@@ -28,13 +28,13 @@ You can install an alpha-build of the Quarto CLI (command-line interface) from h
 
 You can verify that Quarto has been installed correctly with:
 
-``` bash
+``` {.bash}
 $ quarto help
 ```
 
 To install the development version of the Quarto CLI, git clone this repo then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-window.cmd`). For example:
 
-``` bash
+``` {.bash}
 $ git clone https://github.com/quarto-dev/quarto-cli
 $ cd quarto-cli
 $ ./configure-macos.sh
@@ -42,7 +42,7 @@ $ ./configure-macos.sh
 
 ## Getting Started
 
-See [Basic Usage](basic-usage.html) to learn the core mechanics of rendering markdown from the command line as well as how to specify different document formats. 
+See [Basic Usage](basic-usage.html) to learn the core mechanics of rendering markdown from the command line as well as how to specify different document formats.
 
 If you are a Python or Julia user, read the article on [Jupyter Markdown](jupyter-markdown.html) to learn how to use Quarto with Jupyter.
 
@@ -59,4 +59,3 @@ Advanced features of Quarto are covered in these articles:
 -   [PDFs and LaTeX](pdfs-and-latex.html) explains automatic TeX package installation as well as how to install and use [TinyTeX](https://yihui.org/tinytex/).
 
 -   [Quarto Projects](quarto-projects.html) covers how to share YAML metadata options across documents and render all of the documents in directory with a single command.
-

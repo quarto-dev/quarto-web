@@ -13,7 +13,7 @@ We also recommend the use of Quarto's built in PDF compilation engine, which amo
 
 To install TinyTeX, use the following command:
 
-``` bash
+``` {.bash}
 $ quarto install tinytex
 ```
 
@@ -25,7 +25,7 @@ Note that Quarto's automatic installation of missing TeX packages will work for 
 
 When creating a PDF document, Pandoc allows the use of [raw LaTeX](https://pandoc.org/MANUAL.html#extension-raw_tex) directives intermixed with markdown. In some cases this LaTeX will require additional LaTeX packages. To add these packages to your document, use the `header-includes` YAML option. For example:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   pdf:
@@ -64,18 +64,18 @@ The following options are available for customizing automatic package installati
 | `latex-auto-install` | Boolean (enable/disable automatic package installation)             |
 | `latex-tlmgr-opts`   | Array (options for [tlmgr](https://www.tug.org/texlive/tlmgr.html)) |
 
-## Alternate PDF Engines
+## Alternate PDF Engines {#alternate-pdf-engines}
 
 To disable Quarto's built in PDF engine, set the `latex-auto-mk` option to `false`:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 latex-auto-mk: false
 ```
 
 The above configuration will result in Pandoc's default behavior for PDF compilation (`pdf-engine: pdflatex` ). You can then use the `pdf-engine` and `pdf-engine-opts` to further customize Pandoc compilation. For example:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 latex-auto-mk: false
 pdf-engine: xelatex

@@ -15,7 +15,7 @@ Quarto also introduces a number of [enhancements](#enhancements) for Rmd files t
 
 One important point of divergence is that Quarto uses it's own system of output formats rather than traditional R Markdown formats. So instead of this:
 
-``` yaml
+``` {.yaml}
 ---
 output: 
   html_document:
@@ -25,7 +25,7 @@ output:
 
 You write this:
 
-``` yaml
+``` {.yaml}
 ---
 format:
   html:
@@ -45,13 +45,13 @@ In RStudio v1.4 or later, documents that use `format` rather than `output` in th
 
 You can render from the R console using the **quarto** R package. To install the R package:
 
-``` r
+``` {.r}
 install.packages("quarto")
 ```
 
 Then, to render a document:
 
-``` r
+``` {.r}
 library(quarto)
 quarto_render("document.Rmd")
 ```
@@ -60,7 +60,7 @@ quarto_render("document.Rmd")
 
 You can control whether to keep intermediate `.md` and/or `.tex` files using the `keep-md` and `keep-tex` options:
 
-``` yaml
+``` {.yaml}
 ---
 format:
   pdf:
@@ -70,7 +70,7 @@ format:
 ---
 ```
 
-## Enhancements
+## Enhancements {#enhancements}
 
 Beyond the base set of knitr options, Quarto provides a number of enhancements you can use in your Rmd documents.
 
@@ -80,7 +80,7 @@ In R Markdown documents the setup chunk is often used to set document-wide knitr
 
 In Quarto documents, you can provide these options in YAML. For example:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 knitr:
@@ -103,7 +103,7 @@ For HTML output, Quarto enables you to specify that code is included in the docu
 
 To specify that all chunks within a document should use code folding, use the `code-fold` option:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -114,7 +114,7 @@ format:
 
 You can also set code folding on a per-chunk basis with the `fold` attribute:
 
-```` r
+```` {.r}
 ```{r fold=TRUE}
 summary(cars)
 ```
@@ -122,7 +122,7 @@ summary(cars)
 
 Use the `code-summary` option to provide a custom caption for the `<details>` tag:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -134,7 +134,7 @@ format:
 
 You can provide summary text per-cell with the `summary` attribute:
 
-```` r
+```` {.r}
 ```{r, summary="Show the code"}
 summary(cars)
 ```
@@ -142,7 +142,7 @@ summary(cars)
 
 If you want all foldable code regions to be shown by default, use `code-fold: show`. For example:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -153,7 +153,7 @@ format:
 
 This can also be specified on a per-cell basis:
 
-```` r
+```` {.r}
 ```{r, fold="show"}
 summary(cars)
 ```
@@ -165,7 +165,7 @@ You can use standard [knitr cache attributes](https://bookdown.org/yihui/rmarkdo
 
 Use these command line options to force the use of caching on all chunks, disable the use of caching on all chunks, or to force a refresh of the cache even if it has not been invalidated:
 
-``` bash
+``` {.bash}
 $ quarto render document.Rmd --cache 
 $ quarto render document.Rmd --no-cache 
 $ quarto render document.Rmd --cache-refresh 
@@ -173,7 +173,7 @@ $ quarto render document.Rmd --cache-refresh
 
 Or from R using the **quarto** package:
 
-``` r
+``` {.r}
 library(quarto)
 quarto_render("document.Rmd", cache = TRUE)
 quarto_render("document.Rmd", cache = FALSE)
@@ -182,7 +182,7 @@ quarto_render("document.Rmd", cache_refresh = TRUE)
 
 You can also specify these options within a document's YAML metadata. The main advantage of this over the knitr setup chunk is that could specify caching for an [entire project](https://github.com/quarto-dev/quarto-cli/wiki/Quarto-Projects) in one place. For example:
 
-``` yaml
+``` {.yaml}
 ---
 project:
   name: myproject

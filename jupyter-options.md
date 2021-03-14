@@ -28,7 +28,7 @@ There are a number of tags available that control the display of cells in render
 
 These can all be set on document or per-cell level. For example, to hide all code and warnings at a document level:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My document"
 hide-code: true
@@ -39,7 +39,7 @@ jupyter: python3"
 
 To hide code and warnings for an individual cell:
 
-```` python
+```` {.python}
 ```python tags=["hide-code", "hide-warnings"]
 import pandas as pd
 d = {'one' : [1., 2., 3., 4.],
@@ -57,7 +57,7 @@ For HTML output, Quarto enables you to specify that code is included in the docu
 
 To specify that all cells within a document should use code folding, use the `code-fold` option:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -69,7 +69,7 @@ jupyter: python3
 
 You can also set code folding on a per-cell basis with the `fold` attribute:
 
-```` python
+```` {.python}
 ```python fold=true
 import pandas as pd
 d = {'one' : [1., 2., 3., 4.],
@@ -81,7 +81,7 @@ df
 
 Use the `code-summary` option to provide a custom caption for the `<details>` tag:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -94,7 +94,7 @@ jupyter: python3
 
 You can provide summary text per-cell with the `summary` attribute:
 
-```` python
+```` {.python}
 ```python summary="Show the code" 
 1 + 1
 ```
@@ -102,7 +102,7 @@ You can provide summary text per-cell with the `summary` attribute:
 
 If you want all foldable code regions to be shown by default, use `code-fold: show`. For example:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -114,7 +114,7 @@ jupyter: python3
 
 This can also be specified on a per-cell basis:
 
-```` python
+```` {.python}
 ```python fold="show" 
 1 + 1
 ```
@@ -124,7 +124,7 @@ This can also be specified on a per-cell basis:
 
 By default, rendering terminates when a runtime error is encountered while executing a cell. In some cases however you want to actually display errors and continue (e.g. if you are writing a tutorial and want to show errors explicitly). Use the `allow-errors` option to continue execution after errors (and print the error message in the output):
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 allow-errors: true
@@ -134,7 +134,7 @@ jupyter: python3
 
 You can also use the `"allow-errors"` tag to do this on a per-cell basis:
 
-```` python
+```` {.python}
 ```python tags=["allow-errors"]
 1 / 0
 ```
@@ -148,7 +148,7 @@ For each Pandoc output format (e.g. `html`, `pdf`, `docx`, etc.), Quarto defines
 
 You can override these defaults using the `fig-width` and `fig-height options:`
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 format:
@@ -178,7 +178,7 @@ If you are using another library, you can retrieve these values from the followi
 
 If you want your figures to appear with captions below them, use the `fig.cap` attribute on the code block that produces the figure:
 
-```` python
+```` {.python}
 ```python fig.cap="Caption"
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
@@ -188,7 +188,7 @@ plt.show()
 
 If you have a code block that produces multiple figures, you can specify a list of captions:
 
-```` python
+```` {.python}
 ```python fig.cap=["Caption", "Second Caption"]
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
@@ -201,7 +201,7 @@ plt.show()
 
 Figures with captions are by default center-aligned. You can change this using the `fig-align` attribute:
 
-```` python
+```` {.python}
 ```python fig.cap="Caption" fig.align="left"
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
@@ -221,7 +221,7 @@ When you render Jupyter Markdown, there a number of intermediate files created. 
 
 Specify these options at the document level. For example:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 keep-ipynb: true
@@ -233,7 +233,7 @@ jupyter: python3
 
 You might wish to prevent execution of code cells when rendering (for example, if it's very expensive and you just want to preview markdown output). You can do this by adding `execute: false` as a YAML metadata option:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 execute: false
@@ -243,7 +243,7 @@ jupyter: python3
 
 Alternatively, you can pass the `--no-execute` option to the `quarto render` command:
 
-``` bash
+``` {.bash}
 $ quarto render notebook.md --no-execute
 ```
 
@@ -259,7 +259,7 @@ You may have a set of parameters that you use to create different variations of 
 
 Quarto uses the same syntax for defining parameters as [Papermill](https://papermill.readthedocs.io/en/latest/usage-parameterize.html). To parameterize a notebook, designate a cell with the tag `parameters` and provide appropriate default values:
 
-```` python
+```` {.python}
 ```python tags=["parameters"]
 alpha = 0.1
 ratio = 0.1
@@ -268,13 +268,13 @@ ratio = 0.1
 
 To render using different parameters you can pass them on the command line using the `-P` flag:
 
-``` bash
+``` {.bash}
 $ quarto render notebook.md -P alpha:0.2 -P ratio:0.3
 ```
 
 Alternatively you can create a YAML file that defines the parameter values you want to render with, then call `quarto render` with the `--execute-params` flag:
 
-``` bash
+``` {.bash}
 $ quarto render notebook.md --execute-params params.yml
 ```
 
@@ -284,7 +284,7 @@ By default, `quarto render` keeps the Jupyter kernel used to render a document a
 
 You can change this default behavior using the `kernel-keepalive` option. For example:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 kernel-keepalive: 60
@@ -294,7 +294,7 @@ jupyter: python3
 
 You can also specify this option at the command line using the `--kernel-keepalive` flag:
 
-``` bash
+``` {.bash}
 $ quarto render notebook.md --kernel-keepalive 0
 ```
 
@@ -302,6 +302,6 @@ The above example specifies `0`, which means don't keep the kernel around at all
 
 You can force a kernel restart using the `--kernel-restart` flag:
 
-``` bash
+``` {.bash}
 $ quarto render notebook.md --kernel-restart
 ```

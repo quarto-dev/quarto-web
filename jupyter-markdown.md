@@ -55,7 +55,7 @@ $ quarto render notebook.md --to docx
 
 During rendering your Jupyter Markdown file will be converted into a notebook file (.ipynb) and then executed using the Jupyter kernel. By default, this file is considered temporary and removed after render. If you wish to keep it, specify the `keep-ipynb` option:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My document"
 keep-ipynb: true

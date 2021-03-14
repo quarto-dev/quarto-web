@@ -15,13 +15,13 @@ Quarto projects are directories that:
 
 Use the `quarto create-project` command to create a new project. If you have an existing directory of documents that you want to treat as a project just invoke `create-project` with no arguments from within the directory:
 
-``` bash
+``` {.bash}
 $ quarto create-project
 ```
 
 To create a project in a new directory just provide a directory name on the command line:
 
-``` bash
+``` {.bash}
 $ quarto create-project myproject
 ```
 
@@ -29,7 +29,7 @@ $ quarto create-project myproject
 
 When you create a project, a `_quarto.yml` config file is created. Here is an example of what the `_quarto.yml` file might look like:
 
-``` yaml
+``` {.yaml}
 project:
   name: myproject
 format:
@@ -53,21 +53,21 @@ You can render files within a project either one-by-one or all at once (in eithe
 
 To render all of the documents within a project, just use `quarto render` within the project directory (or target a specific directory with a command line argument):
 
-``` bash
+``` {.bash}
 $ quarto render # render current dir
 $ quarto render myproject
 ```
 
 Note that when rendering an entire project, command line arguments you pass to `quarto render` will be used for each file in the project. For example. theses command will render each document in a project as a PDF:
 
-``` bash
+``` {.bash}
 $ quarto render --to pdf
 $ quarto render myproject --to pdf
 ```
 
 If you don't want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a `project: render: [files]` entry to your project metadata. For example:
 
-``` yaml
+``` {.yaml}
 project:
   name: myproject
   render:
@@ -77,7 +77,7 @@ project:
 
 Note that you can use wildcards when defining the `render` list. For example:
 
-``` yaml
+``` {.yaml}
 project:
   name: myproject
   render:

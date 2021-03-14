@@ -7,7 +7,7 @@ format: html
 
 You can use the `quarto render` command to render HTML, PDF, Word and many other output formats from plain markdown, Rmd documents, Jupyter Markdown (a pure markdown representation of a notebook), or a Jupyter Notebook:
 
-``` bash
+``` {.bash}
 $ quarto render document.md
 $ quarto render document.Rmd
 $ quarto render jupyter.md
@@ -16,14 +16,14 @@ $ quarto render jupyter.ipynb
 
 By default, Quarto renders to HTML, however any of Pandoc's over 40 [output formats](https://pandoc.org/) are supported. For example:
 
-``` bash
+``` {.bash}
 $ quarto render document.Rmd --to pdf
 $ quarto render document.ipynb --to docx
 ```
 
 Pandoc supports a wide variety of [command line options](https://pandoc.org/MANUAL.html#general-options) and all of these options are supported by `quarto render`. For example:
 
-``` bash
+``` {.bash}
 $ quarto render document.ipynb --to pdf --toc --number-sections
 ```
 
@@ -31,7 +31,7 @@ $ quarto render document.ipynb --to pdf --toc --number-sections
 
 Note that while it is possible to pass many options via the command line, it's often much more convenient to provide these options within the document itself as YAML front matter. For example:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 author: "Jane Doe"
@@ -43,13 +43,13 @@ number-sections: true
 
 If you do this then the following command is equivalent to the previous example (but no options are provided on the command line b/c they are already defined in YAML):
 
-``` bash
+``` {.bash}
 $ quarto render document.md
 ```
 
 Options may include any of the defined Pandoc metadata [variables](https://pandoc.org/MANUAL.html#variables) or [defaults](https://pandoc.org/MANUAL.html#default-files). For example, here we take advantage of quite a few more options for PDF generation:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 author: "Jane Doe"
@@ -71,7 +71,7 @@ highlight-style: pygments
 
 The above example includes a simple `format: pdf` value to set the default format. It's also possible to provide multiple formats along with YAML options set on a per-format basis. For example, this document defines HTML, PDF, and Word output:
 
-``` yaml
+``` {.yaml}
 ---
 title: "My Document"
 author: "Jane Doe"
@@ -96,7 +96,7 @@ Note that the `toc` and `toc-depth` options are shared across all formats, and t
 
 If you render this document without a `--to` argument, it will be rendered as `html` since that is the first format listed in the file. To render as another format just provide an explicit `--to` argument:
 
-``` bash
+``` {.bash}
 $ quarto render document.md # will render to html
 $ quarto render document.md --to pdf
 $ quarto render document.md --to docx

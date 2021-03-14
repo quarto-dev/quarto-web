@@ -13,7 +13,7 @@ The default theme for HTML output is based on the [Bootstrap](https://getbootstr
 
 The [Bootswatch](https://bootswatch.com/) project provides a set of over 20 custom Bootstrap themes, all of which are built-in to Quarto. To use a Bootswatch theme, just add a `theme` option with it's name. For example:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   html:
@@ -26,7 +26,7 @@ You can see a list of all available Bootstrap themes on the [Bootswatch website]
 
 Bootstrap themes are just CSS files that replace the default Bootstrap stylesheet. You can [create your own](https://bootstrap.build/) theme or procure a [third-party](https://themes.getbootstrap.com/) theme and use it with Quarto. To use custom themes, just provide the theme's CSS file as the `theme` option. For example:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   html:
@@ -37,7 +37,7 @@ format:
 
 Pandoc comes with it's own default HTML theme. You can use this theme by specifying `theme: pandoc` in your document options. For example:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   html: 
@@ -46,7 +46,7 @@ format:
 
 You can then customize the appearance of the document using the [Theme Options](#theme-options) described below.
 
-## Theme Options
+## Theme Options {#theme-options}
 
 If you are using a Bootstrap theme or the Pandoc theme, there are a set of options you can provide in document metadata to customize it's appearance. These include:
 
@@ -65,7 +65,7 @@ If you are using a Bootstrap theme or the Pandoc theme, there are a set of optio
 
 For example. here we set the maximum width to 800px and specify that we want a bit more space between lines of text:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   html: 
@@ -76,7 +76,7 @@ format:
 
 For further customization, you can also include one or more CSS stylesheets using the `css` option. For example:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   html: 
@@ -92,7 +92,7 @@ You can disable HTML theming entirely by specifying `theme: null` in document op
 
 For example, here we disable all built-in themes and provide our own CSS:
 
-``` yaml
+``` {.yaml}
 title: "My Document"
 format:
   html: 
