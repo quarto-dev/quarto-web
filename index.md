@@ -1,7 +1,5 @@
 ---
-format: 
-  html:
-    toc: false
+format: html
 ---
 
 Quarto is an academic, scientific, and technical publishing system built on [Pandoc](https://pandoc.org).
