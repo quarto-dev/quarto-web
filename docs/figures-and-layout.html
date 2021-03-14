@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Quarto – Figures and Layout</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007ba5; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #007ba5; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #007ba5; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <!--quarto-placeholder-envelope-include-in-header-->
+  <style type="text/css">
+    .navbar-brand>img {
+      max-height: 24px;
+      width: auto;
+      padding-right: 6px;
+    }
+    :target::before {
+      content: "";
+      display: block;
+      height: 0px;
+      margin: -0px 0 0;
+    }
+    body {
+      padding-top: 0px;
+    }
+    .sidebar {
+      position: sticky;
+      max-height: calc(100vh - 0px);
+      top: 0px;
+      overflow-y: auto;
+      max-width: 15rem;
+    }
+    .quarto-btn-toggle[aria-expanded=false] .bi-arrows-collapse {
+      display: none;
+    }
+    .quarto-btn-toggle[aria-expanded=true] .bi-arrows-expand {
+      display: none;
+    }
+    .quarto-secondary-nav {
+      margin-top: -4px;
+    }
+    .quarto-secondary-nav-title {
+      padding-top: 4px;
+      margin-bottom: -4px;
+    }
+    @media (max-width: 991.98px) :not(.show) {
+      #quarto-sidebar {
+        height: 0;
+      }
+    }
+    @media (max-width: 991.98px) {
+      #quarto-sidebar {
+        border-bottom: 1px solid var(--bs-light);
+      }
+    }
+    @media (min-width: 992px) {
+      #quarto-sidebar {
+        height: calc(100vh - 7rem);
+        display: block;
+      }
+    }
+  </style>
+
+  <!--/quarto-placeholder-envelope-include-in-header-->
+  <script src="libs/bootstrap-v5.0.0-beta2/bootstrap.bundle.min.js"></script>
+  <script src="libs/bootstrap-v5.0.0-beta2/bootstrap.quarto.js"></script>
+  <link href="libs/bootstrap-v5.0.0-beta2/bootstrap.min.css" rel="stylesheet" />
+  <link href="libs/bootstrap-v5.0.0-beta2/bootstrap-icons.css" rel="stylesheet" />
+  <link href="libs/bootstrap-v5.0.0-beta2/bootstrap.quarto.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<!--quarto-placeholder-envelope-include-before-body-->
+<nav class="quarto-secondary-nav py-2 d-lg-none d-md-block bg-light" aria-label="Secondary navigation">
+  <div class="container-fluid d-flex justify-content-between">
+    <h1 class="quarto-secondary-nav-title mb-0 fs-5 d-inline"></h1>
+    <button class="quarto-btn-toggle btn d-lg-none py-0 px-1 btn-secondary btn-lg d-inline-block" type="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation">
+      <i class="bi bi-arrows-expand"></i>
+      <i class="bi bi-arrows-collapse"></i>
+    </button>
+  </div>
+</nav>
+<div id="quarto-content" class="container-fluid">
+<div class="row">
+<div id="quarto-sidebar" class="col mx-auto col-12 col-lg-2 sidebar collapse sidebar-navigation">
+  <nav>
+  <ul class="list-unstyled">
+    <li class="sidebar-section">Getting Started</li>
+    <li>
+  <a href="./index.html">Introduction</a>
+</li>
+    <li>
+  <a href="./basic-usage.html">Basic Usage</a>
+</li>
+    <li>
+  <a href="./html-themes.html">HTML Themes</a>
+</li>
+    <li class="sidebar-section">Learning More</li>
+    <li>
+  <a href="./figures-and-layout.html">Figures and Layout</a>
+</li>
+    <li>
+  <a href="./cross-references.html">Cross References</a>
+</li>
+    <li>
+  <a href="./pdfs-and-latex.html">PDFs and LaTeX</a>
+</li>
+    <li>
+  <a href="./quarto-projects.html">Quarto Projects</a>
+</li>
+    <li>
+  <a href="./quarto-extensions.html">Quarto Extensions</a>
+</li>
+    <li class="sidebar-section">Using with knitr</li>
+    <li>
+  <a href="./rendering-rmds.html">Rendering Rmds</a>
+</li>
+    <li>
+  <a href="https://yihui.org/knitr/">knitr Options</a>
+</li>
+    <li class="sidebar-section">Using with Jupyter</li>
+    <li>
+  <a href="./jupyter-markdown.html">Jupyter Markdown</a>
+</li>
+    <li>
+  <a href="./jupyter-options.html">Jupyter Options</a>
+</li>
+    <li>
+  <a href="./exporting-notebooks.html">Exporting Notebooks</a>
+</li>
+  </ul>
+</nav>
+</div>
+<div class="col mx-auto col-sm-12 col-md-9 col-lg-8">
+<main>
+
+<!--/quarto-placeholder-envelope-include-before-body-->
+<header id="title-block-header">
+<h1 class="title">Figures and Layout</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#pandoc-figures">Pandoc Figures</a></li>
+<li><a href="#linked-figures">Linked Figures</a></li>
+<li><a href="#figure-alignment">Figure Alignment</a></li>
+<li><a href="#latex-environments">LaTeX Environments</a></li>
+<li><a href="#figure-divs">Figure Divs</a></li>
+<li><a href="#subfigures">Subfigures</a></li>
+<li><a href="#figure-panels">Figure Panels</a>
+<ul>
+<li><a href="#multiple-rows">Multiple Rows</a></li>
+</ul></li>
+<li><a href="#jupyter-and-knitr-figures">Jupyter and knitr Figures</a></li>
+<li><a href="#table-panels">Table Panels</a></li>
+<li><a href="#jupyter-and-knitr-tables">Jupyter and knitr Tables</a></li>
+<li><a href="#complex-layouts">Complex Layouts</a>
+<ul>
+<li><a href="#vertical-alignment">Vertical Alignment</a></li>
+</ul></li>
+<li><a href="#jupyter-and-knitr-layout">Jupyter and knitr Layout</a></li>
+<li><a href="#block-layout">Block Layout</a></li>
+</ul>
+</nav>
+<p>Quarto includes a number of features aimed at making it easier to work with figures and subfigures, as well as for laying out panels that contain multiple figures, tables, or other content.</p>
+<p>In Pandoc markdown, a figure is created whenever a captioned image appears by-itself in a paragraph. For example:</p>
+<section id="pandoc-figures" class="level2">
+<h2>Pandoc Figures</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="al">![Elephant](elephant.png)</span></span></code></pre></div>
+<p>This results in the following treatment for various output types:</p>
+<table>
+<thead>
+<tr class="header">
+<th>HTML</th>
+<th>PDF</th>
+<th>Word</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><img src="images/html-figure.png" width="200"/></td>
+<td><img src="images/pdf-figure.png" width="200"/></td>
+<td><img src="images/word-figure.png" width="200"/></td>
+</tr>
+</tbody>
+</table>
+<p>Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using <a href="cross-references.html">Cross References</a>).</p>
+</section>
+<section id="linked-figures" class="level2">
+<h2>Linked Figures</h2>
+<p>When rendering with Quarto, you can enclose a figure within a link and it will still be treated within output as a captioned figure. For example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="al">![Elephant](elephant.png)</span><span class="co">](https://en.wikipedia.org/wiki/Elephant)</span></span></code></pre></div>
+</section>
+<section id="figure-alignment" class="level2">
+<h2>Figure Alignment</h2>
+<p>Figures and their captions are center aligned by default. Add the <code>fig.align</code> attribute to the image to use a different alignment. For example:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="al">![Elephant](elephant.png)</span>{fig.align=&quot;left&quot;}</span></code></pre></div>
+</section>
+<section id="latex-environments" class="level2">
+<h2>LaTeX Environments</h2>
+<p>There are a number of LaTeX packages that provide custom figure environments. For example, the <a href="https://ctan.org/pkg/mdframed?lang=en">mdframed</a> package includes an <code>mdframed</code> environment used to enclose figures in a special border style. By default, Quarto uses the standard <code>figure</code> environment, but you can use the <code>fig.env</code> attribute to specify a custom one. For example:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Sidenotes&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">  pdf:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">    header-includes: |</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">      \usepackage{sidenotes}</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="al">![Elephant](elephant.png)</span>{fig.env=&quot;marginfigure&quot;}</span></code></pre></div>
+</section>
+<section id="figure-divs" class="level2">
+<h2>Figure Divs</h2>
+<p>You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with #<code>fig:</code>. For example, here we create a figure that includes an embedded iframe:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>::: {#fig:elephant}</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;iframe</span><span class="ot"> width=</span><span class="st">&quot;560&quot;</span><span class="ot"> height=</span><span class="st">&quot;315&quot;</span><span class="ot"> src=</span><span class="st">&quot;https://www.youtube.com/embed/SNggmeilXDQ&quot;</span><span class="kw">&gt;&lt;/iframe&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Elephant</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p>Note that the last paragraph in the div block is used as the figure caption.</p>
+</section>
+<section id="subfigures" class="level2">
+<h2>Subfigures</h2>
+<p>If you have several figures that appear as a group, you can create a figure div to enclose them. For example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>::: {#fig:elephants layout.ncol=2}</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span>{#fig:surus}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="al">![Hanno](hanno.png)</span>{#fig:hanno}</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>Famous Elephants</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p>Again, the last paragraph provides the main caption, and the individual figures carry the sub-captions. Here is what this looks like when rendered as HTML:</p>
+<p><img src="images/elephant-subfigures.png" width="600"/></p>
+<p>Note that we also used a <code>layout.ncol</code> attribute to specify a two-column layout. The next section delves more into customizing figure layouts.</p>
+</section>
+<section id="figure-panels" class="level2">
+<h2>Figure Panels</h2>
+<p>Above we demonstrate laying out two side-by-side figures with subcaptions and a main caption. You may or may not want the caption / subcaption treatment, and you might also want to use multiple rows of figures. All of these variations are possible.</p>
+<p>To layout two figures with their own standalone captions (and no main caption), just eliminate the <code>#fig</code> identifiers and main caption at the bottom:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>::: {layout.ncol=2}</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="al">![Hanno](hanno.png)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/elephant-figures-no-subcaption.png" width="600"/></p>
+<p>You can also eliminate the captions entirely:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>::: {layout.ncol=2}</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="al">![](surus.png)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="al">![](hanno.png)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<section id="multiple-rows" class="level3">
+<h3>Multiple Rows</h3>
+<p>If you have more than 2 images, you might want to lay them out across multiple rows. You can do this using the <code>layout.nrow</code> attribute. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>::: {layout.nrow=2}</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="al">![Hanno](hanno.png)</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="al">![Abdul Abbas](abdul-abbas.png)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="al">![Lin Wang](lin-wang.png)</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/elephant-rows.png" class="img-fluid" /></p>
+<p>More complex figure arrangements (e.g. rows with varying column layouts) are possible. See the <a href="#complex-layouts">Complex Layouts</a> section below for more details.</p>
+</section>
+</section>
+<section id="jupyter-and-knitr-figures" class="level2">
+<h2>Jupyter and knitr Figures</h2>
+<p>Note that figure layout attributes also work for figures produced by knitr or Jupyter. For example, to show two plots emitted from a Jupyter code cell side-by-side you would do the following:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python border-light"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>```python layout.ncol<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">1</span>,<span class="dv">23</span>,<span class="dv">2</span>,<span class="dv">4</span>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">8</span>,<span class="dv">65</span>,<span class="dv">23</span>,<span class="dv">90</span>])</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>```</span></code></pre></div>
+<p><img src="images/jupyter-figure-layout.png" width="600"/></p>
+<p>To show two plots emitted from a knitr code chunk side-by-side:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r border-light"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="st">```</span><span class="at">{r, layout.ncol=2}</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="at">plot(cars)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="at">plot(pressure)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span></code></pre></div>
+<p><img src="images/knitr-figure-layout.png" width="600"/></p>
+</section>
+<section id="table-panels" class="level2">
+<h2>Table Panels</h2>
+<p>You can also use a div with layout attributes to display tables side-by-side. For example:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>::: {layout.ncol=2}</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>| Col1 | Col2 | Col3 |</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>|------|------|------|</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>| A    | B    | C    |</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>| E    | F    | G    |</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>| A    | G    | G    |</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>: First Table</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>| Col1 | Col2 | Col3 |</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>|------|------|------|</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>| A    | B    | C    |</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>| E    | F    | G    |</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>| A    | G    | G    |</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>: Second Table</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/table-layout-basic.png" width="600"/></p>
+<p>As with figures, you can also present tables using numbered subcaptions by adding a main caption and <code>#tbl:</code> identifiers:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>::: {#tbl:panel layout.ncol=2}</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>| Col1 | Col2 | Col3 |</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>|------|------|------|</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>| A    | B    | C    |</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>| E    | F    | G    |</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>| A    | G    | G    |</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>: First Table {#tbl:first}</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>| Col1 | Col2 | Col3 |</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>|------|------|------|</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>| A    | B    | C    |</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>| E    | F    | G    |</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>| A    | G    | G    |</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>: Second Table {#tbl:second}</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>Main Caption</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/table-layout-subcaption.png" width="600"/></p>
+<p>See the article on <a href="cross-references.html">Cross References</a> for additional details on table captions, subcaptions, and numbering.</p>
+</section>
+<section id="jupyter-and-knitr-tables" class="level2">
+<h2>Jupyter and knitr Tables</h2>
+<p>You can also use layout attributes for tables produced by knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r border-light"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="st">```</span><span class="at">{r, layout.ncol=2}</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">library(knitr)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="at">kable(head(cars), caption = &quot;Cars&quot;)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="at">kable(head(pressure), caption = &quot;Pressure&quot;)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span></code></pre></div>
+<p><img src="images/knitr-table-layout.png" width="600"/></p>
+</section>
+<section id="complex-layouts" class="level2">
+<h2>Complex Layouts</h2>
+<p>The examples above used the <code>layout.ncol</code> or <code>layout.nrow</code> attributes to create straightforward layouts where all columns are of equal sizes. The <code>layout</code> attribute enables the creation of much more complex layouts.</p>
+<p>For example, this defines a layout with two equally sized figures in the first row, then another image that spans the entire second row:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>::: {layout=&quot;[<span class="co">[</span><span class="ot">1,1</span><span class="co">]</span>, <span class="co">[</span><span class="ot">1</span><span class="co">]</span>]&quot;}</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="al">![Hanno](hanno.png)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="al">![Lin Wang](lin-wang.png)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/layout-attrib.png" width="600"/></p>
+<p>The <code>layout</code> attribute is a 2-dimensional array where the first dimension defines rows and the second columns. In this case <code>"layout="[[1,1], [1]]"</code> translates to: create two rows, the first of which has two columns of equal size and the second of which has a single column.</p>
+<p>Note that the numbers in a row are arbitrary and don’t need to add up to a particular total. You can therefore use whatever scheme is most natural. For example, here we define columns that occupy varying percentage widths of the row:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>::: {layout=&quot;[<span class="co">[</span><span class="ot">70,30</span><span class="co">]</span>, <span class="co">[</span><span class="ot">100</span><span class="co">]</span>]&quot;}</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="al">![Hanno](hanno.png)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="al">![Lin Wang](lin-wang.png)</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p>You can also use negative values to create space between elements. For example:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>::: {layout=&quot;[<span class="co">[</span><span class="ot">40,-20,40</span><span class="co">]</span>, <span class="co">[</span><span class="ot">100</span><span class="co">]</span>]&quot;}</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="al">![Hanno](hanno.png)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="al">![Lin Wang](lin-wang.png)</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/layout-attrib-negative.png" width="600"/></p>
+<section id="vertical-alignment" class="level3">
+<h3>Vertical Alignment</h3>
+<p>If you have a layout with a row of images of differing heights, you can control their vertical alignment using the <code>layout.valign</code> attribute. A simple example:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>::: {layout=&quot;<span class="co">[</span><span class="ot">25,-2,10</span><span class="co">]</span>&quot; layout.valign=&quot;bottom&quot;}</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="al">![Surus](surus.png)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="al">![Lin Wang](lin-wang.png)</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p><img src="images/valign.png" width="600"/></p>
+<p>Note that vertical alignment isn’t limited to images, you can also vertically align any other elements that are included in a panel.</p>
+</section>
+</section>
+<section id="jupyter-and-knitr-layout" class="level2">
+<h2>Jupyter and knitr Layout</h2>
+<p>The <code>layout</code> works the same way for figures or tables produced by knitr or Jupyter. For example, here’s an Rmd code chunk that produces 3 plots and defines a custom layout for them:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r border-light"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="st">```</span><span class="at">{r, layout=list(c(45,-10, 45), c(100))}</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="at">plot(cars)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="at">plot(pressure)</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="at">plot(mtcars)</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span></code></pre></div>
+<p><img src="images/knitr-layout-complex.png" width="600"/></p>
+<p>Note that for Rmd code chunks, you use a list of numeric vectors (each of which represents a row). For Jupyter Markdown however you use the same array of arrays syntax (e.g <code>layout="[[40,-20,40], [100]]"</code>) as is used for plain markdown.</p>
+</section>
+<section id="block-layout" class="level2">
+<h2>Block Layout</h2>
+<p>While the examples above illustrate laying out figures and tables, it’s important to note that layout attributes can be used to layout any sort of block content. For example, here we layout 2 lists side-by-side:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>::: {layout.ncol=2}</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">### List One</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item A</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item B</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item C</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">### List Two</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item X</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item Y</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item Z</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<p>Note that headings are automatically combined with the block that follows them, so this markdown has a total of 2 columns to lay out. Here’s an example of a paragraph next to a bullet list (without headings):</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode markdown border-light"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>::: {layout.ncol=2}</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item X</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item Y</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Item Z</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur gravida eu erat et fring.</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>Morbi congue augue vel eros ullamcorper, eget convallis tortor sagittis. Fusce sodales viverra</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>mauris a fringilla. Donec feugiat, justo eu blandit placerat, enim dui volutpat turpis, eu</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>dictum lectus urna eu urna. Mauris sed massa ornare, interdum ipsum a, semper massa. </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<!-- -->
+</section>
+<!--quarto-placeholder-envelope-include-after-body-->
+</main>
+</div> <!-- /main column -->
+<div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter text-muted">
+</div> <!-- /toc column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+<!--/quarto-placeholder-envelope-include-after-body-->
+</body>
+</html>
