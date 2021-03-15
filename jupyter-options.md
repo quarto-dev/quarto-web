@@ -53,7 +53,7 @@ df
 
 For HTML output, Quarto enables you to specify that code is included in the document but hidden by default using the `<details>` tag. For example:
 
-<img src="images/code-fold-jupyter.png" width="501"/>
+![](images/code-fold-jupyter.png)
 
 To specify that all cells within a document should use code folding, use the `code-fold` option:
 
