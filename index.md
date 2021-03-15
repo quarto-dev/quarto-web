@@ -1,11 +1,10 @@
 ---
 title: "Quarto"
+subtitle: "Scientific and technical publishing system"
 format: html
 ---
 
-Quarto is an academic, scientific, and technical publishing system built on [Pandoc](https://pandoc.org).
-
-In addition to the core capabilities of Pandoc, Quarto includes:
+Quarto is an academic, scientific, and technical publishing system built on [Pandoc](https://pandoc.org). In addition to the core capabilities of Pandoc, Quarto includes:
 
 1.  Support for embedding output from Python, R, and Julia via integration with [Jupyter](https://jupyter.org/) and [knitr](https://yihui.org/knitr/) .
 2.  A project system for rendering groups of documents at once.
