@@ -63,7 +63,7 @@ See @fig:elephants for examples. In particular, @fig:hanno.
 
 Here is what this looks like when rendered as HTML:
 
-<img src="images/crossref-subfigures.png" width="600"/>
+![](images/crossref-subfigures.png)
 
 Note that we also used the `layout.ncol` attribute to specify a two-column layout. See the article on [Figures and Layout](figures-and-layout.html) for more details on laying out panels of figures.
 
@@ -83,7 +83,7 @@ plt.show()
 For example, see @fig:plot.
 ````
 
-<img src="images/crossref-figure-jupyter.png" width="600"/>
+![](images/crossref-figure-jupyter.png)
 
 You can also create multiple figures within a Jupyter code cell and reference them as subfigures. To do this use `fig.cap` for the main caption, and `fig.subcap` to provide an array of subcaptions. For example:
 
@@ -100,7 +100,7 @@ plt.show()
 See @fig:plots for examples. In particular, @fig:plots-2.
 ````
 
-<img src="images/crossref-subfigures-jupyter.png" width="600"/>
+![](images/crossref-subfigures-jupyter.png)
 
 Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig:plots-1`, `@fig:plots-2`, etc.).
 
@@ -116,7 +116,7 @@ plot(cars)
 For example, see @fig:plot.
 ````
 
-<img src="images/crossref-figure-r.png" width="600"/>
+![](images/crossref-figure-r.png)
 
 You can also create multiple figures within a knitr code chunk and reference them as subfigures. To do this use `fig.cap` for the main caption, and `fig.subcap` to provide a vector of subcaptions. For example:
 
@@ -130,7 +130,7 @@ See @fig:plots for examples. In particular, @fig:plots-2.
 ```
 ````
 
-<img src="images/crossref-subfigures-r.png" width="600"/>
+![](images/crossref-subfigures-r.png)
 
 Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig:plots-1`, `@fig:plots-2`, etc.).
 
@@ -178,7 +178,7 @@ Main Caption
 See @tbl:panel for details, especially @tbl:second.
 ```
 
-<img src="images/crossref-subtable.png" width="600"/>
+![](images/crossref-subtable.png)
 
 Note that the "Main Caption" for the table is provided as the last block within the containing div.
 
@@ -194,7 +194,7 @@ kable(head(pressure), caption = "Pressure {#tbl:pressure}")
 ```
 ````
 
-<img src="images/crossref-subtable-knitr.png" width="600"/>
+![](images/crossref-subtable-knitr.png)
 
 ## Equations
 
@@ -262,7 +262,7 @@ $$
 See @thm:line.
 ```
 
-<img src="images/crossref-theorem.png" width="600"/>
+![](images/crossref-theorem.png)
 
 For LaTeX output, the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is used for typesetting theorems. For other formats an appropriate treatment is used (the above is an example of HTML output).
 
@@ -319,7 +319,7 @@ crossref:
 See @fig:elephant for an illustration.
 ```
 
-<img src="images/crossref-chapters.png" width="600"/>
+![](images/crossref-chapters.png)
 
 ## Lists
 

@@ -15,9 +15,9 @@ In Pandoc markdown, a figure is created whenever a captioned image appears by-it
 
 This results in the following treatment for various output types:
 
-| HTML                                            | PDF                                            | Word                                            |
-|-------------------------------------------------|------------------------------------------------|-------------------------------------------------|
-| <img src="images/html-figure.png" width="200"/> | <img src="images/pdf-figure.png" width="200"/> | <img src="images/word-figure.png" width="200"/> |
+| HTML                        | PDF                        | Word                        |
+|-----------------------------|----------------------------|-----------------------------|
+| ![](images/html-figure.png) | ![](images/pdf-figure.png) | ![](images/word-figure.png) |
 
 Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using [Cross References](cross-references.html)).
 
@@ -85,7 +85,7 @@ Famous Elephants
 
 Again, the last paragraph provides the main caption, and the individual figures carry the sub-captions. Here is what this looks like when rendered as HTML:
 
-<img src="images/elephant-subfigures.png" width="600"/>
+![](images/elephant-subfigures.png)
 
 Note that we also used a `layout.ncol` attribute to specify a two-column layout. The next section delves more into customizing figure layouts.
 
@@ -103,7 +103,7 @@ To layout two figures with their own standalone captions (and no main caption), 
 :::
 ```
 
-<img src="images/elephant-figures-no-subcaption.png" width="600"/>
+![](images/elephant-figures-no-subcaption.png)
 
 You can also eliminate the captions entirely:
 
@@ -150,7 +150,7 @@ plt.show()
 ```
 ````
 
-<img src="images/jupyter-figure-layout.png" width="600"/>
+![](images/jupyter-figure-layout.png)
 
 To show two plots emitted from a knitr code chunk side-by-side:
 
@@ -161,7 +161,7 @@ plot(pressure)
 ```
 ````
 
-<img src="images/knitr-figure-layout.png" width="600"/>
+![](images/knitr-figure-layout.png)
 
 ## Table Panels
 
@@ -187,7 +187,7 @@ You can also use a div with layout attributes to display tables side-by-side. Fo
 :::
 ```
 
-<img src="images/table-layout-basic.png" width="600"/>
+![](images/table-layout-basic.png)
 
 As with figures, you can also present tables using numbered subcaptions by adding a main caption and `#tbl:` identifiers:
 
@@ -213,7 +213,7 @@ Main Caption
 :::
 ```
 
-<img src="images/table-layout-subcaption.png" width="600"/>
+![](images/table-layout-subcaption.png)
 
 See the article on [Cross References](cross-references.html) for additional details on table captions, subcaptions, and numbering.
 
@@ -229,7 +229,7 @@ kable(head(pressure), caption = "Pressure")
 ```
 ````
 
-<img src="images/knitr-table-layout.png" width="600"/>
+![](images/knitr-table-layout.png)
 
 ## Complex Layouts {#complex-layouts}
 
@@ -247,7 +247,7 @@ For example, this defines a layout with two equally sized figures in the first r
 :::
 ```
 
-<img src="images/layout-attrib.png" width="600"/>
+![](images/layout-attrib.png)
 
 The `layout` attribute is a 2-dimensional array where the first dimension defines rows and the second columns. In this case `"layout="[[1,1], [1]]"` translates to: create two rows, the first of which has two columns of equal size and the second of which has a single column.
 
@@ -275,7 +275,7 @@ You can also use negative values to create space between elements. For example:
 :::
 ```
 
-<img src="images/layout-attrib-negative.png" width="600"/>
+![](images/layout-attrib-negative.png)
 
 ### Vertical Alignment
 
@@ -289,7 +289,7 @@ If you have a layout with a row of images of differing heights, you can control 
 :::
 ```
 
-<img src="images/valign.png" width="600"/>
+![](images/valign.png)
 
 Note that vertical alignment isn't limited to images, you can also vertically align any other elements that are included in a panel.
 
@@ -305,7 +305,7 @@ plot(mtcars)
 ```
 ````
 
-<img src="images/knitr-layout-complex.png" width="600"/>
+![](images/knitr-layout-complex.png)
 
 Note that for Rmd code chunks, you use a list of numeric vectors (each of which represents a row). For Jupyter Markdown however you use the same array of arrays syntax (e.g `layout="[[40,-20,40], [100]]"`) as is used for plain markdown.
 
