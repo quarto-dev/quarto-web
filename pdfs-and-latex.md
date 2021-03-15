@@ -46,23 +46,33 @@ Quarto's built-in PDF compilation engine handles running LaTeX multiple times to
 
 The following options are available for customizing PDF compilation:
 
++------------------------+---------------------------------------------------------------------+
 | Option                 | Description                                                         |
-|------------------------|---------------------------------------------------------------------|
++========================+=====================================================================+
 | `latex-min-runs`       | Number (minimum number of compilation passes)                       |
++------------------------+---------------------------------------------------------------------+
 | `latex-max-runs`       | Number (maximum number of compilation passes)                       |
++------------------------+---------------------------------------------------------------------+
 | `latex-clean`          | Boolean (clean intermediates after compilation, defaults to `true`) |
++------------------------+---------------------------------------------------------------------+
 | `latex-output-dir`     | String (output directory for intermediates and PDF)                 |
++------------------------+---------------------------------------------------------------------+
 | `latex-makeindex`      | String (program to use for `makeindex`)                             |
++------------------------+---------------------------------------------------------------------+
 | `latex-makeindex-opts` | Array (options for `makeindex`program)                              |
++------------------------+---------------------------------------------------------------------+
 
 ### Package Installation
 
 The following options are available for customizing automatic package installation:
 
++----------------------+---------------------------------------------------------------------+
 | Option               | Description                                                         |
-|----------------------|---------------------------------------------------------------------|
++======================+=====================================================================+
 | `latex-auto-install` | Boolean (enable/disable automatic package installation)             |
++----------------------+---------------------------------------------------------------------+
 | `latex-tlmgr-opts`   | Array (options for [tlmgr](https://www.tug.org/texlive/tlmgr.html)) |
++----------------------+---------------------------------------------------------------------+
 
 ## Alternate PDF Engines {#alternate-pdf-engines}
 

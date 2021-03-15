@@ -3,8 +3,6 @@ title: "Quarto Projects"
 format: html
 ---
 
-## Projects
-
 Quarto projects are directories that:
 
 -   Enable sharing of YAML metadata/options across multiple files. 
