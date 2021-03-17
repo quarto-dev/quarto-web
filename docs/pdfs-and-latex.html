@@ -128,13 +128,17 @@
     .sidebar-navigation .sidebar-tool.dropdown-toggle::after {
       display: none;
     }
-    .quarto-btn-toggle[aria-expanded=false] .bi-arrows-collapse {
+    .sidebar-navigation #quarto-search {
+      margin-bottom: 0.8em;
+    }
+    .quarto-secondary-nav[aria-expanded=false] .quarto-btn-toggle .bi-chevron-up {
       display: none;
     }
-    .quarto-btn-toggle[aria-expanded=true] .bi-arrows-expand {
+    .quarto-secondary-nav[aria-expanded=true] .quarto-btn-toggle .bi-chevron-down {
       display: none;
     }
     .quarto-secondary-nav {
+      cursor: pointer;
       margin-top: -4px;
     }
     .quarto-secondary-nav-title {
@@ -153,6 +157,14 @@
       .sidebar.sidebar-navigation nav {
         padding-top: .5em !important;
         padding-bottom: .5em;
+      }
+      .sidebar.sidebar-navigation.collapsing {
+        position: fixed;
+        z-index: 1000;
+      }
+      .sidebar.sidebar-navigation.show {
+        position: fixed;
+        z-index: 1000;
       }
     }
     header.headroom {
@@ -212,12 +224,17 @@
 <!--quarto-placeholder-envelope-include-before-body-->
 <div id="quarto-search-results"></div>
 <header id="quarto-header" class="headroom fixed-top">
-<nav class="quarto-secondary-nav py-2 d-lg-none d-md-block bg-light" aria-label="Secondary navigation">
+<nav class="quarto-secondary-nav py-2 d-lg-none d-md-block bg-light" 
+      data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" 
+      aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation"
+      onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"
+>
   <div class="container-fluid d-flex justify-content-between">
     <h1 class="quarto-secondary-nav-title mb-0 fs-5 d-inline"></h1>
-    <button class="quarto-btn-toggle btn d-lg-none py-0 px-1 btn-secondary btn-lg d-inline-block" type="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation">
-      <i class="bi bi-arrows-expand"></i>
-      <i class="bi bi-arrows-collapse"></i>
+    <button type="button" 
+      class="quarto-btn-toggle btn bg-light d-lg-none py-0 px-1 btn-lg d-inline-block border-0">
+      <i class="bi bi-chevron-down"></i>
+      <i class="bi bi-chevron-up"></i>
     </button>
   </div>
 </nav>
@@ -228,7 +245,7 @@
   <div id="quarto-sidebar" class="col col-12 col-lg-3 d-lg-flex px-0 pt-0 sidebar collapse sidebar-navigation overflow-hidden">
     <nav class="me-lg-auto py-4 px-4 border-start border-end  bg-light anchored overflow-scroll">
   <h4 class="sidebar-title">Quarto</h4>
-    <form class="d-flex w-100 pb-1">
+    <form class="d-flex pb-1">
   <input id="quarto-search" class="form-control" type="search" placeholder="Search" aria-label="Search">
 </form>
   <ul class="list-unstyled my-0">
