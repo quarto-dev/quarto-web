@@ -33,8 +33,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         { name: 'text', weight: 10 },
       ],
       ignoreLocation: true,
-      includeMatches: true,
-      includeScore: true,
       threshold: 0.1
     };
     var fuse = new window.Fuse([], options);
@@ -68,12 +66,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         autoselect: true,
         autoWidth: false,
         hint: false,
-        // debug: true,
         minLength: 2,
-        cssClasses: {
-         
-        },
-        appendTo: "#quarto-search-results"
+        appendTo: "#quarto-search-results",
+        debug: true,
       };
       window.autocomplete(searchEl, options, [{
         source: function(query, callback) {
@@ -81,24 +76,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             isCaseSensitive: false,
             shouldSort: true,
             minMatchCharLength: 2,
-            limit: 10,
+            limit: 20,
           };
-          callback(fuse.search(query, searchOptions));          
+          
+          callback(fuse.search(query, searchOptions)
+            .map(result => {
+              return result.item;
+            })
+          );          
         },
         templates: {
-          suggestion: function(result) {
-            const item = result.item;
-            const highlightResult = window.autocomplete.escapeHighlightedString(
-              item.text.slice(0,100)
-            );
-            var html = `
-              <div class="card">${item.section}</div>
-            `;
-            return html;
+          suggestion: function(item) {
+            const escape = window.autocomplete.escapeHighlightedString;
+            const lines = ['<div class="card">','<p class="search-result-title">'];
+            lines.push(escape(item.title));
+            if (item.section) {
+              lines.push(...[
+                '<span class="text-muted">',
+                ' — ' + escape(item.section),
+                '</span>'
+              ]);
+            }
+            lines.push('</p>');
+            lines.push('<p class="search-result-text fw-light small">');
+            lines.push(escape(item.text));
+            lines.push('</p>');
+            lines.push('</div>');
+            return lines.join("\n");
           }
         }
       }])
       .on('autocomplete:redrawn', function(event) {
+        // fixup popup position
         var input = this;
         var inputRect = input.getBoundingClientRect();
         var results = window.document.querySelector("#quarto-search-results .algolia-autocomplete");
@@ -107,9 +116,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           results.style.right = inputRect.right + "px";
           results.style.left = (inputRect.right - width) + "px";
         }
+        // add .card class to menu
+        var menu = results.querySelector(".aa-dropdown-menu");
+        menu.classList.add("card");
       })
-      .on('autocomplete:selected', function(_event, suggestion) {
-        window.location.href = offsetURL(suggestion.item.href);
+      .on('autocomplete:selected', function(_event, item) {
+        window.location.href = offsetURL(item.href);
       });
       // remove inline display style on autocompleter (we want to manage responsive display via css)
       const algolia = window.document.querySelector('.algolia-autocomplete');

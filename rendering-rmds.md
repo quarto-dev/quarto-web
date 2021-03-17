@@ -11,29 +11,7 @@ For R users, Quarto is designed to be highly compatible with existing [R Markdow
 
 -   Quarto uses standard [knitr options](https://yihui.org/knitr/) to control chunk execution and output.
 
-Quarto also introduces a number of [enhancements](#enhancements) for Rmd files that are described below.
-
-One important point of divergence is that Quarto uses it's own system of output formats rather than traditional R Markdown formats. So instead of this:
-
-``` {.yaml}
----
-output: 
-  html_document:
-    toc: true
----
-```
-
-You write this:
-
-``` {.yaml}
----
-format:
-  html:
-    toc: true
----
-```
-
-Where `format` is any of the over 40 Pandoc output formats. In addition, you will eventually be able to create custom output formats as [Quarto Extensions](quarto-extensions.html).
+Quarto also introduces a number of [enhancements](#enhancements) for Rmd files that are described below. Additionally, Quarto includes a comprehensive system for [laying out figure panels](figures-and-layout.html) and a built-in system for [cross-references](cross-references.html) to figures, tables, equations, sections, theorems, etc.
 
 ## Rendering from R
 
@@ -70,11 +48,33 @@ format:
 ---
 ```
 
-## Enhancements {#enhancements}
+## Quarto Formats
 
-Beyond the base set of knitr options, Quarto provides a number of enhancements you can use in your Rmd documents.
+One important point of divergence is that Quarto uses it's own system of output formats rather than traditional R Markdown formats. So instead of this:
 
-### Options in YAML
+``` {.yaml}
+---
+output: 
+  html_document:
+    toc: true
+---
+```
+
+You write this:
+
+``` {.yaml}
+---
+format:
+  html:
+    toc: true
+---
+```
+
+Where `format` is any of the over 40 Pandoc output formats. In addition, you will eventually be able to create custom output formats as [Quarto Extensions](quarto-extensions.html).
+
+## 
+
+## Options in YAML
 
 In R Markdown documents the setup chunk is often used to set document-wide knitr and/or R options. This works perfectly well, but does have the disadvantage of being somewhat awkward to share across all documents within a project.
 
@@ -95,7 +95,7 @@ r-options:
 
 Note that these options can also be provided on a per-format basis.
 
-### Code Folding
+## Code Folding
 
 For HTML output, Quarto enables you to specify that code is included in the document but hidden by default using the `<details>` tag. For example:
 
@@ -159,7 +159,7 @@ summary(cars)
 ```
 ````
 
-### Cache Control
+## Cache Control
 
 You can use standard [knitr cache attributes](https://bookdown.org/yihui/rmarkdown-cookbook/cache.html) to cache time consuming code chunks. In addition, you can use `quarto` command line options (or their equivalent arguments to the `quarto_render` function) to control caching behavior without changing the document's code.
 
@@ -187,12 +187,5 @@ You can also specify these options within a document's YAML metadata. The main a
 project:
   name: myproject
 cache: true
+---
 ```
-
-### Figures and Layout
-
-Quarto includes a number of enhancements to figure handling, including a comprehensive system for laying out multi-row/column figure panels. See the articles on [Figures and Layout](figures-and-layout.html) for additional details.
-
-### Cross References
-
-Quarto has a built-in system for cross-references to figures, tables, equations, sections, theorems, etc. See the article on [Cross References](cross-references.html) for additional details.
