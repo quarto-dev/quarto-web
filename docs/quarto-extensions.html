@@ -25,23 +25,12 @@
       width: auto;
       padding-right: 6px;
     }
-    :target::before {
-      content: "";
-      display: block;
-      height: 0px;
-      margin: -0px 0 0;
-    }
-    body {
-      padding-top: 0px;
-    }
     nav .nav-link i,
     nav .dropdown-item i {
       padding-right: 1px;
     }
     .sidebar {
       position: sticky;
-      max-height: calc(100vh - 0px);
-      top: 0px;
       overflow-y: auto;
       max-width: 15rem;
     }
@@ -103,6 +92,20 @@
         padding-bottom: .5em;
       }
     }
+    header.headroom {
+      will-change: transform;
+      transition: transform 200ms linear;
+    }
+    .sidebar {
+      will-change: top;
+      transition: top 200ms linear;
+    }
+    header.headroom--pinned {
+      transform: translateY(0%);
+    }
+    header.headroom--unpinned {
+      transform: translateY(-100%);
+    }
     @media (min-width: 992px) {
       .sidebar.sidebar-navigation {
         height: 100vh;
@@ -113,6 +116,9 @@
         height: 100vh;
         min-width: 15em;
       }
+    }
+    .sidebar nav .dropdown-menu .dropdown-item .bi::before {
+      width: 1em;
     }
     .sidebar-section button .bi-chevron-right::before {
       transform: rotate(90deg);
@@ -131,6 +137,7 @@
   <script src="libs/quarto-search-0.2/fuse.min.js"></script>
   <script src="libs/quarto-search-0.2/search.quarto.js"></script>
   <link href="libs/quarto-search-0.2/search.quarto.css" rel="stylesheet" />
+  <script src="libs/headroom-0.12.0/headroom.min.js"></script>
   <script src="libs/bootstrap-v5.0.0-beta2/bootstrap.bundle.min.js"></script>
   <script src="libs/bootstrap-v5.0.0-beta2/bootstrap.quarto.js"></script>
   <link href="libs/bootstrap-v5.0.0-beta2/bootstrap.min.css" rel="stylesheet" />
@@ -141,7 +148,7 @@
 <body>
 <!--quarto-placeholder-envelope-include-before-body-->
 <div id="quarto-search-results"></div>
-<header id="quarto-header">
+<header id="quarto-header" class="headroom fixed-top">
 <nav class="quarto-secondary-nav py-2 d-lg-none d-md-block bg-light" aria-label="Secondary navigation">
   <div class="container-fluid d-flex justify-content-between">
     <h1 class="quarto-secondary-nav-title mb-0 fs-5 d-inline"></h1>
@@ -154,7 +161,7 @@
 </header>
  <!-- /navbar/sidebar -->
 <div class="container-fluid" >
-<div class="row" quarto-content>
+<div class="row" id="quarto-content">
   <div id="quarto-sidebar" class="col col-12 col-lg-3 d-lg-flex px-0 pt-0 sidebar collapse sidebar-navigation overflow-hidden">
     <nav class="me-lg-auto py-4 px-4 border-start border-end  bg-light anchored overflow-scroll">
   <h4 class="sidebar-title">Quarto</h4>
