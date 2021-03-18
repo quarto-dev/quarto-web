@@ -1,6 +1,5 @@
 ---
-title: "Quarto"
-subtitle: "Scientific and technical publishing system"
+title: Introduction
 format: html
 ---
 

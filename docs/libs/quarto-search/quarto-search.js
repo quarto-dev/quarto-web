@@ -86,7 +86,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         hint: false,
         minLength: 2,
         appendTo: "#quarto-search-results",
-        debug: true,
+        debug: false,
       };
       window.autocomplete(searchEl, options, [{
         source: function(query, callback) {

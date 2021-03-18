@@ -31,12 +31,12 @@ window.document.addEventListener("DOMContentLoaded", function() {
     // deal with sidebar offsets
     const sidebars = window.document.querySelectorAll(".sidebar");
     sidebars.forEach(sidebar => { 
-      if (!window.Headroom || sidebar.classList.contains("sidebar-pinned")) {
-        sidebar.style.top = offset + "px";
-        sidebar.style.maxHeight = 'calc(100vh - ' + offset + 'px)';   
-      } else {
+      if (window.Headroom && sidebar.classList.contains("sidebar-unpinned")) {
         sidebar.style.top = "0";
         sidebar.style.maxHeight = '100vh';   
+      } else {
+        sidebar.style.top = offset + "px";
+        sidebar.style.maxHeight = 'calc(100vh - ' + offset + 'px)';   
       }
     });
 
@@ -67,14 +67,14 @@ window.document.addEventListener("DOMContentLoaded", function() {
         onPin: function() {
           const sidebars = window.document.querySelectorAll(".sidebar");
           sidebars.forEach(sidebar => {
-            sidebar.classList.add("sidebar-pinned");
+            sidebar.classList.remove("sidebar-unpinned");
           });
           updateDocumentOffset();
         }, 
         onUnpin: function() {
           const sidebars = window.document.querySelectorAll(".sidebar");
           sidebars.forEach(sidebar => {
-            sidebar.classList.remove("sidebar-pinned");
+            sidebar.classList.add("sidebar-unpinned");
           });
           updateDocumentOffset();
         }});
@@ -97,16 +97,17 @@ window.document.addEventListener("DOMContentLoaded", function() {
   window.addEventListener('resize', debounce(updateDocumentOffset, 50));  
 
   // Hide the title when it will appear in the secondary nav
-  const title = window.document.querySelector('header > .title');
-  const sidebar = window.document.getElementById('quarto-sidebar');
+  const title = window.document.querySelector("header > .title");
+  const sidebar = window.document.getElementById("quarto-sidebar");
   if (title && sidebar) {
-   
     // hide below lg
     title.classList.add("d-none");
     title.classList.add("d-lg-block");
 
     // Add the title to the secondary nav bar
-    const secondaryNavTitle = window.document.querySelector('.quarto-secondary-nav .quarto-secondary-nav-title')
+    const secondaryNavTitle = window.document.querySelector(
+      ".quarto-secondary-nav .quarto-secondary-nav-title",
+    );
     if (secondaryNavTitle) {
       secondaryNavTitle.innerHTML = title.innerHTML;
     }
@@ -128,5 +129,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
       navLink.href = navLink.href.replace(/\/index\.html/, "/");
     }
   }
+
+
 });
 
