@@ -1,17 +1,19 @@
 window.document.addEventListener("DOMContentLoaded", function() {
   
-  function debounce(func, wait, immediate) {
+  function throttle(func, wait) {
     var timeout;
     return function() {
-      var context = this, args = arguments;
-      var later = function() {
+      const context = this
+      const args = arguments;
+      const later = function() {
+        clearTimeout(timeout);
         timeout = null;
-        if (!immediate) func.apply(context, args);
+        func.apply(context, args);
       };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) func.apply(context, args);
+
+      if (!timeout) {
+        timeout = setTimeout(later, wait);
+      }
     };
   }
 
@@ -94,7 +96,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
 
   // Set an offset if there is are fixed top navbar
   updateDocumentOffset();
-  window.addEventListener('resize', debounce(updateDocumentOffset, 50));  
+  window.addEventListener('resize', throttle(updateDocumentOffset, 50));  
 
   // Hide the title when it will appear in the secondary nav
   const title = window.document.querySelector("header > .title");
@@ -113,23 +115,29 @@ window.document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // latch active nav link
-  var navLinks = window.document.querySelectorAll("a.nav-link, a.navbar-brand");
-  for (let i=0; i<navLinks.length; i++) {
-    const navLink = navLinks[i];
-    if (navLink.href === window.location.href ||
-        navLink.href === (window.location.href + "index.html")) {
-      if (navLink.classList.contains("nav-link")) {
-        navLink.classList.add("active");
-        navLink.setAttribute("aria-current", "page");
-      }
-    }
-    // function to fixup index.html links if we aren't on the filesystem
-    if (window.location.protocol !== "file:") {
-      navLink.href = navLink.href.replace(/\/index\.html/, "/");
+  // fixup index.html links if we aren't on the filesystem
+  if (window.location.protocol !== "file:") {
+    const links = window.document.querySelectorAll("a");
+    for (let i=0; i<links.length; i++) {
+      links[i].href = links[i].href.replace(/\/index\.html/, "/");
     }
   }
 
-
+  // latch active nav link
+  var navLinks = window.document.querySelectorAll("a.nav-link");
+  for (let i=0; i<navLinks.length; i++) {
+    const navLink = navLinks[i];
+    const sidebarLink = window.document.querySelector(
+      '.sidebar-navigation a[href="' + navLink.href + '"]'
+    );
+    // if the link is either for the current window href or appears on the 
+    // sidebar then set it to active
+    if (sidebarLink || (navLink.href === window.location.href)) {
+      navLink.classList.add("active");
+      navLink.setAttribute("aria-current", "page");
+      // terminate (only one nav link should be active)
+      break;
+    }
+  }
 });
 
