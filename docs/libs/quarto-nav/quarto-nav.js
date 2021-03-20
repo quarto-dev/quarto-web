@@ -95,6 +95,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Set an offset if there is are fixed top navbar
+  updateDocumentOffset();
   window.addEventListener('resize', throttle(updateDocumentOffset, 50));  
 
    // fixup index.html links if we aren't on the filesystem
@@ -104,7 +105,5 @@ window.document.addEventListener("DOMContentLoaded", function() {
       links[i].href = links[i].href.replace(/\/index\.html/, "/");
     }
   }
-
-  setTimeout(updateDocumentOffset, 0);
 });
 
