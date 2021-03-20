@@ -386,8 +386,6 @@ There are a variety of numbering schemes available for cross-references, includi
 
 -   `alpha X` (start from letter 'X')
 
--   `[α, β, γ, δ, ε]` (fully custom list)
-
 You can specify the number scheme used for all types (other than sub-references) using the `labels` option. For sub-references (e.g. subfigures), you can specify the number scheme using the `subref-labels` option. For example:
 
 ``` {.yaml}
