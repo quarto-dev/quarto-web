@@ -23,7 +23,11 @@ window.document.addEventListener("DOMContentLoaded", function() {
     return headerEl.clientHeight;
   }
 
-  function updateDocumentOffset() {
+  function updateDocumentOffsetWithoutAnimation() {
+    updateDocumentOffset(false);
+  }
+
+  function updateDocumentOffset(animated) {
     // set body offset
     const offset = headerOffset()
     const bodyEl = window.document.body;
@@ -33,6 +37,11 @@ window.document.addEventListener("DOMContentLoaded", function() {
     // deal with sidebar offsets
     const sidebars = window.document.querySelectorAll(".sidebar");
     sidebars.forEach(sidebar => { 
+      sidebar.classList.remove("notransition")
+      if (!animated) {
+        sidebar.classList.add("notransition");
+      }
+
       if (window.Headroom && sidebar.classList.contains("sidebar-unpinned")) {
         sidebar.style.top = "0";
         sidebar.style.maxHeight = '100vh';   
@@ -96,13 +105,13 @@ window.document.addEventListener("DOMContentLoaded", function() {
 
   // Observe size changed for the header
   const headerEl = window.document.querySelector('header.fixed-top');
-  var observer = new ResizeObserver(function(mutations) {
-    updateDocumentOffset();
-  });
-  var config = { attributes: true, childList: true, characterData: true };
-  observer.observe(headerEl, config);
-
-  window.addEventListener('resize', throttle(updateDocumentOffset, 50));  
+  if (window.ResizeObserver) {
+    const observer = new window.ResizeObserver(throttle(updateDocumentOffsetWithoutAnimation, 50));
+    observer.observe(headerEl, { attributes: true, childList: true, characterData: true });
+  } else {
+    window.addEventListener('resize', throttle(updateDocumentOffsetWithoutAnimation, 50));  
+    setTimeout(updateDocumentOffsetWithoutAnimation, 500);
+  }
 
    // fixup index.html links if we aren't on the filesystem
    if (window.location.protocol !== "file:") {
