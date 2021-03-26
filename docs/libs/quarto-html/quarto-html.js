@@ -32,7 +32,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       delay: 100,
       interactive: true,
       interactiveBorder: 10,
-      theme: 'light-border',
+      theme: 'quarto',
       placement: 'bottom-start'
     }); 
   }
