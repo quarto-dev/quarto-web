@@ -321,6 +321,8 @@ See @fig:elephant for an illustration.
 
 ![](images/crossref-chapters.png)
 
+Note that the `crossref: chapters` option does not have any effect of PDF/LaTeX output (since LaTeX implements it's own cross reference numbering scheme).
+
 ## Lists
 
 For LaTeX / PDF output, you can use the raw LaTeX commands `\listoffigures`, `\listoftables` and `\listoflistings` to produce listings of all figures, tables, etc. within a document. You can use the `lof-title`, `lot-title`, and `lol-title` crossref options to customize the title of the listing.

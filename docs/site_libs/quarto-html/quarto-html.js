@@ -5,7 +5,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     placement: 'right',
     icon: icon
   };
-  anchorJS.add();
+  anchorJS.add('.anchored');
   const clipboard = new window.ClipboardJS('.code-copy-button', {
     target: function(trigger) {
       return trigger.previousElementSibling;
