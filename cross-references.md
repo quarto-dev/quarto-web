@@ -248,10 +248,12 @@ Then we query the customers database (@lst:customers).
 
 ## Theorems and Proofs
 
-Theorems are commonly used in articles and books in mathematics. To include a referenceable theorem, create a div with a `#thm:` label (or one of other theorem-type labels described below) and `name` attribute. You can include any content you like within the div. For example:
+Theorems are commonly used in articles and books in mathematics. To include a referenceable theorem, create a div with a `#thm:` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via a heading or the `name` attribute. You can include any content you like within the div. For example:
 
 ``` {.markdown}
-::: {#thm:line name="Line"}
+::: {#thm:line}
+## Line
+
 The equation of any straight line, called a linear equation, can be written as:
 
 $$
