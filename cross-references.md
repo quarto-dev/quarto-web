@@ -248,7 +248,7 @@ Then we query the customers database (@lst:customers).
 
 ## Theorems and Proofs
 
-Theorems are commonly used in articles and books in mathematics. To include a referenceable theorem, create a div with a `#thm:` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via a heading or the `name` attribute. You can include any content you like within the div. For example:
+Theorems are commonly used in articles and books in mathematics. To include a reference-able theorem, create a div with a `#thm:` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via a heading or the `name` attribute. You can include any content you like within the div. For example:
 
 ``` {.markdown}
 ::: {#thm:line}
@@ -280,6 +280,18 @@ There are a number of theorem variations supported, each with their own label pr
 | `#def:`          | Definition       | definition            |
 | `#exm:`          | Example          | example               |
 | `#exr:`          | Exercise         | exercise              |
+
+The `proof`, `remark`, and `solution` environments generally receive similar typesetting as theorems, however they are not numbered (and therefore cannot be cross-referenced). To create these environments just use them as the class name of a div:
+
+``` {.markdown}
+::: {.solution}
+The solution.
+:::
+```
+
+As with theorems you can optionally include a heading as the first element of the div (or a `name` attribute) to give the environment a caption for typesetting (this typically appears in parentheses after the environment title).
+
+For LaTeX output the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is used to typeset these environments. For other formats a similar treatment is used, but you can further customizing this using CSS.
 
 ## References
 
