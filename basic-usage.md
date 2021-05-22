@@ -108,10 +108,25 @@ Note that you can share format options across a set of documents using [Quarto P
 
 ## Next Steps
 
-If you are a Python or Julia user, read the article on [Jupyter Markdown](jupyter-markdown.html) to learn how to use Quarto with Jupyter.
+See the article on [Jupyter and Knitr](computations.md) to learn more about creating computational documents with Quarto.
 
-If you are an R user, read the [Rendering Rmds](rendering-rmds.html) article to learn how to render Rmd documents with Quarto.
+[Authoring Tools](authoring-tools.md) covers using Jupyter Lab, RStudio, or other text editors to author Quarto documents.
 
-If you are creating web content with Quarto, see the article on [HTML Themes](html-themes.html) to learn how to customize the appearance of your documents.
+If you are creating HTML output, see the articles on [HTML Extensions](html-basics.md), [HTML w/ Bootstrap](html-bootstrap.Rmd), and the HTML [Theming System](html-themes.md).
 
-To learn about advanced features of Quarto see the articles on [Cross References](cross-references.html), [Figures and Layout](figures-and-layout.html), & [PDFs and LaTeX](pdfs-and-latex.html).
+Advanced features of Quarto are covered in these articles:
+
+-   [Quarto Projects](quarto-projects.html) covers how to share YAML metadata options across documents and render all of the documents in directory with a single command.
+
+-   [Creating a Website](website-basics.md) and [Creating a Book](book-basics.md) describe some special project types.
+
+```{=html}
+<!-- -->
+```
+-   [Callout Blocks](callouts.md) outlines how to emphasize blocks of content (e.g. tips, notes, warning, etc.)
+
+-   [Cross References](cross-references.html) describes how to create numbered references to figures, tables, equations, sections, listings, etc.
+
+-   [Figures and Layout](figures-and-layout.html) documents Quarto's layout primitives for creating figure panels, side-by-side tables, etc.
+
+-   [PDFs and LaTeX](pdfs-and-latex.html) explains automatic TeX package installation as well as how to install and use [TinyTeX](https://yihui.org/tinytex/).
