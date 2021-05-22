@@ -31,7 +31,7 @@ If you are in a fresh environment, install the core Quarto minimal requirements 
 
 ``` {.shell}
 # quarto minimal requirements
-$ pip install jupyter_core nbformat nbclient ipykernel
+$ pip install jupyter_core nbformat nbclient ipykernel pyyaml
 
 # full jupyter install
 $ pip install jupyter
