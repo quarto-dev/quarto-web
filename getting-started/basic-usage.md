@@ -1,5 +1,5 @@
 ---
-title: "Basic Usage"
+title: "Quarto Basics"
 format: html
 ---
 
@@ -120,9 +120,8 @@ Advanced features of Quarto are covered in these articles:
 
 -   [Creating a Website](website-basics.md) and [Creating a Book](book-basics.md) describe some special project types.
 
-```{=html}
 <!-- -->
-```
+
 -   [Callout Blocks](callouts.md) outlines how to emphasize blocks of content (e.g. tips, notes, warning, etc.)
 
 -   [Cross References](cross-references.html) describes how to create numbered references to figures, tables, equations, sections, listings, etc.
