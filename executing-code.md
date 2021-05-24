@@ -1,5 +1,5 @@
 ---
-title: Jupyter and Knitr
+title: Executing Code
 format: html
 execute:
   engine: none
@@ -98,7 +98,7 @@ Jupyter users have a choice of authoring in .ipynb (.e.g. using the JupyterLab o
 
 There are a wide variety of options available for customizing computational output. All of these options can be specified either globally (in the document front-matter) or per code-block. For example, here's a modification of the Python example to specify that we don't want to "echo" the code into the output document:
 
-``` {.markdown}
+``` {.yaml}
 ---
 title: "My Document"
 execute:
@@ -122,14 +122,21 @@ Code block options are included in a special comment at the top of the block (li
 
 Options available for customizing output include:
 
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | Option    | Description                                                                                                                                  |
-|-----------|----------------------------------------------------------------------------------------------------------------------------------------------|
++===========+==============================================================================================================================================+
 | `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `echo`    | Include the source code in output                                                                                                            |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `output`  | Include the results of executing the code in the output                                                                                      |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `warning` | Include warnings in the output.                                                                                                              |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block). |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here's our original R example with some of these additional options:
 
@@ -159,9 +166,9 @@ summary(airquality)
 
 While it's extremely convenient to embed computations within documents, it can present problems if code blocks are long running. There are a couple of built-in ways to mitigate expensive computations.
 
-### Caching 
+### Caching
 
-Quarto integrates with the [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/).) and [Knitr Cache](https://bookdown.org/yihui/rmarkdown-cookbook/cache.html)) to to cache time consuming code chunks. Note that to use Jupyter Cache you'll want to install the `jupyter-cache` package:
+Quarto integrates with the [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) and [Knitr Cache](https://bookdown.org/yihui/rmarkdown-cookbook/cache.html) to to cache time consuming code chunks. Note that to use Jupyter Cache you'll want to install the `jupyter-cache` package:
 
 ``` {.bash}
 $ pip install jupyter-cache
@@ -169,7 +176,7 @@ $ pip install jupyter-cache
 
 To enable caching for a document just add the `cache` option:
 
-``` {.markdown}
+``` {.yaml}
 execute: 
   cache: true
 ```
@@ -188,33 +195,40 @@ Note that for Jupyter, the cache for a document is invalidated if any of the cod
 
 In some cases, you may want to prevent execution entirely. This is especially useful if you author using a standard notebook editor (e.g. JupyterLab) and plan on executing chunks only within the notebook UI. Specify `execute: false` to skip execution when rendering (you'll naturally still get the output that was generated within the notebook editor):
 
-``` {.markdown}
+``` {.yaml}
 execute: false
 ```
 
-You might also set this option if you just want to preview markdown content without re-running computation.
+You might also set this option if you just want to preview markdown content without re-running computation. In this case you can just add `enabled: false` to the `execute` options:
+
+``` {.yaml}
+execute:
+  enabled: false
+  echo: true
+  warning: false
+```
 
 ## Figure Options
 
-## Jupyter Daemon
+## Engine Options {#engine-binding}
 
-## Engine Binding
+### Jupyter Daemon
 
 Earlier we said that the engine used for computations was determined automatically. You may want to customize this---for example you may want to use the Jupyter [R kernel](https://github.com/IRkernel/IRkernel)rather than Knitr, or you may want to use Knitr with Python code (via [reticulate](https://rstudio.github.io/reticulate/)).
 
 Here are the basic rules for automatic binding:
 
-+-------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| File Type               | Engine Binding                                                                                                                                                                                                  |
-+=========================+=================================================================================================================================================================================================================+
-| .Rmd                    | Uses Knitr engine                                                                                                                                                                                               |
-+-------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| .ipynb                  | Uses Jupyter engine                                                                                                                                                                                             |
-+-------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| .md                     | Uses Knitr engine if an `{r}` code block is discovered within the file                                                                                                                                          |
-|                         |                                                                                                                                                                                                                 |
-|                         | Uses Jupyter engine if an executable code block (e.g. `{python}`) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered in the file. |
-+-------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| File Type         | Engine Binding                                                                                                                                                                                                  |
++===================+=================================================================================================================================================================================================================+
+| .Rmd              | Uses Knitr engine                                                                                                                                                                                               |
++-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| .ipynb            | Uses Jupyter engine                                                                                                                                                                                             |
++-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| .md               | Uses Knitr engine if an `{r}` code block is discovered within the file                                                                                                                                          |
+|                   |                                                                                                                                                                                                                 |
+|                   | Uses Jupyter engine if an executable code block (e.g. `{python}`) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered in the file. |
++-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 You can override the engine used via the `engine` option. For example:
 

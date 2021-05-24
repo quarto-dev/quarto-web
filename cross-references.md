@@ -5,25 +5,16 @@ format: html
 
 ## Overview
 
-To enable support for cross-references, specify `crossref: true` in document metadata. For example:
-
-``` {.yaml}
----
-title: "My Document"
-crossref: true
----
-```
-
 Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables. Every cross-referenceable entity requires a label (unique identifier) and caption (description). For example, this is a cross-referenceable figure:
 
 ``` {.markdown}
-![Elephant](elephant.png){#fig:elephant}
+![Elephant](elephant.png){#fig-elephant}
 ```
 
-The presence of the caption (`Elephant`) and label (`#fig:elephant`) make this figure referenceable. This enables you to use the following syntax to refer to it elsewhere in the document:
+The presence of the caption (`Elephant`) and label (`#fig-elephant`) make this figure referenceable. This enables you to use the following syntax to refer to it elsewhere in the document:
 
 ``` {.markdown}
-See @fig:elephant for an illustration.
+See @fig-elephant for an illustration.
 ```
 
 Here is what this would look like rendered to HTML:
@@ -39,9 +30,9 @@ Quarto's syntax for cross-references is based on [pandoc-crossref](https://githu
 As described above, this is the markdown used to create a cross-referenceable figure and then refer to it:
 
 ``` {.markdown}
-![Elephant](elephant.png){#fig:elephant}
+![Elephant](elephant.png){#fig-elephant}
 
-See @fig:elephant for an illustration.
+See @fig-elephant for an illustration.
 ```
 
 ### Subfigures
@@ -49,16 +40,16 @@ See @fig:elephant for an illustration.
 You may want to create a figure composed of multiple subfigures. To do this, enclose the figures in a div (with it's own label and caption) and give each subfigure it's own label and caption. You can then refer to either the entire figure in a reference or a single subfigure:
 
 ``` {.markdown}
-::: {#fig:elephants layout.ncol=2}
+::: {#fig-elephants layout.ncol=2}
 
-![Surus](surus.png){#fig:surus}
+![Surus](surus.png){#fig-surus}
 
-![Hanno](hanno.png){#fig:hanno}
+![Hanno](hanno.png){#fig-hanno}
 
 Famous Elephants
 :::
 
-See @fig:elephants for examples. In particular, @fig:hanno.
+See @fig-elephants for examples. In particular, @fig-hanno.
 ```
 
 Here is what this looks like when rendered as HTML:
@@ -74,13 +65,13 @@ Figures produced by Jupyter and knitr can also be cross-referenced.
 To reference figure output from a Jupyter code cell, add the `label` attribute to provide an identifier, and the `fig.cap` attribute to provide a caption. For example:
 
 ```` {.python}
-```python label="#fig:plot" fig.cap="Plot"
+```python label="#fig-plot" fig.cap="Plot"
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
 plt.show()
 ```
 
-For example, see @fig:plot.
+For example, see @fig-plot.
 ````
 
 ![](images/crossref-figure-jupyter.png)
@@ -88,7 +79,7 @@ For example, see @fig:plot.
 You can also create multiple figures within a Jupyter code cell and reference them as subfigures. To do this use `fig.cap` for the main caption, and `fig.subcap` to provide an array of subcaptions. For example:
 
 ```` {.python}
-```python label="#fig:plots" fig.cap="Plots" fig.subcap=["Plot 1","Plot 2"] layout.ncol=2
+```python label="#fig-plots" fig.cap="Plots" fig.subcap=["Plot 1","Plot 2"] layout.ncol=2
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
 plt.show()
@@ -97,23 +88,23 @@ plt.plot([8,65,23,90])
 plt.show()
 ```
 
-See @fig:plots for examples. In particular, @fig:plots-2.
+See @fig-plots for examples. In particular, @fig-plots-2.
 ````
 
 ![](images/crossref-subfigures-jupyter.png)
 
-Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig:plots-1`, `@fig:plots-2`, etc.).
+Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig-plots-1`, `@fig-plots-2`, etc.).
 
 ### knitr
 
-To reference figure output from a knitr code chunk, add a `#fig:` chunk label along with the `fig.cap` attribute:
+To reference figure output from a knitr code chunk, add a `#fig-` chunk label along with the `fig.cap` attribute:
 
 ```` {.markdown}
-```{r #fig:plot, fig.cap="Plot"}
+```{r #fig-plot, fig.cap="Plot"}
 plot(cars)
 ```
 
-For example, see @fig:plot.
+For example, see @fig-plot.
 ````
 
 ![](images/crossref-figure-r.png)
@@ -121,22 +112,22 @@ For example, see @fig:plot.
 You can also create multiple figures within a knitr code chunk and reference them as subfigures. To do this use `fig.cap` for the main caption, and `fig.subcap` to provide a vector of subcaptions. For example:
 
 ```` {.markdown}
-```{r #fig:plots, fig.cap="Plots", fig.subcap=c("Plot 1", "Plot 2"), layout.ncol=2}
+```{r #fig-plots, fig.cap="Plots", fig.subcap=c("Plot 1", "Plot 2"), layout.ncol=2}
 plot(cars)
 plot(pressure)
 ```
 
-See @fig:plots for examples. In particular, @fig:plots-2.
+See @fig-plots for examples. In particular, @fig-plots-2.
 ```
 ````
 
 ![](images/crossref-subfigures-r.png)
 
-Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig:plots-1`, `@fig:plots-2`, etc.).
+Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig-plots-1`, `@fig-plots-2`, etc.).
 
 ## Tables
 
-To create a cross-referenceable table, add a caption to the table then include a `#tbl:` label in braces at the end of the caption. For example:
+To create a cross-referenceable table, add a caption to the table then include a `#tbl-` label in braces at the end of the caption. For example:
 
 ``` {.markdown}
 | Col1 | Col2 | Col3 |
@@ -145,9 +136,9 @@ To create a cross-referenceable table, add a caption to the table then include a
 | E    | F    | G    |
 | A    | G    | G    |
 
-: My Caption {#tbl:letters}
+: My Caption {#tbl-letters}
 
-See @tbl:letters.
+See @tbl-letters.
 ```
 
 <img src="images/crossref-table.png" width="216"/>
@@ -155,14 +146,14 @@ See @tbl:letters.
 You may want to create a composition of several sub-tables. To do this, create a div with a main identifier, then apply sub-identifiers within the caption of contained tables. For example:
 
 ``` {.markdown}
-::: {#tbl:panel layout.ncol=2}
+::: {#tbl-panel layout.ncol=2}
 | Col1 | Col2 | Col3 |
 |------|------|------|
 | A    | B    | C    |
 | E    | F    | G    |
 | A    | G    | G    |
 
-: First Table {#tbl:first}
+: First Table {#tbl-first}
 
 | Col1 | Col2 | Col3 |
 |------|------|------|
@@ -170,12 +161,12 @@ You may want to create a composition of several sub-tables. To do this, create a
 | E    | F    | G    |
 | A    | G    | G    |
 
-: Second Table {#tbl:second}
+: Second Table {#tbl-second}
 
 Main Caption
 :::
 
-See @tbl:panel for details, especially @tbl:second.
+See @tbl-panel for details, especially @tbl-second.
 ```
 
 ![](images/crossref-subtable.png)
@@ -184,13 +175,13 @@ Note that the "Main Caption" for the table is provided as the last block within 
 
 ### Jupyter and knitr
 
-You can also cross-reference tables created from code executed via knitr or Jupyter. To do this, add a `tbl.cap` attribute and include `#tbl:` labels within the captions of the sub-tables. For example:
+You can also cross-reference tables created from code executed via knitr or Jupyter. To do this, add a `tbl.cap` attribute and include `#tbl-` labels within the captions of the sub-tables. For example:
 
 ```` {.markdown}
-```{r #tbl:tables, tbl.cap="Tables", layout.ncol=2}
+```{r #tbl-tables, tbl.cap="Tables", layout.ncol=2}
 library(knitr)
-kable(head(cars), caption = "Cars {#tbl:cars}")
-kable(head(pressure), caption = "Pressure {#tbl:pressure}")
+kable(head(cars), caption = "Cars {#tbl-cars}")
+kable(head(pressure), caption = "Pressure {#tbl-pressure}")
 ```
 ````
 
@@ -198,17 +189,17 @@ kable(head(pressure), caption = "Pressure {#tbl:pressure}")
 
 ## Equations
 
-Provide an `#eq:` label immediately after an equation to make it referenceable. For example:
+Provide an `#eq-` label immediately after an equation to make it referenceable. For example:
 
 ``` {.markdown}
-Black-Scholes (@eq:black-scholes) is a mathematical model that seeks to explain the behavior of financial derivatives, most commonly options:
+Black-Scholes (@eq-black-scholes) is a mathematical model that seeks to explain the behavior of financial derivatives, most commonly options:
 
 $$
 \frac{\partial \mathrm C}{ \partial \mathrm t } + \frac{1}{2}\sigma^{2} \mathrm S^{2}
 \frac{\partial^{2} \mathrm C}{\partial \mathrm C^2}
   + \mathrm r \mathrm S \frac{\partial \mathrm C}{\partial \mathrm S}\ =
   \mathrm r \mathrm C 
-$$ {#eq:black-scholes}
+$$ {#eq-black-scholes}
 ```
 
 <img src="images/crossref-equation.png" width="600"/>
@@ -217,12 +208,12 @@ Note that the equation number is included (via `\qquad`) in the right margin of 
 
 ## Sections
 
-To reference a section, add a `#sec:` identifier to any heading. For example:
+To reference a section, add a `#sec-` identifier to any heading. For example:
 
 ``` {.markdown}
-## Introduction {#sec:introduction}
+## Introduction {#sec-introduction}
 
-See @sec:introduction for additional context.
+See @sec-introduction for additional context.
 ```
 
 Note that when using section cross-references, you will also need to enable the `number-sections` option (so that section numbering is visible to readers). For example:
@@ -236,14 +227,14 @@ number-sections: true
 
 ## Code Listings
 
-To create a referenceable code block, add a `#lst:` identifier along with a `lst.cap` attribute. For example:
+To create a referenceable code block, add a `#lst-` identifier along with a `lst.cap` attribute. For example:
 
 ```` {.markdown}
-```{#lst:customers .sql lst.cap="Customers Query"}
+```{#lst-customers .sql lst.cap="Customers Query"}
 SELECT * FROM Customers
 ```
 
-Then we query the customers database (@lst:customers).
+Then we query the customers database (@lst-customers).
 ````
 
 ## Theorems and Proofs
@@ -251,7 +242,7 @@ Then we query the customers database (@lst:customers).
 Theorems are commonly used in articles and books in mathematics. To include a reference-able theorem, create a div with a `#thm:` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via a heading or the `name` attribute. You can include any content you like within the div. For example:
 
 ``` {.markdown}
-::: {#thm:line}
+::: {#thm-line}
 ## Line
 
 The equation of any straight line, called a linear equation, can be written as:
@@ -261,7 +252,7 @@ y = mx + b
 $$
 :::
 
-See @thm:line.
+See @thm-line.
 ```
 
 ![](images/crossref-theorem.png)
@@ -272,14 +263,14 @@ There are a number of theorem variations supported, each with their own label pr
 
 | **Label Prefix** | **Printed Name** | **LaTeX Environment** |
 |------------------|------------------|-----------------------|
-| `#thm:`          | Theorem          | theorem               |
-| `#lem:`          | Lemma            | lemma                 |
-| `#cor:`          | Corollary        | corollary             |
-| `#prp:`          | Proposition      | proposition           |
-| `#cnj:`          | Conjecture       | conjecture            |
-| `#def:`          | Definition       | definition            |
-| `#exm:`          | Example          | example               |
-| `#exr:`          | Exercise         | exercise              |
+| `#thm-`          | Theorem          | theorem               |
+| `#lem-`          | Lemma            | lemma                 |
+| `#cor-`          | Corollary        | corollary             |
+| `#prp-`          | Proposition      | proposition           |
+| `#cnj-`          | Conjecture       | conjecture            |
+| `#def-`          | Definition       | definition            |
+| `#exm-`          | Example          | example               |
+| `#exr-`          | Exercise         | exercise              |
 
 The `proof`, `remark`, and `solution` environments generally receive similar typesetting as theorems, however they are not numbered (and therefore cannot be cross-referenced). To create these environments just use them as the class name of a div:
 
@@ -295,21 +286,21 @@ For LaTeX output the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is us
 
 ## References
 
-The examples above have all used the default syntax for inline references (e.g. `@fig:elephant`), which results in the use a short abbreviation for each object type (e.g. "fig. 1", "tbl. 1", etc.).
+The examples above have all used the default syntax for inline references (e.g. `@fig-elephant`), which results in the use a short abbreviation for each object type (e.g. "fig. 1", "tbl. 1", etc.).
 
 You can customize the appearance of inline references by either changing the syntax of the inline reference or by setting options. Here are the various ways to compose a cross-reference and their resulting output:
 
 | Type          | Syntax                   | Output   |
 |---------------|--------------------------|----------|
-| Default       | `@fig:elephant`          | fig. 1   |
-| Capitalized   | `@Fig:elephant`          | Fig. 1   |
-| Custom Prefix | `[Figure @fig:elephant]` | Figure 1 |
-| No Prefix     | `-@fig:elephant`         | 1        |
+| Default       | `@fig-elephant`          | fig. 1   |
+| Capitalized   | `@fig-elephant`          | Fig. 1   |
+| Custom Prefix | `[Figure @fig-elephant]` | Figure 1 |
+| No Prefix     | `-@fig-elephant`         | 1        |
 
 You can also group cross references using the following syntax:
 
 ``` {.markdown}
-As illustrated in [@fig:elephant; @fig:panther; @fig:rabbit].
+As illustrated in [@fig-elephant; @fig-panther; @fig-rabbit].
 ```
 
 There are a number of options that can be used to further customize the treatment of cross-references. See the section below on [References Options](#references-1) for additional details.
@@ -328,9 +319,9 @@ crossref:
 
 # Introduction
 
-![Elephant](elephant.png){#fig:elephant}
+![Elephant](elephant.png){#fig-elephant}
 
-See @fig:elephant for an illustration.
+See @fig-elephant for an illustration.
 ```
 
 ![](images/crossref-chapters.png)
