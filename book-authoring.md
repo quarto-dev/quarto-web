@@ -234,10 +234,13 @@ book:
 
 You can also use the `attribution` and `page-navigation` options to customize book chapter footer:
 
++-------------------+--------------------------------------------------------------------------------------------------------------+
 | Option            | Description                                                                                                  |
-|-------------------|--------------------------------------------------------------------------------------------------------------|
++===================+==============================================================================================================+
 | `attribution`     | Attribution text (e.g. copyright and/or creative commons license) to display at the bottom of book chapters. |
++-------------------+--------------------------------------------------------------------------------------------------------------+
 | `page-navigation` | Provide navigation to previous and next book chapters (defaults to `true`).                                  |
++-------------------+--------------------------------------------------------------------------------------------------------------+
 
 ## Cross References
 
@@ -272,6 +275,8 @@ To refer to a chapter or appendix you should spell out "Chapter" or "Appendix" a
 ``` {.markdown}
 See [Chapter -@sec:visualization] for more details on visualizing model diagnostics.
 ```
+
+Note that normal Pandoc "heading links" (where no ID is specified, e.g. `[Introduction]`) will not work within books, you need to add an explicit ID to your sections to link to them.
 
 ### Chapter Numbering
 

@@ -3,6 +3,8 @@ title: "Quarto Basics"
 format: html
 ---
 
+TODO: Document `shift-heading-level-by` along with `number-sections`.
+
 ## Rendering Documents
 
 You can use the `quarto render` command to render HTML, PDF, Word and many other output formats from plain markdown, Rmd documents, Jupyter Markdown (a pure markdown representation of a notebook), or a Jupyter Notebook:
