@@ -1,4 +1,4 @@
 ---
-title: Formatting
+title: HTML Basics
 format: html
 ---

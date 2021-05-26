@@ -3,6 +3,8 @@ title: "Quarto Projects"
 format: html
 ---
 
+## Overview
+
 Quarto projects are directories that provide:
 
 -   A way to render all or some of the files in a directory with a single command (e.g. `quarto render myproject`).

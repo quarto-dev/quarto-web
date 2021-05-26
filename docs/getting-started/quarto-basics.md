@@ -3,16 +3,37 @@ title: "Quarto Basics"
 format: html
 ---
 
-## Rendering Documents
+## Overview
 
-You can use the `quarto render` command to render HTML, PDF, Word and many other output formats from plain markdown, Rmd documents, Jupyter Markdown (a pure markdown representation of a notebook), or a Jupyter Notebook:
+Quarto is a publishing system used to create documents in a wide variety of formats including HTML, PDF, Office (docx and pptx), OpenOffice, JATS, and [many more](https://pandoc.org/).
+
+You author these documents using [markdown](https://pandoc.org/MANUAL.html#pandocs-markdown), an easy to write plain-text format. You then optionally add code (e.g. Python, R, Julia, etc.) to the documents to dynamically create figures, tables, etc. and then **render** the documents to their final format using Quarto.
+
+## Markdown Inputs
+
+There are three types of markdown input files that Quarto can render:
+
+1.  Plain markdown (with no embedded code)
+
+2.  Markdown with embedded code chunks (similar to .Rmd files in [R Markdown](https://rmarkdown.rstudio.com))
+
+3.  Jupyter notebooks which have a combination of markdown and code cells
+
+R users will typically use the second approach (in fact, existing .Rmd files can be rendered directly with Quarto).
+
+Jupyter users will user either the second or third approach, depending on whether they prefer to work in a text editor or in the standard notebook user interface.
+
+## Rendering Output
+
+Use the `quarto render` command to transform a markdown input file into HTML, a PDF, or any of the other supported output formats. Here are examples of rendering the three types of inputs described above:
 
 ``` {.bash}
 $ quarto render document.md
 $ quarto render document.Rmd
-$ quarto render jupyter.md
-$ quarto render jupyter.ipynb
+$ quarto render document.ipynb
 ```
+
+For plain markdown, the document is sent straight to Pandoc. For markdown with executable code, it is first processed by [Jupyter](https://jupyter.org) or [Knitr](https://yihui.name/knitr), then passed on to Pandoc.
 
 By default, Quarto renders to HTML, however any of Pandoc's over 40 [output formats](https://pandoc.org/) are supported. For example:
 
@@ -26,6 +47,8 @@ Pandoc supports a wide variety of [command line options](https://pandoc.org/MANU
 ``` {.bash}
 $ quarto render document.ipynb --to pdf --toc --number-sections
 ```
+
+We'll talk in more depth about the mechanics of using code chunks in the articles on [Executing Code](../computations/executing-code.md). However, for the remainder of this article we'll just focus on things applicable to all markdown input types whether they contain code or not.
 
 ## YAML Options
 
@@ -47,6 +70,8 @@ If you do this then the following command is equivalent to the previous example 
 $ quarto render document.md
 ```
 
+Note that in this case rendering with no explicit `--to` argument results in a PDF, since `format: pdf` is specified in YAML.
+
 Options may include any of the defined Pandoc metadata [variables](https://pandoc.org/MANUAL.html#variables) or [defaults](https://pandoc.org/MANUAL.html#default-files). For example, here we take advantage of quite a few more options for PDF generation:
 
 ``` {.yaml}
@@ -56,7 +81,6 @@ author: "Jane Doe"
 format: pdf
 toc: true
 number-sections: true
-shift-heading-level-by: 1
 documentclass: report
 geometry:
   - top=30mm
@@ -106,26 +130,12 @@ You can learn about the available options for each format in the Pandoc document
 
 Note that you can share format options across a set of documents using [Quarto Projects](quarto-projects.html).
 
-## Next Steps
+## Learning More
 
-See the article on [Jupyter and Knitr](computations.md) to learn more about creating computational documents with Quarto.
+[Executing Code](../computations/executing-code.md) covers creating computational documents with Quarto in more depth, including how to use Quarto with [JupyterLab](../computations/using-jupyter-lab.md) and [RStudio](../computations/using-rstudio.md).
 
-[Authoring Tools](authoring-tools.md) covers using Jupyter Lab, RStudio, or other text editors to author Quarto documents.
+The [Markdown](../markdown/formatting.md) section describes the capabilities of Pandoc markdown, as well as Quarto extensions for [Cross References](../markdown/cross-references.md), [Figures and Layout](../markdown/figures-and-layout.md), and [Callout Blocks](../markdown/callouts.md).
 
-If you are creating HTML output, see the articles on [HTML Extensions](html-basics.md), [HTML w/ Bootstrap](html-bootstrap.Rmd), and the HTML [Theming System](html-themes.md).
+The output formats section provides additional details on creating [HTML](../output-formats/html-basics.md), [PDF](../output-formats/pdf-basics.md), and [MS Word](../output-formats/ms-word.md) documents, as well as describes a few special output types including [Presentations](../output-formats/presentations.md), [EPUBs](../output-formats/epub.md), and pages in [Hugo](../output-formats/hugo.md) static sites.
 
-Advanced features of Quarto are covered in these articles:
-
--   [Quarto Projects](quarto-projects.html) covers how to share YAML metadata options across documents and render all of the documents in directory with a single command.
-
--   [Creating a Website](website-basics.md) and [Creating a Book](book-basics.md) describe some special project types.
-
-<!-- -->
-
--   [Callout Blocks](callouts.md) outlines how to emphasize blocks of content (e.g. tips, notes, warning, etc.)
-
--   [Cross References](cross-references.html) describes how to create numbered references to figures, tables, equations, sections, listings, etc.
-
--   [Figures and Layout](figures-and-layout.html) documents Quarto's layout primitives for creating figure panels, side-by-side tables, etc.
-
--   [PDFs and LaTeX](pdfs-and-latex.html) explains automatic TeX package installation as well as how to install and use [TinyTeX](https://yihui.org/tinytex/).
+[Creating a Website](../websites/website-basics.md) and [Creating a Book](../books/book-basics.md) describe some special Quarto project types.

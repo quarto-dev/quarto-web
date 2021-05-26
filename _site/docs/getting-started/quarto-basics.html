@@ -254,10 +254,13 @@
       <div class="collapse  show" id="markdown-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="../../docs/markdown/formatting.html" class="">Basic Formatting</a>
+  <a href="../../docs/markdown/formatting.html" class="">Formatting</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/markdown/equations.html" class="">LaTeX Equations</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../docs/markdown/tables.html" class="">Tables</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/markdown/figures-and-layout.html" class="">Figures and Layout</a>
@@ -300,7 +303,10 @@
       <div class="collapse  " id="html-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="../../docs/output-formats/html-basics.html" class="">HTML Extensions</a>
+  <a href="../../docs/output-formats/html-basics.html" class="">HTML Basics</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../docs/output-formats/html-extensions.html" class="">HTML Extensions</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/output-formats/html-bootstrap.html" class="">HTML w/ Bootstrap</a>
@@ -407,10 +413,12 @@
   <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#rendering-documents" class="nav-link active" data-scroll-target="#rendering-documents">Rendering Documents</a></li>
+<li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+<li><a href="#markdown-inputs" class="nav-link" data-scroll-target="#markdown-inputs">Markdown Inputs</a></li>
+<li><a href="#rendering-output" class="nav-link" data-scroll-target="#rendering-output">Rendering Output</a></li>
 <li><a href="#yaml-options" class="nav-link" data-scroll-target="#yaml-options">YAML Options</a></li>
 <li><a href="#multiple-formats" class="nav-link" data-scroll-target="#multiple-formats">Multiple Formats</a></li>
-<li><a href="#next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+<li><a href="#learning-more" class="nav-link" data-scroll-target="#learning-more">Learning More</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-cli/edit/main/docs/getting-started/quarto-basics.md">Edit this page</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
@@ -419,19 +427,35 @@
 <h1 class="title d-none d-lg-block display-7">Quarto Basics</h1>
 </header>
 
-<p>TODO: Document <code>shift-heading-level-by</code> along with <code>number-sections</code>.</p>
 <section class="level2">
-<h2 class="anchored" id="rendering-documents">Rendering Documents</h2>
-<p>You can use the <code>quarto render</code> command to render HTML, PDF, Word and many other output formats from plain markdown, Rmd documents, Jupyter Markdown (a pure markdown representation of a notebook), or a Jupyter Notebook:</p>
+<h2 class="anchored" id="overview">Overview</h2>
+<p>Quarto is a publishing system used to create documents in a wide variety of formats including HTML, PDF, Office (docx and pptx), OpenOffice, JATS, and <a href="https://pandoc.org/">many more</a>.</p>
+<p>You author these documents using <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">markdown</a>, an easy to write plain-text format. You then optionally add code (e.g.&nbsp;Python, R, Julia, etc.) to the documents to dynamically create figures, tables, etc. and then <strong>render</strong> the documents to their final format using Quarto.</p>
+</section>
+<section class="level2">
+<h2 class="anchored" id="markdown-inputs">Markdown Inputs</h2>
+<p>There are three types of markdown input files that Quarto can render:</p>
+<ol type="1">
+<li><p>Plain markdown (with no embedded code)</p></li>
+<li><p>Markdown with embedded code chunks (similar to .Rmd files in <a href="https://rmarkdown.rstudio.com">R Markdown</a>)</p></li>
+<li><p>Jupyter notebooks which have a combination of markdown and code cells</p></li>
+</ol>
+<p>R users will typically use the second approach (in fact, existing .Rmd files can be rendered directly with Quarto).</p>
+<p>Jupyter users will user either the second or third approach, depending on whether they prefer to work in a text editor or in the standard notebook user interface.</p>
+</section>
+<section class="level2">
+<h2 class="anchored" id="rendering-output">Rendering Output</h2>
+<p>Use the <code>quarto render</code> command to transform a markdown input file into HTML, a PDF, or any of the other supported output formats. Here are examples of rendering the three types of inputs described above:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.md</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.Rmd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render jupyter.md</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render jupyter.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For plain markdown, the document is sent straight to Pandoc. For markdown with executable code, it is first processed by <a href="https://jupyter.org">Jupyter</a> or <a href="https://yihui.name/knitr">Knitr</a>, then passed on to Pandoc.</p>
 <p>By default, Quarto renders to HTML, however any of Pandoc’s over 40 <a href="https://pandoc.org/">output formats</a> are supported. For example:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.Rmd <span class="at">--to</span> pdf</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.ipynb <span class="at">--to</span> docx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Pandoc supports a wide variety of <a href="https://pandoc.org/MANUAL.html#general-options">command line options</a> and all of these options are supported by <code>quarto render</code>. For example:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.ipynb <span class="at">--to</span> pdf <span class="at">--toc</span> <span class="at">--number-sections</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We’ll talk in more depth about the mechanics of using code chunks in the articles on <a href="../../docs/computations/executing-code.html">Executing Code</a>. However, for the remainder of this article we’ll just focus on things applicable to all markdown input types whether they contain code or not.</p>
 </section>
 <section class="level2">
 <h2 class="anchored" id="yaml-options">YAML Options</h2>
@@ -445,6 +469,7 @@
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If you do this then the following command is equivalent to the previous example (but no options are provided on the command line b/c they are already defined in YAML):</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render document.md</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that in this case rendering with no explicit <code>--to</code> argument results in a PDF, since <code>format: pdf</code> is specified in YAML.</p>
 <p>Options may include any of the defined Pandoc metadata <a href="https://pandoc.org/MANUAL.html#variables">variables</a> or <a href="https://pandoc.org/MANUAL.html#default-files">defaults</a>. For example, here we take advantage of quite a few more options for PDF generation:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
@@ -452,15 +477,14 @@
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> pdf</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">shift-heading-level-by</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">documentclass</span><span class="kw">:</span><span class="at"> report</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">geometry</span><span class="kw">:</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> top=30mm</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> left=20mm</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> heightrounded</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">links-as-notes</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">highlight-style</span><span class="kw">:</span><span class="at"> pygments</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">documentclass</span><span class="kw">:</span><span class="at"> report</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">geometry</span><span class="kw">:</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> top=30mm</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> left=20mm</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> heightrounded</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">links-as-notes</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">highlight-style</span><span class="kw">:</span><span class="at"> pygments</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section class="level2">
 <h2 class="anchored" id="multiple-formats">Multiple Formats</h2>
@@ -492,22 +516,11 @@
 <p>Note that you can share format options across a set of documents using <a href="quarto-projects.html">Quarto Projects</a>.</p>
 </section>
 <section class="level2">
-<h2 class="anchored" id="next-steps">Next Steps</h2>
-<p>See the article on <a href="computations.md">Jupyter and Knitr</a> to learn more about creating computational documents with Quarto.</p>
-<p><a href="authoring-tools.md">Authoring Tools</a> covers using Jupyter Lab, RStudio, or other text editors to author Quarto documents.</p>
-<p>If you are creating HTML output, see the articles on <a href="html-basics.md">HTML Extensions</a>, <a href="html-bootstrap.Rmd">HTML w/ Bootstrap</a>, and the HTML <a href="html-themes.md">Theming System</a>.</p>
-<p>Advanced features of Quarto are covered in these articles:</p>
-<ul>
-<li><p><a href="quarto-projects.html">Quarto Projects</a> covers how to share YAML metadata options across documents and render all of the documents in directory with a single command.</p></li>
-<li><p><a href="website-basics.md">Creating a Website</a> and <a href="book-basics.md">Creating a Book</a> describe some special project types.</p></li>
-</ul>
-<!-- -->
-<ul>
-<li><p><a href="callouts.md">Callout Blocks</a> outlines how to emphasize blocks of content (e.g.&nbsp;tips, notes, warning, etc.)</p></li>
-<li><p><a href="cross-references.html">Cross References</a> describes how to create numbered references to figures, tables, equations, sections, listings, etc.</p></li>
-<li><p><a href="figures-and-layout.html">Figures and Layout</a> documents Quarto’s layout primitives for creating figure panels, side-by-side tables, etc.</p></li>
-<li><p><a href="pdfs-and-latex.html">PDFs and LaTeX</a> explains automatic TeX package installation as well as how to install and use <a href="https://yihui.org/tinytex/">TinyTeX</a>.</p></li>
-</ul>
+<h2 class="anchored" id="learning-more">Learning More</h2>
+<p><a href="../../docs/computations/executing-code.html">Executing Code</a> covers creating computational documents with Quarto in more depth, including how to use Quarto with <a href="../../docs/computations/using-jupyter-lab.html">JupyterLab</a> and <a href="../../docs/computations/using-rstudio.html">RStudio</a>.</p>
+<p>The <a href="../../docs/markdown/formatting.html">Markdown</a> section describes the capabilities of Pandoc markdown, as well as Quarto extensions for <a href="../../docs/markdown/cross-references.html">Cross References</a>, <a href="../../docs/markdown/figures-and-layout.html">Figures and Layout</a>, and <a href="../../docs/markdown/callouts.html">Callout Blocks</a>.</p>
+<p>The output formats section provides additional details on creating <a href="../../docs/output-formats/html-basics.html">HTML</a>, <a href="../../docs/output-formats/pdf-basics.html">PDF</a>, and <a href="../../docs/output-formats/ms-word.html">MS Word</a> documents, as well as describes a few special output types including <a href="../../docs/output-formats/presentations.html">Presentations</a>, <a href="../../docs/output-formats/epub.html">EPUBs</a>, and pages in <a href="../../docs/output-formats/hugo.html">Hugo</a> static sites.</p>
+<p><a href="../../docs/websites/website-basics.html">Creating a Website</a> and <a href="../../docs/books/book-basics.html">Creating a Book</a> describe some special Quarto project types.</p>
 <!-- -->
 </section>
 </main>
