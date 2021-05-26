@@ -10,7 +10,7 @@ execute:
 
 Quarto is a scientific and technical markdown publishing system built on [Pandoc](https://pandoc.org). In addition to the core capabilities of Pandoc, Quarto includes:
 
-1.  Support for embedding output from Python, R, and Julia via integration with [Jupyter](https://jupyter.org/) and [knitr](https://yihui.org/knitr/) .
+1.  Support for embedding output from Python, R, and Julia via integration with [Jupyter](https://jupyter.org/) and [Knitr](https://yihui.org/knitr/) .
 
 2.  A variety of extensions to Pandoc markdown useful for technical writing including callouts (admonitions), cross-references, sub-figures, layout panels, hover-able citations and footnotes, and more.
 
@@ -73,27 +73,10 @@ Don't worry if all the mechanics of this example aren't obvious, the main takeaw
 While this example demonstrates rendering an ordinary markdown file, Quarto can also be used just the same with other input formats like Jupyter Notebooks (.ipynb) and R Markdown documents (.Rmd).
 :::
 
-## Installation
-
-You can install the Quarto CLI (command-line interface) from here:
-
-<https://github.com/quarto-dev/quarto-cli/releases/latest>
-
-You can verify that Quarto has been installed correctly with:
-
-``` {.bash}
-$ quarto help
-```
-
-To install the development version of the Quarto CLI, git clone this repo then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-window.cmd`). For example:
-
-``` {.bash}
-$ git clone https://github.com/quarto-dev/quarto-cli
-$ cd quarto-cli
-$ ./configure-macos.sh
-```
-
 ## Getting Started
 
-```{r, child="docs/getting-started/_learning-more.Rmd"}
-```
+[Installation](docs/getting-started/installation.md) will get you up and running with Quarto (including additional dependencies required for computational documents).
+
+[Quarto Basics](docs/getting-started/quarto-basics.md) will help you learn the core mechanics of rendering markdown from the command line as well as how to specify document formats and options.
+
+[Executing Code](docs/computations/executing-code.md) covers creating computational documents with Quarto inmore depth, including how to use Quarto with [JupyterLab](docs/computations/using-jupyter-lab.md) and [RStudio](docs/computations/using-rstudio.md).
