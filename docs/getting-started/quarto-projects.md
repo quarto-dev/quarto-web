@@ -3,8 +3,6 @@ title: "Quarto Projects"
 format: html
 ---
 
-## Project Basics
-
 Quarto projects are directories that provide:
 
 -   A way to render all or some of the files in a directory with a single command (e.g. `quarto render myproject`).
@@ -13,9 +11,14 @@ Quarto projects are directories that provide:
 
 -   The ability to redirect output artifacts to another directory.
 
--   The ability to freeze rendered output (e.g. don't re-execute an .Rmd or .ipynb) either unqualified or tied to the content of the source file (via hash).
+-   The ability to freeze rendered output (i.e. don't re-execute documents unless they have changed).
 
-In addition, projects can have special "types" that introduce additional behavior (e.g. [websites](website-basics.md) or [books](book-basics.md)).
+In addition, projects can have special "types" that introduce additional behavior (e.g. [websites](../websites/website-basics.md) or [books](../books/book-basics.md)).
+
+
+::: {.callout-note}
+If you are just getting started with Quarto and/or you don't have previous experience with markdown publishing systems, you probably want to skip learning about projects for now. Once you are comfortable with the basics, come back to this article to learn more.
+:::
 
 
 ## Creating Projects
@@ -65,7 +68,10 @@ You can render files within a project either one-by-one or all at once (in eithe
 To render all of the documents within a project, just use `quarto render` within the project directory (or target a specific directory with a command line argument):
 
 ``` {.bash}
-$ quarto render # render current dir
+# render project in current dir
+$ quarto render 
+
+# render project in 'myproject'
 $ quarto render myproject
 ```
 
@@ -91,7 +97,6 @@ If you don't want to render all of the target documents in a project, or you wis
 
 ``` {.yaml}
 project:
-  name: myproject
   render:
     - section1.md
     - section2.md
@@ -101,26 +106,13 @@ Note that you can use wildcards when defining the `render` list. For example:
 
 ``` {.yaml}
 project:
-  name: myproject
   render:
     - section*.md
 ```
 
-## Working Dir
-
-By default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the `execute-dir` option to your config:
-
-``` {.yaml}
-project:
-  type: site
-  execute-dir: project
-```
-
-Note that you can always determine the location of the currently executing Quarto project using the `QUARTO_PROJECT_DIR` environment variable.
-
 ## Execution
 
-Rendering a list of input files has the potential to quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations.
+Rendering a list of input files has the potential to be quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations.
 
 ### Freeze
 
@@ -136,9 +128,11 @@ execute:
   freeze: auto  # re-render only when source changes
 ```
 
+The results of documents rendered with `freeze` are stored in the `_freeze` directory, and re-used when needed to fulfill document renders.
+
 ### Cache
 
-You can use the `cache` option to cache the results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) for Rmd documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) for .ipynb or Jupyter Markdown documents):
+You can use the `cache` option to cache the results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) for R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) for Jupyter documents):
 
 ``` {.yaml}
 execute:
@@ -156,24 +150,27 @@ $ quarto render --cache-refresh           # entire project
 
 Finally, if you are using Jupyter Notebooks as inputs, you may prefer to execute all code within interactive notebook sessions, and *never* have Quarto execute the code cells:
 
-``` {.yaml .yml}
-execute:
-  eval: false
+``` {.yaml}
+execute: false
 ```
 
-When rendering .ipynb files with Quarto, `eval: false` is the default behavior (it's assumed that you want to only execute cells in the Notebook UI). To always execute the cells in your .ipynb just do this:
+### Working Dir
 
+By default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the `execute-dir: project` option to your config:
 
-``` {.yaml .yml}
-execute:
-  eval: true
+``` {.yaml}
+project:
+  execute-dir: project
 ```
+
+Note that from within your code you can always determine the location of the currently executing Quarto project using the `QUARTO_PROJECT_DIR` environment variable.
+
 
 ## Project Types
 
 There are a couple of special project types available:
 
--   [Websites](website-basics.md) includes additional navigational elements (e.g. navbar/sidebar/etc.) and copy all output files to a deployment directory (e.g. `_site`) by default.
+-   [Websites](../websites/website-basics.md) includes additional navigational elements (e.g. navbar/sidebar/etc.) and copy all output files to a deployment directory (e.g. `_site`) by default.
 
--   [Books](book-basics.md) support combineing all of the included documents into a single manuscript (e.g. a PDF or EPUB) as well as creating a book website from the same source documents.
+-   [Books](../books/book-basics.md) support combineing all of the included documents into a single manuscript (e.g. a PDF or EPUB) as well as creating a book website from the same source documents.
 

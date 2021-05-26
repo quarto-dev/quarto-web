@@ -802,5 +802,47 @@
     "title": "Creating a Website",
     "section": "Resources",
     "text": "Besides input and configuration files, your site likely also includes a variety of resources (e.g. images) that you will want to publish along with your site. Quarto will automatically detect any files that you reference within your site and copy them to the output directory (e.g. _site).\nIf this auto-detection fails for any reason, of if you want to publish a file not explicitly linked to from within your site, you can add a resources entry to your configuration. For example, here we specify that we want to include all Excel spreadsheets within the project directory as part of the website:\nproject:\n  type: site\n  resources: \n    - *.xlsx\nYou can also add a resources metadata value to individual files. For example:\ntitle: \"My Page\"\nresources:\n  - sheet.xlsx\nImages are the most commonly used type of resource file. If you have global images (e.g. a logo) that you want to reference from various pages within your site, you can use an site-absolute path to refer to the images, and it will be automatically converted to a relative path during publishing. For example:\n![](/images/logo.png)"
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#creating-projects",
+    "title": "Quarto Projects",
+    "section": "Creating Projects",
+    "text": "Use the quarto create-project command to create a new project. If you have an existing directory of documents that you want to treat as a project just invoke create-project with no arguments from within the directory:\n$ quarto create-project\nTo create a project in a new directory just provide a directory name on the command line:\n$ quarto create-project myproject"
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#shared-metadata",
+    "title": "Quarto Projects",
+    "section": "Shared Metadata",
+    "text": "When you create a project, a _quarto.yml config file is created. Here is an example of what the _quarto.yml file might look like:\nproject:\n  output-dir: _output\n\ntoc: true\nnumber-sections: true\nbibliography: references.bib  \n  \nformat:\n  html:\n    css: styles.css\n    html-math-method: katex\n  pdf:\n    documentclass: report\n    margin-left: 30mm\n    margin-right: 30mm\nAny document rendered within the project directory will automatically inherit the metadata defined at the project level.\nNote that the project file contains both global options that apply to all formats (e.g. toc and bibliograph) as well as format-specific options."
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#rendering-projects",
+    "title": "Quarto Projects",
+    "section": "Rendering Projects",
+    "text": "You can render files within a project either one-by-one or all at once (in either case, shared project metadata will be used).\nTo render all of the documents within a project, just use quarto render within the project directory (or target a specific directory with a command line argument):\n$ quarto render # render current dir\n$ quarto render myproject\nNote that when rendering an entire project, command line arguments you pass to quarto render will be used for each file in the project. For example. this command will render each document in a project as a PDF:\n$ quarto render --to pdf\n$ quarto render myproject --to pdf\nIf you are working with Quarto from R, you can also render a project from the R console using the quarto R package.\nlibrary(quarto)\nquarto_render(\"document.Rmd\")"
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#render-targets",
+    "title": "Quarto Projects",
+    "section": "Render Targets",
+    "text": "By default, all valid Quarto input files (.Rmd, .ipynb, .md) in the project directory will be rendered, save for ones with a file or directory prefix of . (hidden files) or _ (typically used for non top-level files, e.g. ones included in other files).\nIf you don’t want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a project: render: [files] entry to your project metadata. For example:\nproject:\n  name: myproject\n  render:\n    - section1.md\n    - section2.md\nNote that you can use wildcards when defining the render list. For example:\nproject:\n  name: myproject\n  render:\n    - section*.md"
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#working-dir",
+    "title": "Quarto Projects",
+    "section": "Working Dir",
+    "text": "By default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the execute-dir option to your config:\nproject:\n  type: site\n  execute-dir: project\nNote that you can always determine the location of the currently executing Quarto project using the QUARTO_PROJECT_DIR environment variable."
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#execution",
+    "title": "Quarto Projects",
+    "section": "Execution",
+    "text": "Rendering a list of input files has the potential to quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations.\n\nFreeze\nYou can use the freeze option to denote that computational documents should never be re-rendered, or alternatively only be re-rendered when their source file changes:\nexecute:\n  freeze: true  # never re-render\nexecute:\n  freeze: auto  # re-render only when source changes\n\n\nCache\nYou can use the cache option to cache the results of computations (using the knitr cache for Rmd documents, and Jupyter Cache for .ipynb or Jupyter Markdown documents):\nexecute:\n  cache: true\nNote that cache invalidation is triggered by changes in chunk source code (or other cache attributes you’ve defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option:\n$ quarto render mydoc.Rmd --cache-refresh # single doc\n$ quarto render --cache-refresh           # entire project\n\n\nNo Execute\nFinally, if you are using Jupyter Notebooks as inputs, you may prefer to execute all code within interactive notebook sessions, and never have Quarto execute the code cells:\nexecute:\n  eval: false\nWhen rendering .ipynb files with Quarto, eval: false is the default behavior (it’s assumed that you want to only execute cells in the Notebook UI). To always execute the cells in your .ipynb just do this:\nexecute:\n  eval: true"
+  },
+  {
+    "href": "docs/getting-started/quarto-projects.html#project-types",
+    "title": "Quarto Projects",
+    "section": "Project Types",
+    "text": "There are a couple of special project types available:\n\nWebsites includes additional navigational elements (e.g. navbar/sidebar/etc.) and copy all output files to a deployment directory (e.g. _site) by default.\nBooks support combineing all of the included documents into a single manuscript (e.g. a PDF or EPUB) as well as creating a book website from the same source documents."
   }
 ]
