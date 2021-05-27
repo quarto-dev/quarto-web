@@ -1,5 +1,5 @@
 ---
-title: "Figures and Layout"
+title: "Figures & Layout"
 format: html
 execute:
   engine: none
