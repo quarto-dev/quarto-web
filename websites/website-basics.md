@@ -9,7 +9,7 @@ Quarto Websites are a convenient way to publish groups of documents. Document pu
 
 Website navigation can be provided through a global navbar, a sidebar with links, or a combination of both for sites that have multiple levels of content. You can also enable full text search for websites.
 
-This site is an example of a Quarto Website (you can see the source code for it here: <https://github.com/quarto-dev/quarto-docs>).
+This site is an example of a Quarto Website (you can see the source code for it here: <https://github.com/quarto-dev/quarto-web>).
 
 
 ## Getting Started
