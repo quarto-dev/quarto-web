@@ -279,31 +279,31 @@
     "href": "docs/authoring/document-options.html#format",
     "title": "Document Options",
     "section": "Format",
-    "text": "The most important option is the format to render to (e.g. HTML, PDF, etc.). This is specified using the format key. For example:\nformat: pdf\nYou can also specify more than one format, as well as options that apply to only a given format. For example, here we specify global toc options alongside some format-specific options:\ntoc: true\ntoc-depth: 2\nformat:\n  html:\n    html-math-method: katex\n  pdf:\n    documentclass: report"
-  },
-  {
-    "href": "docs/authoring/document-options.html#table-of-contents",
-    "title": "Document Options",
-    "section": "Table of Contents",
-    "text": "toc\ntoc-depth"
+    "text": "The most important option is the format to render to (e.g. HTML, PDF, etc.). This is specified using the format key. For example:\nformat: pdf\nYou can also specify more than one format, as well as options that apply to only a given format. For example, here we provide some format-specific options:\nformat:\n  html:\n    html-math-method: katex\n  pdf:\n    documentclass: report"
   },
   {
     "href": "docs/authoring/document-options.html#section-numbering",
     "title": "Document Options",
     "section": "Section Numbering",
-    "text": "number-sections"
+    "text": "Use the number-sections option to number section headings in the output document. For example:\nnumber-sections: true\nUse the number-depth option to specify the deepest level of heading to add numbers to (by default all headings are numbered). For example:\nnumber-depth: 3\nTo exclude an individual heading from numbering, add the .unnumbered class to it:\n### More Options {.unnumbered}"
+  },
+  {
+    "href": "docs/authoring/document-options.html#table-of-contents",
+    "title": "Document Options",
+    "section": "Table of Contents",
+    "text": "Use the toc option to include an automatically generated table of contents in the output document. Use the toc-depth option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:\ntoc: true\ntoc-depth: 2\nNote that HTML documents implement support for floating the table of contents to the right of the page. See the Floating TOC documentation for additional details.\nIf you want to exclude a heading from the table of contents, add both the .unnumbered and .unlisted classes to it:\n### More Options {.unnumbered .unlisted}"
   },
   {
     "href": "docs/authoring/document-options.html#syntax-highlighting",
     "title": "Document Options",
     "section": "Syntax Highlighting",
-    "text": ""
+    "text": "Pandoc will automatically highlight syntax in fenced code blocks that are marked with a language name. Currently highlighting is supported only for HTML, EPUB, Docx, Ms, and LaTeX/PDF output. To see a list of language names that pandoc will recognize, type pandoc --list-highlight-languages.\nYou can specify the code highlighting style using highlight-style and specifying one of the supported themes. Supported themes include all the themes included in Pandoc (pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock) as well as an additional set of extended themes here:\nhttps://github.com/quarto-dev/quarto-cli/tree/main/src/resources/pandoc/highlight-styles\nFor example:\nhighlight-style: github\nHighlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color’s darkness. Users may always opt to specify the full name (e.g. atom-one-dark) to bypass this automatic behavior.\nBy default, code is highlighted using the arrow theme. We’ve additionally introduced the arrow-dark theme which is designed to provide beautiful, accessible highlighting against dark backgrounds.\nExamples of some light and dark themes:\n\nArrow\nLightDark\n\n\n\n\n\n\n\n\n\n\nAyu\nLightDark"
   },
   {
     "href": "docs/authoring/document-options.html#includes",
     "title": "Document Options",
     "section": "Includes",
-    "text": ""
+    "text": "If you want to include additional content in your document from another file, you can use the include-in options:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\ninclude-in-header\nInclude contents of file, verbatim, at the end of the header. This can be used, for example, to include special CSS or JavaScript in HTML documents or to inject commands into the LaTeX preamble.\n\n\ninclude-before-body\nInclude contents of file, verbatim, at the beginning of the document body (e.g. after the <body> tag in HTML, or the \\begin{document} command in LaTeX). This can be used to include navigation bars or banners in HTML documents.\n\n\ninclude-after-body\nInclude contents of file, verbatim, at the end of the document body (before the </body> tag in HTML, or the \\end{document} command in LaTeX).\n\n\n\nYou can specify a single file for multiple files for each of these options. For example:\nformat:\n  html:\n    include-in-header:\n      - analytics.html\n      - comments.html\n    include-before-body: header.html\nThere are also a set of options you can use for inline includes (i.e. specifying the included content right within YAML):\n\n\n\nOption\nDescription\n\n\n\n\nheader-includes\nInline version of include-in-header\n\n\ninclude-before\nInline version of include-before-body\n\n\ninclude-after\nInline version include-after-body\n\n\n\nFor example:\nformat:\n  pdf: \n    header-includes: |\n      \\usepackage{eplain}\n      \\usepackage{easy-todo}"
   },
   {
     "href": "docs/authoring/markdown-basics.html#overview",
@@ -357,7 +357,7 @@
     "href": "docs/authoring/cross-references.html#overview",
     "title": "Cross References",
     "section": "Overview",
-    "text": "Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables. Every cross-referenceable entity requires a label (unique identifier) and caption (description). For example, this is a cross-referenceable figure:\n![Elephant](elephant.png){#fig-elephant}\nThe presence of the caption (Elephant) and label (#fig-elephant) make this figure referenceable. This enables you to use the following syntax to refer to it elsewhere in the document:\nSee @fig-elephant for an illustration.\nHere is what this would look like rendered to HTML:\n\nQuarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from knitr and Jupyter. The inline reference text (“fig. 1” in the above example) can also be customized (e.g. “figure 1” rather than the abbreviation).\n\n\n\n\n\n\nQuarto’s syntax for cross-references is based on pandoc-crossref (which is in turn based on this discussion: <https://github.com/jgm/pandoc/issues/813>). There are however several differences (mostly related to handling computational output) to note:\n\nQuarto uses the prefix #fig- rather than #fig: (which is more compatible with Jupyter notebook cell ids).\nQuarto is able to reference raw HTML and LaTeX figures and tables (which are often produced by executable code blocks).\nQuarto has support for referencing theorems and proofs (and related types)."
+    "text": "Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables. Every cross-referenceable entity requires a label (unique identifier) and caption (description). For example, this is a cross-referenceable figure:\n![Elephant](elephant.png){#fig-elephant}\nThe presence of the caption (Elephant) and label (#fig-elephant) make this figure referenceable. This enables you to use the following syntax to refer to it elsewhere in the document:\nSee @fig-elephant for an illustration.\nHere is what this would look like rendered to HTML:\n\nQuarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from knitr and Jupyter. The inline reference text (“fig. 1” in the above example) can also be customized (e.g. “figure 1” rather than the abbreviation).\n\n\n\n\n\n\nQuarto’s syntax for cross-references is based on pandoc-crossref (which is in turn based on this discussion: https://github.com/jgm/pandoc/issues/813). There are however several differences (mostly related to handling computational output) to note:\n\nQuarto uses the prefix #fig- rather than #fig: (which is more compatible with Jupyter notebook cell ids).\nQuarto is able to reference raw HTML and LaTeX figures and tables (which are often produced by executable code blocks).\nQuarto has support for referencing theorems and proofs (and related types)."
   },
   {
     "href": "docs/authoring/cross-references.html#figures",
@@ -501,7 +501,7 @@
     "href": "docs/getting-started/quarto-basics.html#learning-more",
     "title": "Quarto Basics",
     "section": "Learning More",
-    "text": "Executing Code covers creating computational documents with Quarto in more depth, including how to use Quarto with JupyterLab and RStudio.\nThe Markdown section describes the capabilities of Pandoc markdown, as well as Quarto extensions for Cross References, Figures and Layout, and Callout Blocks.\nThe output formats section provides additional details on creating HTML, PDF, and MS Word documents, as well as describes a few special output types including Presentations, EPUBs, and pages in Hugo static sites.\nCreating a Website and Creating a Book describe some special Quarto project types."
+    "text": "Executing Code covers creating computational documents with Quarto in more depth, including how to use Quarto with JupyterLab and RStudio.\nThe Authoring section describes the capabilities of Pandoc markdown, as well as Quarto extensions for Cross References, Figures and Layout, and Callout Blocks.\nThe output formats section provides additional details on creating HTML, PDF, and MS Word documents, as well as describes a few special output types including Presentations, EPUBs, and pages in Hugo static sites.\nCreating a Website and Creating a Book describe some special Quarto project types."
   },
   {
     "href": "docs/getting-started/quarto-projects.html#overview",
