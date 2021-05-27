@@ -57,7 +57,7 @@ Below we provide a couple of simple examples in Python and R to illustrate (the 
 
 ### Python (Jupyter)
 
-```` {.markdown}
+```` {.python}
 ---
 title: "Jupyter Document"
 format: 
@@ -86,7 +86,7 @@ Note that we added the `code-background: true` option to provide a background co
 
 ### R (Knitr)
 
-```` {.markdown}
+```` {.r}
 ---
 title: "Knitr Document"
 format: 
@@ -118,6 +118,9 @@ Quarto will run computations in any markdown document that uses `{}` delimited l
 
 ``` {.bash}
 $ quarto render jupyter-document.md
+```
+
+``` {.bash}
 $ quarto render knitr-document.md
 ```
 
@@ -125,11 +128,14 @@ Quarto is also highly compatible with existing formats used for computational do
 
 ``` {.bash}
 $ quarto render jupyter-document.ipynb
+```
+
+``` {.bash}
 $ quarto render knitr-document.Rmd
 ```
 
 ::: {.callout-note}
-Jupyter users have a choice of authoring in .ipynb (.e.g. using the JupyterLab or VS Code notebook editor) or authoring in plain text markdown using their favorite text editor. See the article on [Using Jupyter Lab](using-jupyter-lab.md) for additional details.
+Jupyter users have a choice of authoring in .ipynb (and using the JupyterLab or VS Code notebook editor) or authoring in plain text markdown using their favorite text editor. See the article on [Using Jupyter Lab](using-jupyter-lab.md) for additional details.
 
 You can convert between notebook (.ipynb) and markdown (.md) representations of a document using the `quarto convert` command (see `quarto convert help` for details).
 :::
@@ -138,9 +144,11 @@ You can convert between notebook (.ipynb) and markdown (.md) representations of 
 R users will likely want to continue using the .Rmd extension for Quarto, as the Quarto format is backwards compatible with .Rmd and editors (e.g. RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on [Using RStudio](using-rstudio.md) for additional details.
 :::
 
-## Output Options
+## Execution Options
 
-There are a wide variety of options available for customizing computational output. All of these options can be specified either globally (in the document front-matter) or per code-block. For example, here's a modification of the Python example to specify that we don't want to "echo" the code into the output document:
+### Output
+
+There are a wide variety of options available for customizing output from executed code. All of these options can be specified either globally (in the document front-matter) or per code-block. For example, here's a modification of the Python example to specify that we don't want to "echo" the code into the output document:
 
 ``` {.yaml}
 ---
@@ -204,8 +212,6 @@ ggplot(airquality, aes(Temp, Ozone)) +
 summary(airquality)
 ```
 ````
-
-## Execution Options
 
 ### Caching
 
