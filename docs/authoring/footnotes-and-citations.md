@@ -1,5 +1,5 @@
 ---
-title: Footnotes & Citations
+title: Citations & Footnotes
 format: html
 link-citations: true
 footnote-section-title: Example Footnotes
@@ -11,7 +11,7 @@ Quarto will use Pandoc to automatically generate citations and a bibliography in
 
 -   A quarto document formatted with citations (see [Citation Markdown](#sec-citations)).
 
--   A bibliographic data source (for example a `.bibtex` file)
+-   A bibliographic data source, for example a BibTeX (`.bib`) file.
 
 -   Optionally, a `CSL` file which specifies the formatting to use when generating the citations and bibliography.
 
@@ -36,17 +36,19 @@ See the [Pandoc Citations](https://pandoc.org/MANUAL.html#citations) documentati
 
 Quarto uses the standard Pandoc markdown representation for citations (e.g. `[@citation]`) --- citations go inside square brackets and are separated by semicolons. Each citation must have a key, composed of '\@' + the citation identifier from the database, and may optionally have a prefix, a locator, and a suffix. The citation key must begin with a letter, digit, or `_`, and may contain alphanumerics, `_`, and internal punctuation characters (`:.#$%&-+?<>~/`). Here are some examples:
 
-+-----------------------------------------------------------------------+-------------------------------------------------------------------+
-| Markdown Format                                                       | Output                                                            |
-+=======================================================================+===================================================================+
-|     Blah Blah [see @knuth1984, pp. 33-35; also @wickham2015, chap. 1] | Blah Blah [see @knuth1984, pp. 33-35; also @wickham2015, chap. 1] |
-+-----------------------------------------------------------------------+-------------------------------------------------------------------+
-|     Blah Blah [@knuth1984, pp. 33-35, 38-39 and passim]               | Blah Blah [@knuth1984, pp. 33-35, 38-39 and passim]               |
-+-----------------------------------------------------------------------+-------------------------------------------------------------------+
-|     Blah Blah [@wickham2015; @knuth1984].                             | Blah Blah [@wickham2015; @knuth1984].                             |
-+-----------------------------------------------------------------------+-------------------------------------------------------------------+
-|     Smith says blah [-@wickham2015]                                   | Wickham says blah [-@wickham2015]                                 |
-+-----------------------------------------------------------------------+-------------------------------------------------------------------+
++-------------------------------------------+-------------------------------------------------------------------+
+| Markdown Format                           | Output                                                            |
++===========================================+===================================================================+
+|     Blah Blah [see @knuth1984, pp. 33-35; | Blah Blah [see @knuth1984, pp. 33-35; also @wickham2015, chap. 1] |
+|     also @wickham2015, chap. 1]           |                                                                   |
++-------------------------------------------+-------------------------------------------------------------------+
+|     Blah Blah [@knuth1984, pp. 33-35,     | Blah Blah [@knuth1984, pp. 33-35, 38-39 and passim]               |
+|     38-39 and passim]                     |                                                                   |
++-------------------------------------------+-------------------------------------------------------------------+
+|     Blah Blah [@wickham2015; @knuth1984]. | Blah Blah [@wickham2015; @knuth1984].                             |
++-------------------------------------------+-------------------------------------------------------------------+
+|     Smith says blah [-@wickham2015]       | Wickham says blah [-@wickham2015]                                 |
++-------------------------------------------+-------------------------------------------------------------------+
 
 You can also write in-text citations, as follows:
 
@@ -91,10 +93,10 @@ If no such div is found, the works cited list will be placed at the end of the d
 You can suppress generation of a bibliography by including `suppress-bibliography: true` option in your document metadata
 :::
 
-An example of such a generated list of works cited for this page and the example citations above can be viewed below:
+Here's an example of a generated bibliography:
 
-> ::: {#refs}
-> :::
+::: {#refs}
+:::
 
 ## Footnotes
 
@@ -124,22 +126,6 @@ isn't indented.
 
 Here is a footnote reference,[^1] and another.[^2]
 
-This paragraph won't be part of the note, because it isn't indented.
-
-In addition, you can also write single paragraph footnotes inline using the following syntax:
-
-``` {.markdown}
-Here is an inline note.^[Inlines notes are easier to write, since
-you don't have to pick an identifier and move down to type the
-note.]
-```
-
-#### Output
-
-Here is an inline note.[^3]
-
-The footnotes that are generated from the above examples are included in the following section. See the [Pandoc Footnotes](https://pandoc.org/MANUAL.html#footnotes) for additional information.
-
 [^1]: Here is the footnote.
 
 [^2]: Here's one with multiple blocks.
@@ -150,4 +136,20 @@ The footnotes that are generated from the above examples are included in the fol
 
     The whole paragraph can be indented, or just the first line. In this way, multi-paragraph footnotes work like multi-paragraph list items.
 
+This paragraph won't be part of the note, because it isn't indented.
+
+In addition, you can also write single paragraph footnotes inline using the following syntax:
+
+``` {.markdown}
+Here is an inline note.^[Inlines notes are easier to write,
+since you don't have to pick an identifier and move down to
+type the note.]
+```
+
+#### Output
+
+Here is an inline note.[^3]
+
 [^3]: Inlines notes are easier to write, since you don't have to pick an identifier and move down to type the note.
+
+The footnotes that are generated from the above examples are included in the following section. See the [Pandoc Footnotes](https://pandoc.org/MANUAL.html#footnotes) for additional information.

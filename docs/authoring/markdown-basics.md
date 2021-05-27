@@ -11,7 +11,7 @@ Markdown is a plain text format that is designed to be easy to write, and, even 
 
 > A Markdown-formatted document should be publishable as-is, as plain text, without looking like it's been marked up with tags or formatting instructions. -- [John Gruber](https://daringfireball.net/projects/markdown/syntax#philosophy)
 
-This document provides a high-level summary of the most commonly used markdown syntax. See the full documentation of [Pandoc's Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) for more in-depth documentation.
+This document provides examples of the most commonly used markdown syntax. See the full documentation of [Pandoc's Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) for more in-depth documentation.
 
 ## Text Formatting
 
@@ -27,35 +27,44 @@ This document provides a high-level summary of the most commonly used markdown s
 |     `verbatim code`               | `verbatim code`               |
 +-----------------------------------+-------------------------------+
 
-## Headings
+## Headings {#headings}
 
-+-----------------------------------+------------------------------+
-| Markdown Syntax                   | Output                       |
-+===================================+==============================+
-|     # Header 1                    | # Header 1                   |
-+-----------------------------------+------------------------------+
-|     ## Header 2                   | ## Header 2                  |
-+-----------------------------------+------------------------------+
-|     ### Header 3                  | ### Header 3                 |
-+-----------------------------------+------------------------------+
-|     #### Header 4                 | Header 4                     |
-+-----------------------------------+------------------------------+
-|     ##### Header 5                | ##### Header 5               |
-+-----------------------------------+------------------------------+
-|     ###### Header 6               | ###### Header 6              |
-+-----------------------------------+------------------------------+
++-----------------------------------+-----------------------------------+
+| Markdown Syntax                   | Output                            |
++===================================+===================================+
+|     # Header 1                    | # Header 1 {.heading-output}      |
++-----------------------------------+-----------------------------------+
+|     ## Header 2                   | ## Header 2 {.heading-output}     |
++-----------------------------------+-----------------------------------+
+|     ### Header 3                  | ### Header 3 {.heading-output}    |
++-----------------------------------+-----------------------------------+
+|     #### Header 4                 | #### Header 4 {.heading-output}   |
++-----------------------------------+-----------------------------------+
+|     ##### Header 5                | ##### Header 5 {.heading-output}  |
++-----------------------------------+-----------------------------------+
+|     ###### Header 6               | ###### Header 6 {.heading-output} |
++-----------------------------------+-----------------------------------+
 
+```{=html}
+<style type="text/css">
+.heading-output {
+  border-bottom: none;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+</style>
+```
 ## Links & Images
 
-+---------------------------------------------------------------+-----------------------------------------------------------+
-| Markdown Syntax                                               | Output                                                    |
-+===============================================================+===========================================================+
-|     [link](https://www.quarto.org)                            | [link](https://www.quarto.org)                            |
-+---------------------------------------------------------------+-----------------------------------------------------------+
-|     ![Caption](images/elephant.png)                           | ![Caption](images/elephant.png)                           |
-+---------------------------------------------------------------+-----------------------------------------------------------+
-|     [![Caption](images/elephant.png)](https://www.quarto.org) | [![Caption](images/elephant.png)](https://www.quarto.org) |
-+---------------------------------------------------------------+-----------------------------------------------------------+
++---------------------------------------------------+-----------------------------------------------+
+| Markdown Syntax                                   | Output                                        |
++===================================================+===============================================+
+|     [Quarto](https://quarto.org)                  | [Quarto](https://quarto.org)                  |
++---------------------------------------------------+-----------------------------------------------+
+|     ![Caption](elephant.png)                      | ![Caption](elephant.png)                      |
++---------------------------------------------------+-----------------------------------------------+
+|     [!Caption](elephant.png)](https://quarto.org) | [![Caption](elephant.png)](https:/quarto.org) |
++---------------------------------------------------+-----------------------------------------------+
 
 ## Lists
 
@@ -70,7 +79,7 @@ This document provides a high-level summary of the most commonly used markdown s
 |                                     |                                 |
 |                                     |         -   sub-sub-item 1      |
 +-------------------------------------+---------------------------------+
-|     * item 2                        | -   item 2                      |
+|     *   item 2                      | -   item 2                      |
 |                                     |                                 |
 |         Continued (indent 4 spaces) |     Continued (indent 4 spaces) |
 +-------------------------------------+---------------------------------+
@@ -117,28 +126,31 @@ This document provides a high-level summary of the most commonly used markdown s
 
 ## Equations
 
-+----------------------------------+--------------------------------+
-| Markdown Syntax                  | Output                         |
-+==================================+================================+
-|     inline math: $E = mc^{2}$    | inline math: $E=mc^{2}$        |
-+----------------------------------+--------------------------------+
-|     display math: $$E = mc^{2}$$ | display math: $$E = mc^{2}$$   |
-+----------------------------------+--------------------------------+
++----------------------------------+----------------------------------+
+| Markdown Syntax                  | Output                           |
++==================================+==================================+
+|     inline math: $E = mc^{2}$    | inline math: $E=mc^{2}$          |
++----------------------------------+----------------------------------+
+|     display math:                | display math: \                  |
+|                                  | $$E = mc^{2}$$                   |
+|     $$E = mc^{2}$$               |                                  |
++----------------------------------+----------------------------------+
 
 ## Special Blocks
 
-+---------------------------------+--------------------------------+
-| Markdown Syntax                 | Output                         |
-+=================================+================================+
-|     > Blockquote                | > Blockquote                   |
-+---------------------------------+--------------------------------+
-|     :::{.classname}             | ::: {.classname}               |
-|     Div                         | Div                            |
-|     :::                         | :::                            |
-+---------------------------------+--------------------------------+
-|     |    Line Block             | |    Line Block                |
-|     | Line Block                | | Line Block                   |
-+---------------------------------+--------------------------------+
++---------------------------------+---------------------------------+
+| Markdown Syntax                 | Output                          |
++=================================+=================================+
+|     > Blockquote                | > Blockquote                    |
++---------------------------------+---------------------------------+
+|     ::: {.classname}            | ::: {.classname}                |
+|     Div                         | Div                             |
+|     :::                         | :::                             |
++---------------------------------+---------------------------------+
+|     | Line Block                | | Line Block                    |
+|     |   Spaces and newlines     | |    Spaces and newlines        |
+|     |   are preserved           | |    are preserved              |
++---------------------------------+---------------------------------+
 
 ### Special Characters
 

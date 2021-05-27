@@ -153,7 +153,7 @@
     "href": "docs/computations/executing-code.html#executable-code",
     "title": "Executing Code",
     "section": "Executable Code",
-    "text": "Code blocks that use braces around the language name (e.g. ```{python}) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).\n\nPython (Jupyter)\n---\ntitle: \"Jupyter Document\"\nformat: \n  html:\n    code-background: true\n---\n\n```{python}\nimport matplotlib.pyplot as plt\nplt.plot([1,2,3,4])\nplt.show()\n```\n\n```{python}\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n```\n\nNote that we added the code-background: true option to provide a background color for the code chunks (see the documentation on Code Block options for additional details on customizing code block output).\n\n\nR (Knitr)\n---\ntitle: \"Knitr Document\"\nformat: \n  html:\n    code-background: true\nexecute:\n  warning: false\n---\n\n```{r}\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\n\n```{r}\nsummary(airquality)\n```\n\nNote that we added the execute: warning: false option to suppress printing of warnings. See the Execution Options section below for additional details.\nYou can produce a wide variety of output types from executable code blocks, including:\n\nStatic plots (e.g. from matplotlib or ggplot2).\nInteractive plots (e.g. from plotly or leaflet).\nTabular output (e.g. from printing R or Pandas data frames)\nPlain text output (e.g. printing the results of statistical summaries).\n\n\n\nNon-Executable Blocks\nCode blocks that use convential markdown code block syntax (either ```python or ```{.python}) are not executable:\n\n\n\n\n\n\n\nCode Block Syntax\nExecutable?\n\n\n\n\n```{python}\n1 + 1\n```\nYes\n\n\n```python\n1 + 1\n```\nNo\n\n\n```{.python}\n1 + 1\n```\nNo"
+    "text": "Code blocks that use braces around the language name (e.g. ```{python}) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).\n\nPython (Jupyter)\n---\ntitle: \"Jupyter Document\"\nformat: \n  html:\n    code-background: true\n---\n\n```{python}\nimport matplotlib.pyplot as plt\nplt.plot([1,2,3,4])\nplt.show()\n```\n\n```{python}\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n```\n\nNote that we added the code-background: true option to provide a background color for the code chunks (see the documentation on Code Block options for additional details on customizing code block output).\n\n\nR (Knitr)\n---\ntitle: \"Knitr Document\"\nformat: \n  html:\n    code-background: true\nexecute:\n  warning: false\n---\n\n```{r}\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\n\n```{r}\nsummary(airquality)\n```\n\nNote that we added the execute: warning: false option to suppress printing of warnings. See the Execution Options section below for additional details.\nYou can produce a wide variety of output types from executable code blocks, including:\n\nStatic plots (e.g. from matplotlib or ggplot2).\nInteractive plots (e.g. from plotly or leaflet).\nTabular output (e.g. from printing R or Pandas data frames)\nPlain text output (e.g. printing the results of statistical summaries).\n\n\n\nNon-Executable Blocks\nNote that code blocks that use convential markdown code block syntax (either ```python or ```{.python}) are not executable:\n\n\n\n\n\n\n\nCode Block Syntax\nExecutable?\n\n\n\n\n```{python}\n1 + 1\n```\nYes\n\n\n```python\n1 + 1\n```\nNo\n\n\n```{.python}\n1 + 1\n```\nNo\n\n\n\nNon-executable code blocks are printed but not executed."
   },
   {
     "href": "docs/computations/executing-code.html#formats-and-tools",
@@ -264,10 +264,16 @@
     "text": "The following formats render callouts as illustrated above:\n\nHTML\nPDF\nMS Word\nEPUB\n\nIn other formats, callouts are placed in a simple blockquote."
   },
   {
-    "href": "docs/authoring/footnotes-and-citations.html",
-    "title": "Footnotes & Citations",
-    "section": "",
-    "text": ""
+    "href": "docs/authoring/footnotes-and-citations.html#citations",
+    "title": "Citations & Footnotes",
+    "section": "Citations",
+    "text": "Quarto will use Pandoc to automatically generate citations and a bibliography in a number of styles. To use this capability, you will need:\n\nA quarto document formatted with citations (see Citation Markdown).\nA bibliographic data source, for example a BibTeX (.bib) file.\nOptionally, a CSL file which specifies the formatting to use when generating the citations and bibliography.\n\n\nBibliography Files\nQuarto supports bibliography files in a wide variety of formats including BibTeX and CSL. Add a bibliography to your document using the bibliography YAML metadata field. For example:\n---\ntitle: \"My Document\"\nbibliography: references.bib\n---\n\n\n\n\n\n\nYou can provide more than one bibliography file if you would like by setting the bibliography field’s value to a YAML array.\n\n\n\nSee the Pandoc Citations documentation for additional information on bibliography formats.\n\n\nCitation Syntax\nQuarto uses the standard Pandoc markdown representation for citations (e.g. [@citation]) — citations go inside square brackets and are separated by semicolons. Each citation must have a key, composed of ‘@’ + the citation identifier from the database, and may optionally have a prefix, a locator, and a suffix. The citation key must begin with a letter, digit, or _, and may contain alphanumerics, _, and internal punctuation characters (:.#$%&-+?<>~/). Here are some examples:\n\n\n\n\n\n\n\nMarkdown Format\nOutput\n\n\n\n\nBlah Blah [see @knuth1984, pp. 33-35;\nalso @wickham2015, chap. 1]\nBlah Blah (see Knuth 1984, 33–35; also Wickham 2015, chap. 1)\n\n\nBlah Blah [@knuth1984, pp. 33-35,\n38-39 and passim]\nBlah Blah (Knuth 1984, 33–35, 38–39 and passim)\n\n\nBlah Blah [@wickham2015; @knuth1984].\nBlah Blah (Wickham 2015; Knuth 1984).\n\n\nSmith says blah [-@wickham2015]\nWickham says blah (2015)\n\n\n\nYou can also write in-text citations, as follows:\n\n\n\n\n\n\n\nMarkdown Format\nOutput\n\n\n\n\n@knuth1984 says blah.\nKnuth (1984) says blah.\n\n\n@knuth1984 [p. 33] says blah.\nKnuth (1984, 33) says blah.\n\n\n\nSee the Pandoc Citations documentation for additional information on citation syntax.\n\n\nCitation Style\nQuarto uses Pandoc to format citations and bibliographies. By default, Pandoc will use the Chicago Manual of Style author-date format, but you can specify a custom formatting using CSL (Citation Style Language). To provide a custom citation stylesheet, provide a path to a CSL file using the csl metadata field in your document, for example:\n---\ntitle: \"My Document\"\nbibliography: references.bib\ncsl: nature.csl\n---\nYou can find CSL files or learn more about using styles at the CSL Project. You can browse the list of more than 8,500 Creative Commons CSL definitions in the CSL Project’s central repository or Zotero’s style repository.\n\n\nBibliography Generation\nPandoc will automatically generate a list of works cited and place it in the document if the style calls for it. It will be placed in a div with the id refs if one exists:\n### References\n\n::: {#refs}\n:::\nIf no such div is found, the works cited list will be placed at the end of the document.\n\n\n\n\n\n\nYou can suppress generation of a bibliography by including suppress-bibliography: true option in your document metadata\n\n\n\nHere’s an example of a generated bibliography:\n\n\nKnuth, Donald E. 1984. “Literate Programming.” The Computer Journal 27 (2): 97–111.\n\n\nWickham, Hadley. 2015. R Packages. 1st ed. O’Reilly Media, Inc."
+  },
+  {
+    "href": "docs/authoring/footnotes-and-citations.html#footnotes",
+    "title": "Citations & Footnotes",
+    "section": "Footnotes",
+    "text": "Pandoc supports numbering and formatting footnotes using the following syntax:\nHere is a footnote reference,[^1] and another.[^longnote]\n\n[^1]: Here is the footnote.\n\n[^longnote]: Here's one with multiple blocks.\n\n    Subsequent paragraphs are indented to show that they\nbelong to the previous footnote.\n\n        { some.code }\n\n    The whole paragraph can be indented, or just the first\n    line.  In this way, multi-paragraph footnotes work like\n    multi-paragraph list items.\n\nThis paragraph won't be part of the note, because it\nisn't indented.\n\nOutput\nHere is a footnote reference,1 and another.2\nThis paragraph won’t be part of the note, because it isn’t indented.\nIn addition, you can also write single paragraph footnotes inline using the following syntax:\nHere is an inline note.^[Inlines notes are easier to write,\nsince you don't have to pick an identifier and move down to\ntype the note.]\n\n\nOutput\nHere is an inline note.3\nThe footnotes that are generated from the above examples are included in the following section. See the Pandoc Footnotes for additional information."
   },
   {
     "href": "docs/authoring/equations.html",
@@ -309,49 +315,49 @@
     "href": "docs/authoring/markdown-basics.html#overview",
     "title": "Markdown Basics",
     "section": "Overview",
-    "text": "Quarto is based on Pandoc and uses it’s variation of markdown as it’s underlying document syntax. Pandoc markdown is an extended and slightly revised version of John Gruber’s Markdown syntax.\nMarkdown is designed to be easy to write, and, even more importantly, easy to read:\n\nA Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. – John Gruber\n\nThis document provides a high-level summary of the most commonly used markdown syntax. See the full documentation of Pandoc’s Markdown for more in-depth documentation.\nhttps://github.com/rstudio/cheatsheets/blob/master/keynotes/rmarkdown-2.0.key"
+    "text": "Quarto is based on Pandoc and uses it’s variation of markdown as it’s underlying document syntax. Pandoc markdown is an extended and slightly revised version of John Gruber’s Markdown syntax.\nMarkdown is a plain text format that is designed to be easy to write, and, even more importantly, easy to read:\n\nA Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. – John Gruber\n\nThis document provides examples of the most commonly used markdown syntax. See the full documentation of Pandoc’s Markdown for more in-depth documentation."
   },
   {
     "href": "docs/authoring/markdown-basics.html#text-formatting",
     "title": "Markdown Basics",
     "section": "Text Formatting",
-    "text": "Markdown Syntax\nOutput\n\n\n\n\n*italics* and **bold**\nitalics and bold\n\n\n`verbatim code`\nverbatim code\n\n\n$$E = mc^{2}$$\n\\(E = mc^{2}\\)"
+    "text": "Markdown Syntax\nOutput\n\n\n\n\n*italics* and **bold**\nitalics and bold\n\n\nsuperscript^2^ / subscript~2~\nsuperscript2 / subscript2\n\n\n~~strikethrough~~\nstrikethrough\n\n\n`verbatim code`\nverbatim code"
   },
   {
     "href": "docs/authoring/markdown-basics.html#headings",
     "title": "Markdown Basics",
     "section": "Headings",
-    "text": ""
+    "text": "Markdown Syntax\nOutput\n\n\n\n\n# Header 1\nHeader 1\n\n\n## Header 2\nHeader 2\n\n\n### Header 3\nHeader 3\n\n\n#### Header 4\nHeader 4\n\n\n##### Header 5\nHeader 5\n\n\n###### Header 6\nHeader 6\n\n\n\n\n.heading-output {\n  border-bottom: none;\n  margin-top: 0;\n  margin-bottom: 0;\n}"
   },
   {
     "href": "docs/authoring/markdown-basics.html#links-images",
     "title": "Markdown Basics",
     "section": "Links & Images",
-    "text": ""
+    "text": "Markdown Syntax\nOutput\n\n\n\n\n[Quarto](https://quarto.org)\nQuarto\n\n\n![Caption](elephant.png)\n\n\n\n[!Caption](elephant.png)](https://quarto.org)"
   },
   {
     "href": "docs/authoring/markdown-basics.html#lists",
     "title": "Markdown Basics",
     "section": "Lists",
-    "text": ""
+    "text": "Markdown Syntax\nOutput\n\n\n\n\n* unordered list\n    + sub-item 1\n    + sub-item 2\n        - sub-sub-item 1\n\nunordered list\n\nsub-item 1\nsub-item 2\n\nsub-sub-item 1\n\n\n\n\n\n*   item 2\n\n    Continued (indent 4 spaces)\n\nitem 2\nContinued (indent 4 spaces)\n\n\n\n1. ordered list\n2. item 2\n    i) sub-item 1\n         A.  sub-sub-item 1\n\nordered list\nitem 2\n\nsub-item 1\n\nsub-sub-item 1\n\n\n\n\n\n(@)  A list whose numbering\n\ncontinues after\n\n(@)  an interruption\n\nA list whose numbering\n\ncontinues after\n\nan interruption\n\n\n\nterm\n: definition\n\nterm\ndefinition"
   },
   {
     "href": "docs/authoring/markdown-basics.html#tables",
     "title": "Markdown Basics",
     "section": "Tables",
-    "text": ""
+    "text": "Markdown Syntax\n| Right | Left | Default | Center |\n|------:|:-----|---------|:------:|\n|   12  |  12  |    12   |    12  |\n|  123  |  123 |   123   |   123  |\n|    1  |    1 |     1   |     1  |\n\n\nOutput\n\n\n\n\n\n\n\n\n\nRight\nLeft\nDefault\nCenter\n\n\n\n\n12\n12\n12\n12\n\n\n123\n123\n123\n123\n\n\n1\n1\n1\n1"
   },
   {
     "href": "docs/authoring/markdown-basics.html#equations",
     "title": "Markdown Basics",
     "section": "Equations",
-    "text": ""
+    "text": "Markdown Syntax\nOutput\n\n\n\n\ninline math: $E = mc^{2}$\ninline math: \\(E=mc^{2}\\)\n\n\ndisplay math:\n\n$$E = mc^{2}$$\ndisplay math:\n\\[E = mc^{2}\\]"
   },
   {
     "href": "docs/authoring/markdown-basics.html#special-blocks",
     "title": "Markdown Basics",
     "section": "Special Blocks",
-    "text": "Blockquotes\nLine blocks\nDivs"
+    "text": "Markdown Syntax\nOutput\n\n\n\n\n> Blockquote\n\nBlockquote\n\n\n\n::: {.classname}\nDiv\n:::\n\nDiv\n\n\n\n| Line Block\n|   Spaces and newlines\n|   are preserved\nLine Block\n   Spaces and newlines\n   are preserved\n\n\n\n\nSpecial Characters\n\n\n\n\n\n\n\nMarkdown Syntax\nOutput\n\n\n\n\nendash: --\nendash: –\n\n\nemdash: ---\nemdash: —"
   },
   {
     "href": "docs/authoring/cross-references.html#overview",
@@ -421,49 +427,49 @@
   },
   {
     "href": "docs/authoring/figures-and-layout.html#figure-basics",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Figure Basics",
     "text": "In Pandoc markdown, a figure is created whenever a captioned image appears by-itself in a paragraph. For example:\n![Elephant](elephant.png)\nThis results in the following treatment for various output types:\n\n\n\nHTML\nPDF\nWord\n\n\n\n\n\n\n\n\n\n\nNote that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using Cross References).\n\nLinked Figures\nWhen rendering with Quarto, you can enclose a figure within a link and it will still be treated within output as a captioned figure. For example:\n[![Elephant](elephant.png)](https://en.wikipedia.org/wiki/Elephant)\n\n\nFigure Alignment\nFigures and their captions are center aligned by default. Add the fig.align attribute to the image to use a different alignment. For example:\n![Elephant](elephant.png){fig.align=\"left\"}\n\n\nLaTeX Environments\nThere are a number of LaTeX packages that provide custom figure environments. For example, the mdframed package includes an mdframed environment used to enclose figures in a special border style. By default, Quarto uses the standard figure environment, but you can use the fig.env attribute to specify a custom one. For example:\n---\ntitle: \"Sidenotes\"\nformat:\n  pdf:\n    header-includes: |\n      \\usepackage{sidenotes}\n---\n\n![Elephant](elephant.png){fig.env=\"marginfigure\"}"
   },
   {
     "href": "docs/authoring/figures-and-layout.html#figure-divs",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Figure Divs",
     "text": "You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with #fig-. For example, here we create a figure that includes an embedded iframe:\n::: {#fig-elephant}\n\n<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/SNggmeilXDQ\"></iframe>\n\nElephant\n:::\nNote that the last paragraph in the div block is used as the figure caption."
   },
   {
     "href": "docs/authoring/figures-and-layout.html#subfigures",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Subfigures",
     "text": "If you have several figures that appear as a group, you can create a figure div to enclose them. For example:\n::: {#fig-elephants layout.ncol=2}\n\n![Surus](surus.png){#fig-surus}\n\n![Hanno](hanno.png){#fig-hanno}\n\nFamous Elephants\n:::\nAgain, the last paragraph provides the main caption, and the individual figures carry the sub-captions. Here is what this looks like when rendered as HTML:\n\nNote that we also used a layout.ncol attribute to specify a two-column layout. The next section delves more into customizing figure layouts."
   },
   {
     "href": "docs/authoring/figures-and-layout.html#figure-panels",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Figure Panels",
     "text": "Above we demonstrate laying out two side-by-side figures with subcaptions and a main caption. You may or may not want the caption / sub-caption treatment, and you might also want to use multiple rows of figures. All of these variations are possible.\nTo layout two figures with their own standalone captions (and no main caption), just eliminate the #fig identifiers and main caption at the bottom:\n::: {layout.ncol=2}\n![Surus](surus.png)\n\n![Hanno](hanno.png)\n:::\n\nYou can also eliminate the captions entirely:\n::: {layout.ncol=2}\n![](surus.png)\n\n![](hanno.png)\n:::\n\nMultiple Rows\nIf you have more than 2 images, you might want to lay them out across multiple rows. You can do this using the layout.nrow attribute. For example:\n::: {layout.nrow=2}\n![Surus](surus.png)\n\n![Hanno](hanno.png)\n\n![Abdul Abbas](abdul-abbas.png)\n\n![Lin Wang](lin-wang.png)\n:::\n\nMore complex figure arrangements (e.g. rows with varying column layouts) are possible. See the Complex Layouts section below for more details."
   },
   {
     "href": "docs/authoring/figures-and-layout.html#table-panels",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Table Panels",
     "text": "You can also use a div with layout attributes to display tables side-by-side. For example:\n::: {layout.ncol=2}\n| Col1 | Col2 | Col3 |\n|------|------|------|\n| A    | B    | C    |\n| E    | F    | G    |\n| A    | G    | G    |\n\n: First Table\n\n| Col1 | Col2 | Col3 |\n|------|------|------|\n| A    | B    | C    |\n| E    | F    | G    |\n| A    | G    | G    |\n\n: Second Table\n:::\n\nAs with figures, you can also present tables using numbered subcaptions by adding a main caption and #tbl- identifiers:\n::: {#tbl-panel layout.ncol=2}\n| Col1 | Col2 | Col3 |\n|------|------|------|\n| A    | B    | C    |\n| E    | F    | G    |\n| A    | G    | G    |\n\n: First Table {#tbl-first}\n\n| Col1 | Col2 | Col3 |\n|------|------|------|\n| A    | B    | C    |\n| E    | F    | G    |\n| A    | G    | G    |\n\n: Second Table {#tbl-second}\n\nMain Caption\n:::\n\nSee the article on Cross References for additional details on table captions, subcaptions, and numbering."
   },
   {
     "href": "docs/authoring/figures-and-layout.html#complex-layouts",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Custom Layouts",
     "text": "The examples above used the layout.ncol or layout.nrow attributes to create straightforward layouts where all columns are of equal sizes. The layout attribute enables the creation of much more complex layouts.\nFor example, this defines a layout with two equally sized figures in the first row, then another image that spans the entire second row:\n::: {layout=\"[[1,1], [1]]\"}\n![Surus](surus.png)\n\n![Hanno](hanno.png)\n\n![Lin Wang](lin-wang.png)\n:::\n\nThe layout attribute is a 2-dimensional array where the first dimension defines rows and the second columns. In this case \"layout=\"[[1,1], [1]]\" translates to: create two rows, the first of which has two columns of equal size and the second of which has a single column.\nNote that the numbers in a row are arbitrary and don’t need to add up to a particular total. You can therefore use whatever scheme is most natural. For example, here we define columns that occupy varying percentage widths of the row:\n::: {layout=\"[[70,30], [100]]\"}\n![Surus](surus.png)\n\n![Hanno](hanno.png)\n\n![Lin Wang](lin-wang.png)\n:::\nYou can also use negative values to create space between elements. For example:\n::: {layout=\"[[40,-20,40], [100]]\"}\n![Surus](surus.png)\n\n![Hanno](hanno.png)\n\n![Lin Wang](lin-wang.png)\n:::\n\n\nVertical Alignment\nIf you have a layout with a row of images of differing heights, you can control their vertical alignment using the layout.valign attribute. A simple example:\n::: {layout=\"[25,-2,10]\" layout.valign=\"bottom\"}\n![Surus](surus.png)\n\n![Lin Wang](lin-wang.png)\n:::\n\nNote that vertical alignment isn’t limited to images, you can also vertically align any other elements that are included in a panel."
   },
   {
     "href": "docs/authoring/figures-and-layout.html#computations",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Computations",
     "text": "Figures\nNote that figure layout attributes also work for figures produced by executable code blocks. Here are examples for both Jupyter and Knitr:\nJupyterKnitr\n\n\n```{python} \n#| layout.ncol=2\n\nimport matplotlib.pyplot as plt\nplt.plot([1,23,2,4])\nplt.show()\n\nplt.plot([8,65,23,90])\nplt.show()\n```\n\n\n\n```{r}\n#| layout.ncol=2\n\nplot(cars)\nplot(pressure)\n```\n\n\n\n\n\nTables\nYou can also use layout attributes for tables produced by Knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:\n```{r}\n#|  layout.ncol=2\n\nlibrary(knitr)\nkable(head(cars), caption = \"Cars\")\nkable(head(pressure), caption = \"Pressure\")\n```\n\n\n\nCustom Layout\nThe layout works the same way for figures or tables produced by knitr or Jupyter. For example, here’s an Rmd code chunk that produces 3 plots and defines a custom layout for them:\n```{r}\n#| layout: [[45,-10, 45], [100]]\n\nplot(cars)\nplot(pressure)\nplot(mtcars)\n```"
   },
   {
     "href": "docs/authoring/figures-and-layout.html#block-layout",
-    "title": "Figures and Layout",
+    "title": "Figures & Layout",
     "section": "Block Layout",
     "text": "While the examples above illustrate laying out figures and tables, it’s important to note that layout attributes can be used to layout any sort of block content. For example, here we layout 2 lists side-by-side:\n::: {layout.ncol=2}\n### List One\n\n- Item A\n- Item B\n- Item C\n\n### List Two\n\n- Item X\n- Item Y\n- Item Z\n:::\nNote that headings are automatically combined with the block that follows them, so this markdown has a total of 2 columns to lay out. Here’s an example of a paragraph next to a bullet list (without headings):\n::: {layout.ncol=2}\n- Item X\n- Item Y\n- Item Z\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur gravida eu erat et fring. Morbi congue augue vel eros ullamcorper, eget convallis tortor sagittis. Fusce sodales viverra mauris a fringilla. Donec feugiat, justo eu blandit placerat, enim dui volutpat turpis, eu dictum lectus urna eu urna. Mauris sed massa ornare, interdum ipsum a, semper massa. \n:::"
   },
@@ -789,13 +795,13 @@
     "href": "index.html#introduction",
     "title": "Welcome to Quarto",
     "section": "Introduction",
-    "text": "Quarto is an open-source scientific and technical markdown publishing system built on Pandoc. In addition to the core capabilities of Pandoc, Quarto includes:\n\nSupport for embedding output from Python, R, and Julia via integration with Jupyter and Knitr .\nA variety of extensions to Pandoc markdown useful for technical writing including callouts (admonitions), cross-references, sub-figures, layout panels, hover-able citations and footnotes, and more.\nA project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like books and websites.\nHTML output based on Bootstrap (including support for Bootswatch themes).\nAutomatic installation of required LaTeX packages when rendering PDF output.\n\nThe overall design of Quarto is influenced heavily by R Markdown, however unlike R Markdown the architecture is language agnostic. In it’s current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents.."
+    "text": "Quarto is an open-source scientific and technical publishing system built on Pandoc. Quarto documents are authored using markdown, an easy to write plain text format.\nIn addition to the core capabilities of Pandoc, Quarto includes:\n\nSupport for embedding output from Python, R, and Julia via integration with Jupyter and Knitr .\nA variety of extensions to Pandoc markdown useful for technical writing including callouts (admonitions), cross-references, sub-figures, layout panels, hover-able citations and footnotes, and more.\nA project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like books and websites.\nHTML output based on Bootstrap (including support for Bootswatch themes).\nAutomatic installation of required LaTeX packages when rendering PDF output.\n\nThe overall design of Quarto is influenced heavily by R Markdown, however unlike R Markdown the architecture is language agnostic. In it’s current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents.."
   },
   {
     "href": "index.html#hello-quarto",
     "title": "Welcome to Quarto",
     "section": "Hello, Quarto",
-    "text": "Here’s a simple example of a markdown document that includes a cross-referenced figure generated by Matplotlib:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\ndate: \"May 22nd, 2021\"\nformat: \n  html:\n    code-fold: true\n---\n\n## Polar Axis\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n```{python}`r ''`\n#| label: fig-polar\n#| fig.cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```\nHere’s what the document looks like when rendered by Quarto:\n\nYou can render documents using the quarto command line tool:\n$ quarto render matplotlib-demo.md\nEmbedded code blocks (in this case some Python code that generates a plot) are run by Quarto, and their output is included in the final document generated by Pandoc.\nDon’t worry if all the mechanics of this example aren’t obvious, the main takeaway is that Quarto enables you to enhance Pandoc markdown documents with features useful for scientific and technical communication including executable code, cross-references, and much more.\n\n\n\n\n\n\nWhile this example demonstrates rendering an ordinary markdown file, Quarto can also be used just the same with other input formats like Jupyter Notebooks (.ipynb) and R Markdown documents (.Rmd)."
+    "text": "Here’s a simple example of a markdown document that includes a cross-referenced figure generated by Matplotlib:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\ndate: \"May 22nd, 2021\"\nformat: \n  html:\n    code-fold: true\n---\n\n## Polar Axis\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n```{python}\n#| label: fig-polar\n#| fig.cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```\nHere’s what the document looks like when rendered by Quarto:\n\nYou can render documents using the quarto command line tool:\n$ quarto render matplotlib-demo.md\nEmbedded code blocks (in this case some Python code that generates a plot) are run by Quarto, and their output is included in the final document generated by Pandoc.\nDon’t worry if all the mechanics of this example aren’t obvious, the main takeaway is that Quarto enables you to enhance Pandoc markdown documents with features useful for scientific and technical communication including executable code, cross-references, and much more.\n\n\n\n\n\n\nWhile this example demonstrates rendering an ordinary markdown file, Quarto can also be used just the same with other input formats like Jupyter Notebooks (.ipynb) and R Markdown documents (.Rmd)."
   },
   {
     "href": "index.html#getting-started",
