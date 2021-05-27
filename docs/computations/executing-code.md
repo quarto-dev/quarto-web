@@ -19,48 +19,7 @@ Extensive customization of code chunk output is supported, including the ability
 
 ## Executable Code
 
-Code blocks that use braces around the language name (e.g. ```` ```{python} ````) are executable, and will be run by Quarto during render. Code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
-
-+----------------------------------------+-----------------------------+
-| Code Block Syntax                      | Executable?                 |
-+========================================+:===========================:+
-|     ```{python}                        | Yes                         |
-|     1 + 1                              |                             |
-|     ```                                |                             |
-+----------------------------------------+-----------------------------+
-|     ```python                          | No                          |
-|     1 + 1                              |                             |
-|     ```                                |                             |
-+----------------------------------------+-----------------------------+
-|     ```{.python}                       | No                          |
-|     1 + 1                              |                             |
-|     ```                                |                             |
-+----------------------------------------+-----------------------------+
-
-You can also specify various execution options for code blocks using special comments (`#|`) at the top of the block. For example:
-
-```` {.python}
-```{python}
-#| echo: false
-#| warning: false
-
-1 + 1
-```
-````
-
-In this example we've provided options that prevent the inclusion of both the source code and warnings in the generated output.
-
-You can produce a wide variety of output types from executable code blocks, including:
-
--   Static plots (e.g. from matplotlib or ggplot2).
-
--   Interactive plots (e.g. from plotly or leaflet).
-
--   Tabular output (e.g. from printing R or Pandas data frames)
-
--   Plain text output (e.g. printing the results of statistical summaries).
-
-Below we provide a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).
+Code blocks that use braces around the language name (e.g. ```` ```{python} ````) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).
 
 ### Python (Jupyter)
 
@@ -117,7 +76,37 @@ summary(airquality)
 
 ![](images/knitr-document.png){.border}
 
-Note that we added the `execute: warning: false` option to suppress printing of warnings. See the [Output Options] section below for additional details.
+Note that we added the `execute: warning: false` option to suppress printing of warnings. See the [Execution Options] section below for additional details.
+
+You can produce a wide variety of output types from executable code blocks, including:
+
+-   Static plots (e.g. from matplotlib or ggplot2).
+
+-   Interactive plots (e.g. from plotly or leaflet).
+
+-   Tabular output (e.g. from printing R or Pandas data frames)
+
+-   Plain text output (e.g. printing the results of statistical summaries).
+
+### Non-Executable Blocks
+
+Code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
+
++----------------------------------------+-----------------------------+
+| Code Block Syntax                      | Executable?                 |
++========================================+:===========================:+
+|     ```{python}                        | Yes                         |
+|     1 + 1                              |                             |
+|     ```                                |                             |
++----------------------------------------+-----------------------------+
+|     ```python                          | No                          |
+|     1 + 1                              |                             |
+|     ```                                |                             |
++----------------------------------------+-----------------------------+
+|     ```{.python}                       | No                          |
+|     1 + 1                              |                             |
+|     ```                                |                             |
++----------------------------------------+-----------------------------+
 
 ## Formats and Tools
 
@@ -167,7 +156,7 @@ execute:
 
 Note that we can override this option on a per code-block basis. For example:
 
-```` {.markdown}
+```` {.python}
 ```{python}
 #| echo: true
 
