@@ -1,6 +1,8 @@
 ---
 title: "Cross References"
 format: html
+execute:
+  engine: none
 ---
 
 ## Overview
@@ -23,7 +25,13 @@ Here is what this would look like rendered to HTML:
 
 Quarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from knitr and Jupyter. The inline reference text ("fig. 1" in the above example) can also be customized (e.g. "figure 1" rather than the abbreviation).
 
-Quarto's syntax for cross-references is based on [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (which is in turn based on this discussion: <https://github.com/jgm/pandoc/issues/813>). In addition, Quarto includes support for referencing raw HTML and LaTeX figures and tables, as well as referencing theorems and proofs.
+::: {.callout-note style="padding-bottom: 16px"}
+Quarto's syntax for cross-references is based on [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (which is in turn based on this discussion: [<https://github.com/jgm/pandoc/issues/813>](https://github.com/jgm/pandoc/issues/813){.uri}). There are however several differences (mostly related to handling computational output) to note:
+
+1.  Quarto uses the prefix `#fig-` rather than `#fig:` (which is more compatible with Jupyter notebook [cell ids](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html)).
+2.  Quarto is able to reference raw HTML and LaTeX figures and tables (which are often produced by executable code blocks).
+3.  Quarto has support for referencing theorems and proofs (and related types).
+:::
 
 ## Figures
 
@@ -58,14 +66,18 @@ Here is what this looks like when rendered as HTML:
 
 Note that we also used the `layout.ncol` attribute to specify a two-column layout. See the article on [Figures and Layout](figures-and-layout.html) for more details on laying out panels of figures.
 
-### Jupyter
+### Computations
 
-Figures produced by Jupyter and knitr can also be cross-referenced.
+Figures produced by Jupyter and Knitr can also be cross-referenced. To do this, add a `label` and `fig.cap` option at the top of the code block. For example:
 
-To reference figure output from a Jupyter code cell, add the `label` attribute to provide an identifier, and the `fig.cap` attribute to provide a caption. For example:
+::: {.tabset}
+#### Jupyter
 
 ```` {.python}
-```python label="#fig-plot" fig.cap="Plot"
+```{python}
+#| label: fig-plot
+#| fig.cap: "Plot"
+
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
 plt.show()
@@ -76,10 +88,33 @@ For example, see @fig-plot.
 
 ![](images/crossref-figure-jupyter.png)
 
+#### Knitr
+
+```` {.r}
+```{r}
+#| label: fig-plot
+#| fig.cap: "Plot"
+
+plot(cars)
+```
+
+For example, see @fig-plot.
+````
+
+![](images/crossref-figure-r.png)
+:::
+
 You can also create multiple figures within a Jupyter code cell and reference them as subfigures. To do this use `fig.cap` for the main caption, and `fig.subcap` to provide an array of subcaptions. For example:
 
 ```` {.python}
-```python label="#fig-plots" fig.cap="Plots" fig.subcap=["Plot 1","Plot 2"] layout.ncol=2
+```{python}
+#| label: fig-plots
+#| fig.cap: "Plots" 
+#| fig.subcap:
+#|   - "Plot 1"
+#|   - "Plot 2" 
+#| layout.ncol=2
+
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
 plt.show()
@@ -92,36 +127,6 @@ See @fig-plots for examples. In particular, @fig-plots-2.
 ````
 
 ![](images/crossref-subfigures-jupyter.png)
-
-Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig-plots-1`, `@fig-plots-2`, etc.).
-
-### knitr
-
-To reference figure output from a knitr code chunk, add a `#fig-` chunk label along with the `fig.cap` attribute:
-
-```` {.markdown}
-```{r #fig-plot, fig.cap="Plot"}
-plot(cars)
-```
-
-For example, see @fig-plot.
-````
-
-![](images/crossref-figure-r.png)
-
-You can also create multiple figures within a knitr code chunk and reference them as subfigures. To do this use `fig.cap` for the main caption, and `fig.subcap` to provide a vector of subcaptions. For example:
-
-```` {.markdown}
-```{r #fig-plots, fig.cap="Plots", fig.subcap=c("Plot 1", "Plot 2"), layout.ncol=2}
-plot(cars)
-plot(pressure)
-```
-
-See @fig-plots for examples. In particular, @fig-plots-2.
-```
-````
-
-![](images/crossref-subfigures-r.png)
 
 Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig-plots-1`, `@fig-plots-2`, etc.).
 
@@ -173,12 +178,16 @@ See @tbl-panel for details, especially @tbl-second.
 
 Note that the "Main Caption" for the table is provided as the last block within the containing div.
 
-### Jupyter and knitr
+### Computations
 
-You can also cross-reference tables created from code executed via knitr or Jupyter. To do this, add a `tbl.cap` attribute and include `#tbl-` labels within the captions of the sub-tables. For example:
+You can also cross-reference tables created from code executed via Knitr or Jupyter. To do this, add a `tbl.cap` attribute and include `#tbl-` labels within the captions of the sub-tables. For example:
 
-```` {.markdown}
-```{r #tbl-tables, tbl.cap="Tables", layout.ncol=2}
+```` {.r}
+```{r}
+#| label: tbl-tables
+#| tbl.cap="Tables"
+#| layout.ncol=2
+
 library(knitr)
 kable(head(cars), caption = "Cars {#tbl-cars}")
 kable(head(pressure), caption = "Pressure {#tbl-pressure}")
@@ -227,7 +236,7 @@ number-sections: true
 
 ## Code Listings
 
-To create a referenceable code block, add a `#lst-` identifier along with a `lst.cap` attribute. For example:
+To create a reference-able code block, add a `#lst-` identifier along with a `lst.cap` attribute. For example:
 
 ```` {.markdown}
 ```{#lst-customers .sql lst.cap="Customers Query"}
@@ -239,7 +248,7 @@ Then we query the customers database (@lst-customers).
 
 ## Theorems and Proofs
 
-Theorems are commonly used in articles and books in mathematics. To include a reference-able theorem, create a div with a `#thm:` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via a heading or the `name` attribute. You can include any content you like within the div. For example:
+Theorems are commonly used in articles and books in mathematics. To include a reference-able theorem, create a div with a `#thm-` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via the first heading in the block. You can include any content you like within the div. For example:
 
 ``` {.markdown}
 ::: {#thm-line}
@@ -325,8 +334,6 @@ See @fig-elephant for an illustration.
 ```
 
 ![](images/crossref-chapters.png)
-
-Note that the `crossref: chapters` option does not have any effect of PDF/LaTeX output (since LaTeX implements it's own cross reference numbering scheme).
 
 ## Lists
 

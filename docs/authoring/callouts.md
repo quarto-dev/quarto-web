@@ -74,9 +74,8 @@ This is an example of a 'folded' caution callout that can be expanded by the use
 The following formats render callouts as illustrated above:
 
 - HTML
+- PDF
 - MS Word
 - EPUB
-
-In PDF output the [awesomebox](https://ctan.org/pkg/awesomebox?lang=en) LaTeX package is used for callouts.
 
 In other formats, callouts are placed in a simple blockquote.

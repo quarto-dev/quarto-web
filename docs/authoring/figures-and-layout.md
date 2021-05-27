@@ -1,13 +1,15 @@
 ---
 title: "Figures and Layout"
 format: html
+execute:
+  engine: none
 ---
 
 Quarto includes a number of features aimed at making it easier to work with figures and subfigures, as well as for laying out panels that contain multiple figures, tables, or other content.
 
-In Pandoc markdown, a figure is created whenever a captioned image appears by-itself in a paragraph. For example:
+## Figure Basics
 
-## Pandoc Figures
+In Pandoc markdown, a figure is created whenever a captioned image appears by-itself in a paragraph. For example:
 
 ``` {.markdown}
 ![Elephant](elephant.png)
@@ -15,13 +17,13 @@ In Pandoc markdown, a figure is created whenever a captioned image appears by-it
 
 This results in the following treatment for various output types:
 
-| HTML                        | PDF                              | Word                              |
-|-----------------------------|----------------------------------|-----------------------------------|
+| HTML                        | PDF                        | Word                        |
+|-----------------------------|----------------------------|-----------------------------|
 | ![](images/html-figure.png) | ![](images/pdf-figure.png) | ![](images/word-figure.png) |
 
 Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using [Cross References](cross-references.html)).
 
-## Linked Figures
+### Linked Figures
 
 When rendering with Quarto, you can enclose a figure within a link and it will still be treated within output as a captioned figure. For example:
 
@@ -29,7 +31,7 @@ When rendering with Quarto, you can enclose a figure within a link and it will s
 [![Elephant](elephant.png)](https://en.wikipedia.org/wiki/Elephant)
 ```
 
-## Figure Alignment
+### Figure Alignment
 
 Figures and their captions are center aligned by default. Add the `fig.align` attribute to the image to use a different alignment. For example:
 
@@ -37,7 +39,7 @@ Figures and their captions are center aligned by default. Add the `fig.align` at
 ![Elephant](elephant.png){fig.align="left"}
 ```
 
-## LaTeX Environments
+### LaTeX Environments
 
 There are a number of LaTeX packages that provide custom figure environments. For example, the [mdframed](https://ctan.org/pkg/mdframed?lang=en) package includes an `mdframed` environment used to enclose figures in a special border style. By default, Quarto uses the standard `figure` environment, but you can use the `fig.env` attribute to specify a custom one. For example:
 
@@ -55,10 +57,10 @@ format:
 
 ## Figure Divs
 
-You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with \#`fig:`. For example, here we create a figure that includes an embedded iframe:
+You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with `#fig-`. For example, here we create a figure that includes an embedded iframe:
 
 ``` {.markdown}
-::: {#fig:elephant}
+::: {#fig-elephant}
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/SNggmeilXDQ"></iframe>
 
@@ -73,11 +75,11 @@ Note that the last paragraph in the div block is used as the figure caption.
 If you have several figures that appear as a group, you can create a figure div to enclose them. For example:
 
 ``` {.markdown}
-::: {#fig:elephants layout.ncol=2}
+::: {#fig-elephants layout.ncol=2}
 
-![Surus](surus.png){#fig:surus}
+![Surus](surus.png){#fig-surus}
 
-![Hanno](hanno.png){#fig:hanno}
+![Hanno](hanno.png){#fig-hanno}
 
 Famous Elephants
 :::
@@ -91,7 +93,7 @@ Note that we also used a `layout.ncol` attribute to specify a two-column layout.
 
 ## Figure Panels
 
-Above we demonstrate laying out two side-by-side figures with subcaptions and a main caption. You may or may not want the caption / subcaption treatment, and you might also want to use multiple rows of figures. All of these variations are possible.
+Above we demonstrate laying out two side-by-side figures with subcaptions and a main caption. You may or may not want the caption / sub-caption treatment, and you might also want to use multiple rows of figures. All of these variations are possible.
 
 To layout two figures with their own standalone captions (and no main caption), just eliminate the `#fig` identifiers and main caption at the bottom:
 
@@ -135,34 +137,6 @@ If you have more than 2 images, you might want to lay them out across multiple r
 
 More complex figure arrangements (e.g. rows with varying column layouts) are possible. See the [Complex Layouts](#complex-layouts) section below for more details.
 
-## Jupyter and knitr Figures
-
-Note that figure layout attributes also work for figures produced by knitr or Jupyter. For example, to show two plots emitted from a Jupyter code cell side-by-side you would do the following:
-
-```` {.python}
-```python layout.ncol=2
-import matplotlib.pyplot as plt
-plt.plot([1,23,2,4])
-plt.show()
-
-plt.plot([8,65,23,90])
-plt.show()
-```
-````
-
-![](images/jupyter-figure-layout.png)
-
-To show two plots emitted from a knitr code chunk side-by-side:
-
-```` {.r}
-```{r, layout.ncol=2}
-plot(cars)
-plot(pressure)
-```
-````
-
-![](images/knitr-figure-layout.png)
-
 ## Table Panels
 
 You can also use a div with layout attributes to display tables side-by-side. For example:
@@ -189,17 +163,17 @@ You can also use a div with layout attributes to display tables side-by-side. Fo
 
 ![](images/table-layout-basic.png)
 
-As with figures, you can also present tables using numbered subcaptions by adding a main caption and `#tbl:` identifiers:
+As with figures, you can also present tables using numbered subcaptions by adding a main caption and `#tbl-` identifiers:
 
 ``` {.markdown}
-::: {#tbl:panel layout.ncol=2}
+::: {#tbl-panel layout.ncol=2}
 | Col1 | Col2 | Col3 |
 |------|------|------|
 | A    | B    | C    |
 | E    | F    | G    |
 | A    | G    | G    |
 
-: First Table {#tbl:first}
+: First Table {#tbl-first}
 
 | Col1 | Col2 | Col3 |
 |------|------|------|
@@ -207,7 +181,7 @@ As with figures, you can also present tables using numbered subcaptions by addin
 | E    | F    | G    |
 | A    | G    | G    |
 
-: Second Table {#tbl:second}
+: Second Table {#tbl-second}
 
 Main Caption
 :::
@@ -217,21 +191,7 @@ Main Caption
 
 See the article on [Cross References](cross-references.html) for additional details on table captions, subcaptions, and numbering.
 
-## Jupyter and knitr Tables
-
-You can also use layout attributes for tables produced by knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:
-
-```` {.r}
-```{r, layout.ncol=2}
-library(knitr)
-kable(head(cars), caption = "Cars")
-kable(head(pressure), caption = "Pressure")
-```
-````
-
-![](images/knitr-table-layout.png)
-
-## Complex Layouts {#complex-layouts}
+## Custom Layouts {#complex-layouts}
 
 The examples above used the `layout.ncol` or `layout.nrow` attributes to create straightforward layouts where all columns are of equal sizes. The `layout` attribute enables the creation of much more complex layouts.
 
@@ -293,12 +253,68 @@ If you have a layout with a row of images of differing heights, you can control 
 
 Note that vertical alignment isn't limited to images, you can also vertically align any other elements that are included in a panel.
 
-## Jupyter and knitr Layout
+## Computations
+
+### Figures
+
+Note that figure layout attributes also work for figures produced by executable code blocks. Here are examples for both Jupyter and Knitr:
+
+::: {.tabset}
+#### Jupyter
+
+```` {.python}
+```{python} 
+#| layout.ncol=2
+
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+
+plt.plot([8,65,23,90])
+plt.show()
+```
+````
+
+![](images/jupyter-figure-layout.png)
+
+#### Knitr
+
+```` {.r}
+```{r}
+#| layout.ncol=2
+
+plot(cars)
+plot(pressure)
+```
+````
+
+![](images/knitr-figure-layout.png)
+:::
+
+### Tables
+
+You can also use layout attributes for tables produced by Knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:
+
+```` {.r}
+```{r}
+#|  layout.ncol=2
+
+library(knitr)
+kable(head(cars), caption = "Cars")
+kable(head(pressure), caption = "Pressure")
+```
+````
+
+![](images/knitr-table-layout.png)
+
+### Custom Layout
 
 The `layout` works the same way for figures or tables produced by knitr or Jupyter. For example, here's an Rmd code chunk that produces 3 plots and defines a custom layout for them:
 
 ```` {.r}
-```{r, layout=list(c(45,-10, 45), c(100))}
+```{r}
+#| layout: [[45,-10, 45], [100]]
+
 plot(cars)
 plot(pressure)
 plot(mtcars)
@@ -306,8 +322,6 @@ plot(mtcars)
 ````
 
 ![](images/knitr-layout-complex.png)
-
-Note that for Rmd code chunks, you use a list of numeric vectors (each of which represents a row). For Jupyter Markdown however you use the same array of arrays syntax (e.g `layout="[[40,-20,40], [100]]"`) as is used for plain markdown.
 
 ## Block Layout
 
@@ -337,9 +351,6 @@ Note that headings are automatically combined with the block that follows them, 
 - Item Y
 - Item Z
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur gravida eu erat et fring.
-Morbi congue augue vel eros ullamcorper, eget convallis tortor sagittis. Fusce sodales viverra
-mauris a fringilla. Donec feugiat, justo eu blandit placerat, enim dui volutpat turpis, eu
-dictum lectus urna eu urna. Mauris sed massa ornare, interdum ipsum a, semper massa. 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur gravida eu erat et fring. Morbi congue augue vel eros ullamcorper, eget convallis tortor sagittis. Fusce sodales viverra mauris a fringilla. Donec feugiat, justo eu blandit placerat, enim dui volutpat turpis, eu dictum lectus urna eu urna. Mauris sed massa ornare, interdum ipsum a, semper massa. 
 :::
 ```
