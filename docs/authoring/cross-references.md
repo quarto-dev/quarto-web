@@ -26,7 +26,7 @@ Here is what this would look like rendered to HTML:
 Quarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from knitr and Jupyter. The inline reference text ("fig. 1" in the above example) can also be customized (e.g. "figure 1" rather than the abbreviation).
 
 ::: {.callout-note style="padding-bottom: 16px"}
-Quarto's syntax for cross-references is based on [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (which is in turn based on this discussion: [<https://github.com/jgm/pandoc/issues/813>](https://github.com/jgm/pandoc/issues/813){.uri}). There are however several differences (mostly related to handling computational output) to note:
+Quarto's syntax for cross-references is based on [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (which is in turn based on this discussion: <https://github.com/jgm/pandoc/issues/813>). There are however several differences (mostly related to handling computational output) to note:
 
 1.  Quarto uses the prefix `#fig-` rather than `#fig:` (which is more compatible with Jupyter notebook [cell ids](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html)).
 2.  Quarto is able to reference raw HTML and LaTeX figures and tables (which are often produced by executable code blocks).

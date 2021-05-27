@@ -8,7 +8,9 @@ execute:
 
 ## Introduction
 
-Quarto is an open-source scientific and technical markdown publishing system built on [Pandoc](https://pandoc.org). In addition to the core capabilities of Pandoc, Quarto includes:
+Quarto is an open-source scientific and technical publishing system built on [Pandoc](https://pandoc.org). Quarto documents are authored using [markdown](https://en.wikipedia.org/wiki/Markdown), an easy to write plain text format.
+
+In addition to the core capabilities of Pandoc, Quarto includes:
 
 1.  Support for embedding output from Python, R, and Julia via integration with [Jupyter](https://jupyter.org/) and [Knitr](https://yihui.org/knitr/) .
 
@@ -40,7 +42,7 @@ format:
 
 For a demonstration of a line plot on a polar axis, see @fig-polar.
 
-```{python}`r ''`
+```{python}
 #| label: fig-polar
 #| fig.cap: "A line plot on a polar axis"
 
