@@ -1,7 +1,7 @@
 ---
 title: Footnotes & Citations
 format: html
-suppress-bibliography: true
+link-citations: true
 ---
 
 ## Citations
@@ -14,21 +14,20 @@ Quarto will use Pandoc to automatically generate citations and a bibliography in
 
 -   Optionally, a `CSL` file which specifies the formatting to use when generating the citations and bibliography.
 
-### Bibliographies
+### Bibliography Files
 
-Quarto supports bibliographies in a wide variety of formats including BibTeX and CSL. Add a bibliography to your document using the `bibliography` YAML metadata field. For example:
+Quarto supports bibliography files in a wide variety of formats including BibTeX and CSL. Add a bibliography to your document using the `bibliography` YAML metadata field. For example:
 
 ``` {.yaml}
 ---
 title: "My Document"
 bibliography: references.bib
-link-citations: true
 ---
 ```
 
+::: {.callout-tip}
 You can provide more than one bibliography file if you would like by setting the `bibliography` field's value to a YAML array.
-
-Note that we've also specified the `link-citations` option, which will make your citations hyperlinks to the corresponding bibliography entries.
+:::
 
 See the [Pandoc Citations](https://pandoc.org/MANUAL.html#citations) documentation for additional information on bibliography formats.
 
@@ -73,3 +72,27 @@ csl: nature.csl
 ```
 
 You can find CSL files or learn more about using styles at the [CSL Project](https://github.com/citation-style-language/styles). You can browse the list of more than 8,500 Creative Commons CSL definitions in the CSL Project's [central repository](https://github.com/citation-style-language/styles) or Zotero's [style repository](https://www.zotero.org/styles).
+
+### Bibliography Generation
+
+Pandoc will automatically generate a list of works cited and place it in the document if the style calls for it. It will be placed in a div with the id `refs` if one exists:
+
+``` {.markdown}
+### References
+
+::: {#refs}
+:::
+```
+
+If no such div is found, the works cited list will be placed at the end of the document.
+
+::: {.callout-tip}
+You can suppress generation of a bibliography by including `suppress-bibliography: true` option in your document metadata
+:::
+
+An example of such a generated list of works cited for this page and the example citations above can be viewed below:
+
+> ::: {#refs}
+> :::
+
+## Footnotes
