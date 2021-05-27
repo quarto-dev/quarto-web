@@ -90,7 +90,7 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 ### Non-Executable Blocks
 
-Code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
+Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
 +----------------------------------------+-----------------------------+
 | Code Block Syntax                      | Executable?                 |
@@ -107,6 +107,8 @@ Code blocks that use convential markdown code block syntax (either ```` ```pytho
 |     1 + 1                              |                             |
 |     ```                                |                             |
 +----------------------------------------+-----------------------------+
+
+Non-executable code blocks are printed but not executed.
 
 ## Formats and Tools
 
