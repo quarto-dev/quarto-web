@@ -63,7 +63,7 @@ If you prefer TeX Live, you can find instructions for installing it here: <https
 
 ## Development Version
 
-To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-window.cmd`). For example:
+To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-windows.cmd`). For example:
 
 ``` {.bash}
 $ git clone https://github.com/quarto-dev/quarto-cli
