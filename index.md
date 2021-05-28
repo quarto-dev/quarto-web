@@ -2,8 +2,6 @@
 title: Welcome to Quarto
 subtitle: A scientific and technical publishing system built on Pandoc
 format: html
-execute:
-  engine: none
 ---
 
 ## Introduction
@@ -16,7 +14,7 @@ In addition to the core capabilities of Pandoc, Quarto includes:
 
 2.  A variety of extensions to Pandoc markdown useful for technical writing including callouts (admonitions), cross-references, sub-figures, layout panels, hover-able citations and footnotes, and more.
 
-3.  A project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like [books](book-basics.md) and [websites](websites/website-basics.md).
+3.  A project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like [books](docs/books/book-basics.md) and [websites](docs/websites/website-basics.md).
 
 4.  HTML output based on [Bootstrap](https://getbootstrap.com/) (including support for [Bootswatch](https://bootswatch.com/) themes).
 

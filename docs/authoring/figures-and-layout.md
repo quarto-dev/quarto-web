@@ -1,8 +1,6 @@
 ---
 title: "Figures & Layout"
 format: html
-execute:
-  engine: none
 ---
 
 Quarto includes a number of features aimed at making it easier to work with figures and subfigures, as well as for laying out panels that contain multiple figures, tables, or other content.

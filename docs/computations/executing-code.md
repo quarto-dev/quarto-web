@@ -1,8 +1,6 @@
 ---
 title: Executing Code
 format: html
-execute:
-  engine: none
 ---
 
 ## Overview
