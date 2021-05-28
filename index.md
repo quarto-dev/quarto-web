@@ -34,6 +34,7 @@ date: "May 22nd, 2021"
 format: 
   html:
     code-fold: true
+jupyter: python3
 ---
 
 ## Polar Axis
