@@ -264,7 +264,7 @@ Note that figure layout attributes also work for figures produced by executable 
 
 ```` {.python}
 ```{python} 
-#| layout.ncol=2
+#| layout.ncol: 2
 
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
@@ -281,7 +281,7 @@ plt.show()
 
 ```` {.r}
 ```{r}
-#| layout.ncol=2
+#| layout.ncol: 2
 
 plot(cars)
 plot(pressure)
@@ -297,7 +297,7 @@ You can also use layout attributes for tables produced by Knitr or Jupyter. For 
 
 ```` {.r}
 ```{r}
-#|  layout.ncol=2
+#|  layout.ncol: 2
 
 library(knitr)
 kable(head(cars), caption = "Cars")
