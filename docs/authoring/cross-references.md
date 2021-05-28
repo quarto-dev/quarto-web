@@ -90,7 +90,7 @@ For example, see @fig-plot.
 
 #### Knitr
 
-```` {.r}
+```` {.python}
 ```{r}
 #| label: fig-plot
 #| fig.cap: "Plot"
@@ -113,7 +113,7 @@ You can also create multiple figures within a Jupyter code cell and reference th
 #| fig.subcap:
 #|   - "Plot 1"
 #|   - "Plot 2" 
-#| layout.ncol=2
+#| layout.ncol: 2
 
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
@@ -182,11 +182,11 @@ Note that the "Main Caption" for the table is provided as the last block within 
 
 You can also cross-reference tables created from code executed via Knitr or Jupyter. To do this, add a `tbl.cap` attribute and include `#tbl-` labels within the captions of the sub-tables. For example:
 
-```` {.r}
+```` {.python}
 ```{r}
 #| label: tbl-tables
-#| tbl.cap="Tables"
-#| layout.ncol=2
+#| tbl.cap: "Tables"
+#| layout.ncol: 2
 
 library(knitr)
 kable(head(cars), caption = "Cars {#tbl-cars}")

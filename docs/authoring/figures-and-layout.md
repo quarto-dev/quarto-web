@@ -279,7 +279,7 @@ plt.show()
 
 #### Knitr
 
-```` {.r}
+```` {.python}
 ```{r}
 #| layout.ncol: 2
 
@@ -295,9 +295,9 @@ plot(pressure)
 
 You can also use layout attributes for tables produced by Knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:
 
-```` {.r}
+```` {.python}
 ```{r}
-#|  layout.ncol: 2
+#| layout.ncol: 2
 
 library(knitr)
 kable(head(cars), caption = "Cars")
@@ -311,7 +311,7 @@ kable(head(pressure), caption = "Pressure")
 
 The `layout` works the same way for figures or tables produced by knitr or Jupyter. For example, here's an Rmd code chunk that produces 3 plots and defines a custom layout for them:
 
-```` {.r}
+```` {.python}
 ```{r}
 #| layout: [[45,-10, 45], [100]]
 
