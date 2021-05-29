@@ -45,7 +45,7 @@ Here's the underlying code for the markdown cell:
 
 Note that a Quarto cross-reference (`@fig-polar`) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells.
 
-## Cell Output Options
+## Output Options
 
 Quarto uses leading comments with a special prefix (`#|`) to denote cell options. Here we specify the `label` and `fig.cap` options so that the plot generated from the cell can be cross-referenced.
 
@@ -55,9 +55,9 @@ Note that options must appear at the very beginning of the cell. As with documen
 
 There are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on [Output Outputs](../computations/executing-code.md) for additional details.
 
-## Rendering Options
+## Cell Execution
 
-By default, all code cells are re-run in order by Quarto during rendering. You may however prefer to only execute cells in the notebook, and have Quarto just render the notebook without any execution. Specify the `execute: false` option in YAML front matter to prevent execution:
+By default, all code cells are re-run in order by Quarto during rendering. You may however prefer to only execute cells from within JupyterLab, and have Quarto render the notebook without any execution. Specify the `execute: false` option in YAML front matter to prevent execution:
 
 ![](images/jupyter-lab-no-execute.png)
 
@@ -67,6 +67,65 @@ You can also specify this on the command line as follows:
 $ quarto render basics-jupyter.ipynb --no-execute
 ```
 
-There are many other execution options available (e.g. to control caching, optimizing kernel startup time, etc.). Learn more about these options in [Execution Options](executing-code.md#execution-options).
+There are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in [Execution Options](executing-code.md#execution-options).
 
-## Plain Text Notebooks
+## Plain Text Editing
+
+It's also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.
+
+To make a code block executable in a markdown notebook, just add braces around the name of the language. For example:
+
+```` {.python}
+```{python}
+1 + 1
+```
+````
+
+Here is the plain text markdown version of the notebook used in the previous examples:
+
+```` {.python}
+---
+title: "Matplotlib Demo"
+author: "Norah Smith"
+date: "May 22nd, 2021"
+format: 
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+## Polar Axis
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
+```{python}
+#| label: fig-polar
+#| fig.cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
+Note that we've added the `jupyter: python3` option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:
+
+``` {.bash}
+$ quarto render basics-jupyter.md
+```
+
+You can convert between .ipynb and .md representations of a notebook using the `quarto convert` command. For example:
+
+``` {.bash}
+$ quarto convert basics-jupyter.ipynb --to markdown
+$ quarto convert basics-jupyter.md --to notebook
+```
+
+See `quarto convert help` for additional details on converting notebooks.
