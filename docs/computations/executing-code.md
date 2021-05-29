@@ -91,21 +91,21 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+----------------------------------------+-----------------------------+
-| Code Block Syntax                      | Executable?                 |
-+========================================+:===========================:+
-|     ```{python}                        | Yes                         |
-|     1 + 1                              |                             |
-|     ```                                |                             |
-+----------------------------------------+-----------------------------+
-|     ```python                          | No                          |
-|     1 + 1                              |                             |
-|     ```                                |                             |
-+----------------------------------------+-----------------------------+
-|     ```{.python}                       | No                          |
-|     1 + 1                              |                             |
-|     ```                                |                             |
-+----------------------------------------+-----------------------------+
++-------------------+-------------+
+| Code Block Syntax | Executable? |
++===================+:===========:+
+|     ```{python}   | Yes         |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```python     | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```{.python}  | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
 
 Non-executable code blocks are printed but not executed.
 
@@ -170,21 +170,14 @@ Code block options are included in a special comment at the top of the block (li
 
 Options available for customizing output include:
 
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | Option    | Description                                                                                                                                  |
-+===========+==============================================================================================================================================+
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                   |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `echo`    | Include the source code in output                                                                                                            |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `output`  | Include the results of executing the code in the output                                                                                      |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `warning` | Include warnings in the output.                                                                                                              |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                   |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block). |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here's a Knitr example with some of these additional options included:
 
@@ -281,13 +274,10 @@ $ quarto render document.ipynb --execute-daemon-restart
 
 On the way from markdown input to final output, there are some intermediate files that are created and automatically deleted at the end of rendering. You can use the following options to keep these intermediate files:
 
-+--------------+------------------------------------------------------------------------------------------------+
 | Option       | Description                                                                                    |
-+==============+================================================================================================+
+|--------------|------------------------------------------------------------------------------------------------|
 | `keep-md`    | Keep the markdown file generated by executing code.                                            |
-+--------------+------------------------------------------------------------------------------------------------+
 | `keep-ipynb` | Keep the notebook file generated from executing code (applicable only to markdown input files) |
-+--------------+------------------------------------------------------------------------------------------------+
 
 For example, here we specify that we want to keep both the markdown intermediate file after rendering:
 
