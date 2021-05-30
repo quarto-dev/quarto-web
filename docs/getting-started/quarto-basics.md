@@ -136,6 +136,6 @@ Note that you can share format options across a set of documents using [Quarto P
 
 The [Authoring](../authoring/document-options.md) section describes the capabilities of Pandoc markdown, as well as Quarto extensions for [Cross References](../authoring/cross-references.md), [Figures and Layout](../authoring/figures-and-layout.md), and [Callout Blocks](../authoring/callouts.md).
 
-The output formats section provides additional details on creating [HTML](../output-formats/html-basics.md), [PDF](../output-formats/pdf-basics.md), and [MS Word](../output-formats/ms-word.md) documents, as well as describes a few special output types including [Presentations](../output-formats/presentations.md), [EPUBs](../output-formats/epub.md), and pages in [Hugo](../output-formats/hugo.md) static sites.
+The output formats section provides additional details on creating [HTML](../output-formats/html-basics.Rmd), [PDF](../output-formats/pdf-basics.md), and [MS Word](../output-formats/ms-word.md) documents, as well as describes a few special output types including [Presentations](../output-formats/presentations.md), [EPUBs](../output-formats/epub.md), and pages in [Hugo](../output-formats/hugo.md) static sites.
 
 [Creating a Website](../websites/website-basics.md) and [Creating a Book](../books/book-basics.md) describe some special Quarto project types.

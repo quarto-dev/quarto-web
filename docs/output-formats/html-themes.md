@@ -1,5 +1,5 @@
 ---
-title: "Theming System"
+title: "HTML Themes"
 format: html
 ---
 

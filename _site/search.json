@@ -630,6 +630,12 @@
     "text": "To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (configure-linux.sh, configure-macos.sh, or configure-windows.cmd). For example:\n$ git clone https://github.com/quarto-dev/quarto-cli\n$ cd quarto-cli\n$ ./configure-macos.sh\nTo update to the latest development version, just git pull from the local repo directory:\n$ cd quarto-cli\n$ git pull"
   },
   {
+    "href": "docs/output-formats/html-bootstrap.html#overview",
+    "title": "HTML w/ Bootstrap",
+    "section": "Overview",
+    "text": "There are a number of additional HTML output features that are available when you are using a Bootstrap based theme, including:\n\nFloating TOC\nTabsets\nAdditional code block options\nResponsive figures\n\n\n\n\n\n\n\nNote that the html format uses a Bootstrap theme by default, so you don’t need to do anything special to enable these features. If however you specify theme: none or theme: pandoc they will not be available."
+  },
+  {
     "href": "docs/output-formats/html-bootstrap.html#floating-toc",
     "title": "HTML w/ Bootstrap",
     "section": "Floating TOC",
@@ -639,7 +645,7 @@
     "href": "docs/output-formats/html-bootstrap.html#tabsets",
     "title": "HTML w/ Bootstrap",
     "section": "Tabsets",
-    "text": "Example\nTabsets as such:\nRPythonJavaJulia\n\n\nfizz_buzz <- function(num_array=seq_len(100L)) {\n  result_array <- Map(function(r,n){cat(paste0(ifelse(r=='',n,r),'\\n'))},\n                      r=paste0(ifelse(num_array%%3L,'','Fizz'),\n                                 ifelse(num_array%%5L,'','Buzz')),\n                      n=num_array)\n}\n\n\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n\n\npublic class FizzBuzz\n{\n  public static void fizzBuzz(int num)\n  {\n    if (num % 15 == 0) {\n      System.out.println(\"FizzBuzz\");\n    } else if (num % 5 == 0) {\n      System.out.println(\"Buzz\");\n    } else if (num % 3 == 0) {\n      System.out.println(\"Fizz\");\n    } else {\n      System.out.println(num);\n    }\n  }\n}\n\n\nfunction FizzBuzz(num)\n  if num % 15 == 0\n    println(\"FizzBuzz\")\n  elseif num % 5 == 0\n    println(\"Buzz\")\n  elseif num % 3 == 0\n    println(\"Fizz\")\n  else\n    println(num)\n  end\nend\n\n\n\n\nMarkdown\nThe example is implemented using markdown like:\n::: {.tabset}\n## R\n\n``` {.r}\nfizz_buzz <- function(num_array=seq_len(100L)) {\n  result_array <- Map(function(r,n){cat(paste0(ifelse(r=='',n,r),'\\n'))},\n                      r=paste0(ifelse(num_array%%3L,'','Fizz'),\n                                 ifelse(num_array%%5L,'','Buzz')),\n                      n=num_array)\n}\n```\n\n## Python\n\n``` {.python}\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n```\n\n:::"
+    "text": "You can use tabsets to present content that will vary in interest depending on the audience. For example, here we provide some example code in a variety of languages:\nRPythonJavaJulia\n\n\nfizz_buzz <- function(fbnums = 1:50) {\n  output <- dplyr::case_when(\n    fbnums %% 15 == 0 ~ \"FizzBuzz\",\n    fbnums %% 3 == 0 ~ \"Fizz\",\n    fbnums %% 5 == 0 ~ \"Buzz\",\n    TRUE ~ as.character(fbnums)\n  )\n  print(output)\n}\n\n\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n\n\npublic class FizzBuzz\n{\n  public static void fizzBuzz(int num)\n  {\n    if (num % 15 == 0) {\n      System.out.println(\"FizzBuzz\");\n    } else if (num % 5 == 0) {\n      System.out.println(\"Buzz\");\n    } else if (num % 3 == 0) {\n      System.out.println(\"Fizz\");\n    } else {\n      System.out.println(num);\n    }\n  }\n}\n\n\nfunction FizzBuzz(num)\n  if num % 15 == 0\n    println(\"FizzBuzz\")\n  elseif num % 5 == 0\n    println(\"Buzz\")\n  elseif num % 3 == 0\n    println(\"Fizz\")\n  else\n    println(num)\n  end\nend\n\n\nCreate a tabset via a markdown div with the class name tabset (e.g. ::: {.tabset}). Each top-level heading within the div creates a new tab. For example, here is the markdown used to implement the first two tabs displayed above:\n::: {.tabset}\n## R\n\n``` {.r}\nfizz_buzz <- function(fbnums = 1:50) {\n  output <- dplyr::case_when(\n    fbnums %% 15 == 0 ~ \"FizzBuzz\",\n    fbnums %% 3 == 0 ~ \"Fizz\",\n    fbnums %% 5 == 0 ~ \"Buzz\",\n    TRUE ~ as.character(fbnums)\n  )\n  print(output)\n}\n```\n\n## Python\n\n``` {.python}\ndef fizz_buzz(num):\n  if num % 15 == 0:\n    print(\"FizzBuzz\")\n  elif num % 5 == 0:\n    print(\"Buzz\")\n  elif num % 3 == 0:\n    print(\"Fizz\")\n  else:\n    print(num)\n```\n\n:::"
   },
   {
     "href": "docs/output-formats/html-bootstrap.html#code-blocks",
@@ -651,7 +657,7 @@
     "href": "docs/output-formats/html-bootstrap.html#responsive-figures",
     "title": "HTML w/ Bootstrap",
     "section": "Responsive Figures",
-    "text": "If an image does not include an explicitly set height, it will automatically become responsive. Try resizing the browser and note how the image below grows and shrinks.\n\n\n\n\n\nUnder Pressure"
+    "text": "If an image does not include an explicitly set height, it will automatically become responsive. Try resizing the browser and note how the image below grows and shrinks."
   },
   {
     "href": "docs/output-formats/more-formats.html#overview",
@@ -696,64 +702,82 @@
     "text": "To disable Quarto’s built in PDF engine, set the latex-auto-mk option to false:\ntitle: \"My Document\"\nlatex-auto-mk: false\nThe above configuration will result in Pandoc’s default behavior for PDF compilation (pdf-engine: pdflatex ). You can then use the pdf-engine and pdf-engine-opts to further customize Pandoc compilation. For example:\ntitle: \"My Document\"\nlatex-auto-mk: false\npdf-engine: xelatex\npdf-engine-opt: -outdir=out"
   },
   {
-    "href": "docs/output-formats/html-extensions.html#overview",
-    "title": "HTML Extensions",
-    "section": "Overview",
-    "text": "Quarto adds several features on top of standard pandoc markdown for the html format:\n\nHover for section anchor links\nHover to view citations and footnotes\nCode folding via <details>\nCopy button for code blocks\nCommenting via Hypothesis or Utterances\n\nNote that these features all work irrespective of whether a Bootstrap or other theme is applied."
-  },
-  {
-    "href": "docs/output-formats/html-extensions.html#anchor-sections",
-    "title": "HTML Extensions",
-    "section": "Anchor Sections",
-    "text": "Hover over a section title to see an anchor link. Enable/disable this behavior with:\nanchor-sections: true"
-  },
-  {
-    "href": "docs/output-formats/html-extensions.html#reference-hover",
-    "title": "HTML Extensions",
-    "section": "Reference Hover",
-    "text": "Hover over Xie (2015) to see a reference to the definitive book on knitr1.\nControl this behavior with the following options:\nhover-citations: true\nhover-footnotes: true"
-  },
-  {
-    "href": "docs/output-formats/html-extensions.html#code-blocks",
-    "title": "HTML Extensions",
-    "section": "Code Blocks",
-    "text": "Folding\nClick the Code button to see the code that produced this plot.\n\n\nCode\nlibrary(ggplot2)\ndat <- data.frame(cond = rep(c(\"A\", \"B\"), each=10),\n                  xvar = 1:20 + rnorm(20,sd=3),\n                  yvar = 1:20 + rnorm(20,sd=3))\n\nggplot(dat, aes(x=xvar, y=yvar)) +\n    geom_point(shape=1) + \n    geom_smooth() \n\n\n\n\n\nCode folding can be set globally or on a per-chunk basis (chunks can be set to display folded or unfolded by default). For example:\ncode-fold: false # no folding (default)\ncode-fold: true  # fold code (initially hidden)\ncode-fold: show  # fold code (initially shown)\nYou can customize the summary text via:\ncode-summary: \"Show the code\"\nUse the fold and summary chunk attributes to control this on a chunk-by-chunk basis.\n\n\nCopy Button\nHover over the code block below and you will see a copy icon in the top-right corner:\n\nlibrary(dygraphs)\ndygraph(nhtemp, main = \"New Haven Temperatures\") %>% \n  dyRangeSelector(dateWindow = c(\"1920-01-01\", \"1960-01-01\"))\n\nThis behavior is enabled by default but you configure it using the code-copy option:\ncode-copy: hover # show button on hover (default)\ncode-copy: true  # always show hover button\ncode-copy: false # never show hover button\n\n\nLinking\nThe code-link option enables hyper-linking of functions within code blocks to their online documentation:\ncode-link: true\nCode linking is currently implemented only for the knitr engine (via the downlit package)."
-  },
-  {
-    "href": "docs/output-formats/html-extensions.html#commenting",
-    "title": "HTML Extensions",
-    "section": "Commenting",
-    "text": "This page has commenting with Hypothes.is enabled via the following YAML option:\ncomments:\n  hypothesis: true\nYou can see the Hypothesis UI at the far right of the page. Rather than true, you can specify any of the available Hypothesis embedding options as a sub-key of hypothesis. For example:\ncomments:\n  hypothesis: \n    theme: clean\nYou can enable Utterances commenting using the utterances option. Here you need to specify at least the Git repo you want to use for storing comments:\ncomments:\n  utterances:\n    repo: quarto-dev/quarto-docs\nYou can also specify the other options documented here."
-  },
-  {
-    "href": "docs/output-formats/html-extensions.html#references",
-    "title": "HTML Extensions",
-    "section": "References",
-    "text": "Xie, Yihui. 2015. Dynamic Documents with R and Knitr. 2nd ed. Boca Raton, Florida: Chapman; Hall/CRC. https://yihui.name/knitr/."
-  },
-  {
     "href": "docs/output-formats/html-themes.html#overview",
-    "title": "Theming System",
+    "title": "HTML Themes",
     "section": "Overview",
     "text": "HTML documents rendered with Quarto use Bootstrap 5 by default. This can be disabled or customized via the theme option:\ntheme: default # bootstrap 5 default\ntheme: cosmo   # cosmo bootswatch theme\ntheme: pandoc  # pandoc default html treatment\ntheme: none    # no css added to document\nNote that all of the features described in HTML Basics (e.g. code folding, citation hover, commenting, etc.) are still available with theme: pandoc or theme: none. However the features described in HTML Bootstrap (e.g. floating toc, callouts, tabs) are only available for documents with Bootstrap.\nQuarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). Below we describe how to use SASS to create your own themes."
   },
   {
     "href": "docs/output-formats/html-themes.html#basic-options",
-    "title": "Theming System",
+    "title": "HTML Themes",
     "section": "Basic Options",
     "text": "Pandoc supports a set of basic metadata options for customizing document appearance without directly using CSS. These options are available for both the pandoc theme as well as for all Bootstrap themes.\nIf you are using a Bootstrap theme or the Pandoc theme, there are a set of options you can provide in document metadata to customize it’s appearance. These include:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\nmax-width\nThe maximum width occupied by page content. Defaults to 1400px for bootstrap themes and 36em for the pandoc theme.\n\n\nmainfont\nSets the font-family property for the document.\n\n\nfontsize\nSets the base CSS font-size for the document.\n\n\nfontcolor\nSets the default text color for the document.\n\n\nlinkcolor\nSets the default text color for hyperlinks.\n\n\nmonofont\nSets the font-family property for <code> elements.\n\n\nmonobackgroundcolor\nSets the background-color property for <code> elements.\n\n\nlinestretch\nSets the CSS line-height property (affects distance between lines of text, defaults to 1.5).\n\n\nbackgroundcolor\nSets the background-color for the document.\n\n\nmargin-left, margin-right, margin-top, margin-bottom\nSets the CSS margin properties for the document body.\n\n\n\nFor example. here we set the font-size a bit larger and specify that we want a bit more space between lines of text:\ntitle: \"My Document\"\nformat:\n  html: \n    theme: cosmo\n    font-size: 1.1em\n    linestretch: 1.7"
   },
   {
     "href": "docs/output-formats/html-themes.html#theme-options",
-    "title": "Theming System",
+    "title": "HTML Themes",
     "section": "Theme Options",
     "text": "While the basic customization described above handles many common requirements, you can do extensive additional customization using SASS theme files. Bootstrap defines over 1,400 variables that control fonts, colors, padding, borders, and much more. You can see all of the variables here:\nhttps://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_variables.scss\nSASS theme files can define both variables that globally set things like colors and fonts, as well as rules that define more fine grained behavior. To customize an existing Bootstrap theme with your own set of variables and/or rules, just provide the base theme and then your custom theme file(s):\ntheme:\n  - cosmo\n  - custom.scss\nYour custom.scss file might look something like this:\n/*-- scss:defaults --*/\n$h2-font-size:          1.6rem !default;\n$headings-font-weight:  500 !default;\n$body-color:            $gray-700 !default;\n\n/*-- scss:rules --*/\nh1, h2, h3, h4, h5, h6 {\n  text-shadow: -1px -1px 0 rgba(0, 0, 0, .3);\n}\nNote that the variables section is denoted by the /*-- scss:defaults --*/ comment and the rules section (where normal CSS rules go) is denoted by the /*-- scss:rules --*/ comment."
   },
   {
     "href": "docs/output-formats/html-themes.html#custom-themes",
-    "title": "Theming System",
+    "title": "HTML Themes",
     "section": "Custom Themes",
     "text": "You can naturally also create an entirely custom theme and provide only that (in this case you will inherit from the default Bootstrap theme):\ntheme: custom.scss\nFor example, here are the theme files for the 25 built-in Bootswatch themes:\nhttps://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/bootstrap/themes\nYou can read more about the custom theming design here:\nhttps://github.com/quarto-dev/quarto-cli/blob/main/design/quarto-themes.md"
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#overview",
+    "title": "HTML Basics",
+    "section": "Overview",
+    "text": "There are a variety of ways to customize HTML output. The Document Options article covers core options shared by all formats (e.g. table of contents, section numbering, syntax highlighting, etc.). This article covers some HTML specific options including:\n\nAdding your own CSS styles\nLaTeX math rendering\nCreating self-contained HTML\nProviding section anchor links\nHover to view citations and footnotes\nCode folding via <details>\nCopy button for code blocks\nCommenting via Hypothesis or Utterances\n\nNote that these features all work irrespective of whether a Bootstrap or other theme is applied."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#css-styles",
+    "title": "HTML Basics",
+    "section": "CSS Styles",
+    "text": "To add a CSS stylesheet to your document, just provide the css option. For example:\nformat:\n  html: \n    css: styles.css\nUsing the css option works well for simple tweaks to document appearance. If you want to do more extensive customiation see the documentation on HTML Themes."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#latex-equations",
+    "title": "HTML Basics",
+    "section": "LaTeX Equations",
+    "text": "By default, LaTeX equations are rendered using MathJax. Use the html-math-method option to choose another method. For example:\nformat:\n  html:\n    html-math-method: katex\nYou can also specify a url for the library to load for a given method:\nhtml-math-method:\n  method: mathjax\n  url: \"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js\"\nAvailable math rendering methods include:\n\n\n\n\n\n\n\nMethod\nDescription\n\n\n\n\nmathjax\nUse MathJax to display embedded TeX math in HTML output.\n\n\nkatex\nUse KaTeX to display embedded TeX math in HTML output.\n\n\nwebtex\nConvert TeX formulas to <img> tags that link to an external script that converts formulas to images.\n\n\ngladtex\nEnclose TeX math in <eq> tags in HTML output. The resulting HTML can then be processed by GladTeX to produce images of the typeset formulas and an HTML file with links to these images.\n\n\nmathml\nConvert TeX math to MathML (note that currently only Firefox and Safari natively support MathML)\n\n\nplain\nNo special processing (formulas are put inside a span with class=\"math\").\n\n\n\nNote that this is more detailed documentation on each of these options in the Pandoc Math Rendering in HTML documentation."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#code-blocks",
+    "title": "HTML Basics",
+    "section": "Code Blocks",
+    "text": "Syntax Highlighting\nUse the highlight-style option to specify a syntax highlighting style:\nformat:\n  html:\n    highlight-style: github\nSee the completion documentation on Syntax Highlighting for details on available styles and other options.\n\n\nFolding\nClick the Code button to see the code that produced this plot.\n\n\nCode\nlibrary(ggplot2)\ndat <- data.frame(cond = rep(c(\"A\", \"B\"), each=10),\n                  xvar = 1:20 + rnorm(20,sd=3),\n                  yvar = 1:20 + rnorm(20,sd=3))\n\nggplot(dat, aes(x=xvar, y=yvar)) +\n    geom_point(shape=1) + \n    geom_smooth() \n\n\n\n\n\nCode folding can be set globally or on a per-chunk basis (chunks can be set to display folded or unfolded by default). For example:\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Show the code\"\nNote that we’ve also customized summary text that appears in place of the code (the default is just “Code”).\nValid values for code-fold include:\n\n\n\nfalse\nNo folding (default)\n\n\n\n\ntrue\nFold code (initially hidden)\n\n\nshow\nFold code (initially shown)\n\n\n\nUse the fold and summary chunk attributes to control this on a chunk-by-chunk basis:\n```{r}\n#| fold: true\n#| summary: \"Show the code\"\n\n```\n\n\nCopy Button\nHover over the code block below and you will see a copy icon in the top-right corner:\n\nlibrary(dygraphs)\ndygraph(nhtemp, main = \"New Haven Temperatures\") %>% \n  dyRangeSelector(dateWindow = c(\"1920-01-01\", \"1960-01-01\"))\n\nThis behavior is enabled by default but you configure it using the code-copy option:\nformat:\n  html:\n    code-copy: false\nValid values for code-copy include:\n\n\n\n\n\n\n\nhover\nShow button on hover (default)\n\n\n\n\ntrue\nAlways show code copy button\n\n\nfalse\nNever show code copy button\n\n\n\n\n\nLinking\nThe code-link option enables hyper-linking of functions within code blocks to their online documentation:\nformat:\n  html:\n    code-link: true\nCode linking is currently implemented only for the knitr engine (via the downlit package)."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#self-contained",
+    "title": "HTML Basics",
+    "section": "Self Contained",
+    "text": "HTML documents typically have a number of external dependencies (e.g. images, CSS style sheets, JavaScript, etc.). By default these dependencies are placed in a _files directory alongside your document. For example, if you render report.md to HTML:\n$ quarto render report.md --to html\nThen the following output is produced:\nreport.html\nreport_files/\nYou might alternatively want to create an entirely self-contained HTML document (with images, css, etc. embedded into the HTML file). You can do this by specifying the self-contained option:\nformat:\n  html\n    self-contained: true\nThis will produce a standalone HTML file with no external dependencies, using data: URIs to incorporate the contents of linked scripts, style sheets, images, and videos. The resulting file should be “self-contained,” in the sense that it needs no external files and no net access to be displayed properly by a browser."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#anchor-sections",
+    "title": "HTML Basics",
+    "section": "Anchor Sections",
+    "text": "Hover over a section title to see an anchor link. Enable/disable this behavior with:\nformat:\n  html:\n    anchor-sections: true\nAnchor links are also automatically added to figures and tables that have a cross reference defined."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#reference-hover",
+    "title": "HTML Basics",
+    "section": "Reference Hover",
+    "text": "Hover over Xie (2015) to see a reference to the definitive book on knitr1.\nControl this behavior with the following options:\nformat:\n  html:\n    hover-citations: true\n    hover-footnotes: true"
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#commenting",
+    "title": "HTML Basics",
+    "section": "Commenting",
+    "text": "This page has commenting with Hypothes.is enabled via the following YAML option:\ncomments:\n  hypothesis: true\nYou can see the Hypothesis UI at the far right of the page. Rather than true, you can specify any of the available Hypothesis embedding options as a sub-key of hypothesis. For example:\ncomments:\n  hypothesis: \n    theme: clean\nYou can enable Utterances commenting using the utterances option. Here you need to specify at least the Git repo you want to use for storing comments:\ncomments:\n  utterances:\n    repo: quarto-dev/quarto-docs\nYou can also specify the other options documented here."
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#references",
+    "title": "HTML Basics",
+    "section": "References",
+    "text": "Xie, Yihui. 2015. Dynamic Documents with R and Knitr. 2nd ed. Boca Raton, Florida: Chapman; Hall/CRC. https://yihui.name/knitr/."
   },
   {
     "href": "docs/output-formats/ms-word.html",
@@ -764,12 +788,6 @@
   {
     "href": "docs/output-formats/epub.html",
     "title": "EPUB",
-    "section": "",
-    "text": ""
-  },
-  {
-    "href": "docs/output-formats/html-basics.html",
-    "title": "HTML Basics",
     "section": "",
     "text": ""
   },

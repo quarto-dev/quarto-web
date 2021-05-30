@@ -1,0 +1,248 @@
+---
+title: "HTML Basics"
+format: html
+comments:
+  hypothesis: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning=FALSE)
+```
+
+## Overview
+
+There are a variety of ways to customize HTML output. The [Document Options](../authoring/document-options.md) article covers core options shared by all formats (e.g. table of contents, section numbering, syntax highlighting, etc.). This article covers some HTML specific options including:
+
+-   Adding your own CSS styles
+-   LaTeX math rendering
+-   Creating self-contained HTML
+-   Providing section anchor links
+-   Hover to view citations and footnotes
+-   Code folding via `<details>`
+-   Copy button for code blocks
+-   Commenting via Hypothesis or Utterances
+
+Note that these features all work irrespective of whether a Bootstrap or other theme is applied.
+
+## CSS Styles
+
+To add a CSS stylesheet to your document, just provide the `css` option. For example:
+
+``` {.yaml}
+format:
+  html: 
+    css: styles.css
+```
+
+Using the `css` option works well for simple tweaks to document appearance. If you want to do more extensive customiation see the documentation on [HTML Themes](html-themes.md).
+
+## LaTeX Equations
+
+By default, LaTeX equations are rendered using [MathJax](https://www.mathjax.org/). Use the `html-math-method` option to choose another method. For example:
+
+``` {.yaml}
+format:
+  html:
+    html-math-method: katex
+```
+
+You can also specify a `url` for the library to load for a given method:
+
+``` {.yaml}
+html-math-method:
+  method: mathjax
+  url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+```
+
+Available math rendering methods include:
+
+| Method    | Description                                                                                                                                                                                                                      |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `mathjax` | Use [MathJax](https://www.mathjax.org/) to display embedded TeX math in HTML output.                                                                                                                                             |
+| `katex`   | Use [KaTeX](https://github.com/Khan/KaTeX) to display embedded TeX math in HTML output.                                                                                                                                          |
+| `webtex`  | Convert TeX formulas to `<img>` tags that link to an external script that converts formulas to images.                                                                                                                           |
+| `gladtex` | Enclose TeX math in `<eq>` tags in HTML output. The resulting HTML can then be processed by [GladTeX](https://humenda.github.io/GladTeX/) to produce images of the typeset formulas and an HTML file with links to these images. |
+| `mathml`  | Convert TeX math to [MathML](https://www.w3.org/Math/) (note that currently only Firefox and Safari natively support MathML)                                                                                                     |
+| `plain`   | No special processing (formulas are put inside a `span` with `class="math").`                                                                                                                                                    |
+
+Note that this is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
+
+## Code Blocks
+
+### Syntax Highlighting
+
+Use the `highlight-style` option to specify a syntax highlighting style:
+
+``` {.yaml}
+format:
+  html:
+    highlight-style: github
+```
+
+See the completion documentation on [Syntax Highlighting](../authoring/document-options.md#syntax-highlighting) for details on available styles and other options.
+
+### Folding
+
+Click the **Code** button to see the code that produced this plot.
+
+```{r}
+#| fold: true
+
+library(ggplot2)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) + 
+    geom_smooth() 
+```
+
+Code folding can be set globally or on a per-chunk basis (chunks can be set to display folded or unfolded by default). For example:
+
+``` {.yaml}
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+```
+
+Note that we've also customized summary text that appears in place of the code (the default is just "Code").
+
+Valid values for `code-fold` include:
+
+| `false` | No folding (default)         |
+|---------|------------------------------|
+| `true`  | Fold code (initially hidden) |
+| `show`  | Fold code (initially shown)  |
+
+Use the `fold` and `summary` chunk attributes to control this on a chunk-by-chunk basis:
+
+```` {.python}
+```{r}`r ''`
+#| fold: true
+#| summary: "Show the code"
+
+```
+````
+
+### Copy Button
+
+Hover over the code block below and you will see a copy icon in the top-right corner:
+
+```{r eval=FALSE}
+library(dygraphs)
+dygraph(nhtemp, main = "New Haven Temperatures") %>% 
+  dyRangeSelector(dateWindow = c("1920-01-01", "1960-01-01"))
+```
+
+This behavior is enabled by default but you configure it using the `code-copy` option:
+
+``` {.yaml}
+format:
+  html:
+    code-copy: false
+```
+
+Valid values for `code-copy` include:
+
++----------------------------------+-----------------------------------+
+| `hover`                          | Show button on hover (default)    |
++==================================+===================================+
+| `true`                           | Always show code copy button      |
++----------------------------------+-----------------------------------+
+| `false`                          | Never show code copy button       |
++----------------------------------+-----------------------------------+
+
+### Linking
+
+The `code-link` option enables hyper-linking of functions within code blocks to their online documentation:
+
+``` {.yaml}
+format:
+  html:
+    code-link: true
+```
+
+Code linking is currently implemented only for the knitr engine (via the [downlit](https://downlit.r-lib.org) package).
+
+## Self Contained
+
+HTML documents typically have a number of external dependencies (e.g. images, CSS style sheets, JavaScript, etc.). By default these dependencies are placed in a `_files` directory alongside your document. For example, if you render `report.md` to HTML:
+
+``` {.bash}
+$ quarto render report.md --to html
+```
+
+Then the following output is produced:
+
+``` {.ini}
+report.html
+report_files/
+```
+
+You might alternatively want to create an entirely self-contained HTML document (with images, css, etc. embedded into the HTML file). You can do this by specifying the `self-contained` option:
+
+``` {.yaml}
+format:
+  html
+    self-contained: true
+```
+
+This will produce a standalone HTML file with no external dependencies, using `data:` URIs to incorporate the contents of linked scripts, style sheets, images, and videos. The resulting file should be "self-contained," in the sense that it needs no external files and no net access to be displayed properly by a browser.
+
+## Anchor Sections
+
+Hover over a section title to see an anchor link. Enable/disable this behavior with:
+
+``` {.yaml}
+format:
+  html:
+    anchor-sections: true
+```
+
+Anchor links are also automatically added to figures and tables that have a [cross reference](../authoring/cross-references.md) defined.
+
+## Reference Hover
+
+Hover over @xie2015 to see a reference to the definitive book on knitr[^1].
+
+[^1]: knitr is an R package for creating dynamic documents.
+
+Control this behavior with the following options:
+
+``` {.yaml}
+format:
+  html:
+    hover-citations: true
+    hover-footnotes: true
+```
+
+## Commenting
+
+This page has commenting with [Hypothes.is](https://web.hypothes.is/) enabled via the following YAML option:
+
+``` {.yaml}
+comments:
+  hypothesis: true
+```
+
+You can see the Hypothesis UI at the far right of the page. Rather than `true`, you can specify any of the available Hypothesis [embedding options](https://h.readthedocs.io/projects/client/en/latest/publishers/config/) as a sub-key of `hypothesis`. For example:
+
+``` {.yaml}
+comments:
+  hypothesis: 
+    theme: clean
+```
+
+You can enable [Utterances](https://utteranc.es/) commenting using the `utterances` option. Here you need to specify at least the Git repo you want to use for storing comments:
+
+``` {.yaml}
+comments:
+  utterances:
+    repo: quarto-dev/quarto-docs
+```
+
+You can also specify the other options [documented here](https://utteranc.es/).
+
+## References {.unlisted}

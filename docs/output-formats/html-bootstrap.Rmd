@@ -3,6 +3,22 @@ title: "HTML w/ Bootstrap"
 format: html
 ---
 
+## Overview
+
+There are a number of additional HTML output features that are available when you are using a [Bootstrap](https://getbootstrap.com/) based theme, including:
+
+-   Floating TOC
+
+-   Tabsets
+
+-   Additional code block options
+
+-   Responsive figures
+
+::: {.callout-note}
+Note that the `html` format uses a Bootstrap theme by default, so you don't need to do anything special to enable these features. If however you specify `theme: none` or `theme: pandoc` they will not be available.
+:::
+
 ## Floating TOC
 
 The HTML format by default uses a floating table of contents which can be customized using the following:
@@ -19,19 +35,20 @@ The floating table of contents can be used to navigate to sections of the docume
 
 ## Tabsets
 
-### Example
-
-Tabsets as such:
+You can use tabsets to present content that will vary in interest depending on the audience. For example, here we provide some example code in a variety of languages:
 
 ::: {.tabset}
 ## R
 
 ``` {.r}
-fizz_buzz <- function(num_array=seq_len(100L)) {
-  result_array <- Map(function(r,n){cat(paste0(ifelse(r=='',n,r),'\n'))},
-                      r=paste0(ifelse(num_array%%3L,'','Fizz'),
-                                 ifelse(num_array%%5L,'','Buzz')),
-                      n=num_array)
+fizz_buzz <- function(fbnums = 1:50) {
+  output <- dplyr::case_when(
+    fbnums %% 15 == 0 ~ "FizzBuzz",
+    fbnums %% 3 == 0 ~ "Fizz",
+    fbnums %% 5 == 0 ~ "Buzz",
+    TRUE ~ as.character(fbnums)
+  )
+  print(output)
 }
 ```
 
@@ -86,20 +103,21 @@ end
 ```
 :::
 
-### Markdown
-
-The example is implemented using markdown like:
+Create a tabset via a markdown div with the class name tabset (e.g. `::: {.tabset}`). Each top-level heading within the div creates a new tab. For example, here is the markdown used to implement the first two tabs displayed above:
 
 ```` {.markdown}
 ::: {.tabset}
 ## R
 
 ``` {.r}
-fizz_buzz <- function(num_array=seq_len(100L)) {
-  result_array <- Map(function(r,n){cat(paste0(ifelse(r=='',n,r),'\n'))},
-                      r=paste0(ifelse(num_array%%3L,'','Fizz'),
-                                 ifelse(num_array%%5L,'','Buzz')),
-                      n=num_array)
+fizz_buzz <- function(fbnums = 1:50) {
+  output <- dplyr::case_when(
+    fbnums %% 15 == 0 ~ "FizzBuzz",
+    fbnums %% 3 == 0 ~ "Fizz",
+    fbnums %% 5 == 0 ~ "Buzz",
+    TRUE ~ as.character(fbnums)
+  )
+  print(output)
 }
 ```
 
@@ -120,7 +138,6 @@ def fizz_buzz(num):
 :::
 ````
 
-
 ## Code Blocks
 
 By default code blocks are rendered with a left border whose color is derived from the currently theme. You can customize code chunk appearance with some simple options that control the background color and left border. Options can either be booleans to enable or disable the treatment or can be legal CSS color strings (or they could even be SASS variable names!).
@@ -133,7 +150,7 @@ Here is the default appearance for code blocks (note the border at left and no b
 
 You can add a background using the `code-background` option:
 
-```yaml
+``` {.yaml}
 code-background: true
 ```
 
@@ -146,7 +163,6 @@ code-background: true
 code-border-left: "#31BAE9"
 ```
 
-
 ![](images/code-custom.png)
 
 ### Highlighting
@@ -157,7 +173,7 @@ You can specify the code highlighting style using `highlight-style` and specifyi
 
 For example:
 
-```{.yaml}
+``` {.yaml}
 highlight-style: github
 ```
 
@@ -169,7 +185,7 @@ Examples of the light and dark themes:
 
 #### Arrow (light)
 
-![](images/arrow.png){}
+![](images/arrow.png)
 
 #### Arrow (dark)
 
@@ -187,6 +203,16 @@ Examples of the light and dark themes:
 
 If an image does not include an explicitly set height, it will automatically become responsive. Try resizing the browser and note how the image below grows and shrinks.
 
-```{r pressure, echo=FALSE, fig.cap="Under Pressure"}
-plot(pressure)
+```{r pressure}
+#| echo: false
+#| message: false
+
+library(ggplot2)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) + 
+    geom_smooth() 
 ```
