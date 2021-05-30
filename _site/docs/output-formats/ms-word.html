@@ -453,25 +453,22 @@
   <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#basic-options" class="nav-link active" data-scroll-target="#basic-options">Basic Options</a></li>
+<li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+<li><a href="#table-of-contents" class="nav-link" data-scroll-target="#table-of-contents">Table of Contents</a></li>
+<li><a href="#section-numbering" class="nav-link" data-scroll-target="#section-numbering">Section Numbering</a></li>
+<li><a href="#syntax-highlighting" class="nav-link" data-scroll-target="#syntax-highlighting">Syntax Highlighting</a></li>
 <li><a href="#templates" class="nav-link" data-scroll-target="#templates">Templates</a></li>
 </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/ms-word.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/ms-word.Rmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
 <main>
 <header id="title-block-header">
 <h1 class="title d-none d-lg-block display-7">MS Word</h1>
 </header>
 
-<section id="basic-options" class="level2">
-<h2 class="anchored" data-anchor-id="basic-options">Basic Options</h2>
-<p>The MS Word format (<code>docx</code>) supports all the standard Pandoc document output options for:</p>
-<ul>
-<li>Table of contents</li>
-<li>Section numbering,</li>
-<li>Syntax highlighting</li>
-</ul>
-<p>Here’s an example of using these options:</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Use the <code>docx</code> format to create MS Word output. For example:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
@@ -479,14 +476,52 @@
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">section-numbers</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">highlight-style</span><span class="kw">:</span><span class="at"> github</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>See the article on <a href="../../docs/authoring/document-options.html">Document Options</a> for additional details.</p>
+<p>This example highlights a few of the options available for MS Word output. This document covers these and other options in detail.</p>
+</section>
+<section id="table-of-contents" class="level2">
+<h2 class="anchored" data-anchor-id="table-of-contents">Table of Contents</h2>
+<p>Use the <code>toc</code> option to include an automatically generated table of contents in the output document. Use the <code>toc-depth</code> option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> true</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">toc-depth:</span><span class="co"> 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that HTML documents implement support for floating the table of contents to the right of the page. See the <a href="../output-formats/html-bootstrap.md#floating-toc">Floating TOC</a> documentation for additional details.</p>
+<p>You can customize the title used for the table of contents using the <code>toc-title</code> option:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">toc-title</span><span class="kw">:</span><span class="at"> Contents</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you want to exclude a heading from the table of contents, add both the <code>.unnumbered</code> and <code>.unlisted</code> classes to it:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">### More Options {.unnumbered .unlisted}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="section-numbering" class="level2">
+<h2 class="anchored" data-anchor-id="section-numbering">Section Numbering</h2>
+<p>Use the <code>number-sections</code> option to number section headings in the output document. For example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Use the <code>number-depth</code> option to specify the deepest level of heading to add numbers to (by default all headings are numbered). For example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">number-depth</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To exclude an individual heading from numbering, add the <code>.unnumbered</code> class to it:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">### More Options {.unnumbered}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="syntax-highlighting" class="level2">
+<h2 class="anchored" data-anchor-id="syntax-highlighting">Syntax Highlighting</h2>
+<p>Pandoc will automatically highlight syntax in <a href="https://pandoc.org/MANUAL.html#fenced-code-blocks">fenced code blocks</a> that are marked with a language name.</p>
+<p>You can specify the code highlighting style using <code>highlight-style</code> and specifying one of the supported themes. Supported themes include: arrow, pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock, atom-one, ayu, breeze, dracula, github, gruvbox, monokai, nord, oblivion, printing, radical, solarized, and vim.</p>
+<p>For example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">highlight-style</span><span class="kw">:</span><span class="at"> github</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Highlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color’s darkness. You may may always opt to specify the full name (e.g.&nbsp;<code>atom-one-dark</code>) to bypass this automatic behavior.</p>
+<p>By default, code is highlighted using the <code>arrow</code> theme, which is optimized for accessibility. Here are examples of the <code>arrow</code> light and dark themes:</p>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Light</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Dark</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labeledby="tabset-1-1-tab">
+<p><img src="images/arrow.png" class="img-fluid"></p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labeledby="tabset-1-2-tab">
+<p><img src="images/arrow-dark.png" class="img-fluid"></p>
+</div>
+</div>
 </section>
 <section id="templates" class="level2">
 <h2 class="anchored" data-anchor-id="templates">Templates</h2>
 <p>If you want to customize the appearance of MS Word output, Pandoc supports a special type of template called a <em>reference document</em>. Here’s an example of specifying a custom reference document for <code>docx</code>:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">docx</span><span class="kw">:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    custom-reference-doc.docx</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">docx</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    custom-reference-doc.docx</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Reference documents include sample text that uses all of the output styles used by Pandoc. To create a new reference doc based on the Pandoc default, execute the following command:</p>
 <pre><code>$ pandoc -o custom-reference-doc.docx --print-default-data-file reference.docx</code></pre>
 <p>Then, open <code>custom-reference-doc.docx</code> in MS Word and modify styles as you wish:</p>
