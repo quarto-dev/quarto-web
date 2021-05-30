@@ -485,7 +485,7 @@
 <section id="non-executable-blocks" class="level3">
 <h3 class="anchored" data-anchor-id="non-executable-blocks">Non-Executable Blocks</h3>
 <p>Note that code blocks that use convential markdown code block syntax (either <code>```python</code> or <code>```{.python}</code>) are not executable:</p>
-<table style="width:47%;" class="table">
+<table class="table">
 <colgroup>
 <col style="width: 27%">
 <col style="width: 19%">
@@ -523,7 +523,7 @@
 <section id="formats-and-tools" class="level2">
 <h2 class="anchored" data-anchor-id="formats-and-tools">Formats and Tools</h2>
 <p>Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the Python example shown above might be rendered with:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render jupyter-document.md</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render jupyter-document.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The R example might have been rendered with:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render knitr-document.Rmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout-note callout">
@@ -532,7 +532,7 @@
 <i class="callout-icon"></i>
 </div>
 <div>
-<p>Note that while the .Rmd extension is not required for using the Knitr engine (you could just use .md), it’s still recommended that you use .Rmd since many editors (e.g.&nbsp;RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on <a href="../../docs/computations/using-rstudio.html">Using RStudio</a> for additional details.</p>
+<p>Note that while the .Rmd extension is not required for using the Knitr engine (you could instead use .qmd), it’s still recommended that you use .Rmd since many editors (e.g.&nbsp;RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on <a href="../../docs/computations/using-rstudio.html">Using RStudio</a> for additional details.</p>
 </div>
 </div>
 </div>
@@ -545,7 +545,7 @@
 </div>
 <div>
 <p>Jupyter users have a choice of authoring in .ipynb (and using the JupyterLab or VS Code notebook editor) or authoring in plain text markdown using their favorite text editor. See the article on <a href="../../docs/computations/using-jupyter-lab.html">Using Jupyter Lab</a> for additional details.</p>
-<p>You can convert between notebook (.ipynb) and markdown (.md) representations of a document using the <code>quarto convert</code> command (see <code>quarto convert help</code> for details).</p>
+<p>You can convert between notebook (.ipynb) and markdown (.qmd) representations of a document using the <code>quarto convert</code> command (see <code>quarto convert help</code> for details).</p>
 </div>
 </div>
 </div>
@@ -637,9 +637,9 @@
 <div class="sourceCode" id="cb13"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span><span class="at"> </span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You can also use `quarto` command line options to control caching behavior without changing the document’s code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it’s specified in options), or to force a refresh of the cache even if it has not been invalidated:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render example.md <span class="at">--cache</span> </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render example.md <span class="at">--no-cache</span> </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render example.md <span class="at">--cache-refresh</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render example.qmd <span class="at">--cache</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render example.qmd <span class="at">--no-cache</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render example.qmd <span class="at">--cache-refresh</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that for Jupyter, the cache for a document is invalidated if any of the code blocks change. For Knitr, invalidation occurs on a per-cell basis.</p>
 </section>
 <section id="disabling-execution" class="level3">
@@ -678,8 +678,8 @@
 <p>On the way from markdown input to final output, there are some intermediate files that are created and automatically deleted at the end of rendering. You can use the following options to keep these intermediate files:</p>
 <table class="table">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 87%">
+<col style="width: 13%">
+<col style="width: 86%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -752,7 +752,8 @@
 <td>Uses Jupyter engine</td>
 </tr>
 <tr class="odd">
-<td>.md</td>
+<td>.md<br>
+.qmd</td>
 <td><p>Uses Knitr engine if an <code>{r}</code> code block is discovered within the file</p>
 <p>Uses Jupyter engine if an executable code block (e.g.&nbsp;<code>{python}</code>) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered in the file.</p></td>
 </tr>
