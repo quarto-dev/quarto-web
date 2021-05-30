@@ -23,7 +23,7 @@ format:
     highlight-style: github
 ```
 
-See the article on [Document Options](../authoring/document-options.md) for additional details.
+See the article on [Document Options](../authoring/document-options.Rmd) for additional details.
 
 ## Templates
 

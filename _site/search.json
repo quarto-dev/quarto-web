@@ -351,13 +351,13 @@
     "href": "docs/authoring/document-options.html#table-of-contents",
     "title": "Document Options",
     "section": "Table of Contents",
-    "text": "Use the toc option to include an automatically generated table of contents in the output document. Use the toc-depth option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:\ntoc: true\ntoc-depth: 2\nNote that HTML documents implement support for floating the table of contents to the right of the page. See the Floating TOC documentation for additional details.\nIf you want to exclude a heading from the table of contents, add both the .unnumbered and .unlisted classes to it:\n### More Options {.unnumbered .unlisted}"
+    "text": "Use the toc option to include an automatically generated table of contents in the output document. Use the toc-depth option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:\ntoc: true\ntoc-depth: 2\nNote that HTML documents implement support for floating the table of contents to the right of the page. See the Floating TOC documentation for additional details.\nYou can customize the title used for the table of contents using the toc-title option:\ntoc-title: Contents\nIf you want to exclude a heading from the table of contents, add both the .unnumbered and .unlisted classes to it:\n### More Options {.unnumbered .unlisted}"
   },
   {
     "href": "docs/authoring/document-options.html#syntax-highlighting",
     "title": "Document Options",
     "section": "Syntax Highlighting",
-    "text": "Pandoc will automatically highlight syntax in fenced code blocks that are marked with a language name. Currently highlighting is supported only for HTML, EPUB, Docx, Ms, and LaTeX/PDF output. To see a list of language names that pandoc will recognize, type pandoc --list-highlight-languages.\nYou can specify the code highlighting style using highlight-style and specifying one of the supported themes. Supported themes include all the themes included in Pandoc (pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock) as well as an additional set of extended themes here:\nhttps://github.com/quarto-dev/quarto-cli/tree/main/src/resources/pandoc/highlight-styles\nFor example:\nhighlight-style: github\nHighlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color’s darkness. Users may always opt to specify the full name (e.g. atom-one-dark) to bypass this automatic behavior.\nBy default, code is highlighted using the arrow theme. We’ve additionally introduced the arrow-dark theme which is designed to provide beautiful, accessible highlighting against dark backgrounds.\nExamples of some light and dark themes:\n\nArrow\nLightDark\n\n\n\n\n\n\n\n\n\n\nAyu\nLightDark"
+    "text": "Pandoc will automatically highlight syntax in fenced code blocks that are marked with a language name.\nYou can specify the code highlighting style using highlight-style and specifying one of the supported themes. Supported themes include: arrow, pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock, atom-one, ayu, breeze, dracula, github, gruvbox, monokai, nord, oblivion, printing, radical, solarized, and vim.\nFor example:\nhighlight-style: github\nHighlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color’s darkness. You may may always opt to specify the full name (e.g. atom-one-dark) to bypass this automatic behavior.\nBy default, code is highlighted using the arrow theme, which is optimized for accessibility. Here are examples of the arrow light and dark themes:\nLightDark"
   },
   {
     "href": "docs/authoring/document-options.html#includes",
@@ -723,7 +723,7 @@
     "href": "docs/output-formats/html-basics.html#overview",
     "title": "HTML Basics",
     "section": "Overview",
-    "text": "There are a variety of ways to customize HTML output. The Document Options article covers core options shared by all formats (e.g. table of contents, section numbering, syntax highlighting, etc.). This article covers some HTML specific options including:\n\nAdding your own CSS styles\nLaTeX math rendering\nCreating self-contained HTML\nProviding section anchor links\nHover to view citations and footnotes\nCode folding via <details>\nCopy button for code blocks\nCommenting via Hypothesis or Utterances\n\nNote that these features all work irrespective of whether a Bootstrap or other theme is applied."
+    "text": "Use the html format to create HTML output. For example:\n---\ntitle: \"My document\"\nformat:\n  html:\n    toc: true\n    html-math-method: katex\n    css: styles\n---\nThis example highlights a few of the options available for HTML output. This document covers these and other options in detail."
   },
   {
     "href": "docs/output-formats/html-basics.html#css-styles",
@@ -741,7 +741,7 @@
     "href": "docs/output-formats/html-basics.html#code-blocks",
     "title": "HTML Basics",
     "section": "Code Blocks",
-    "text": "Syntax Highlighting\nUse the highlight-style option to specify a syntax highlighting style:\nformat:\n  html:\n    highlight-style: github\nSee the completion documentation on Syntax Highlighting for details on available styles and other options.\n\n\nFolding\nClick the Code button to see the code that produced this plot.\n\n\nCode\nlibrary(ggplot2)\ndat <- data.frame(cond = rep(c(\"A\", \"B\"), each=10),\n                  xvar = 1:20 + rnorm(20,sd=3),\n                  yvar = 1:20 + rnorm(20,sd=3))\n\nggplot(dat, aes(x=xvar, y=yvar)) +\n    geom_point(shape=1) + \n    geom_smooth() \n\n\n\n\n\nCode folding can be set globally or on a per-chunk basis (chunks can be set to display folded or unfolded by default). For example:\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Show the code\"\nNote that we’ve also customized summary text that appears in place of the code (the default is just “Code”).\nValid values for code-fold include:\n\n\n\nfalse\nNo folding (default)\n\n\n\n\ntrue\nFold code (initially hidden)\n\n\nshow\nFold code (initially shown)\n\n\n\nUse the fold and summary chunk attributes to control this on a chunk-by-chunk basis:\n```{r}\n#| fold: true\n#| summary: \"Show the code\"\n\n```\n\n\nCopy Button\nHover over the code block below and you will see a copy icon in the top-right corner:\n\nlibrary(dygraphs)\ndygraph(nhtemp, main = \"New Haven Temperatures\") %>% \n  dyRangeSelector(dateWindow = c(\"1920-01-01\", \"1960-01-01\"))\n\nThis behavior is enabled by default but you configure it using the code-copy option:\nformat:\n  html:\n    code-copy: false\nValid values for code-copy include:\n\n\n\n\n\n\n\nhover\nShow button on hover (default)\n\n\n\n\ntrue\nAlways show code copy button\n\n\nfalse\nNever show code copy button\n\n\n\n\n\nLinking\nThe code-link option enables hyper-linking of functions within code blocks to their online documentation:\nformat:\n  html:\n    code-link: true\nCode linking is currently implemented only for the knitr engine (via the downlit package)."
+    "text": "Folding\nClick the Code button to see the code that produced this plot.\n\n\nCode\nlibrary(ggplot2)\ndat <- data.frame(cond = rep(c(\"A\", \"B\"), each=10),\n                  xvar = 1:20 + rnorm(20,sd=3),\n                  yvar = 1:20 + rnorm(20,sd=3))\n\nggplot(dat, aes(x=xvar, y=yvar)) +\n    geom_point(shape=1) + \n    geom_smooth() \n\n\n\n\n\nCode folding can be set globally or on a per-chunk basis (chunks can be set to display folded or unfolded by default). For example:\nformat:\n  html:\n    code-fold: true\n    code-summary: \"Show the code\"\nNote that we’ve also customized summary text that appears in place of the code (the default is just “Code”).\nValid values for code-fold include:\n\n\n\nfalse\nNo folding (default)\n\n\n\n\ntrue\nFold code (initially hidden)\n\n\nshow\nFold code (initially shown)\n\n\n\nUse the fold and summary chunk attributes to control this on a chunk-by-chunk basis:\n```{r}\n#| fold: true\n#| summary: \"Show the code\"\n\n```\n\n\nCopy Button\nHover over the code block below and you will see a copy icon in the top-right corner:\n\nlibrary(dygraphs)\ndygraph(nhtemp, main = \"New Haven Temperatures\") %>% \n  dyRangeSelector(dateWindow = c(\"1920-01-01\", \"1960-01-01\"))\n\nThis behavior is enabled by default but you configure it using the code-copy option:\nformat:\n  html:\n    code-copy: false\nValid values for code-copy include:\n\n\n\n\n\n\n\nhover\nShow button on hover (default)\n\n\n\n\ntrue\nAlways show code copy button\n\n\nfalse\nNever show code copy button\n\n\n\n\n\nLinking\nThe code-link option enables hyper-linking of functions within code blocks to their online documentation:\nformat:\n  html:\n    code-link: true\nCode linking is currently implemented only for the knitr engine (via the downlit package)."
   },
   {
     "href": "docs/output-formats/html-basics.html#self-contained",
@@ -786,20 +786,8 @@
     "text": "If you want to customize the appearance of MS Word output, Pandoc supports a special type of template called a reference document. Here’s an example of specifying a custom reference document for docx:\nformat:\n  docx:\n    custom-reference-doc.docx\nReference documents include sample text that uses all of the output styles used by Pandoc. To create a new reference doc based on the Pandoc default, execute the following command:\n$ pandoc -o custom-reference-doc.docx --print-default-data-file reference.docx\nThen, open custom-reference-doc.docx in MS Word and modify styles as you wish:\n\n\n\nYou can open the Styles pane from the HOME tab in the MS Word toolbar.\n\n\nWhen you move the cursor to a specific element in the document, an item in the styles list will be highlighted. If you want to modify the style of any type of element, you can click the drop-down menu on the highlighted item, and you will see a dialog box like this:\n\nAfter you finish modifying the styles, you can save the document and use it as the template for future Word documents."
   },
   {
-    "href": "docs/output-formats/epub.html",
-    "title": "EPUB",
-    "section": "",
-    "text": ""
-  },
-  {
     "href": "docs/output-formats/pdf-basics.html",
     "title": "PDF Basics",
-    "section": "",
-    "text": ""
-  },
-  {
-    "href": "docs/output-formats/presentations.html",
-    "title": "Presentations",
     "section": "",
     "text": ""
   },
@@ -904,5 +892,41 @@
     "title": "Welcome to Quarto",
     "section": "Getting Started",
     "text": "Installation will get you up and running with Quarto (including additional dependencies required for computational documents).\nQuarto Basics will help you learn the core mechanics of rendering markdown from the command line as well as how to specify document formats and options.\nExecuting Code covers creating computational documents with Quarto in more depth, including how to use Quarto with JupyterLab and RStudio."
+  },
+  {
+    "href": "docs/authoring/document-options.html#section",
+    "title": "Document Options",
+    "section": "",
+    "text": ""
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#table-of-contents",
+    "title": "HTML Basics",
+    "section": "Table of Contents",
+    "text": "Use the toc option to include an automatically generated table of contents in the output document. Use the toc-depth option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:\ntoc: true\ntoc-depth: 2\nNote that HTML documents implement support for floating the table of contents to the right of the page. See the Floating TOC documentation for additional details.\nYou can customize the title used for the table of contents using the toc-title option:\ntoc-title: Contents\nIf you want to exclude a heading from the table of contents, add both the .unnumbered and .unlisted classes to it:\n### More Options {.unnumbered .unlisted}"
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#section-numbering",
+    "title": "HTML Basics",
+    "section": "Section Numbering",
+    "text": "Use the number-sections option to number section headings in the output document. For example:\nnumber-sections: true\nUse the number-depth option to specify the deepest level of heading to add numbers to (by default all headings are numbered). For example:\nnumber-depth: 3\nTo exclude an individual heading from numbering, add the .unnumbered class to it:\n### More Options {.unnumbered}"
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#syntax-highlighting",
+    "title": "HTML Basics",
+    "section": "Syntax Highlighting",
+    "text": "Pandoc will automatically highlight syntax in fenced code blocks that are marked with a language name.\nYou can specify the code highlighting style using highlight-style and specifying one of the supported themes. Supported themes include: arrow, pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock, atom-one, ayu, breeze, dracula, github, gruvbox, monokai, nord, oblivion, printing, radical, solarized, and vim.\nFor example:\nhighlight-style: github\nHighlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color’s darkness. You may may always opt to specify the full name (e.g. atom-one-dark) to bypass this automatic behavior.\nBy default, code is highlighted using the arrow theme, which is optimized for accessibility. Here are examples of the arrow light and dark themes:\nLightDark"
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#reference-popup",
+    "title": "HTML Basics",
+    "section": "Reference Popup",
+    "text": "Hover over Xie (2015) to see a reference to the definitive book on knitr1.\nControl this behavior with the following options:\nformat:\n  html:\n    hover-citations: true\n    hover-footnotes: true"
+  },
+  {
+    "href": "docs/output-formats/html-basics.html#includes",
+    "title": "HTML Basics",
+    "section": "Includes",
+    "text": "If you want to include additional content in your document from another file, you can use the include-in options:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\ninclude-in-header\nInclude contents of file, verbatim, at the end of the header. This can be used, for example, to include special CSS or JavaScript in HTML documents or to inject commands into the LaTeX preamble.\n\n\ninclude-before-body\nInclude contents of file, verbatim, at the beginning of the document body (e.g. after the <body> tag in HTML, or the \\begin{document} command in LaTeX). This can be used to include navigation bars or banners in HTML documents.\n\n\ninclude-after-body\nInclude contents of file, verbatim, at the end of the document body (before the </body> tag in HTML, or the \\end{document} command in LaTeX).\n\n\n\nYou can specify a single file for multiple files for each of these options. For example:\nformat:\n  html:\n    include-in-header:\n      - analytics.html\n      - comments.html\n    include-before-body: header.html\nThere are also a set of options you can use for inline includes (i.e. specifying the included content right within YAML):\n\n\n\nOption\nDescription\n\n\n\n\nheader-includes\nInline version of include-in-header\n\n\ninclude-before\nInline version of include-before-body\n\n\ninclude-after\nInline version include-after-body\n\n\n\nFor example:\nformat:\n  pdf: \n    header-includes: |\n      \\usepackage{eplain}\n      \\usepackage{easy-todo}"
   }
 ]
