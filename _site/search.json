@@ -804,10 +804,22 @@
     "text": ""
   },
   {
-    "href": "docs/output-formats/hugo.html",
+    "href": "docs/output-formats/hugo.html#overview",
     "title": "Hugo",
-    "section": "",
-    "text": ""
+    "section": "Overview",
+    "text": "Hugo is a very popular open source website publishing system. Pages in Hugo websites are typically written in plain markdown, so don’t have a straightforward way to automatically and reproducibly incorporate computational output.\nUsing the Quarto hugo format, you can incorporate computational output (e.g. R or Python code that produces plots) into Hugo websites. This article explains how."
+  },
+  {
+    "href": "docs/output-formats/hugo.html#creating-a-page",
+    "title": "Hugo",
+    "section": "Creating a Page",
+    "text": "Hugo articles and posts that use Quarto should live in their own directory (taking advantage of the Hugo Page Bundles feature). This allows any content generated/referenced by the page (e.g. plot output) to live right alongside the markdown source.\nTo create a new page that uses Quarto:\n\nCreate a new directory at the location in your site’s content directory where you want the article to live.\nAdd a markdown file to that directory (usually with the same name as the directory). This file should not use the .md extension (to prevent Hugo from rendering it). For example, use the extension .qmd (for Jupyter) or .Rmd (for Knitr).\nAdd the requisite Hugo metadata to the document’s front matter, then also specify format: hugo and any other required Quarto options.\n\nFor example, let’s say we wanted to create a new article named hello-quarto within the content directory. The filesystem would look like this:\nmysite/\n  content/\n    hello-quarto/\n      hello-quarto.qmd\nHere’s what the source code hello-quarto.qmd might look like:\n---\ntitle: Hello, Quarto\nformat: hugo\njupyter: python3\n---\n\n## Polar Axis\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n```{python}\n#| label: fig-polar\n#| fig.cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```"
+  },
+  {
+    "href": "docs/output-formats/hugo.html#workflow",
+    "title": "Hugo",
+    "section": "Workflow",
+    "text": "Generating pages for Hugo requires just a simple Quarto render:\n$ quarto render hello-quarto.qmd\nWhenever your render the hello-quarto.qmd file, Quarto will execute the code in the file (writing any generated plots, etc. into the article’s directory) and then generate an index.md file that is subsequently processed by Hugo.\nIf you are running the hugo server command for live preview, you will see the updated version of your page whenever you render.\nNote that the index.md file is only updated when you explicitly render with Quarto. Running the hugo command to build your site just renders the index.md file — if you want to regenerate this file based on updated code or data you need to explicitly quarto render it."
   },
   {
     "href": "docs/websites/publishing-websites.html",
