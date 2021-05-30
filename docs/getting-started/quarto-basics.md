@@ -15,7 +15,7 @@ There are three types of markdown input files that Quarto can render:
 
 1.  Plain markdown (with no embedded code)
 
-2.  Markdown with embedded code chunks (similar to .Rmd files in [R Markdown](https://rmarkdown.rstudio.com))
+2.  Markdown with embedded code chunks
 
 3.  Jupyter notebooks which have a combination of markdown and code cells
 
@@ -25,10 +25,11 @@ Jupyter users will user either the second or third approach, depending on whethe
 
 ## Rendering Output
 
-Use the `quarto render` command to transform a markdown input file into HTML, a PDF, or any of the other supported output formats. Here are examples of rendering the three types of inputs described above:
+Use the `quarto render` command to transform a markdown input file into HTML, a PDF, or any of the other supported output formats. Here are examples of rendering the input types described above:
 
 ``` {.bash}
 $ quarto render document.md
+$ quarto render document.qmd
 $ quarto render document.Rmd
 $ quarto render document.ipynb
 ```
@@ -38,7 +39,8 @@ For plain markdown, the document is sent straight to Pandoc. For markdown with e
 By default, Quarto renders to HTML, however any of Pandoc's over 40 [output formats](https://pandoc.org/) are supported. For example:
 
 ``` {.bash}
-$ quarto render document.Rmd --to pdf
+$ quarto render document.qmd --to pdf
+$ quarto render document.Rmd --to odt
 $ quarto render document.ipynb --to docx
 ```
 

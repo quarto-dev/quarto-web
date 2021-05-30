@@ -114,7 +114,7 @@ Non-executable code blocks are printed but not executed.
 Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the Python example shown above might be rendered with:
 
 ``` {.bash}
-$ quarto render jupyter-document.md
+$ quarto render jupyter-document.qmd
 ```
 
 The R example might have been rendered with:
@@ -124,7 +124,7 @@ $ quarto render knitr-document.Rmd
 ```
 
 ::: {.callout-note}
-Note that while the .Rmd extension is not required for using the Knitr engine (you could just use .md), it's still recommended that you use .Rmd since many editors (e.g. RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on [Using RStudio](using-rstudio.md) for additional details.
+Note that while the .Rmd extension is not required for using the Knitr engine (you could instead use .qmd), it's still recommended that you use .Rmd since many editors (e.g. RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on [Using RStudio](using-rstudio.md) for additional details.
 :::
 
 Note that while the Python example above uses a markdown file, Quarto can also render any Jupyter notebook (.ipynb) and use all of the same computational features described here. For example:
@@ -136,7 +136,7 @@ $ quarto render jupyter-document.ipynb
 ::: {.callout-note}
 Jupyter users have a choice of authoring in .ipynb (and using the JupyterLab or VS Code notebook editor) or authoring in plain text markdown using their favorite text editor. See the article on [Using Jupyter Lab](using-jupyter-lab.md) for additional details.
 
-You can convert between notebook (.ipynb) and markdown (.md) representations of a document using the `quarto convert` command (see `quarto convert help` for details).
+You can convert between notebook (.ipynb) and markdown (.qmd) representations of a document using the `quarto convert` command (see `quarto convert help` for details).
 :::
 
 ## Execution Options
@@ -170,14 +170,21 @@ Code block options are included in a special comment at the top of the block (li
 
 Options available for customizing output include:
 
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | Option    | Description                                                                                                                                  |
-|-----------|----------------------------------------------------------------------------------------------------------------------------------------------|
++===========+==============================================================================================================================================+
 | `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `echo`    | Include the source code in output                                                                                                            |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `output`  | Include the results of executing the code in the output                                                                                      |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `warning` | Include warnings in the output.                                                                                                              |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                   |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 | `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block). |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here's a Knitr example with some of these additional options included:
 
@@ -220,9 +227,9 @@ execute:
 You can also use \`quarto\` command line options to control caching behavior without changing the document's code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it's specified in options), or to force a refresh of the cache even if it has not been invalidated:
 
 ``` {.bash}
-$ quarto render example.md --cache 
-$ quarto render example.md --no-cache 
-$ quarto render example.md --cache-refresh 
+$ quarto render example.qmd --cache 
+$ quarto render example.qmd --no-cache 
+$ quarto render example.qmd --cache-refresh 
 ```
 
 Note that for Jupyter, the cache for a document is invalidated if any of the code blocks change. For Knitr, invalidation occurs on a per-cell basis.
@@ -274,10 +281,13 @@ $ quarto render document.ipynb --execute-daemon-restart
 
 On the way from markdown input to final output, there are some intermediate files that are created and automatically deleted at the end of rendering. You can use the following options to keep these intermediate files:
 
++--------------+------------------------------------------------------------------------------------------------+
 | Option       | Description                                                                                    |
-|--------------|------------------------------------------------------------------------------------------------|
++==============+================================================================================================+
 | `keep-md`    | Keep the markdown file generated by executing code.                                            |
++--------------+------------------------------------------------------------------------------------------------+
 | `keep-ipynb` | Keep the notebook file generated from executing code (applicable only to markdown input files) |
++--------------+------------------------------------------------------------------------------------------------+
 
 For example, here we specify that we want to keep both the markdown intermediate file after rendering:
 
@@ -331,8 +341,8 @@ Here are the basic rules for automatic binding:
 +-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | .ipynb            | Uses Jupyter engine                                                                                                                                                                                             |
 +-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| .md               | Uses Knitr engine if an `{r}` code block is discovered within the file                                                                                                                                          |
-|                   |                                                                                                                                                                                                                 |
+| .md\              | Uses Knitr engine if an `{r}` code block is discovered within the file                                                                                                                                          |
+| .qmd              |                                                                                                                                                                                                                 |
 |                   | Uses Jupyter engine if an executable code block (e.g. `{python}`) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered in the file. |
 +-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 

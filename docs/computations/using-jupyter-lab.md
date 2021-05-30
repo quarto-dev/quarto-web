@@ -5,7 +5,7 @@ format: html
 
 ## Overview
 
-Quarto can render Jupyter notebooks represented as plain text (.md) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) as your editor.
+Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) as your editor.
 
 Here is the "Hello, Quarto" example from the homepage inside JupyterLab:
 
@@ -73,6 +73,9 @@ There are many other execution options available (e.g. to control caching, optim
 
 It's also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.
 
+Markdown files with embedded code chunks should use the file extension `.qmd` to indicate that they aren't ordinary markdown files but rather contain embedded computations to be run by Quarto.
+
+
 To make a code block executable in a markdown notebook, just add braces around the name of the language. For example:
 
 ```` {.python}
@@ -118,14 +121,14 @@ plt.show()
 Note that we've added the `jupyter: python3` option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:
 
 ``` {.bash}
-$ quarto render basics-jupyter.md
+$ quarto render basics-jupyter.qmd
 ```
 
 You can convert between .ipynb and .md representations of a notebook using the `quarto convert` command. For example:
 
 ``` {.bash}
 $ quarto convert basics-jupyter.ipynb --to markdown
-$ quarto convert basics-jupyter.md --to notebook
+$ quarto convert basics-jupyter.qmd --to notebook
 ```
 
 See `quarto convert help` for additional details on converting notebooks.

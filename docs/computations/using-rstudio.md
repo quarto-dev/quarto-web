@@ -67,13 +67,13 @@ Chunk options included this way use YAML syntax rather than R syntax for consist
 
 While Quarto doesn't technically require that documents targeting the Knitr engine have an .Rmd extension, you will generally be better off using this extension. This is because many editors (including RStudio) will enable features like interactive chunk execution when they see the .Rmd extension.
 
-If you prefer to use the .md extension, you can still tell RStudio to enable .Rmd features by explicitly setting the file type using the popup menu at the bottom right of the editor:
+If you prefer to use the .`md` or `.qmd` extension, you can still tell RStudio to enable .Rmd features by explicitly setting the file type to "R Markdown" using the popup menu at the bottom right of the editor:
 
 ![](images/rstudio-file-type.png)
 
 ## Jupyter Engine
 
-You can also render Quarto markdown documents that target the Jupyter engine within RStudio. These files will generally have an .md extension and include a `jupyter` option in the YAML front matter indicating which kernel to use. For example:
+You can also render Quarto markdown documents that target the Jupyter engine within RStudio. These files will generally have an `.qmd` extension and include a `jupyter` option in the YAML front matter indicating which kernel to use. For example:
 
 ``` {.yaml}
 ---
@@ -83,6 +83,8 @@ jupyter: python3
 ```
 
 Note that the presence of the `jupyter` option also provides a sufficient hint to RStudio that it should render the file using Quarto rather than R Markdown.
+
+You can also enable interactive cell execution for `.qmd` files by setting the file type to "R Markdown" as described immediately above.
 
 ## R Package
 
