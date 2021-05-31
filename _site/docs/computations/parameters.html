@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Quarto – Exporting Notebooks</title>
+  <title>Quarto – Parameters</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -85,6 +85,8 @@
   <script src="../../site_libs/quarto-search/autocomplete.min.js"></script>
   <script src="../../site_libs/quarto-search/fuse.min.js"></script>
   <script src="../../site_libs/quarto-search/quarto-search.js"></script>
+  <link href="../../docs/authoring/markdown-basics.html" rel="next">
+  <link href="../../docs/computations/using-rstudio.html" rel="prev">
   <script src="../../site_libs/quarto-html/quarto.js"></script>
   <script src="../../site_libs/quarto-html/popper.min.js"></script>
   <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,7 +130,7 @@
 <header id="quarto-header" class="headroom fixed-top">
 <nav class="quarto-secondary-nav py-2 d-lg-none d-md-block " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <div class="container-fluid d-flex justify-content-between">
-    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Exporting Notebooks</h1>
+    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Parameters</h1>
     <button type="button" class="quarto-btn-toggle btn d-lg-none py-0 px-1 d-inline-block border-0 ">
       <i class="bi bi-chevron-right"></i>
     </button>
@@ -212,7 +214,7 @@
   <a href="../../docs/computations/using-rstudio.html" class="">Using RStudio</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/computations/parameters.html" class="">Parameters</a>
+  <a href="../../docs/computations/parameters.html" class="active">Parameters</a>
 </li>
         </ul>
       </div>
@@ -379,38 +381,74 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#export-options" class="nav-link" data-scroll-target="#export-options">Export Options</a></li>
+<li><a href="#definition" class="nav-link" data-scroll-target="#definition">Definition</a>
+<ul class="collapse">
+<li><a href="#juypter" class="nav-link" data-scroll-target="#juypter">Juypter</a></li>
+<li><a href="#knitr" class="nav-link" data-scroll-target="#knitr">Knitr</a></li>
+</ul></li>
+<li><a href="#rendering" class="nav-link" data-scroll-target="#rendering">Rendering</a></li>
 </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/exporting-notebooks.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/parameters.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
 <main>
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7">Exporting Notebooks</h1>
+<h1 class="title d-none d-lg-block display-7">Parameters</h1>
 </header>
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>If you have an existing Jupyter Notebook (.ipynb file) that you want to export to one of the formats supported by Pandoc, you can do this using <code>quarto render</code>. For example:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="co"># html by default</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="at">--to</span> pdf</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="at">--to</span> docx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>By default, Quarto will not re-execute the code cells in the notebook. If you want to execute code cells during render, specify the <code>--execute</code> flag. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="at">--execute</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You may have a set of parameters that are used to create different variations of a report. For example:</p>
+<ul>
+<li>Showing results for a specific geographic location.</li>
+<li>Running a report that covers a specific time period.</li>
+<li>Running a single analysis multiple times for different assumptions.</li>
+</ul>
+<p>This article describes how to define and use computational parameters with Quarto.</p>
 </section>
-<section id="export-options" class="level2">
-<h2 class="anchored" data-anchor-id="export-options">Export Options</h2>
-<p>There are dozens of options that you can use to customize exported output. You can specify these options by adding a raw YAML block at the top of your notebook:</p>
-<p><img src="images/jupyter-metadata.png" class="img-fluid"></p>
-<p>Alternatively, you can keep these options in a separate YAML file and reference this file using the <code>--metadata-file</code> command line argument. For example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="at">--metadata-file</span> options.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>See the <a href="basic-usage.html">Basic Usage</a> article to learn more about the various metadata options that can be used to customize output.</p>
+<section id="definition" class="level2">
+<h2 class="anchored" data-anchor-id="definition">Definition</h2>
+<p>Adding parameter definitions to a document works differently depending on whether you are using the <a href="https://jupyter.org">Jupyter</a> or <a href="https://yihui.name/knitr">Knitr</a> engine.</p>
+<section id="juypter" class="level3">
+<h3 class="anchored" data-anchor-id="juypter">Juypter</h3>
+<p>For Jupyter, Quarto uses the same syntax for defining parameters as <a href="https://papermill.readthedocs.io/en/latest/usage-parameterize.html">Papermill</a>. To parameterize a notebook, designate a cell with the tag <code>parameters</code> and provide appropriate default values:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>```{python}</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| tags: [parameters]</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When the notebook is executed with a set of new parameters a cell is injected which overrides these defaults as appropriate.</p>
+</section>
+<section id="knitr" class="level3">
+<h3 class="anchored" data-anchor-id="knitr">Knitr</h3>
+<p>For Knitr, the standard Knitr <code>params</code> YAML option is used to define parameters. For example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">params</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">alpha</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ratio</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="rendering" class="level2">
+<h2 class="anchored" data-anchor-id="rendering">Rendering</h2>
+<p>To render using different parameters you can pass them on the command line using the <code>-P</code> flag:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="at">-P</span> alpha:0.2 <span class="at">-P</span> ratio:0.3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Alternatively you can create a YAML file that defines the parameter values you want to render with, then call quarto render with the <code>--execute-params</code> flag:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render notebook.ipynb <span class="at">--execute-params</span> params.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <!-- -->
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
+      <a href="../../docs/computations/using-rstudio.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using RStudio</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../../docs/authoring/markdown-basics.html">
+        <span class="nav-page-text">Markdown Basics</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </div>
 </div> <!-- /main column -->
