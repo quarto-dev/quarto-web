@@ -323,7 +323,7 @@
   <a href="../../docs/output-formats/pdf-basics.html" class="">PDF Basics</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/output-formats/pdfs-and-latex.html" class="">PDFs and LaTeX</a>
+  <a href="../../docs/output-formats/pdf-engine.html" class="">PDF Engines</a>
 </li>
         </ul>
       </div>
@@ -402,6 +402,7 @@
 <li><a href="#sec-citations" class="nav-link" data-scroll-target="#sec-citations">Citation Syntax</a></li>
 <li><a href="#citation-style" class="nav-link" data-scroll-target="#citation-style">Citation Style</a></li>
 <li><a href="#bibliography-generation" class="nav-link" data-scroll-target="#bibliography-generation">Bibliography Generation</a></li>
+<li><a href="#including-uncited-items" class="nav-link" data-scroll-target="#including-uncited-items">Including Uncited Items</a></li>
 </ul></li>
 <li><a href="#footnotes" class="nav-link" data-scroll-target="#footnotes">Footnotes</a></li>
 </ul>
@@ -537,35 +538,51 @@ Wickham, Hadley. 2015. <em>R Packages</em>. 1st ed. O’Reilly Media, Inc.
 </div>
 </div>
 </section>
+<section id="including-uncited-items" class="level3">
+<h3 class="anchored" data-anchor-id="including-uncited-items">Including Uncited Items</h3>
+<p>If you want to include items in the bibliography without actually citing them in the body text, you can define a dummy <code>nocite</code> metadata field and put the citations there:</p>
+<pre><code>---
+nocite: |
+  @item1, @item2
+---
+
+@item3</code></pre>
+<p>In this example, the document will contain a citation for <code>item3</code> only, but the bibliography will contain entries for <code>item1</code>, <code>item2</code>, and <code>item3</code>.</p>
+<p>It is possible to create a bibliography with all the citations, whether or not they appear in the document, by using a wildcard:</p>
+<pre><code>---
+nocite: |
+  @*
+---</code></pre>
+</section>
 </section>
 <section id="footnotes" class="level2">
 <h2 class="anchored" data-anchor-id="footnotes">Footnotes</h2>
 <p>Pandoc supports numbering and formatting footnotes using the following syntax:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Here is a footnote reference,<span class="ot">[^1]</span> and another.<span class="ot">[^longnote]</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>Here is the footnote.</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ot">[^longnote]: </span>Here's one with multiple blocks.</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="in">    Subsequent paragraphs are indented to show that they</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>belong to the previous footnote.</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="in">        { some.code }</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="in">    The whole paragraph can be indented, or just the first</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="in">    line.  In this way, multi-paragraph footnotes work like</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="in">    multi-paragraph list items.</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>This paragraph won't be part of the note, because it</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>isn't indented.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Here is a footnote reference,<span class="ot">[^1]</span> and another.<span class="ot">[^longnote]</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ot">[^1]: </span>Here is the footnote.</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ot">[^longnote]: </span>Here's one with multiple blocks.</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="in">    Subsequent paragraphs are indented to show that they</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>belong to the previous footnote.</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="in">        { some.code }</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="in">    The whole paragraph can be indented, or just the first</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="in">    line.  In this way, multi-paragraph footnotes work like</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="in">    multi-paragraph list items.</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>This paragraph won't be part of the note, because it</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>isn't indented.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="output" class="level4">
 <h4 class="anchored" data-anchor-id="output">Output</h4>
 <p>Here is a footnote reference,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> and another.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p>This paragraph won’t be part of the note, because it isn’t indented.</p>
 <p>In addition, you can also write single paragraph footnotes inline using the following syntax:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Here is an inline note.^[Inlines notes are easier to write,</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>since you don't have to pick an identifier and move down to</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>type the note.]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Here is an inline note.^[Inlines notes are easier to write,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>since you don't have to pick an identifier and move down to</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>type the note.]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="output-1" class="level4">
 <h4 class="anchored" data-anchor-id="output-1">Output</h4>

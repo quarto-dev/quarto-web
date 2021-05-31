@@ -1,7 +1,9 @@
 ---
-title: "PDFs and LaTeX"
+title: "PDF Engines"
 format: html
 ---
+
+## Overview
 
 Pandoc supports the use of a wide range of TeX distributions and PDF compilation engines including pdflatex, xelatex, lualatex, tectonic, and latexmk.
 
@@ -20,23 +22,6 @@ $ quarto install tinytex
 If you prefer TeX Live, you can find instructions for installing it here: <https://tug.org/texlive/>.
 
 Note that Quarto's automatic installation of missing TeX packages will work for TinyTeX and TeX Live, but not for other TeX distributions (as it relies on TeX Live's [tlmgr](https://www.tug.org/texlive/tlmgr.html) command).
-
-## LaTeX Packages
-
-When creating a PDF document, Pandoc allows the use of [raw LaTeX](https://pandoc.org/MANUAL.html#extension-raw_tex) directives intermixed with markdown. In some cases this LaTeX will require additional LaTeX packages. To add these packages to your document, use the `header-includes` YAML option. For example:
-
-``` {.yaml}
-title: "My Document"
-format:
-  pdf:
-    header-includes: |
-      \usepackage{fontawesome}
-      \usepackage{sansmath}
-```
-
-Note the use of the `|` character on the line with `header-includes` to indicate that the value is a multi-line string.
-
-If you don't already have these packages installed locally, then Quarto will automatically install them during rendering of the document.
 
 ## Quarto PDF Engine
 
