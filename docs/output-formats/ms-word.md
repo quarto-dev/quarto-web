@@ -19,7 +19,8 @@ format:
 
 This example highlights a few of the options available for MS Word output. This document covers these and other options in detail.
 
-```{r, child=c("../authoring/_document-options-begin.Rmd")}
+```{.include}
+../authoring/_document-options-begin.md
 ```
 
 ## Templates
