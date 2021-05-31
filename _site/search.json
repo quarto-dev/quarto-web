@@ -480,6 +480,24 @@
     "text": "There are a wide variety of options available for customizing caption labels and references. These options are all specified within the crossref key of document metadata.\n\nTitles\nYou can specify the title prefix used for captions using *-title options. You can also specify the delimiter used between the prefix and the caption using the title-delim option. For example:\n---\ntitle: \"My Document\"\ncrossref:\n  fig-title: Fig     # (default is \"Figure\")\n  tbl-title: Tbl     # (default is \"Table\")\n  title-delim: —     # (default is \":\")\n---\n\n\nReferences\nYou can specify the prefix used for inline reference type using *-prefix options. You can also specify whether references should be hyper-linked using the ref-hyperlink option. For example:\n---\ntitle: \"My Document\"\ncrossref:\n  fig-prefix: figure   # (default is \"fig.\")\n  tbl-prefix: table    # (default is \"tbl.\")\n  ref-hyperlink: false # (default is true)\n---\n\n\nNumbering\nThere are a variety of numbering schemes available for cross-references, including:\n\narabic (1, 2, 3)\nroman (I, II, III, IV)\nroman i (i, ii, iii, iv)\nalpha x (start from letter ‘x’)\nalpha X (start from letter ‘X’)\n\nYou can specify the number scheme used for all types (other than sub-references) using the labels option. For sub-references (e.g. subfigures), you can specify the number scheme using the subref-labels option. For example:\n---\ntitle: \"My Document\"\ncrossref:\n  labels: alpha a        # (default is arabic)\n  subref-labels: roman i # (default is alpha a)\n---\nIf you would like, you can specify the number scheme for a specific type using the *-labels options. For example:\n---\ntitle: \"My Document\"\ncrossref:\n  fig-labels: alpha a    # (default is arabic)\n  tbl-labels: alpha a    # (default is arabic)\n  subref-labels: roman i # (default is alpha a)\n---\nIf both labels and a type specific label option is provided, the type specific option will override the labels option."
   },
   {
+    "href": "docs/authoring/pandoc-filters.html#overview",
+    "title": "Pandoc Filters",
+    "section": "Overview",
+    "text": "If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a Pandoc Filter that bridges the gap.\nPandoc consists of a set of readers and writers. When converting a document from one format to another, text is parsed by a reader into pandoc’s intermediate representation of the document—an “abstract syntax tree” or AST—which is then converted by the writer into the target format. The pandoc AST format is defined in the module Text.Pandoc.Definition in the pandoc-types package.\nA “filter” is a program that modifies the AST, between the reader and the writer.\nINPUT --reader--> AST --filter--> AST --writer--> OUTPUT\nPandoc’s built-in citation processing is implemented as a filter, as are many of Quarto’s extensions (e.g. cross-references, figure layout, etc.). Some other examples include:\n\n\n\n\n\n\n\nFilter\nDescription\n\n\n\n\ninclude-files\nFilter to include other files in the document.\n\n\ninclude-code-files\nFilter to include code from source files.\n\n\npagebreak\nConverts paragraps containing only the LaTeX \\newpage or \\pagebreak command into appropriate pagebreak markup for other formats."
+  },
+  {
+    "href": "docs/authoring/pandoc-filters.html#using-filters",
+    "title": "Pandoc Filters",
+    "section": "Using Filters",
+    "text": "Add one or more filters to document rendering using the filters option. For example:\nfilters:\n   - include-files.lua\n   - pagebreak.lua\nBy default, user filters are run before Quarto’s built-in filters. If you prefer to control the order of filters visa-vi Quarto just include quarto explicitly as a filter. For example, to run include-files.lua before Quarto filters and pagebreak.lua after, use this:\nfilters:\n  - include-files.lua\n  - quarto\n  - pagebreak.lua"
+  },
+  {
+    "href": "docs/authoring/pandoc-filters.html#writing-filters",
+    "title": "Pandoc Filters",
+    "section": "Writing Filters",
+    "text": "You can write Pandoc filters using Lua (via Pandoc’s built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process.\nWe strongly recommend using Lua Filters, which have the following advantages:\n\nNo external dependencies\nHigh performance (no serialization or process execution overhead)\nAccess to Pandoc’s library of Lua helper functions.\n\nSee the documentation on Writing Lua Filters for additional details.\nIf you want to write a JSON filter, see the documentation on Writing JSON filters."
+  },
+  {
     "href": "docs/authoring/figures-and-layout.html#figure-basics",
     "title": "Figures & Layout",
     "section": "Figure Basics",

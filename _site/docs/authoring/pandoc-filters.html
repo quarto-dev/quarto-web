@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Quarto – HTML Themes</title>
+  <title>Quarto – Pandoc Filters</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -85,8 +85,8 @@
   <script src="../../site_libs/quarto-search/autocomplete.min.js"></script>
   <script src="../../site_libs/quarto-search/fuse.min.js"></script>
   <script src="../../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../../docs/output-formats/pdf-basics.html" rel="next">
-  <link href="../../docs/output-formats/html-bootstrap.html" rel="prev">
+  <link href="../../docs/output-formats/html-basics.html" rel="next">
+  <link href="../../docs/authoring/callouts.html" rel="prev">
   <script src="../../site_libs/quarto-html/quarto.js"></script>
   <script src="../../site_libs/quarto-html/popper.min.js"></script>
   <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -130,7 +130,7 @@
 <header id="quarto-header" class="headroom fixed-top">
 <nav class="quarto-secondary-nav py-2 d-lg-none d-md-block " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <div class="container-fluid d-flex justify-content-between">
-    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">HTML Themes</h1>
+    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Pandoc Filters</h1>
     <button type="button" class="quarto-btn-toggle btn d-lg-none py-0 px-1 d-inline-block border-0 ">
       <i class="bi bi-chevron-right"></i>
     </button>
@@ -248,7 +248,7 @@
   <a href="../../docs/authoring/callouts.html" class="">Callout Blocks</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/authoring/pandoc-filters.html" class="">Pandoc Filters</a>
+  <a href="../../docs/authoring/pandoc-filters.html" class="active">Pandoc Filters</a>
 </li>
         </ul>
       </div>
@@ -269,14 +269,14 @@
           <ul class="list-unstyled sidebar-section depth2">
     <li class="">
         <div class="me-auto ">
-            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#html-collapse" aria-expanded="true">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 collapsed" data-bs-toggle="collapse" data-bs-target="#html-collapse" aria-expanded="false">
               <div class="me-auto  sidebar-item">
                 HTML
               </div>
             <div><i class="bi bi-chevron-right ms-2 "></i></div>
             </a>
         </div>
-      <div class="collapse  show" id="html-collapse">
+      <div class="collapse  " id="html-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
   <a href="../../docs/output-formats/html-basics.html" class="">HTML Basics</a>
@@ -285,7 +285,7 @@
   <a href="../../docs/output-formats/html-bootstrap.html" class="">HTML w/ Bootstrap</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/output-formats/html-themes.html" class="active">HTML Themes</a>
+  <a href="../../docs/output-formats/html-themes.html" class="">HTML Themes</a>
 </li>
         </ul>
       </div>
@@ -381,133 +381,85 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#basic-options" class="nav-link" data-scroll-target="#basic-options">Basic Options</a></li>
-<li><a href="#theme-options" class="nav-link" data-scroll-target="#theme-options">Theme Options</a></li>
-<li><a href="#custom-themes" class="nav-link" data-scroll-target="#custom-themes">Custom Themes</a></li>
+<li><a href="#using-filters" class="nav-link" data-scroll-target="#using-filters">Using Filters</a></li>
+<li><a href="#writing-filters" class="nav-link" data-scroll-target="#writing-filters">Writing Filters</a></li>
 </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/html-themes.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/authoring/pandoc-filters.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
 <main>
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7">HTML Themes</h1>
+<h1 class="title d-none d-lg-block display-7">Pandoc Filters</h1>
 </header>
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>HTML documents rendered with Quarto use Bootstrap 5 by default. This can be disabled or customized via the <code>theme</code> option:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span><span class="at"> default</span><span class="co"> # bootstrap 5 default</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span><span class="at"> cosmo</span><span class="co">   # cosmo bootswatch theme</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span><span class="at"> pandoc</span><span class="co">  # pandoc default html treatment</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span><span class="at"> none</span><span class="co">    # no css added to document</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that all of the features described in <a href="../../docs/output-formats/html-basics.html">HTML Basics</a> (e.g.&nbsp;code folding, citation hover, commenting, etc.) are still available with <code>theme: pandoc</code> or <code>theme: none</code>. However the features described in <a href="../../docs/output-formats/html-bootstrap.html">HTML Bootstrap</a> (e.g.&nbsp;floating toc, callouts, tabs) are only available for documents with Bootstrap.</p>
-<p>Quarto includes 25 themes from the <a href="https://bootswatch.com/">Bootswatch</a> project (for example, the website uses the <a href="https://bootswatch.com/cosmo/">cosmo</a> theme). Below we describe how to use SASS to create your own themes.</p>
-</section>
-<section id="basic-options" class="level2">
-<h2 class="anchored" data-anchor-id="basic-options">Basic Options</h2>
-<p>Pandoc supports a set of basic metadata options for customizing document appearance without directly using CSS. These options are available for both the <code>pandoc</code> theme as well as for all Bootstrap themes.</p>
-<p>If you are using a Bootstrap theme or the Pandoc theme, there are a set of options you can provide in document metadata to customize it’s appearance. These include:</p>
+<p>If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a <a href="https://pandoc.org/filters.html">Pandoc Filter</a> that bridges the gap.</p>
+<p>Pandoc consists of a set of readers and writers. When converting a document from one format to another, text is parsed by a reader into pandoc’s intermediate representation of the document—an “abstract syntax tree” or AST—which is then converted by the writer into the target format. The pandoc AST format is defined in the module <a href="https://hackage.haskell.org/package/pandoc-types-1.22/docs/Text-Pandoc-Definition.html"><code>Text.Pandoc.Definition</code></a> in the pandoc-types package.</p>
+<p>A “filter” is a program that modifies the AST, between the reader and the writer.</p>
+<pre><code>INPUT --reader--&gt; AST --filter--&gt; AST --writer--&gt; OUTPUT</code></pre>
+<p>Pandoc’s built-in citation processing is implemented as a filter, as are many of Quarto’s extensions (e.g.&nbsp;cross-references, figure layout, etc.). Some other examples include:</p>
 <table class="table">
 <colgroup>
-<col style="width: 28%">
-<col style="width: 71%">
+<col style="width: 40%">
+<col style="width: 59%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Option</th>
+<th>Filter</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>max-width</code></td>
-<td>The maximum width occupied by page content. Defaults to 1400px for bootstrap themes and 36em for the pandoc theme.</td>
+<td><a href="https://github.com/pandoc/lua-filters/tree/master/include-files">include-files</a></td>
+<td>Filter to include other files in the document.</td>
 </tr>
 <tr class="even">
-<td><code>mainfont</code></td>
-<td>Sets the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-family"><code>font-family</code></a> property for the document.</td>
+<td><a href="https://github.com/pandoc/lua-filters/tree/master/include-code-files">include-code-files</a></td>
+<td>Filter to include code from source files.</td>
 </tr>
 <tr class="odd">
-<td><code>fontsize</code></td>
-<td>Sets the base CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-size"><code>font-size</code></a> for the document.</td>
-</tr>
-<tr class="even">
-<td><code>fontcolor</code></td>
-<td>Sets the default text <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color"><code>color</code></a> for the document.</td>
-</tr>
-<tr class="odd">
-<td><code>linkcolor</code></td>
-<td>Sets the default text <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color"><code>color</code></a> for hyperlinks.</td>
-</tr>
-<tr class="even">
-<td><code>monofont</code></td>
-<td>Sets the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/font-family"><code>font-family</code></a> property for <code>&lt;code&gt;</code> elements.</td>
-</tr>
-<tr class="odd">
-<td><code>monobackgroundcolor</code></td>
-<td>Sets the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-color"><code>background-color</code></a> property for <code>&lt;code&gt;</code> elements.</td>
-</tr>
-<tr class="even">
-<td><code>linestretch</code></td>
-<td>Sets the CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/line-height"><code>line-height</code></a> property (affects distance between lines of text, defaults to 1.5).</td>
-</tr>
-<tr class="odd">
-<td><code>backgroundcolor</code></td>
-<td>Sets the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-color"><code>background-color</code></a> for the document.</td>
-</tr>
-<tr class="even">
-<td><code>margin-left</code>, <code>margin-right</code>, <code>margin-top</code>, <code>margin-bottom</code></td>
-<td>Sets the CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/margin"><code>margin</code></a> properties for the document body.</td>
+<td><a href="https://github.com/pandoc/lua-filters/tree/master/pagebreak">pagebreak</a></td>
+<td>Converts paragraps containing only the LaTeX <code>\newpage</code> or <code>\pagebreak</code> command into appropriate pagebreak markup for other formats.</td>
 </tr>
 </tbody>
 </table>
-<p>For example. here we set the font-size a bit larger and specify that we want a bit more space between lines of text:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span><span class="at"> </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> cosmo</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">font-size</span><span class="kw">:</span><span class="at"> 1.1em</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">linestretch</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="theme-options" class="level2">
-<h2 class="anchored" data-anchor-id="theme-options">Theme Options</h2>
-<p>While the basic customization described above handles many common requirements, you can do extensive additional customization using <a href="https://sass-lang.com/">SASS</a> theme files. Bootstrap defines over 1,400 variables that control fonts, colors, padding, borders, and much more. You can see all of the variables here:</p>
-<p><a href="https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_variables.scss" class="uri">https://github.com/twbs/bootstrap-sass/blob/master/assets/stylesheets/bootstrap/_variables.scss</a></p>
-<p>SASS theme files can define both <em>variables</em> that globally set things like colors and fonts, as well as <em>rules</em> that define more fine grained behavior. To customize an existing Bootstrap theme with your own set of variables and/or rules, just provide the base theme and then your custom theme file(s):</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> cosmo</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> custom.scss</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Your <code>custom.scss</code> file might look something like this:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">/*-- scss:defaults --*/</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>$h2-font-size<span class="in">:          1.6rem !default</span>;</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>$headings-font-weight<span class="in">:  500 !default</span>;</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>$body-color<span class="in">:            $gray-700</span> !default;</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">/*-- scss:rules --*/</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>h1<span class="op">,</span> h2<span class="op">,</span> h3<span class="op">,</span> h4<span class="op">,</span> h5<span class="op">,</span> h6 {</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">text-shadow</span>: <span class="dv">-1</span><span class="dt">px</span> <span class="dv">-1</span><span class="dt">px</span> <span class="dv">0</span> <span class="fu">rgba(</span><span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">.3</span><span class="fu">)</span><span class="op">;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that the variables section is denoted by the <code>/*-- scss:defaults --*/</code> comment and the rules section (where normal CSS rules go) is denoted by the <code>/*-- scss:rules --*/</code> comment.</p>
+<section id="using-filters" class="level2">
+<h2 class="anchored" data-anchor-id="using-filters">Using Filters</h2>
+<p>Add one or more filters to document rendering using the <code>filters</code> option. For example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="kw">-</span><span class="at"> include-files.lua</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By default, user filters are run before Quarto’s built-in filters. If you prefer to control the order of filters visa-vi Quarto just include <code>quarto</code> explicitly as a filter. For example, to run <code>include-files.lua</code> before Quarto filters and <code>pagebreak.lua</code> after, use this:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> include-files.lua</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> quarto</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="custom-themes" class="level2">
-<h2 class="anchored" data-anchor-id="custom-themes">Custom Themes</h2>
-<p>You can naturally also create an entirely custom theme and provide only that (in this case you will inherit from the default Bootstrap theme):</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span><span class="at"> custom.scss</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>For example, here are the theme files for the 25 built-in Bootswatch themes:</p>
-<p><a href="https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/bootstrap/themes" class="uri">https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/bootstrap/themes</a></p>
-<p>You can read more about the custom theming design here:</p>
-<p><a href="https://github.com/quarto-dev/quarto-cli/blob/main/design/quarto-themes.md" class="uri">https://github.com/quarto-dev/quarto-cli/blob/main/design/quarto-themes.md</a></p>
+<section id="writing-filters" class="level2">
+<h2 class="anchored" data-anchor-id="writing-filters">Writing Filters</h2>
+<p>You can write Pandoc filters using Lua (via Pandoc’s built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process.</p>
+<p>We strongly recommend using Lua Filters, which have the following advantages:</p>
+<ul>
+<li><p>No external dependencies</p></li>
+<li><p>High performance (no serialization or process execution overhead)</p></li>
+<li><p>Access to Pandoc’s library of <a href="https://pandoc.org/lua-filters.html#pandoc-module">Lua helper functions</a>.</p></li>
+</ul>
+<p>See the documentation on <a href="https://pandoc.org/lua-filters.html">Writing Lua Filters</a> for additional details.</p>
+<p>If you want to write a JSON filter, see the documentation on <a href="https://pandoc.org/filters.html">Writing JSON filters</a>.</p>
 <!-- -->
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
-      <a href="../../docs/output-formats/html-bootstrap.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">HTML w/ Bootstrap</span>
+      <a href="../../docs/authoring/callouts.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Callout Blocks</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../docs/output-formats/pdf-basics.html">
-        <span class="nav-page-text">PDF Basics</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../docs/output-formats/html-basics.html">
+        <span class="nav-page-text">HTML Basics</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </div>
