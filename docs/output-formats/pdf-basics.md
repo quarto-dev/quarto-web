@@ -20,6 +20,8 @@ format:
 
 This example highlights a few of the options available for PDF output. This article covers these and other options in detail.
 
+If you want to produce raw LaTeX output (a .tex file) rather than a PDF, all of the options documented here are still available (see the [LaTeX Output] section below for additional details).
+
 ::: {.callout-note}
 Note that while we will focus here exclusively on the use LaTeX to create PDFs, Pandoc also has support for creating PDFs using ConTeXt, roff ms, or HTML (via wkhtmltopdf). See the Pandoc documentation on [Creating a PDF](https://pandoc.org/MANUAL.html#creating-a-pdf) for additional details.
 :::
@@ -34,7 +36,7 @@ $ quarto install tinytex
 
 See the article on [PDF Engines](pdf-engine.md) for details on using other TeX distributions and PDF compilation engines.
 
-```{.include}
+``` {.include}
 ../authoring/_document-options-begin.md
 ```
 
@@ -122,15 +124,15 @@ In some cases raw LaTeX will require additional LaTeX packages. The [LaTeX Inclu
 
 If you want to include additional content in your document from another file, you can use the `include-in` options:
 
-+-------------------------+--------------------------------------------------------------------------------------------------------------------------+
-| Option                  | Description                                                                                                              |
-+=========================+==========================================================================================================================+
-| `include-in-header`     | Include contents of *file*, verbatim, into the LaTeX preamble.                                                           |
-+-------------------------+--------------------------------------------------------------------------------------------------------------------------+
-| `include-before-body`   | Include contents of *file*, verbatim, at the beginning of the document body (e.g. after the `\begin{document}` command). |
-+-------------------------+--------------------------------------------------------------------------------------------------------------------------+
-| `include-after-body`    | Include contents of *file*, verbatim, at the end of the document body (before the the `\end{document}`).                 |
-+-------------------------+--------------------------------------------------------------------------------------------------------------------------+
++-----------------------+--------------------------------------------------------------------------------------------------------------------------+
+| Option                | Description                                                                                                              |
++=======================+==========================================================================================================================+
+| `include-in-header`   | Include contents of *file*, verbatim, into the LaTeX preamble.                                                           |
++-----------------------+--------------------------------------------------------------------------------------------------------------------------+
+| `include-before-body` | Include contents of *file*, verbatim, at the beginning of the document body (e.g. after the `\begin{document}` command). |
++-----------------------+--------------------------------------------------------------------------------------------------------------------------+
+| `include-after-body`  | Include contents of *file*, verbatim, at the end of the document body (before the the `\end{document}`).                 |
++-----------------------+--------------------------------------------------------------------------------------------------------------------------+
 
 You can specify a single file for multiple files for each of these options. For example:
 
@@ -164,3 +166,31 @@ format:
 Note the use of the `|` character on the line with `header-includes` to indicate that the value is a multi-line string.
 
 If you don't already have these packages installed locally, then Quarto will automatically install them during rendering of the document.
+
+## LaTeX Output
+
+If you want Quarto to produce a LaTeX file (.tex) rather than a PDF (for example, if you want to do your own processing of the PDF) there are two ways to accomplish this:
+
+1.  Use the `latex` format rather than the `pdf` format. For example:
+
+    ``` {.yaml}
+    format:
+      latex:
+        documentclass: report
+        classoption: [twocolumn, landscape]
+        lof: true
+        lot: true
+    ```
+
+    Note that all of the PDF format options documented above will also work for the `latex` format.
+
+2.  Use the `pdf` format along with the `keep-tex` option. For example:
+
+    ``` {.yaml}
+    format:
+      pdf:
+        documentclass: report
+        keep-tex: true
+    ```
+
+    This technique will produce a PDF file for preview, but will also create a .tex file alongside it that you can do subsequent processing on.
