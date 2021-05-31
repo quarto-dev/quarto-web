@@ -15,7 +15,7 @@
     "href": "docs/books/book-basics.html#workflow",
     "title": "Creating a Book",
     "section": "Workflow",
-    "text": "Development\nWhen working on a book, you’ll typically run the local development server as described above and incrementally preview content as you work:\n$ quarto serve\nIf you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.\nNote that development server updates do not cause an update to the final book output. Consequently, you should always quarto render your site before deploying it as described below in Publishing.\n\n\nRStudio\nNote that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the quarto R package:\nlibrary(quarto)\nquarto_serve()\nNote that you should also be sure to disable the standard RStudio preview behavior when using this workflow:\n\nNote that the (No Preview) option is checked to disable the normal preview on render behavior.\nRStudio v1.4 automatically uses Quarto to render Rmd documents whenever it sees a format key in the YAML front matter (as opposed to an output key). For projects, you typically provide the format configuration in _quarto.yml so may not have a format key in individual documents.\nHowever, since RStudio v1.4 is not aware of Quarto projects, you should add an explicit entry in YAML front-matter to ensure that Quarto (rather than the rmarkdown package) is used for rendering:\n---\ntitle: \"My Page\"\nknit: quarto render\n---\n\n\nPublishing\nWhen you are ready to publish the book, use the render command to render all output formats:\n$ quarto render --to all\nIf you pass no arguments to quarto render the default format (HTML) will be rendered. You can also render individual formats via the --to argument:\n$ quarto render           # render default format (HTML)\n$ quarto render --to pdf  # render PDF format only\nThe output of your book will be written to the _book sub-directory of your book project:\nmybook/\n  _book/\n    index.html # and other website files\n    mybook.pdf\n    mybook.epub"
+    "text": "Development\nWhen working on a book, you’ll typically run the local development server as described above and incrementally preview content as you work:\n$ quarto serve\nIf you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.\nNote that development server updates do not cause an update to the final book output. Consequently, you should always quarto render your site before deploying it as described below in Publishing.\n\n\nRStudio\nNote that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the quarto R package:\nlibrary(quarto)\nquarto_serve()\nNote that you should also be sure to disable the standard RStudio preview behavior when using this workflow:\n\nNote that the (No Preview) option is checked to disable the normal preview on render behavior.\nRStudio v1.4 automatically uses Quarto to render Rmd documents whenever it sees a format key in the YAML front matter (as opposed to an output key). For projects, you typically provide the format configuration in _quarto.yml so may not have a format key in individual documents.\nHowever, since RStudio v1.4 is not aware of Quarto projects, you should add an explicit entry in YAML front-matter to ensure that Quarto (rather than the rmarkdown package) is used for rendering:\n---\ntitle: \"My Page\"\nknit: quarto render\n---\n\n\nPublishing\nWhen you are ready to publish the book, use the render command to render all output formats:\n$ quarto render --to all\nIf you pass no arguments to quarto render the default format (HTML) will be rendered. You can also render individual formats via the --to argument:\n$ quarto render           # render default format (HTML)\n$ quarto render --to pdf  # render PDF format only\nThe output of your book will be written to the _book sub-directory of your book project:\nmybook/\n  _book/\n    index.html # and other website files\n    mybook.pdf\n    mybook.epub\nSee the documentation on Publishing Websites for details on how to publish books to GitHub Pages, Netlify, and other services. Note that in that documentation the output-dir may be referred to as _site: for publishing books you should use _book rather than _site."
   },
   {
     "href": "docs/books/book-basics.html#learning-more",
@@ -888,10 +888,58 @@
     "text": "Generating pages for Hugo requires just a simple Quarto render:\n$ quarto render hello-quarto.qmd\nWhenever your render the hello-quarto.qmd file, Quarto will execute the code in the file (writing any generated plots, etc. into the article’s directory) and then generate an index.md file that is subsequently processed by Hugo.\nIf you are running the hugo server command for live preview, you will see the updated version of your page whenever you render.\nNote that the index.md file is only updated when you explicitly render with Quarto. Running the hugo command to build your site just renders the index.md file — if you want to regenerate this file based on updated code or data you need to explicitly quarto render it."
   },
   {
-    "href": "docs/websites/publishing-websites.html",
+    "href": "docs/websites/publishing-websites.html#overview",
     "title": "Publishing Websites",
-    "section": "",
-    "text": ""
+    "section": "Overview",
+    "text": "There are a wide variety of ways to publish Quarto websites. Website content is by default written to the _site sub-directory (you can customize this using the output-dir option). Publishing is simply a matter of copying the output directory to a web server or web hosting service.\nBelow we describe several convenient options for Quarto website deployment including GitHub Pages, Netlify, RStudio Connect, Firebase, [Site44], and Amazon S3. We’ll mostly defer to the documentation provided by the various services, but will note any Quarto website specific configuration required."
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#rendering-for-publish",
+    "title": "Publishing Websites",
+    "section": "Rendering for Publish",
+    "text": "The most important thing you should be sure to do before publishing is a final render of your project:\n$ quarto render\nIf you are publishing a book you’ll want to add the --to all argument to ensure that all output formats (e.g. PDF, EPUB) have up to date content:\n$ quarto render --to all\nThis is particularly important to remember because incremental changes you make when using the development server aren’t rendered into the output directory. To ensure that your output is up to date before publishing you should always do a full quarto render."
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#github-pages",
+    "title": "Publishing Websites",
+    "section": "GitHub Pages",
+    "text": "GitHub Pages is a service that lets you publish a website from any GitHub repository. There are a few configuration steps required to host a Quarto website using GitHub Pages:\n\nCreate a file named .nojekyll in your repository (this is required to disable some processing of HTML files that GitHub does by default). You can do this with the following:\n$ touch .nojekyll\nSet the output-dir within your _quarto.yml project file to “docs”:\nproject:\n  type: site\n  output-dir: docs\nConfigure your gh-pages to serve content from the “docs” directory:\n\n\nSee the GitHub Pages documentation for additional details on creating and deploying websites with GitHub."
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#netlify",
+    "title": "Publishing Websites",
+    "section": "Netlify",
+    "text": "Netlify is a popular website hosting service that allows for both direct upload of website files or integrated publishing from Git repositories (GitHub, GitLab, or Bitbucket) via commit-hooks.\nIf you are using Netlify Git integration, be sure to set the publish directory to the output directory of your website (_site by default but modifiable via the output-dir metadata value). For example:"
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#rstudio-connect",
+    "title": "Publishing Websites",
+    "section": "RStudio Connect",
+    "text": "RStudio Connect is a server product from RStudio for secure sharing of websites, applications, reports, and plots.\nYou can deploy a Quarto website to RStudio Connect from the command line using the quarto_publish() function from the R quarto package. For example:\nlibrary(quarto)\nquarto_publish(server = \"https://rsc.example.com\")\nNote that once you’ve published your site for the first time you can omit the server argument:\nquarto_publish()\nUnlike the other website publishing options described here, RStudio Connect is a server that you run inside an organization, so is suitable for publishing content that you only want visible within your organization’s network as opposed to visible to the entire internet."
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#google-firebase",
+    "title": "Publishing Websites",
+    "section": "Google Firebase",
+    "text": "Google Firebase has a web hosting service that enables easy deployment of websites using a set of command line tools.\nFirebase websites by default deploy content from the public directory of the Firebase project directory. This means that you should set the output-dir to \"public\" within _quarto.yml:\nproject:\n  type: site\n  output-dir: public"
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#site44-dropbox",
+    "title": "Publishing Websites",
+    "section": "Site44 (Dropbox)",
+    "text": "Site44 is a service that allows you to publish websites from within Dropbox folders. Site44 creates a Dropbox/Apps/site44 directory, and any folders within that directory are published as websites.\nThe recommended workflow for deploying Distill websites to Site44 is to develop your website in a separate project directory, and then, when it’s ready for final publishing, copy the contents of the _site directory to the folder for your website."
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#amazon-s3",
+    "title": "Publishing Websites",
+    "section": "Amazon S3",
+    "text": "If you are a user of Amazon Web Services you can serve your website directly from Amazon S3. Note however that this option is a bit more technically involved than GitHub Pages, Netlify, or Site 44. See the article on Hosting a Static Website on Amazon S3 for additional details."
+  },
+  {
+    "href": "docs/websites/publishing-websites.html#other-services",
+    "title": "Publishing Websites",
+    "section": "Other services",
+    "text": "Any web server or web host can be used to deploy a Distill website. Here’s a recent CNET roundup of other web hosts you could consider. You can also deploy a Distill website on any internal (intranet) web server."
   },
   {
     "href": "docs/websites/website-navigation.html#overview",

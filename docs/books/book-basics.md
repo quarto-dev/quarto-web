@@ -131,6 +131,8 @@ mybook/
     mybook.epub
 ```
 
+See the documentation on [Publishing Websites](../websites/publishing-websites.md) for details on how to publish books to GitHub Pages, Netlify, and other services. Note that in that documentation the `output-dir` may be referred to as `_site`: for publishing books you should use `_book` rather than `_site`.
+
 ## Learning More
 
 Once you are familiar with the basic mechanics, read the article on [Book Authoring](book-authoring.md) to learn about:
