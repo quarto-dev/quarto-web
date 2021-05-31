@@ -20,7 +20,7 @@ format:
 This example highlights a few of the options available for MS Word output. This document covers these and other options in detail.
 
 ```{.include}
-../authoring/_document-options-begin.md
+_document-options-begin.md
 ```
 
 ## Templates

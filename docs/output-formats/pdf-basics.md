@@ -37,7 +37,7 @@ $ quarto install tinytex
 See the article on [PDF Engines](pdf-engine.md) for details on using other TeX distributions and PDF compilation engines.
 
 ``` {.include}
-../authoring/_document-options-begin.md
+_document-options-begin.md
 ```
 
 ## Output Options
