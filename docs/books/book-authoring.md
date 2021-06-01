@@ -234,10 +234,13 @@ book:
 
 You can also use the `attribution` and `page-navigation` options to customize book chapter footer:
 
++-------------------+--------------------------------------------------------------------------------------------------------------+
 | Option            | Description                                                                                                  |
-|-------------------|--------------------------------------------------------------------------------------------------------------|
++===================+==============================================================================================================+
 | `attribution`     | Attribution text (e.g. copyright and/or creative commons license) to display at the bottom of book chapters. |
++-------------------+--------------------------------------------------------------------------------------------------------------+
 | `page-navigation` | Provide navigation to previous and next book chapters (defaults to `true`).                                  |
++-------------------+--------------------------------------------------------------------------------------------------------------+
 
 ## Cross References
 
@@ -431,12 +434,14 @@ You can include additional LaTeX directives in the preamble of your book using t
 ``` {.yaml}
 format:
   pdf: 
-    documentclass: book
+    documentclass: scrbook
     include-in-header: preamble.tex
     fontfamily: libertinus
 ```
 
-Note that Quarto books use `documentclass: report` by default. You can switch to `book` as demonstrated above. You can find a summary of the differences between `book` and `report` here: <https://tex.stackexchange.com/questions/36988>
+Quarto uses the [KOMA Script](https://ctan.org/pkg/koma-script) `scrreprt` document class by default for PDF books. KOMA-Script classes are drop-in replacements for the standard classes with an emphasis on typography and versatility.
+
+You can switch to KOMA `scrbook` as demonstrated above, or to the standard LaTeX `book` and `report` classes. You can find a summary of the differences between `book` and `report` here: <https://tex.stackexchange.com/questions/36988>
 
 ### MS Word
 

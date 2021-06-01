@@ -13,7 +13,7 @@ title: "My document"
 format:
   pdf:
     toc: true
-    documentclass: report
+    number-sections: true
     colorlinks: true
 ---
 ```
@@ -35,6 +35,23 @@ $ quarto install tinytex
 ```
 
 See the article on [PDF Engines](pdf-engine.md) for details on using other TeX distributions and PDF compilation engines.
+
+## Document Class
+
+Quarto uses [KOMA Script](https://ctan.org/pkg/koma-script) document classes by default for PDF documents and books. KOMA-Script classes are drop-in replacements for the standard classes with an emphasis on typography and versatility. 
+
+For PDF documents this results in the following Pandoc options set by default:
+
+```yaml
+format:
+  pdf:
+    documentclass: scrartcl
+    papersize: letter
+```
+
+You can set `documentclass` to the standard `article`, `report` or `book` classes, to the KOMA Script equivalents `scrartcl`, `scrbook`, and `scrreprt`, or to any other class made available by LaTeX packages you have installed.
+
+See the [Output Options] section below for additional details on customizing LaTeX document options.
 
 ``` {.include}
 _document-options-begin.md
