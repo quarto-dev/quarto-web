@@ -47,7 +47,7 @@ Quarto uses the standard Pandoc markdown representation for citations (e.g. `[@c
 +-------------------------------------------+-------------------------------------------------------------------+
 |     Blah Blah [@wickham2015; @knuth1984]. | Blah Blah [@wickham2015; @knuth1984].                             |
 +-------------------------------------------+-------------------------------------------------------------------+
-|     Smith says blah [-@wickham2015]       | Wickham says blah [-@wickham2015]                                 |
+|     Wickham says blah [-@wickham2015]     | Wickham says blah [-@wickham2015]                                 |
 +-------------------------------------------+-------------------------------------------------------------------+
 
 You can also write in-text citations, as follows:
