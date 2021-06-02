@@ -300,6 +300,69 @@ jupyter: python3
 ---
 ```
 
+## Figure Options
+
+There are a number of ways to control the default width and height of figures generated from code. First, it's important to know that Quarto sets a default width and height for figures appropriate to the target output format. Here are the defaults (expressed in inches):
+
+| Format                  | Default   |
+|-------------------------|-----------|
+| Default                 | 7 x 5     |
+| HTML Slides             | 9.5 x 6.5 |
+| HTML Slides (reveal.js) | 9 x 5     |
+| PDF                     | 6.5 x 4.5 |
+| PDF Slides (Beamer)     | 10 x 7    |
+| PowerPoint              | 7.5 x 5.5 |
+| MS Word, ODT, RTF       | 5 x 4     |
+| EPUB                    | 5 x 4     |
+| Hugo                    | 8 x 5     |
+
+These defaults were chosen to provide attractive well proportioned figures, but feel free to experiment to see whether you prefer another default size. You can change the default sizes using the `fig-width` and `fig-height` options. For example:
+
+``` {.yaml}
+---
+title: "My Document"
+format: 
+  html:
+    fig-width: 8
+    fig-height: 6
+  pdf:
+    fig-width: 7
+    fig-height: 5
+---
+```
+
+How do these sizes make their way into the engine-level defaults for generating figures? This differs by engine:
+
+-   For the Knitr engine, these values become the default values for the `fig.width` and `fig.height` chunk options. You can override these default values via chunk level options.
+
+-   For the Jupyter engine, these values are used to set the [Matplotlib](https://matplotlib.org/stable/tutorials/introductory/customizing.html) `figure.figsize` rcParam (you can of course manually override these defaults for any given plot).
+
+    ::: {.callout-note}
+    If you are using another graphics library with Jupyter and want to utilize these values, you can read them from `QUARTO_FIG_WIDTH` and `QUARTO_FIG_HEIGHT` environment variables.
+    :::
+
+### Caption and Alt Text
+
+You can specify the caption and alt text for figures generated from code using the `fig.cap` and `fig.alt` options. For example, here we add these options to a Python code cell that creates a plot:
+
+```` {.python}
+```{python}
+#| fig.cap: "Polar axis plot"
+#| fig.alt: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
 ## Engine Options {#engine-binding}
 
 ### Jupyter Kernel
