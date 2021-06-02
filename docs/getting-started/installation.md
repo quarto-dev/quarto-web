@@ -5,33 +5,15 @@ knit: quarto render
 
 ## Quarto CLI
 
-Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of [Pandoc](https://pandoc.org)). 
+Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of [Pandoc](https://pandoc.org)). You can install the latest release of the Quarto CLI from:
 
-To install the latest version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`). For example:
-
-``` {.bash}
-$ git clone https://github.com/quarto-dev/quarto-cli
-$ cd quarto-cli
-$ ./configure-macos.sh
-```
+<https://github.com/quarto-dev/quarto-cli/releases/latest>
 
 You can verify that Quarto has been installed correctly with:
 
 ``` {.bash}
 $ quarto help
 ```
-
-To update to the latest development version, just `git pull` from the local repo directory:
-
-``` {.bash}
-$ cd quarto-cli
-$ git pull
-```
-
-::: {.callout-note}
-Quarto is not currently available for Windows, however a Windows release is imminent. Please check back here in a few days to see if a release is available.
-:::
-
 
 ## Computational Tools
 
@@ -78,3 +60,20 @@ $ quarto install tinytex
 ```
 
 If you prefer TeX Live, you can find instructions for installing it here: <https://tug.org/texlive/>.
+
+## Development Version
+
+To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-windows.cmd`). For example:
+
+``` {.bash}
+$ git clone https://github.com/quarto-dev/quarto-cli
+$ cd quarto-cli
+$ ./configure-macos.sh
+```
+
+To update to the latest development version, just `git pull` from the local repo directory:
+
+``` {.bash}
+$ cd quarto-cli
+$ git pull
+```
