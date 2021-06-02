@@ -23,11 +23,31 @@ Note that for LaTeX / PDF output figures are automatically numbered (you can arr
 
 ### Alt text
 
-You can add alternative text to a figure by adding the `fig.alt` attribute to the image. For example:
+You can add alternative text to a figure by adding the `fig.alt` attribute to the image. For example, the following Markdown...
 
 ``` {.markdown}
-![Elephant](elephant.png){fig.alt="A picture of an elephant."}
+![Caption](elephant.png){fig.alt="A drawing of an elephant."}
 ```
+... will create this HTML:
+
+```{.html}
+<img src="elephant.png" class="img-fluid figure-img" alt="A drawing of an elephant.">
+```
+
+Note that the figure caption, title, and alt text can all be different. For example, the following code...
+
+``` {.markdown}
+![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
+```
+...produces this HTML...
+
+```{.html}
+<img src="elephant.png" title="Title: An elephant" class="img-fluid figure-img" alt="A drawing of an elephant.">
+```
+
+The resulting figure:
+
+![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
 
 ### Linked Figures
 
