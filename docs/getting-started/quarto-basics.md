@@ -50,7 +50,7 @@ Pandoc supports a wide variety of [command line options](https://pandoc.org/MANU
 $ quarto render document.ipynb --to pdf --toc --number-sections
 ```
 
-We'll talk in more depth about the mechanics of using code chunks in the articles on [Executing Code](../computations/executing-code.md). However, for the remainder of this article we'll just focus on things applicable to all markdown input types whether they contain code or not.
+We'll talk in more depth about the mechanics of using code chunks in the articles on [Running Code](../computations/running-code.md). However, for the remainder of this article we'll just focus on things applicable to all markdown input types whether they contain code or not.
 
 ## YAML Options
 
@@ -134,7 +134,7 @@ Note that you can share format options across a set of documents using [Quarto P
 
 ## Learning More
 
-[Executing Code](../computations/executing-code.md) covers creating computational documents with Quarto in more depth, including how to use Quarto with [JupyterLab](../computations/using-jupyter-lab.md) and [RStudio](../computations/using-rstudio.md).
+[Running Code](../computations/running-code.md) covers creating computational documents with Quarto in more depth, including how to use Quarto with [JupyterLab](../computations/using-jupyter-lab.md) and [RStudio](../computations/using-rstudio.md).
 
 The [Authoring](../authoring/markdown-basics.md) section describes the capabilities of Pandoc markdown, as well as Quarto extensions for [Cross References](../authoring/cross-references.md), [Figures and Layout](../authoring/figures-and-layout.md), and [Callout Blocks](../authoring/callouts.md).
 
