@@ -53,7 +53,7 @@ Quarto uses leading comments with a special prefix (`#|`) to denote cell options
 
 Note that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.
 
-There are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on [Output Outputs](../computations/executing-code.md) for additional details.
+There are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on [Output Outputs](../computations/execution-options.md#output-options) for additional details.
 
 ## Cell Execution
 

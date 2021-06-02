@@ -84,4 +84,4 @@ While this example demonstrates rendering a `.qmd` markdown file, Quarto is also
 
 [Quarto Basics](docs/getting-started/quarto-basics.md) will help you learn the core mechanics of rendering markdown from the command line as well as how to specify document formats and options.
 
-[Executing Code](docs/computations/executing-code.md) covers creating computational documents with Quarto in more depth, including how to use Quarto with [JupyterLab](docs/computations/using-jupyter-lab.md) and [RStudio](docs/computations/using-rstudio.md).
+[Running Code](docs/computations/running-code.md) covers creating computational documents with Quarto in more depth, including how to use Quarto with [JupyterLab](docs/computations/using-jupyter-lab.md) and [RStudio](docs/computations/using-rstudio.md).

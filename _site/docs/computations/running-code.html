@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Quarto – Using RStudio</title>
+  <title>Quarto – Running Code</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -85,8 +85,8 @@
   <script src="../../site_libs/quarto-search/autocomplete.min.js"></script>
   <script src="../../site_libs/quarto-search/fuse.min.js"></script>
   <script src="../../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../../docs/computations/parameters.html" rel="next">
-  <link href="../../docs/computations/using-jupyter-lab.html" rel="prev">
+  <link href="../../docs/computations/execution-options.html" rel="next">
+  <link href="../../docs/getting-started/quarto-projects.html" rel="prev">
   <script src="../../site_libs/quarto-html/quarto.js"></script>
   <script src="../../site_libs/quarto-html/popper.min.js"></script>
   <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -130,7 +130,7 @@
 <header id="quarto-header" class="headroom fixed-top">
 <nav class="quarto-secondary-nav py-2 d-lg-none d-md-block " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <div class="container-fluid d-flex justify-content-between">
-    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Using RStudio</h1>
+    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Running Code</h1>
     <button type="button" class="quarto-btn-toggle btn d-lg-none py-0 px-1 d-inline-block border-0 ">
       <i class="bi bi-chevron-right"></i>
     </button>
@@ -205,7 +205,7 @@
       <div class="collapse  show" id="computations-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="../../docs/computations/running-code.html" class="">Running Code</a>
+  <a href="../../docs/computations/running-code.html" class="active">Running Code</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/computations/execution-options.html" class="">Execution Options</a>
@@ -214,7 +214,7 @@
   <a href="../../docs/computations/using-jupyter-lab.html" class="">Using JupyterLab</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/computations/using-rstudio.html" class="active">Using RStudio</a>
+  <a href="../../docs/computations/using-rstudio.html" class="">Using RStudio</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/computations/parameters.html" class="">Parameters</a>
@@ -406,110 +406,228 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#knit-with-quarto" class="nav-link" data-scroll-target="#knit-with-quarto">Knit with Quarto</a></li>
-<li><a href="#chunk-options" class="nav-link" data-scroll-target="#chunk-options">Chunk Options</a></li>
-<li><a href="#rmd-extension" class="nav-link" data-scroll-target="#rmd-extension">Rmd Extension</a></li>
-<li><a href="#jupyter-engine" class="nav-link" data-scroll-target="#jupyter-engine">Jupyter Engine</a></li>
-<li><a href="#r-package" class="nav-link" data-scroll-target="#r-package">R Package</a></li>
+<li><a href="#executing-code-blocks" class="nav-link" data-scroll-target="#executing-code-blocks">Executing Code Blocks</a>
+<ul class="collapse">
+<li><a href="#python-jupyter" class="nav-link" data-scroll-target="#python-jupyter">Python (Jupyter)</a></li>
+<li><a href="#r-knitr" class="nav-link" data-scroll-target="#r-knitr">R (Knitr)</a></li>
+<li><a href="#non-executable-blocks" class="nav-link" data-scroll-target="#non-executable-blocks">Non-Executable Blocks</a></li>
+</ul></li>
+<li><a href="#rendering" class="nav-link" data-scroll-target="#rendering">Rendering</a></li>
+<li><a href="#engine-binding" class="nav-link" data-scroll-target="#engine-binding">Engine Binding</a></li>
 </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/using-rstudio.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/running-code.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
 <main>
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7">Using RStudio</h1>
+<h1 class="title d-none d-lg-block display-7">Running Code</h1>
 </header>
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>RStudio IDE v1.4 or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as markdown files that use the Jupyter engine.</p>
-<p>Quarto is also designed to be highly compatible with existing <a href="https://rmarkdown.rstudio.com/">R Markdown</a> documents. You should generally be able to use Quarto to render any existing Rmd document without changes.</p>
+<p>Quarto supports executable code blocks within markdown. This allows you to create fully reproducible documents and reports—the code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.</p>
+<p>There are currently two engines supported for running computations:</p>
+<ul>
+<li><p><a href="https://jupyter.org/">Jupyter</a>, for running code from Python, Julia, and many other languages.</p></li>
+<li><p><a href="https://yihui.org/knitr/">Knitr</a>, for running code from R.</p></li>
+</ul>
+<p>Extensive customization of code chunk output is supported, including the ability to hide code and/or output as well as fold code (make it visible only on demand).</p>
 </section>
-<section id="knit-with-quarto" class="level2">
-<h2 class="anchored" data-anchor-id="knit-with-quarto">Knit with Quarto</h2>
-<p>You need to take one important measure to ensure that RStudio knows to use Quarto rather than R Markdown to render when you click the <strong>Knit</strong> button. To opt-in to rendering with Quarto, add the following <code>knit</code> option to the document’s YAML metadata:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Jone Smith"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">knit</span><span class="kw">:</span><span class="at"> quarto render</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Another difference between R Markdown and Quarto is that R Markdown uses the <code>output</code> option to indicate the output format while Quarto uses <code>format</code>. As such, including a <code>format</code> option (and no <code>output</code> option) will also cause RStudio to use Quarto:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Jane Smith"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> html</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="executing-code-blocks" class="level2">
+<h2 class="anchored" data-anchor-id="executing-code-blocks">Executing Code Blocks</h2>
+<p>Code blocks that use braces around the language name (e.g.&nbsp;<code>```{python}</code>) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).</p>
+<section id="python-jupyter" class="level3">
+<h3 class="anchored" data-anchor-id="python-jupyter">Python (Jupyter)</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>title: <span class="st">"Jupyter Document"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">format</span>: </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  html:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    code<span class="op">-</span>background: true</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>jupyter: python3</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>```{python}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>```{python}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> {<span class="st">'one'</span> : [<span class="fl">1.</span>, <span class="fl">2.</span>, <span class="fl">3.</span>, <span class="fl">4.</span>],</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>     <span class="st">'two'</span> : [<span class="fl">4.</span>, <span class="fl">3.</span>, <span class="fl">2.</span>, <span class="fl">1.</span>]}</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(d)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/jupyter-document.png" class="border img-fluid"></p>
+<p>Note that we added the <code>code-background: true</code> option to provide a background color for the code chunks (see the documentation on <a href="../output-formats/html-extensions.Rmd#code-blocks">Code Block</a> options for additional details on customizing code block output).</p>
+</section>
+<section id="r-knitr" class="level3">
+<h3 class="anchored" data-anchor-id="r-knitr">R (Knitr)</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>title<span class="sc">:</span> <span class="st">"Knitr Document"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>format<span class="sc">:</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  html<span class="sc">:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    code<span class="sc">-</span>background<span class="sc">:</span> true</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>execute<span class="sc">:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  warning<span class="sc">:</span> false</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="sc">---</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">```</span><span class="at">{r}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">library(ggplot2)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">ggplot(airquality, aes(Temp, Ozone)) + </span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">        geom_point() + </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">        geom_smooth(method = "loess", se = FALSE)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="st">```</span><span class="at">{r}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">summary(airquality)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="st">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/knitr-document.png" class="border img-fluid"></p>
+<p>Note that we added the <code>execute: warning: false</code> option to suppress printing of warnings. See the [Execution Options] section below for additional details.</p>
+<p>You can produce a wide variety of output types from executable code blocks, including:</p>
+<ul>
+<li><p>Static plots (e.g.&nbsp;from matplotlib or ggplot2).</p></li>
+<li><p>Interactive plots (e.g.&nbsp;from plotly or leaflet).</p></li>
+<li><p>Tabular output (e.g.&nbsp;from printing R or Pandas data frames)</p></li>
+<li><p>Plain text output (e.g.&nbsp;printing the results of statistical summaries).</p></li>
+</ul>
+</section>
+<section id="non-executable-blocks" class="level3">
+<h3 class="anchored" data-anchor-id="non-executable-blocks">Non-Executable Blocks</h3>
+<p>Note that code blocks that use convential markdown code block syntax (either <code>```python</code> or <code>```{.python}</code>) are not executable:</p>
+<table class="table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Code Block Syntax</th>
+<th style="text-align: center;">Executable?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><pre><code>```{python}
+1 + 1
+```</code></pre></td>
+<td style="text-align: center;">Yes</td>
+</tr>
+<tr class="even">
+<td><pre><code>```python
+1 + 1
+```</code></pre></td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr class="odd">
+<td><pre><code>```{.python}
+1 + 1
+```</code></pre></td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<p>Non-executable code blocks are printed but not executed.</p>
+</section>
+</section>
+<section id="rendering" class="level2">
+<h2 class="anchored" data-anchor-id="rendering">Rendering</h2>
+<p>Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the Python example shown above might be rendered with:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render jupyter-document.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The R example might have been rendered with:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render knitr-document.Rmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout-note callout">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div>
-<p>Future versions of RStudio will have more intelligence about when a document should be rendered with Quarto, and will no longer require the options described above. For the time being though you should provide the <code>knit</code> or the <code>format</code> option in documents you want to render with Quarto.</p>
+<p>While the .Rmd extension is not required for using the Knitr engine (you could instead use .qmd), it’s still recommended that you use .Rmd since many editors (e.g.&nbsp;RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on <a href="../../docs/computations/using-rstudio.html">Using RStudio</a> for additional details.</p>
 </div>
 </div>
 </div>
-</section>
-<section id="chunk-options" class="level2">
-<h2 class="anchored" data-anchor-id="chunk-options">Chunk Options</h2>
-<p>One important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are generally included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>```{r}</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.cap: "Air Quality"</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>library(ggplot2)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>ggplot(airquality, aes(Temp, Ozone)) <span class="op">+</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        geom_point() <span class="op">+</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        geom_smooth(method <span class="op">=</span> <span class="st">"loess"</span>, se <span class="op">=</span> FALSE)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Quarto uses this approach to both better accommodate longer options like <code>fig.cap</code>, <code>fig.subcap</code>, and <code>fig.alt</code> as well as to make it straightforward to edit chunk options within more structured editors that don’t have an easy way to edit chunk metadata (e.g.&nbsp;most traditional notebook UIs).</p>
+<p>The Python example above uses a markdown input file, Quarto can also render any Jupyter notebook (.ipynb) and use all of the same computational features described here. For example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto render jupyter-document.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Jupyter users have a choice of authoring in .ipynb (and using the JupyterLab or VS Code notebook editor) or authoring in plain text markdown using their favorite text editor. See the article on <a href="../../docs/computations/using-jupyter-lab.html">Using Jupyter Lab</a> for additional details.</p>
 <div class="callout-note callout">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div>
-<p>Note that if you prefer it is still possible to include chunk options on the first line (e.g.&nbsp;<code>```{r, echo = FALSE}</code>). That said, we recommend using the comment-based syntax to make documents more portable and consistent across execution engines.</p>
+<p>You can convert between notebook (.ipynb) and markdown (.qmd) representations of a document using the <code>quarto convert</code> command (see <code>quarto convert help</code> for details).</p>
 </div>
 </div>
 </div>
-<p>Chunk options included this way use YAML syntax rather than R syntax for consistency with options provided in YAML front matter. You can still however use R code for option values by prefacing them with <code>!expr</code>. For example:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.cap: !expr paste("Air", "Quality")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!---
+## Inline Code
+--->
 </section>
-<section id="rmd-extension" class="level2">
-<h2 class="anchored" data-anchor-id="rmd-extension">Rmd Extension</h2>
-<p>While Quarto doesn’t technically require that documents targeting the Knitr engine have an .Rmd extension, you will generally be better off using this extension. This is because many editors (including RStudio) will enable features like interactive chunk execution when they see the .Rmd extension.</p>
-<p>If you prefer to use the .<code>md</code> or <code>.qmd</code> extension, you can still tell RStudio to enable .Rmd features by explicitly setting the file type to “R Markdown” using the popup menu at the bottom right of the editor:</p>
-<p><img src="images/rstudio-file-type.png" class="img-fluid"></p>
-</section>
-<section id="jupyter-engine" class="level2">
-<h2 class="anchored" data-anchor-id="jupyter-engine">Jupyter Engine</h2>
-<p>You can also render Quarto markdown documents that target the Jupyter engine within RStudio. These files will generally have an <code>.qmd</code> extension and include a <code>jupyter</code> option in the YAML front matter indicating which kernel to use. For example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Matplotlib Demo"</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Norah Smith"</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that the presence of the <code>jupyter</code> option also provides a sufficient hint to RStudio that it should render the file using Quarto rather than R Markdown.</p>
-<p>You can also enable interactive cell execution for <code>.qmd</code> files by setting the file type to “R Markdown” as described immediately above.</p>
-</section>
-<section id="r-package" class="level2">
-<h2 class="anchored" data-anchor-id="r-package">R Package</h2>
-<p>You can render Quarto documents from the R console using the <strong>quarto</strong> R package. To install the R package:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"quarto"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then, to render a document:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_render</span>(<span class="st">"document.Rmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="engine-binding" class="level2">
+<h2 class="anchored" data-anchor-id="engine-binding">Engine Binding</h2>
+<p>Earlier we said that the engine used for computations was determined automatically. You may want to customize this—for example you may want to use the Jupyter <a href="https://github.com/IRkernel/IRkernel">R kernel</a> rather than Knitr, or you may want to use Knitr with Python code (via <a href="https://rstudio.github.io/reticulate/">reticulate</a>).</p>
+<p>Here are the basic rules for automatic binding:</p>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 91%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File Type</th>
+<th>Engine Binding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>.md</td>
+<td>Plain markdown (no engine)</td>
+</tr>
+<tr class="even">
+<td>.ipynb</td>
+<td>Jupyter engine</td>
+</tr>
+<tr class="odd">
+<td>.Rmd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>Knitr engine</td>
+</tr>
+<tr class="even">
+<td>.qmd</td>
+<td><p>Use Knitr engine if an <code>{r}</code> code block is discovered within the file</p>
+<p>Use Jupyter engine if an executable code block (e.g.&nbsp;<code>{python}</code>) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered in the file.</p></td>
+</tr>
+</tbody>
+</table>
+<p>You can override the engine used via the <code>engine</code> option. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  engine: jupyter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  engine: knitr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also specify that no engine should be used via <code>engine: none</code>.</p>
+<p>The presence of the <code>knitr</code> or <code>jupyter</code> option will also override the default engine:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span><span class="co"> true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Variations with additional engine-specific options also work to override the default engine:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  opts_knit:</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    verbose: true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  kernelspec:</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    display_name: Python 3</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    language: python</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    name: python3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <!-- -->
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
-      <a href="../../docs/computations/using-jupyter-lab.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Using JupyterLab</span>
+      <a href="../../docs/getting-started/quarto-projects.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Quarto Projects</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../docs/computations/parameters.html">
-        <span class="nav-page-text">Parameters</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../docs/computations/execution-options.html">
+        <span class="nav-page-text">Execution Options</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </div>
