@@ -20,7 +20,7 @@ In addition to the core capabilities of Pandoc, Quarto includes:
 
 5.  Automatic installation of required LaTeX packages when rendering PDF output.
 
-The overall design of Quarto is influenced heavily by [R Markdown](https://rmarkdown.rstudio.com/), however unlike R Markdown the architecture is language agnostic. In it's current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents..
+The overall design of Quarto is influenced heavily by [R Markdown](https://rmarkdown.rstudio.com/), however unlike R Markdown the architecture is language agnostic. In its current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents.
 
 ## Hello, Quarto
 
