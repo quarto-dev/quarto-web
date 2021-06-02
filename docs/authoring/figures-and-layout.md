@@ -45,10 +45,6 @@ Note that the figure caption, title, and alt text can all be different. For exam
 <img src="elephant.png" title="Title: An elephant" class="img-fluid figure-img" alt="A drawing of an elephant.">
 ```
 
-The resulting figure:
-
-![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
-
 ### Linked Figures
 
 When rendering with Quarto, you can enclose a figure within a link and it will still be treated within output as a captioned figure. For example:
