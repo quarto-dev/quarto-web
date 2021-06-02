@@ -139,9 +139,38 @@ Jupyter users have a choice of authoring in .ipynb (and using the JupyterLab or 
 You can convert between notebook (.ipynb) and markdown (.qmd) representations of a document using the `quarto convert` command (see `quarto convert help` for details).
 :::
 
-<!---
 ## Inline Code
---->
+
+Both Jupyter and Knitr support executing inline code within markdown (e.g. to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines.
+
+### Jupyter
+
+To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
+
+```` {.python}
+```{python}
+#| echo: false
+
+from IPython.display import Markdown
+Markdown("""
+## Circle
+
+The radius of the circle is {radius}.
+""".format(radius = radius))
+```
+````
+
+Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
+
+### Knitr
+
+To include executable expressions within markdown for Knitr, enclose the expression in `` `r ` ``. For example, if we have a variable `radius` we can use it within markdown as follows:
+
+``` {.markdown}
+## Circle
+
+The radius of the circle is `r radius`.
+```
 
 ## Engine Binding
 

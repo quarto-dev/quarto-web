@@ -413,6 +413,11 @@
 <li><a href="#non-executable-blocks" class="nav-link" data-scroll-target="#non-executable-blocks">Non-Executable Blocks</a></li>
 </ul></li>
 <li><a href="#rendering" class="nav-link" data-scroll-target="#rendering">Rendering</a></li>
+<li><a href="#inline-code" class="nav-link" data-scroll-target="#inline-code">Inline Code</a>
+<ul class="collapse">
+<li><a href="#jupyter" class="nav-link" data-scroll-target="#jupyter">Jupyter</a></li>
+<li><a href="#knitr" class="nav-link" data-scroll-target="#knitr">Knitr</a></li>
+</ul></li>
 <li><a href="#engine-binding" class="nav-link" data-scroll-target="#engine-binding">Engine Binding</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/running-code.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
@@ -559,9 +564,32 @@
 </div>
 </div>
 </div>
-<!---
-## Inline Code
---->
+</section>
+<section id="inline-code" class="level2">
+<h2 class="anchored" data-anchor-id="inline-code">Inline Code</h2>
+<p>Both Jupyter and Knitr support executing inline code within markdown (e.g.&nbsp;to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines.</p>
+<section id="jupyter" class="level3">
+<h3 class="anchored" data-anchor-id="jupyter">Jupyter</h3>
+<p>To include executable expressions within markdown in a Jupyter notebook, you use <a href="https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html"><code>IPython.display.Markdown</code></a> to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable <code>radius</code> we can use it within markdown as follows:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>```{python}</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>Markdown(<span class="st">"""</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="st">## Circle</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="st">The radius of the circle is </span><span class="sc">{radius}</span><span class="st">.</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>.<span class="bu">format</span>(radius <span class="op">=</span> radius))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that we also include the <code>echo: false</code> option to ensure that the code used to generate markdown isn’t included in the final output.</p>
+</section>
+<section id="knitr" class="level3">
+<h3 class="anchored" data-anchor-id="knitr">Knitr</h3>
+<p>To include executable expressions within markdown for Knitr, enclose the expression in <code>`r `</code>. For example, if we have a variable <code>radius</code> we can use it within markdown as follows:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## Circle</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>The radius of the circle is <span class="in">`r radius`</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 </section>
 <section id="engine-binding" class="level2">
 <h2 class="anchored" data-anchor-id="engine-binding">Engine Binding</h2>
@@ -599,23 +627,23 @@
 </tbody>
 </table>
 <p>You can override the engine used via the <code>engine</code> option. For example:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  engine: jupyter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  engine: knitr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  engine: jupyter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  engine: knitr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You can also specify that no engine should be used via <code>engine: none</code>.</p>
 <p>The presence of the <code>knitr</code> or <code>jupyter</code> option will also override the default engine:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span><span class="co"> true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span><span class="co"> true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Variations with additional engine-specific options also work to override the default engine:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  opts_knit:</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    verbose: true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  kernelspec:</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    display_name: Python 3</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    language: python</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    name: python3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  opts_knit:</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    verbose: true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  kernelspec:</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    display_name: Python 3</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    language: python</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    name: python3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <!-- -->
 </section>
 </main>
