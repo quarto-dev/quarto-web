@@ -68,7 +68,7 @@ Note that we also used the `layout.ncol` attribute to specify a two-column layou
 
 Figures produced by Jupyter and Knitr can also be cross-referenced. To do this, add a `label` and `fig.cap` option at the top of the code block. For example:
 
-::: {.tabset}
+::: {.panel-tabset}
 #### Jupyter
 
 ```` {.python}

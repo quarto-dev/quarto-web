@@ -257,7 +257,7 @@ Note that vertical alignment isn't limited to images, you can also vertically al
 
 Note that figure layout attributes also work for figures produced by executable code blocks. Here are examples for both Jupyter and Knitr:
 
-::: {.tabset}
+::: {.panel-tabset}
 #### Jupyter
 
 ```` {.python}

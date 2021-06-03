@@ -57,7 +57,7 @@ Highlighting themes can provide either a single highlighting definition or two d
 
 By default, code is highlighted using the `arrow` theme, which is optimized for accessibility. Here are examples of the `arrow` light and dark themes:
 
-::: {.tabset}
+::: {.panel-tabset}
 #### Light
 
 ![](images/arrow.png)
