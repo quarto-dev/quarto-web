@@ -28,7 +28,6 @@ Jupyter users will user either the second or third approach, depending on whethe
 Use the `quarto render` command to transform a markdown input file into HTML, a PDF, or any of the other supported output formats. Here are examples of rendering the input types described above:
 
 ``` {.bash}
-$ quarto render document.md
 $ quarto render document.qmd
 $ quarto render document.Rmd
 $ quarto render document.ipynb
@@ -69,7 +68,7 @@ number-sections: true
 If you do this then the following command is equivalent to the previous example (but no options are provided on the command line b/c they are already defined in YAML):
 
 ``` {.bash}
-$ quarto render document.md
+$ quarto render document.qmd
 ```
 
 Note that in this case rendering with no explicit `--to` argument results in a PDF, since `format: pdf` is specified in YAML.
@@ -123,9 +122,9 @@ Note that the `toc` and `toc-depth` options are shared across all formats, and t
 If you render this document without a `--to` argument, it will be rendered as `html` since that is the first format listed in the file. To render as another format just provide an explicit `--to` argument:
 
 ``` {.bash}
-$ quarto render document.md # will render to html
-$ quarto render document.md --to pdf
-$ quarto render document.md --to docx
+$ quarto render document.qmd # will render to html
+$ quarto render document.qmd --to pdf
+$ quarto render document.qmd --to docx
 ```
 
 You can learn about the available options for each format in the Pandoc documentation on metadata [variables](https://pandoc.org/MANUAL.html#variables) and [defaults](https://pandoc.org/MANUAL.html#default-files).

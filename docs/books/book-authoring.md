@@ -15,10 +15,10 @@ book:
   author: "Jane Doe"
   date: "5/9/2021"
   chapters:
-    - index.md
-    - intro.md
-    - summary.md
-    - references.md
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
 ```
 
 -   The index file is required and includes preface, acknowledgements, etc. Content in the index file is unnumbered.
@@ -128,18 +128,18 @@ You can divide your book into parts using `part` within the book `chapters`. For
 
 ``` {.yaml}
 chapters:
-  - index.md
-  - preface.md
-  - part: dice.md
+  - index.qmd
+  - preface.qmd
+  - part: dice.qmd
     chapters: 
-      - basics.md
-      - packages.md
-  - part: cards.md
+      - basics.qmd
+      - packages.qmd
+  - part: cards.qmd
     chapters:
-      - objects.md
-      - notation.md
-      - modifying.md
-      - environments.md
+      - objects.qmd
+      - notation.qmd
+      - modifying.qmd
+      - environments.qmd
 ```
 
 Note that the markdown files `dice.md` and `cards.md` contain the part title (as a level one header) as well as some introductory content for the part. If you just need a part title then you can alternatively use this syntax:
@@ -147,8 +147,8 @@ Note that the markdown files `dice.md` and `cards.md` contain the part title (as
 ``` {.yaml}
 - part: "Dice"
   chapters: 
-    - basics.md
-    - packages.md
+    - basics.qmd
+    - packages.qmd
 ```
 
 You can include appendices by adding an `appendices` key to your `book` config. For example:
@@ -159,13 +159,13 @@ book:
   author: "Jane Doe"
   date: "5/9/2021"
   chapters:
-    - index.md
-    - intro.md
-    - summary.md
-    - references.md
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
   appendices:
-    - tools.md
-    - resources.md
+    - tools.qmd
+    - resources.qmd
   
 ```
 

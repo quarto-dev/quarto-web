@@ -50,10 +50,10 @@ book:
   author: "Jane Doe"
   date: "5/11/2021"
   chapters:
-    - index.md
-    - intro.md
-    - summary.md
-    - references.md
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
 
 bibliography: references.bib
 

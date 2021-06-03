@@ -67,7 +67,7 @@ You can also specify this on the command line as follows:
 $ quarto render basics-jupyter.ipynb --no-execute
 ```
 
-There are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in [Execution Options](executing-code.md#execution-options).
+There are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in [Execution Options](execution-options.md).
 
 ## Plain Text Editing
 
@@ -124,7 +124,7 @@ Note that we've added the `jupyter: python3` option to the YAML front matter to 
 $ quarto render basics-jupyter.qmd
 ```
 
-You can convert between .ipynb and .md representations of a notebook using the `quarto convert` command. For example:
+You can convert between .ipynb and .qmd representations of a notebook using the `quarto convert` command. For example:
 
 ``` {.bash}
 $ quarto convert basics-jupyter.ipynb --to markdown
