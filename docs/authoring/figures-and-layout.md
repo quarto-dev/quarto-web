@@ -21,30 +21,6 @@ This results in the following treatment for various output types:
 
 Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using [Cross References](cross-references.html)).
 
-### Alt text
-
-You can add alternative text to a figure by adding the `fig.alt` attribute to the image. For example, the following Markdown...
-
-``` {.markdown}
-![](elephant.png){fig.alt="A drawing of an elephant."}
-```
-... will create the following HTML with the corresponding alt tag:
-
-```{.html}
-<img src="elephant.png" class="img-fluid" alt="A drawing of an elephant.">
-```
-
-Note that the figure caption, title, and alt text can all be different. For example, the following code...
-
-``` {.markdown}
-![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
-```
-...produces this HTML:
-
-```{.html}
-<img src="elephant.png" title="Title: An elephant" class="img-fluid figure-img" alt="A drawing of an elephant.">
-```
-
 ### Linked Figures
 
 When rendering with Quarto, you can enclose a figure within a link and it will still be treated within output as a captioned figure. For example:
@@ -59,6 +35,32 @@ Figures and their captions are center aligned by default. Add the `fig.align` at
 
 ``` {.markdown}
 ![Elephant](elephant.png){fig.align="left"}
+```
+
+### Alt Text
+
+You can add alternative text to a figure by adding the `fig.alt` attribute to the image. For example, the following Markdown...
+
+``` {.markdown}
+![](elephant.png){fig.alt="A drawing of an elephant."}
+```
+
+... will create the following HTML with the corresponding alt tag:
+
+``` {.html}
+<img src="elephant.png" alt="A drawing of an elephant.">
+```
+
+Note that the figure caption, title, and alt text can all be different. For example, the following code...
+
+``` {.markdown}
+![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
+```
+
+...produces this HTML:
+
+``` {.html}
+<img src="elephant.png" title="Title: An elephant" alt="A drawing of an elephant.">
 ```
 
 ### LaTeX Environments
