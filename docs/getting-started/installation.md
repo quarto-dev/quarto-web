@@ -49,6 +49,17 @@ Note that it's also strongly recommended that you use [Revise.jl](https://timhol
 
 ## Additional Tools
 
+### Pandoc
+
+A recent version of Pandoc (v2.14) is installed alongside Quarto. This version of Pandoc won't interfere with others you may have on your system (it's not added to the system PATH).
+
+To interact directly with the version of Pandoc installed with Quarto, use the `quarto pandoc` command. For example:
+
+```bash
+quarto pandoc --version
+quarto pandoc --list-output-formats
+```
+
 ### TeX
 
 If you expect to use Quarto to create PDFs, you will need to install a recent distribution of TeX. While you can employ whatever toolchain you like for LaTeX compilation, we strongly recommend the use of [TinyTeX](https://yihui.org/tinytex/), which is a distribution of [TeX Live](https://tug.org/texlive/) that provides a reasonably sized initial download (\~100 MB) that includes the 200 or so most commonly used TeX packages for Pandoc documents.
