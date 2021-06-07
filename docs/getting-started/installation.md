@@ -1,7 +1,6 @@
 ---
 title: "Installation"
 knit: quarto render
-page-layout: container
 ---
 
 ## Quarto CLI
