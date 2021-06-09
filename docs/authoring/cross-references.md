@@ -302,7 +302,7 @@ You can customize the appearance of inline references by either changing the syn
 | Default       | `@fig-elephant`          | fig. 1   |
 | Capitalized   | `@Fig-elephant`          | Fig. 1   |
 | Custom Prefix | `[Figure @fig-elephant]` | Figure 1 |
-| No Prefix     | `-@fig-elephant`         | 1        |
+| No Prefix     | `[-@fig-elephant]`       | 1        |
 
 You can also group cross references using the following syntax:
 
