@@ -6,7 +6,7 @@ format: html
 
 ## Introduction
 
-Quarto is an open-source scientific and technical publishing system built on [Pandoc](https://pandoc.org). Quarto documents are authored using [markdown](https://en.wikipedia.org/wiki/Markdown), an easy to write plain text format.
+Quarto is an [open-source](https://github.com/quarto-dev/quarto-cli) scientific and technical publishing system built on [Pandoc](https://pandoc.org). Quarto documents are authored using [markdown](https://en.wikipedia.org/wiki/Markdown), an easy to write plain text format.
 
 In addition to the core capabilities of Pandoc, Quarto includes:
 
@@ -20,7 +20,7 @@ In addition to the core capabilities of Pandoc, Quarto includes:
 
 5.  Automatic installation of required LaTeX packages when rendering PDF output.
 
-The overall design of Quarto is influenced heavily by [R Markdown](https://rmarkdown.rstudio.com/), however unlike R Markdown the architecture is language agnostic. In it's current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents..
+The overall design of Quarto is influenced heavily by [R Markdown](https://rmarkdown.rstudio.com/), however unlike R Markdown the architecture is language agnostic. In it's current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents.
 
 ## Hello, Quarto
 
