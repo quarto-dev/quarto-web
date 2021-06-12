@@ -20,8 +20,8 @@ email:
   support: support@example.com
 
 engine:
-  jupyter: [Jupyter](https://jupyter.org)
-  knitr: [Knitr](<https://yihui.name/knitr>)
+  jupyter: "[Jupyter](https://jupyter.org)"
+  knitr: "[Knitr](<https://yihui.name/knitr>)"
 ```
 
 Note that the `engine` variable values include markdown for hyperlinks.
