@@ -116,7 +116,7 @@
     }
 
     .cell-output-display {
-      overflow-x: scroll;
+      overflow-x: auto;
     }
 
     .hidden {
@@ -406,6 +406,7 @@
 <ul class="collapse">
 <li><a href="#knitr" class="nav-link" data-scroll-target="#knitr">Knitr</a></li>
 <li><a href="#jupyter" class="nav-link" data-scroll-target="#jupyter">Jupyter</a></li>
+<li><a href="#julia" class="nav-link" data-scroll-target="#julia">Julia</a></li>
 </ul></li>
 <li><a href="#additional-tools" class="nav-link" data-scroll-target="#additional-tools">Additional Tools</a>
 <ul class="collapse">
@@ -439,12 +440,65 @@
 <section id="jupyter" class="level3">
 <h3 class="anchored" data-anchor-id="jupyter">Jupyter</h3>
 <p>If you already have Python/Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.</p>
-<p>If you are in a fresh environment, install the core Quarto minimal requirements (as shown below) or if you like install the full <code>jupyter</code> package including the notebook, qtconsole, etc.:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># quarto minimal requirements</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install jupyter_core nbformat nbclient ipykernel pyyaml</span>
+<p>If you are in a fresh environment, installing the <code>jupyter</code> or <code>jupyterlab</code> package will provide everything required to run Quarto:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jupyter classic </span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install jupyter</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># full jupyter install</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install jupyter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># JupyterLab IDE</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install jupyterlab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!---
+### Windows
+
+```bash
+python -m venv .venv
+
+# powershell
+.venv\Scripts\Activate.ps1
+
+# venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled # on this system. For more information, see about_Execution_Policies
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+
+# git bash
+source .venv/Scripts/activate
+# (note that daemon mode currently doesn't work in Git Bash but one shot does)
+
+# cmd
+.venv\Scripts\activate.bat
+
+
+# conda (powershell/cmd)
+conda init powershell
+conda create --prefix .condaenv python=3.8
+conda activate .\.condaenv\
+
+conda install jupyter_core nbformat nbclient ipykernel pyyaml
+conda install matplotlib pandas
+
+# for git bash, may need to add conda to system path or add conda activation
+# to .bashrc
+https://fmorenovr.medium.com/how-to-add-conda-to-git-bash-windows-21f5e5987f3d
+
+
+```
+
+```r
+renv::use_python(type = "virtualenv")
+pip install quarto
+pip install matplotlib pandas
+```
+
+```r
+renv::use_python(type = "conda")
+library(reticulate)
+py_install(c("jupyter_core", "nbformat", "nbclient", "ipykernel", "pyyaml"), method = "conda")
+py_install(c("matplotlib", "pandas"), method="conda")
+```
+
+
+-->
+</section>
+<section id="julia" class="level3">
+<h3 class="anchored" data-anchor-id="julia">Julia</h3>
 <p>If you are using Julia, please see the <a href="https://github.com/JuliaLang/IJulia.jl">IJulia documentation</a> on installing and using the Julia kernel.</p>
 <p>Note that it’s also strongly recommended that you use <a href="https://timholy.github.io/Revise.jl/stable/">Revise.jl</a> to optimize away kernel startup time. See the documentation on <a href="https://timholy.github.io/Revise.jl/stable/config/#Using-Revise-automatically-within-Jupyter/IJulia-1">using Revise within Jupyter</a> for additional details.</p>
 </section>

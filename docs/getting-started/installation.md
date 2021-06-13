@@ -32,15 +32,68 @@ To use Quarto with R, you should install the Quarto R package:
 
 If you already have Python/Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
 
-If you are in a fresh environment, install the core Quarto minimal requirements (as shown below) or if you like install the full `jupyter` package including the notebook, qtconsole, etc.:
+If you are in a fresh environment, installing the `jupyter` or `jupyterlab` package will provide everything required to run Quarto:
 
 ``` {.bash}
-# quarto minimal requirements
-$ pip install jupyter_core nbformat nbclient ipykernel pyyaml
-
-# full jupyter install
+# Jupyter classic 
 $ pip install jupyter
+
+# JupyterLab IDE
+$ pip install jupyterlab
 ```
+
+<!---
+### Windows
+
+```bash
+python -m venv .venv
+
+# powershell
+.venv\Scripts\Activate.ps1
+
+# venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled # on this system. For more information, see about_Execution_Policies
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+
+# git bash
+source .venv/Scripts/activate
+# (note that daemon mode currently doesn't work in Git Bash but one shot does)
+
+# cmd
+.venv\Scripts\activate.bat
+
+
+# conda (powershell/cmd)
+conda init powershell
+conda create --prefix .condaenv python=3.8
+conda activate .\.condaenv\
+
+conda install jupyter_core nbformat nbclient ipykernel pyyaml
+conda install matplotlib pandas
+
+# for git bash, may need to add conda to system path or add conda activation
+# to .bashrc
+https://fmorenovr.medium.com/how-to-add-conda-to-git-bash-windows-21f5e5987f3d
+
+
+```
+
+```r
+renv::use_python(type = "virtualenv")
+pip install quarto
+pip install matplotlib pandas
+```
+
+```r
+renv::use_python(type = "conda")
+library(reticulate)
+py_install(c("jupyter_core", "nbformat", "nbclient", "ipykernel", "pyyaml"), method = "conda")
+py_install(c("matplotlib", "pandas"), method="conda")
+```
+
+
+-->
+
+### Julia
 
 If you are using Julia, please see the [IJulia documentation](https://github.com/JuliaLang/IJulia.jl) on installing and using the Julia kernel.
 
