@@ -95,15 +95,19 @@ $ git pull
 
 ## Virtual Environments {#virtual-environments}
 
-Virtual environments provide a project-specific version of installed Pytohn packages. This both helps you to faithfully reproduce your environment (e.g. if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn't break other projects.
+Virtual environments provide a project-specific version of installed packages. This both helps you to faithfully reproduce your environment (e.g. if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn't break other projects.
 
-There are two popular flavors of Python virtual environment:
+There are several popular flavors of virtual environment, we will cover the following ones here:
 
-1.  [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (built into Python 3).
+1.  [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (built into Python 3)
 
-2.  [Conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs) (built in to Anaconda/Miniconda).
+2.  [Conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs) (built in to Anaconda/Miniconda)
+
+3.  [renv](https://rstudio.github.io/renv/articles/renv.html) (package for managing R environments)
 
 Below we'll provide some example workflows for using these tools with Quarto. In these examples we'll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a subdirectory of the project).
+
+We'll also cover using virtual environments with [JupyterLab](#jupyterlab) and [RStudio](#rstudio).
 
 ### Using venv
 
@@ -225,3 +229,95 @@ To reproduce the environment on another machine you just pass the `environment.y
 ``` {.bash}
 conda create --prefix .condaenv -f environment.yml
 ```
+
+### Using renv
+
+The [renv](https://rstudio.github.io/renv/articles/renv.html) package provides functionality similar to the venv and conda, but for R packages. To create a new renv environment, install the **renv** package from GitHub then call the `renv::init()` function:
+
+``` {.r}
+remotes::install("rstudio/renv")
+renv::init()
+```
+
+As part of initialization, your `.Rprofile` file is modified to ensure that the renv is activated automatically at the start of each R session.
+
+If you plan on using **both** R and Python in your project, you can have renv automatically create and manage a Python virtual environment as follows:
+
+``` {.r}
+renv::use_python(type = "virtualenv")
+```
+
+Although you can optionally specify `type = "conda"` here, we strongly recommend `type = "virtualenv"`, as it is much better tested and debugged with Quarto.
+
+To install R packages use the standard R `install.packages` function. You can also install GitHub packages using the `renv::install` function. For example:
+
+``` {.r}
+install.packages("ggplot2")      # install from CRAN
+renv::install("tidyverse/dplyr") # install from GitHub
+```
+
+To install Python packages just use `pip` as described above from the built-in RStudio terminal.
+
+To record the current versions of all R (and optionally Python) packages, use the `renv::snapshot()` function:
+
+``` {.r}
+renv::snapshot()
+```
+
+This will record an `renv.lock` file for R packages and a `requirements.txt` file for Python packages). These files should be checked into version control.
+
+To reproduce the environment on another machine use the `renv::restore()` function:
+
+``` {.r}
+renv::restore()
+```
+
+### JupyterLab {#jupyterlab}
+
+To use Jupyter or JupyterLab within a Python virtual environment you just need to activate the environment and then launch the Jupyter front end. For example:
+
+``` {.bash}
+# bash activate venv (see above for windows equivalents)
+source .venv/bin/activate
+
+# launch jupyterlab
+jupyter lab
+```
+
+All of the Python packages installed within the `.venv` will be available in your Jupyter notebook session. The workflow is similar if you have are using conda environments.
+
+### RStudio {#rstudio}
+
+We'll cover two different scenarios for using RStudio with Quarto:
+
+1.  Using RStudio with **renv** (R and optionally some Python packages)
+2.  Using RStudio with **venv** (Python packages only)
+
+::: {.callout-note}
+#### RStudio v1.5
+
+If you are using RStudio with Quarto, it is strongly recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. You can download the daily build at <https://dailies.rstudio.com>.
+:::
+
+#### renv
+
+If you are using **renv**, RStudio v1.5 wiill automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.
+
+If you need to install R packages just use `install.packages`; if you need to install Python packages simply use `pip install` or `conda install` within the RStudio Terminal.
+
+#### venv 
+
+If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using **renv** at all. In this case you'll want to configure RStudio to use the `.venv` directory for executing Python code.
+
+To do this you need to modify your `.Rprofile` to add the appropriate directory to the system `PATH`. This is the code to add to `.Rprofile` for `.venv`:
+
+``` {.r}
+bin <- ifelse(.Platform$OS.type == "windows", "Scripts", "bin")
+venv_bin <- file.path(getwd(), ".venv", bin)
+Sys.setenv(PATH = paste(venv_bin, Sys.getenv("PATH"),  
+                        sep = .Platform$path.sep))
+```
+
+The directory containing the Python executable differs between Windows and other systems, which is we need the `ifelse` on the first line.
+
+Note that while in principle you could also use **conda** in this configuration, **venv** is much better tested and debugged with Quarto under RStudio so is strongly recommended.

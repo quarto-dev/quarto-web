@@ -420,6 +420,9 @@
 <ul class="collapse">
 <li><a href="#using-venv" class="nav-link" data-scroll-target="#using-venv">Using venv</a></li>
 <li><a href="#using-conda" class="nav-link" data-scroll-target="#using-conda">Using conda</a></li>
+<li><a href="#using-renv" class="nav-link" data-scroll-target="#using-renv">Using renv</a></li>
+<li><a href="#jupyterlab" class="nav-link" data-scroll-target="#jupyterlab">JupyterLab</a></li>
+<li><a href="#rstudio" class="nav-link" data-scroll-target="#rstudio">RStudio</a></li>
 </ul></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/getting-started/installation.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
@@ -491,13 +494,15 @@
 </section>
 <section id="virtual-environments" class="level2">
 <h2 class="anchored" data-anchor-id="virtual-environments">Virtual Environments</h2>
-<p>Virtual environments provide a project-specific version of installed Pytohn packages. This both helps you to faithfully reproduce your environment (e.g.&nbsp;if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn’t break other projects.</p>
-<p>There are two popular flavors of Python virtual environment:</p>
+<p>Virtual environments provide a project-specific version of installed packages. This both helps you to faithfully reproduce your environment (e.g.&nbsp;if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn’t break other projects.</p>
+<p>There are several popular flavors of virtual environment, we will cover the following ones here:</p>
 <ol type="1">
-<li><p><a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment">venv</a> (built into Python 3).</p></li>
-<li><p><a href="https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs">Conda</a> (built in to Anaconda/Miniconda).</p></li>
+<li><p><a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment">venv</a> (built into Python 3)</p></li>
+<li><p><a href="https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs">Conda</a> (built in to Anaconda/Miniconda)</p></li>
+<li><p><a href="https://rstudio.github.io/renv/articles/renv.html">renv</a> (package for managing R environments)</p></li>
 </ol>
 <p>Below we’ll provide some example workflows for using these tools with Quarto. In these examples we’ll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a subdirectory of the project).</p>
+<p>We’ll also cover using virtual environments with <a href="#jupyterlab">JupyterLab</a> and <a href="#rstudio">RStudio</a>.</p>
 <section id="using-venv" class="level3">
 <h3 class="anchored" data-anchor-id="using-venv">Using venv</h3>
 <p>To create a new environment in the directory <code>.venv</code>:</p>
@@ -568,7 +573,73 @@
 <p>You should generally check the <code>environment.yml</code> file into version control.</p>
 <p>To reproduce the environment on another machine you just pass the <code>environment.yml</code> file as an argument to <code>conda create</code>:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> .condaenv <span class="at">-f</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="using-renv" class="level3">
+<h3 class="anchored" data-anchor-id="using-renv">Using renv</h3>
+<p>The <a href="https://rstudio.github.io/renv/articles/renv.html">renv</a> package provides functionality similar to the venv and conda, but for R packages. To create a new renv environment, install the <strong>renv</strong> package from GitHub then call the <code>renv::init()</code> function:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install</span>(<span class="st">"rstudio/renv"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As part of initialization, your <code>.Rprofile</code> file is modified to ensure that the renv is activated automatically at the start of each R session.</p>
+<p>If you plan on using <strong>both</strong> R and Python in your project, you can have renv automatically create and manage a Python virtual environment as follows:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">use_python</span>(<span class="at">type =</span> <span class="st">"virtualenv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Although you can optionally specify <code>type = "conda"</code> here, we strongly recommend <code>type = "virtualenv"</code>, as it is much better tested and debugged with Quarto.</p>
+<p>To install R packages use the standard R <code>install.packages</code> function. You can also install GitHub packages using the <code>renv::install</code> function. For example:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)      <span class="co"># install from CRAN</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"tidyverse/dplyr"</span>) <span class="co"># install from GitHub</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To install Python packages just use <code>pip</code> as described above from the built-in RStudio terminal.</p>
+<p>To record the current versions of all R (and optionally Python) packages, use the <code>renv::snapshot()</code> function:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will record an <code>renv.lock</code> file for R packages and a <code>requirements.txt</code> file for Python packages). These files should be checked into version control.</p>
+<p>To reproduce the environment on another machine use the <code>renv::restore()</code> function:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="jupyterlab" class="level3">
+<h3 class="anchored" data-anchor-id="jupyterlab">JupyterLab</h3>
+<p>To use Jupyter or JupyterLab within a Python virtual environment you just need to activate the environment and then launch the Jupyter front end. For example:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bash activate venv (see above for windows equivalents)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># launch jupyterlab</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>All of the Python packages installed within the <code>.venv</code> will be available in your Jupyter notebook session. The workflow is similar if you have are using conda environments.</p>
+</section>
+<section id="rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="rstudio">RStudio</h3>
+<p>We’ll cover two different scenarios for using RStudio with Quarto:</p>
+<ol type="1">
+<li>Using RStudio with <strong>renv</strong> (R and optionally some Python packages)</li>
+<li>Using RStudio with <strong>venv</strong> (Python packages only)</li>
+</ol>
+<div class="callout-note callout callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="flex-fill">
+RStudio v1.5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you are using RStudio with Quarto, it is strongly recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. You can download the daily build at <a href="https://dailies.rstudio.com" class="uri">https://dailies.rstudio.com</a>.</p>
+</div>
+</div>
+<section id="renv" class="level4">
+<h4 class="anchored" data-anchor-id="renv">renv</h4>
+<p>If you are using <strong>renv</strong>, RStudio v1.5 wiill automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.</p>
+<p>If you need to install R packages just use <code>install.packages</code>; if you need to install Python packages simply use <code>pip install</code> or <code>conda install</code> within the RStudio Terminal.</p>
+</section>
+<section id="venv" class="level4">
+<h4 class="anchored" data-anchor-id="venv">venv</h4>
+<p>If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using <strong>renv</strong> at all. In this case you’ll want to configure RStudio to use the <code>.venv</code> directory for executing Python code.</p>
+<p>To do this you need to modify your <code>.Rprofile</code> to add the appropriate directory to the system <code>PATH</code>. This is the code to add to <code>.Rprofile</code> for <code>.venv</code>:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>bin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(.Platform<span class="sc">$</span>OS.type <span class="sc">==</span> <span class="st">"windows"</span>, <span class="st">"Scripts"</span>, <span class="st">"bin"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>venv_bin <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">".venv"</span>, bin)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PATH =</span> <span class="fu">paste</span>(venv_bin, <span class="fu">Sys.getenv</span>(<span class="st">"PATH"</span>),  </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep =</span> .Platform<span class="sc">$</span>path.sep))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The directory containing the Python executable differs between Windows and other systems, which is we need the <code>ifelse</code> on the first line.</p>
+<p>Note that while in principle you could also use <strong>conda</strong> in this configuration, <strong>venv</strong> is much better tested and debugged with Quarto under RStudio so is strongly recommended.</p>
 <!-- -->
+</section>
 </section>
 </section>
 </main>
