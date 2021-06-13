@@ -409,7 +409,6 @@
 <ul class="collapse">
 <li><a href="#knitr" class="nav-link" data-scroll-target="#knitr">Knitr</a></li>
 <li><a href="#jupyter" class="nav-link" data-scroll-target="#jupyter">Jupyter</a></li>
-<li><a href="#julia" class="nav-link" data-scroll-target="#julia">Julia</a></li>
 </ul></li>
 <li><a href="#additional-tools" class="nav-link" data-scroll-target="#additional-tools">Additional Tools</a>
 <ul class="collapse">
@@ -417,6 +416,11 @@
 <li><a href="#tex" class="nav-link" data-scroll-target="#tex">TeX</a></li>
 </ul></li>
 <li><a href="#development-version" class="nav-link" data-scroll-target="#development-version">Development Version</a></li>
+<li><a href="#virtual-environments" class="nav-link" data-scroll-target="#virtual-environments">Virtual Environments</a>
+<ul class="collapse">
+<li><a href="#using-venv" class="nav-link" data-scroll-target="#using-venv">Using venv</a></li>
+<li><a href="#using-conda" class="nav-link" data-scroll-target="#using-conda">Using conda</a></li>
+</ul></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/getting-started/installation.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
@@ -431,6 +435,7 @@
 <p><a href="https://github.com/quarto-dev/quarto-cli/releases/latest" class="uri">https://github.com/quarto-dev/quarto-cli/releases/latest</a></p>
 <p>You can verify that Quarto has been installed correctly with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> quarto help</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you need to install a version more recent than the latest release, see the documentation on installing the <a href="#development-version">Development Version</a>.</p>
 </section>
 <section id="computational-tools" class="level2">
 <h2 class="anchored" data-anchor-id="computational-tools">Computational Tools</h2>
@@ -449,61 +454,12 @@
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># JupyterLab IDE</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> pip install jupyterlab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<!---
-### Windows
-
-```bash
-python -m venv .venv
-
-# powershell
-.venv\Scripts\Activate.ps1
-
-# venv\Scripts\Activate.ps1 cannot be loaded because running scripts is disabled # on this system. For more information, see about_Execution_Policies
-Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
-
-# git bash
-source .venv/Scripts/activate
-# (note that daemon mode currently doesn't work in Git Bash but one shot does)
-
-# cmd
-.venv\Scripts\activate.bat
-
-
-# conda (powershell/cmd)
-conda init powershell
-conda create --prefix .condaenv python=3.8
-conda activate .\.condaenv\
-
-conda install jupyter_core nbformat nbclient ipykernel pyyaml
-conda install matplotlib pandas
-
-# for git bash, may need to add conda to system path or add conda activation
-# to .bashrc
-https://fmorenovr.medium.com/how-to-add-conda-to-git-bash-windows-21f5e5987f3d
-
-
-```
-
-```r
-renv::use_python(type = "virtualenv")
-pip install quarto
-pip install matplotlib pandas
-```
-
-```r
-renv::use_python(type = "conda")
-library(reticulate)
-py_install(c("jupyter_core", "nbformat", "nbclient", "ipykernel", "pyyaml"), method = "conda")
-py_install(c("matplotlib", "pandas"), method="conda")
-```
-
-
--->
-</section>
-<section id="julia" class="level3">
-<h3 class="anchored" data-anchor-id="julia">Julia</h3>
+<p>It’s generally a good practice to use virtual environments with Quarto projects to ensure that your documents are reproducible. See the documentation below on <a href="#virtual-environments">Virtual Environments</a> for additional details.</p>
+<section id="julia" class="level4">
+<h4 class="anchored" data-anchor-id="julia">Julia</h4>
 <p>If you are using Julia, please see the <a href="https://github.com/JuliaLang/IJulia.jl">IJulia documentation</a> on installing and using the Julia kernel.</p>
 <p>Note that it’s also strongly recommended that you use <a href="https://timholy.github.io/Revise.jl/stable/">Revise.jl</a> to optimize away kernel startup time. See the documentation on <a href="https://timholy.github.io/Revise.jl/stable/config/#Using-Revise-automatically-within-Jupyter/IJulia-1">using Revise within Jupyter</a> for additional details.</p>
+</section>
 </section>
 </section>
 <section id="additional-tools" class="level2">
@@ -532,7 +488,88 @@ py_install(c("matplotlib", "pandas"), method="conda")
 <p>To update to the latest development version, just <code>git pull</code> from the local repo directory:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd quarto-cli</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> git pull</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="virtual-environments" class="level2">
+<h2 class="anchored" data-anchor-id="virtual-environments">Virtual Environments</h2>
+<p>Virtual environments provide a project-specific version of installed Pytohn packages. This both helps you to faithfully reproduce your environment (e.g.&nbsp;if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn’t break other projects.</p>
+<p>There are two popular flavors of Python virtual environment:</p>
+<ol type="1">
+<li><p><a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment">venv</a> (built into Python 3).</p></li>
+<li><p><a href="https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs">Conda</a> (built in to Anaconda/Miniconda).</p></li>
+</ol>
+<p>Below we’ll provide some example workflows for using these tools with Quarto. In these examples we’ll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a subdirectory of the project).</p>
+<section id="using-venv" class="level3">
+<h3 class="anchored" data-anchor-id="using-venv">Using venv</h3>
+<p>To create a new environment in the directory <code>.venv</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:</p>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Bash/Zsh</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Windows</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">PowerShell</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labeledby="tabset-1-1-tab">
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labeledby="tabset-1-2-tab">
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv\Scripts\activate.bat</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labeledby="tabset-1-3-tab">
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv\Scripts\Activate.ps1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that you may receive an error about running scripts being disabled when activating within PowerShell. If you get this error then execute the following command:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Set-ExecutionPolicy</span> <span class="at">-ExecutionPolicy</span> Unrestricted <span class="at">-Scope</span> CurrentUser</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code. Use a normal <code>pip install</code> to install packages into your environment. For example:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyterlab</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pandas matplotlib </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Assuming you installed all of the required packages (likely more than just <code>pandas</code> and <code>matplotlib</code>) you should now be able to <code>quarto render</code> documents within the directory.</p>
+<p>To make your environment reproducible, you need to create a <code>requirements.txt</code> file that enumerates all of the packages in use. To do this use the <code>pip freeze</code> command:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should generally check the <code>requirements.txt</code> file into version control.</p>
+<p>To reproduce the environment on another machine you create an empty environment, activate it, and then <code>pip install</code> using <code>requirements.txt</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a new environment</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># activate it (note this is for bash, see above for windows)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># install packages from requirements.txt</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="using-conda" class="level3">
+<h3 class="anchored" data-anchor-id="using-conda">Using conda</h3>
+<p>To create a new environment in the directory <code>.condaenv</code>:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> .condaenv </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-warning callout">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Note that if you are using PowerShell on Windows, you may need to execute the following command before using other conda commands:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+<p>To use the environment you need to activate it, which you do as follows:</p>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Bash/Zsh</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Windows</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labeledby="tabset-2-1-tab">
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate ./.condaenv/</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labeledby="tabset-2-2-tab">
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate .<span class="dt">\.</span>condaenv<span class="dt">\</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code. Use <code>conda install</code> to install packages into your environment. For example:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install jupyterlab</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pandas matplotlib </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Assuming you installed all of the required packages (likely more than just <code>pandas</code> and <code>matplotlib</code>) you should now be able to <code>quarto render</code> documents within the directory.</p>
+<p>To make your environment reproducible, you need to create a <code>environment.yml</code> file that enumerates all of the packages in use. Do this using the <code>conda env export</code> command:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env export <span class="op">&gt;</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should generally check the <code>environment.yml</code> file into version control.</p>
+<p>To reproduce the environment on another machine you just pass the <code>environment.yml</code> file as an argument to <code>conda create</code>:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> .condaenv <span class="at">-f</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <!-- -->
+</section>
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
