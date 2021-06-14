@@ -183,13 +183,19 @@ To create a new environment in the directory `.condaenv`:
 conda create --prefix .condaenv 
 ```
 
-::: {.callout-warning}
-Note that if you are using PowerShell on Windows, you may need to execute the following command before using other conda commands:
+If this is the first time you've used conda in your shell, you may need to execute one of the following commands before using other conda tools:
 
 ``` {.bash}
+# linux / older macos
+conda init bash
+
+# newer macos
+conda init zsh
+
+# windows
+conda init cmd.exe
 conda init powershell
 ```
-:::
 
 To use the environment you need to activate it, which you do as follows:
 
