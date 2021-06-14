@@ -301,7 +301,7 @@ If you are using RStudio with Quarto, it is strongly recommended that you run th
 
 #### renv
 
-If you are using **renv**, RStudio v1.5 wiill automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.
+If you are using **renv**, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.
 
 If you need to install R packages just use `install.packages`; if you need to install Python packages simply use `pip install` or `conda install` within the RStudio Terminal.
 
