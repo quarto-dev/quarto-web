@@ -29,11 +29,16 @@ To use Quarto with R, you should install the Quarto R package:
 > install.packages("quarto")
 ```
 
+Installation of the **quarto** package will also install the **knitr** package so you will everything required to render documents containing R code.
+
 ### Jupyter
 
 If you already have Python/Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
 
 If you are in a fresh environment, installing the `jupyter` or `jupyterlab` package will provide everything required to run Quarto:
+
+::: {.panel-tabset}
+#### Pip
 
 ``` {.bash}
 # Jupyter classic 
@@ -43,13 +48,20 @@ $ pip install jupyter
 $ pip install jupyterlab
 ```
 
-It's generally a good practice to use virtual environments with Quarto projects to ensure that your documents are reproducible. See the documentation below on [Virtual Environments](#virtual-environments) for additional details.
+#### Conda
 
-#### Julia
+``` {.bash}
+# Jupyter classic 
+$ conda install jupyter
 
-If you are using Julia, please see the [IJulia documentation](https://github.com/JuliaLang/IJulia.jl) on installing and using the Julia kernel.
+# JupyterLab IDE
+$ conda install jupyterlab
+```
+:::
 
-Note that it's also strongly recommended that you use [Revise.jl](https://timholy.github.io/Revise.jl/stable/) to optimize away kernel startup time. See the documentation on [using Revise within Jupyter](https://timholy.github.io/Revise.jl/stable/config/#Using-Revise-automatically-within-Jupyter/IJulia-1) for additional details.
+### Environments
+
+If you are using [Quarto Projects](getting-started/quarto-projects.md) and want to create a project-local virtual environment for your Python and/or R dependencies see the documentation below on using [Virtual Environments](#virtual-environments).
 
 ## Additional Tools
 
@@ -97,9 +109,15 @@ $ git pull
 
 Virtual environments provide a project-specific version of installed packages. This both helps you to faithfully reproduce your environment (e.g. if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn't break other projects.
 
-There are several popular flavors of virtual environment, here we will cover [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (which built into Python 3) and [renv](https://rstudio.github.io/renv/articles/renv.html) (an R package for managing virtual environments).
+There are several popular flavors of virtual environment, we will cover the following ones here:
 
-Below we'll provide some example workflows for using these tools with Quarto. In these examples we'll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a subdirectory of the project).
+1.  [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (built into Python 3)
+
+2.  [conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs) (built in to Anaconda/Miniconda)
+
+3.  [renv](https://rstudio.github.io/renv/articles/renv.html) (package for managing R environments)
+
+Below we'll provide some example workflows for using these tools with Quarto. In these examples we'll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a sub-directory of the project).
 
 We'll also cover using virtual environments with [JupyterLab](#jupyterlab) and [RStudio](#rstudio).
 
@@ -182,6 +200,73 @@ To reproduce the environment on another machine you create an empty environment,
     pip install -r requirements.txt
     ```
 
+### Using conda
+
+To create a new environment in the directory `.condaenv`:
+
+``` {.bash}
+conda create --prefix .condaenv 
+```
+
+If this is the first time you've used conda in your shell, you may need to execute one of the following commands before using other conda tools:
+
+``` {.bash}
+# linux / older macos
+conda init bash
+
+# newer macos
+conda init zsh
+
+# windows
+conda init cmd.exe
+conda init powershell
+```
+
+You will likely need to exit and restart your terminal for `conda init` to be reflected in your session.
+
+To use the environment you need to activate it, which you do as follows:
+
+::: {.panel-tabset}
+#### Mac/Linux {.panel-tabset}
+
+``` {.bash}
+conda activate ./.condaenv/
+```
+
+#### Windows {.panel-tabset}
+
+``` {.bash}
+conda activate .\.condaenv\
+```
+:::
+
+Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Use `conda install` to install packages into your environment. For example:
+
+``` {.bash}
+conda install jupyterlab
+conda install pandas matplotlib 
+```
+
+Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
+
+#### Saving Environments
+
+To make your environment reproducible, you need to create a `environment.yml` file that enumerates all of the packages in use. Do this using the `conda env export` command:
+
+``` {.bash}
+conda env export > environment.yml
+```
+
+You should generally check the `environment.yml` file into version control.
+
+#### Restoring Environments
+
+To reproduce the environment on another machine you just pass the `environment.yml` file as an argument to `conda create`:
+
+``` {.bash}
+conda create --prefix .condaenv -f environment.yml
+```
+
 ### Using renv
 
 The [renv](https://rstudio.github.io/renv/articles/renv.html) package provides functionality similar to the venv and conda, but for R packages. To create a new renv environment, install the **renv** package from GitHub then call the `renv::init()` function:
@@ -230,15 +315,39 @@ renv::restore()
 
 To use Jupyter or JupyterLab within a Python virtual environment you just need to activate the environment and then launch the Jupyter front end. For example:
 
+::: {.panel-tabset}
+#### Mac/Linux {.panel-tabset}
+
 ``` {.bash}
-# bash activate venv (see above for windows equivalents)
+# activate environment
 source .venv/bin/activate
 
 # launch jupyterlab
 jupyter lab
 ```
 
-All of the Python packages installed within the `.venv` will be available in your Jupyter notebook session. The workflow is similar if you have are using conda environments.
+#### Windows (Cmd) {.panel-tabset}
+
+``` {.bash}
+# activate environment
+.venv\Scripts\activate.bat
+
+# launch jupyterlab
+jupyter lab
+```
+
+#### Windows (PowerShell) {.panel-tabset}
+
+``` {.bash}
+# activate environment
+.venv\Scripts\Activate.ps1
+
+# launch jupyterlab
+jupyter lab
+```
+:::
+
+All of the Python packages installed within the `.venv` will be available in your Jupyter notebook session. The workflow is similar if you are using conda environments.
 
 ### RStudio {#rstudio}
 
