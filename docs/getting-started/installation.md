@@ -103,7 +103,7 @@ Below we'll provide some example workflows for using these tools with Quarto. In
 
 We'll also cover using virtual environments with [JupyterLab](#jupyterlab) and [RStudio](#rstudio).
 
-### Using venv
+### Using venv {#using-venv}
 
 To create a new Python 3 virtual environment in the directory `.venv`:
 
