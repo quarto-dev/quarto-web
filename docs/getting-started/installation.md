@@ -105,28 +105,40 @@ We'll also cover using virtual environments with [JupyterLab](#jupyterlab) and [
 
 ### Using venv
 
-To create a new environment in the directory `.venv`:
+To create a new Python 3 virtual environment in the directory `.venv`:
+
+::: {.panel-tabset}
+#### Mac/Linux
 
 ``` {.bash}
-python -m venv .venv
+python3 -m venv .venv
 ```
+
+#### Windows
+
+``` {.bash}
+py -3 -m venv .venv
+```
+
+Note that using `py -3` ensures that you are invoking the most recent version of Python 3 for Windows installed on your system. If this command fails, you should run the [Python for Windows](https://www.python.org/downloads/windows/) installer and then re-execute it.
+:::
 
 To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:
 
 ::: {.panel-tabset}
-## Bash/Zsh
+#### Mac/Linux {.panel-tabset}
 
 ``` {.bash}
 source .venv/bin/activate
 ```
 
-## Windows
+#### Windows (Cmd) {.panel-tabset}
 
 ``` {.bash}
 .venv\Scripts\activate.bat
 ```
 
-## PowerShell
+#### Windows (PowerShell) {.panel-tabset}
 
 ``` {.bash}
 .venv\Scripts\Activate.ps1
@@ -148,6 +160,8 @@ pip install pandas matplotlib
 
 Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
 
+#### Saving Environments
+
 To make your environment reproducible, you need to create a `requirements.txt` file that enumerates all of the packages in use. To do this use the `pip freeze` command:
 
 ``` {.bash}
@@ -156,18 +170,17 @@ pip freeze > requirements.txt
 
 You should generally check the `requirements.txt` file into version control.
 
+#### Restoring Environments
+
 To reproduce the environment on another machine you create an empty environment, activate it, and then `pip install` using `requirements.txt`:
 
-``` {.bash}
-# create a new environment
-python -m venv .venv
+1.  Follow the [instructions above](#using-venv) for creating and activating a virtual environment for your platform/shell.
 
-# activate it (note this is for bash, see above for windows)
-source .venv/bin/activate
+2.  Install packages from `requirements.txt`:
 
-# install packages from requirements.txt
-pip install -r requirements.txt
-```
+    ``` {.bash}
+    pip install -r requirements.txt
+    ```
 
 ### Using renv
 
@@ -195,6 +208,8 @@ renv::install("tidyverse/dplyr") # install from GitHub
 
 To install Python packages just use `pip` as described above from the built-in RStudio terminal.
 
+#### Saving Environments
+
 To record the current versions of all R (and optionally Python) packages, use the `renv::snapshot()` function:
 
 ``` {.r}
@@ -202,6 +217,8 @@ renv::snapshot()
 ```
 
 This will record an `renv.lock` file for R packages and a `requirements.txt` file for Python packages). These files should be checked into version control.
+
+#### Restoring Environments
 
 To reproduce the environment on another machine use the `renv::restore()` function:
 
@@ -242,7 +259,7 @@ If you are using **renv**, RStudio v1.5 wiill automatically do the right thing i
 
 If you need to install R packages just use `install.packages`; if you need to install Python packages simply use `pip install` or `conda install` within the RStudio Terminal.
 
-#### venv 
+#### venv
 
 If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using **renv** at all. In this case you'll want to configure RStudio to use the `.venv` directory for executing Python code.
 
