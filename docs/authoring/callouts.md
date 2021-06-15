@@ -120,7 +120,7 @@ callout-icon: false;
 or by setting an attribute directly on the callout:
 
 ``` {.markdown}
-::: {.callout-note icom=false}
+::: {.callout-note icon=false}
 
 ## Pay Attention
 
