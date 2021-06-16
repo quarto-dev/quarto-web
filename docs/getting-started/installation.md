@@ -12,7 +12,7 @@ Installing the Quarto CLI (command-line interface) provides you with everything 
 You can verify that Quarto has been installed correctly with:
 
 ``` {.bash}
-$ quarto help
+$ quarto check install
 ```
 
 If you need to install a version more recent than the latest release, see the documentation on installing the [Development Version].
@@ -29,7 +29,11 @@ To use Quarto with R, you should install the Quarto R package:
 > install.packages("quarto")
 ```
 
-Installation of the **quarto** package will also install the **knitr** package so you will everything required to render documents containing R code.
+Installation of the **quarto** package will also install the **knitr** package so you will everything required to render documents containing R code. You can verify that Quarto is configured correctly for Knitr with:
+
+``` {.bash}
+$ quarto check knitr
+```
 
 ### Jupyter
 
@@ -58,6 +62,12 @@ $ conda install jupyter
 $ conda install jupyterlab
 ```
 :::
+
+You can verify that Quarto is configured correctly for Jupyter with:
+
+``` {.bash}
+$ quarto check jupyter
+```
 
 ### Environments
 
