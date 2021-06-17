@@ -203,6 +203,15 @@ execute:
   warning: false
 ```
 
+You might want to have different execution policies for Jupyter Notebooks (`.ipynb`) and text-based computational markdown (`.qmd`). You can do this using the `ipynb` option:
+
+``` {.yaml}
+execute:
+  ipynb: false
+```
+
+You might use this option if you are implementing of policy of having all notebook execution occur within Jupyter / Jupyter Lab, while having Quarto still handle converting the notebook to HTML, PDF, etc.
+
 ### Jupyter Kernel
 
 The Jupyter kernel is determined using the `jupyter` metdata option. For example, to use the [Xeus Python](https://github.com/jupyter-xeus/xeus-python) kernel, do this:

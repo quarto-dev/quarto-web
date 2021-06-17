@@ -5,12 +5,11 @@ format: html
 
 ## Overview
 
-Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style. 
+Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style.
 
 Website navigation can be provided through a global navbar, a sidebar with links, or a combination of both for sites that have multiple levels of content. You can also enable full text search for websites.
 
 This site is an example of a Quarto Website (you can see the source code for it here: <https://github.com/quarto-dev/quarto-docs>).
-
 
 ## Getting Started
 
@@ -49,7 +48,7 @@ To build the website into the `_site` directory:
 quarto render mybook
 ```
 
-See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects. 
+See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects.
 
 ## Workflow
 
@@ -59,7 +58,7 @@ Quarto includes a live-reloading development server that you will likely find co
 quarto serve
 ```
 
-The browser will automatically refresh when you render a computational input (e.g. Rmd) or save a markdown file that doesn't require computation.
+The browser will automatically refresh whenever you save a markdown file (`.md`) or Jupyter Notebook (`.ipynb`). The browser will also refresh whenever you render a `.qmd` or `.Rmd` file.
 
 Changes to configuration files (e.g. `_quarto.yml`) as well site resources (e.g. theme or CSS files) will also cause an automatic refresh.
 
