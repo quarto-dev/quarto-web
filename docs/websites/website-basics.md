@@ -17,7 +17,7 @@ This site is an example of a Quarto Website (you can see the source code for it 
 To create a new website project, use the Quarto `create-project` command:
 
 ``` {.bash}
-$ quarto create-project mysite --type site
+quarto create-project mysite --type site
 ```
 
 This will create the scaffolding for a simple website in the `mysite` subdirectory. Here is what the `_quarto.yml` config file will look like for the site:
@@ -46,7 +46,7 @@ format:
 To build the website into the `_site` directory:
 
 ``` {.bash}
-$ quarto render mybook
+quarto render mybook
 ```
 
 See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects. 
@@ -56,7 +56,7 @@ See the [Quarto Projects](quarto-projects.md) article to learn more about workin
 Quarto includes a live-reloading development server that you will likely find convenient to use while working on websites. Start the server with:
 
 ``` {.bash}
-$ quarto serve
+quarto serve
 ```
 
 The browser will automatically refresh when you render a computational input (e.g. Rmd) or save a markdown file that doesn't require computation.

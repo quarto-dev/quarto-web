@@ -22,7 +22,7 @@ format:
 Alternatively you can specify the use of a format on the command line:
 
 ``` {.bash}
-$ quarto render document.md --to odt
+quarto render document.md --to odt
 ```
 
 ## Formats

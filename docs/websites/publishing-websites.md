@@ -14,13 +14,13 @@ Below we describe several convenient options for Quarto website deployment inclu
 The most important thing you should be sure to do before publishing is a final render of your project:
 
 ``` {.bash}
-$ quarto render
+quarto render
 ```
 
 If you are publishing a [book](../books/book-basidcs.md) you'll want to add the `--to all` argument to ensure that all output formats (e.g. PDF, EPUB) have up to date content:
 
 ``` {.bash}
-$ quarto render --to all
+quarto render --to all
 ```
 
 This is particularly important to remember because incremental changes you make when using the [development server](website-basics.md\#workflow) aren't rendered into the output directory. To ensure that your output is up to date before publishing you should always do a full `quarto render`.
@@ -32,7 +32,7 @@ This is particularly important to remember because incremental changes you make 
 1.  Create a file named `.nojekyll` in your repository (this is required to disable some processing of HTML files that GitHub does by default). You can do this with the following:
 
     ``` {.bash}
-    $ touch .nojekyll
+    touch .nojekyll
     ```
 
 2.  Set the `output-dir` within your `_quarto.yml` project file to "docs":

@@ -24,13 +24,13 @@ Here are some examples of books created with Quarto:
 To create a new book project, use the Quarto `create-project` command:
 
 ``` {.bash}
-$ quarto create-project mybook --type book
+quarto create-project mybook --type book
 ```
 
 This will create the scaffolding for a simple book in the `mybook` subdirectory. To build and view the HTML version of the book use the `serve` command:
 
 ``` {.bash}
-$ quarto serve mybook
+quarto serve mybook
 ```
 
 This will build the HTML version of the book and run a local web server to view it. Here's what you'll see in your browser for the simple book scaffolding:
@@ -73,7 +73,7 @@ format:
 When working on a book, you'll typically run the local development server as described above and incrementally preview content as you work:
 
 ``` {.bash}
-$ quarto serve
+quarto serve
 ```
 
 If you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.
@@ -111,14 +111,14 @@ knit: quarto render
 When you are ready to publish the book, use the `render` command to render all output formats:
 
 ``` {.bash}
-$ quarto render --to all
+quarto render --to all
 ```
 
 If you pass no arguments to `quarto render` the default format (HTML) will be rendered. You can also render individual formats via the `--to` argument:
 
 ``` {.bash}
-$ quarto render           # render default format (HTML)
-$ quarto render --to pdf  # render PDF format only
+quarto render           # render default format (HTML)
+quarto render --to pdf  # render PDF format only
 ```
 
 The output of your book will be written to the `_book` sub-directory of your book project:

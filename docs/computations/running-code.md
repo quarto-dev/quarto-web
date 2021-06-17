@@ -114,13 +114,13 @@ Non-executable code blocks are printed but not executed.
 Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the Python example shown above might be rendered with:
 
 ``` {.bash}
-$ quarto render jupyter-document.qmd
+quarto render jupyter-document.qmd
 ```
 
 The R example might have been rendered with:
 
 ``` {.bash}
-$ quarto render knitr-document.Rmd
+quarto render knitr-document.Rmd
 ```
 
 ::: {.callout-note}
@@ -130,7 +130,7 @@ While the .Rmd extension is not required for using the Knitr engine (you could i
 The Python example above uses a markdown input file, Quarto can also render any Jupyter notebook (.ipynb) and use all of the same computational features described here. For example:
 
 ``` {.bash}
-$ quarto render jupyter-document.ipynb
+quarto render jupyter-document.ipynb
 ```
 
 Jupyter users have a choice of authoring in .ipynb (and using the JupyterLab or VS Code notebook editor) or authoring in plain text markdown using their favorite text editor. See the article on [Using Jupyter Lab](using-jupyter-lab.md) for additional details.

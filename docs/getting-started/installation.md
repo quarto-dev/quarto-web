@@ -12,7 +12,7 @@ Installing the Quarto CLI (command-line interface) provides you with everything 
 You can verify that Quarto has been installed correctly with:
 
 ``` {.bash}
-$ quarto check install
+quarto check install
 ```
 
 If you need to install a version more recent than the latest release, see the documentation on installing the [Development Version].
@@ -26,13 +26,13 @@ If you are creating computational documents with Quarto, you'll want to be sure 
 To use Quarto with R, you should install the Quarto R package:
 
 ``` {.r}
-> install.packages("quarto")
+install.packages("quarto")
 ```
 
 Installation of the **quarto** package will also install the **knitr** package so you will everything required to render documents containing R code. You can verify that Quarto is configured correctly for Knitr with:
 
 ``` {.bash}
-$ quarto check knitr
+quarto check knitr
 ```
 
 ### Jupyter
@@ -46,27 +46,27 @@ If you are in a fresh environment, installing the `jupyter` or `jupyterlab` pack
 
 ``` {.bash}
 # Jupyter classic 
-$ pip install jupyter
+pip install jupyter
 
 # JupyterLab IDE
-$ pip install jupyterlab
+pip install jupyterlab
 ```
 
 #### Conda
 
 ``` {.bash}
 # Jupyter classic 
-$ conda install jupyter
+conda install jupyter
 
 # JupyterLab IDE
-$ conda install jupyterlab
+conda install jupyterlab
 ```
 :::
 
 You can verify that Quarto is configured correctly for Jupyter with:
 
 ``` {.bash}
-$ quarto check jupyter
+quarto check jupyter
 ```
 
 ### Environments
@@ -93,7 +93,7 @@ If you expect to use Quarto to create PDFs, you will need to install a recent di
 To install TinyTeX, use the following command:
 
 ``` {.bash}
-$ quarto install tinytex
+quarto install tinytex
 ```
 
 If you prefer TeX Live, you can find instructions for installing it here: <https://tug.org/texlive/>.
@@ -103,16 +103,16 @@ If you prefer TeX Live, you can find instructions for installing it here: <https
 To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-windows.cmd`). For example:
 
 ``` {.bash}
-$ git clone https://github.com/quarto-dev/quarto-cli
-$ cd quarto-cli
-$ ./configure-macos.sh
+git clone https://github.com/quarto-dev/quarto-cli
+cd quarto-cli
+./configure-macos.sh
 ```
 
 To update to the latest development version, just `git pull` from the local repo directory:
 
 ``` {.bash}
-$ cd quarto-cli
-$ git pull
+cd quarto-cli
+git pull
 ```
 
 ## Virtual Environments {#virtual-environments}

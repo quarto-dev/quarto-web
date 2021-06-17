@@ -50,13 +50,13 @@ params:
 To render using different parameters you can pass them on the command line using the `-P` flag:
 
 ```bash
-$ quarto render notebook.ipynb -P alpha:0.2 -P ratio:0.3
+quarto render notebook.ipynb -P alpha:0.2 -P ratio:0.3
 ```
 
 Alternatively you can create a YAML file that defines the parameter values you want to render with, then call quarto render with the `--execute-params` flag:
 
 ```bash
-$ quarto render notebook.ipynb --execute-params params.yml
+quarto render notebook.ipynb --execute-params params.yml
 ```
 
 

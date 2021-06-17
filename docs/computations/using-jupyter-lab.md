@@ -22,7 +22,7 @@ There are a few things to point out about this notebook:
 We'll describe each of these in more depth below. First though, let's render the notebook to HTML with Quarto:
 
 ``` {.bash}
-$ quarto render basics-jupyter.ipynb
+quarto render basics-jupyter.ipynb
 ```
 
 ![](images/hello-quarto.png){.border}
@@ -64,7 +64,7 @@ By default, all code cells are re-run in order by Quarto during rendering. You m
 You can also specify this on the command line as follows:
 
 ``` {.bash}
-$ quarto render basics-jupyter.ipynb --no-execute
+quarto render basics-jupyter.ipynb --no-execute
 ```
 
 There are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in [Execution Options](execution-options.md).
@@ -121,14 +121,14 @@ plt.show()
 Note that we've added the `jupyter: python3` option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:
 
 ``` {.bash}
-$ quarto render basics-jupyter.qmd
+quarto render basics-jupyter.qmd
 ```
 
 You can convert between .ipynb and .qmd representations of a notebook using the `quarto convert` command. For example:
 
 ``` {.bash}
-$ quarto convert basics-jupyter.ipynb --to markdown
-$ quarto convert basics-jupyter.qmd --to notebook
+quarto convert basics-jupyter.ipynb --to markdown
+quarto convert basics-jupyter.qmd --to notebook
 ```
 
 See `quarto convert help` for additional details on converting notebooks.

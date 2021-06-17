@@ -320,8 +320,8 @@ cache: true
 Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you've defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the `--cache-refresh` option:
 
 ``` {.bash}
-$ quarto render mydoc.Rmd --cache-refresh # single doc
-$ quarto render --cache-refresh           # entire project
+quarto render mydoc.Rmd --cache-refresh # single doc
+quarto render --cache-refresh           # entire project
 ```
 
 ### No Execute
@@ -444,7 +444,7 @@ format:
 To create a new reference doc based on the Pandoc default, execute the following command:
 
 ``` {.bash}
-$ pandoc -o custom-reference.docx --print-default-data-file reference.docx
+quarto pandoc -o custom-reference.docx --print-default-data-file reference.docx
 ```
 
 Then, open `custom-reference.docx` in MS Word and modify styles as you wish:

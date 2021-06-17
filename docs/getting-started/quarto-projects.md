@@ -28,13 +28,13 @@ If you are just getting started with Quarto and/or you don't have previous exper
 Use the `quarto create-project` command to create a new project. If you have an existing directory of documents that you want to treat as a project just invoke `create-project` with no arguments from within the directory:
 
 ``` {.bash}
-$ quarto create-project
+quarto create-project
 ```
 
 To create a project in a new directory just provide a directory name on the command line:
 
 ``` {.bash}
-$ quarto create-project myproject
+quarto create-project myproject
 ```
 
 ## Shared Metadata
@@ -71,17 +71,17 @@ To render all of the documents within a project, just use `quarto render` within
 
 ``` {.bash}
 # render project in current dir
-$ quarto render 
+quarto render 
 
 # render project in 'myproject'
-$ quarto render myproject
+quarto render myproject
 ```
 
 Note that when rendering an entire project, command line arguments you pass to `quarto render` will be used for each file in the project. For example. this command will render each document in a project as a PDF:
 
 ``` {.bash}
-$ quarto render --to pdf
-$ quarto render myproject --to pdf
+quarto render --to pdf
+quarto render myproject --to pdf
 ```
 
 If you are working with Quarto from R, you can also render a project from the R console using the **quarto** R package.
@@ -144,8 +144,8 @@ execute:
 Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you've defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the `--cache-refresh` option:
 
 ``` {.bash}
-$ quarto render mydoc.Rmd --cache-refresh # single doc
-$ quarto render --cache-refresh           # entire project
+quarto render mydoc.Rmd --cache-refresh # single doc
+quarto render --cache-refresh           # entire project
 ```
 
 ### No Execute

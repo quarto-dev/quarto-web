@@ -166,18 +166,18 @@ You can use standard [knitr cache attributes](https://bookdown.org/yihui/rmarkdo
 Use these command line options to force the use of caching on all chunks, disable the use of caching on all chunks, or to force a refresh of the cache even if it has not been invalidated:
 
 ``` {.bash}
-$ quarto render document.Rmd --cache 
-$ quarto render document.Rmd --no-cache 
-$ quarto render document.Rmd --cache-refresh 
+quarto render document.qmd --cache 
+quarto render document.qmd --no-cache 
+quarto render document.qmd --cache-refresh 
 ```
 
 Or from R using the **quarto** package:
 
 ``` {.r}
 library(quarto)
-quarto_render("document.Rmd", cache = TRUE)
-quarto_render("document.Rmd", cache = FALSE)
-quarto_render("document.Rmd", cache_refresh = TRUE)
+quarto_render("document.qmd", cache = TRUE)
+quarto_render("document.qmd", cache = FALSE)
+quarto_render("document.qmd", cache_refresh = TRUE)
 ```
 
 You can also specify these options within a document's YAML metadata. The main advantage of this over the knitr setup chunk is that could specify caching for an [entire project](https://github.com/quarto-dev/quarto-cli/wiki/Quarto-Projects) in one place. For example:

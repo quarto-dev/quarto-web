@@ -166,7 +166,7 @@ jupyter: python3
 Quarto integrates with the [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) and [Knitr Cache](https://bookdown.org/yihui/rmarkdown-cookbook/cache.html) to to cache time consuming code chunks. Note that to use Jupyter Cache you'll want to install the `jupyter-cache` package:
 
 ``` {.bash}
-$ pip install jupyter-cache
+pip install jupyter-cache
 ```
 
 To enable caching for a document just add the `cache` option:
@@ -179,9 +179,9 @@ execute:
 You can also use \`quarto\` command line options to control caching behavior without changing the document's code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it's specified in options), or to force a refresh of the cache even if it has not been invalidated:
 
 ``` {.bash}
-$ quarto render example.qmd --cache 
-$ quarto render example.qmd --no-cache 
-$ quarto render example.qmd --cache-refresh 
+quarto render example.qmd --cache 
+quarto render example.qmd --no-cache 
+quarto render example.qmd --cache-refresh 
 ```
 
 Note that for Jupyter, the cache for a document is invalidated if any of the code blocks change. For Knitr, invalidation occurs on a per-cell basis.
@@ -264,19 +264,19 @@ You can also control use of the Jupyter daemon using the following command line 
 
 ``` {.bash}
 # use a daemon w/ default timeout (300 sec)
-$ quarto render document.qmd --execute-daemon
+quarto render document.qmd --execute-daemon
 
 # use a daemon w/ an explicit timeout
-$ quarto render document.qmd --execute-daemon 60
+quarto render document.qmd --execute-daemon 60
 
 # prevent use of a daemon
-$ quarto render document.qmd --no-execute-daemon
+quarto render document.qmd --no-execute-daemon
 ```
 
 You can also force an existing daemon to restart using the `--execute-daemon-restart` command line flag:
 
 ``` {.bash}
-$ quarto render document.qmd --execute-daemon-restart 
+quarto render document.qmd --execute-daemon-restart 
 ```
 
 This might be useful if you suspect that the re-use of notebook sessions is causing an error.
@@ -284,5 +284,5 @@ This might be useful if you suspect that the re-use of notebook sessions is caus
 Finally, you can print extended debugging information about daemon usage (startup, shutdown, connections, etc.) using the `--execute-debug` flag:
 
 ``` {.bash}
-$ quarto render document.qmd --execute-debug
+quarto render document.qmd --execute-debug
 ```
