@@ -42,15 +42,26 @@ If you already have Python/Jupyter installed in your environment, then you shoul
 If you are in a fresh environment, installing the `jupyter` or `jupyterlab` package will provide everything required to run Quarto:
 
 ::: {.panel-tabset}
-#### Pip
+#### Pip (MacOS/Linux)
 
 ``` {.bash}
 # Jupyter classic 
-pip install jupyter
+python3 -m pip install jupyter
 
 # JupyterLab IDE
-pip install jupyterlab
+python3 -m pip install jupyterlab
 ```
+
+#### Pip (Windows)
+
+``` {.bash}
+# Jupyter classic 
+py -3 -m pip install jupyter
+
+# JupyterLab IDE
+py -3 -m pip install jupyterlab
+```
+
 
 #### Conda
 
@@ -179,22 +190,28 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 :::
 
-Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Use a normal `pip install` to install packages into your environment. For example:
+Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. 
 
-``` {.bash}
-pip install jupyterlab
-pip install pandas matplotlib 
-```
-
-Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
+Assuming you installed all of the required packages you should now be able to `quarto render` documents within the directory.
 
 #### Saving Environments
 
 To make your environment reproducible, you need to create a `requirements.txt` file that enumerates all of the packages in use. To do this use the `pip freeze` command:
 
+
+::: {.panel-tabset}
+#### MacOS/Linux
+
 ``` {.bash}
-pip freeze > requirements.txt
+python3 -m pip freeze > requirements.txt
 ```
+
+#### Windows
+
+``` {.bash}
+py -3 -m pip freeze > requirements.txt
+```
+:::
 
 You should generally check the `requirements.txt` file into version control.
 
@@ -206,16 +223,26 @@ To reproduce the environment on another machine you create an empty environment,
 
 2.  Install packages from `requirements.txt`:
 
+    ::: {.panel-tabset}
+    #### MacOS/Linux
+
     ``` {.bash}
-    pip install -r requirements.txt
+    python3 -m pip install -r requirements.txt
     ```
+
+    #### Windows
+
+    ``` {.bash}
+    py -3 -m pip install -r requirements.txt
+    ```
+    :::
 
 ### Using conda
 
 To create a new environment in the directory `.condaenv`:
 
 ``` {.bash}
-conda create --prefix .condaenv 
+conda create --prefix .condaenv python
 ```
 
 If this is the first time you've used conda in your shell, you may need to execute one of the following commands before using other conda tools:

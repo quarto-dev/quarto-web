@@ -23,7 +23,7 @@ If you are publishing a [book](../books/book-basidcs.md) you'll want to add the 
 quarto render --to all
 ```
 
-This is particularly important to remember because incremental changes you make when using the [development server](website-basics.md\#workflow) aren't rendered into the output directory. To ensure that your output is up to date before publishing you should always do a full `quarto render`.
+This is particularly important to remember because incremental changes you make when using the [development server](website-basics.md#workflow) aren't rendered into the output directory. To ensure that your output is up to date before publishing you should always do a full `quarto render`.
 
 ## GitHub Pages
 
@@ -76,7 +76,7 @@ quarto_publish()
 
 Unlike the other website publishing options described here, [RStudio Connect](https://www.rstudio.com/products/connect/) is a server that you run inside an organization, so is suitable for publishing content that you only want visible within your organization's network as opposed to visible to the entire internet.
 
-## Google Firebase
+## Google Firebase {#google-firebase}
 
 Google Firebase has a [web hosting service](https://firebase.google.com/docs/hosting/quickstart) that enables easy deployment of websites using a set of command line tools.
 
