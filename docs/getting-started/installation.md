@@ -21,56 +21,29 @@ If you need to install a version more recent than the latest release, see the do
 
 If you are creating computational documents with Quarto, you'll want to be sure to install the additional dependencies required to work with [Knitr](https://yihui.name/knitr) and/or [Jupyter](https://jupyter.org).
 
-### Knitr
-
-To use Quarto with R, you should install the Quarto R package:
-
-``` {.r}
-install.packages("quarto")
-```
-
-Installation of the **quarto** package will also install the **knitr** package so you will everything required to render documents containing R code. You can verify that Quarto is configured correctly for Knitr with:
-
-``` {.bash}
-quarto check knitr
-```
-
 ### Jupyter
 
-If you already have Python/Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
+If you already have Python 3 and Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
 
-If you are in a fresh environment, installing the `jupyter` or `jupyterlab` package will provide everything required to run Quarto:
+If you are in a fresh environment, installing the `jupyter` package will provide everything required to run Quarto:
 
 ::: {.panel-tabset}
 #### Pip (MacOS/Linux)
 
 ``` {.bash}
-# Jupyter classic 
 python3 -m pip install jupyter
-
-# JupyterLab IDE
-python3 -m pip install jupyterlab
 ```
 
 #### Pip (Windows)
 
 ``` {.bash}
-# Jupyter classic 
 py -3 -m pip install jupyter
-
-# JupyterLab IDE
-py -3 -m pip install jupyterlab
 ```
-
 
 #### Conda
 
 ``` {.bash}
-# Jupyter classic 
 conda install jupyter
-
-# JupyterLab IDE
-conda install jupyterlab
 ```
 :::
 
@@ -80,9 +53,31 @@ You can verify that Quarto is configured correctly for Jupyter with:
 quarto check jupyter
 ```
 
+#### Python Versions
+
+On Mac OS and Linux, Quarto will use the version of Python 3 that it finds in the system path. Modify the `PATH` before invoking Quarto to use a different version of Python 3.
+
+On Windows, Quarto will use Conda if it's invoked within an activated Conda environment. Otherwise, it will use the [Python Windows Launcher](https://docs.python.org/3/using/windows.html#launcher) to select a version of Python 3. Use the `PY_PYTHON3` environment variable to override the default behavior (for example: `PY_PYTHON3=3.8`).
+
+The `quarto check jupyter` command will tell you which version of Python will be selected for the shell it is invoked from within.
+
+### Knitr
+
+To use Quarto with R, you should install the **quarto** R package:
+
+``` {.r}
+install.packages("quarto")
+```
+
+Installation of the **quarto** package will also install the **knitr** package so you will have everything required to render documents containing R code. You can verify that Quarto is configured correctly for Knitr with:
+
+``` {.bash}
+quarto check knitr
+```
+
 ### Environments
 
-If you are using [Quarto Projects](getting-started/quarto-projects.md) and want to create a project-local virtual environment for your Python and/or R dependencies see the documentation below on using [Virtual Environments](#virtual-environments).
+if you are using [Quarto Projects](getting-started/quarto-projects.md) and want to create a project-local virtual environment for your Python and/or R dependencies see the documentation below on using [Virtual Environments](#virtual-environments).
 
 ## Additional Tools
 
@@ -190,14 +185,13 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 :::
 
-Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. 
+Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code.
 
 Assuming you installed all of the required packages you should now be able to `quarto render` documents within the directory.
 
 #### Saving Environments
 
 To make your environment reproducible, you need to create a `requirements.txt` file that enumerates all of the packages in use. To do this use the `pip freeze` command:
-
 
 ::: {.panel-tabset}
 #### MacOS/Linux
@@ -360,7 +354,7 @@ To use Jupyter or JupyterLab within a Python virtual environment you just need t
 source .venv/bin/activate
 
 # launch jupyterlab
-jupyter lab
+python3 -m jupyter lab
 ```
 
 #### Windows (Cmd) {.panel-tabset}
@@ -370,7 +364,7 @@ jupyter lab
 .venv\Scripts\activate.bat
 
 # launch jupyterlab
-jupyter lab
+py -3 -m jupyter lab
 ```
 
 #### Windows (PowerShell) {.panel-tabset}
@@ -380,7 +374,7 @@ jupyter lab
 .venv\Scripts\Activate.ps1
 
 # launch jupyterlab
-jupyter lab
+py -3 -m jupyter lab
 ```
 :::
 
