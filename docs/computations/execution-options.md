@@ -161,25 +161,21 @@ jupyter: python3
 
 ## Engine Options
 
-### Caching
+### Caching {.platform-table}
 
 Quarto integrates with the [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) and [Knitr Cache](https://bookdown.org/yihui/rmarkdown-cookbook/cache.html) to to cache time consuming code chunks. Note that to use Jupyter Cache you'll want to install the `jupyter-cache` package:
 
-::: {.panel-tabset}
-
-#### MacOS/Linux
-
-``` {.bash}
-python3 -m pip install jupyter-cache
-```
-
-#### Windows
-
-``` {.bash}
-py -3 -m pip install jupyter-cache
-```
-
-:::
++--------------+-------------------------------------------------------+
+| Platform     | Command                                               |
++==============+=======================================================+
+| Windows      | ``` {.bash}                                           |
+|              | py -m pip install jupyter-cache                       |
+|              | ```                                                   |
++--------------+-------------------------------------------------------+
+| Mac/Linux    | ``` {.bash}                                           |
+|              | python3 -m pip install jupyter-cache                  |
+|              | ```                                                   |
++--------------+-------------------------------------------------------+
 
 To enable caching for a document just add the `cache` option:
 
