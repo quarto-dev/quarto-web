@@ -125,7 +125,7 @@ There are several popular flavors of virtual environment, we will cover the foll
 
 1.  [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (built into Python 3)
 
-2.  [conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs) (built in to Anaconda/Miniconda)
+2.  [conda](https://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab) (built in to Anaconda/Miniconda)
 
 3.  [renv](https://rstudio.github.io/renv/articles/renv.html) (package for managing R environments)
 
@@ -135,17 +135,19 @@ We'll also cover using virtual environments with [JupyterLab](#jupyterlab) and [
 
 ### Using venv {#using-venv .platform-table}
 
-To create a new Python 3 virtual environment in the directory `.venv`:
+Here we'll provide a brief run through of creating a venv for a Quarto project. See the [full documentation](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) on using virtual environments with Python for additional details.
+
+To create a new Python 3 virtual environment in the directory `env`:
 
 +-----------+-----------------------+
 | Platform  | Command               |
 +===========+=======================+
 | Windows   | ``` {.bash}           |
-|           | py -m venv .venv      |
+|           | py -m venv env        |
 |           | ```                   |
 +-----------+-----------------------+
 | Mac/Linux | ``` {.bash}           |
-|           | python3 -m venv .venv |
+|           | python3 -m venv env   |
 |           | ```                   |
 +-----------+-----------------------+
 
@@ -155,15 +157,15 @@ To use the environment you need to activate it. This differs slightly depending 
 | Shell                  | Command                                    |
 +========================+============================================+
 | Windows\               | ``` {.bash}                                |
-| (Command)              | .venv\Scripts\activate.bat                 |
+| (Command)              | env\Scripts\activate.bat                   |
 |                        | ```                                        |
 +------------------------+--------------------------------------------+
 | Windows\               | ``` {.bash}                                |
-| (PowerShell)           | .venv\Scripts\Activate.ps1                 |
+| (PowerShell)           | env\Scripts\Activate.ps1                   |
 |                        | ```                                        |
 +------------------------+--------------------------------------------+
 | Mac/Linux              | ``` {.bash}                                |
-|                        | source .venv/bin/activate                  |
+|                        | source env/bin/activate                    |
 |                        | ```                                        |
 +------------------------+--------------------------------------------+
 
@@ -180,6 +182,12 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code.
 
 Assuming you installed all of the required packages you should now be able to `quarto render` documents within the directory.
+
+To deactivate an environment use the `deactivate` command:
+
+``` {.bash}
+deactivate
+```
 
 #### Saving Environments {.platform-table}
 
@@ -221,10 +229,12 @@ Then, install packages from `requirements.txt`:
 
 ### Using conda {.platform-table}
 
-To create a new environment in the directory `.condaenv`:
+This section will cover the basics of creating and using conda environments with Quarto projects. See this article on [managing project specific environments](hhttps://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab) with Conda for additional details.
+
+To create a new environment in the directory `env`:
 
 ``` {.bash}
-conda create --prefix .condaenv python
+conda create --prefix env python
 ```
 
 If this is the first time you've used conda in your shell, you may need to execute one of the following commands before using other conda tools:
@@ -257,11 +267,11 @@ To use the environment you need to activate it, which you do as follows:
 | Platform       | Command                                             |
 +================+=====================================================+
 | Windows        | ``` {.bash}                                         |
-|                | conda activate .\.condaenv\                         |
+|                | conda activate .\env                                |
 |                | ```                                                 |
 +----------------+-----------------------------------------------------+
 | Mac/Linux      | ``` {.bash}                                         |
-|                | conda activate ./.condaenv/                         |
+|                | conda activate ./env                                |
 |                | ```                                                 |
 +----------------+-----------------------------------------------------+
 
@@ -273,6 +283,12 @@ conda install pandas matplotlib
 ```
 
 Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
+
+Use `conda deactivate` to exit an activated environment:
+
+``` {.bash}
+conda deactivate
+```
 
 #### Saving Environments
 
@@ -289,7 +305,7 @@ You should generally check the `environment.yml` file into version control.
 To reproduce the environment on another machine you just pass the `environment.yml` file as an argument to `conda create`:
 
 ``` {.bash}
-conda create --prefix .condaenv -f environment.yml
+conda create --prefix env -f environment.yml
 ```
 
 ### Using renv
@@ -344,22 +360,22 @@ To use Jupyter or JupyterLab within a Python virtual environment you just need t
 | Shell                | Command                                        |
 +======================+================================================+
 | Windows\             | ``` {.bash}                                    |
-| (Command)            | .venv\Scripts\activate.bat                     |
+| (Command)            | env\Scripts\activate.bat                       |
 |                      | py -m jupyter lab                              |
 |                      | ```                                            |
 +----------------------+------------------------------------------------+
 | Windows (PowerShell) | ``` {.bash}                                    |
-|                      | .venv\Scripts\Activate.ps1                     |
+|                      | env\Scripts\Activate.ps1                       |
 |                      | py -m jupyter lab                              |
 |                      | ```                                            |
 +----------------------+------------------------------------------------+
 | Mac/Linux            | ``` {.bash}                                    |
-|                      | source .venv/bin/activate                      |
+|                      | source env/bin/activate                        |
 |                      | python3 -m jupyter lab                         |
 |                      | ```                                            |
 +----------------------+------------------------------------------------+
 
-All of the Python packages installed within the `.venv` will be available in your Jupyter notebook session. The workflow is similar if you are using conda environments.
+All of the Python packages installed within the `env` will be available in your Jupyter notebook session. The workflow is similar if you are using conda environments.
 
 ### RStudio {#rstudio}
 
@@ -382,13 +398,13 @@ If you need to install R packages just use `install.packages`; if you need to in
 
 #### venv
 
-If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using **renv** at all. In this case you'll want to configure RStudio to use the `.venv` directory for executing Python code.
+If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using **renv** at all. In this case you'll want to configure RStudio to use the `env` directory for executing Python code.
 
-To do this you need to modify your `.Rprofile` to add the appropriate directory to the system `PATH`. This is the code to add to `.Rprofile` for `.venv`:
+To do this you need to modify your `.Rprofile` to add the appropriate directory to the system `PATH`. This is the code to add to `.Rprofile` for `env`:
 
 ``` {.r}
 bin <- ifelse(.Platform$OS.type == "windows", "Scripts", "bin")
-venv_bin <- file.path(getwd(), ".venv", bin)
+venv_bin <- file.path(getwd(), "env", bin)
 Sys.setenv(PATH = paste(venv_bin, Sys.getenv("PATH"),  
                         sep = .Platform$path.sep))
 ```
