@@ -25,7 +25,9 @@ If you are creating computational documents with Quarto, you'll want to be sure 
 
 If you already have Python 3 and Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
 
-If you are in a fresh environment, installing the `jupyter` package will provide everything required to run Quarto:
+If you don't yet have Python 3 on your system, we recommend you install a version using the standard installer from <https://www.python.org/downloads/>. 
+
+If you are in a fresh Pytohn 3 environment, installing the `jupyter` package will provide everything required to run Quarto:
 
 +-------------------+--------------------------------------------------+
 | Pkg. Manager      | Command                                          |
@@ -52,6 +54,13 @@ quarto check jupyter
 #### Python Versions
 
 On Mac OS and Linux, Quarto will use the version of Python 3 that it finds in the system path. Modify the `PATH` before invoking Quarto to use a different version of Python.
+
+
+::: {.callout-warning}
+#### Mac OS Python 3
+
+If you are running Mac OS you might already have a version of Python 3 installed via the [Command Line Tools](https://developer.apple.com/xcode/features/). Even so, we still recommend that you install a version of Python 3 using the standard installer at <https://www.python.org/downloads/>.
+:::
 
 On Windows, Quarto will use Conda if it's invoked within an activated Conda environment. Otherwise, it will use the [Python Windows Launcher](https://docs.python.org/3/using/windows.html#launcher) to select a version of Python 3. Use the `PY_PYTHON` environment variable to override the default behavior (for example: `PY_PYTHON=3.8`).
 
