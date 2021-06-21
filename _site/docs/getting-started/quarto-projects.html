@@ -392,12 +392,20 @@
 <li><a href="#shared-metadata" class="nav-link" data-scroll-target="#shared-metadata">Shared Metadata</a></li>
 <li><a href="#rendering-projects" class="nav-link" data-scroll-target="#rendering-projects">Rendering Projects</a></li>
 <li><a href="#render-targets" class="nav-link" data-scroll-target="#render-targets">Render Targets</a></li>
-<li><a href="#execution" class="nav-link" data-scroll-target="#execution">Execution</a>
+<li><a href="#code-execution" class="nav-link" data-scroll-target="#code-execution">Code Execution</a>
 <ul class="collapse">
 <li><a href="#freeze" class="nav-link" data-scroll-target="#freeze">Freeze</a></li>
 <li><a href="#cache" class="nav-link" data-scroll-target="#cache">Cache</a></li>
 <li><a href="#no-execute" class="nav-link" data-scroll-target="#no-execute">No Execute</a></li>
 <li><a href="#working-dir" class="nav-link" data-scroll-target="#working-dir">Working Dir</a></li>
+</ul></li>
+<li><a href="#virtual-environments" class="nav-link" data-scroll-target="#virtual-environments">Virtual Environments</a>
+<ul class="collapse">
+<li><a href="#using-venv" class="nav-link" data-scroll-target="#using-venv">Using venv</a></li>
+<li><a href="#using-conda" class="nav-link" data-scroll-target="#using-conda">Using conda</a></li>
+<li><a href="#using-renv" class="nav-link" data-scroll-target="#using-renv">Using renv</a></li>
+<li><a href="#jupyterlab" class="nav-link" data-scroll-target="#jupyterlab">JupyterLab</a></li>
+<li><a href="#rstudio" class="nav-link" data-scroll-target="#rstudio">RStudio</a></li>
 </ul></li>
 <li><a href="#project-types" class="nav-link" data-scroll-target="#project-types">Project Types</a></li>
 </ul>
@@ -469,58 +477,412 @@ Note
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># render project in 'myproject'</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render myproject</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that when rendering an entire project, command line arguments you pass to <code>quarto render</code> will be used for each file in the project. For example. this command will render each document in a project as a PDF:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render <span class="at">--to</span> pdf</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render myproject <span class="at">--to</span> pdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also render only the files within a sub-directory of a project. For example, if the current directory contains a project with sub-directories <code>tutorials</code>, <code>how-to</code>, and <code>articles</code>, you can render just the contents of <code>articles</code> as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># render only documents in the 'articles' sub-directory</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render articles</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that when rendering a project, command line arguments you pass to <code>quarto render</code> will be used for each file in the project. For example. this command will render each document in a project as a PDF:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render <span class="at">--to</span> pdf</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render myproject <span class="at">--to</span> pdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If you are working with Quarto from R, you can also render a project from the R console using the <strong>quarto</strong> R package.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_render</span>(<span class="st">"document.Rmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_render</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="render-targets" class="level2">
 <h2 class="anchored" data-anchor-id="render-targets">Render Targets</h2>
 <p>By default, all valid Quarto input files (.Rmd, .ipynb, .md) in the project directory will be rendered, save for ones with a file or directory prefix of <code>.</code> (hidden files) or <code>_</code> (typically used for non top-level files, e.g.&nbsp;ones included in other files).</p>
 <p>If you don’t want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a <code>project: render: [files]</code> entry to your project metadata. For example:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section1.md</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section2.md</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that you can use wildcards when defining the <code>render</code> list. For example:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section*.md</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section1.md</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section2.md</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that you can use wildcards when defining the <code>render</code> list. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section*.md</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="execution" class="level2">
-<h2 class="anchored" data-anchor-id="execution">Execution</h2>
+<section id="code-execution" class="level2">
+<h2 class="anchored" data-anchor-id="code-execution">Code Execution</h2>
 <p>Rendering a list of input files has the potential to be quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations.</p>
 <section id="freeze" class="level3">
 <h3 class="anchored" data-anchor-id="freeze">Freeze</h3>
-<p>You can use the <code>freeze</code> option to denote that computational documents should never be re-rendered, or alternatively only be re-rendered when their source file changes:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">  # never re-render</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can use the <code>freeze</code> option to denote that computational documents should never be re-rendered during a global project render, or alternatively only be re-rendered when their source file changes:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> auto</span><span class="co">  # re-render only when source changes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The results of documents rendered with <code>freeze</code> are stored in the <code>_freeze</code> directory, and re-used when needed to fulfill document renders.</p>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">  # never re-render during project render</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> auto</span><span class="co">  # re-render only when source changes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that <code>freeze</code> controls whether execution occurs during global project renders. If you do an incremental render of either a single document or a project sub-directory then code is always executed. For example:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># render single document (always executes code)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.qmd</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># render project subdirectory (always executes code)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render articles</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="using-freeze" class="level4">
+<h4 class="anchored" data-anchor-id="using-freeze">Using Freeze</h4>
+<p>Freeze is generally used when you have either a large number of collaborators or many computational documents created over a longer period of time. In both cases it can be challenging to fully re-execute every document when you render the site. This could be because some documents have esoteric or environment-specific requirements (e.g.&nbsp;require access/authentication to a data source) or due to general fragility of dependencies over time. Using freeze ensures that you can always reproducibly render your site.</p>
+<p>The computational results of documents executed with <code>freeze</code> are stored in the <code>_freeze</code> directory, and re-used when needed to fulfill document renders. You should check the contents of <code>_freeze</code> into version control so that others rendering the project don’t need to reproduce your computational environment to render it in their environment.</p>
+</section>
+<section id="freeze-virtual-environments" class="level4">
+<h4 class="anchored" data-anchor-id="freeze-virtual-environments">Virtual Environments</h4>
+<p>You can also combine <code>freeze</code> with the use of virtual environments to divide your project into sub-directories that each have their own set of dependencies. This allows multiple collaborators to use a set of localized dependencies for the documents they are responsible for, but at the same time still be able to render the entire project without requiring all of it’s dependencies.</p>
+<p>To learn how to create and use a virtual environment, see the documentation on <a href="#virtual-environments">Virtual Environments</a> below.</p>
+<p>Here’s an example workflow of using virtual environments with freeze:</p>
+<ol type="1">
+<li><p>Include <code>freeze: true</code> in the project execution options:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Create a sub-directory of documents (e.g.&nbsp;<code>research</code>), and initialize and use a virtual environment within it:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>research/</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  document1.qmd</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  document2.qmd</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  env/</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>When working wihtin this sub-directory, activate the virtual environment before rendering it’s documents. For example:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> research</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>This sub-directory render won’t use the cached <code>freeze</code> results but instead will re-run all of the computations using the directory-specific virtual environment. You can of course also include sub-directories within this directory and their documents will also be rendered using the parent virtual environment.</p>
+</section>
 </section>
 <section id="cache" class="level3">
 <h3 class="anchored" data-anchor-id="cache">Cache</h3>
 <p>You can use the <code>cache</code> option to cache the results of computations (using the <a href="https://yihui.org/knitr/demo/cache/">knitr cache</a> for R documents, and <a href="https://jupyter-cache.readthedocs.io/en/latest/">Jupyter Cache</a> for Jupyter documents):</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you’ve defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the <code>--cache-refresh</code> option:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render mydoc.Rmd <span class="at">--cache-refresh</span> <span class="co"># single doc</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render <span class="at">--cache-refresh</span>           <span class="co"># entire project</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render mydoc.Rmd <span class="at">--cache-refresh</span> <span class="co"># single doc</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render <span class="at">--cache-refresh</span>           <span class="co"># entire project</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="no-execute" class="level3">
 <h3 class="anchored" data-anchor-id="no-execute">No Execute</h3>
 <p>Finally, if you are using Jupyter Notebooks as inputs, you may prefer to execute all code within interactive notebook sessions, and <em>never</em> have Quarto execute the code cells:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="working-dir" class="level3">
 <h3 class="anchored" data-anchor-id="working-dir">Working Dir</h3>
 <p>By default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the <code>execute-dir: project</code> option to your config:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">execute-dir</span><span class="kw">:</span><span class="at"> project</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">execute-dir</span><span class="kw">:</span><span class="at"> project</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that from within your code you can always determine the location of the currently executing Quarto project using the <code>QUARTO_PROJECT_DIR</code> environment variable.</p>
+</section>
+</section>
+<section id="virtual-environments" class="level2">
+<h2 class="anchored" data-anchor-id="virtual-environments">Virtual Environments</h2>
+<p>Virtual environments provide a project-specific version of installed packages. This both helps you to faithfully reproduce your environment (e.g.&nbsp;if you are collaborating with a colleague or deploying to a server) as well as isolate the use of packages so that upgrading a package in one project doesn’t break other projects.</p>
+<p>There are several popular flavors of virtual environment, we will cover the following ones here:</p>
+<ol type="1">
+<li><p><a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment">venv</a> (built into Python 3)</p></li>
+<li><p><a href="https://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab">conda</a> (built in to Anaconda/Miniconda)</p></li>
+<li><p><a href="https://rstudio.github.io/renv/articles/renv.html">renv</a> (package for managing R environments)</p></li>
+</ol>
+<p>Below we’ll provide some example workflows for using these tools with Quarto. In these examples we’ll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a sub-directory of the project).</p>
+<p>We’ll also cover using virtual environments with <a href="#jupyterlab">JupyterLab</a> and <a href="#rstudio">RStudio</a>.</p>
+<section id="using-venv" class="level3 platform-table">
+<h3 class="platform-table anchored" data-anchor-id="using-venv">Using venv</h3>
+<p>Here we’ll provide a brief run through of creating a venv for a Quarto project. See the <a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment">full documentation</a> on using virtual environments with Python for additional details.</p>
+<p>To create a new Python 3 virtual environment in the directory <code>env</code>:</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows</td>
+<td><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> venv env</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv env</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:</p>
+<table class="table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 62%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Shell</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows<br>
+(Command)</td>
+<td><div class="sourceCode" id="cb22"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\activate.bat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Windows<br>
+(PowerShell)</td>
+<td><div class="sourceCode" id="cb23"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\Activate.ps1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="odd">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> env/bin/activate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+PowerShell Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that you may receive an error about running scripts being disabled when activating within PowerShell. If you get this error then execute the following command:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Set-ExecutionPolicy</span> <span class="at">-ExecutionPolicy</span> Unrestricted <span class="at">-Scope</span> CurrentUser</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code.</p>
+<p>Assuming you installed all of the required packages you should now be able to <code>quarto render</code> documents within the directory.</p>
+<p>To deactivate an environment use the <code>deactivate</code> command:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="saving-environments" class="level4 platform-table">
+<h4 class="platform-table anchored" data-anchor-id="saving-environments">Saving Environments</h4>
+<p>To make your environment reproducible, you need to create a <code>requirements.txt</code> file that enumerates all of the packages in use. To do this use the <code>pip freeze</code> command:</p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows</td>
+<td><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>You should generally check the <code>requirements.txt</code> file into version control.</p>
+</section>
+<section id="restoring-environments" class="level4 platform-table">
+<h4 class="platform-table anchored" data-anchor-id="restoring-environments">Restoring Environments</h4>
+<p>To reproduce the environment on another machine you create an empty environment, activate it, and then <code>pip install</code> using <code>requirements.txt</code>:</p>
+<p>First, follow the <a href="#using-venv">instructions above</a> for creating and activating a virtual environment for your platform/shell.</p>
+<p>Then, install packages from <code>requirements.txt</code>:</p>
+<table class="table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows</td>
+<td><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="using-conda" class="level3 platform-table">
+<h3 class="platform-table anchored" data-anchor-id="using-conda">Using conda</h3>
+<p>This section will cover the basics of creating and using conda environments with Quarto projects. See this article on <a href="hhttps://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab">managing project specific environments</a> with Conda for additional details.</p>
+<p>To create a new environment in the directory <code>env</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> env python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If this is the first time you’ve used conda in your shell, you may need to execute one of the following commands before using other conda tools:</p>
+<table class="table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 63%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Shell</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows<br>
+(Command)</td>
+<td><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init cmd.exe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Windows<br>
+(PowerShell)</td>
+<td><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="odd">
+<td>Linux / Older Mac<br>
+(Bash)</td>
+<td><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init bash</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Newer Mac<br>
+(Zsh)</td>
+<td><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init zsh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>You will likely need to exit and restart your terminal for <code>conda init</code> to be reflected in your session.</p>
+<p>To use the environment you need to activate it, which you do as follows:</p>
+<table class="table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows</td>
+<td><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate .<span class="dt">\e</span>nv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate ./env</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code. Use <code>conda install</code> to install packages into your environment. For example:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install jupyterlab</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pandas matplotlib </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Assuming you installed all of the required packages (likely more than just <code>pandas</code> and <code>matplotlib</code>) you should now be able to <code>quarto render</code> documents within the directory.</p>
+<p>Use <code>conda deactivate</code> to exit an activated environment:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> deactivate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="saving-environments-1" class="level4">
+<h4 class="anchored" data-anchor-id="saving-environments-1">Saving Environments</h4>
+<p>To make your environment reproducible, you need to create a <code>environment.yml</code> file that enumerates all of the packages in use. Do this using the <code>conda env export</code> command:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env export <span class="op">&gt;</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should generally check the <code>environment.yml</code> file into version control.</p>
+</section>
+<section id="restoring-environments-1" class="level4">
+<h4 class="anchored" data-anchor-id="restoring-environments-1">Restoring Environments</h4>
+<p>To reproduce the environment on another machine you just pass the <code>environment.yml</code> file as an argument to <code>conda create</code>:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> env <span class="at">-f</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="using-renv" class="level3">
+<h3 class="anchored" data-anchor-id="using-renv">Using renv</h3>
+<p>The <a href="https://rstudio.github.io/renv/articles/renv.html">renv</a> package provides functionality similar to the venv and conda, but for R packages. To create a new renv environment, install the <strong>renv</strong> package from GitHub then call the <code>renv::init()</code> function:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install</span>(<span class="st">"rstudio/renv"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As part of initialization, your <code>.Rprofile</code> file is modified to ensure that the renv is activated automatically at the start of each R session.</p>
+<p>If you plan on using <strong>both</strong> R and Python in your project, you can have renv automatically create and manage a Python virtual environment as follows:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">use_python</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To install R packages use the standard R <code>install.packages</code> function. You can also install GitHub packages using the <code>renv::install</code> function. For example:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)      <span class="co"># install from CRAN</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"tidyverse/dplyr"</span>) <span class="co"># install from GitHub</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To install Python packages just use <code>pip</code> as described above from the built-in RStudio terminal.</p>
+<section id="saving-environments-2" class="level4">
+<h4 class="anchored" data-anchor-id="saving-environments-2">Saving Environments</h4>
+<p>To record the current versions of all R (and optionally Python) packages, use the <code>renv::snapshot()</code> function:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This will record an <code>renv.lock</code> file for R packages and a <code>requirements.txt</code> file for Python packages). These files should be checked into version control.</p>
+</section>
+<section id="restoring-environments-2" class="level4">
+<h4 class="anchored" data-anchor-id="restoring-environments-2">Restoring Environments</h4>
+<p>To reproduce the environment on another machine use the <code>renv::restore()</code> function:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="jupyterlab" class="level3 platform-table">
+<h3 class="platform-table anchored" data-anchor-id="jupyterlab">JupyterLab</h3>
+<p>To use Jupyter or JupyterLab within a Python virtual environment you just need to activate the environment and then launch the Jupyter front end. For example:</p>
+<table class="table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Shell</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows<br>
+(Command)</td>
+<td><div class="sourceCode" id="cb47"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\activate.bat</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>py -m jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Windows (PowerShell)</td>
+<td><div class="sourceCode" id="cb48"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\Activate.ps1</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>py -m jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="odd">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> env/bin/activate</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>All of the Python packages installed within the <code>env</code> will be available in your Jupyter notebook session. The workflow is similar if you are using conda environments.</p>
+</section>
+<section id="rstudio" class="level3">
+<h3 class="anchored" data-anchor-id="rstudio">RStudio</h3>
+<p>We’ll cover two different scenarios for using RStudio with Quarto:</p>
+<ol type="1">
+<li>Using RStudio with <strong>renv</strong> (R and optionally some Python packages)</li>
+<li>Using RStudio with <strong>venv</strong> (Python packages only)</li>
+</ol>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+RStudio v1.5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you are using RStudio with Quarto, it is strongly recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. You can download the daily build at <a href="https://dailies.rstudio.com" class="uri">https://dailies.rstudio.com</a>.</p>
+</div>
+</div>
+<section id="renv" class="level4">
+<h4 class="anchored" data-anchor-id="renv">renv</h4>
+<p>If you are using <strong>renv</strong>, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.</p>
+<p>If you need to install R packages just use <code>install.packages</code>; if you need to install Python packages simply use <code>pip install</code> or <code>conda install</code> within the RStudio Terminal.</p>
+</section>
+<section id="venv" class="level4">
+<h4 class="anchored" data-anchor-id="venv">venv</h4>
+<p>If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using <strong>renv</strong> at all. In this case you’ll want to configure RStudio to use the <code>env</code> directory for executing Python code.</p>
+<p>To do this you need to modify your <code>.Rprofile</code> to add the appropriate directory to the system <code>PATH</code>. This is the code to add to <code>.Rprofile</code> for <code>env</code>:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>bin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(.Platform<span class="sc">$</span>OS.type <span class="sc">==</span> <span class="st">"windows"</span>, <span class="st">"Scripts"</span>, <span class="st">"bin"</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>venv_bin <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"env"</span>, bin)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PATH =</span> <span class="fu">paste</span>(venv_bin, <span class="fu">Sys.getenv</span>(<span class="st">"PATH"</span>),  </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep =</span> .Platform<span class="sc">$</span>path.sep))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The directory containing the Python executable differs between Windows and other systems, which is we need the <code>ifelse</code> on the first line.</p>
+<p>Note that while in principle you could also use <strong>conda</strong> in this configuration, <strong>venv</strong> is much better tested and debugged with Quarto under RStudio so is strongly recommended.</p>
+</section>
 </section>
 </section>
 <section id="project-types" class="level2">
