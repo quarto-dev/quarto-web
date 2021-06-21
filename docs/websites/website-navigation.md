@@ -1,5 +1,5 @@
 ---
-title: "Site Navigation"
+title: "Website Navigation"
 format: html
 ---
 
