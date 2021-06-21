@@ -165,11 +165,11 @@ To use the environment you need to activate it. This differs slightly depending 
 +------------------------+--------------------------------------------+
 | Shell                  | Command                                    |
 +========================+============================================+
-| Windows\               | ``` {.bash}                                |
+| Windows\               | ``` {.default}                             |
 | (Command)              | env\Scripts\activate.bat                   |
 |                        | ```                                        |
 +------------------------+--------------------------------------------+
-| Windows\               | ``` {.bash}                                |
+| Windows\               | ``` {.default}                             |
 | (PowerShell)           | env\Scripts\Activate.ps1                   |
 |                        | ```                                        |
 +------------------------+--------------------------------------------+
@@ -368,12 +368,12 @@ To use Jupyter or JupyterLab within a Python virtual environment you just need t
 +----------------------+------------------------------------------------+
 | Shell                | Command                                        |
 +======================+================================================+
-| Windows\             | ``` {.bash}                                    |
+| Windows\             | ``` {.default}                                 |
 | (Command)            | env\Scripts\activate.bat                       |
 |                      | py -m jupyter lab                              |
 |                      | ```                                            |
 +----------------------+------------------------------------------------+
-| Windows (PowerShell) | ``` {.bash}                                    |
+| Windows (PowerShell) | ``` {.default}                                 |
 |                      | env\Scripts\Activate.ps1                       |
 |                      | py -m jupyter lab                              |
 |                      | ```                                            |
