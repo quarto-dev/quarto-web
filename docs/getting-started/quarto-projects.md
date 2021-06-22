@@ -181,7 +181,8 @@ Here's an example workflow of using virtual environments with freeze:
     ``` {.bash}
     cd research
     source venv/bin/activate
-    quarto render
+    quarto render               # render all files in subdir
+    quarto render document.qmd  # render a single-file
     ```
     
 
