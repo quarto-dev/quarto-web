@@ -1,5 +1,6 @@
 ---
 title: Using RStudio
+description: "RStudio IDE v1.4 or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as markdown files that use the Jupyter engine."
 format: html
 ---
 
@@ -69,7 +70,7 @@ While Quarto doesn't technically require that documents targeting the Knitr engi
 
 If you prefer to use the .`md` or `.qmd` extension, you can still tell RStudio to enable .Rmd features by explicitly setting the file type to "R Markdown" using the popup menu at the bottom right of the editor:
 
-![](images/rstudio-file-type.png)
+![](images/rstudio-file-type.png){.preview-image}
 
 ## Jupyter Engine
 

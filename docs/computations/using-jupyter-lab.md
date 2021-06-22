@@ -1,5 +1,6 @@
 ---
 title: Using JupyterLab
+description: "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use JupyterLab as your editor."
 format: html
 ---
 
@@ -9,7 +10,7 @@ Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a nor
 
 Here is the "Hello, Quarto" example from the homepage inside JupyterLab:
 
-![](images/jupyter-lab.png){.border}
+![](images/jupyter-lab.png){.border .preview-image}
 
 There are a few things to point out about this notebook:
 

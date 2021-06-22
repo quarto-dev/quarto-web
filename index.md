@@ -60,7 +60,7 @@ plt.show()
 
 Here's what the document looks like when rendered by Quarto:
 
-![](docs/getting-started/images/hello-quarto.png){.border}
+![](docs/getting-started/images/hello-quarto.png){.border .preview-image}
 
 You can render documents using the `quarto` command line tool:
 

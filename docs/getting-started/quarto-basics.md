@@ -1,5 +1,6 @@
 ---
 title: "Quarto Basics"
+description: "Quarto is a publishing system used to create documents in a wide variety of formats including HTML, PDF, Office (docx and pptx), OpenOffice, JATS, and many more."
 format: html
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: "Parameters"
+description: "Learn more about using parameters to create different variations of a single document."
 format: html
 ---
 

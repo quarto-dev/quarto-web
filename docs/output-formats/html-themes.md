@@ -1,5 +1,6 @@
 ---
 title: "HTML Themes"
+description: "Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). You can disable this theming or use SASS to create your own themes."
 format: html
 ---
 

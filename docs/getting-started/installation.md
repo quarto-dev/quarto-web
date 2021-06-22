@@ -1,5 +1,6 @@
 ---
 title: "Installation"
+description: "Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of Pandoc)."
 knit: quarto render
 ---
 

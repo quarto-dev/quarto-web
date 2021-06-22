@@ -1,5 +1,6 @@
 ---
 title: "Book Authoring"
+description: "Learn more about configuring reader tools and structuring your book with Quarto."
 format: html
 ---
 
@@ -195,7 +196,7 @@ comments:
 
 Note the various tools that now appear:
 
-![](images/book-tools.png){.border}
+![](images/book-tools.png){.border .preview-image}
 
 -   The search box enables full text search of the entire book
 
