@@ -1,5 +1,6 @@
 ---
 title: Running Code
+description: "Quarto supports executable code blocks within markdown. This allows you to create fully reproducible documents and reports---the code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered."
 format: html
 ---
 
@@ -73,7 +74,7 @@ summary(airquality)
 ```
 ````
 
-![](images/knitr-document.png){.border}
+![](images/knitr-document.png){.border .preview-image}
 
 Note that we added the `execute: warning: false` option to suppress printing of warnings. See the [Execution Options] section below for additional details.
 

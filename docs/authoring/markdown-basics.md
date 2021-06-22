@@ -1,5 +1,6 @@
 ---
 title: Markdown Basics
+description: "Quarto is based on Pandoc and uses it’s variation of markdown as it’s underlying document syntax."
 format: html
 ---
 

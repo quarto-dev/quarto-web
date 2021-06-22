@@ -1,5 +1,6 @@
 ---
 title: "Pandoc Filters"
+description: "If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a Pandoc Filter that bridges the gap."
 format: html
 ---
 

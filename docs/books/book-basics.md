@@ -1,5 +1,6 @@
 ---
 title: "Creating a Book"
+description: "Quarto can help you create a book that combines multiple documents into a single manuscript in a variety of formats."
 format: html
 ---
 
@@ -35,7 +36,7 @@ quarto serve mybook
 
 This will build the HTML version of the book and run a local web server to view it. Here's what you'll see in your browser for the simple book scaffolding:
 
-![](images/book-scaffold.png){.border}
+![](images/book-scaffold.png){.border .preview-image}
 
 The book's chapters are contained in the files `index.md`, `introduction.md`, `summary.md`. Try adding some content to one of these files and saving---you'll notice that the book preview is automatically updated in the browser.
 

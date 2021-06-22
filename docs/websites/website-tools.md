@@ -1,6 +1,6 @@
 ---
 title: "Website Tools"
-description: "Learn more about the variety of website tools that Quarto provides."
+description: "Learn more about the additional tools that you can use to customize your Quarto website."
 ---
 
 ## Social Metadata

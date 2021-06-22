@@ -1,5 +1,6 @@
 ---
 title: "PDF Engines"
+description: "Pandoc supports the use of a wide range of TeX distributions and PDF compilation engines including pdflatex, xelatex, lualatex, tectonic, and latexmk."
 format: html
 ---
 

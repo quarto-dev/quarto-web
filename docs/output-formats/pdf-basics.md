@@ -1,5 +1,6 @@
 ---
 title: PDF Basics
+description: "Learn more about creating and customizing PDF documents using Quarto."
 format: html
 ---
 

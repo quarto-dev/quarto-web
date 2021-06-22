@@ -1,5 +1,6 @@
 ---
 title: "Figures & Layout"
+description: "Quarto has a variety of capabilities for creating and laying out individual tables and figures as well as panels of tables and figures."
 format: html
 ---
 
@@ -345,7 +346,7 @@ plot(mtcars)
 ```
 ````
 
-![](images/knitr-layout-complex.png)
+![](images/knitr-layout-complex.png){.preview-image}
 
 ## Block Layout
 

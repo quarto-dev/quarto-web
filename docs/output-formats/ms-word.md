@@ -1,5 +1,6 @@
 ---
 title: MS Word
+description: "Learn more about creating and customizing MS Word documents using Quarto."
 format: html
 ---
 
@@ -39,7 +40,7 @@ Reference documents include sample text that uses all of the output styles used 
 
 Then, open `custom-reference-doc.docx` in MS Word and modify styles as you wish:
 
-![You can open the Styles pane from the HOME tab in the MS Word toolbar.](images/word-styles.png)
+![You can open the Styles pane from the HOME tab in the MS Word toolbar.](images/word-styles.png){.preview-image}
 
 When you move the cursor to a specific element in the document, an item in the styles list will be highlighted. If you want to modify the style of any type of element, you can click the drop-down menu on the highlighted item, and you will see a dialog box like this:
 

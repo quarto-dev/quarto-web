@@ -1,5 +1,6 @@
 ---
 title: "Cross References"
+description: "Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables."
 format: html
 ---
 
@@ -60,7 +61,7 @@ See @fig-elephants for examples. In particular, @fig-hanno.
 
 Here is what this looks like when rendered as HTML:
 
-![](images/crossref-subfigures.png)
+![](images/crossref-subfigures.png){.preview-image}
 
 Note that we also used the `layout.ncol` attribute to specify a two-column layout. See the article on [Figures and Layout](figures-and-layout.html) for more details on laying out panels of figures.
 

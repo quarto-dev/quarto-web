@@ -1,5 +1,6 @@
 ---
 title: More Formats
+description: "Pandoc support a huge array of output formats, all of which can be used with Quarto. To use any Pandoc format just use the `format` option or the `--to` command line option."
 format: html
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: "Website Navigation"
+description: "Quarto supports a variety of options for customizing your website's navigation."
 format: html
 ---
 
@@ -120,9 +121,9 @@ site:
 
 There are two styles of side navigation available: "docked" which shows the navigation in a sidebar with a distinct background color, and "floating" which places it closer to the main body text. Here's that the "docked" and "floating" styles look like (respectively):
 
-|                                   |                                   |
-|:---------------------------------:|:---------------------------------:|
-| ![](images/nav-side-anchored.png) | ![](images/nav-side-floating.png) |
+|                                                   |                                   |
+|:-------------------------------------------------:|:---------------------------------:|
+| ![](images/nav-side-anchored.png){.preview-image} | ![](images/nav-side-floating.png) |
 
 Here are all of the options available for side navigation:
 
@@ -236,7 +237,7 @@ site:
 
 When enabled, page navigation will be displayed at the bottom of the page whenever there is a next or previous page (including in the next or previous section).
 
-### Page Navigation and Separators 
+### Page Navigation and Separators
 
 If you include a page separator in sidebar (either between sections or items), page navigation controls will not appear to continue pagination across the separator. For example, in the following sidebar:
 

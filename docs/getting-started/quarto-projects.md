@@ -1,5 +1,6 @@
 ---
 title: "Quarto Projects"
+description: "Quarto projects are directories that provide additional group functionality on top of individual documents within the project."
 format: html
 ---
 

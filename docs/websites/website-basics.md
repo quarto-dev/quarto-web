@@ -1,5 +1,6 @@
 ---
 title: "Creating a Website"
+description: "Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style."
 format: html
 ---
 

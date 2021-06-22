@@ -1,5 +1,6 @@
 ---
 title: "Publishing Websites"
+description: "Learn more about publishing websites using Quarto."
 format: html
 ---
 
