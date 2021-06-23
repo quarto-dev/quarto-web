@@ -486,39 +486,21 @@ All of the Python packages installed within the `env` will be available in your 
 
 ### RStudio {#rstudio}
 
-We'll cover two different scenarios for using RStudio with Quarto:
+If you are using RStudio with Quarto, it is _strongly_ recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. 
 
-1.  Using RStudio with **renv** (R and optionally some Python packages)
-2.  Using RStudio with **venv** (Python packages only)
-
-::: {.callout-note}
-#### RStudio v1.5
-
-If you are using RStudio with Quarto, it is strongly recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. You can download the daily build at <https://dailies.rstudio.com>.
-:::
+For virtual environments in particular, you should make sure you are using version 1.5.122 or higher. You can download the daily build at <https://dailies.rstudio.com>.
 
 #### renv
 
-If you are using **renv**, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.
+If you are using **renv**, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project-local environments.
 
-If you need to install R packages just use `install.packages`; if you need to install Python packages simply use `pip install` or `conda install` within the RStudio Terminal.
+If you need to install R packages ust use `install.packages`; if you need to install Python packages simply use pip or conda within the Terminal as described above.
 
-#### venv
+#### venv / condaenv
 
-If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using **renv** at all. In this case you'll want to configure RStudio to use the `env` directory for executing Python code.
+Starting with version 1.5.122, RStudio will automatically activate any venv or condaenv that it finds within a project directory. Just be sure to create an RStudio project within the same directory where you created your `env` and things will work as expected with no additional configuration.
 
-To do this you need to modify your `.Rprofile` to add the appropriate directory to the system `PATH`. This is the code to add to `.Rprofile` for `env`:
-
-``` {.r}
-bin <- ifelse(.Platform$OS.type == "windows", "Scripts", "bin")
-venv_bin <- file.path(getwd(), "env", bin)
-Sys.setenv(PATH = paste(venv_bin, Sys.getenv("PATH"),  
-                        sep = .Platform$path.sep))
-```
-
-The directory containing the Python executable differs between Windows and other systems, which is we need the `ifelse` on the first line.
-
-Note that while in principle you could also use **conda** in this configuration, **venv** is much better tested and debugged with Quarto under RStudio so is strongly recommended.
+If you need to install Python packages simply use pip or conda within the Terminal as described above.
 
 ## Project Types
 

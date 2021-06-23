@@ -6,37 +6,15 @@ format: html
 
 ## Overview
 
-RStudio IDE v1.4 or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as markdown files that use the Jupyter engine.
+RStudio IDE [v1.5.122](https://dailies.rstudio.com) or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as qmd markdown files that use the Jupyter engine.
 
-Quarto is also designed to be highly compatible with existing [R Markdown](https://rmarkdown.rstudio.com/) documents. You should generally be able to use Quarto to render any existing Rmd document without changes.
+The version of RStudio that works with Quarto (v1.5) is currently available as a daily build. If you are using Quarto within RStudio it's *strongly* recommended that you use this version (the documentation below assumes you are using this build).
 
-## Knit with Quarto
+You can download the RStudio daily build from <https://dailies.rstudio.com>.
 
-You need to take one important measure to ensure that RStudio knows to use Quarto rather than R Markdown to render when you click the **Knit** button. To opt-in to rendering with Quarto, add the following `knit` option to the document's YAML metadata:
+## Knitr Engine
 
-``` {.yaml}
----
-title: "My Document"
-author: "Jone Smith"
-knit: quarto render
----
-```
-
-Another difference between R Markdown and Quarto is that R Markdown uses the `output` option to indicate the output format while Quarto uses `format`. As such, including a `format` option (and no `output` option) will also cause RStudio to use Quarto:
-
-``` {.yaml}
----
-title: "My Document"
-author: "Jane Smith"
-format: html
----
-```
-
-::: {.callout-note}
-Future versions of RStudio will have more intelligence about when a document should be rendered with Quarto, and will no longer require the options described above. For the time being though you should provide the `knit` or the `format` option in documents you want to render with Quarto.
-:::
-
-## Chunk Options
+Quarto is designed to be highly compatible with existing [R Markdown](https://rmarkdown.rstudio.com/) documents. You should generally be able to use Quarto to render any existing Rmd document without changes.
 
 One important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are generally included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:
 
@@ -64,14 +42,6 @@ Chunk options included this way use YAML syntax rather than R syntax for consist
 #| fig.cap: !expr paste("Air", "Quality")
 ```
 
-## Rmd Extension
-
-While Quarto doesn't technically require that documents targeting the Knitr engine have an .Rmd extension, you will generally be better off using this extension. This is because many editors (including RStudio) will enable features like interactive chunk execution when they see the .Rmd extension.
-
-If you prefer to use the .`md` or `.qmd` extension, you can still tell RStudio to enable .Rmd features by explicitly setting the file type to "R Markdown" using the popup menu at the bottom right of the editor:
-
-![](images/rstudio-file-type.png){.preview-image}
-
 ## Jupyter Engine
 
 You can also render Quarto markdown documents that target the Jupyter engine within RStudio. These files will generally have an `.qmd` extension and include a `jupyter` option in the YAML front matter indicating which kernel to use. For example:
@@ -85,14 +55,20 @@ jupyter: python3
 
 Note that the presence of the `jupyter` option also provides a sufficient hint to RStudio that it should render the file using Quarto rather than R Markdown.
 
-You can also enable interactive cell execution for `.qmd` files by setting the file type to "R Markdown" as described immediately above.
+## New Documents
+
+You can use the **File :** **New File : Quarto Doc...** command to create new Quarto documents:
+
+![](images/new-quarto-doc.png){width="471"}
+
+Note that this command uses the .qmd file extension by default for all new documents. If you prefer, you can optionally change the extension to .md for plain markdown files and .Rmd for Knitr engine documents.
 
 ## R Package
 
-You can render Quarto documents from the R console using the **quarto** R package. To install the R package:
+If you are not using RStudio and/or you prefer to render from the R console, you can do so using the **quarto** R package. To install the R package:
 
 ``` {.r}
-install.packages("quarto")
+remotes::install_github("quarto-dev/quarto-r")
 ```
 
 Then, to render a document:
@@ -100,4 +76,11 @@ Then, to render a document:
 ``` {.r}
 library(quarto)
 quarto_render("document.Rmd")
+```
+
+If you working on a [website](../websites/website-basics.md) or [book](../books/book-basics.md) project, you can run the Quarto development server with:
+
+``` {.r}
+library(quarto)
+quarto_serve()
 ```

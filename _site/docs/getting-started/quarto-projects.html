@@ -863,39 +863,17 @@ PowerShell Note
 </section>
 <section id="rstudio" class="level3">
 <h3 class="anchored" data-anchor-id="rstudio">RStudio</h3>
-<p>We’ll cover two different scenarios for using RStudio with Quarto:</p>
-<ol type="1">
-<li>Using RStudio with <strong>renv</strong> (R and optionally some Python packages)</li>
-<li>Using RStudio with <strong>venv</strong> (Python packages only)</li>
-</ol>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-RStudio v1.5
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If you are using RStudio with Quarto, it is strongly recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. You can download the daily build at <a href="https://dailies.rstudio.com" class="uri">https://dailies.rstudio.com</a>.</p>
-</div>
-</div>
+<p>If you are using RStudio with Quarto, it is <em>strongly</em> recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly.</p>
+<p>For virtual environments in particular, you should make sure you are using version 1.5.122 or higher. You can download the daily build at <a href="https://dailies.rstudio.com" class="uri">https://dailies.rstudio.com</a>.</p>
 <section id="renv" class="level4">
 <h4 class="anchored" data-anchor-id="renv">renv</h4>
-<p>If you are using <strong>renv</strong>, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project environments.</p>
-<p>If you need to install R packages just use <code>install.packages</code>; if you need to install Python packages simply use <code>pip install</code> or <code>conda install</code> within the RStudio Terminal.</p>
+<p>If you are using <strong>renv</strong>, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project-local environments.</p>
+<p>If you need to install R packages ust use <code>install.packages</code>; if you need to install Python packages simply use pip or conda within the Terminal as described above.</p>
 </section>
-<section id="venv" class="level4">
-<h4 class="anchored" data-anchor-id="venv">venv</h4>
-<p>If you are using RStudio as a Quarto editing front end for Python/Jupyter, you may not be using <strong>renv</strong> at all. In this case you’ll want to configure RStudio to use the <code>env</code> directory for executing Python code.</p>
-<p>To do this you need to modify your <code>.Rprofile</code> to add the appropriate directory to the system <code>PATH</code>. This is the code to add to <code>.Rprofile</code> for <code>env</code>:</p>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>bin <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(.Platform<span class="sc">$</span>OS.type <span class="sc">==</span> <span class="st">"windows"</span>, <span class="st">"Scripts"</span>, <span class="st">"bin"</span>)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>venv_bin <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"env"</span>, bin)</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">PATH =</span> <span class="fu">paste</span>(venv_bin, <span class="fu">Sys.getenv</span>(<span class="st">"PATH"</span>),  </span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep =</span> .Platform<span class="sc">$</span>path.sep))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The directory containing the Python executable differs between Windows and other systems, which is we need the <code>ifelse</code> on the first line.</p>
-<p>Note that while in principle you could also use <strong>conda</strong> in this configuration, <strong>venv</strong> is much better tested and debugged with Quarto under RStudio so is strongly recommended.</p>
+<section id="venv-condaenv" class="level4">
+<h4 class="anchored" data-anchor-id="venv-condaenv">venv / condaenv</h4>
+<p>Starting with version 1.5.122, RStudio will automatically activate any venv or condaenv that it finds within a project directory. Just be sure to create an RStudio project within the same directory where you created your <code>env</code> and things will work as expected with no additional configuration.</p>
+<p>If you need to install Python packages simply use pip or conda within the Terminal as described above.</p>
 </section>
 </section>
 </section>
