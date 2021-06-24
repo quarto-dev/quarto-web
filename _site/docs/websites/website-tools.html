@@ -415,6 +415,15 @@
 <li><a href="#open-graph" class="nav-link" data-scroll-target="#open-graph">Open Graph</a></li>
 <li><a href="#preview-images" class="nav-link" data-scroll-target="#preview-images">Preview Images</a></li>
 </ul></li>
+<li><a href="#google-analytics" class="nav-link" data-scroll-target="#google-analytics">Google Analytics</a>
+<ul class="collapse">
+<li><a href="#storage" class="nav-link" data-scroll-target="#storage">Storage</a></li>
+</ul></li>
+<li><a href="#cookie-consent" class="nav-link" data-scroll-target="#cookie-consent">Cookie Consent</a>
+<ul class="collapse">
+<li><a href="#cookie-preferences" class="nav-link" data-scroll-target="#cookie-preferences">Cookie Preferences</a></li>
+<li><a href="#custom-scripts-and-cookie-consent" class="nav-link" data-scroll-target="#custom-scripts-and-cookie-consent">Custom Scripts and Cookie Consent</a></li>
+</ul></li>
 <li><a href="#website-variables" class="nav-link" data-scroll-target="#website-variables">Website Variables</a>
 <ul class="collapse">
 <li><a href="#defining-variables" class="nav-link" data-scroll-target="#defining-variables">Defining Variables</a></li>
@@ -566,6 +575,164 @@
 </ol>
 </section>
 </section>
+<section id="google-analytics" class="level2">
+<h2 class="anchored" data-anchor-id="google-analytics">Google Analytics</h2>
+<p>You can add <a href="https://analytics.google.com/">Google Analytics</a> to your website by adding adding a <code>google-analytics</code> key to your <code>_quarto.yml</code> file. In its simplest form, you can just pass your Google Analytics tracking Id (e.g.&nbsp;<code>UA-xxxxxxx</code>) or Google Tag measurement Id (e.g.&nbsp;<code>G-xxxxxxx</code>) like:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">google-analytics</span><span class="kw">:</span><span class="at"> </span><span class="st">"UA-XXXXXXXX"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Quarto will use the key itself to determine whether to embed Google Analytics (analytics.js) or Google Tags (gtag) as appropriate.</p>
+<p>In addition to this basic configuration, you can exercise more fine grained control of your site analytics using the following keys.</p>
+<table class="table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 92%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tracking-id</code></td>
+<td>The Google tracking Id or measurement Id of this website.</td>
+</tr>
+<tr class="even">
+<td><code>storage</code></td>
+<td><p><strong>cookies -</strong> Use cookies to store unique user and session identification (default).</p>
+<p><strong>none</strong> - Do not use cookies to store unique user and session identification.</p>
+<p>For more about choosing storage options see <a href="#storage">Storage</a>.</p></td>
+</tr>
+<tr class="odd">
+<td><code>anonymize-ip</code></td>
+<td>Anonymize the user ip address. For more about this feature, see <a href="https://support.google.com/analytics/answer/2763052?hl=en">IP Anonymization (or IP masking) in Google Analytics</a>.</td>
+</tr>
+<tr class="even">
+<td><code>version</code></td>
+<td>The version number of Google Analytics to use. Currently supports either 3 (for analytics.js) or 4 (for gtag). This is automatically detected based upon the <code>tracking-id</code>, but you may specify it.</td>
+</tr>
+</tbody>
+</table>
+<section id="storage" class="level3">
+<h3 class="anchored" data-anchor-id="storage">Storage</h3>
+<p>Google Analytics uses cookies to distinguish unique users and sessions. If you choose to use cookies to store this user data, you should consider whether you need to enable <a href="#cookie-consent">Cookie Consent</a> in order to permit the viewer to control any tracking that you enable.</p>
+<p>If you choose <code>none</code> for storage, this will have the following effects:</p>
+<ul>
+<li><p>For Google Analytics v3 (analytics.js)<br>
+No tracking cookies will be used. Individual page hits will be properly tracked, enabling you to see which pages are viewed and how often they are viewed. Unique user and session tracking will not report data correctly since the tracking cookies they rely upon are not set.</p></li>
+<li><p>For Google Tags (gtag)<br>
+User consent for ad and analytics tracking cookies will be withheld. In this mode, Google Analytics will still collect user data without the user identification, but that data is currently not displayed in the Google Analytics reports.</p></li>
+</ul>
+</section>
+</section>
+<section id="cookie-consent" class="level2">
+<h2 class="anchored" data-anchor-id="cookie-consent">Cookie Consent</h2>
+<p>Quarto includes the ability to request cookie consent before enabling scripts that set cookies, using <a href="https://www.cookieconsent.com">Cookie Consent</a>.</p>
+<p>The user’s cookie preferences will automatically control <a href="#google-analytics">Google Analytics</a> (if enabled) and can be used to control custom scripts you add as well (see <a href="#custom-scripts-and-cookie-consent">Custom Scripts and Cookie Consent</a>. You can enable the default request for cookie consent using the following:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site</span><span class="kw">:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cookie-consent</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can further customize the appearance and behavior of the consent using the following:</p>
+<table class="table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 92%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>type</code></td>
+<td><p>The type of consent that should be requested, using one of these two values:</p>
+<p><strong>implied -</strong> (default)This will notify the user that the site uses cookies and permit them to change preferences, but not block cookies unless the user changes their preferences.</p>
+<p><strong>express -</strong> This will block cookies until the user expressly agrees to allow them (or continue blocking them if the user doesn’t agree).</p></td>
+</tr>
+<tr class="even">
+<td><code>style</code></td>
+<td><p>The style of the consent banner that is displayed:</p>
+<p><strong>simple -</strong> (default) A simple dialog in the lower right corner of the website.</p>
+<p><strong>headline -</strong> A full width banner across the top of the website.</p>
+<p><strong>interstitial -</strong> An semi-transparent overlay of the entire website.</p>
+<p><strong>standalone -</strong> An opaque overlay of the entire website.</p></td>
+</tr>
+<tr class="odd">
+<td><code>palette</code></td>
+<td><p>Whether to use a dark or light appearance for the consent banner:</p>
+<p><strong>light -</strong> A light colored banner.</p>
+<p><strong>dark -</strong> A dark colored banner.</p></td>
+</tr>
+<tr class="even">
+<td><code>policy-url</code></td>
+<td>The url to the website’s cookie or privacy policy.</td>
+</tr>
+<tr class="odd">
+<td><code>prefs-text</code></td>
+<td>The text to display for the cookie preferences link in the website footer.</td>
+</tr>
+</tbody>
+</table>
+<p>A custom example might look more like:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site</span><span class="kw">:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cookie-consent</span><span class="kw">:</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">type</span><span class="kw">:</span><span class="at"> express</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">style</span><span class="kw">:</span><span class="at"> headline</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">palette</span><span class="kw">:</span><span class="at"> dark</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="cookie-preferences" class="level3">
+<h3 class="anchored" data-anchor-id="cookie-preferences">Cookie Preferences</h3>
+<p>In addition to requesting consent when a new user visits your website, Cookie Consent will also add a cookie preferences link to the footer of the website. You can control the text of this link using <code>prefs-text</code>. If you would rather position this link yourself, just add a link with the id <code>open_preferences_center</code> to the website and Cookie Consent will not add the preferences link to the footer.</p>
+</section>
+<section id="custom-scripts-and-cookie-consent" class="level3">
+<h3 class="anchored" data-anchor-id="custom-scripts-and-cookie-consent">Custom Scripts and Cookie Consent</h3>
+<p>Cookie Consent works by preventing the execution of scripts unless the user has expressed their consent. To control your custom scripts using Cookie Consent:</p>
+<ol type="1">
+<li>Insert script tags as <code>type='text/plain'</code> (when the user consents, the type will be switched to <code>text/javascript</code> and the script will be executed).</li>
+</ol>
+<!-- -->
+<ol start="2" type="1">
+<li><p>Add a <code>cookie-consent</code> attribute to your script tag, setting it one of the following 4 levels:</p>
+<table class="table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 84%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>strictly-necessary</code></td>
+<td>Strictly scripts are loaded automatically and cannot be disabled by the user.</td>
+</tr>
+<tr class="even">
+<td><code>functionality</code></td>
+<td>Scripts that are required for basic functionality of the website, for example, remembering a user language preference.</td>
+</tr>
+<tr class="odd">
+<td><code>tracking</code></td>
+<td>Scripts that are used to track users, for example <a href="#google-analytics">Google Analytics</a>.</td>
+</tr>
+<tr class="even">
+<td><code>targeting</code></td>
+<td>Scripts that are used for the purposed of advertising to ad targeting, for example Google AdSense remarketing.</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<p>An example script that is used for user tracking would look like:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode javascript code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>script type<span class="op">=</span><span class="st">"text/plain"</span> cookie<span class="op">-</span>consent<span class="op">=</span><span class="st">"tracking"</span><span class="op">&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">// My tracking JS code here</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>script<span class="op">&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
 <section id="website-variables" class="level2">
 <h2 class="anchored" data-anchor-id="website-variables">Website Variables</h2>
 <p>If you have commonly repeating values or content in your website, you can create a <code>_variables.yml</code> file alongside your <code>_quarto.yml</code> project file, and then include references to those variables within any page on your site.</p>
@@ -573,26 +740,26 @@
 <section id="defining-variables" class="level3">
 <h3 class="anchored" data-anchor-id="defining-variables">Defining Variables</h3>
 <p>To define variables, create a <code>_variables.yml</code> file in the root directory of your project. For example:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.2</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">email</span><span class="kw">:</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">info</span><span class="kw">:</span><span class="at"> info@example.com</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">support</span><span class="kw">:</span><span class="at"> support@example.com</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">engine</span><span class="kw">:</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Jupyter](https://jupyter.org)"</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">knitr</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Knitr](&lt;https://yihui.name/knitr&gt;)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.2</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">email</span><span class="kw">:</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">info</span><span class="kw">:</span><span class="at"> info@example.com</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">support</span><span class="kw">:</span><span class="at"> support@example.com</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="fu">engine</span><span class="kw">:</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Jupyter](https://jupyter.org)"</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">knitr</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Knitr](&lt;https://yihui.name/knitr&gt;)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that the <code>engine</code> variable values include markdown for hyperlinks.</p>
 </section>
 <section id="using-variables" class="level3">
 <h3 class="anchored" data-anchor-id="using-variables">Using Variables</h3>
 <p>To include the value of a variable, use the <code>{{&lt; var &gt;}}</code> shortcode, for example:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Version {{&lt; var version &gt;}} is a minor upgrade.</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>Please contact us at {{&lt; var email.info &gt;}}.</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>Quarto includes {{&lt; var engine.jupyter &gt;}} and </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>{{&lt; var engine.knitr &gt;}} computation engines.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Version {{&lt; var version &gt;}} is a minor upgrade.</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Please contact us at {{&lt; var email.info &gt;}}.</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>Quarto includes {{&lt; var engine.jupyter &gt;}} and </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>{{&lt; var engine.knitr &gt;}} computation engines.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <!-- -->
 </section>
 </section>
