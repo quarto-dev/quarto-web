@@ -230,6 +230,9 @@ site:
     type: express
     style: headline
     palette: dark
+  google-analytics:
+    tracking-id: "G-XXXXXXX"
+    anonymize-ip: true
 ```
 
 ### Cookie Preferences
