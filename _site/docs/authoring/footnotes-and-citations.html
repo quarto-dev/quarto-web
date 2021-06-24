@@ -118,14 +118,35 @@
   <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
   <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
   <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-FV9Z7SDZ0M"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
 
-    gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true });
+  <script type="text/javascript">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+   
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'analytics_storage': 'denied'
+  });
+
+  let clientId = '';
+  try {
+    const dec2hex = (dec) => {
+      return dec.toString(16).padStart(2, "0")
+    }
+    clientId = localStorage.getItem('quarto-ga-clientid');
+    if (clientId === null) {
+      let cryptoObj = window.crypto || window.msCrypto;
+      clientId = Array.from(cryptoObj.getRandomValues(new Uint8Array(16)), dec2hex).join('');
+      localStorage.setItem('quarto-ga-clientid', clientId);          
+    } 
+  } catch {
+    // No ability to use local storage
+  }
+  gtag('set', {'client_id': clientId});
+  gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': false });
   </script>
   <style type="text/css">
     details {
