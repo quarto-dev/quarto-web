@@ -3,6 +3,7 @@ title: "Website Tools"
 description: "Learn more about the additional tools that you can use to customize your Quarto website."
 ---
 
+
 ## Social Metadata
 
 You can enhance your website and the content that you publish to it by including additional types of metadata, including:
@@ -135,6 +136,137 @@ You can specify a preview image for your article in several different ways:
     -   `thumbail`
 
     If you rely in image names to provide a preview image, you must also provide a `site-url` in your site's metadata.
+
+
+## Google Analytics
+
+You can add [Google Analytics](https://analytics.google.com/) to your website by adding adding a `google-analytics` key to your `_quarto.yml` file. In its simplest form, you can just pass your Google Analytics tracking Id (e.g. `UA-xxxxxxx`) or Google Tag measurement Id (e.g. `G-xxxxxxx`) like:
+
+``` {.yaml}
+site:
+  google-analytics: "UA-XXXXXXXX"
+```
+
+Quarto will use the key itself to determine whether to embed Google Analytics (analytics.js) or Google Tags (gtag) as appropriate.
+
+In addition to this basic configuration, you can exercise more fine grained control of your site analytics using the following keys.
+
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Key            | Description                                                                                                                                                                                         |
++================+=====================================================================================================================================================================================================+
+| `tracking-id`  | The Google tracking Id or measurement Id of this website.                                                                                                                                           |
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `storage`      | **cookies -** Use cookies to store unique user and session identification (default).                                                                                                                |
+|                |                                                                                                                                                                                                     |
+|                | **none** - Do not use cookies to store unique user and session identification.                                                                                                                      |
+|                |                                                                                                                                                                                                     |
+|                | For more about choosing storage options see [Storage].                                                                                                                                              |
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `anonymize-ip` | Anonymize the user ip address. For more about this feature, see [IP Anonymization (or IP masking) in Google Analytics](https://support.google.com/analytics/answer/2763052?hl=en).                  |
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `version`      | The version number of Google Analytics to use. Currently supports either 3 (for analytics.js) or 4 (for gtag). This is automatically detected based upon the `tracking-id`, but you may specify it. |
++----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+### Storage
+
+Google Analytics uses cookies to distinguish unique users and sessions. If you choose to use cookies to store this user data, you should consider whether you need to enable [Cookie Consent] in order to permit the viewer to control any tracking that you enable.
+
+If you choose `none` for storage, this will have the following effects:
+
+-   For Google Analytics v3 (analytics.js)\
+    No tracking cookies will be used. Individual page hits will be properly tracked, enabling you to see which pages are viewed and how often they are viewed. Unique user and session tracking will not report data correctly since the tracking cookies they rely upon are not set.
+
+-   For Google Tags (gtag)\
+    User consent for ad and analytics tracking cookies will be withheld. In this mode, Google Analytics will still collect user data without the user identification, but that data is currently not displayed in the Google Analytics reports.
+
+## Cookie Consent
+
+Quarto includes the ability to request cookie consent before enabling scripts that set cookies, using [Cookie Consent](https://www.cookieconsent.com).
+
+The user's cookie preferences will automatically control [Google Analytics] (if enabled) and can be used to control custom scripts you add as well (see [Custom Scripts and Cookie Consent]. You can enable the default request for cookie consent using the following:
+
+``` {.yaml}
+site:
+  cookie-consent: true
+```
+
+You can further customize the appearance and behavior of the consent using the following:
+
++--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Key          | Description                                                                                                                                                                         |
++==============+=====================================================================================================================================================================================+
+| `type`       | The type of consent that should be requested, using one of these two values:                                                                                                        |
+|              |                                                                                                                                                                                     |
+|              | **implied -** (default)This will notify the user that the site uses cookies and permit them to change preferences, but not block cookies unless the user changes their preferences. |
+|              |                                                                                                                                                                                     |
+|              | **express -** This will block cookies until the user expressly agrees to allow them (or continue blocking them if the user doesn't agree).                                          |
++--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `style`      | The style of the consent banner that is displayed:                                                                                                                                  |
+|              |                                                                                                                                                                                     |
+|              | **simple -** (default) A simple dialog in the lower right corner of the website.                                                                                                    |
+|              |                                                                                                                                                                                     |
+|              | **headline -** A full width banner across the top of the website.                                                                                                                   |
+|              |                                                                                                                                                                                     |
+|              | **interstitial -** An semi-transparent overlay of the entire website.                                                                                                               |
+|              |                                                                                                                                                                                     |
+|              | **standalone -** An opaque overlay of the entire website.                                                                                                                           |
++--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `palette`    | Whether to use a dark or light appearance for the consent banner:                                                                                                                   |
+|              |                                                                                                                                                                                     |
+|              | **light -** A light colored banner.                                                                                                                                                 |
+|              |                                                                                                                                                                                     |
+|              | **dark -** A dark colored banner.                                                                                                                                                   |
++--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `policy-url` | The url to the website's cookie or privacy policy.                                                                                                                                  |
++--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `prefs-text` | The text to display for the cookie preferences link in the website footer.                                                                                                          |
++--------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+A custom example might look more like:
+
+``` {.yaml}
+site:
+  cookie-consent:
+    type: express
+    style: headline
+    palette: dark
+```
+
+### Cookie Preferences
+
+In addition to requesting consent when a new user visits your website, Cookie Consent will also add a cookie preferences link to the footer of the website. You can control the text of this link using `prefs-text`. If you would rather position this link yourself, just add a link with the id `open_preferences_center` to the website and Cookie Consent will not add the preferences link to the footer.
+
+### Custom Scripts and Cookie Consent
+
+Cookie Consent works by preventing the execution of scripts unless the user has expressed their consent. To control your custom scripts using Cookie Consent:
+
+1.  Insert script tags as `type='text/plain'` (when the user consents, the type will be switched to `text/javascript` and the script will be executed).
+
+<!-- -->
+
+2.  Add a `cookie-consent` attribute to your script tag, setting it one of the following 4 levels:
+
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
+    | Level                | Description                                                                                                            |
+    +======================+========================================================================================================================+
+    | `strictly-necessary` | Strictly scripts are loaded automatically and cannot be disabled by the user.                                          |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
+    | `functionality`      | Scripts that are required for basic functionality of the website, for example, remembering a user language preference. |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
+    | `tracking`           | Scripts that are used to track users, for example [Google Analytics].                                                  |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
+    | `targeting`          | Scripts that are used for the purposed of advertising to ad targeting, for example Google AdSense remarketing.         |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
+
+An example script that is used for user tracking would look like:
+
+``` {.javascript}
+<script type="text/plain" cookie-consent="tracking">
+
+// My tracking JS code here
+
+</script>
+```
 
 ## Website Variables
 
