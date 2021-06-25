@@ -1,5 +1,6 @@
 ---
 title: "Figures & Layout"
+description: "Quarto has a variety of capabilities for creating and laying out individual tables and figures as well as panels of tables and figures."
 format: html
 ---
 
@@ -35,6 +36,32 @@ Figures and their captions are center aligned by default. Add the `fig.align` at
 
 ``` {.markdown}
 ![Elephant](elephant.png){fig.align="left"}
+```
+
+### Alt Text
+
+You can add alternative text to a figure by adding the `fig.alt` attribute to the image. For example, the following Markdown...
+
+``` {.markdown}
+![](elephant.png){fig.alt="A drawing of an elephant."}
+```
+
+... will create the following HTML with the corresponding alt tag:
+
+``` {.html}
+<img src="elephant.png" alt="A drawing of an elephant.">
+```
+
+Note that the figure caption, title, and alt text can all be different. For example, the following code...
+
+``` {.markdown}
+![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
+```
+
+...produces this HTML:
+
+``` {.html}
+<img src="elephant.png" title="Title: An elephant" alt="A drawing of an elephant.">
 ```
 
 ### LaTeX Environments
@@ -257,7 +284,7 @@ Note that vertical alignment isn't limited to images, you can also vertically al
 
 Note that figure layout attributes also work for figures produced by executable code blocks. Here are examples for both Jupyter and Knitr:
 
-::: {.tabset}
+::: {.panel-tabset}
 #### Jupyter
 
 ```` {.python}
@@ -319,7 +346,7 @@ plot(mtcars)
 ```
 ````
 
-![](images/knitr-layout-complex.png)
+![](images/knitr-layout-complex.png){.preview-image}
 
 ## Block Layout
 

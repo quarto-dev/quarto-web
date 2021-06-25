@@ -1,5 +1,6 @@
 ---
 title: Citations & Footnotes
+description: "Quarto will use Pandoc to automatically generate citations and a bibliography in a number of styles."
 format: html
 link-citations: true
 footnote-section-title: Example Footnotes

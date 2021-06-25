@@ -1,5 +1,6 @@
 ---
 title: Presentations
+description: "This article covers the core syntax for presentations (slides, incremental bullets, columns, etc.)."
 format: html
 ---
 

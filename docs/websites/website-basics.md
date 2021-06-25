@@ -1,23 +1,23 @@
 ---
 title: "Creating a Website"
+description: "Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style."
 format: html
 ---
 
 ## Overview
 
-Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style. 
+Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style.
 
 Website navigation can be provided through a global navbar, a sidebar with links, or a combination of both for sites that have multiple levels of content. You can also enable full text search for websites.
 
 This site is an example of a Quarto Website (you can see the source code for it here: <https://github.com/quarto-dev/quarto-docs>).
-
 
 ## Getting Started
 
 To create a new website project, use the Quarto `create-project` command:
 
 ``` {.bash}
-$ quarto create-project mysite --type site
+quarto create-project mysite --type site
 ```
 
 This will create the scaffolding for a simple website in the `mysite` subdirectory. Here is what the `_quarto.yml` config file will look like for the site:
@@ -46,20 +46,20 @@ format:
 To build the website into the `_site` directory:
 
 ``` {.bash}
-$ quarto render mybook
+quarto render mybook
 ```
 
-See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects. 
+See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects.
 
 ## Workflow
 
 Quarto includes a live-reloading development server that you will likely find convenient to use while working on websites. Start the server with:
 
 ``` {.bash}
-$ quarto serve
+quarto serve
 ```
 
-The browser will automatically refresh when you render a computational input (e.g. Rmd) or save a markdown file that doesn't require computation.
+The browser will automatically refresh whenever you save a markdown file (`.md`) or Jupyter Notebook (`.ipynb`). The browser will also refresh whenever you render a `.qmd` or `.Rmd` file.
 
 Changes to configuration files (e.g. `_quarto.yml`) as well site resources (e.g. theme or CSS files) will also cause an automatic refresh.
 
@@ -95,7 +95,7 @@ knit: quarto render
 
 Besides input and configuration files, your site likely also includes a variety of resources (e.g. images) that you will want to publish along with your site. Quarto will automatically detect any files that you reference within your site and copy them to the output directory (e.g. `_site`).
 
-If this auto-detection fails for any reason, of if you want to publish a file not explicitly linked to from within your site, you can add a `resources` entry to your configuration. For example, here we specify that we want to include all Excel spreadsheets within the project directory as part of the website:
+If this auto-detection fails for any reason, or if you want to publish a file not explicitly linked to from within your site, you can add a `resources` entry to your configuration. For example, here we specify that we want to include all Excel spreadsheets within the project directory as part of the website:
 
 ``` {.yaml .yml}
 project:

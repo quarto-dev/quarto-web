@@ -1,5 +1,6 @@
 ---
 title: "Website Navigation"
+description: "Quarto supports a variety of options for customizing your website's navigation."
 format: html
 ---
 
@@ -103,9 +104,9 @@ site:
 
 There are two styles of side navigation available: "docked" which shows the navigation in a sidebar with a distinct background color, and "floating" which places it closer to the main body text. Here's that the "docked" and "floating" styles look like (respectively):
 
-|                                   |                                   |
-|:---------------------------------:|:---------------------------------:|
-| ![](images/nav-side-anchored.png) | ![](images/nav-side-floating.png) |
+|                                                   |                                   |
+|:-------------------------------------------------:|:---------------------------------:|
+| ![](images/nav-side-anchored.png){.preview-image} | ![](images/nav-side-floating.png) |
 
 Here are all of the options available for side navigation:
 
@@ -193,6 +194,41 @@ site:
     
 ```
 
+## Page Navigation
+
+If you have a website with a number of pages in a section or subsection, it is often convenient to offer the user the ability to navigate to the next page (or previous page) at the bottom of the page that they've just finished reading. You can enable this using:
+
+``` {.yaml}
+site:
+  page-navigation: true
+```
+
+When enabled, page navigation will be displayed at the bottom of the page whenever there is a next or previous page (including in the next or previous section).
+
+### Page Navigation and Separators
+
+If you include a page separator in sidebar (either between sections or items), page navigation controls will not appear to continue pagination across the separator. For example, in the following sidebar:
+
+``` {.yaml}
+site:
+  sidebar:
+    contents:
+      - section: "First Section"
+        - contents:
+          - href: document1.qmd
+          - href: document2.qmd
+          - href: document3.qmd
+      - section: "---"
+      - section: "Second Section"
+        contents:
+          - href: document4.qmd
+          - href: document5.qmd
+          - href: document6.qmd
+          
+```
+
+When the user reaches the bottom of document3.qmd, they will see previous navigation to go back to document2.qmd, but they will not see next navigation to continue onto document 4. This behavior is useful when you have sections of contents that don't naturally flow together in sequential order. Use the separator to denote this in the sidebar and break up pagination.
+
 ## Site Search
 
 You can add site search by including `search: true` in either your `site-navbar` or `site-sidebar` configuration. For example:
@@ -210,6 +246,26 @@ site:
         # etc
 ```
 
+## Redirects
+
+If you rename or move a page on your site, you may want to create redirects from the old URLs so that existing links don't break. You can do this by adding `aliases` from old pages to renamed pages.
+
+For example, let's say you renamed `page.md` to `renamed-page.md`. You would add the following `aliases` entry to `renamed-page.md` to create the redirect:
+
+``` {.yaml}
+---
+title: "Renamed Page"
+aliases:
+  - page.html
+---
+```
+
+This can also be useful for situations where you re-organize content on your site into a different directory hierarchy.
+
+::: {.callout-tip}
+Depending on where you are deploying your site there may be more powerful tools available for defining redirects based on patterns. For example, Netlify [`_redirects`](https://docs.netlify.com/routing/redirects/) files or [`.htaccess`](https://www.danielmorell.com/guides/htaccess-seo/redirects/introduction-to-redirects) files. Search your web host's documentation for "redirects" to see if any of these tools are available.
+:::
+
 ## GitHub Links
 
 You can add various links (e.g. to edit pages, report issues, etc.) to the GitHub repository where your site source code is hosted. To do this, add a `repo-url` along with one or more actions in `repo-actions`. For example:
@@ -222,6 +278,6 @@ site:
 
 The links will be displayed immediately below the page table of contents:
 
-![](images/repo-actions.png)
+![](images/repo-actions.png){.border}
 
 By default, the `main` branch will be used for generating links. You can specify an alternate branch using the `repo-branch` option.

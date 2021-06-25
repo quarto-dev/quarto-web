@@ -65,7 +65,7 @@ plt.show()
 Generating pages for Hugo requires just a simple Quarto render:
 
 ``` {.bash}
-$ quarto render hello-quarto.qmd
+quarto render hello-quarto.qmd
 ```
 
 Whenever your render the `hello-quarto.qmd` file, Quarto will execute the code in the file (writing any generated plots, etc. into the article's directory) and then generate an `index.md` file that is subsequently processed by Hugo.

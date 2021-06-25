@@ -45,7 +45,7 @@ This is a GitHub README that has content dynamically generated from Python:
 Render the README with:
 
 ``` {.bash}
-$ quarto render README.qmd
+quarto render README.qmd
 ```
 
 Which will create `README.md` alongside your input file.
@@ -57,7 +57,7 @@ If you want to use Quarto to incorporate computations into a GitHub wiki start b
 Then, simply create a computational markdown file (.ipynb, .qmd, .Rmd) for each page in the wiki. You can render all of these files at once into their corresponding .md files using [Quarto Projects](../getting-started/quarto-projects.md). For example:
 
 ``` {.bash}
-$ quarto render
+quarto render
 ```
 
 You don't even strictly need a Quarto project file to do this as `quarto render` will render all input files in a directory by default if there is no project file.

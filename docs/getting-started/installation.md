@@ -1,71 +1,101 @@
 ---
 title: "Installation"
+description: "Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of Pandoc)."
 knit: quarto render
 ---
 
 ## Quarto CLI
 
-Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of [Pandoc](https://pandoc.org)). 
+Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of [Pandoc](https://pandoc.org)). You can install the latest release of the Quarto CLI from:
 
-To install the latest version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`). For example:
-
-``` {.bash}
-$ git clone https://github.com/quarto-dev/quarto-cli
-$ cd quarto-cli
-$ ./configure-macos.sh
-```
+<https://github.com/quarto-dev/quarto-cli/releases/latest>
 
 You can verify that Quarto has been installed correctly with:
 
 ``` {.bash}
-$ quarto help
+quarto check install
 ```
 
-To update to the latest development version, just `git pull` from the local repo directory:
-
-``` {.bash}
-$ cd quarto-cli
-$ git pull
-```
-
-::: {.callout-note}
-Quarto is not currently available for Windows, however a Windows release is imminent. Please check back here in a few days to see if a release is available.
-:::
-
+If you need to install a version more recent than the latest release, see the documentation on installing the [Development Version].
 
 ## Computational Tools
 
 If you are creating computational documents with Quarto, you'll want to be sure to install the additional dependencies required to work with [Knitr](https://yihui.name/knitr) and/or [Jupyter](https://jupyter.org).
 
-### Knitr
+### Jupyter {.platform-table}
 
-To use Quarto with R, you should install the Quarto R package:
+If you already have Python 3 and Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
 
-```r
-> install.packages("quarto")
-```
+If you don't yet have Python 3 on your system, we recommend you install a version using the standard installer from <https://www.python.org/downloads/>.
 
+If you are in a fresh Pytohn 3 environment, installing the `jupyter` package will provide everything required to run Quarto:
 
-### Jupyter
++-------------------+--------------------------------------------------+
+| Pkg. Manager      | Command                                          |
++===================+==================================================+
+| Pip\              | ``` {.bash}                                      |
+| (Windows)         | py -m pip install jupyter                        |
+|                   | ```                                              |
++-------------------+--------------------------------------------------+
+| Pip\              | ``` {.bash}                                      |
+| (Mac/Linux)       | python3 -m pip install jupyter                   |
+|                   | ```                                              |
++-------------------+--------------------------------------------------+
+| Conda             | ``` {.bash}                                      |
+|                   | conda install jupyter                            |
+|                   | ```                                              |
++-------------------+--------------------------------------------------+
 
-If you already have Python/Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
-
-If you are in a fresh environment, install the core Quarto minimal requirements (as shown below) or if you like install the full `jupyter` package including the notebook, qtconsole, etc.:
+You can verify that Quarto is configured correctly for Jupyter with:
 
 ``` {.bash}
-# quarto minimal requirements
-$ pip install jupyter_core nbformat nbclient ipykernel pyyaml
-
-# full jupyter install
-$ pip install jupyter
+quarto check jupyter
 ```
 
-If you are using Julia, please see the [IJulia documentation](https://github.com/JuliaLang/IJulia.jl) on installing and using the Julia kernel.
+#### Python Versions
 
-Note that it's also strongly recommended that you use [Revise.jl](https://timholy.github.io/Revise.jl/stable/) to optimize away kernel startup time. See the documentation on [using Revise within Jupyter](https://timholy.github.io/Revise.jl/stable/config/#Using-Revise-automatically-within-Jupyter/IJulia-1) for additional details.
+On Mac OS and Linux, Quarto will use the version of Python 3 that it finds in the system path. Modify the `PATH` before invoking Quarto to use a different version of Python.
 
+::: {.callout-warning}
+#### Mac OS Python 3
+
+If you are running Mac OS you might already have a version of Python 3 installed via the [Command Line Tools](https://developer.apple.com/xcode/features/). Even so, we still recommend that you install a version of Python 3 using the standard installer at <https://www.python.org/downloads/>.
+:::
+
+On Windows, Quarto will use Conda if it's invoked within an activated Conda environment. Otherwise, it will use the [Python Windows Launcher](https://docs.python.org/3/using/windows.html#launcher) to select a version of Python 3. Use the `PY_PYTHON` environment variable to override the default behavior (for example: `PY_PYTHON=3.8`).
+
+The `quarto check jupyter` command will tell you which version of Python will be selected for the shell it is invoked from within.
+
+### Knitr
+
+To use Quarto with R, you should install the **quarto** R package:
+
+``` {.r}
+install.packages("quarto")
+```
+
+Installation of the **quarto** package will also install the **knitr** package so you will have everything required to render documents containing R code. You can verify that Quarto is configured correctly for Knitr with:
+
+``` {.bash}
+quarto check knitr
+```
+
+### Environments
+
+if you are using [Quarto Projects](getting-started/quarto-projects.md) and want to create a project-local virtual environment for your Python and/or R dependencies see the documentation below on using [Virtual Environments](quarto-projects.md#virtual-environments).
 
 ## Additional Tools
+
+### Pandoc
+
+A recent version of Pandoc (v2.14) is installed alongside Quarto. This version of Pandoc won't interfere with others you may have on your system (it's not added to the system PATH).
+
+To interact directly with the version of Pandoc installed with Quarto, use the `quarto pandoc` command. For example:
+
+``` {.bash}
+quarto pandoc --version
+quarto pandoc --list-output-formats
+```
 
 ### TeX
 
@@ -73,8 +103,25 @@ If you expect to use Quarto to create PDFs, you will need to install a recent di
 
 To install TinyTeX, use the following command:
 
-```bash
-$ quarto install tinytex
+``` {.bash}
+quarto install tinytex
 ```
 
 If you prefer TeX Live, you can find instructions for installing it here: <https://tug.org/texlive/>.
+
+## Development Version
+
+To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-windows.cmd`). For example:
+
+``` {.bash}
+git clone https://github.com/quarto-dev/quarto-cli
+cd quarto-cli
+./configure-macos.sh
+```
+
+To update to the latest development version, just `git pull` from the local repo directory:
+
+``` {.bash}
+cd quarto-cli
+git pull
+```

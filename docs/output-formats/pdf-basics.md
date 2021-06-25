@@ -1,5 +1,6 @@
 ---
 title: PDF Basics
+description: "Learn more about creating and customizing PDF documents using Quarto."
 format: html
 ---
 
@@ -31,7 +32,7 @@ Note that while we will focus here exclusively on the use LaTeX to create PDFs, 
 In order to create PDFs you will need to install a recent distribution of TeX. We recommend the use of TinyTeX (which is based on TexLive), which you can install with the following command:
 
 ``` {.bash}
-$ quarto install tinytex
+quarto install tinytex
 ```
 
 See the article on [PDF Engines](pdf-engine.md) for details on using other TeX distributions and PDF compilation engines.

@@ -1,5 +1,6 @@
 ---
 title: "Cross References"
+description: "Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables."
 format: html
 ---
 
@@ -60,7 +61,7 @@ See @fig-elephants for examples. In particular, @fig-hanno.
 
 Here is what this looks like when rendered as HTML:
 
-![](images/crossref-subfigures.png)
+![](images/crossref-subfigures.png){.preview-image}
 
 Note that we also used the `layout.ncol` attribute to specify a two-column layout. See the article on [Figures and Layout](figures-and-layout.html) for more details on laying out panels of figures.
 
@@ -68,7 +69,7 @@ Note that we also used the `layout.ncol` attribute to specify a two-column layou
 
 Figures produced by Jupyter and Knitr can also be cross-referenced. To do this, add a `label` and `fig.cap` option at the top of the code block. For example:
 
-::: {.tabset}
+::: {.panel-tabset}
 #### Jupyter
 
 ```` {.python}
@@ -300,9 +301,9 @@ You can customize the appearance of inline references by either changing the syn
 | Type          | Syntax                   | Output   |
 |---------------|--------------------------|----------|
 | Default       | `@fig-elephant`          | fig. 1   |
-| Capitalized   | `@fig-elephant`          | Fig. 1   |
+| Capitalized   | `@Fig-elephant`          | Fig. 1   |
 | Custom Prefix | `[Figure @fig-elephant]` | Figure 1 |
-| No Prefix     | `-@fig-elephant`         | 1        |
+| No Prefix     | `[-@fig-elephant]`       | 1        |
 
 You can also group cross references using the following syntax:
 
