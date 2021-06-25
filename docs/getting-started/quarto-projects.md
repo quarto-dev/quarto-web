@@ -508,4 +508,4 @@ There are a couple of special project types available:
 
 -   [Websites](../websites/website-basics.md) includes additional navigational elements (e.g. navbar/sidebar/etc.) and copy all output files to a deployment directory (e.g. `_site`) by default.
 
--   [Books](../books/book-basics.md) support combineing all of the included documents into a single manuscript (e.g. a PDF or EPUB) as well as creating a book website from the same source documents.
+-   [Books](../books/book-basics.md) support combining all of the included documents into a single manuscript (e.g. a PDF or EPUB) as well as creating a book website from the same source documents.
