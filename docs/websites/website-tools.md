@@ -297,9 +297,9 @@ Note that the `engine` variable values include markdown for hyperlinks.
 
 ### Using Variables
 
-To include the value of a variable, use the `{{< var >}}` shortcode, for example:
+To include the value of a variable, use the `{{</* var */>}}` shortcode, for example:
 
-``` {.markdown}
+``` {.markdown shortcodes=false}
 Version {{< var version >}} is a minor upgrade.
 
 Please contact us at {{< var email.info >}}.
@@ -307,3 +307,24 @@ Please contact us at {{< var email.info >}}.
 Quarto includes {{< var engine.jupyter >}} and 
 {{< var engine.knitr >}} computation engines.
 ```
+
+#### Escaping Variables
+
+If you are writing documentation about using variables (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:
+
+1.  Escape the variable reference like this:
+
+    ```{.markdown shortcodes=false}
+    {{</* var version */>}}
+    ```
+
+2.  Add a `shortcodes=false` attribute to any code block you want to prevent processing of shortcodes within:
+
+    ````{.markdown shortcodes=false}
+    ```{shortcodes=false}
+    {{< var version >}}
+    ```
+    ````
+
+
+
