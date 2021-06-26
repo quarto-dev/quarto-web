@@ -3,8 +3,8 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="Pandoc support a huge array of output formats, all of which can be used with Quarto. To use any Pandoc format just use the format option or the --to command line option.">
-  <title>Quarto – More Formats</title>
+  <meta name="description" content="Shortcodes and filters provide extensions to Pandoc markdown. If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a a filter that bridges the gap.">
+  <title>Quarto – Shortcodes &amp; Filters</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -86,8 +86,8 @@
   <script src="../../site_libs/quarto-search/autocomplete.min.js"></script>
   <script src="../../site_libs/quarto-search/fuse.min.js"></script>
   <script src="../../site_libs/quarto-search/quarto-search.js"></script>
-  <link href="../../docs/websites/website-basics.html" rel="next">
-  <link href="../../docs/output-formats/presentations.html" rel="prev">
+  <link href="../../docs/output-formats/html-basics.html" rel="next">
+  <link href="../../docs/authoring/callouts.html" rel="prev">
   <script src="../../site_libs/quarto-html/quarto.js"></script>
   <script src="../../site_libs/quarto-html/popper.min.js"></script>
   <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -135,14 +135,14 @@
     }
   </style>
   <link rel="stylesheet" href="../../styles.css">
-<meta name="og:title" content="Quarto - More Formats">
-<meta name="og:description" content="Pandoc support a huge array of output formats, all of which can be used with Quarto. To use any Pandoc format just use the `format` option or the `--to` command line option.">
+<meta name="og:title" content="Quarto - Shortcodes &amp; Filters">
+<meta name="og:description" content="Shortcodes and filters provide extensions to Pandoc markdown. If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a a filter that bridges the gap.">
 <meta name="og:image" content="https://quarto.org/quarto.png">
 <meta name="og:site-name" content="Quarto">
 <meta name="og:image:height" content="152">
 <meta name="og:image:width" content="624">
-<meta name="twitter:title" content="Quarto - More Formats">
-<meta name="twitter:description" content="Pandoc support a huge array of output formats, all of which can be used with Quarto. To use any Pandoc format just use the `format` option or the `--to` command line option.">
+<meta name="twitter:title" content="Quarto - Shortcodes &amp; Filters">
+<meta name="twitter:description" content="Shortcodes and filters provide extensions to Pandoc markdown. If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a a filter that bridges the gap.">
 <meta name="twitter:image" content="https://quarto.org/quarto.png">
 <meta name="twitter:image-height" content="152">
 <meta name="twitter:image-width" content="624">
@@ -153,7 +153,7 @@
 <header id="quarto-header" class="headroom fixed-top">
 <nav class="quarto-secondary-nav py-2 d-lg-none d-md-block " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <div class="container-fluid d-flex justify-content-between">
-    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">More Formats</h1>
+    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Shortcodes &amp; Filters</h1>
     <button type="button" class="quarto-btn-toggle btn d-lg-none py-0 px-1 d-inline-block border-0 ">
       <i class="bi bi-chevron-right"></i>
     </button>
@@ -264,7 +264,7 @@
   <a href="../../docs/authoring/callouts.html" class="">Callout Blocks</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/authoring/shortcodes-and-filters.html" class="">Shortcodes &amp; Filters</a>
+  <a href="../../docs/authoring/shortcodes-and-filters.html" class="active">Shortcodes &amp; Filters</a>
 </li>
         </ul>
       </div>
@@ -350,7 +350,7 @@
   <a href="../../docs/output-formats/presentations.html" class="">Presentations</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/output-formats/more-formats.html" class="active">More Formats</a>
+  <a href="../../docs/output-formats/more-formats.html" class="">More Formats</a>
 </li>
         </ul>
       </div>
@@ -409,346 +409,141 @@
   <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#formats" class="nav-link" data-scroll-target="#formats">Formats</a></li>
+<li><a href="#shortcodes" class="nav-link active" data-scroll-target="#shortcodes">Shortcodes</a>
+<ul class="collapse">
+<li><a href="#meta" class="nav-link" data-scroll-target="#meta">meta</a></li>
+<li><a href="#var" class="nav-link" data-scroll-target="#var">var</a></li>
+<li><a href="#escaping" class="nav-link" data-scroll-target="#escaping">Escaping</a></li>
+</ul></li>
+<li><a href="#filters" class="nav-link" data-scroll-target="#filters">Filters</a>
+<ul class="collapse">
+<li><a href="#using-filters" class="nav-link" data-scroll-target="#using-filters">Using Filters</a></li>
+<li><a href="#writing-filters" class="nav-link" data-scroll-target="#writing-filters">Writing Filters</a></li>
+</ul></li>
 </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/more-formats.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/authoring/shortcodes-and-filters.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
 <main>
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7">More Formats</h1>
+<h1 class="title d-none d-lg-block display-7">Shortcodes &amp; Filters</h1>
 </header>
 
-<section id="overview" class="level2">
-<h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Pandoc support a huge array of output formats, all of which can be used with Quarto. To use any Pandoc format just use the <code>format</code> option or the <code>--to</code> command line option.</p>
-<p>For example, here’s some YAML that specifies the use of the <code>odt</code> format as well as a couple of format options:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> </span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">odt</span><span class="kw">:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">reference-doc</span><span class="kw">:</span><span class="at"> reference.odt</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Alternatively you can specify the use of a format on the command line:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.md <span class="at">--to</span> odt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="shortcodes" class="level2">
+<h2 class="anchored" data-anchor-id="shortcodes">Shortcodes</h2>
+<p>Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to <a href="https://gohugo.io/content-management/shortcodes/">Hugo shortcodes</a> and <a href="https://codex.wordpress.org/Shortcode">WordPress shortcodes</a>.</p>
+<p>Quarto currently only supports two shortcodes: <code>meta</code> and <code>var</code>. Additional shortcodes (e.g.&nbsp;for inserting videos, tweets, gists, etc.) will be developed soon.</p>
+<section id="meta" class="level3">
+<h3 class="anchored" data-anchor-id="meta">meta</h3>
+<p>The <code>meta</code> shortcode allows you to insert content from Pandoc metadata (e.g.&nbsp;YAML at the top of the document and/or in <code>_quarto.yml</code>).</p>
+<p>For example, the following shortcode inserts the value of the <code>title</code> field from YAML metadata:</p>
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>{{&lt; meta title &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can dereference sub-keys using the dot (<code>.)</code> delimiter. For example:</p>
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>{{&lt; meta author.affiliation &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="formats" class="level2">
-<h2 class="anchored" data-anchor-id="formats">Formats</h2>
-<p>All Panoc output formats currently available are listed below (the format “name” on the left is what you specify in the <code>format</code> YAML key).</p>
-<p>To learn more about the specific options available for all of Pandoc’s formats, see the <a href="https://pandoc.org/MANUAL.html">Pandoc User Guide</a>.</p>
+<section id="var" class="level3">
+<h3 class="anchored" data-anchor-id="var">var</h3>
+<p>The <code>var</code> shortcode enables you to insert content from a project-level <code>_variables.yml</code> file. Create this file alongside your <code>_quarto.yml</code> project file, and then include references to those variables within any document in your project.</p>
+<p>Variables can be either simple values or can include arbitrary markdown content. To define variables, create a <code>_variables.yml</code> file in the root directory of your project. For example:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.2</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">email</span><span class="kw">:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">info</span><span class="kw">:</span><span class="at"> info@example.com</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">support</span><span class="kw">:</span><span class="at"> support@example.com</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">engine</span><span class="kw">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Jupyter](https://jupyter.org)"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">knitr</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Knitr](&lt;https://yihui.name/knitr&gt;)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the <code>engine</code> variable values include markdown for hyperlinks.</p>
+<p>To include the value of a variable, use the <code>{{&lt; var &gt;}}</code> shortcode, for example:</p>
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Version {{&lt; var version &gt;}} is a minor upgrade.</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Please contact us at {{&lt; var email.info &gt;}}.</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Quarto includes {{&lt; var engine.jupyter &gt;}} and </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>{{&lt; var engine.knitr &gt;}} computation engines.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="escaping" class="level3">
+<h3 class="anchored" data-anchor-id="escaping">Escaping</h3>
+<p>If you are writing documentation about using shortocdes (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:</p>
+<ol type="1">
+<li><p>Escape the shortcode reference like this:</p>
+<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>{{&lt;/* var version */&gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Add a <code>shortcodes=false</code> attribute to any code block you want to prevent processing of shortcodes within:</p>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{shortcodes=false}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="in">{{&lt; var version &gt;}}</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+</section>
+</section>
+<section id="filters" class="level2">
+<h2 class="anchored" data-anchor-id="filters">Filters</h2>
+<p>If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a <a href="https://pandoc.org/filters.html">Pandoc Filter</a> that bridges the gap.</p>
+<p>Pandoc consists of a set of readers and writers. When converting a document from one format to another, text is parsed by a reader into pandoc’s intermediate representation of the document—an “abstract syntax tree” or AST—which is then converted by the writer into the target format. The pandoc AST format is defined in the module <a href="https://hackage.haskell.org/package/pandoc-types-1.22/docs/Text-Pandoc-Definition.html"><code>Text.Pandoc.Definition</code></a> in the pandoc-types package.</p>
+<p>A “filter” is a program that modifies the AST, between the reader and the writer.</p>
+<pre><code>INPUT --reader--&gt; AST --filter--&gt; AST --writer--&gt; OUTPUT</code></pre>
+<p>Pandoc’s built-in citation processing is implemented as a filter, as are many of Quarto’s extensions (e.g.&nbsp;cross-references, figure layout, etc.). Some other examples include:</p>
 <table class="table">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 80%">
+<col style="width: 40%">
+<col style="width: 59%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Name</th>
-<th>Details</th>
+<th>Filter</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>asciidoc</td>
-<td><a href="https://asciidoc.org/" class="uri">https://asciidoc.org/</a></td>
+<td><a href="https://github.com/pandoc/lua-filters/tree/master/include-files">include-files</a></td>
+<td>Filter to include other files in the document.</td>
 </tr>
 <tr class="even">
-<td>asciidoctor</td>
-<td><a href="https://asciidoctor.org/" class="uri">https://asciidoctor.org/</a></td>
+<td><a href="https://github.com/pandoc/lua-filters/tree/master/include-code-files">include-code-files</a></td>
+<td>Filter to include code from source files.</td>
 </tr>
 <tr class="odd">
-<td>beamer</td>
-<td><a href="https://ctan.org/pkg/beamer" class="uri">https://ctan.org/pkg/beamer</a></td>
-</tr>
-<tr class="even">
-<td>commonmark<br>
-commonmark_x</td>
-<td><a href="http://commonmark.org/" class="uri">http://commonmark.org/</a></td>
-</tr>
-<tr class="odd">
-<td>context</td>
-<td><a href="http://www.pragma-ade.nl/" class="uri">http://www.pragma-ade.nl/</a></td>
-</tr>
-<tr class="even">
-<td>csljson</td>
-<td><a href="https://citationstyles.org/" class="uri">https://citationstyles.org/</a></td>
-</tr>
-<tr class="odd">
-<td>docbook<br>
-docbook4<br>
-docbook5</td>
-<td><a href="http://www.docbook.org/" class="uri">http://www.docbook.org/</a></td>
-</tr>
-<tr class="even">
-<td>docx</td>
-<td><a href="https://en.wikipedia.org/wiki/Office_Open_XML" class="uri">https://en.wikipedia.org/wiki/Office_Open_XML</a></td>
-</tr>
-<tr class="odd">
-<td>dokuwiki</td>
-<td><a href="https://www.dokuwiki.org/wiki:syntax" class="uri">https://www.dokuwiki.org/wiki:syntax</a></td>
-</tr>
-<tr class="even">
-<td>dzslides</td>
-<td><a href="http://paulrouget.com/dzslides/" class="uri">http://paulrouget.com/dzslides/</a></td>
-</tr>
-<tr class="odd">
-<td>epub<br>
-epub2<br>
-epub3</td>
-<td><a href="http://en.wikipedia.org/wiki/EPUB" class="uri">http://en.wikipedia.org/wiki/EPUB</a></td>
-</tr>
-<tr class="even">
-<td>fb2</td>
-<td><a href="https://en.wikipedia.org/wiki/FictionBook" class="uri">https://en.wikipedia.org/wiki/FictionBook</a></td>
-</tr>
-<tr class="odd">
-<td>gfm</td>
-<td><a href="https://github.github.com/gfm/" class="uri">https://github.github.com/gfm/</a></td>
-</tr>
-<tr class="even">
-<td>haddock</td>
-<td><a href="http://www.haskell.org/haddock/doc/html/ch03s08.html" class="uri">http://www.haskell.org/haddock/doc/html/ch03s08.html</a></td>
-</tr>
-<tr class="odd">
-<td>html<br>
-html4<br>
-html5</td>
-<td><a href="https://en.wikipedia.org/wiki/HTML5" class="uri">https://en.wikipedia.org/wiki/HTML5</a></td>
-</tr>
-<tr class="even">
-<td>icml</td>
-<td><a href="https://wwwimages.adobe.com/content/dam/acom/en/devnet/indesign/sdk/cs6/idml/idml-specification.pdf" class="uri">https://wwwimages.adobe.com/content/dam/acom/en/devnet/indesign/sdk/cs6/idml/idml-specification.pdf</a></td>
-</tr>
-<tr class="odd">
-<td>ipynb</td>
-<td><a href="https://nbformat.readthedocs.io/en/latest/" class="uri">https://nbformat.readthedocs.io/en/latest/</a></td>
-</tr>
-<tr class="even">
-<td>jats<br>
-jats_archiving<br>
-jats_articleauthoring<br>
-jats_publishing</td>
-<td><a href="https://jats.nlm.nih.gov/publishing/" class="uri">https://jats.nlm.nih.gov/publishing/</a></td>
-</tr>
-<tr class="odd">
-<td>jira</td>
-<td><a href="https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all" class="uri">https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all</a></td>
-</tr>
-<tr class="even">
-<td>json</td>
-<td><a href="https://pandoc.org/filters.html" class="uri">https://pandoc.org/filters.html</a></td>
-</tr>
-<tr class="odd">
-<td>latex</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>man</td>
-<td><a href="http://www.gnu.org/software/groff/groff.html" class="uri">http://www.gnu.org/software/groff/groff.html</a></td>
-</tr>
-<tr class="odd">
-<td>markdown<br>
-markdown_github<br>
-markdown_mmd<br>
-markdown_phpextra<br>
-markdown_strict</td>
-<td><a href="https://pandoc.org/MANUAL.html#markdown-variants" class="uri">https://pandoc.org/MANUAL.html#markdown-variants</a></td>
-</tr>
-<tr class="even">
-<td>mediawiki</td>
-<td><a href="http://www.mediawiki.org/wiki/Help:Formatting" class="uri">http://www.mediawiki.org/wiki/Help:Formatting</a></td>
-</tr>
-<tr class="odd">
-<td>ms</td>
-<td><a href="http://www.gnu.org/software/groff/groff.html" class="uri">http://www.gnu.org/software/groff/groff.html</a></td>
-</tr>
-<tr class="even">
-<td>muse</td>
-<td><a href="https://www.gnu.org/software/emacs-muse/manual/" class="uri">https://www.gnu.org/software/emacs-muse/manual/</a></td>
-</tr>
-<tr class="odd">
-<td>native</td>
-<td><a href="https://pandoc.org/using-the-pandoc-api.html" class="uri">https://pandoc.org/using-the-pandoc-api.html</a></td>
-</tr>
-<tr class="even">
-<td>odt</td>
-<td><a href="http://en.wikipedia.org/wiki/OpenDocument" class="uri">http://en.wikipedia.org/wiki/OpenDocument</a></td>
-</tr>
-<tr class="odd">
-<td>opendocument</td>
-<td><a href="http://opendocument.xml.org/" class="uri">http://opendocument.xml.org/</a></td>
-</tr>
-<tr class="even">
-<td>opml</td>
-<td><a href="http://dev.opml.org/spec2.html" class="uri">http://dev.opml.org/spec2.html</a></td>
-</tr>
-<tr class="odd">
-<td>org</td>
-<td><a href="http://orgmode.org/" class="uri">http://orgmode.org/</a></td>
-</tr>
-<tr class="even">
-<td>pdf</td>
-<td><a href="https://en.wikipedia.org/wiki/PDF" class="uri">https://en.wikipedia.org/wiki/PDF</a></td>
-</tr>
-<tr class="odd">
-<td>plain</td>
-<td>Plain text</td>
-</tr>
-<tr class="even">
-<td>pptx</td>
-<td><a href="https://en.wikipedia.org/wiki/Microsoft_PowerPoint" class="uri">https://en.wikipedia.org/wiki/Microsoft_PowerPoint</a></td>
-</tr>
-<tr class="odd">
-<td>revealjs</td>
-<td><a href="http://lab.hakim.se/reveal-js/" class="uri">http://lab.hakim.se/reveal-js/</a></td>
-</tr>
-<tr class="even">
-<td>rst</td>
-<td><a href="http://docutils.sourceforge.net/docs/ref/rst/introduction.html" class="uri">http://docutils.sourceforge.net/docs/ref/rst/introduction.html</a></td>
-</tr>
-<tr class="odd">
-<td>rtf</td>
-<td><a href="https://en.wikipedia.org/wiki/Rich_Text_Format" class="uri">https://en.wikipedia.org/wiki/Rich_Text_Format</a></td>
-</tr>
-<tr class="even">
-<td>s5</td>
-<td><a href="http://meyerweb.com/eric/tools/s5/" class="uri">http://meyerweb.com/eric/tools/s5/</a></td>
-</tr>
-<tr class="odd">
-<td>slideous</td>
-<td><a href="http://goessner.net/articles/slideous/" class="uri">http://goessner.net/articles/slideous/</a></td>
-</tr>
-<tr class="even">
-<td>slidy</td>
-<td><a href="http://www.w3.org/Talks/Tools/Slidy" class="uri">http://www.w3.org/Talks/Tools/Slidy</a></td>
-</tr>
-<tr class="odd">
-<td>tei</td>
-<td><a href="https://github.com/TEIC/TEI-Simple" class="uri">https://github.com/TEIC/TEI-Simple</a></td>
-</tr>
-<tr class="even">
-<td>texinfo</td>
-<td><a href="http://www.gnu.org/software/texinfo/" class="uri">http://www.gnu.org/software/texinfo/</a></td>
-</tr>
-<tr class="odd">
-<td>textile</td>
-<td><a href="http://redcloth.org/textile" class="uri">http://redcloth.org/textile</a></td>
-</tr>
-<tr class="even">
-<td>xwiki</td>
-<td><a href="https://www.xwiki.org/xwiki/bin/view/Documentation/UserGuide/Features/XWikiSyntax/" class="uri">https://www.xwiki.org/xwiki/bin/view/Documentation/UserGuide/Features/XWikiSyntax/</a></td>
-</tr>
-<tr class="odd">
-<td>zimwik</td>
-<td><a href="http://zim-wiki.org/manual/Help/Wiki_Syntax.html" class="uri">http://zim-wiki.org/manual/Help/Wiki_Syntax.html</a></td>
+<td><a href="https://github.com/pandoc/lua-filters/tree/master/pagebreak">pagebreak</a></td>
+<td>Converts paragraps containing only the LaTeX <code>\newpage</code> or <code>\pagebreak</code> command into appropriate pagebreak markup for other formats.</td>
 </tr>
 </tbody>
 </table>
-<p>Here is a list of the currently supported formats:</p>
-<p><strong>Lightweight markup formats</strong></p>
+<section id="using-filters" class="level3">
+<h3 class="anchored" data-anchor-id="using-filters">Using Filters</h3>
+<p>Add one or more filters to document rendering using the <code>filters</code> option. For example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="kw">-</span><span class="at"> include-files.lua</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>By default, user filters are run before Quarto’s built-in filters. If you prefer to control the order of filters visa-vi Quarto just include <code>quarto</code> explicitly as a filter. For example, to run <code>include-files.lua</code> before Quarto filters and <code>pagebreak.lua</code> after, use this:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> include-files.lua</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> quarto</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="writing-filters" class="level3">
+<h3 class="anchored" data-anchor-id="writing-filters">Writing Filters</h3>
+<p>You can write Pandoc filters using Lua (via Pandoc’s built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process.</p>
+<p>We strongly recommend using Lua Filters, which have the following advantages:</p>
 <ul>
-<li><p><a href="http://daringfireball.net/projects/markdown/">Markdown</a> (including <a href="http://commonmark.org/">CommonMark</a> and <a href="https://github.github.com/gfm/">GitHub-flavored Markdown</a>)</p></li>
-<li><p><a href="http://docutils.sourceforge.net/docs/ref/rst/introduction.html">reStructuredText</a></p></li>
-<li><p><a href="https://asciidoc.org/">AsciiDoc</a></p></li>
-<li><p>Emacs <a href="http://orgmode.org/">Org-Mode</a></p></li>
-<li><p>Emacs <a href="https://www.gnu.org/software/emacs-muse/manual/">Muse</a></p></li>
-<li><p><a href="http://redcloth.org/textile">Textile</a></p></li>
+<li><p>No external dependencies</p></li>
+<li><p>High performance (no serialization or process execution overhead)</p></li>
+<li><p>Access to Pandoc’s library of <a href="https://pandoc.org/lua-filters.html#pandoc-module">Lua helper functions</a>.</p></li>
 </ul>
-<p><strong>HTML formats</strong></p>
-<ul>
-<li><p>(X)HTML 4</p></li>
-<li><p>HTML5</p></li>
-</ul>
-<p><strong>Ebooks</strong></p>
-<ul>
-<li><p><a href="http://en.wikipedia.org/wiki/EPUB">EPUB</a> version 2 or 3</p></li>
-<li><p><a href="http://www.fictionbook.org/index.php/Eng:XML_Schema_Fictionbook_2.1">FictionBook2</a></p></li>
-</ul>
-<p><strong>Documentation formats</strong></p>
-<ul>
-<li><p><a href="http://www.gnu.org/software/texinfo/">GNU TexInfo</a></p></li>
-<li><p><a href="http://www.haskell.org/haddock/doc/html/ch03s08.html">Haddock markup</a></p></li>
-</ul>
-<p><strong>Roff formats</strong></p>
-<ul>
-<li><p><a href="http://www.gnu.org/software/groff/groff.html">roff man</a></p></li>
-<li><p><a href="http://www.gnu.org/software/groff/groff.html">roff ms</a></p></li>
-</ul>
-<p><strong>TeX formats</strong></p>
-<ul>
-<li><p><a href="http://www.latex-project.org/">LaTeX</a></p></li>
-<li><p><a href="http://www.pragma-ade.nl/">ConTeXt</a></p></li>
-</ul>
-<p><strong>XML formats</strong></p>
-<ul>
-<li><p><a href="http://www.docbook.org/">DocBook</a> version 4 or 5</p></li>
-<li><p><a href="https://jats.nlm.nih.gov/publishing/">JATS</a></p></li>
-<li><p><a href="https://github.com/TEIC/TEI-Simple">TEI Simple</a></p></li>
-</ul>
-<p><strong>Outline formats</strong></p>
-<ul>
-<li><a href="http://dev.opml.org/spec2.html">OPML</a></li>
-</ul>
-<p><strong>Bibliography formats</strong></p>
-<ul>
-<li><p><a href="http://tug.org/bibtex/">BibTeX</a></p></li>
-<li><p><a href="https://github.com/plk/biblatex">BibLaTeX</a></p></li>
-<li><p><a href="https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html">CSL JSON</a></p></li>
-<li><p>CSL YAML</p></li>
-</ul>
-<p><strong>Word processor formats</strong></p>
-<ul>
-<li><p>Microsoft Word <a href="https://en.wikipedia.org/wiki/Office_Open_XML">docx</a></p></li>
-<li><p>OpenOffice/LibreOffice <a href="http://en.wikipedia.org/wiki/OpenDocument">ODT</a></p></li>
-<li><p><a href="http://opendocument.xml.org/">OpenDocument XML</a></p></li>
-<li><p>Microsoft <a href="https://en.wikipedia.org/wiki/Microsoft_PowerPoint">PowerPoint</a></p></li>
-</ul>
-<p><strong>Interactive notebook formats</strong></p>
-<ul>
-<li>Jupyter notebook (<a href="https://nbformat.readthedocs.io/en/latest/">ipynb</a>)</li>
-</ul>
-<p><strong>Page layout formats</strong></p>
-<ul>
-<li><a href="http://wwwimages.adobe.com/content/dam/acom/en/devnet/indesign/sdk/cs6/idml/idml-specification.pdf">InDesign ICML</a></li>
-</ul>
-<p><strong>Wiki markup formats</strong></p>
-<ul>
-<li><p><a href="http://www.mediawiki.org/wiki/Help:Formatting">MediaWiki markup</a></p></li>
-<li><p><a href="https://www.dokuwiki.org/wiki:syntax">DokuWiki markup</a></p></li>
-<li><p><a href="https://www.xwiki.org/xwiki/bin/view/Documentation/UserGuide/Features/XWikiSyntax/">XWiki markup</a></p></li>
-<li><p><a href="http://zim-wiki.org/manual/Help/Wiki_Syntax.html">ZimWiki markup</a></p></li>
-<li><p><a href="https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all">Jira wiki markup</a></p></li>
-</ul>
-<p><strong>Slide show formats</strong></p>
-<ul>
-<li><p><a href="https://ctan.org/pkg/beamer">LaTeX Beamer</a></p></li>
-<li><p><a href="http://www.w3.org/Talks/Tools/Slidy">Slidy</a></p></li>
-<li><p><a href="http://lab.hakim.se/reveal-js/">reveal.js</a></p></li>
-<li><p><a href="http://goessner.net/articles/slideous/">Slideous</a></p></li>
-<li><p><a href="http://meyerweb.com/eric/tools/s5/">S5</a></p></li>
-<li><p><a href="http://paulrouget.com/dzslides/">DZSlides</a></p></li>
-</ul>
-<p><strong>Custom formats</strong></p>
-<ul>
-<li>Custom writers can be written in <a href="http://www.lua.org/">lua</a>.</li>
-</ul>
-<p><strong>PDF</strong></p>
-<ul>
-<li>via <code>pdflatex</code>, <code>lualatex</code>, <code>xelatex</code>, <code>latexmk</code>, <code>tectonic</code>, <code>wkhtmltopdf</code>, <code>weasyprint</code>, <code>prince</code>, <code>context</code>, or <code>pdfroff</code>.</li>
-</ul>
+<p>See the documentation on <a href="https://pandoc.org/lua-filters.html">Writing Lua Filters</a> for additional details.</p>
+<p>If you want to write a JSON filter, see the documentation on <a href="https://pandoc.org/filters.html">Writing JSON filters</a>.</p>
 <!-- -->
+</section>
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
-      <a href="../../docs/output-formats/presentations.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Presentations</span>
+      <a href="../../docs/authoring/callouts.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Callout Blocks</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../docs/websites/website-basics.html">
-        <span class="nav-page-text">Creating a Website</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../docs/output-formats/html-basics.html">
+        <span class="nav-page-text">HTML Basics</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </div>
