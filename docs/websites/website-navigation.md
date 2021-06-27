@@ -318,16 +318,42 @@ Depending on where you are deploying your site there may be more powerful tools 
 
 When a browser can't find a requested web page, it displays a [404 error](https://en.wikipedia.org/wiki/HTTP_404) indicating that the file can't be found. Browser default 404 pages can be pretty stark, so you may want to create a custom page with a more friendly message and perhaps pointers on how users might find what they are looking for.
 
-Most web serving platforms (e.g. Netlify, GH Pages, etc.) will use a file named `404.html` in the root of your website as a custom error page if you provide it.
+Most web serving platforms (e.g. Netlify, GH Pages, etc.) will use a file named `404.html` in the root of your website as a custom error page if you provide it. You can include a custom 404 page in a Quarto website by creating a markdown file named `404.md` in the root of your project. For example:
 
-You can include a custom 404 page in a Quarto website in one of two ways:
+``` {.markdown}
+---
+title: Page Not Found
+---
 
-1.  Provide content for your 404 page that will be served within your site's chrome (e.g. matching fonts/css, navbar and/or sidebar, etc.) by creating a markdown file named `404.md` in the root of your project.
+The page you requested cannot be found (perhaps it was moved or renamed).
 
-2.  Provide fully custom HTML for your 404 page by creating a file named `404.html` in the root of your project.
+You may want to try searching to find the page's new location.
+```
 
-Unless you have a particular reason not to, it's probably best to use option (1) so that users don't feel that they've "left" your site when they get a 404 error. Remember that you can use HTML alongside markdown within your `404.md` file in order to get exactly the appearance you want.
+Note that you can use HTML alongside markdown within your `404.md` file in order to get exactly the appearance and layout you want.
+
+Your 404 page will appear within the chrome of your site (e.g. fonts, css, layout, navigation, etc.). This is so that users don't feel that they've irrecoverably "left" your site when they get a 404 error. If you don't want this behavior, then provide a `404.html` rather than `404.md`.
 
 Here are some examples of how various popular websites handle custom 404 pages: <https://blog.fluidui.com/top-404-error-page-examples/>.
 
-## 
+#### Site Path Configuration
+
+If your website is served from the root of a domain (e.g. *https://example.com/*) then simply providing a `404.md` file as described above is all that's required to create a custom 404 page.
+
+However, if your website is **not** served from the root of a domain then you need to provide one additional bit of configuration to make sure that resources (e.g. your site's CSS) are resolved correctly within 404 pages.
+
+For example, if your site is served from *https://example.com/mysite/* then you'd add the following to your project `site` configuration within `_quarto.yml`:
+
+``` {.yaml}
+site:
+  title: "My Site"
+  site-path: "/mysite/"
+```
+
+Note that if you are already providing a `site-url` (which is required for generation of sitemaps and [social metadata](website-tools.md#social-metadata) preview images) then it's enough to simply include the path within the `site-url`:
+
+``` {.yaml}
+site:
+  title: "My Site"
+  site-url: "https://example.com/mysite/"
+```
