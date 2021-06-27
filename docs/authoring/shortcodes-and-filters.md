@@ -10,7 +10,7 @@ Shortcodes are special markdown directives that generate various types of conten
 
 Quarto currently supports just two shortcodes: `meta` and `var`. Additional shortcodes (e.g. for inserting videos, tweets, gists, etc.) will be developed soon.
 
-### meta 
+### meta
 
 The `meta` shortcode allows you to insert content from Pandoc metadata (e.g. YAML at the top of the document and/or in `_quarto.yml`).
 
@@ -87,15 +87,11 @@ A "filter" is a program that modifies the AST, between the reader and the writer
 
 Pandoc's built-in citation processing is implemented as a filter, as are many of Quarto's extensions (e.g. cross-references, figure layout, etc.). Some other examples include:
 
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Filter                                                                                     | Description                                                                                                                          |
-+============================================================================================+======================================================================================================================================+
+|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | [include-files](https://github.com/pandoc/lua-filters/tree/master/include-files)           | Filter to include other files in the document.                                                                                       |
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | [include-code-files](https://github.com/pandoc/lua-filters/tree/master/include-code-files) | Filter to include code from source files.                                                                                            |
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | [pagebreak](https://github.com/pandoc/lua-filters/tree/master/pagebreak)                   | Converts paragraps containing only the LaTeX `\newpage` or `\pagebreak` command into appropriate pagebreak markup for other formats. |
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Using Filters
 
