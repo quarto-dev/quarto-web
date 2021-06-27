@@ -1,6 +1,6 @@
 ---
 title: "Shortcodes & Filters"
-description: "Shortcodes and filters provide extensions to Pandoc markdown. If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a a filter that bridges the gap."
+description: "Shortcodes and filters provide extensions to Pandoc markdown."
 format: html
 ---
 
