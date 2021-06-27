@@ -8,7 +8,7 @@ format: html
 
 Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to [Hugo shortcodes](https://gohugo.io/content-management/shortcodes/) and [WordPress shortcodes](https://codex.wordpress.org/Shortcode).
 
-Quarto currently only supports two shortcodes: `meta` and `var`. Additional shortcodes (e.g. for inserting videos, tweets, gists, etc.) will be developed soon.
+Quarto currently supports just two shortcodes: `meta` and `var`. Additional shortcodes (e.g. for inserting videos, tweets, gists, etc.) will be developed soon.
 
 ### meta 
 
@@ -59,7 +59,7 @@ Quarto includes {{< var engine.jupyter >}} and
 
 ### Escaping
 
-If you are writing documentation about using shortocdes (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:
+If you are writing documentation about using shortcodes (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:
 
 1.  Escape the shortcode reference like this:
 
