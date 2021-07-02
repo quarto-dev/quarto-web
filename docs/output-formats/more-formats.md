@@ -28,7 +28,7 @@ quarto render document.md --to odt
 
 ## Formats
 
-All Panoc output formats currently available are listed below (the format "name" on the left is what you specify in the `format` YAML key).
+All Pandoc output formats currently available are listed below (the format "name" on the left is what you specify in the `format` YAML key).
 
 To learn more about the specific options available for all of Pandoc's formats, see the [Pandoc User Guide](https://pandoc.org/MANUAL.html).
 
