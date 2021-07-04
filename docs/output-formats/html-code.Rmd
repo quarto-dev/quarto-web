@@ -1,0 +1,264 @@
+---
+title: "HTML Code Blocks"
+description: "Quarto options for customizing the display of source code in HTML output."
+format: 
+  html:
+    code-tools: true
+execute:
+  warning: false
+---
+
+## Overview
+
+There are wide variety of options available to customize the display of source code within HTML documents, including:
+
+1.  Hiding some or all code that was executed by [Knitr](https://yihui.name/knitr) or [Jupyter](https://jupyter.org).
+2.  Code folding for executed code (hidden by default and expandable by readers).
+3.  View the full source code of the .qmd or .Rmd used to generate the document.
+4.  Syntax highlighting themes and other options to control the appearance of code.
+5.  Copy to clipboard button for code blocks.
+6.  Generating hyperlinks to online documentation for functions used within code blocks via the [downlit](https://downlit.r-lib.org/) package (note that this option currently only works when using the Knitr engine).
+
+Details on using all of these options are provided below.
+
+## Hiding Code
+
+For many documents you may want to hide all of the executable source code used to produce dynamic outputs. You can do this by specifying `echo: false` in the document `execute` options. For example:
+
+``` {.yaml}
+---
+title: "My Document"
+execute:
+  echo: false
+jupyter: python3
+---
+```
+
+Note that we can override this option on a per code-block basis. For example:
+
+```` {.markdown}
+```{python}`r ''`
+#| echo: true
+
+import matplotlib.pyplot as plt
+plt.plot([1,2,3,4])
+plt.show()
+```
+````
+
+Code block options are included in a special comment at the top of the block (lines at the top prefaced with `#|` are considered options).
+
+## Folding Code
+
+Use the `code-fold` option to include code but have it hidden by default using the HTML `<details>` tag. For example, click the **Code** button to see the code that produced this plot.
+
+```{r}
+#| fold: true
+
+library(ggplot2)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) + 
+    geom_smooth() 
+```
+
+Here we specify both `code-fold: true` as well as custom summary text (the default is just "Code" as shown above):
+
+``` {.yaml}
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+```
+
+Valid values for `code-fold` include:
+
+| Value   | Behavior                     |
+|---------|------------------------------|
+| `false` | No folding (default)         |
+| `true`  | Fold code (initially hidden) |
+| `show`  | Fold code (initially shown)  |
+
+Use the `fold` and `summary` chunk attributes to control this on a chunk-by-chunk basis:
+
+```` {.python}
+```{r}`r ''`
+#| fold: true
+#| summary: "Show the code"
+
+```
+````
+
+## Code Tools
+
+You can include a **Code** menu in the header of your document that provides various tools for readers to interact with the source code. Specify `code-tools: true` to activate these tools:
+
+``` {.yaml}
+format:
+  html:
+    code-fold: true
+    code-tools: true
+```
+
+If you have a document that includes folded code blocks then the **Code** menu will present options to show and hide the folded code as well as view the full source code of the document:
+
+![](images/code-tools-01.png){.border}
+
+This document specifies `code-tools: true` in it's options so you should see the **Code** menu above next to the main header.
+
+You can control which of these options are made available as well as the "Code" caption text using sub-options of `code-tools`. For example, here we specify that we want only "View Source" (no toggling of code visibility) and no caption on the code menu:
+
+``` {.yaml}
+format:
+  html: 
+    code-tools:
+      source: true
+      toggle: false
+      caption: none
+```
+
+By default, the source code is embedded in the document and shown in a popup window like this:
+
+![](images/code-tools-source.png)
+
+You can alternatively specify a URL for the value of `source`:
+
+``` {.yaml}
+format:
+  html: 
+    code-tools:
+      source: https://github.com/quarto-dev/quarto-web/blob/main/index.md
+```
+
+If you are within a project and have specified a `repo-url` option then you can just use `repo` and the correct link to your source file will be generated:
+
+``` {.yaml}
+format:
+  html: 
+    code-tools:
+      source: repo
+```
+
+## Appearance
+
+By default code blocks are rendered with a left border whose color is derived from the currently theme. You can customize code chunk appearance with some simple options that control the background color and left border. Options can either be booleans to enable or disable the treatment or can be legal CSS color strings (or they could even be SASS variable names!).
+
+Here is the default appearance for code blocks (`code-background: true`):
+
+![](images/code-bg.png)
+
+You can instead use a left border treatment using the `code-border-left` option:
+
+``` {.yaml}
+code-border-left: true
+```
+
+![](images/code-default.png)
+
+You can combine a background and border treatment as well as customize the left border color:
+
+``` {.yaml}
+code-background: true
+code-border-left: "#31BAE9"
+```
+
+![](images/code-custom.png)
+
+## Highlighting
+
+You can specify the code highlighting style using `highlight-style` and specifying one of the supported themes. Supported themes include all the themes included in Pandoc:
+
+-   pygments
+-   tango
+-   espresso
+-   zenburn
+-   kate
+-   monochrome
+-   breezedark
+-   haddock
+
+As well as an additional set of extended themes including:
+
+-   arrow
+-   atom-one
+-   ayu
+-   breeze
+-   dracula
+-   github
+-   gruvbox
+-   mokokai
+-   nord
+-   oblivion
+-   printing
+-   radical
+-   solarized
+-   vim-dark
+
+For example:
+
+``` {.yaml}
+highlight-style: github
+```
+
+Highlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color's darkness. Users may always opt to specify the full name (e.g. `atom-one-dark`) to by pass this automatic behavior.
+
+By default, code is highlighted using the `arrow` theme, which optimized for accessibility. We've additionally introduced the `arrow-dark` theme which is designed to provide accessible highlighting against dark backgrounds.
+
+Examples of the light and dark themes:
+
+#### Arrow (light)
+
+![](images/arrow.png)
+
+#### Arrow (dark)
+
+![](images/arrow-dark.png)
+
+#### Ayu (light)
+
+![](images/ayu.png)
+
+#### Ayu (dark)
+
+![](images/ayu-dark.png){.preview-image}
+
+## Copy Button
+
+Hover over the code block below and you will see a copy icon in the top-right corner:
+
+```{r eval=FALSE}
+library(dygraphs)
+dygraph(nhtemp, main = "New Haven Temperatures") %>% 
+  dyRangeSelector(dateWindow = c("1920-01-01", "1960-01-01"))
+```
+
+This behavior is enabled by default but you configure it using the `code-copy` option:
+
+``` {.yaml}
+format:
+  html:
+    code-copy: false
+```
+
+Valid values for `code-copy` include:
+
+|         |                                |
+|---------|--------------------------------|
+| `hover` | Show button on hover (default) |
+| `true`  | Always show code copy button   |
+| `false` | Never show code copy button    |
+
+## Code Linking
+
+The `code-link` option enables hyper-linking of functions within code blocks to their online documentation:
+
+``` {.yaml}
+format:
+  html:
+    code-link: true
+```
+
+Code linking is currently implemented only for the knitr engine (via the [downlit](https://downlit.r-lib.org) package).

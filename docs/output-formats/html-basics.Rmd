@@ -27,9 +27,44 @@ format:
 
 This example highlights a few of the options available for HTML output. This document covers these and other options in detail.
 
-``` {.include}
-_document-options-begin.md
+## Table of Contents
+
+Use the `toc` option to include an automatically generated table of contents in the output document. Use the `toc-depth` option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:
+
+``` {.markdown}
+toc: true
+toc-depth: 2
 ```
+
+Note that HTML documents implement support for floating the table of contents to the right of the page. See the [Floating TOC](../output-formats/html-bootstrap.md#floating-toc) documentation for additional details.
+
+You can customize the title used for the table of contents using the `toc-title` option:
+
+``` {.yaml}
+toc-title: Contents
+```
+
+If you want to exclude a heading from the table of contents, add both the `.unnumbered` and `.unlisted` classes to it:
+
+``` {.markdown}
+### More Options {.unnumbered .unlisted}
+```
+
+The HTML format by default uses a floating table of contents. You can revert to a standard table of contents that appears at the top using the following:
+
+```{.yaml}
+format:
+  html:
+    toc: true
+    toc-float: false
+```
+
+The floating table of contents can be used to navigate to sections of the document and also will automatically highlight the appropriate section as the user scrolls. The table of contents is responsive and will become hidden once the viewport becomes too narrow. See an example on the right of this page.
+
+```{.include}
+_document-options-section-numbering.md
+```
+
 
 ## CSS Styles
 
@@ -81,91 +116,110 @@ Available math rendering methods include:
 
 Note that this is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
 
-## Code Blocks
+## Tabsets
 
-### Folding
+You can use tabsets to present content that will vary in interest depending on the audience. For example, here we provide some example code in a variety of languages:
 
-Click the **Code** button to see the code that produced this plot.
+::: {.panel-tabset}
+## R
 
-```{r}
-#| fold: true
-
-library(ggplot2)
-dat <- data.frame(cond = rep(c("A", "B"), each=10),
-                  xvar = 1:20 + rnorm(20,sd=3),
-                  yvar = 1:20 + rnorm(20,sd=3))
-
-ggplot(dat, aes(x=xvar, y=yvar)) +
-    geom_point(shape=1) + 
-    geom_smooth() 
+``` {.r}
+fizz_buzz <- function(fbnums = 1:50) {
+  output <- dplyr::case_when(
+    fbnums %% 15 == 0 ~ "FizzBuzz",
+    fbnums %% 3 == 0 ~ "Fizz",
+    fbnums %% 5 == 0 ~ "Buzz",
+    TRUE ~ as.character(fbnums)
+  )
+  print(output)
+}
 ```
 
-Code folding can be set globally or on a per-chunk basis (chunks can be set to display folded or unfolded by default). For example:
+## Python
 
-``` {.yaml}
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
+``` {.python}
+def fizz_buzz(num):
+  if num % 15 == 0:
+    print("FizzBuzz")
+  elif num % 5 == 0:
+    print("Buzz")
+  elif num % 3 == 0:
+    print("Fizz")
+  else:
+    print(num)
 ```
 
-Note that we've also customized summary text that appears in place of the code (the default is just "Code").
+## Java
 
-Valid values for `code-fold` include:
-
-|         |                              |
-|---------|------------------------------|
-| `false` | No folding (default)         |
-| `true`  | Fold code (initially hidden) |
-| `show`  | Fold code (initially shown)  |
-
-Use the `fold` and `summary` chunk attributes to control this on a chunk-by-chunk basis:
-
-```` {.python}
-```{r}`r ''`
-#| fold: true
-#| summary: "Show the code"
-
+``` {.java}
+public class FizzBuzz
+{
+  public static void fizzBuzz(int num)
+  {
+    if (num % 15 == 0) {
+      System.out.println("FizzBuzz");
+    } else if (num % 5 == 0) {
+      System.out.println("Buzz");
+    } else if (num % 3 == 0) {
+      System.out.println("Fizz");
+    } else {
+      System.out.println(num);
+    }
+  }
+}
 ```
+
+## Julia
+
+``` {.julia}
+function FizzBuzz(num)
+  if num % 15 == 0
+    println("FizzBuzz")
+  elseif num % 5 == 0
+    println("Buzz")
+  elseif num % 3 == 0
+    println("Fizz")
+  else
+    println(num)
+  end
+end
+```
+:::
+
+Create a tabset via a markdown div with the class name panel-tabset (e.g. `::: {.panel-tabset}`). Each top-level heading within the div creates a new tab. For example, here is the markdown used to implement the first two tabs displayed above:
+
+```` {.markdown}
+::: {.panel-tabset}
+## R
+
+``` {.r}
+fizz_buzz <- function(fbnums = 1:50) {
+  output <- dplyr::case_when(
+    fbnums %% 15 == 0 ~ "FizzBuzz",
+    fbnums %% 3 == 0 ~ "Fizz",
+    fbnums %% 5 == 0 ~ "Buzz",
+    TRUE ~ as.character(fbnums)
+  )
+  print(output)
+}
+```
+
+## Python
+
+``` {.python}
+def fizz_buzz(num):
+  if num % 15 == 0:
+    print("FizzBuzz")
+  elif num % 5 == 0:
+    print("Buzz")
+  elif num % 3 == 0:
+    print("Fizz")
+  else:
+    print(num)
+```
+
+:::
 ````
-
-### Copy Button
-
-Hover over the code block below and you will see a copy icon in the top-right corner:
-
-```{r eval=FALSE}
-library(dygraphs)
-dygraph(nhtemp, main = "New Haven Temperatures") %>% 
-  dyRangeSelector(dateWindow = c("1920-01-01", "1960-01-01"))
-```
-
-This behavior is enabled by default but you configure it using the `code-copy` option:
-
-``` {.yaml}
-format:
-  html:
-    code-copy: false
-```
-
-Valid values for `code-copy` include:
-
-|         |                                |
-|---------|--------------------------------|
-| `hover` | Show button on hover (default) |
-| `true`  | Always show code copy button   |
-| `false` | Never show code copy button    |
-
-### Linking
-
-The `code-link` option enables hyper-linking of functions within code blocks to their online documentation:
-
-``` {.yaml}
-format:
-  html:
-    code-link: true
-```
-
-Code linking is currently implemented only for the knitr engine (via the [downlit](https://downlit.r-lib.org) package).
 
 ## Self Contained
 
@@ -219,6 +273,8 @@ format:
     hover-footnotes: true
 ```
 
+
+
 ## Commenting
 
 This page has commenting with [Hypothes.is](https://web.hypothes.is/) enabled via the following YAML option:
@@ -250,4 +306,8 @@ You can also specify the other options [documented here](https://utteranc.es/).
 _document-options-end.md
 ```
 
+
+
+
 ## References {.unlisted}
+

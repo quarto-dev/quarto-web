@@ -87,11 +87,15 @@ A "filter" is a program that modifies the AST, between the reader and the writer
 
 Pandoc's built-in citation processing is implemented as a filter, as are many of Quarto's extensions (e.g. cross-references, figure layout, etc.). Some other examples include:
 
++--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Filter                                                                                     | Description                                                                                                                          |
-|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
++============================================================================================+======================================================================================================================================+
 | [include-files](https://github.com/pandoc/lua-filters/tree/master/include-files)           | Filter to include other files in the document.                                                                                       |
++--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | [include-code-files](https://github.com/pandoc/lua-filters/tree/master/include-code-files) | Filter to include code from source files.                                                                                            |
++--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | [pagebreak](https://github.com/pandoc/lua-filters/tree/master/pagebreak)                   | Converts paragraps containing only the LaTeX `\newpage` or `\pagebreak` command into appropriate pagebreak markup for other formats. |
++--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Using Filters
 
@@ -127,3 +131,31 @@ We strongly recommend using Lua Filters, which have the following advantages:
 See the documentation on [Writing Lua Filters](https://pandoc.org/lua-filters.html) for additional details.
 
 If you want to write a JSON filter, see the documentation on [Writing JSON filters](https://pandoc.org/filters.html).
+
+## Includes
+
+The [include-files](https://github.com/pandoc/lua-filters/tree/master/include-files) filter is a convenient way to re-use markdown content within a project. You can make this filter available by [downloading](https://raw.githubusercontent.com/pandoc/lua-filters/master/include-files/include-files.lua) it from the site linked to above, copying it into your project directory, then adding it as a filter within `_quarto.yml` as follows:
+
+``` {.yaml}
+filters:
+  - include-files.lua
+```
+
+To include a file named `_common.md` you would use this markdown:
+
+```` {.markdown}
+```{.include}
+_common.md
+```
+````
+
+You can also include multiple files:
+
+```` {.markdown}
+```{.include}
+_common.md
+_download.md
+```
+````
+
+In the examples above the names of included files are prefaced with an underscore. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standalone files) by a `quarto render` of your project.
