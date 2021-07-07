@@ -169,12 +169,12 @@ Here's an example workflow of using virtual environments with freeze:
 
 2.  Create a sub-directory of documents (e.g. `research`), and initialize and use a virtual environment within it:
 
-     ``` {.default}
+    ``` {.default}
     research/
-       document1.qmd
-       document2.qmd
-       env/
-       requirements.txt
+      document1.qmd
+      document2.qmd
+      env/
+      requirements.txt
     ```
 
 3.  When working wihtin this sub-directory, activate the virtual environment before rendering it's documents. For example:
@@ -185,7 +185,6 @@ Here's an example workflow of using virtual environments with freeze:
     quarto render               # render all files in subdir
     quarto render document.qmd  # render a single-file
     ```
-    
 
 This sub-directory render won't use the cached `freeze` results but instead will re-run all of the computations using the directory-specific virtual environment. You can of course also include sub-directories within this directory and their documents will also be rendered using the parent virtual environment.
 
@@ -246,35 +245,35 @@ Here we'll provide a brief run through of creating a venv for a Quarto project. 
 
 To create a new Python 3 virtual environment in the directory `env`:
 
-+-----------+-----------------------+
-| Platform  | Command               |
-+===========+=======================+
-| Windows   | ``` {.bash}           |
-|           | py -m venv env        |
-|           | ```                   |
-+-----------+-----------------------+
-| Mac/Linux | ``` {.bash}           |
-|           | python3 -m venv env   |
-|           | ```                   |
-+-----------+-----------------------+
++-----------+---------------------+
+| Platform  | Command             |
++===========+=====================+
+| Windows   | ``` {.bash}         |
+|           | py -m venv env      |
+|           | ```                 |
++-----------+---------------------+
+| Mac/Linux | ``` {.bash}         |
+|           | python3 -m venv env |
+|           | ```                 |
++-----------+---------------------+
 
 To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:
 
-+------------------------+--------------------------------------------+
-| Shell                  | Command                                    |
-+========================+============================================+
-| Windows\               | ``` {.default}                             |
-| (Command)              | env\Scripts\activate.bat                   |
-|                        | ```                                        |
-+------------------------+--------------------------------------------+
-| Windows\               | ``` {.default}                             |
-| (PowerShell)           | env\Scripts\Activate.ps1                   |
-|                        | ```                                        |
-+------------------------+--------------------------------------------+
-| Mac/Linux              | ``` {.bash}                                |
-|                        | source env/bin/activate                    |
-|                        | ```                                        |
-+------------------------+--------------------------------------------+
++--------------+--------------------------+
+| Shell        | Command                  |
++==============+==========================+
+| Windows\     | ``` {.default}           |
+| (Command)    | env\Scripts\activate.bat |
+|              | ```                      |
++--------------+--------------------------+
+| Windows\     | ``` {.default}           |
+| (PowerShell) | env\Scripts\Activate.ps1 |
+|              | ```                      |
++--------------+--------------------------+
+| Mac/Linux    | ``` {.bash}              |
+|              | source env/bin/activate  |
+|              | ```                      |
++--------------+--------------------------+
 
 ::: {.callout-note}
 #### PowerShell Note
@@ -286,9 +285,21 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 :::
 
-Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code.
+Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. ip to install packages into your environment. For example:
 
-Assuming you installed all of the required packages you should now be able to `quarto render` documents within the directory.
++-----------+------------------------------------------+
+| Platform  | Command                                  |
++===========+==========================================+
+| Windows   | ``` {.bash}                              |
+|           | py -m pip install matplotlib pandas      |
+|           | ```                                      |
++-----------+------------------------------------------+
+| Mac/Linux | ``` {.bash}                              |
+|           | python3 -m pip install matplotlib pandas |
+|           | ```                                      |
++-----------+------------------------------------------+
+
+Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
 
 To deactivate an environment use the `deactivate` command:
 
@@ -300,17 +311,17 @@ deactivate
 
 To make your environment reproducible, you need to create a `requirements.txt` file that enumerates all of the packages in use. To do this use the `pip freeze` command:
 
-+--------------+-------------------------------------------------------+
-| Platform     | Command                                               |
-+==============+=======================================================+
-| Windows      | ``` {.bash}                                           |
-|              | py -m pip freeze > requirements.txt                   |
-|              | ```                                                   |
-+--------------+-------------------------------------------------------+
-| Mac/Linux    | ``` {.bash}                                           |
-|              | python3 -m pip freeze > requirements.txt              |
-|              | ```                                                   |
-+--------------+-------------------------------------------------------+
++-----------+------------------------------------------+
+| Platform  | Command                                  |
++===========+==========================================+
+| Windows   | ``` {.bash}                              |
+|           | py -m pip freeze > requirements.txt      |
+|           | ```                                      |
++-----------+------------------------------------------+
+| Mac/Linux | ``` {.bash}                              |
+|           | python3 -m pip freeze > requirements.txt |
+|           | ```                                      |
++-----------+------------------------------------------+
 
 You should generally check the `requirements.txt` file into version control.
 
@@ -322,17 +333,17 @@ First, follow the [instructions above](#using-venv) for creating and activating 
 
 Then, install packages from `requirements.txt`:
 
-+----------------+-----------------------------------------------------+
-| Platform       | Command                                             |
-+================+=====================================================+
-| Windows        | ``` {.bash}                                         |
-|                | py -m pip install -r requirements.txt               |
-|                | ```                                                 |
-+----------------+-----------------------------------------------------+
-| Mac/Linux      | ``` {.bash}                                         |
-|                | python3 -m pip install -r requirements.txt          |
-|                | ```                                                 |
-+----------------+-----------------------------------------------------+
++-----------+--------------------------------------------+
+| Platform  | Command                                    |
++===========+============================================+
+| Windows   | ``` {.bash}                                |
+|           | py -m pip install -r requirements.txt      |
+|           | ```                                        |
++-----------+--------------------------------------------+
+| Mac/Linux | ``` {.bash}                                |
+|           | python3 -m pip install -r requirements.txt |
+|           | ```                                        |
++-----------+--------------------------------------------+
 
 ### Using conda {.platform-table}
 
@@ -346,41 +357,41 @@ conda create --prefix env python
 
 If this is the first time you've used conda in your shell, you may need to execute one of the following commands before using other conda tools:
 
-+------------------------+---------------------------------------------+
-| Shell                  | Command                                     |
-+========================+=============================================+
-| Windows\               | ``` {.bash}                                 |
-| (Command)              | conda init cmd.exe                          |
-|                        | ```                                         |
-+------------------------+---------------------------------------------+
-| Windows\               | ``` {.bash}                                 |
-| (PowerShell)           | conda init powershell                       |
-|                        | ```                                         |
-+------------------------+---------------------------------------------+
-| Linux / Older Mac\     | ``` {.bash}                                 |
-| (Bash)                 | conda init bash                             |
-|                        | ```                                         |
-+------------------------+---------------------------------------------+
-| Newer Mac\             | ``` {.bash}                                 |
-| (Zsh)                  | conda init zsh                              |
-|                        | ```                                         |
-+------------------------+---------------------------------------------+
++--------------------+-----------------------+
+| Shell              | Command               |
++====================+=======================+
+| Windows\           | ``` {.bash}           |
+| (Command)          | conda init cmd.exe    |
+|                    | ```                   |
++--------------------+-----------------------+
+| Windows\           | ``` {.bash}           |
+| (PowerShell)       | conda init powershell |
+|                    | ```                   |
++--------------------+-----------------------+
+| Linux / Older Mac\ | ``` {.bash}           |
+| (Bash)             | conda init bash       |
+|                    | ```                   |
++--------------------+-----------------------+
+| Newer Mac\         | ``` {.bash}           |
+| (Zsh)              | conda init zsh        |
+|                    | ```                   |
++--------------------+-----------------------+
 
 You will likely need to exit and restart your terminal for `conda init` to be reflected in your session.
 
 To use the environment you need to activate it, which you do as follows:
 
-+----------------+-----------------------------------------------------+
-| Platform       | Command                                             |
-+================+=====================================================+
-| Windows        | ``` {.bash}                                         |
-|                | conda activate .\env                                |
-|                | ```                                                 |
-+----------------+-----------------------------------------------------+
-| Mac/Linux      | ``` {.bash}                                         |
-|                | conda activate ./env                                |
-|                | ```                                                 |
-+----------------+-----------------------------------------------------+
++-----------+----------------------+
+| Platform  | Command              |
++===========+======================+
+| Windows   | ``` {.bash}          |
+|           | conda activate .\env |
+|           | ```                  |
++-----------+----------------------+
+| Mac/Linux | ``` {.bash}          |
+|           | conda activate ./env |
+|           | ```                  |
++-----------+----------------------+
 
 Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Use `conda install` to install packages into your environment. For example:
 
@@ -463,30 +474,30 @@ renv::restore()
 
 To use Jupyter or JupyterLab within a Python virtual environment you just need to activate the environment and then launch the Jupyter front end. For example:
 
-+----------------------+------------------------------------------------+
-| Shell                | Command                                        |
-+======================+================================================+
-| Windows\             | ``` {.default}                                 |
-| (Command)            | env\Scripts\activate.bat                       |
-|                      | py -m jupyter lab                              |
-|                      | ```                                            |
-+----------------------+------------------------------------------------+
-| Windows (PowerShell) | ``` {.default}                                 |
-|                      | env\Scripts\Activate.ps1                       |
-|                      | py -m jupyter lab                              |
-|                      | ```                                            |
-+----------------------+------------------------------------------------+
-| Mac/Linux            | ``` {.bash}                                    |
-|                      | source env/bin/activate                        |
-|                      | python3 -m jupyter lab                         |
-|                      | ```                                            |
-+----------------------+------------------------------------------------+
++----------------------+--------------------------+
+| Shell                | Command                  |
++======================+==========================+
+| Windows\             | ``` {.default}           |
+| (Command)            | env\Scripts\activate.bat |
+|                      | py -m jupyter lab        |
+|                      | ```                      |
++----------------------+--------------------------+
+| Windows (PowerShell) | ``` {.default}           |
+|                      | env\Scripts\Activate.ps1 |
+|                      | py -m jupyter lab        |
+|                      | ```                      |
++----------------------+--------------------------+
+| Mac/Linux            | ``` {.bash}              |
+|                      | source env/bin/activate  |
+|                      | python3 -m jupyter lab   |
+|                      | ```                      |
++----------------------+--------------------------+
 
 All of the Python packages installed within the `env` will be available in your Jupyter notebook session. The workflow is similar if you are using conda environments.
 
 ### RStudio {#rstudio}
 
-If you are using RStudio with Quarto, it is _strongly_ recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly. 
+If you are using RStudio with Quarto, it is *strongly* recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly.
 
 For virtual environments in particular, you should make sure you are using version 1.5.122 or higher. You can download the daily build at <https://dailies.rstudio.com>.
 
