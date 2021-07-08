@@ -394,6 +394,11 @@
 <li><a href="#basic-options" class="nav-link" data-scroll-target="#basic-options">Basic Options</a></li>
 <li><a href="#theme-options" class="nav-link" data-scroll-target="#theme-options">Theme Options</a></li>
 <li><a href="#custom-themes" class="nav-link" data-scroll-target="#custom-themes">Custom Themes</a></li>
+<li><a href="#dark-and-light-themes" class="nav-link" data-scroll-target="#dark-and-light-themes">Dark and Light Themes</a>
+<ul class="collapse">
+<li><a href="#customizing-themes" class="nav-link" data-scroll-target="#customizing-themes">Customizing Themes</a></li>
+<li><a href="#syntax-highlighting" class="nav-link" data-scroll-target="#syntax-highlighting">Syntax Highlighting</a></li>
+</ul></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/html-themes.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 px-lg-4">
@@ -506,7 +511,48 @@
 <p><a href="https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/bootstrap/themes" class="uri">https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/bootstrap/themes</a></p>
 <p>You can read more about the custom theming design here:</p>
 <p><a href="https://github.com/quarto-dev/quarto-cli/blob/main/design/quarto-themes.md" class="uri">https://github.com/quarto-dev/quarto-cli/blob/main/design/quarto-themes.md</a></p>
+</section>
+<section id="dark-and-light-themes" class="level2">
+<h2 class="anchored" data-anchor-id="dark-and-light-themes">Dark and Light Themes</h2>
+<p>In addition to providing a single theme for your html output, you may also provide a light and dark theme. For example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">light</span><span class="kw">:</span><span class="at"> flatly</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dark</span><span class="kw">:</span><span class="at"> darkly</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Setting the above themes in your <code>_quarto.yml</code> results in both a dark and light version of your output being available. For example:</p>
+<hr>
+<section id="flatly-themed-output" class="level5">
+<h5 class="anchored" data-anchor-id="flatly-themed-output">Flatly Themed Output</h5>
+<p><img src="images/html-light.png" class="img-fluid"></p>
+<hr>
+</section>
+<section id="darkly-themed-output" class="level5">
+<h5 class="anchored" data-anchor-id="darkly-themed-output">Darkly Themed Output</h5>
+<p><img src="images/html-dark.png" class="img-fluid"></p>
+<hr>
+<p>When providing both a dark and light mode for your html output, Quarto will automatically create a toggle to allow your reader to select the desired dark or light appearance. The toggle will automatically appear in the top right corner of your html output. When possible, the toggle will use browser local storage to maintain the user’s preference across sessions.</p>
+<p>The first appearance (light or dark) elements in the theme to determine the default appearance for your html output. For example, since the <code>light</code> option appears first in the above example, a reader will see the light appearance by default.</p>
+</section>
+<section id="customizing-themes" class="level3">
+<h3 class="anchored" data-anchor-id="customizing-themes">Customizing Themes</h3>
+<p>As when providing a single theme, you may provide a custom theme for dark and light mode, or a list of <code>scss</code> files to customize the light and dark appearance. This website, for example uses the following to use a light <code>cosmo</code> theme and then customizes the <code>cosmo</code> theme with additional Sass variables when in dark mode:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">theme</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">light</span><span class="kw">:</span><span class="at"> cosmo</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">dark</span><span class="kw">:</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> theme-dark.scss</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> cosmo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The contents of <code>theme-dark.scss</code> which is customizing the cosmo appearance is:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode css code-with-copy"><code class="sourceCode css"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">/*-- scss:defaults --*/</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>$body-bg<span class="in">: black</span> !default;</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>$body-color<span class="in">: white</span> !default;</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>$link-color<span class="in">: #75AADB !default</span>;</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>$sidebar-bg<span class="in">: #303030 !default</span>;</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>$code-background-alpha<span class="in">: -</span><span class="fu">.80</span> !default;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="syntax-highlighting" class="level3">
+<h3 class="anchored" data-anchor-id="syntax-highlighting">Syntax Highlighting</h3>
+<p>Quarto will automatically select the appropriate light or dark version of the text highlighter that you have specified when possible. For more information, see <a href="html-code.html#highlighting">Code Highlighting</a>.</p>
 <!-- -->
+</section>
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">

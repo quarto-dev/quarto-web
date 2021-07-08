@@ -3,7 +3,6 @@ title: "Website Tools"
 description: "Learn more about the additional tools that you can use to customize your Quarto website."
 ---
 
-
 ## Social Metadata
 
 You can enhance your website and the content that you publish to it by including additional types of metadata, including:
@@ -137,7 +136,6 @@ You can specify a preview image for your article in several different ways:
 
     If you rely in image names to provide a preview image, you must also provide a `site-url` in your site's metadata.
 
-
 ## Google Analytics
 
 You can add [Google Analytics](https://analytics.google.com/) to your website by adding adding a `google-analytics` key to your `_quarto.yml` file. In its simplest form, you can just pass your Google Analytics tracking Id (e.g. `UA-xxxxxxx`) or Google Tag measurement Id (e.g. `G-xxxxxxx`) like:
@@ -270,3 +268,25 @@ An example script that is used for user tracking would look like:
 
 </script>
 ```
+
+## Dark and Light Themes
+
+Quarto websites can support both a light and dark mode. For example, you may used the `Flatly` and `Darkly` themes (which are designed to be used in tandem as dark and light appearances) as:
+
+``` {.yaml}
+theme:
+  light: flatly
+  dark: darkly
+```
+
+For more about selecting the dark and light themes for your website, see [Dark and Light Themes](../output-formats/html-themes.html\#dark-and-light-themes).
+
+| Light                      | Dark                      |
+|----------------------------|---------------------------|
+| ![](images/site-light.png) | ![](images/site-dark.png) |
+
+When enabled, a toggle that allows your reader to control the appearance of the website. The toggle will automatically be added to the website navigation as follows:
+
+1.  If a navbar has been specified, the toggle will appear in the top right corner of the nav bar.
+2.  If there is no navbar present, but a sidebar has been specified, the toggle will appear in the same location that the sidebar tools appears (adjacent to the title or logo in the sidebar).
+3.  If there is no navbar or sidebar present, the toggle will appear in the top right corner of the page.

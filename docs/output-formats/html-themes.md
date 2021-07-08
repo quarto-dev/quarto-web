@@ -104,3 +104,60 @@ For example, here are the theme files for the 25 built-in Bootswatch themes:
 You can read more about the custom theming design here:
 
 <https://github.com/quarto-dev/quarto-cli/blob/main/design/quarto-themes.md>
+
+## Dark and Light Themes
+
+In addition to providing a single theme for your html output, you may also provide a light and dark theme. For example:
+
+``` {.yaml}
+theme:
+  light: flatly
+  dark: darkly
+```
+
+Setting the above themes in your `_quarto.yml` results in both a dark and light version of your output being available. For example:
+
+------------------------------------------------------------------------
+
+##### Flatly Themed Output
+
+![](images/html-light.png)
+
+------------------------------------------------------------------------
+
+##### Darkly Themed Output
+
+![](images/html-dark.png)
+
+------------------------------------------------------------------------
+
+When providing both a dark and light mode for your html output, Quarto will automatically create a toggle to allow your reader to select the desired dark or light appearance. The toggle will automatically appear in the top right corner of your html output. When possible, the toggle will use browser local storage to maintain the user's preference across sessions.
+
+The first appearance (light or dark) elements in the theme to determine the default appearance for your html output. For example, since the `light` option appears first in the above example, a reader will see the light appearance by default.
+
+### Customizing Themes
+
+As when providing a single theme, you may provide a custom theme for dark and light mode, or a list of `scss` files to customize the light and dark appearance. This website, for example uses the following to use a light `cosmo` theme and then customizes the `cosmo` theme with additional Sass variables when in dark mode:
+
+``` {.yaml}
+theme:
+  light: cosmo
+  dark:
+    - theme-dark.scss
+    - cosmo
+```
+
+The contents of `theme-dark.scss` which is customizing the cosmo appearance is:
+
+``` {.css}
+/*-- scss:defaults --*/
+$body-bg: black !default;
+$body-color: white !default;
+$link-color: #75AADB !default;
+$sidebar-bg: #303030 !default;
+$code-background-alpha: -.80 !default;
+```
+
+### Syntax Highlighting
+
+Quarto will automatically select the appropriate light or dark version of the text highlighter that you have specified when possible. For more information, see [Code Highlighting](html-code.html\#highlighting).
