@@ -271,7 +271,7 @@ An example script that is used for user tracking would look like:
 
 ## Dark and Light Themes
 
-Quarto websites can support both a light and dark mode. For example, you may used the `Flatly` and `Darkly` themes (which are designed to be used in tandem as dark and light appearances) as:
+Quarto websites can support both a light and dark mode. For example, you may used the `flatly` and `darkly` themes (which are designed to be used in tandem as dark and light appearances) as:
 
 ``` {.yaml}
 theme:
