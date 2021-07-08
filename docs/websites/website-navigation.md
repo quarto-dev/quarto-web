@@ -226,6 +226,18 @@ site:
     
 ```
 
+## Hiding Navigation
+
+For specific pages, useful particularly when you'd like a completely custom layout, you can hide the navigation (either the top navigation or the side navigation). In these cases when you'd like to hide navigation, add the following to that page's front matter:
+
+``` {.yaml}
+# Hides the side bar on this page
+sidebar: false
+
+# Hides the top navigation on this page
+navbar: false
+```
+
 ## Page Navigation
 
 If you have a website with a number of pages in a section or subsection, it is often convenient to offer the user the ability to navigate to the next page (or previous page) at the bottom of the page that they've just finished reading. You can enable this using:
@@ -317,7 +329,6 @@ aliases:
   - overview.html#learning-more
 ---
 ```
-
 
 ::: {.callout-tip}
 Depending on where you are deploying your site there may be more powerful tools available for defining redirects based on patterns. For example, Netlify [`_redirects`](https://docs.netlify.com/routing/redirects/) files or [`.htaccess`](https://www.danielmorell.com/guides/htaccess-seo/redirects/introduction-to-redirects) files. Search your web host's documentation for "redirects" to see if any of these tools are available.
