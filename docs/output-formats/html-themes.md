@@ -151,13 +151,13 @@ The contents of `theme-dark.scss` which is customizing the cosmo appearance is:
 
 ``` {.css}
 /*-- scss:defaults --*/
-$body-bg: black !default;
-$body-color: white !default;
-$link-color: #75AADB !default;
-$sidebar-bg: #303030 !default;
-$code-background-alpha: -.80 !default;
+$body-bg: black;
+$body-color: white;
+$link-color: #75AADB;
+$sidebar-bg: #303030;
+$code-background-alpha: -.80;
 ```
 
 ### Syntax Highlighting
 
-Quarto will automatically select the appropriate light or dark version of the text highlighter that you have specified when possible. For more information, see [Code Highlighting](html-code.html\#highlighting).
+Quarto will automatically select the appropriate light or dark version of the text highlighter that you have specified when possible. For more information, see [Code Highlighting](html-code.html#highlighting).
