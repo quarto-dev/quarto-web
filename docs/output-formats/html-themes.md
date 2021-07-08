@@ -142,9 +142,7 @@ As when providing a single theme, you may provide a custom theme for dark and li
 ``` {.yaml}
 theme:
   light: cosmo
-  dark:
-    - theme-dark.scss
-    - cosmo
+  dark: [cosmo, theme-dark.scss]
 ```
 
 The contents of `theme-dark.scss` which is customizing the cosmo appearance is:
