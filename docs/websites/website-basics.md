@@ -103,15 +103,17 @@ If this auto-detection fails for any reason, or if you want to publish a file no
 project:
   type: site
   resources: 
-    - *.xlsx
+    - "*.xlsx"
 ```
+
+Note that the `*.xslx` value is quoted: this is because YAML requires that strings that begin with non-alphanumeric characters be quoted.
 
 You can also add a `resources` metadata value to individual files. For example:
 
 ``` {.yaml}
 title: "My Page"
 resources:
-  - sheet.xlsx
+  - "sheet.xlsx"
 ```
 
 Images are the most commonly used type of resource file. If you have global images (e.g. a logo) that you want to reference from various pages within your site, you can use an site-absolute path to refer to the images, and it will be automatically converted to a relative path during publishing. For example:
