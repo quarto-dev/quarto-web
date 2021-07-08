@@ -308,7 +308,16 @@ aliases:
 ---
 ```
 
-This can also be useful for situations where you re-organize content on your site into a different directory hierarchy.
+This can also be useful for situations where you re-organize content on your site into a different directory hierarchy or break one large article into smaller ones. For this case, you may want to add the URL hash of the section that you have broken into a new page. For example:
+
+``` {.yaml}
+---
+title: "Learning More"
+aliases:
+  - overview.html#learning-more
+---
+```
+
 
 ::: {.callout-tip}
 Depending on where you are deploying your site there may be more powerful tools available for defining redirects based on patterns. For example, Netlify [`_redirects`](https://docs.netlify.com/routing/redirects/) files or [`.htaccess`](https://www.danielmorell.com/guides/htaccess-seo/redirects/introduction-to-redirects) files. Search your web host's documentation for "redirects" to see if any of these tools are available.

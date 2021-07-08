@@ -62,17 +62,17 @@ If you are using Netlify Git integration, be sure to set the publish directory t
 
 [RStudio Connect](https://www.rstudio.com/products/connect/) is a server product from RStudio for secure sharing of websites, applications, reports, and plots.
 
-You can deploy a Quarto website to RStudio Connect from the command line using the `quarto_publish()` function from the R quarto package. For example:
+You can deploy a Quarto website to RStudio Connect from the command line using the `quarto_publish_site()` function from the R quarto package. For example:
 
 ``` {.r}
 library(quarto)
-quarto_publish(server = "https://rsc.example.com")
+quarto_publish_site(server = "https://rsc.example.com")
 ```
 
 Note that once you've published your site for the first time you can omit the `server` argument:
 
 ``` {.r}
-quarto_publish()
+quarto_publish_site()
 ```
 
 Unlike the other website publishing options described here, [RStudio Connect](https://www.rstudio.com/products/connect/) is a server that you run inside an organization, so is suitable for publishing content that you only want visible within your organization's network as opposed to visible to the entire internet.

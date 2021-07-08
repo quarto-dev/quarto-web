@@ -108,32 +108,6 @@
   gtag('js', new Date());
   gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
   </script>
-  <style type="text/css">
-    details {
-      margin-bottom: 1em;
-    } 
-    details[show] {
-      margin-bottom: 0;
-    }
-
-    .quarto-unresolved-ref {
-      font-weight: 600;
-    }
-
-    .quarto-cover-image {
-      max-width: 35%;
-      float: right;
-      margin-left: 30px;
-    }
-
-    .cell-output-display {
-      overflow-x: auto;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
   <link rel="stylesheet" href="../../styles.css">
 <meta name="og:title" content="Quarto - Quarto Projects">
 <meta name="og:description" content="Quarto projects are directories that provide additional group functionality on top of individual documents within the project.">
@@ -294,10 +268,13 @@
   <a href="../../docs/output-formats/html-basics.html" class="">HTML Basics</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/output-formats/html-bootstrap.html" class="">HTML w/ Bootstrap</a>
+  <a href="../../docs/output-formats/html-code.html" class="">HTML Code Blocks</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/output-formats/html-themes.html" class="">HTML Themes</a>
+  <a href="../../docs/output-formats/html-themes.html" class="">HTML Theming</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../docs/output-formats/html-publishing.html" class="">Publishing HTML</a>
 </li>
         </ul>
       </div>
@@ -367,7 +344,7 @@
       <div class="collapse  show" id="websites-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="../../docs/websites/website-basics.html" class="">Creating a Website</a>
+  <a href="../../docs/websites/index.html" class="">Creating a Website</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/websites/website-navigation.html" class="">Website Navigation</a>
@@ -393,7 +370,7 @@
       <div class="collapse  show" id="books-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="../../docs/books/book-basics.html" class="">Creating a Book</a>
+  <a href="../../docs/books/index.html" class="">Creating a Book</a>
 </li>
           <li class="sidebar-item">
   <a href="../../docs/books/book-authoring.html" class="">Book Authoring</a>
@@ -447,7 +424,7 @@
 <li><p>The ability to redirect output artifacts to another directory.</p></li>
 <li><p>The ability to freeze rendered output (i.e.&nbsp;don’t re-execute documents unless they have changed).</p></li>
 </ul>
-<p>In addition, projects can have special “types” that introduce additional behavior (e.g.&nbsp;<a href="../../docs/websites/website-basics.html">websites</a> or <a href="../../docs/books/book-basics.html">books</a>).</p>
+<p>In addition, projects can have special “types” that introduce additional behavior (e.g.&nbsp;<a href="../../docs/websites/index.html">websites</a> or <a href="../../docs/books/index.html">books</a>).</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -607,7 +584,7 @@ Note
 <table class="table">
 <colgroup>
 <col style="width: 16%">
-<col style="width: 33%">
+<col style="width: 30%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -629,8 +606,8 @@ Note
 <p>To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:</p>
 <table class="table">
 <colgroup>
-<col style="width: 34%">
-<col style="width: 62%">
+<col style="width: 20%">
+<col style="width: 37%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -669,17 +646,11 @@ PowerShell Note
 <div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Set-ExecutionPolicy</span> <span class="at">-ExecutionPolicy</span> Unrestricted <span class="at">-Scope</span> CurrentUser</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code.</p>
-<p>Assuming you installed all of the required packages you should now be able to <code>quarto render</code> documents within the directory.</p>
-<p>To deactivate an environment use the <code>deactivate</code> command:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<section id="saving-environments" class="level4 platform-table">
-<h4 class="platform-table anchored" data-anchor-id="saving-environments">Saving Environments</h4>
-<p>To make your environment reproducible, you need to create a <code>requirements.txt</code> file that enumerates all of the packages in use. To do this use the <code>pip freeze</code> command:</p>
+<p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code. ip to install packages into your environment. For example:</p>
 <table class="table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 77%">
+<col style="width: 16%">
+<col style="width: 59%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -690,11 +661,39 @@ PowerShell Note
 <tbody>
 <tr class="odd">
 <td>Windows</td>
-<td><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip install matplotlib pandas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="even">
 <td>Mac/Linux</td>
-<td><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install matplotlib pandas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>Assuming you installed all of the required packages (likely more than just <code>pandas</code> and <code>matplotlib</code>) you should now be able to <code>quarto render</code> documents within the directory.</p>
+<p>To deactivate an environment use the <code>deactivate</code> command:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">deactivate</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="saving-environments" class="level4 platform-table">
+<h4 class="platform-table anchored" data-anchor-id="saving-environments">Saving Environments</h4>
+<p>To make your environment reproducible, you need to create a <code>requirements.txt</code> file that enumerates all of the packages in use. To do this use the <code>pip freeze</code> command:</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Windows</td>
+<td><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Mac/Linux</td>
+<td><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip freeze <span class="op">&gt;</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 </tbody>
 </table>
@@ -707,8 +706,8 @@ PowerShell Note
 <p>Then, install packages from <code>requirements.txt</code>:</p>
 <table class="table">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 75%">
+<col style="width: 16%">
+<col style="width: 62%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -719,11 +718,11 @@ PowerShell Note
 <tbody>
 <tr class="odd">
 <td>Windows</td>
-<td><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">py</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="even">
 <td>Mac/Linux</td>
-<td><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 </tbody>
 </table>
@@ -733,12 +732,12 @@ PowerShell Note
 <h3 class="platform-table anchored" data-anchor-id="using-conda">Using conda</h3>
 <p>This section will cover the basics of creating and using conda environments with Quarto projects. See this article on <a href="hhttps://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab">managing project specific environments</a> with Conda for additional details.</p>
 <p>To create a new environment in the directory <code>env</code>:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> env python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> env python</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If this is the first time you’ve used conda in your shell, you may need to execute one of the following commands before using other conda tools:</p>
 <table class="table">
 <colgroup>
-<col style="width: 34%">
-<col style="width: 63%">
+<col style="width: 29%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -750,22 +749,22 @@ PowerShell Note
 <tr class="odd">
 <td>Windows<br>
 (Command)</td>
-<td><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init cmd.exe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init cmd.exe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="even">
 <td>Windows<br>
 (PowerShell)</td>
-<td><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init powershell</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="odd">
 <td>Linux / Older Mac<br>
 (Bash)</td>
-<td><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init bash</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init bash</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="even">
 <td>Newer Mac<br>
 (Zsh)</td>
-<td><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init zsh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> init zsh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 </tbody>
 </table>
@@ -773,8 +772,8 @@ PowerShell Note
 <p>To use the environment you need to activate it, which you do as follows:</p>
 <table class="table">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 75%">
+<col style="width: 16%">
+<col style="width: 31%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -785,54 +784,54 @@ PowerShell Note
 <tbody>
 <tr class="odd">
 <td>Windows</td>
-<td><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate .<span class="dt">\e</span>nv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate .<span class="dt">\e</span>nv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="even">
 <td>Mac/Linux</td>
-<td><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate ./env</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate ./env</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 </tbody>
 </table>
 <p>Once you’ve activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass <code>jupyter</code> / <code>jupyterlab</code> plus whatever other packages are used in your Python code. Use <code>conda install</code> to install packages into your environment. For example:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install jupyterlab</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pandas matplotlib </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install jupyterlab</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pandas matplotlib </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Assuming you installed all of the required packages (likely more than just <code>pandas</code> and <code>matplotlib</code>) you should now be able to <code>quarto render</code> documents within the directory.</p>
 <p>Use <code>conda deactivate</code> to exit an activated environment:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> deactivate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> deactivate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="saving-environments-1" class="level4">
 <h4 class="anchored" data-anchor-id="saving-environments-1">Saving Environments</h4>
 <p>To make your environment reproducible, you need to create a <code>environment.yml</code> file that enumerates all of the packages in use. Do this using the <code>conda env export</code> command:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env export <span class="op">&gt;</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env export <span class="op">&gt;</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You should generally check the <code>environment.yml</code> file into version control.</p>
 </section>
 <section id="restoring-environments-1" class="level4">
 <h4 class="anchored" data-anchor-id="restoring-environments-1">Restoring Environments</h4>
 <p>To reproduce the environment on another machine you just pass the <code>environment.yml</code> file as an argument to <code>conda create</code>:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> env <span class="at">-f</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">--prefix</span> env <span class="at">-f</span> environment.yml</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="using-renv" class="level3">
 <h3 class="anchored" data-anchor-id="using-renv">Using renv</h3>
 <p>The <a href="https://rstudio.github.io/renv/articles/renv.html">renv</a> package provides functionality similar to the venv and conda, but for R packages. To create a new renv environment, install the <strong>renv</strong> package from GitHub then call the <code>renv::init()</code> function:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install</span>(<span class="st">"rstudio/renv"</span>)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install</span>(<span class="st">"rstudio/renv"</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>As part of initialization, your <code>.Rprofile</code> file is modified to ensure that the renv is activated automatically at the start of each R session.</p>
 <p>If you plan on using <strong>both</strong> R and Python in your project, you can have renv automatically create and manage a Python virtual environment as follows:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">use_python</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">use_python</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To install R packages use the standard R <code>install.packages</code> function. You can also install GitHub packages using the <code>renv::install</code> function. For example:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)      <span class="co"># install from CRAN</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"tidyverse/dplyr"</span>) <span class="co"># install from GitHub</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)      <span class="co"># install from CRAN</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">install</span>(<span class="st">"tidyverse/dplyr"</span>) <span class="co"># install from GitHub</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To install Python packages just use <code>pip</code> as described above from the built-in RStudio terminal.</p>
 <section id="saving-environments-2" class="level4">
 <h4 class="anchored" data-anchor-id="saving-environments-2">Saving Environments</h4>
 <p>To record the current versions of all R (and optionally Python) packages, use the <code>renv::snapshot()</code> function:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This will record an <code>renv.lock</code> file for R packages and a <code>requirements.txt</code> file for Python packages). These files should be checked into version control.</p>
 </section>
 <section id="restoring-environments-2" class="level4">
 <h4 class="anchored" data-anchor-id="restoring-environments-2">Restoring Environments</h4>
 <p>To reproduce the environment on another machine use the <code>renv::restore()</code> function:</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
 <section id="jupyterlab" class="level3 platform-table">
@@ -841,7 +840,7 @@ PowerShell Note
 <table class="table">
 <colgroup>
 <col style="width: 31%">
-<col style="width: 68%">
+<col style="width: 37%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -853,18 +852,18 @@ PowerShell Note
 <tr class="odd">
 <td>Windows<br>
 (Command)</td>
-<td><div class="sourceCode" id="cb47"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\activate.bat</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>py -m jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb49"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\activate.bat</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>py -m jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="even">
 <td>Windows (PowerShell)</td>
-<td><div class="sourceCode" id="cb48"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\Activate.ps1</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>py -m jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb50"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>env\Scripts\Activate.ps1</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>py -m jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 <tr class="odd">
 <td>Mac/Linux</td>
-<td><div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> env/bin/activate</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+<td><div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> env/bin/activate</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
 </tr>
 </tbody>
 </table>
@@ -890,8 +889,8 @@ PowerShell Note
 <h2 class="anchored" data-anchor-id="project-types">Project Types</h2>
 <p>There are a couple of special project types available:</p>
 <ul>
-<li><p><a href="../../docs/websites/website-basics.html">Websites</a> includes additional navigational elements (e.g.&nbsp;navbar/sidebar/etc.) and copy all output files to a deployment directory (e.g.&nbsp;<code>_site</code>) by default.</p></li>
-<li><p><a href="../../docs/books/book-basics.html">Books</a> support combining all of the included documents into a single manuscript (e.g.&nbsp;a PDF or EPUB) as well as creating a book website from the same source documents.</p></li>
+<li><p><a href="../../docs/websites/index.html">Websites</a> includes additional navigational elements (e.g.&nbsp;navbar/sidebar/etc.) and copy all output files to a deployment directory (e.g.&nbsp;<code>_site</code>) by default.</p></li>
+<li><p><a href="../../docs/books/index.html">Books</a> support combining all of the included documents into a single manuscript (e.g.&nbsp;a PDF or EPUB) as well as creating a book website from the same source documents.</p></li>
 </ul>
 <!-- -->
 </section>

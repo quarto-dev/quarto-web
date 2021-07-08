@@ -1,6 +1,6 @@
 ---
-title: "HTML Themes"
-description: "Quarto includes 25 themes from the Bootswatch project (for example, the website uses the cosmo theme). You can disable this theming or use SASS to create your own themes."
+title: "HTML Theming"
+description: "Quarto includes 25 themes from the Bootswatch project (for example, this website uses the Cosmo theme). You can use Sass to customize these themes or create your own themes."
 ---
 
 ## Overview
@@ -14,7 +14,7 @@ theme: pandoc  # pandoc default html treatment
 theme: none    # no css added to document
 ```
 
-Note that all of the features described in [HTML Basics](html-basics.Rmd) (e.g. code folding, citation hover, commenting, etc.) are still available with `theme: pandoc` or `theme: none`. However the features described in [HTML Bootstrap](html-bootstrap.Rmd) (e.g. floating toc, callouts, tabs) are only available for documents with Bootstrap.
+Note that many features of Quarto HTML documents are only available when using a Bootstrap theme. Code folding, citation hover, and commenting are still available with `theme: pandoc` or `theme: none`, however most other features (e.g. floating toc, callouts, tabs) are only available for documents with Bootstrap.
 
 Quarto includes 25 themes from the [Bootswatch](https://bootswatch.com/) project (for example, the website uses the [cosmo](https://bootswatch.com/cosmo/) theme). Below we describe how to use SASS to create your own themes.
 

@@ -1,7 +1,9 @@
 ---
 title: "Creating a Book"
 description: "Quarto can help you create a book that combines multiple documents into a single manuscript in a variety of formats."
-format: html
+format:
+  html:
+    output-file: index.html
 ---
 
 ## Overview
