@@ -391,8 +391,8 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#github-pages" class="nav-link active" data-scroll-target="#github-pages">GitHub Pages</a></li>
+<li><a href="#rpubs-and-rsc" class="nav-link" data-scroll-target="#rpubs-and-rsc">RPubs &amp; RStudio Connect</a></li>
 <li><a href="#standalone-html" class="nav-link" data-scroll-target="#standalone-html">Standalone HTML</a></li>
-<li><a href="#rstudio-connect" class="nav-link" data-scroll-target="#rstudio-connect">RStudio Connect</a></li>
 <li><a href="#other-services" class="nav-link" data-scroll-target="#other-services">Other Services</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/html-publishing.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
@@ -405,17 +405,17 @@
 <p>This article covers the various ways you can publish Quarto HTML documents, including:</p>
 <ul>
 <li><p>Using <a href="#github-pages">GitHub Pages</a> to host your article on GitHub</p></li>
+<li><p>Publishing to <a href="#rpubs-and-rsc">RPubs</a> and <a href="#rpubs-and-rsc">RStudio Connect</a>.</p></li>
 <li><p>Sharing a standalone HTML file using E-mail, Dropbox, etc.</p></li>
-<li><p>Publishing to <a href="#rstudio-connect">RStudio Connect</a>.</p></li>
 </ul>
 <p>Note that it’s also possible to publish collections of Quarto documents as a website (see the article on <a href="../../docs/websites/publishing-websites.html">publishing websites</a> for additional details).</p>
 <section id="github-pages" class="level2">
 <h2 class="anchored" data-anchor-id="github-pages">GitHub Pages</h2>
 <p><a href="https://pages.github.com/">GitHub Pages</a> is a service that lets you publish a website from any GitHub repository. While the service supports publishing full websites, it’s also a perfectly suitable place to publish a single Quarto document.</p>
-<p>Here are the steps required to publish a Distill article to GitHub Pages:</p>
+<p>Here are the steps required to publish a Quarto article to GitHub Pages:</p>
 <ol type="1">
 <li><p>Create a new Git repository that will be used to host your article.</p></li>
-<li><p>Configure your repository to publish the contents of the <code>main</code> or <code>master</code> branch (you can do this from the <em>Pages</em> section of your repository settings:</p>
+<li><p>Configure your repository to publish the contents of the <code>main</code> branch (you can do this from the <em>Pages</em> section of your repository settings:</p>
 <p><img src="images/gh-pages-article.png" class="border img-fluid"></p>
 <p>Note that the <strong>Source</strong> is set to the root directory of the <code>main</code> branch.</p></li>
 <li><p>Create a Quarto document named <code>index.qmd</code> within the repository (using this name will allow your article to be served as the default web page for the repository).</p></li>
@@ -424,23 +424,27 @@
 </ol>
 <p>GitHub Pages are served on the <code>github.io</code> domain (with your GitHub account as a sub-domain). For example, if your GitHub username is <code>jsmith</code> and your repository is named <code>quarto-article</code> then the article will be available at <a href="https://jsmith.github.io/quarto-article" class="uri">https://jsmith.github.io/quarto-article</a>.</p>
 </section>
+<section id="rpubs-and-rsc" class="level2">
+<h2 class="anchored" data-anchor-id="rpubs-and-rsc">RPubs &amp; RStudio Connect</h2>
+<p><a href="https://rpubs.com/">RPubs</a> is a free service from RStudio for sharing documents on the web. <a href="https://www.rstudio.com/products/connect/">RStudio Connect</a> is a server product from RStudio for secure sharing of applications, reports, and plots.</p>
+<p>Note that all documents published to RPubs are publicly visible, so you should only publish content you want to share publicly. Unlike RPubs, RStudio Connect is a server that you run inside an organization, so is suitable for publishing content that you only want visible within your organization’s network.</p>
+<p>You can publish Quarto documents using the <code>quarto_publish_doc()</code> function from the R quarto package. For example, here we publish a document to both RPubs and an RStudio Connect server:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_publish_doc</span>(<span class="st">"mydoc.qmd"</span>, <span class="at">server =</span> <span class="st">"rpubs.com"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_publish_doc</span>(<span class="st">"mydoc.qmd"</span>, <span class="at">server =</span> <span class="st">"rsc.example.com"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that once you’ve published a document to a particular server you can omit the <code>server</code> argument when updating the document:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_publish_doc</span>(<span class="st">"mydoc.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also publish to RPubs and RStudio Connect directly from within RStudio. To do this, just click the Publish button <kbd><img src="images/publish-button.png" class="img-fluid" width="21"></kbd> on the editor toolbar or preview window:</p>
+<p><img src="images/rstudio-publish.png" class="img-fluid"></p>
+<p>You should be running the <a href="https://dailies.rstudio.com">daily build</a> of RStudio (version 1.5.184 or higher) if you want to publish Quarto documents. The daily build has many other Quarto related enhancements so is highly recommended even if you aren’t using the publishing features.</p>
+</section>
 <section id="standalone-html" class="level2">
 <h2 class="anchored" data-anchor-id="standalone-html">Standalone HTML</h2>
 <p>You can optionally render Quarto documents into <code>self-contained</code> HTML, whereby all of the content required to render the article (images generated by plots, required CSS and JavaScript, etc.) are bundled into a single HTML file. Use the <code>self-contained</code> option to do this:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="fu">html</span><span class="kw">:</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">     </span><span class="fu">self-contained</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">     </span><span class="fu">self-contained</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then, you can share this HTML file using the same means you use to share other document types like spreadsheets, presentations, and PDFs (e.g by uploading it to Dropbox or any other file sharing service).</p>
-<p>This type of sharing is suitable for private communications to small groups. If you want to make your article available more broadly the following sections cover various ways to do that.</p>
-</section>
-<section id="rstudio-connect" class="level2">
-<h2 class="anchored" data-anchor-id="rstudio-connect">RStudio Connect</h2>
-<p><a href="https://www.rstudio.com/products/connect/">RStudio Connect</a> is a server product from RStudio for secure sharing of websites, applications, reports, and plots.</p>
-<p>You can deploy a Quarto HTML document to RStudio Connect from the command line using the <code>quarto_publish_doc()</code> function from the R quarto package. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_publish_doc</span>(<span class="st">"document.qmd"</span>, <span class="at">server =</span> <span class="st">"https://rsc.example.com"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that once you’ve published your site for the first time you can omit the <code>server</code> argument:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_publish_site</span>(<span class="st">"document.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="other-services" class="level2">
 <h2 class="anchored" data-anchor-id="other-services">Other Services</h2>

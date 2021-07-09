@@ -77,6 +77,16 @@ quarto_publish_site()
 
 Unlike the other website publishing options described here, [RStudio Connect](https://www.rstudio.com/products/connect/) is a server that you run inside an organization, so is suitable for publishing content that you only want visible within your organization's network as opposed to visible to the entire internet.
 
+You can also publish to RStudio Connect directly from within RStudio. To do this, just click the Publish button <kbd>![](images/publish-button.png){width="21"}</kbd> on the editor toolbar or preview window:
+
+![](images/rstudio-publish.png){.border-bottom}
+
+For the time being **Publish finished website only** is the only option supported for publishing Quarto websites to RStudio Connect. Support for publishing websites with source code (so they can be rendered on the server) will be added to an upcoming release of RStudio Connect.
+
+::: {.callout-note}
+You should be running the [daily build](https://dailies.rstudio.com) of RStudio (version 1.5.184 or higher) if you want to publish Quarto websites. The daily build has many other Quarto related enhancements so is highly recommended even if you aren't using the publishing features.
+:::
+
 ## Google Firebase {#google-firebase}
 
 Google Firebase has a [web hosting service](https://firebase.google.com/docs/hosting/quickstart) that enables easy deployment of websites using a set of command line tools.
