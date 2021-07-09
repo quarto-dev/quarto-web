@@ -149,11 +149,13 @@ The contents of `theme-dark.scss` which is customizing the cosmo appearance is:
 
 ``` {.css}
 /*-- scss:defaults --*/
-$body-bg: black;
+$body-bg: #181818;
 $body-color: white;
 $link-color: #75AADB;
 $sidebar-bg: #303030;
-$code-background-alpha: -.80;
+$code-background-alpha: -.8;
+$popover-bg: #242424;
+$input-bg: #242424;
 ```
 
 ### Syntax Highlighting
