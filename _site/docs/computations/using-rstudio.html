@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="RStudio IDE v1.4 or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as markdown files that use the Jupyter engine.">
+  <meta name="description" content="Use RStudio v1.5 to work with Quarto documents that use either the Knitr or Jupyter engine.">
   <title>Quarto – Using RStudio</title>
   <style>
     code{white-space: pre-wrap;}
@@ -112,13 +112,13 @@
   </script>
   <link rel="stylesheet" href="../../styles.css">
 <meta name="og:title" content="Quarto - Using RStudio">
-<meta name="og:description" content="RStudio IDE v1.4 or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as markdown files that use the Jupyter engine.">
+<meta name="og:description" content="Use RStudio v1.5 to work with Quarto documents that use either the Knitr or Jupyter engine.">
 <meta name="og:image" content="https://quarto.org/quarto.png">
 <meta name="og:site-name" content="Quarto">
 <meta name="og:image:height" content="152">
 <meta name="og:image:width" content="624">
 <meta name="twitter:title" content="Quarto - Using RStudio">
-<meta name="twitter:description" content="RStudio IDE v1.4 or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as markdown files that use the Jupyter engine.">
+<meta name="twitter:description" content="Use RStudio v1.5 to work with Quarto documents that use either the Knitr or Jupyter engine.">
 <meta name="twitter:image" content="https://quarto.org/quarto.png">
 <meta name="twitter:image-height" content="152">
 <meta name="twitter:image-width" content="624">
@@ -393,7 +393,6 @@
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
 <li><a href="#knitr-engine" class="nav-link" data-scroll-target="#knitr-engine">Knitr Engine</a></li>
 <li><a href="#jupyter-engine" class="nav-link" data-scroll-target="#jupyter-engine">Jupyter Engine</a></li>
-<li><a href="#new-documents" class="nav-link" data-scroll-target="#new-documents">New Documents</a></li>
 <li><a href="#r-package" class="nav-link" data-scroll-target="#r-package">R Package</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/using-rstudio.md">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
@@ -405,14 +404,19 @@
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>RStudio IDE <a href="https://dailies.rstudio.com">v1.5.122</a> or higher includes support for editing and preview of Quarto documents. This works for plain markdown. Knitr (Rmd), as well as qmd markdown files that use the Jupyter engine.</p>
-<p>The version of RStudio that works with Quarto (v1.5) is currently available as a daily build. If you are using Quarto within RStudio it’s <em>strongly</em> recommended that you use this version (the documentation below assumes you are using this build).</p>
+<p>RStudio IDE <a href="https://dailies.rstudio.com">v1.5.184</a> or higher includes support for editing and preview of Quarto documents. This works for plain markdown as well as both the Knitr and Jupyter engines.</p>
+<p>The version of RStudio that works with Quarto (v1.5) is currently available as a daily build. If you are using Quarto within RStudio it is <strong>strongly</strong> recommended that you use this version (the documentation below assumes you are using this build).</p>
 <p>You can download the RStudio daily build from <a href="https://dailies.rstudio.com" class="uri">https://dailies.rstudio.com</a>.</p>
+<section id="creating-a-document" class="level4">
+<h4 class="anchored" data-anchor-id="creating-a-document">Creating a Document</h4>
+<p>Use the <strong>File :</strong> <strong>New File : Quarto Doc…</strong> command to create new Quarto documents:</p>
+<p><img src="images/new-quarto-doc.png" class="img-fluid" width="471"></p>
+</section>
 </section>
 <section id="knitr-engine" class="level2">
 <h2 class="anchored" data-anchor-id="knitr-engine">Knitr Engine</h2>
 <p>Quarto is designed to be highly compatible with existing <a href="https://rmarkdown.rstudio.com/">R Markdown</a> documents. You should generally be able to use Quarto to render any existing Rmd document without changes.</p>
-<p>One important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are generally included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:</p>
+<p>One important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are typically included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>```{r}</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.cap: "Air Quality"</span></span>
@@ -437,22 +441,20 @@ Note
 </div>
 </div>
 <p>Chunk options included this way use YAML syntax rather than R syntax for consistency with options provided in YAML front matter. You can still however use R code for option values by prefacing them with <code>!expr</code>. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.cap: !expr paste("Air", "Quality")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.cap: !expr paste("Air", "Quality")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="jupyter-engine" class="level2">
 <h2 class="anchored" data-anchor-id="jupyter-engine">Jupyter Engine</h2>
-<p>You can also render Quarto markdown documents that target the Jupyter engine within RStudio. These files will generally have an <code>.qmd</code> extension and include a <code>jupyter</code> option in the YAML front matter indicating which kernel to use. For example:</p>
+<p>You can also work with Quarto markdown documents that target the Jupyter engine within RStudio. These files will typically include a <code>jupyter</code> option in the YAML front matter indicating which kernel to use. For example:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Matplotlib Demo"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Norah Smith"</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that the presence of the <code>jupyter</code> option also provides a sufficient hint to RStudio that it should render the file using Quarto rather than R Markdown.</p>
-</section>
-<section id="new-documents" class="level2">
-<h2 class="anchored" data-anchor-id="new-documents">New Documents</h2>
-<p>You can use the <strong>File :</strong> <strong>New File : Quarto Doc…</strong> command to create new Quarto documents:</p>
-<p><img src="images/new-quarto-doc.png" class="img-fluid" width="471"></p>
-<p>Note that this command uses the .qmd file extension by default for all new documents. If you prefer, you can optionally change the extension to .md for plain markdown files and .Rmd for Knitr engine documents.</p>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> python3</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you want to work within a virtual environment (<a href="https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment">venv</a>), use the <strong>File :</strong> <strong>New Project…</strong> command and specify which packages you’d like to seed the venv with:</p>
+<p><img src="images/rstudio-new-project.png" class="img-fluid" width="552"></p>
+<p>RStudio will automatically activate this virtual environment whenever you open the project. You can install additional Python packages into the environment using the RStudio <strong>Terminal</strong> tab. For example:</p>
+<p><img src="images/rstudio-pip-install.png" class="img-fluid" width="726"></p>
 </section>
 <section id="r-package" class="level2">
 <h2 class="anchored" data-anchor-id="r-package">R Package</h2>
@@ -460,7 +462,7 @@ Note
 <div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"quarto-dev/quarto-r"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then, to render a document:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_render</span>(<span class="st">"document.Rmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_render</span>(<span class="st">"document.qmd"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If you working on a <a href="../../docs/websites/index.html">website</a> or <a href="../../docs/books/index.html">book</a> project, you can run the Quarto development server with:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quarto_serve</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

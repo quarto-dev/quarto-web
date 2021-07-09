@@ -61,7 +61,7 @@ Quarto includes a live-reloading development server that you will likely find co
 quarto serve
 ```
 
-The browser will automatically refresh whenever you save a markdown file (`.md`) or Jupyter Notebook (`.ipynb`). The browser will also refresh whenever you render a `.qmd` or `.Rmd` file.
+The browser will automatically refresh whenever you save a markdown file (`.md`) or Jupyter Notebook (`.ipynb`). The browser will also refresh whenever you render a `.qmd` file.
 
 Changes to configuration files (e.g. `_quarto.yml`) as well site resources (e.g. theme or CSS files) will also cause an automatic refresh.
 

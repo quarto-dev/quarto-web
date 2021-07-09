@@ -48,7 +48,7 @@ df
 
 ![](images/jupyter-document.png){.border}
 
-Note that we added the `code-background: true` option to provide a background color for the code chunks (see the documentation on [Code Block](../output-formats/html-extensions.Rmd#code-blocks) options for additional details on customizing code block output).
+Note that we added the `code-background: true` option to provide a background color for the code chunks (see the documentation on [Code Block](../output-formats/html-extensions.qmd#code-blocks) options for additional details on customizing code block output).
 
 ### R (Knitr)
 
@@ -121,12 +121,8 @@ quarto render jupyter-document.qmd
 The R example might have been rendered with:
 
 ``` {.bash}
-quarto render knitr-document.Rmd
+quarto render knitr-document.qmd
 ```
-
-::: {.callout-note}
-While the .Rmd extension is not required for using the Knitr engine (you could instead use .qmd), it's still recommended that you use .Rmd since many editors (e.g. RStudio) will make features like interactive chunk execution available when the .Rmd extension is present. See the article on [Using RStudio](using-rstudio.md) for additional details.
-:::
 
 The Python example above uses a markdown input file, Quarto can also render any Jupyter notebook (.ipynb) and use all of the same computational features described here. For example:
 

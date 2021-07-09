@@ -52,7 +52,7 @@ The first cell of your notebook should be a **Raw** cell that contains the docum
 
 ![](images/jupyter-lab-yaml.png){.border}
 
-In this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on [Authoring](../authoring/markdown-basics.md) and [Output Formats](../docs/output-formats/html-basics.Rmd) for additional details.
+In this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on [Authoring](../authoring/markdown-basics.md) and [Output Formats](../docs/output-formats/html-basics.qmd) for additional details.
 
 ## Markdown Cells
 

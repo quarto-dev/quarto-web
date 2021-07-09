@@ -24,7 +24,7 @@ format: gfm
 ---
 ```
 
-To create a `README.md` using Quarto, start with a notebook (.ipynb) or computational markdown file (.qmd or .Rmd) that has README as it's file name stem, for example:
+To create a `README.md` using Quarto, start with a notebook (.ipynb) or computational markdown file (.qmd) that has README as it's file name stem, for example:
 
 **README.qmd**
 
@@ -54,7 +54,7 @@ Which will create `README.md` alongside your input file.
 
 If you want to use Quarto to incorporate computations into a GitHub wiki start by [cloning the wiki for local editing](https://docs.github.com/en/communities/documenting-your-project-with-wikis/adding-or-editing-wiki-pages#adding-or-editing-wiki-pages-locally).
 
-Then, simply create a computational markdown file (.ipynb, .qmd, .Rmd) for each page in the wiki. You can render all of these files at once into their corresponding .md files using [Quarto Projects](../getting-started/quarto-projects.md). For example:
+Then, simply create a computational markdown file (.ipynb, .qmd) for each page in the wiki. You can render all of these files at once into their corresponding .md files using [Quarto Projects](../getting-started/quarto-projects.md). For example:
 
 ``` {.bash}
 quarto render

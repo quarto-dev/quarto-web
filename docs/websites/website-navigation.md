@@ -28,9 +28,9 @@ site:
     search: true
     left:
       - text: "Home"
-        file: index.Rmd
-      - talks.Rmd
-      - about.Rmd 
+        file: index.qmd
+      - talks.qmd
+      - about.qmd 
 ```
 
 Would result in a navigation bar that looks something like this:
@@ -39,7 +39,7 @@ Would result in a navigation bar that looks something like this:
 
 Above we use the `left` option to specify items for the left side of the navigation bar. You can also use the `right` option to specify items for the right side.
 
-The text for navigation bar items will be taken from the underlying target document's title. Note that in the above example we provide a custom `text: "Home"` value for `index.Rmd`.
+The text for navigation bar items will be taken from the underlying target document's title. Note that in the above example we provide a custom `text: "Home"` value for `index.qmd`.
 
 You can also create a navigation menu by including a `menu` (which is list of items much like `left` and `right)`. For example:
 
@@ -47,8 +47,8 @@ You can also create a navigation menu by including a `menu` (which is list of it
 left:
   - text: "More"
     menu:
-      - talks.Rmd
-      - about.Rmd 
+      - talks.qmd
+      - about.qmd 
 ```
 
 Here are all of the options available for top navigation:
@@ -109,14 +109,14 @@ site:
     contents:
       - section: "Basics"
         contents:
-          - index.md
-          - basics-knitr.Rmd
-          - basics-jupyter.md
+          - index.qmd
+          - basics-knitr.qmd
+          - basics-jupyter.qmd
       - section: "Layout"
         contents:
-          - layout.md
-          - layout-knitr.Rmd
-          - layout-jupyter.md
+          - layout.qmd
+          - layout-knitr.qmd
+          - layout-jupyter.qmd
 ```
 
 There are two styles of side navigation available: "docked" which shows the navigation in a sidebar with a distinct background color, and "floating" which places it closer to the main body text. Here's that the "docked" and "floating" styles look like (respectively):
@@ -197,7 +197,7 @@ site:
     search: true
     left:
       - text: "Home"
-        file: index.Rmd
+        file: index.qmd
       - sidebar:tutorials
       - sidebar:howto
       - sidebar:fundamentals
@@ -285,7 +285,7 @@ site:
     items:
       - text: "Basics"
         contents:
-          - index.Rmd
+          - index.qmd
           - basics-jupyter.md
         # etc
 ```

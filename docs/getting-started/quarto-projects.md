@@ -99,7 +99,7 @@ quarto_render()
 
 ## Render Targets
 
-By default, all valid Quarto input files (.Rmd, .ipynb, .md) in the project directory will be rendered, save for ones with a file or directory prefix of `.` (hidden files) or `_` (typically used for non top-level files, e.g. ones included in other files).
+By default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the project directory will be rendered, save for ones with a file or directory prefix of `.` (hidden files) or `_` (typically used for non top-level files, e.g. ones included in other files).
 
 If you don't want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a `project: render: [files]` entry to your project metadata. For example:
 
@@ -200,7 +200,7 @@ execute:
 Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you've defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the `--cache-refresh` option:
 
 ``` {.bash}
-quarto render mydoc.Rmd --cache-refresh # single doc
+quarto render mydoc.qmd --cache-refresh # single doc
 quarto render --cache-refresh           # entire project
 ```
 

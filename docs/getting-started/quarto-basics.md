@@ -29,8 +29,8 @@ Jupyter users will user either the second or third approach, depending on whethe
 Use the `quarto render` command to transform a markdown input file into HTML, a PDF, or any of the other supported output formats. Here are examples of rendering the input types described above:
 
 ``` {.bash}
+quarto render document.md
 quarto render document.qmd
-quarto render document.Rmd
 quarto render document.ipynb
 ```
 
@@ -39,8 +39,8 @@ For plain markdown, the document is sent straight to Pandoc. For markdown with e
 By default, Quarto renders to HTML, however any of Pandoc's over 40 [output formats](https://pandoc.org/) are supported. For example:
 
 ``` {.bash}
-quarto render document.qmd --to pdf
-quarto render document.Rmd --to odt
+quarto render document.md --to pdf
+quarto render document.qmd --to odt
 quarto render document.ipynb --to docx
 ```
 
@@ -138,6 +138,6 @@ Note that you can share format options across a set of documents using [Quarto P
 
 The [Authoring](../authoring/markdown-basics.md) section describes the capabilities of Pandoc markdown, as well as Quarto extensions for [Cross References](../authoring/cross-references.md), [Figures and Layout](../authoring/figures-and-layout.md), and [Callout Blocks](../authoring/callouts.md).
 
-The output formats section provides additional details on creating [HTML](../output-formats/html-basics.Rmd), [PDF](../output-formats/pdf-basics.md), and [MS Word](../output-formats/ms-word.md) documents, as well as describes a few special output types including [Presentations](../output-formats/presentations.md), [EPUBs](../output-formats/epub.md), and pages in [Hugo](../output-formats/hugo.md) static sites.
+The output formats section provides additional details on creating [HTML](../output-formats/html-basics.qmd), [PDF](../output-formats/pdf-basics.md), and [MS Word](../output-formats/ms-word.md) documents, as well as describes a few special output types including [Presentations](../output-formats/presentations.md), [EPUBs](../output-formats/epub.md), and pages in [Hugo](../output-formats/hugo.md) static sites.
 
 [Creating a Website](../websites/website-basics.md) and [Creating a Book](../books/book-basics.md) describe some special Quarto project types.

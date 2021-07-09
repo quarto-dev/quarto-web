@@ -204,7 +204,7 @@ Note the various tools that now appear:
 
 -   Immediately below the table of contents on the right there is an "Edit this page" link that takes the reader to the edit interface on GitHub for the current chapter. Note that in this example we specify `repo-actions: [edit]`. You can optionally also add `issue` and `source` actions (e.g. `repo-actions: [edit, issue, source]`).
 
--   The [Hypothesis](https://web.hypothes.is/) commenting bar appears on the far right of the page. Note that [commenting](html-basics.Rmd#commenting) is a feature available for all Quarto HTML output so appears in it's own YAML key.
+-   The [Hypothesis](https://web.hypothes.is/) commenting bar appears on the far right of the page. Note that [commenting](html-basics.qmd#commenting) is a feature available for all Quarto HTML output so appears in it's own YAML key.
 
 #### Sidebar Options
 
@@ -321,7 +321,7 @@ cache: true
 Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you've defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the `--cache-refresh` option:
 
 ``` {.bash}
-quarto render mydoc.Rmd --cache-refresh # single doc
+quarto render mydoc.qmd --cache-refresh # single doc
 quarto render --cache-refresh           # entire project
 ```
 

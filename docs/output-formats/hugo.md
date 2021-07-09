@@ -17,7 +17,7 @@ To create a new page that uses Quarto:
 
 1.  Create a new directory at the location in your site's `content` directory where you want the article to live.
 
-2.  Add a markdown file to that directory (usually with the same name as the directory). This file should not use the `.md` extension (to prevent Hugo from rendering it). For example, use the extension `.qmd` (for Jupyter) or `.Rmd` (for Knitr).
+2.  Add a markdown file to that directory (usually with the same name as the directory). This file should use the `.qmd` extension (to prevent Hugo from rendering it).
 
 3.  Add the requisite Hugo metadata to the document's front matter, then also specify `format: hugo` and any other required Quarto options.
 

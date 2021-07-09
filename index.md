@@ -75,7 +75,7 @@ Note that we use the file extension `.qmd` to indicate that this isn't a plain m
 Don't worry if all the mechanics of this example aren't obvious, the main takeaway is that Quarto enables you to enhance [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) documents with features useful for scientific and technical communication including executable code, cross-references, and much more.
 
 ::: {.callout-note}
-While this example demonstrates rendering a `.qmd` markdown file, Quarto is also compatible with other computational markdown formats like Jupyter Notebooks (.ipynb) and R Markdown (.Rmd).
+While this example demonstrates rendering a `.qmd` markdown file, Quarto can also directly render existing computational document formats like Jupyter Notebooks (.ipynb) and R Markdown (.Rmd).
 :::
 
 ## Getting Started
