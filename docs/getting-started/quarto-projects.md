@@ -204,12 +204,10 @@ quarto render mydoc.qmd --cache-refresh # single doc
 quarto render --cache-refresh           # entire project
 ```
 
-### No Execute
+### Notebooks
 
-Finally, if you are using Jupyter Notebooks as inputs, you may prefer to execute all code within interactive notebook sessions, and *never* have Quarto execute the code cells:
-
-``` {.yaml}
-execute: false
+``` {.include}
+../computations/_jupyter-execute.md
 ```
 
 ### Working Dir
