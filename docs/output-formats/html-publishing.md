@@ -60,7 +60,7 @@ You can also publish to RPubs and RStudio Connect directly from within RStudio. 
 
 ![](images/rstudio-publish.png)
 
-Note that you should be running the [daily build](https://dailies.rstudio.com) of RStudio (version 1.5.184 or higher) if you want to publish Quarto documents. Note that the daily build has many other Quarto related enhancements so is highly recommended even if you aren't using the publishing features.
+You should be running the [daily build](https://dailies.rstudio.com) of RStudio (version 1.5.184 or higher) if you want to publish Quarto documents. The daily build has many other Quarto related enhancements so is highly recommended even if you aren't using the publishing features.
 
 ## Standalone HTML
 
