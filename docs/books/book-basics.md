@@ -15,7 +15,7 @@ Quarto Books are combinations of multiple documents (chapters) into a single man
 -   EPUB
 -   MS Word
 
-HTML books are not that different from [Quarto Websites](website-basics.md) save for the fact that chapters and sections are numbered and therefore support [Cross References](crossref.md).
+HTML books are not that different from [Quarto Websites](../websites/website-basics.md) save for the fact that chapters and sections are numbered and therefore support [Cross References](crossref.md).
 
 Here are some examples of books created with Quarto:
 

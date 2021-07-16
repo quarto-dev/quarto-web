@@ -51,7 +51,7 @@ To build the website into the `_site` directory:
 quarto render mybook
 ```
 
-See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects.
+See the [Quarto Projects](../getting-started/quarto-projects.md) article to learn more about working with projects.
 
 ## Workflow
 
