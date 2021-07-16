@@ -104,7 +104,7 @@ If you expect to use Quarto to create PDFs, you will need to install a recent di
 To install TinyTeX, use the following command:
 
 ``` {.bash}
-quarto install tinytex
+quarto tools install tinytex
 ```
 
 If you prefer TeX Live, you can find instructions for installing it here: <https://tug.org/texlive/>.
