@@ -18,23 +18,23 @@ There are five different types of callouts available.
 
 The color and icon will be different depending upon the type that you select. Here are what the various types look like in HTML output:
 
-::: {.callout-note}
+::: callout-note
 Note that there are five types of callouts, including: `note`, `tip`, `warning`, `caution`, and `important`.
 :::
 
-::: {.callout-tip}
+::: callout-tip
 ## Tip With Caption
 
 This is an example of a callout with a caption.
 :::
 
-::: {.callout-important}
+::: callout-important
 ## This is Important
 
 Danger, callouts will really improve your writing.
 :::
 
-::: {.callout-warning}
+::: callout-warning
 Callouts provide a simple way to attract attention, for example, to this warning.
 :::
 
@@ -48,7 +48,7 @@ This is an example of a 'collapsed' caution callout that can be expanded by the 
 
 Create callouts in markdown using the following syntax (note that the first markdown heading used within the callout is used as the callout heading):
 
-``` {.markdown}
+``` markdown
 :::{.callout-note}
 Note that there are five types of callouts, including:
 `note`, `tip`, `warning`, `caution`, and `important`.
@@ -85,13 +85,13 @@ Callouts have 3 different looks you can use.
 
 You can set the callout appearance either globally in the document (or project yaml):
 
-``` {.yaml}
+``` yaml
 callout-appearance: simple
 ```
 
 or by setting the `type` attribute on the callout. For example
 
-``` {.markdown}
+``` markdown
 ::: {.callout-note appearance="simple"}
 
 ## Pay Attention
@@ -104,23 +104,22 @@ Using callouts is an effective way to highlight content that your reader give sp
 which appears as:
 
 ::: {.callout-note appearance="simple"}
-
 ## Pay Attention
 
 Using callouts is an effect way to highlight content that your reader give special consideration or attention.
-
 :::
 
 ### Icons
+
 In addition to controlling the appearance of the callout, you can also choose to directly suppress the icon but either setting the global option in your document (or project) yaml:
 
-```{.yaml}
+``` yaml
 callout-icon: false;
 ```
 
 or by setting an attribute directly on the callout:
 
-``` {.markdown}
+``` markdown
 ::: {.callout-note icon=false}
 
 ## Pay Attention
@@ -132,15 +131,11 @@ Using callouts is an effective way to highlight content that your reader give sp
 
 Which will appear as:
 
-::: {.callout-note icon=false}
-
+::: {.callout-note icon="false"}
 ## Pay Attention
 
 Using callouts is an effective way to highlight content that your reader give special consideration or attention.
-
 :::
-
-
 
 ## Format Support
 

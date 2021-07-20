@@ -1,4 +1,3 @@
-
 ## Syntax Highlighting
 
 Pandoc will automatically highlight syntax in [fenced code blocks](https://pandoc.org/MANUAL.html#fenced-code-blocks) that are marked with a language name.
@@ -7,7 +6,7 @@ You can specify the code highlighting style using `highlight-style` and specifyi
 
 For example:
 
-``` {.yaml}
+``` yaml
 highlight-style: github
 ```
 
@@ -15,7 +14,7 @@ Highlighting themes can provide either a single highlighting definition or two d
 
 By default, code is highlighted using the `arrow` theme, which is optimized for accessibility. Here are examples of the `arrow` light and dark themes:
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Light
 
 ![](images/arrow.png)

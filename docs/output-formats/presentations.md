@@ -20,7 +20,7 @@ This article covers the core syntax for presentations (slides, incremental bulle
 
 Here's an example of a simple markdown side show. The H1 headers are used to delimit sections; the H2 headers and horizontal rule are used to delimit slides:
 
-``` {.markdown}
+``` markdown
 ---
 title: "Habits"
 author: "John Doe"
@@ -65,7 +65,7 @@ In the example above, level-1 headings are always followed by level-2 headings, 
 
 By default number and bullet lists within slides are displayed all at once. You can override this globally using the `incremental` option. For example:
 
-``` {.yaml}
+``` yaml
 title: "My Presentation"
 format:
   revealjs:
@@ -74,7 +74,7 @@ format:
 
 You can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:
 
-```markdown
+``` markdown
 ::: {.incremental}
 
 - Eat spaghetti
@@ -85,7 +85,7 @@ You can also explicitly make any list incremental or non-incremental by surround
 
 To make a list non-incremental do this:
 
-```markdown
+``` markdown
 ::: {.nonincremental}
 
 - Eat spaghetti
@@ -96,7 +96,7 @@ To make a list non-incremental do this:
 
 You can also insert a pause within a slide (keeping the content after the pause hidden) by inserting three dots separated by spaces:
 
-```markdown
+``` markdown
 ## Slide with a pause
 
 content before the pause
@@ -104,10 +104,9 @@ content before the pause
 . . .
 
 content after the pause
-
 ```
 
-::: {.callout-warning}
+::: callout-warning
 The incremental/nonincremental and pause markdown syntax described above do not currently work for PowerPoint output.
 :::
 
@@ -115,7 +114,7 @@ The incremental/nonincremental and pause markdown syntax described above do not 
 
 To put material in side by side columns, you can use a native div container with class `.columns`, containing two or more div containers with class `.column` and a `width` attribute:
 
-```markdown
+``` markdown
 :::: {.columns}
 
 ::: {.column width="40%"}
@@ -129,12 +128,11 @@ contents...
 ::::
 ```
 
-
 ## Speaker Notes
 
 Speaker notes are supported in reveal.js and PowerPoint (pptx) output. You can add notes to your Markdown document thus:
 
-```markdown
+``` markdown
 ## Slide with speaker notes
 
 Slide content
@@ -149,7 +147,3 @@ Speaker notes go here.
 To show the notes window in reveal.js, press <kbd>s</kbd> while viewing the presentation. Speaker notes in PowerPoint will be available, as usual, in handouts and presenter view.
 
 Notes are not yet supported for other slide formats, but the notes will not appear on the slides themselves.
-
-
-
-

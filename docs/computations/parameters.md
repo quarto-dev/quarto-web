@@ -8,21 +8,21 @@ format: html
 
 You may have a set of parameters that are used to create different variations of a report. For example:
 
-- Showing results for a specific geographic location.
-- Running a report that covers a specific time period.
-- Running a single analysis multiple times for different assumptions.
+-   Showing results for a specific geographic location.
+-   Running a report that covers a specific time period.
+-   Running a single analysis multiple times for different assumptions.
 
 This article describes how to define and use computational parameters with Quarto.
 
 ## Definition
 
-Adding parameter definitions to a document works differently depending on whether you are using the [Jupyter](https://jupyter.org) or [Knitr](https://yihui.name/knitr) engine. 
+Adding parameter definitions to a document works differently depending on whether you are using the [Jupyter](https://jupyter.org) or [Knitr](https://yihui.name/knitr) engine.
 
 ### Juypter
 
 For Jupyter, Quarto uses the same syntax for defining parameters as [Papermill](https://papermill.readthedocs.io/en/latest/usage-parameterize.html). To parameterize a notebook, designate a cell with the tag `parameters` and provide appropriate default values:
 
-````python
+```` python
 ```{python}
 #| tags: [parameters]
 
@@ -37,7 +37,7 @@ When the notebook is executed with a set of new parameters a cell is injected wh
 
 For Knitr, the standard Knitr `params` YAML option is used to define parameters. For example:
 
-```yaml
+``` yaml
 ---
 title: "My Document"
 params:
@@ -50,15 +50,12 @@ params:
 
 To render using different parameters you can pass them on the command line using the `-P` flag:
 
-```bash
+``` bash
 quarto render notebook.ipynb -P alpha:0.2 -P ratio:0.3
 ```
 
 Alternatively you can create a YAML file that defines the parameter values you want to render with, then call quarto render with the `--execute-params` flag:
 
-```bash
+``` bash
 quarto render notebook.ipynb --execute-params params.yml
 ```
-
-
-

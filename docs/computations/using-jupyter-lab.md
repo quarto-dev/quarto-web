@@ -22,13 +22,13 @@ There are a few things to point out about this notebook:
 
 We'll describe each of these in more depth below. First though, let's render the notebook to HTML with Quarto:
 
-``` {.bash}
+``` bash
 quarto render basics-jupyter.ipynb
 ```
 
 ![](images/hello-quarto.png){.border}
 
-``` {.include}
+``` include
 _jupyter-execute.md
 ```
 
@@ -41,11 +41,11 @@ To run JupyterLab, invoke the `jupyter` module from within the shell where you a
 +-----------+------------------------+
 | Platform  | Command                |
 +===========+========================+
-| Windows   | ``` {.bash}            |
+| Windows   | ``` bash               |
 |           | py -m jupyter lab      |
 |           | ```                    |
 +-----------+------------------------+
-| Mac/Linux | ``` {.bash}            |
+| Mac/Linux | ``` bash               |
 |           | python3 -m jupyter lab |
 |           | ```                    |
 +-----------+------------------------+
@@ -84,7 +84,7 @@ Markdown files with embedded code chunks should use the file extension `.qmd` to
 
 To make a code block executable in a markdown notebook, just add braces around the name of the language. For example:
 
-```` {.python}
+```` python
 ```{python}
 1 + 1
 ```
@@ -92,7 +92,7 @@ To make a code block executable in a markdown notebook, just add braces around t
 
 Here is the plain text markdown version of the notebook used in the previous examples:
 
-```` {.python}
+```` python
 ---
 title: "Matplotlib Demo"
 author: "Norah Smith"
@@ -126,13 +126,13 @@ plt.show()
 
 Note that we've added the `jupyter: python3` option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:
 
-``` {.bash}
+``` bash
 quarto render basics-jupyter.qmd
 ```
 
 You can convert between .ipynb and .qmd representations of a notebook using the `quarto convert` command. For example:
 
-``` {.bash}
+``` bash
 quarto convert basics-jupyter.ipynb --to markdown
 quarto convert basics-jupyter.qmd --to notebook
 ```

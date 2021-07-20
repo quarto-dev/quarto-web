@@ -18,7 +18,7 @@ Quarto projects are directories that provide:
 
 In addition, projects can have special "types" that introduce additional behavior (e.g. [websites](../websites/website-basics.md) or [books](../books/book-basics.md)).
 
-::: {.callout-note}
+::: callout-note
 If you are just getting started with Quarto and/or you don't have previous experience with markdown publishing systems, you probably want to skip learning about projects for now. Once you are comfortable with the basics, come back to this article to learn more.
 :::
 
@@ -26,13 +26,13 @@ If you are just getting started with Quarto and/or you don't have previous exper
 
 Use the `quarto create-project` command to create a new project. If you have an existing directory of documents that you want to treat as a project just invoke `create-project` with no arguments from within the directory:
 
-``` {.bash}
+``` bash
 quarto create-project
 ```
 
 To create a project in a new directory just provide a directory name on the command line:
 
-``` {.bash}
+``` bash
 quarto create-project myproject
 ```
 
@@ -40,7 +40,7 @@ quarto create-project myproject
 
 When you create a project, a `_quarto.yml` config file is created. Here is an example of what the `_quarto.yml` file might look like:
 
-``` {.yaml}
+``` yaml
 project:
   output-dir: _output
 
@@ -68,7 +68,7 @@ You can render files within a project either one-by-one or all at once (in eithe
 
 To render all of the documents within a project, just use `quarto render` within the project directory (or target a specific directory with a command line argument):
 
-``` {.bash}
+``` bash
 # render project in current dir
 quarto render 
 
@@ -78,21 +78,21 @@ quarto render myproject
 
 You can also render only the files within a sub-directory of a project. For example, if the current directory contains a project with sub-directories `tutorials`, `how-to`, and `articles`, you can render just the contents of `articles` as follows:
 
-``` {.bash}
+``` bash
 # render only documents in the 'articles' sub-directory
 quarto render articles
 ```
 
 Note that when rendering a project, command line arguments you pass to `quarto render` will be used for each file in the project. For example. this command will render each document in a project as a PDF:
 
-``` {.bash}
+``` bash
 quarto render --to pdf
 quarto render myproject --to pdf
 ```
 
 If you are working with Quarto from R, you can also render a project from the R console using the **quarto** R package.
 
-``` {.r}
+``` r
 library(quarto)
 quarto_render()
 ```
@@ -103,7 +103,7 @@ By default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the projec
 
 If you don't want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a `project: render: [files]` entry to your project metadata. For example:
 
-``` {.yaml}
+``` yaml
 project:
   render:
     - section1.md
@@ -112,7 +112,7 @@ project:
 
 Note that you can use wildcards when defining the `render` list. For example:
 
-``` {.yaml}
+``` yaml
 project:
   render:
     - section*.md
@@ -126,19 +126,19 @@ Rendering a list of input files has the potential to be quite time consuming dep
 
 You can use the `freeze` option to denote that computational documents should never be re-rendered during a global project render, or alternatively only be re-rendered when their source file changes:
 
-``` {.yaml}
+``` yaml
 execute:
   freeze: true  # never re-render during project render
 ```
 
-``` {.yaml}
+``` yaml
 execute:
   freeze: auto  # re-render only when source changes
 ```
 
 Note that `freeze` controls whether execution occurs during global project renders. If you do an incremental render of either a single document or a project sub-directory then code is always executed. For example:
 
-``` {.bash}
+``` bash
 # render single document (always executes code)
 quarto render document.qmd
 
@@ -162,14 +162,14 @@ Here's an example workflow of using virtual environments with freeze:
 
 1.  Include `freeze: true` in the project execution options:
 
-    ``` {.yaml}
+    ``` yaml
     execute:
       freeze: true
     ```
 
 2.  Create a sub-directory of documents (e.g. `research`), and initialize and use a virtual environment within it:
 
-    ``` {.default}
+    ``` default
     research/
       document1.qmd
       document2.qmd
@@ -179,7 +179,7 @@ Here's an example workflow of using virtual environments with freeze:
 
 3.  When working wihtin this sub-directory, activate the virtual environment before rendering it's documents. For example:
 
-    ``` {.bash}
+    ``` bash
     cd research
     source venv/bin/activate
     quarto render               # render all files in subdir
@@ -192,21 +192,21 @@ This sub-directory render won't use the cached `freeze` results but instead will
 
 You can use the `cache` option to cache the results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) for R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) for Jupyter documents):
 
-``` {.yaml}
+``` yaml
 execute:
   cache: true
 ```
 
 Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you've defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the `--cache-refresh` option:
 
-``` {.bash}
+``` bash
 quarto render mydoc.qmd --cache-refresh # single doc
 quarto render --cache-refresh           # entire project
 ```
 
 ### Notebooks
 
-``` {.include}
+``` include
 ../computations/_jupyter-execute.md
 ```
 
@@ -214,7 +214,7 @@ quarto render --cache-refresh           # entire project
 
 By default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the `execute-dir: project` option to your config:
 
-``` {.yaml}
+``` yaml
 project:
   execute-dir: project
 ```
@@ -246,11 +246,11 @@ To create a new Python 3 virtual environment in the directory `env`:
 +-----------+---------------------+
 | Platform  | Command             |
 +===========+=====================+
-| Windows   | ``` {.bash}         |
+| Windows   | ``` bash            |
 |           | py -m venv env      |
 |           | ```                 |
 +-----------+---------------------+
-| Mac/Linux | ``` {.bash}         |
+| Mac/Linux | ``` bash            |
 |           | python3 -m venv env |
 |           | ```                 |
 +-----------+---------------------+
@@ -260,25 +260,25 @@ To use the environment you need to activate it. This differs slightly depending 
 +--------------+--------------------------+
 | Shell        | Command                  |
 +==============+==========================+
-| Windows\     | ``` {.default}           |
+| Windows\     | ``` default              |
 | (Command)    | env\Scripts\activate.bat |
 |              | ```                      |
 +--------------+--------------------------+
-| Windows\     | ``` {.default}           |
+| Windows\     | ``` default              |
 | (PowerShell) | env\Scripts\Activate.ps1 |
 |              | ```                      |
 +--------------+--------------------------+
-| Mac/Linux    | ``` {.bash}              |
+| Mac/Linux    | ``` bash                 |
 |              | source env/bin/activate  |
 |              | ```                      |
 +--------------+--------------------------+
 
-::: {.callout-note}
+::: callout-note
 #### PowerShell Note
 
 Note that you may receive an error about running scripts being disabled when activating within PowerShell. If you get this error then execute the following command:
 
-``` {.bash}
+``` bash
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 :::
@@ -288,11 +288,11 @@ Once you've activated the environment, you need to ensure that you have the pack
 +-----------+------------------------------------------+
 | Platform  | Command                                  |
 +===========+==========================================+
-| Windows   | ``` {.bash}                              |
+| Windows   | ``` bash                                 |
 |           | py -m pip install matplotlib pandas      |
 |           | ```                                      |
 +-----------+------------------------------------------+
-| Mac/Linux | ``` {.bash}                              |
+| Mac/Linux | ``` bash                                 |
 |           | python3 -m pip install matplotlib pandas |
 |           | ```                                      |
 +-----------+------------------------------------------+
@@ -301,7 +301,7 @@ Assuming you installed all of the required packages (likely more than just `pand
 
 To deactivate an environment use the `deactivate` command:
 
-``` {.bash}
+``` bash
 deactivate
 ```
 
@@ -312,11 +312,11 @@ To make your environment reproducible, you need to create a `requirements.txt` f
 +-----------+------------------------------------------+
 | Platform  | Command                                  |
 +===========+==========================================+
-| Windows   | ``` {.bash}                              |
+| Windows   | ``` bash                                 |
 |           | py -m pip freeze > requirements.txt      |
 |           | ```                                      |
 +-----------+------------------------------------------+
-| Mac/Linux | ``` {.bash}                              |
+| Mac/Linux | ``` bash                                 |
 |           | python3 -m pip freeze > requirements.txt |
 |           | ```                                      |
 +-----------+------------------------------------------+
@@ -334,11 +334,11 @@ Then, install packages from `requirements.txt`:
 +-----------+--------------------------------------------+
 | Platform  | Command                                    |
 +===========+============================================+
-| Windows   | ``` {.bash}                                |
+| Windows   | ``` bash                                   |
 |           | py -m pip install -r requirements.txt      |
 |           | ```                                        |
 +-----------+--------------------------------------------+
-| Mac/Linux | ``` {.bash}                                |
+| Mac/Linux | ``` bash                                   |
 |           | python3 -m pip install -r requirements.txt |
 |           | ```                                        |
 +-----------+--------------------------------------------+
@@ -349,7 +349,7 @@ This section will cover the basics of creating and using conda environments with
 
 To create a new environment in the directory `env`:
 
-``` {.bash}
+``` bash
 conda create --prefix env python
 ```
 
@@ -358,19 +358,19 @@ If this is the first time you've used conda in your shell, you may need to execu
 +--------------------+-----------------------+
 | Shell              | Command               |
 +====================+=======================+
-| Windows\           | ``` {.bash}           |
+| Windows\           | ``` bash              |
 | (Command)          | conda init cmd.exe    |
 |                    | ```                   |
 +--------------------+-----------------------+
-| Windows\           | ``` {.bash}           |
+| Windows\           | ``` bash              |
 | (PowerShell)       | conda init powershell |
 |                    | ```                   |
 +--------------------+-----------------------+
-| Linux / Older Mac\ | ``` {.bash}           |
+| Linux / Older Mac\ | ``` bash              |
 | (Bash)             | conda init bash       |
 |                    | ```                   |
 +--------------------+-----------------------+
-| Newer Mac\         | ``` {.bash}           |
+| Newer Mac\         | ``` bash              |
 | (Zsh)              | conda init zsh        |
 |                    | ```                   |
 +--------------------+-----------------------+
@@ -382,18 +382,18 @@ To use the environment you need to activate it, which you do as follows:
 +-----------+----------------------+
 | Platform  | Command              |
 +===========+======================+
-| Windows   | ``` {.bash}          |
+| Windows   | ``` bash             |
 |           | conda activate .\env |
 |           | ```                  |
 +-----------+----------------------+
-| Mac/Linux | ``` {.bash}          |
+| Mac/Linux | ``` bash             |
 |           | conda activate ./env |
 |           | ```                  |
 +-----------+----------------------+
 
 Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Use `conda install` to install packages into your environment. For example:
 
-``` {.bash}
+``` bash
 conda install jupyterlab
 conda install pandas matplotlib 
 ```
@@ -402,7 +402,7 @@ Assuming you installed all of the required packages (likely more than just `pand
 
 Use `conda deactivate` to exit an activated environment:
 
-``` {.bash}
+``` bash
 conda deactivate
 ```
 
@@ -410,7 +410,7 @@ conda deactivate
 
 To make your environment reproducible, you need to create a `environment.yml` file that enumerates all of the packages in use. Do this using the `conda env export` command:
 
-``` {.bash}
+``` bash
 conda env export > environment.yml
 ```
 
@@ -420,7 +420,7 @@ You should generally check the `environment.yml` file into version control.
 
 To reproduce the environment on another machine you just pass the `environment.yml` file as an argument to `conda create`:
 
-``` {.bash}
+``` bash
 conda create --prefix env -f environment.yml
 ```
 
@@ -428,7 +428,7 @@ conda create --prefix env -f environment.yml
 
 The [renv](https://rstudio.github.io/renv/articles/renv.html) package provides functionality similar to the venv and conda, but for R packages. To create a new renv environment, install the **renv** package from GitHub then call the `renv::init()` function:
 
-``` {.r}
+``` r
 remotes::install("rstudio/renv")
 renv::init()
 ```
@@ -437,13 +437,13 @@ As part of initialization, your `.Rprofile` file is modified to ensure that the 
 
 If you plan on using **both** R and Python in your project, you can have renv automatically create and manage a Python virtual environment as follows:
 
-``` {.r}
+``` r
 renv::use_python()
 ```
 
 To install R packages use the standard R `install.packages` function. You can also install GitHub packages using the `renv::install` function. For example:
 
-``` {.r}
+``` r
 install.packages("ggplot2")      # install from CRAN
 renv::install("tidyverse/dplyr") # install from GitHub
 ```
@@ -454,7 +454,7 @@ To install Python packages just use `pip` as described above from the built-in R
 
 To record the current versions of all R (and optionally Python) packages, use the `renv::snapshot()` function:
 
-``` {.r}
+``` r
 renv::snapshot()
 ```
 
@@ -464,7 +464,7 @@ This will record an `renv.lock` file for R packages and a `requirements.txt` fil
 
 To reproduce the environment on another machine use the `renv::restore()` function:
 
-``` {.r}
+``` r
 renv::restore()
 ```
 
@@ -475,17 +475,17 @@ To use Jupyter or JupyterLab within a Python virtual environment you just need t
 +----------------------+--------------------------+
 | Shell                | Command                  |
 +======================+==========================+
-| Windows\             | ``` {.default}           |
+| Windows\             | ``` default              |
 | (Command)            | env\Scripts\activate.bat |
 |                      | py -m jupyter lab        |
 |                      | ```                      |
 +----------------------+--------------------------+
-| Windows (PowerShell) | ``` {.default}           |
+| Windows (PowerShell) | ``` default              |
 |                      | env\Scripts\Activate.ps1 |
 |                      | py -m jupyter lab        |
 |                      | ```                      |
 +----------------------+--------------------------+
-| Mac/Linux            | ``` {.bash}              |
+| Mac/Linux            | ``` bash                 |
 |                      | source env/bin/activate  |
 |                      | python3 -m jupyter lab   |
 |                      | ```                      |

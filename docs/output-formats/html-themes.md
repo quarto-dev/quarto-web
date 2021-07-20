@@ -7,7 +7,7 @@ description: "Quarto includes 25 themes from the Bootswatch project (for example
 
 HTML documents rendered with Quarto use Bootstrap 5 by default. This can be disabled or customized via the `theme` option:
 
-``` {.yaml}
+``` yaml
 theme: default # bootstrap 5 default
 theme: cosmo   # cosmo bootswatch theme
 theme: pandoc  # pandoc default html treatment
@@ -24,33 +24,22 @@ Pandoc supports a set of basic metadata options for customizing document appeara
 
 If you are using a Bootstrap theme or the Pandoc theme, there are a set of options you can provide in document metadata to customize it's appearance. These include:
 
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option                                                       | Description                                                                                                                                                    |
-+==============================================================+================================================================================================================================================================+
+|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `max-width`                                                  | The maximum width occupied by page content. Defaults to 1400px for bootstrap themes and 36em for the pandoc theme.                                             |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mainfont`                                                   | Sets the [`font-family`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) property for the document.                                              |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `fontsize`                                                   | Sets the base CSS [`font-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size) for the document.                                                  |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `fontcolor`                                                  | Sets the default text [`color`](https://developer.mozilla.org/en-US/docs/Web/CSS/color) for the document.                                                      |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `linkcolor`                                                  | Sets the default text [`color`](https://developer.mozilla.org/en-US/docs/Web/CSS/color) for hyperlinks.                                                        |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `monofont`                                                   | Sets the [`font-family`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) property for `<code>` elements.                                         |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `monobackgroundcolor`                                        | Sets the [`background-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) property for `<code>` elements.                               |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `linestretch`                                                | Sets the CSS [`line-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height) property (affects distance between lines of text, defaults to 1.5). |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `backgroundcolor`                                            | Sets the [`background-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) for the document.                                             |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `margin-left`, `margin-right`, `margin-top`, `margin-bottom` | Sets the CSS [`margin`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin) properties for the document body.                                             |
-+--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 For example. here we set the font-size a bit larger and specify that we want a bit more space between lines of text:
 
-``` {.yaml}
+``` yaml
 title: "My Document"
 format:
   html: 
@@ -67,7 +56,7 @@ While the basic customization described above handles many common requirements, 
 
 SASS theme files can define both *variables* that globally set things like colors and fonts, as well as *rules* that define more fine grained behavior. To customize an existing Bootstrap theme with your own set of variables and/or rules, just provide the base theme and then your custom theme file(s):
 
-``` {.yaml}
+``` yaml
 theme:
   - cosmo
   - custom.scss
@@ -75,7 +64,7 @@ theme:
 
 Your `custom.scss` file might look something like this:
 
-``` {.css}
+``` css
 /*-- scss:defaults --*/
 $h2-font-size:          1.6rem !default;
 $headings-font-weight:  500 !default;
@@ -93,7 +82,7 @@ Note that the variables section is denoted by the `/*-- scss:defaults --*/` comm
 
 You can naturally also create an entirely custom theme and provide only that (in this case you will inherit from the default Bootstrap theme):
 
-``` {.yaml}
+``` yaml
 theme: custom.scss
 ```
 
@@ -109,7 +98,7 @@ You can read more about the custom theming design here:
 
 In addition to providing a single theme for your html output, you may also provide a light and dark theme. For example:
 
-``` {.yaml}
+``` yaml
 theme:
   light: flatly
   dark: darkly
@@ -139,7 +128,7 @@ The first appearance (light or dark) elements in the theme to determine the defa
 
 As when providing a single theme, you may provide a custom theme for dark and light mode, or a list of `scss` files to customize the light and dark appearance. This website, for example uses the following to use a light `cosmo` theme and then customizes the `cosmo` theme with additional Sass variables when in dark mode:
 
-``` {.yaml}
+``` yaml
 theme:
   light: cosmo
   dark: [cosmo, theme-dark.scss]
@@ -147,7 +136,7 @@ theme:
 
 The contents of `theme-dark.scss` which is customizing the cosmo appearance is:
 
-``` {.css}
+``` css
 /*-- scss:defaults --*/
 $body-bg: #181818;
 $body-color: white;

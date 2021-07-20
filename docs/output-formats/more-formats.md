@@ -10,7 +10,7 @@ Pandoc support a huge array of output formats, all of which can be used with Qua
 
 For example, here's some YAML that specifies the use of the `odt` format as well as a couple of format options:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 format: 
@@ -22,7 +22,7 @@ format:
 
 Alternatively you can specify the use of a format on the command line:
 
-``` {.bash}
+``` bash
 quarto render document.md --to odt
 ```
 

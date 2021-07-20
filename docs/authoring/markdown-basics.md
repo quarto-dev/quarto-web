@@ -144,7 +144,7 @@ This document provides examples of the most commonly used markdown syntax. See t
 +=============================+==========================+
 |     > Blockquote            | > Blockquote             |
 +-----------------------------+--------------------------+
-|     ::: {.classname}        | ::: {.classname}         |
+|     ::: {.classname}        | ::: classname            |
 |     Div                     | Div                      |
 |     :::                     | :::                      |
 +-----------------------------+--------------------------+

@@ -18,14 +18,13 @@ Use the **File :** **New File : Quarto Doc...** command to create new Quarto doc
 
 ![](images/new-quarto-doc.png){width="471"}
 
-
 ## Knitr Engine
 
 Quarto is designed to be highly compatible with existing [R Markdown](https://rmarkdown.rstudio.com/) documents. You should generally be able to use Quarto to render any existing Rmd document without changes.
 
 One important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are typically included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:
 
-```` {.python}
+```` python
 ```{r}
 #| echo: false
 #| fig.cap: "Air Quality"
@@ -39,13 +38,13 @@ ggplot(airquality, aes(Temp, Ozone)) +
 
 Quarto uses this approach to both better accommodate longer options like `fig.cap`, `fig.subcap`, and `fig.alt` as well as to make it straightforward to edit chunk options within more structured editors that don't have an easy way to edit chunk metadata (e.g. most traditional notebook UIs).
 
-::: {.callout-note}
+::: callout-note
 Note that if you prefer it is still possible to include chunk options on the first line (e.g. ```` ```{r, echo = FALSE} ````). That said, we recommend using the comment-based syntax to make documents more portable and consistent across execution engines.
 :::
 
 Chunk options included this way use YAML syntax rather than R syntax for consistency with options provided in YAML front matter. You can still however use R code for option values by prefacing them with `!expr`. For example:
 
-``` {.r}
+``` r
 #| fig.cap: !expr paste("Air", "Quality")
 ```
 
@@ -53,7 +52,7 @@ Chunk options included this way use YAML syntax rather than R syntax for consist
 
 You can also work with Quarto markdown documents that target the Jupyter engine within RStudio. These files will typically include a `jupyter` option in the YAML front matter indicating which kernel to use. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "Matplotlib Demo"
 author: "Norah Smith"
@@ -61,7 +60,7 @@ jupyter: python3
 ---
 ```
 
-If you want to work within a virtual environment ([venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)), use the **File :** **New Project...** command and specify which packages you'd like to seed the venv with: 
+If you want to work within a virtual environment ([venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)), use the **File :** **New Project...** command and specify which packages you'd like to seed the venv with:
 
 ![](images/rstudio-new-project.png){width="552"}
 
@@ -73,20 +72,20 @@ RStudio will automatically activate this virtual environment whenever you open t
 
 If you are not using RStudio and/or you prefer to render from the R console, you can do so using the **quarto** R package. To install the R package:
 
-``` {.r}
+``` r
 remotes::install_github("quarto-dev/quarto-r")
 ```
 
 Then, to render a document:
 
-``` {.r}
+``` r
 library(quarto)
 quarto_render("document.qmd")
 ```
 
 If you working on a [website](../websites/website-basics.md) or [book](../books/book-basics.md) project, you can run the Quarto development server with:
 
-``` {.r}
+``` r
 library(quarto)
 quarto_serve()
 ```
