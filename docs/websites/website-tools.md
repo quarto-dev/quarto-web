@@ -14,7 +14,7 @@ You can enhance your website and the content that you publish to it by including
 
 [Twitter Cards](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards) provide an enhanced appearance when someone links to content on Twitter. When a link to your content is included in a Tweet, Twitter automatically crawls your site and fetches any Twitter Card metadata. To enable the automatic generation of Twitter Card metadata for your content, you can add the following to your `_quarto.yml` configuration file:
 
-``` {.yaml}
+``` yaml
 site:
   twitter-card: true
 ```
@@ -43,7 +43,7 @@ You may also provide additional metadata to be used when generating the Twitter 
 
 Here is a more comprehensive example of specifying Twitter Card metadata in a `quarto.yml` file:
 
-``` {.yaml}
+``` yaml
 site:
   twitter-card:
     creator: "@dragsonstyle"
@@ -56,7 +56,7 @@ Quarto will automatically merge global metadata found in the `site: twitter-card
 
 The [Open Graph protocol](http://ogp.me/) is a specification that enables richer sharing of links to articles on the web. It will improve the previews of your content when a link to it is pasted into applications like Slack, Discord, Facebook, Linkedin, and more. To enable the automatic generation of Open Graph metadata for your content, include the following in your `_quarto.yml` configuration file:
 
-``` {.yaml}
+``` yaml
 site:
   opengraph: true
 ```
@@ -83,7 +83,7 @@ You may also provide additional metadata to be used when generating the Open Gra
 
 Here is a more comprehensive example of specifying Open Graph metadata in a `quarto.yml` file:
 
-``` {.yaml}
+``` yaml
 site:
   open-graph:
     locale: es_ES
@@ -98,7 +98,7 @@ You can specify a preview image for your article in several different ways:
 
 1.  You can explicitly provide a full url to the preview image using the `image` field in the appropriate metadata. For example:
 
-    ``` {.yaml}
+    ``` yaml
     title: "My Document"
     twitter-card:
       image: "https://quarto.org/images/preview-code.png"
@@ -106,14 +106,14 @@ You can specify a preview image for your article in several different ways:
 
 2.  You may provide a document relative path to an image (such as `images/preview-code.png`) or a project relative path to an image (such as `/images/preview-code.png`). If you provide a relative path such as this, you must also provide a `site-url` in your site's metadata. For example in your `_quarto.yml` configuration file:
 
-    ``` {.yaml}
+    ``` yaml
     site:
       site-url: "https://www.quarto.org"
     ```
 
     and in your document front matter:
 
-    ``` {.yaml}
+    ``` yaml
     title: "My Document"
     twitter-card:
       image: "/images/preview-code.png"
@@ -121,7 +121,7 @@ You can specify a preview image for your article in several different ways:
 
 3.  Any image that is being rendered in the page may also be used as a preview image by giving it the class name `preview-image`. Quarto will select the first image it finds with this class. For example, the following image will be used as the preview image when included on a page:
 
-    ``` {.markdown}
+    ``` markdown
     ![](images/jupyter-document.png){.border .preview-image}
     ```
 
@@ -140,7 +140,7 @@ You can specify a preview image for your article in several different ways:
 
 You can add [Google Analytics](https://analytics.google.com/) to your website by adding adding a `google-analytics` key to your `_quarto.yml` file. In its simplest form, you can just pass your Google Analytics tracking Id (e.g. `UA-xxxxxxx`) or Google Tag measurement Id (e.g. `G-xxxxxxx`) like:
 
-``` {.yaml}
+``` yaml
 site:
   google-analytics: "UA-XXXXXXXX"
 ```
@@ -183,7 +183,7 @@ Quarto includes the ability to request cookie consent before enabling scripts th
 
 The user's cookie preferences will automatically control [Google Analytics] (if enabled) and can be used to control custom scripts you add as well (see [Custom Scripts and Cookie Consent]. You can enable the default request for cookie consent using the following:
 
-``` {.yaml}
+``` yaml
 site:
   cookie-consent: true
 ```
@@ -222,7 +222,7 @@ You can further customize the appearance and behavior of the consent using the f
 
 A custom example might look more like:
 
-``` {.yaml}
+``` yaml
 site:
   cookie-consent:
     type: express
@@ -247,21 +247,16 @@ Cookie Consent works by preventing the execution of scripts unless the user has 
 
 2.  Add a `cookie-consent` attribute to your script tag, setting it one of the following 4 levels:
 
-    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | Level                | Description                                                                                                            |
-    +======================+========================================================================================================================+
+    |----------------------|------------------------------------------------------------------------------------------------------------------------|
     | `strictly-necessary` | Strictly scripts are loaded automatically and cannot be disabled by the user.                                          |
-    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | `functionality`      | Scripts that are required for basic functionality of the website, for example, remembering a user language preference. |
-    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | `tracking`           | Scripts that are used to track users, for example [Google Analytics].                                                  |
-    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | `targeting`          | Scripts that are used for the purposed of advertising to ad targeting, for example Google AdSense remarketing.         |
-    +----------------------+------------------------------------------------------------------------------------------------------------------------+
 
 An example script that is used for user tracking would look like:
 
-``` {.javascript}
+``` javascript
 <script type="text/plain" cookie-consent="tracking">
 
 // My tracking JS code here
@@ -273,13 +268,13 @@ An example script that is used for user tracking would look like:
 
 Quarto websites can support both a light and dark mode. For example, you may used the `flatly` and `darkly` themes (which are designed to be used in tandem as dark and light appearances) as:
 
-``` {.yaml}
+``` yaml
 theme:
   light: flatly
   dark: darkly
 ```
 
-For more about selecting the dark and light themes for your website, see [Dark and Light Themes](../output-formats/html-themes.html\#dark-and-light-themes).
+For more about selecting the dark and light themes for your website, see [Dark and Light Themes](../output-formats/html-themes.html#dark-and-light-themes).
 
 | Light                      | Dark                      |
 |----------------------------|---------------------------|

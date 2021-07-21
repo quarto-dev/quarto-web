@@ -32,7 +32,7 @@ The `var` shortcode enables you to insert content from a project-level `_variabl
 
 Variables can be either simple values or can include arbitrary markdown content. To define variables, create a `_variables.yml` file in the root directory of your project. For example:
 
-``` {.yaml}
+``` yaml
 version: 1.2
 
 email:
@@ -87,21 +87,17 @@ A "filter" is a program that modifies the AST, between the reader and the writer
 
 Pandoc's built-in citation processing is implemented as a filter, as are many of Quarto's extensions (e.g. cross-references, figure layout, etc.). Some other examples include:
 
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Filter                                                                                     | Description                                                                                                                          |
-+============================================================================================+======================================================================================================================================+
+|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | [include-files](https://github.com/pandoc/lua-filters/tree/master/include-files)           | Filter to include other files in the document.                                                                                       |
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | [include-code-files](https://github.com/pandoc/lua-filters/tree/master/include-code-files) | Filter to include code from source files.                                                                                            |
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | [pagebreak](https://github.com/pandoc/lua-filters/tree/master/pagebreak)                   | Converts paragraps containing only the LaTeX `\newpage` or `\pagebreak` command into appropriate pagebreak markup for other formats. |
-+--------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Using Filters
 
 Add one or more filters to document rendering using the `filters` option. For example:
 
-``` {.yaml}
+``` yaml
 filters:
    - include-files.lua
    - pagebreak.lua
@@ -109,7 +105,7 @@ filters:
 
 By default, user filters are run before Quarto's built-in filters. If you prefer to control the order of filters visa-vi Quarto just include `quarto` explicitly as a filter. For example, to run `include-files.lua` before Quarto filters and `pagebreak.lua` after, use this:
 
-``` {.yaml}
+``` yaml
 filters:
   - include-files.lua
   - quarto
@@ -136,14 +132,14 @@ If you want to write a JSON filter, see the documentation on [Writing JSON filte
 
 The [include-files](https://github.com/pandoc/lua-filters/tree/master/include-files) filter is a convenient way to re-use markdown content within a project. You can make this filter available by [downloading](https://raw.githubusercontent.com/pandoc/lua-filters/master/include-files/include-files.lua) it from the site linked to above, copying it into your project directory, then adding it as a filter within `_quarto.yml` as follows:
 
-``` {.yaml}
+``` yaml
 filters:
   - include-files.lua
 ```
 
 To include a file named `_common.md` you would use this markdown:
 
-```` {.markdown}
+```` markdown
 ```{.include}
 _common.md
 ```
@@ -151,7 +147,7 @@ _common.md
 
 You can also include multiple files:
 
-```` {.markdown}
+```` markdown
 ```{.include}
 _common.md
 _download.md

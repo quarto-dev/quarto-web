@@ -8,7 +8,7 @@ format: html
 
 Use the `pdf` format to create PDF output. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My document"
 format:
@@ -23,7 +23,7 @@ This example highlights a few of the options available for PDF output. This arti
 
 If you want to produce raw LaTeX output (a .tex file) rather than a PDF, all of the options documented here are still available (see the [LaTeX Output] section below for additional details).
 
-::: {.callout-note}
+::: callout-note
 Note that while we will focus here exclusively on the use LaTeX to create PDFs, Pandoc also has support for creating PDFs using ConTeXt, roff ms, or HTML (via wkhtmltopdf). See the Pandoc documentation on [Creating a PDF](https://pandoc.org/MANUAL.html#creating-a-pdf) for additional details.
 :::
 
@@ -31,7 +31,7 @@ Note that while we will focus here exclusively on the use LaTeX to create PDFs, 
 
 In order to create PDFs you will need to install a recent distribution of TeX. We recommend the use of TinyTeX (which is based on TexLive), which you can install with the following command:
 
-``` {.bash}
+``` bash
 quarto tools install tinytex
 ```
 
@@ -39,11 +39,11 @@ See the article on [PDF Engines](pdf-engine.md) for details on using other TeX d
 
 ## Document Class
 
-Quarto uses [KOMA Script](https://ctan.org/pkg/koma-script) document classes by default for PDF documents and books. KOMA-Script classes are drop-in replacements for the standard classes with an emphasis on typography and versatility. 
+Quarto uses [KOMA Script](https://ctan.org/pkg/koma-script) document classes by default for PDF documents and books. KOMA-Script classes are drop-in replacements for the standard classes with an emphasis on typography and versatility.
 
 For PDF documents this results in the following Pandoc options set by default:
 
-```yaml
+``` yaml
 format:
   pdf:
     documentclass: scrartcl
@@ -54,7 +54,7 @@ You can set `documentclass` to the standard `article`, `report` or `book` classe
 
 See the [Output Options] section below for additional details on customizing LaTeX document options.
 
-``` {.include}
+``` include
 _document-options-begin.md
 ```
 
@@ -72,7 +72,7 @@ There are numerous options available for customizing PDF output, including:
 
 For example, here we use a few of these options:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 format: 
@@ -96,7 +96,7 @@ See the Pandoc documentation on metadata [variables for LaTeX](https://pandoc.or
 
 When creating PDFs, you can choose to use either the default Pandoc [citation handling](https://pandoc.org/MANUAL.html#citations) based on citeproc, or alternatively use [natbib](https://ctan.org/pkg/natbib) or [BibLaTeX](https://ctan.org/pkg/biblatex). This can be controlled using the `cite-method` option. For example:
 
-``` {.yaml}
+``` yaml
 format:
   pdf: 
     cite-method: biblatex
@@ -121,7 +121,7 @@ When using natbib or biblatex you can specify the following additional options t
 
 When creating a PDF document, Pandoc allows the use of [raw LaTeX](https://pandoc.org/MANUAL.html#extension-raw_tex) directives intermixed with markdown. For example:
 
-``` {.tex}
+``` tex
 \begin{tabular}{|l|l|}\hline
 Age & Frequency \\ \hline
 18--25  & 15 \\
@@ -132,7 +132,7 @@ Age & Frequency \\ \hline
 
 Raw LaTeX commands will be preserved and passed unchanged to the LaTeX writer.
 
-::: {.callout-warning}
+::: callout-warning
 While it's very convenient to use raw LaTeX, raw LaTeX is ignored when rendering to other formats like HTML and MS Word. If you plan on rendering to other formats then the example above would be better written using native [markdown tables](../authoring/markdown-basics.md#tables).
 :::
 
@@ -142,19 +142,15 @@ In some cases raw LaTeX will require additional LaTeX packages. The [LaTeX Inclu
 
 If you want to include additional content in your document from another file, you can use the `include-in` options:
 
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------+
 | Option                | Description                                                                                                              |
-+=======================+==========================================================================================================================+
+|-----------------------|--------------------------------------------------------------------------------------------------------------------------|
 | `include-in-header`   | Include contents of *file*, verbatim, into the LaTeX preamble.                                                           |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------+
 | `include-before-body` | Include contents of *file*, verbatim, at the beginning of the document body (e.g. after the `\begin{document}` command). |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------+
 | `include-after-body`  | Include contents of *file*, verbatim, at the end of the document body (before the the `\end{document}`).                 |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------+
 
 You can specify a single file for multiple files for each of these options. For example:
 
-``` {.yaml}
+``` yaml
 format:
   html:
     include-in-header:
@@ -173,7 +169,7 @@ There are also a set of options you can use for inline includes (i.e. specifying
 
 For example:
 
-``` {.yaml}
+``` yaml
 format:
   pdf: 
     header-includes: |
@@ -191,7 +187,7 @@ If you want Quarto to produce a LaTeX file (.tex) rather than a PDF (for example
 
 1.  Use the `latex` format rather than the `pdf` format. For example:
 
-    ``` {.yaml}
+    ``` yaml
     format:
       latex:
         documentclass: report
@@ -204,7 +200,7 @@ If you want Quarto to produce a LaTeX file (.tex) rather than a PDF (for example
 
 2.  Use the `pdf` format along with the `keep-tex` option. For example:
 
-    ``` {.yaml}
+    ``` yaml
     format:
       pdf:
         documentclass: report

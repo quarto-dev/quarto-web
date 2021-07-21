@@ -14,13 +14,13 @@ Below we describe several convenient options for Quarto website deployment inclu
 
 The most important thing you should be sure to do before publishing is a final render of your project:
 
-``` {.bash}
+``` bash
 quarto render
 ```
 
 If you are publishing a [book](../books/book-basidcs.md) you'll want to add the `--to all` argument to ensure that all output formats (e.g. PDF, EPUB) have up to date content:
 
-``` {.bash}
+``` bash
 quarto render --to all
 ```
 
@@ -32,13 +32,13 @@ This is particularly important to remember because incremental changes you make 
 
 1.  Create a file named `.nojekyll` in your repository (this is required to disable some processing of HTML files that GitHub does by default). You can do this with the following:
 
-    ``` {.bash}
+    ``` bash
     touch .nojekyll
     ```
 
 2.  Set the `output-dir` within your `_quarto.yml` project file to "docs":
 
-    ``` {.yaml}
+    ``` yaml
     project:
       type: site
       output-dir: docs
@@ -64,14 +64,14 @@ If you are using Netlify Git integration, be sure to set the publish directory t
 
 You can deploy a Quarto website to RStudio Connect from the command line using the `quarto_publish_site()` function from the R quarto package. For example:
 
-``` {.r}
+``` r
 library(quarto)
 quarto_publish_site(server = "https://rsc.example.com")
 ```
 
 Note that once you've published your site for the first time you can omit the `server` argument:
 
-``` {.r}
+``` r
 quarto_publish_site()
 ```
 
@@ -83,7 +83,7 @@ You can also publish to RStudio Connect directly from within RStudio. To do this
 
 For the time being **Publish finished website only** is the only option supported for publishing Quarto websites to RStudio Connect. Support for publishing websites with source code (so they can be rendered on the server) will be added to an upcoming release of RStudio Connect.
 
-::: {.callout-note}
+::: callout-note
 You should be running the [daily build](https://dailies.rstudio.com) of RStudio (version 1.5.184 or higher) if you want to publish Quarto websites. The daily build has many other Quarto related enhancements so is highly recommended even if you aren't using the publishing features.
 :::
 
@@ -93,13 +93,13 @@ Google Firebase has a [web hosting service](https://firebase.google.com/docs/hos
 
 Firebase websites by default deploy content from the `public` directory of the Firebase project directory. This means that you should set the `output-dir` to `"public"` within `_quarto.yml`:
 
-``` {.yaml}
+``` yaml
 project:
   type: site
   output-dir: public
 ```
 
-## Site44 (Dropbox)
+## Site44
 
 [Site44](https://www.site44.com/) is a service that allows you to publish websites from within Dropbox folders. Site44 creates a `Dropbox/Apps/site44` directory, and any folders within that directory are published as websites.
 
@@ -107,7 +107,7 @@ The recommended workflow for deploying Distill websites to Site44 is to develop 
 
 ## Amazon S3
 
-If you are a user of Amazon Web Services you can serve your website directly from Amazon S3. Note however that this option is a bit more technically involved than GitHub Pages, Netlify, or Site 44. See the article on [Hosting a Static Website on Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html) for additional details.
+If you are a user of Amazon Web Services you can serve your website directly from Amazon S3. Note however that this option is a bit more technically involved than GitHub Pages, Netlify, or Site44. See the article on [Hosting a Static Website on Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html) for additional details.
 
 ## Other services
 

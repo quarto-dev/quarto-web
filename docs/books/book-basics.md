@@ -26,13 +26,13 @@ Here are some examples of books created with Quarto:
 
 To create a new book project, use the Quarto `create-project` command:
 
-``` {.bash}
+``` bash
 quarto create-project mybook --type book
 ```
 
 This will create the scaffolding for a simple book in the `mybook` subdirectory. To build and view the HTML version of the book use the `serve` command:
 
-``` {.bash}
+``` bash
 quarto serve mybook
 ```
 
@@ -44,7 +44,7 @@ The book's chapters are contained in the files `index.md`, `introduction.md`, `s
 
 You'll also notice that a Quarto project file (`_quarto.yml`) was created in the `mybook` directory. This file contains the initial configuration for your book:
 
-``` {.yaml}
+``` yaml
 project:
   type: book
 
@@ -75,7 +75,7 @@ format:
 
 When working on a book, you'll typically run the local development server as described above and incrementally preview content as you work:
 
-``` {.bash}
+``` bash
 quarto serve
 ```
 
@@ -87,7 +87,7 @@ Note that development server updates do not cause an update to the final book ou
 
 Note that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the **quarto** R package:
 
-``` {.r}
+``` r
 library(quarto)
 quarto_serve()
 ```
@@ -102,7 +102,7 @@ RStudio v1.4 automatically uses Quarto to render Rmd documents whenever it sees 
 
 However, since RStudio v1.4 is not aware of Quarto projects, you should add an explicit entry in YAML front-matter to ensure that Quarto (rather than the **rmarkdown** package) is used for rendering:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Page"
 knit: quarto render
@@ -113,20 +113,20 @@ knit: quarto render
 
 When you are ready to publish the book, use the `render` command to render all output formats:
 
-``` {.bash}
+``` bash
 quarto render --to all
 ```
 
 If you pass no arguments to `quarto render` the default format (HTML) will be rendered. You can also render individual formats via the `--to` argument:
 
-``` {.bash}
+``` bash
 quarto render           # render default format (HTML)
 quarto render --to pdf  # render PDF format only
 ```
 
 The output of your book will be written to the `_book` sub-directory of your book project:
 
-``` {.yaml}
+``` yaml
 mybook/
   _book/
     index.html # and other website files

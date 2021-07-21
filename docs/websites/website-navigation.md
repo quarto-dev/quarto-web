@@ -20,7 +20,7 @@ In addition, you can add full text search to either the top or side navigation i
 
 To add top-navigation to a website, add a `navbar` entry to the `site` config in `_quarto.yml`. For example, the following YAML:
 
-``` {.yaml}
+``` yaml
 site:
   navbar:
     type: dark
@@ -43,7 +43,7 @@ The text for navigation bar items will be taken from the underlying target docum
 
 You can also create a navigation menu by including a `menu` (which is list of items much like `left` and `right)`. For example:
 
-``` {.yaml}
+``` yaml
 left:
   - text: "More"
     menu:
@@ -53,45 +53,28 @@ left:
 
 Here are all of the options available for top navigation:
 
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option         | Description                                                                                                                                                                                    |
-+================+================================================================================================================================================================================================+
+|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | title          | Navbar title (uses the `site-title` if none is specified).                                                                                                                                     |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | logo           | Optional logo image to be displayed left of the title.                                                                                                                                         |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | type           | "dark" or "light" (each Bootstrap theme has a light and dark variation of the navigation bar)                                                                                                  |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | background     | Background color ("primary", "secondary", "success", "danger", "warning", "info", "light", or "dark")                                                                                          |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | search         | Include a search box (true or false)                                                                                                                                                           |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | left / right   | Lists of navigation items for left and right side of navbar                                                                                                                                    |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | pinned         | Always show the navbar (true or false). Defaults to false, and uses [headroom.js](https://wicky.nillia.ms/headroom.js/) to automatically show the navbar when the user scrolls up on the page. |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | collapse       | Collapse the navbar items into a hamburger menu when the display gets narrow (defaults to true)                                                                                                |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | collapse-below | Responsive breakpoint at which to collapse navbar items to a hamburger menu ("sm", "md", "lg", "xl", or "xxl", defaults to "lg")                                                               |
-+----------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here are the options available for individual navigation items:
 
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option     | Description                                                                                                                                                 |
-+============+=============================================================================================================================================================+
+|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | file       | Link to file contained with the project.                                                                                                                    |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | url        | Link to external URL.                                                                                                                                       |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | text       | Text to display for navigation item (defaults to the document `title` if not provided).                                                                     |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | icon       | Name of one of the standard [Bootstrap 5 icons](https://icons.getbootstrap.com/) (e.g. "github", "twitter", "share", etc.).                                 |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | aria-label | [Accessible label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) for the navigation item. |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | menu       | List of navigation items to populate a drop-down menu.                                                                                                      |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ## Side Navigation {#side-navigation}
 
@@ -101,7 +84,7 @@ If you are reading this page on a desktop device then you will see the default s
 
 To add side navigation to a website, add a `sidebar` entry to the `site` section of `_quarto.yml`. For example:
 
-``` {.yaml}
+``` yaml
 site:
   sidebar:
     style: "docked"
@@ -127,37 +110,22 @@ There are two styles of side navigation available: "docked" which shows the navi
 
 Here are all of the options available for side navigation:
 
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option         | Description                                                                                                                                                                                                                                                        |
-+================+====================================================================================================================================================================================================================================================================+
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | id             | Optional identifier (used only for hybrid navigation, described below).                                                                                                                                                                                            |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | title          | Sidebar title (uses the project title if none is specified).                                                                                                                                                                                                       |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | subtitle       | Optional subtitle                                                                                                                                                                                                                                                  |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | logo           | Optional logo image                                                                                                                                                                                                                                                |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | search         | Include a search box (true or false). Note that if there is already a search box on the top navigation bar it won't be displayed on the sidebar.                                                                                                                   |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | tools          | List of sidebar tools (e.g. link to github or twitter, etc.). See the next section for details.                                                                                                                                                                    |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | footer         | Footer content to place immediately below the sidebar.                                                                                                                                                                                                             |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | items          | List of navigation items to display (typically top level items will in turn have a list of sub-items).                                                                                                                                                             |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | style          | "docked" or "floating"                                                                                                                                                                                                                                             |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | type           | "dark" or "light" (hint to make sure the text color is the inverse of the background)                                                                                                                                                                              |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | background     | Background color ("none", "primary", "secondary", "success", "danger", "warning", "info", "light", "dark", or "white"). Defaults to "light".                                                                                                                       |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | alignment      | Alignment ("left", "right", or "center").                                                                                                                                                                                                                          |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | collapse-level | Whether to show sidebar navigation collapsed by default. The default is 2, which shows the top and next level fully expanded (but leaves the 3rd and subsequent levels collapsed).                                                                                 |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | pinned         | Always show a title bar that expands to show the sidebar at narrower screen widths (true or false). Defaults to false, and uses [headroom.js](https://wicky.nillia.ms/headroom.js/) to automatically show the navigation bar when the user scrolls up on the page. |
-+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Sidebar Tools {.unlisted}
 
@@ -166,7 +134,7 @@ In addition to traditional navigation, the sidebar can also display a set of too
 For example:
 
 +------------------------------------+-----------------------+
-| ``` {.yaml}                        | ![](images/tools.png) |
+| ``` yaml                           | ![](images/tools.png) |
 | site:                              |                       |
 |   sidebar:                         |                       |
 |     tools:                         |                       |
@@ -191,7 +159,7 @@ To do this, provide a list of `nav-side` entries and give them each an `id`, whi
 
 Your configuration for this site might look something like this:
 
-``` {.yaml}
+``` yaml
 site:
   navbar:
     search: true
@@ -230,7 +198,7 @@ site:
 
 For specific pages, useful particularly when you'd like a completely custom layout, you can hide the navigation (either the top navigation or the side navigation). In these cases when you'd like to hide navigation, add the following to that page's front matter:
 
-``` {.yaml}
+``` yaml
 # Hides the side bar on this page
 sidebar: false
 
@@ -242,7 +210,7 @@ navbar: false
 
 If you have a website with a number of pages in a section or subsection, it is often convenient to offer the user the ability to navigate to the next page (or previous page) at the bottom of the page that they've just finished reading. You can enable this using:
 
-``` {.yaml}
+``` yaml
 site:
   page-navigation: true
 ```
@@ -253,7 +221,7 @@ When enabled, page navigation will be displayed at the bottom of the page whenev
 
 If you include a page separator in sidebar (either between sections or items), page navigation controls will not appear to continue pagination across the separator. For example, in the following sidebar:
 
-``` {.yaml}
+``` yaml
 site:
   sidebar:
     contents:
@@ -277,7 +245,7 @@ When the user reaches the bottom of document3.qmd, they will see previous naviga
 
 You can add site search by including `search: true` in either your `site-navbar` or `site-sidebar` configuration. For example:
 
-``` {.yaml}
+``` yaml
 site:
   sidebar:
     style: "docked"
@@ -294,7 +262,7 @@ site:
 
 You can add various links (e.g. to edit pages, report issues, etc.) to the GitHub repository where your site source code is hosted. To do this, add a `repo-url` along with one or more actions in `repo-actions`. For example:
 
-``` {.yaml}
+``` yaml
 site:
   repo-url: https://github.com/quarto-dev/quarto-demo
   repo-actions: [edit, issue]
@@ -312,7 +280,7 @@ If you rename or move a page on your site, you may want to create redirects from
 
 For example, let's say you renamed `page.md` to `renamed-page.md`. You would add the following `aliases` entry to `renamed-page.md` to create the redirect:
 
-``` {.yaml}
+``` yaml
 ---
 title: "Renamed Page"
 aliases:
@@ -322,7 +290,7 @@ aliases:
 
 This can also be useful for situations where you re-organize content on your site into a different directory hierarchy or break one large article into smaller ones. For this case, you may want to add the URL hash of the section that you have broken into a new page. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "Learning More"
 aliases:
@@ -330,7 +298,7 @@ aliases:
 ---
 ```
 
-::: {.callout-tip}
+::: callout-tip
 Depending on where you are deploying your site there may be more powerful tools available for defining redirects based on patterns. For example, Netlify [`_redirects`](https://docs.netlify.com/routing/redirects/) files or [`.htaccess`](https://www.danielmorell.com/guides/htaccess-seo/redirects/introduction-to-redirects) files. Search your web host's documentation for "redirects" to see if any of these tools are available.
 :::
 
@@ -340,7 +308,7 @@ When a browser can't find a requested web page, it displays a [404 error](https:
 
 Most web serving platforms (e.g. Netlify, GH Pages, etc.) will use a file named `404.html` in the root of your website as a custom error page if you provide it. You can include a custom 404 page in a Quarto website by creating a markdown file named `404.md` in the root of your project. For example:
 
-``` {.markdown}
+``` markdown
 ---
 title: Page Not Found
 ---
@@ -364,7 +332,7 @@ However, if your website is **not** served from the root of a domain then you ne
 
 For example, if your site is served from <https://example.com/mysite/> then you'd add the following to your project `site` configuration within `_quarto.yml`:
 
-``` {.yaml}
+``` yaml
 site:
   title: "My Site"
   site-path: "/mysite/"
@@ -372,7 +340,7 @@ site:
 
 Note that if you are already providing a `site-url` (which is required for generation of sitemaps and [social metadata](website-tools.md#social-metadata) preview images) then it's enough to simply include the path within the `site-url`:
 
-``` {.yaml}
+``` yaml
 site:
   title: "My Site"
   site-url: "https://example.com/mysite/"

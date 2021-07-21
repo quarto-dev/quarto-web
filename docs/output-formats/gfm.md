@@ -17,7 +17,7 @@ This article covers using Quarto to generate [GitHub Flavored Markdown](https://
 
 Use the `gfm` format to create GitHub Flavored Markdown from Quarto. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Project"
 format: gfm
@@ -28,7 +28,7 @@ To create a `README.md` using Quarto, start with a notebook (.ipynb) or computat
 
 **README.qmd**
 
-```` {.python}
+```` python
 ---
 title: "My Project"
 format: gfm
@@ -44,7 +44,7 @@ This is a GitHub README that has content dynamically generated from Python:
 
 Render the README with:
 
-``` {.bash}
+``` bash
 quarto render README.qmd
 ```
 
@@ -56,7 +56,7 @@ If you want to use Quarto to incorporate computations into a GitHub wiki start b
 
 Then, simply create a computational markdown file (.ipynb, .qmd) for each page in the wiki. You can render all of these files at once into their corresponding .md files using [Quarto Projects](../getting-started/quarto-projects.md). For example:
 
-``` {.bash}
+``` bash
 quarto render
 ```
 

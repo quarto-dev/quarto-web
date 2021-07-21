@@ -20,14 +20,14 @@ Quarto will use Pandoc to automatically generate citations and a bibliography in
 
 Quarto supports bibliography files in a wide variety of formats including BibTeX and CSL. Add a bibliography to your document using the `bibliography` YAML metadata field. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 bibliography: references.bib
 ---
 ```
 
-::: {.callout-tip}
+::: callout-tip
 You can provide more than one bibliography file if you would like by setting the `bibliography` field's value to a YAML array.
 :::
 
@@ -37,19 +37,19 @@ See the [Pandoc Citations](https://pandoc.org/MANUAL.html#citations) documentati
 
 Quarto uses the standard Pandoc markdown representation for citations (e.g. `[@citation]`) --- citations go inside square brackets and are separated by semicolons. Each citation must have a key, composed of '\@' + the citation identifier from the database, and may optionally have a prefix, a locator, and a suffix. The citation key must begin with a letter, digit, or `_`, and may contain alphanumerics, `_`, and internal punctuation characters (`:.#$%&-+?<>~/`). Here are some examples:
 
-+-------------------------------------------+-------------------------------------------------------------------+
-| Markdown Format                           | Output                                                            |
-+===========================================+===================================================================+
-|     Blah Blah [see @knuth1984, pp. 33-35; | Blah Blah [see @knuth1984, pp. 33-35; also @wickham2015, chap. 1] |
-|     also @wickham2015, chap. 1]           |                                                                   |
-+-------------------------------------------+-------------------------------------------------------------------+
-|     Blah Blah [@knuth1984, pp. 33-35,     | Blah Blah [@knuth1984, pp. 33-35, 38-39 and passim]               |
-|     38-39 and passim]                     |                                                                   |
-+-------------------------------------------+-------------------------------------------------------------------+
-|     Blah Blah [@wickham2015; @knuth1984]. | Blah Blah [@wickham2015; @knuth1984].                             |
-+-------------------------------------------+-------------------------------------------------------------------+
-|     Wickham says blah [-@wickham2015]     | Wickham says blah [-@wickham2015]                                 |
-+-------------------------------------------+-------------------------------------------------------------------+
++-------------------------------------------+---------------------------------------------------------------------+
+| Markdown Format                           | Output                                                              |
++===========================================+=====================================================================+
+|     Blah Blah [see @knuth1984, pp. 33-35; | Blah Blah \[see @knuth1984, pp. 33-35; also @wickham2015, chap. 1\] |
+|     also @wickham2015, chap. 1]           |                                                                     |
++-------------------------------------------+---------------------------------------------------------------------+
+|     Blah Blah [@knuth1984, pp. 33-35,     | Blah Blah \[@knuth1984, pp. 33-35, 38-39 and passim\]               |
+|     38-39 and passim]                     |                                                                     |
++-------------------------------------------+---------------------------------------------------------------------+
+|     Blah Blah [@wickham2015; @knuth1984]. | Blah Blah [@wickham2015; @knuth1984].                               |
++-------------------------------------------+---------------------------------------------------------------------+
+|     Wickham says blah [-@wickham2015]     | Wickham says blah [-@wickham2015]                                   |
++-------------------------------------------+---------------------------------------------------------------------+
 
 You can also write in-text citations, as follows:
 
@@ -67,7 +67,7 @@ See the [Pandoc Citations](https://pandoc.org/MANUAL.html#citations) documentati
 
 Quarto uses Pandoc to format citations and bibliographies. By default, Pandoc will use the [Chicago Manual of Style](https://chicagomanualofstyle.org/) author-date format, but you can specify a custom formatting using CSL ([Citation Style Language](https://citationstyles.org)). To provide a custom citation stylesheet, provide a path to a CSL file using the `csl` metadata field in your document, for example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 bibliography: references.bib
@@ -81,7 +81,7 @@ You can find CSL files or learn more about using styles at the [CSL Project](htt
 
 Pandoc will automatically generate a list of works cited and place it in the document if the style calls for it. It will be placed in a div with the id `refs` if one exists:
 
-``` {.markdown}
+``` markdown
 ### References
 
 ::: {#refs}
@@ -90,7 +90,7 @@ Pandoc will automatically generate a list of works cited and place it in the doc
 
 If no such div is found, the works cited list will be placed at the end of the document.
 
-::: {.callout-tip}
+::: callout-tip
 You can suppress generation of a bibliography by including `suppress-bibliography: true` option in your document metadata
 :::
 
@@ -123,7 +123,7 @@ It is possible to create a bibliography with all the citations, whether or not t
 
 Pandoc supports numbering and formatting footnotes using the following syntax:
 
-``` {.markdown}
+``` markdown
 Here is a footnote reference,[^1] and another.[^longnote]
 
 [^1]: Here is the footnote.
@@ -161,7 +161,7 @@ This paragraph won't be part of the note, because it isn't indented.
 
 In addition, you can also write single paragraph footnotes inline using the following syntax:
 
-``` {.markdown}
+``` markdown
 Here is an inline note.^[Inlines notes are easier to write,
 since you don't have to pick an identifier and move down to
 type the note.]

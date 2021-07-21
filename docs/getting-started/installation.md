@@ -12,7 +12,7 @@ Installing the Quarto CLI (command-line interface) provides you with everything 
 
 You can verify that Quarto has been installed correctly with:
 
-``` {.bash}
+``` bash
 quarto check install
 ```
 
@@ -30,25 +30,25 @@ If you don't yet have Python 3 on your system, we recommend you install a versio
 
 If you are in a fresh Pytohn 3 environment, installing the `jupyter` package will provide everything required to run Quarto:
 
-+-------------------+--------------------------------------------------+
-| Pkg. Manager      | Command                                          |
-+===================+==================================================+
-| Pip\              | ``` {.bash}                                      |
-| (Windows)         | py -m pip install jupyter                        |
-|                   | ```                                              |
-+-------------------+--------------------------------------------------+
-| Pip\              | ``` {.bash}                                      |
-| (Mac/Linux)       | python3 -m pip install jupyter                   |
-|                   | ```                                              |
-+-------------------+--------------------------------------------------+
-| Conda             | ``` {.bash}                                      |
-|                   | conda install jupyter                            |
-|                   | ```                                              |
-+-------------------+--------------------------------------------------+
++--------------+--------------------------------+
+| Pkg. Manager | Command                        |
++==============+================================+
+| Pip\         | ``` bash                       |
+| (Windows)    | py -m pip install jupyter      |
+|              | ```                            |
++--------------+--------------------------------+
+| Pip\         | ``` bash                       |
+| (Mac/Linux)  | python3 -m pip install jupyter |
+|              | ```                            |
++--------------+--------------------------------+
+| Conda        | ``` bash                       |
+|              | conda install jupyter          |
+|              | ```                            |
++--------------+--------------------------------+
 
 You can verify that Quarto is configured correctly for Jupyter with:
 
-``` {.bash}
+``` bash
 quarto check jupyter
 ```
 
@@ -56,7 +56,7 @@ quarto check jupyter
 
 On Mac OS and Linux, Quarto will use the version of Python 3 that it finds in the system path. Modify the `PATH` before invoking Quarto to use a different version of Python.
 
-::: {.callout-warning}
+::: callout-warning
 #### Mac OS Python 3
 
 If you are running Mac OS you might already have a version of Python 3 installed via the [Command Line Tools](https://developer.apple.com/xcode/features/). Even so, we still recommend that you install a version of Python 3 using the standard installer at <https://www.python.org/downloads/>.
@@ -70,13 +70,13 @@ The `quarto check jupyter` command will tell you which version of Python will be
 
 To use Quarto with R, you should install the **quarto** R package:
 
-``` {.r}
+``` r
 install.packages("quarto")
 ```
 
 Installation of the **quarto** package will also install the **knitr** package so you will have everything required to render documents containing R code. You can verify that Quarto is configured correctly for Knitr with:
 
-``` {.bash}
+``` bash
 quarto check knitr
 ```
 
@@ -92,7 +92,7 @@ A recent version of Pandoc (v2.14) is installed alongside Quarto. This version o
 
 To interact directly with the version of Pandoc installed with Quarto, use the `quarto pandoc` command. For example:
 
-``` {.bash}
+``` bash
 quarto pandoc --version
 quarto pandoc --list-output-formats
 ```
@@ -103,7 +103,7 @@ If you expect to use Quarto to create PDFs, you will need to install a recent di
 
 To install TinyTeX, use the following command:
 
-``` {.bash}
+``` bash
 quarto tools install tinytex
 ```
 
@@ -113,7 +113,7 @@ If you prefer TeX Live, you can find instructions for installing it here: <https
 
 To install the development version of the Quarto CLI, clone the quarto-cli repository then run the configure script for your platform (`configure-linux.sh`, `configure-macos.sh`, or `configure-windows.cmd`). For example:
 
-``` {.bash}
+``` bash
 git clone https://github.com/quarto-dev/quarto-cli
 cd quarto-cli
 ./configure-macos.sh
@@ -121,7 +121,7 @@ cd quarto-cli
 
 To update to the latest development version, just `git pull` from the local repo directory:
 
-``` {.bash}
+``` bash
 cd quarto-cli
 git pull
 ```
