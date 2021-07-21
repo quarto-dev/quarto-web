@@ -48,7 +48,7 @@ format:
 To build the website into the `_site` directory:
 
 ``` bash
-quarto render mybook
+quarto render
 ```
 
 See the [Quarto Projects](../getting-started/quarto-projects.md) article to learn more about working with projects.
