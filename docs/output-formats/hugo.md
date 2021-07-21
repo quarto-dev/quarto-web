@@ -23,7 +23,7 @@ To create a new page that uses Quarto:
 
 For example, let's say we wanted to create a new article named `hello-quarto` within the `content` directory. The filesystem would look like this:
 
-``` {.ini}
+``` ini
 mysite/
   content/
     hello-quarto/
@@ -32,7 +32,7 @@ mysite/
 
 Here's what the source code `hello-quarto.qmd` might look like:
 
-```` {.yaml}
+```` yaml
 ---
 title: Hello, Quarto
 format: hugo
@@ -64,7 +64,7 @@ plt.show()
 
 Generating pages for Hugo requires just a simple Quarto render:
 
-``` {.bash}
+``` bash
 quarto render hello-quarto.qmd
 ```
 

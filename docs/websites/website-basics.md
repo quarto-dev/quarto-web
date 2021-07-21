@@ -18,13 +18,13 @@ This site is an example of a Quarto Website (you can see the source code for it 
 
 To create a new website project, use the Quarto `create-project` command:
 
-``` {.bash}
+``` bash
 quarto create-project mysite --type site
 ```
 
 This will create the scaffolding for a simple website in the `mysite` subdirectory. Here is what the `_quarto.yml` config file will look like for the site:
 
-``` {.yaml}
+``` yaml
 project:
   type: site
 
@@ -47,17 +47,17 @@ format:
 
 To build the website into the `_site` directory:
 
-``` {.bash}
+``` bash
 quarto render
 ```
 
-See the [Quarto Projects](quarto-projects.md) article to learn more about working with projects.
+See the [Quarto Projects](../getting-started/quarto-projects.md) article to learn more about working with projects.
 
 ## Workflow
 
 Quarto includes a live-reloading development server that you will likely find convenient to use while working on websites. Start the server with:
 
-``` {.bash}
+``` bash
 quarto serve
 ```
 
@@ -71,7 +71,7 @@ Note that development server updates do not cause an update to the final site ou
 
 If you are using Quarto from R, you can also use the **quarto** package to run the development server:
 
-``` {.r}
+``` r
 library(quarto)
 quarto_serve()
 ```
@@ -86,7 +86,7 @@ RStudio v1.4 automatically uses Quarto to render Rmd documents whenever it sees 
 
 However, since RStudio v1.4 is not aware of Quarto projects, you should add an explicit entry in YAML front-matter to ensure that Quarto (rather than the **rmarkdown** package) is used for rendering:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Page"
 knit: quarto render
@@ -110,7 +110,7 @@ Note that the `*.xslx` value is quoted: this is because YAML requires that strin
 
 You can also add a `resources` metadata value to individual files. For example:
 
-``` {.yaml}
+``` yaml
 title: "My Page"
 resources:
   - "sheet.xlsx"
@@ -118,6 +118,6 @@ resources:
 
 Images are the most commonly used type of resource file. If you have global images (e.g. a logo) that you want to reference from various pages within your site, you can use an site-absolute path to refer to the images, and it will be automatically converted to a relative path during publishing. For example:
 
-``` {.markdown}
+``` markdown
 ![](/images/logo.png)
 ```

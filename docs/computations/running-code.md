@@ -22,7 +22,7 @@ Code blocks that use braces around the language name (e.g. ```` ```{python} ````
 
 ### Python (Jupyter)
 
-```` {.python}
+```` python
 ---
 title: "Jupyter Document"
 format: 
@@ -52,7 +52,7 @@ Note that we added the `code-background: true` option to provide a background co
 
 ### R (Knitr)
 
-```` {.r}
+```` r
 ---
 title: "Knitr Document"
 format: 
@@ -76,7 +76,7 @@ summary(airquality)
 
 ![](images/knitr-document.png){.border .preview-image}
 
-Note that we added the `execute: warning: false` option to suppress printing of warnings. See the [Execution Options] section below for additional details.
+Note that we added the `execute: warning: false` option to suppress printing of warnings. See [Execution Options](execution-options.md) below for additional details.
 
 You can produce a wide variety of output types from executable code blocks, including:
 
@@ -112,17 +112,17 @@ Non-executable code blocks are printed but not executed.
 
 ## Rendering
 
-### Markdown 
+### Markdown
 
 Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the Python example shown above might be rendered with:
 
-``` {.bash}
+``` bash
 quarto render jupyter-document.qmd
 ```
 
 The R example might have been rendered with:
 
-``` {.bash}
+``` bash
 quarto render knitr-document.qmd
 ```
 
@@ -130,11 +130,11 @@ quarto render knitr-document.qmd
 
 The Python example above uses a markdown input file, Quarto can also render any Jupyter notebook (.ipynb):
 
-``` {.bash}
+``` bash
 quarto render jupyter-document.ipynb
 ```
 
-```{.include}
+``` include
 _jupyter-execute.md
 ```
 
@@ -146,7 +146,7 @@ Both Jupyter and Knitr support executing inline code within markdown (e.g. to al
 
 To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
 
-```` {.python}
+```` python
 ```{python}
 #| echo: false
 
@@ -165,7 +165,7 @@ Note that we also include the `echo: false` option to ensure that the code used 
 
 To include executable expressions within markdown for Knitr, enclose the expression in `` `r ` ``. For example, if we have a variable `radius` we can use it within markdown as follows:
 
-``` {.markdown}
+``` markdown
 ## Circle
 
 The radius of the circle is `r radius`.
@@ -195,11 +195,11 @@ Here are the basic rules for automatic binding:
 
 You can override the engine used via the `engine` option. For example:
 
-``` {.markdown}
+``` markdown
 engine: jupyter
 ```
 
-``` {.markdown}
+``` markdown
 engine: knitr
 ```
 
@@ -207,23 +207,23 @@ You can also specify that no engine should be used via `engine: none`.
 
 The presence of the `knitr` or `jupyter` option will also override the default engine:
 
-``` {.markdown}
+``` markdown
 knitr: true
 ```
 
-``` {.markdown}
+``` markdown
 jupyter: python3
 ```
 
 Variations with additional engine-specific options also work to override the default engine:
 
-``` {.markdown}
+``` markdown
 knitr:
   opts_knit:
     verbose: true
 ```
 
-``` {.markdown}
+``` markdown
 jupyter:
   kernelspec:
     display_name: Python 3

@@ -8,7 +8,7 @@ format: html
 
 Use the `docx` format to create MS Word output. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 format:
@@ -20,7 +20,7 @@ format:
 
 This example highlights a few of the options available for MS Word output. This document covers these and other options in detail.
 
-```{.include}
+``` include
 _document-options-begin.md
 ```
 
@@ -28,7 +28,7 @@ _document-options-begin.md
 
 If you want to customize the appearance of MS Word output, Pandoc supports a special type of template called a *reference document*. Here's an example of specifying a custom reference document for `docx`:
 
-``` {.yaml}
+``` yaml
 format:
   docx:
     custom-reference-doc.docx

@@ -7,7 +7,7 @@ format: html
 
 There are a wide variety of options available for customizing output from executed code. All of these options can be specified either globally (in the document front-matter) or per code-block. For example, here's a modification of the Python example to specify that we don't want to "echo" the code into the output document:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 execute:
@@ -18,7 +18,7 @@ jupyter: python3
 
 Note that we can override this option on a per code-block basis. For example:
 
-```` {.python}
+```` python
 ```{python}
 #| echo: true
 
@@ -43,7 +43,7 @@ Options available for customizing output include:
 
 Here's a Knitr example with some of these additional options included:
 
-```` {.markdown}
+```` markdown
 ---
 title: "Knitr Document"
 execute:
@@ -64,7 +64,7 @@ summary(airquality)
 ```
 ````
 
-::: {.callout-tip}
+::: callout-tip
 When using the Knitr engine, you can also use any of the available native options (e.g. `collapse`, `tidy`, `comment`, etc.). See the [Knitr options documentation](https://yihui.org/knitr/options/) for additional details. You can include these native options in option comment blocks as shown above, or on the same line as the `{r}` as shown in the Knitr documentation.
 :::
 
@@ -86,7 +86,7 @@ There are a number of ways to control the default width and height of figures ge
 
 These defaults were chosen to provide attractive well proportioned figures, but feel free to experiment to see whether you prefer another default size. You can change the default sizes using the `fig-width` and `fig-height` options. For example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 format: 
@@ -111,7 +111,7 @@ How do these sizes make their way into the engine-level defaults for generating 
 
 You can specify the caption and alt text for figures generated from code using the `fig.cap` and `fig.alt` options. For example, here we add these options to a Python code cell that creates a plot:
 
-```` {.python}
+```` python
 ```{python}
 #| fig.cap: "Polar axis plot"
 #| fig.alt: "A line plot on a polar axis"
@@ -140,7 +140,7 @@ On the way from markdown input to final output, there are some intermediate file
 
 For example, here we specify that we want to keep both the markdown intermediate file after rendering:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 execute:
@@ -158,25 +158,25 @@ Quarto integrates with the [Jupyter Cache](https://jupyter-cache.readthedocs.io/
 +-----------+--------------------------------------+
 | Platform  | Command                              |
 +===========+======================================+
-| Windows   | ``` {.bash}                          |
+| Windows   | ``` bash                             |
 |           | py -m pip install jupyter-cache      |
 |           | ```                                  |
 +-----------+--------------------------------------+
-| Mac/Linux | ``` {.bash}                          |
+| Mac/Linux | ``` bash                             |
 |           | python3 -m pip install jupyter-cache |
 |           | ```                                  |
 +-----------+--------------------------------------+
 
 To enable caching for a document just add the `cache` option:
 
-``` {.yaml}
+``` yaml
 execute: 
   cache: true
 ```
 
 You can also use \`quarto\` command line options to control caching behavior without changing the document's code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it's specified in options), or to force a refresh of the cache even if it has not been invalidated:
 
-``` {.bash}
+``` bash
 quarto render example.qmd --cache 
 quarto render example.qmd --no-cache 
 quarto render example.qmd --cache-refresh 
@@ -188,13 +188,13 @@ Note that for Jupyter, the cache for a document is invalidated if any of the cod
 
 In some cases, you may want to prevent execution entirely. This is especially useful if you author using a standard notebook editor (e.g. JupyterLab) and plan on executing chunks only within the notebook UI. Specify `execute: false` to skip execution when rendering (you'll naturally still get the output that was generated within the notebook editor):
 
-``` {.yaml}
+``` yaml
 execute: false
 ```
 
 If you are temporarily disabling execution and don't want to overwrite other `execute` options, you can alternatively just add `enabled: false` to the `execute` options:
 
-``` {.yaml}
+``` yaml
 execute:
   enabled: false
   echo: true
@@ -203,7 +203,7 @@ execute:
 
 You might want to have different execution policies for Jupyter Notebooks (`.ipynb`) and text-based computational markdown (`.qmd`). You can do this using the `ipynb` option:
 
-``` {.yaml}
+``` yaml
 execute:
   ipynb: false
 ```
@@ -214,7 +214,7 @@ You might use this option if you are implementing of policy of having all notebo
 
 The Jupyter kernel is determined using the `jupyter` metdata option. For example, to use the [Xeus Python](https://github.com/jupyter-xeus/xeus-python) kernel, do this:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 jupyter: xpython
@@ -223,7 +223,7 @@ jupyter: xpython
 
 Note that you can also provide a full `kerenlspec`, for example:
 
-``` {.yaml}
+``` yaml
 ---
 title: "My Document"
 jupyter: 
@@ -242,25 +242,25 @@ To mitigate the \~ 2 second start-up time for the Jupyter Python kernel (and pot
 
 The purpose of the daemon is to make render more responsive during interactive sessions. Accordingly, no daemon is created when documents are rendered without an active tty or when they are part of a batch rendering (e.g. in a [Quarto Project](../getting-started/quarto-projects.md)).
 
-::: {.callout-note}
+::: callout-note
 Note that Quarto does not use a daemon by default on Windows (as some Windows systems will not allow the socket connection required by the daemon).
 :::
 
 You can customize this behavior using the `daemon` execution option. Set it to `false` to prevent the use of a daemon, or set it to a value (in seconds) to determine the period after which the daemon will timeout (the default is 300 seconds). For example:
 
-``` {.yaml}
+``` yaml
 execute:
   daemon: false
 ```
 
-``` {.yaml}
+``` yaml
 execute:
   daemon: 60
 ```
 
 Note that if you want to use a daemon on Windows you need to enable it explicitly:
 
-``` {.yaml}
+``` yaml
 execute:
   daemon: true
 ```
@@ -269,7 +269,7 @@ execute:
 
 You can also control use of the Jupyter daemon using the following command line options:
 
-``` {.bash}
+``` bash
 # use a daemon w/ default timeout (300 sec)
 quarto render document.qmd --execute-daemon
 
@@ -282,7 +282,7 @@ quarto render document.qmd --no-execute-daemon
 
 You can also force an existing daemon to restart using the `--execute-daemon-restart` command line flag:
 
-``` {.bash}
+``` bash
 quarto render document.qmd --execute-daemon-restart 
 ```
 
@@ -290,6 +290,6 @@ This might be useful if you suspect that the re-use of notebook sessions is caus
 
 Finally, you can print extended debugging information about daemon usage (startup, shutdown, connections, etc.) using the `--execute-debug` flag:
 
-``` {.bash}
+``` bash
 quarto render document.qmd --execute-debug
 ```

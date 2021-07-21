@@ -16,7 +16,7 @@ We also recommend the use of Quarto's built in PDF compilation engine, which amo
 
 To install TinyTeX, use the following command:
 
-``` {.bash}
+``` bash
 quarto tools install tinytex
 ```
 
@@ -32,46 +32,36 @@ Quarto's built-in PDF compilation engine handles running LaTeX multiple times to
 
 The following options are available for customizing PDF compilation:
 
-+------------------------+---------------------------------------------------------------------+
 | Option                 | Description                                                         |
-+========================+=====================================================================+
+|------------------------|---------------------------------------------------------------------|
 | `latex-min-runs`       | Number (minimum number of compilation passes)                       |
-+------------------------+---------------------------------------------------------------------+
 | `latex-max-runs`       | Number (maximum number of compilation passes)                       |
-+------------------------+---------------------------------------------------------------------+
 | `latex-clean`          | Boolean (clean intermediates after compilation, defaults to `true`) |
-+------------------------+---------------------------------------------------------------------+
 | `latex-output-dir`     | String (output directory for intermediates and PDF)                 |
-+------------------------+---------------------------------------------------------------------+
 | `latex-makeindex`      | String (program to use for `makeindex`)                             |
-+------------------------+---------------------------------------------------------------------+
 | `latex-makeindex-opts` | Array (options for `makeindex`program)                              |
-+------------------------+---------------------------------------------------------------------+
 
 ### Package Installation
 
 The following options are available for customizing automatic package installation:
 
-+----------------------+---------------------------------------------------------------------+
 | Option               | Description                                                         |
-+======================+=====================================================================+
+|----------------------|---------------------------------------------------------------------|
 | `latex-auto-install` | Boolean (enable/disable automatic package installation)             |
-+----------------------+---------------------------------------------------------------------+
 | `latex-tlmgr-opts`   | Array (options for [tlmgr](https://www.tug.org/texlive/tlmgr.html)) |
-+----------------------+---------------------------------------------------------------------+
 
 ## Alternate PDF Engines {#alternate-pdf-engines}
 
 To disable Quarto's built in PDF engine, set the `latex-auto-mk` option to `false`:
 
-``` {.yaml}
+``` yaml
 title: "My Document"
 latex-auto-mk: false
 ```
 
 The above configuration will result in Pandoc's default behavior for PDF compilation (`pdf-engine: pdflatex` ). You can then use the `pdf-engine` and `pdf-engine-opts` to further customize Pandoc compilation. For example:
 
-``` {.yaml}
+``` yaml
 title: "My Document"
 latex-auto-mk: false
 pdf-engine: xelatex

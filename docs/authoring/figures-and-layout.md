@@ -10,7 +10,7 @@ Quarto includes a number of features aimed at making it easier to work with figu
 
 In Pandoc markdown, a figure is created whenever a captioned image appears by-itself in a paragraph. For example:
 
-``` {.markdown}
+``` markdown
 ![Elephant](elephant.png)
 ```
 
@@ -26,7 +26,7 @@ Note that for LaTeX / PDF output figures are automatically numbered (you can arr
 
 When rendering with Quarto, you can enclose a figure within a link and it will still be treated within output as a captioned figure. For example:
 
-``` {.markdown}
+``` markdown
 [![Elephant](elephant.png)](https://en.wikipedia.org/wiki/Elephant)
 ```
 
@@ -34,7 +34,7 @@ When rendering with Quarto, you can enclose a figure within a link and it will s
 
 Figures and their captions are center aligned by default. Add the `fig.align` attribute to the image to use a different alignment. For example:
 
-``` {.markdown}
+``` markdown
 ![Elephant](elephant.png){fig.align="left"}
 ```
 
@@ -42,25 +42,25 @@ Figures and their captions are center aligned by default. Add the `fig.align` at
 
 You can add alternative text to a figure by adding the `fig.alt` attribute to the image. For example, the following Markdown...
 
-``` {.markdown}
+``` markdown
 ![](elephant.png){fig.alt="A drawing of an elephant."}
 ```
 
 ... will create the following HTML with the corresponding alt tag:
 
-``` {.html}
+``` html
 <img src="elephant.png" alt="A drawing of an elephant.">
 ```
 
 Note that the figure caption, title, and alt text can all be different. For example, the following code...
 
-``` {.markdown}
+``` markdown
 ![Elephant](elephant.png "Title: An elephant"){fig.alt="A drawing of an elephant."}
 ```
 
 ...produces this HTML:
 
-``` {.html}
+``` html
 <img src="elephant.png" title="Title: An elephant" alt="A drawing of an elephant.">
 ```
 
@@ -68,7 +68,7 @@ Note that the figure caption, title, and alt text can all be different. For exam
 
 There are a number of LaTeX packages that provide custom figure environments. For example, the [mdframed](https://ctan.org/pkg/mdframed?lang=en) package includes an `mdframed` environment used to enclose figures in a special border style. By default, Quarto uses the standard `figure` environment, but you can use the `fig.env` attribute to specify a custom one. For example:
 
-``` {.markdown}
+``` markdown
 ---
 title: "Sidenotes"
 format:
@@ -84,7 +84,7 @@ format:
 
 You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with `#fig-`. For example, here we create a figure that includes an embedded iframe:
 
-``` {.markdown}
+``` markdown
 ::: {#fig-elephant}
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/SNggmeilXDQ"></iframe>
@@ -99,7 +99,7 @@ Note that the last paragraph in the div block is used as the figure caption.
 
 If you have several figures that appear as a group, you can create a figure div to enclose them. For example:
 
-``` {.markdown}
+``` markdown
 ::: {#fig-elephants layout.ncol=2}
 
 ![Surus](surus.png){#fig-surus}
@@ -122,7 +122,7 @@ Above we demonstrate laying out two side-by-side figures with subcaptions and a 
 
 To layout two figures with their own standalone captions (and no main caption), just eliminate the `#fig` identifiers and main caption at the bottom:
 
-``` {.markdown}
+``` markdown
 ::: {layout.ncol=2}
 ![Surus](surus.png)
 
@@ -134,7 +134,7 @@ To layout two figures with their own standalone captions (and no main caption), 
 
 You can also eliminate the captions entirely:
 
-``` {.markdown}
+``` markdown
 ::: {layout.ncol=2}
 ![](surus.png)
 
@@ -146,7 +146,7 @@ You can also eliminate the captions entirely:
 
 If you have more than 2 images, you might want to lay them out across multiple rows. You can do this using the `layout.nrow` attribute. For example:
 
-``` {.markdown}
+``` markdown
 ::: {layout.nrow=2}
 ![Surus](surus.png)
 
@@ -166,7 +166,7 @@ More complex figure arrangements (e.g. rows with varying column layouts) are pos
 
 You can also use a div with layout attributes to display tables side-by-side. For example:
 
-``` {.markdown}
+``` markdown
 ::: {layout.ncol=2}
 | Col1 | Col2 | Col3 |
 |------|------|------|
@@ -190,7 +190,7 @@ You can also use a div with layout attributes to display tables side-by-side. Fo
 
 As with figures, you can also present tables using numbered subcaptions by adding a main caption and `#tbl-` identifiers:
 
-``` {.markdown}
+``` markdown
 ::: {#tbl-panel layout.ncol=2}
 | Col1 | Col2 | Col3 |
 |------|------|------|
@@ -222,7 +222,7 @@ The examples above used the `layout.ncol` or `layout.nrow` attributes to create 
 
 For example, this defines a layout with two equally sized figures in the first row, then another image that spans the entire second row:
 
-``` {.markdown}
+``` markdown
 ::: {layout="[[1,1], [1]]"}
 ![Surus](surus.png)
 
@@ -238,7 +238,7 @@ The `layout` attribute is a 2-dimensional array where the first dimension define
 
 Note that the numbers in a row are arbitrary and don't need to add up to a particular total. You can therefore use whatever scheme is most natural. For example, here we define columns that occupy varying percentage widths of the row:
 
-``` {.markdown}
+``` markdown
 ::: {layout="[[70,30], [100]]"}
 ![Surus](surus.png)
 
@@ -250,7 +250,7 @@ Note that the numbers in a row are arbitrary and don't need to add up to a parti
 
 You can also use negative values to create space between elements. For example:
 
-``` {.markdown}
+``` markdown
 ::: {layout="[[40,-20,40], [100]]"}
 ![Surus](surus.png)
 
@@ -266,7 +266,7 @@ You can also use negative values to create space between elements. For example:
 
 If you have a layout with a row of images of differing heights, you can control their vertical alignment using the `layout.valign` attribute. A simple example:
 
-``` {.markdown}
+``` markdown
 ::: {layout="[25,-2,10]" layout.valign="bottom"}
 ![Surus](surus.png)
 
@@ -284,10 +284,10 @@ Note that vertical alignment isn't limited to images, you can also vertically al
 
 Note that figure layout attributes also work for figures produced by executable code blocks. Here are examples for both Jupyter and Knitr:
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Jupyter
 
-```` {.python}
+```` python
 ```{python} 
 #| layout.ncol: 2
 
@@ -304,7 +304,7 @@ plt.show()
 
 #### Knitr
 
-```` {.python}
+```` python
 ```{r}
 #| layout.ncol: 2
 
@@ -320,7 +320,7 @@ plot(pressure)
 
 You can also use layout attributes for tables produced by Knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:
 
-```` {.python}
+```` python
 ```{r}
 #| layout.ncol: 2
 
@@ -336,7 +336,7 @@ kable(head(pressure), caption = "Pressure")
 
 The `layout` works the same way for figures or tables produced by knitr or Jupyter. For example, here's an Rmd code chunk that produces 3 plots and defines a custom layout for them:
 
-```` {.python}
+```` python
 ```{r}
 #| layout: [[45,-10, 45], [100]]
 
@@ -352,7 +352,7 @@ plot(mtcars)
 
 While the examples above illustrate laying out figures and tables, it's important to note that layout attributes can be used to layout any sort of block content. For example, here we layout 2 lists side-by-side:
 
-``` {.markdown}
+``` markdown
 ::: {layout.ncol=2}
 ### List One
 
@@ -370,7 +370,7 @@ While the examples above illustrate laying out figures and tables, it's importan
 
 Note that headings are automatically combined with the block that follows them, so this markdown has a total of 2 columns to lay out. Here's an example of a paragraph next to a bullet list (without headings):
 
-``` {.markdown}
+``` markdown
 ::: {layout.ncol=2}
 - Item X
 - Item Y
