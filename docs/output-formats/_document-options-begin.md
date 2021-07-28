@@ -7,8 +7,6 @@ toc: true
 toc-depth: 2
 ```
 
-Note that HTML documents implement support for floating the table of contents to the right of the page. See the [Floating TOC](../output-formats/html-bootstrap.md#floating-toc) documentation for additional details.
-
 You can customize the title used for the table of contents using the `toc-title` option:
 
 ``` yaml

@@ -1,0 +1,105 @@
+---
+title: "Code Execution"
+format: html
+---
+
+Rendering a list of input files has the potential to be quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations.
+
+## Freeze
+
+You can use the `freeze` option to denote that computational documents should never be re-rendered during a global project render, or alternatively only be re-rendered when their source file changes:
+
+``` yaml
+execute:
+  freeze: true  # never re-render during project render
+```
+
+``` yaml
+execute:
+  freeze: auto  # re-render only when source changes
+```
+
+Note that `freeze` controls whether execution occurs during global project renders. If you do an incremental render of either a single document or a project sub-directory then code is always executed. For example:
+
+``` bash
+# render single document (always executes code)
+quarto render document.qmd
+
+# render project subdirectory (always executes code)
+quarto render articles
+```
+
+### Using Freeze
+
+Freeze is generally used when you have either a large number of collaborators or many computational documents created over a longer period of time. In both cases it can be challenging to fully re-execute every document when you render the site. This could be because some documents have esoteric or environment-specific requirements (e.g. require access/authentication to a data source) or due to general fragility of dependencies over time. Using freeze ensures that you can always reproducibly render your site.
+
+The computational results of documents executed with `freeze` are stored in the `_freeze` directory, and re-used when needed to fulfill document renders. You should check the contents of `_freeze` into version control so that others rendering the project don't need to reproduce your computational environment to render it in their environment.
+
+### Virtual Environments {#freeze-virtual-environments}
+
+You can also combine `freeze` with the use of virtual environments to divide your project into sub-directories that each have their own set of dependencies. This allows multiple collaborators to use a set of localized dependencies for the documents they are responsible for, but at the same time still be able to render the entire project without requiring all of it's dependencies.
+
+To learn how to create and use a virtual environment, see the full documentation on [Virtual Environments](virtual-environments.qmd)
+
+Here's an example workflow of using virtual environments with freeze:
+
+1.  Include `freeze: true` in the project execution options:
+
+    ``` yaml
+    execute:
+      freeze: true
+    ```
+
+2.  Create a sub-directory of documents (e.g. `research`), and initialize and use a virtual environment within it:
+
+    ``` default
+    research/
+      document1.qmd
+      document2.qmd
+      env/
+      requirements.txt
+    ```
+
+3.  When working wihtin this sub-directory, activate the virtual environment before rendering it's documents. For example:
+
+    ``` bash
+    cd research
+    source venv/bin/activate
+    quarto render               # render all files in subdir
+    quarto render document.qmd  # render a single-file
+    ```
+
+This sub-directory render won't use the cached `freeze` results but instead will re-run all of the computations using the directory-specific virtual environment. You can of course also include sub-directories within this directory and their documents will also be rendered using the parent virtual environment.
+
+## Cache
+
+You can use the `cache` option to cache the results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) for R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) for Jupyter documents):
+
+``` yaml
+execute:
+  cache: true
+```
+
+Note that cache invalidation is triggered by changes in chunk source code (or other cache attributes you've defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the `--cache-refresh` option:
+
+``` bash
+quarto render mydoc.qmd --cache-refresh # single doc
+quarto render --cache-refresh           # entire project
+```
+
+## Notebooks
+
+``` include
+../computations/_jupyter-execute.md
+```
+
+## Working Dir
+
+By default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the `execute-dir: project` option to your config:
+
+``` yaml
+project:
+  execute-dir: project
+```
+
+Note that from within your code you can always determine the location of the currently executing Quarto project using the `QUARTO_PROJECT_DIR` environment variable.
