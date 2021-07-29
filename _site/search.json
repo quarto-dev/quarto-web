@@ -1,5 +1,137 @@
 [
   {
+    "href": "docs/tools/vscode.html#overview",
+    "title": "VS Code",
+    "section": "Overview",
+    "text": "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use the VS Code Jupyter Notebook UI as your editor.\nHere is the “Hello, Quarto” example from the homepage inside VSCode:\n\nIf you look at the source code you’ll note that YAML options were provided both at the top of the document and within the code cell. We’ll describe working with YAML options in more detail below."
+  },
+  {
+    "href": "docs/tools/vscode.html#workflow",
+    "title": "VS Code",
+    "section": "Workflow",
+    "text": "The ideal workflow for authoring Quarto notebooks in VS Code is to run the quarto preview command from within a terminal:\nquarto preview notebook.ipynb\nThe notebook will be rendered and a web browser with a “live preview” opened. Position this browser so that you can see it as you edit and save the notebook:\n\nEvery time you save within VS Code the preview will be automatically updated. You can use quarto preview for both HTML and PDF output.\nIn the screenshot above you’ll note that we ran quarto preview inside a VS Code terminal window—this is generally recommended so that you can see progress and error messages when renders occur.\n\n\n\n\n\n\nNote that if you are authoring a book or website you should use quarto serve instead, which will create a live preview for the entire project.\n\n\n\n\nRender without Preview\nYou can render a notebook (or group of notebooks) without previewing them using the quarto render command:\nquarto render notebook.ipynb\nUse the --to argument to render to different formats:\nquarto render notebook.ipynb --to docx"
+  },
+  {
+    "href": "docs/tools/vscode.html#yaml-front-matter",
+    "title": "VS Code",
+    "section": "YAML Front Matter",
+    "text": "The first cell of your notebook should be a Raw cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to Raw using the cell type menu at the bottom right of the cell:\n\nIn this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on Authoring and Output Formats for additional details."
+  },
+  {
+    "href": "docs/tools/vscode.html#markdown-cells",
+    "title": "VS Code",
+    "section": "Markdown Cells",
+    "text": "Here’s the underlying code for the markdown cell:\n\nNote that a Quarto cross-reference (@fig-polar) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells."
+  },
+  {
+    "href": "docs/tools/vscode.html#output-options",
+    "title": "VS Code",
+    "section": "Output Options",
+    "text": "Quarto uses leading comments with a special prefix (#|) to denote cell options. Here we specify the label and fig.cap options so that the plot generated from the cell can be cross-referenced.\n\nNote that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.\nThere are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on Output Outputs for additional details."
+  },
+  {
+    "href": "docs/tools/vscode.html#cell-execution",
+    "title": "VS Code",
+    "section": "Cell Execution",
+    "text": "Note that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render jupyter-document.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Document\"\nexecute: true\njupyter: python3\n---\nThere are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in Execution Options."
+  },
+  {
+    "href": "docs/tools/vscode.html#plain-text-editing",
+    "title": "VS Code",
+    "section": "Plain Text Editing",
+    "text": "It’s also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.\nHere is the plain text markdown version of the notebook used in the previous examples:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\ndate: \"May 22nd, 2021\"\nformat: \n  html:\n    code-fold: true\njupyter: python3\n---\n\n## Polar Axis\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n```{python}\n#| label: fig-polar\n#| fig.cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```\nNote that we’ve added the jupyter: python3 option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:\nquarto render basics-jupyter.qmd\nMarkdown files with embedded code chunks should use the file extension .qmd.\n\n\n\n\n\n\nTip\n\n\n\nIf you are doing most of your work in .qmd files you should consider using RStudio, which includes full support for editing .qmd files that use Python and Jupyter (including code completion, cell-at-a-time execution, and side-by-side preview). See the article on using RStudio for additional details.\n\n\n\nConverting Notebooks\nYou can convert between .ipynb and .qmd representations of a notebook using the quarto convert command. For example:\nquarto convert basics-jupyter.ipynb --to markdown\nquarto convert basics-jupyter.qmd --to notebook\nSee quarto convert help for additional details on converting notebooks."
+  },
+  {
+    "href": "docs/tools/text-editors.html#overview",
+    "title": "Text Editors",
+    "section": "Overview",
+    "text": "If you are editing plain markdown documents (with no embedded computations) you may want to use your favorite text editor (Vim, Emacs, Sublime, etc.) to author Quarto documents. This articles provides some guidance on the optimal workflow when using text editors with Quarto.\nNote that if you are using either the Jupyter or Knitr computational engine you will likely be better off using JupyterLab or VS Code (for .ipynb notebooks) or RStudio (for .qmd documents) as these environments provide code-completion, incremental cell execution, and other useful tools for working with executable code."
+  },
+  {
+    "href": "docs/tools/text-editors.html#workflow",
+    "title": "Text Editors",
+    "section": "Workflow",
+    "text": "The ideal workflow for authoring Quarto markdown documents is to run the quarto preview command from within a terminal:\nquarto preview document.md\nThe document will be rendered and a web browser with a “live preview” opened. Position this browser so that you can see it as you edit and save the document:\n\nEvery time you save the preview will be automatically updated. You can use quarto preview for both HTML and PDF output.\n\n\n\n\n\n\nNote that if you are authoring a book or website you should use quarto serve instead, which will create a live preview for the entire project.\n\n\n\n\nRender without Preview\nYou can render a document (or group of documents) without previewing them using the quarto render command:\nquarto render document.md\nUse the --to argument to render to different formats:\nquarto render document.md --to docx"
+  },
+  {
+    "href": "docs/tools/text-editors.html#file-extension",
+    "title": "Text Editors",
+    "section": "File Extension",
+    "text": "You’ll likely find that it’s easier to use the .md file extension (rather than .qmd) when working with plain markdown documents. This enables you to take advantage of existing behaviors associated with .md in your text editor configuration (you can certainly also modify your editor configuration to recognize .qmd).\nNote that if you end up at some point including embedded computations in your document you should at that point change the extension to .qmd (and as discussed above possibly migrate to using a tool that has more built-in tools for working with executable code)."
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#overview",
+    "title": "JupyterLab",
+    "section": "Overview",
+    "text": "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use JupyterLab as your editor.\nHere is the “Hello, Quarto” example from the homepage inside JupyterLab:\n\nIf you look at the source code you’ll note that YAML options were provided both at the top of the document and within the code cell. We’ll describe working with YAML options in more detail below."
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#workflow",
+    "title": "JupyterLab",
+    "section": "Workflow",
+    "text": "The ideal workflow for authoring Quarto notebooks in JupyterLab is to run the quarto preview command from within a terminal:\nquarto preview notebook.ipynb\nThe notebook will be rendered and a web browser with a “live preview” opened. Position this browser so that you can see it as you edit and save the notebook:\n\nEvery time you save within JupyterLab the preview will be automatically updated. You can use quarto preview for both HTML and PDF output.\nIn the screenshot above you’ll note that we ran quarto preview inside a JupyterLab terminal window—this is generally recommended so that you can see progress and error messages when renders occur.\n\n\n\n\n\n\nNote that if you are authoring a book or website you should use quarto serve instead, which will create a live preview for the entire project.\n\n\n\n\nRunning JupyterLab\nTo run JupyterLab, invoke the jupyter module from within the shell where you are using Quarto:\n\n\n\n\n\n\n\nPlatform\nCommand\n\n\n\n\nWindows\npy -m jupyter lab\n\n\nMac/Linux\npython3 -m jupyter lab\n\n\n\n\n\nRender without Preview\nYou can render a notebook (or group of notebooks) without previewing them using the quarto render command:\nquarto render notebook.ipynb\nUse the --to argument to render to different formats:\nquarto render notebook.ipynb --to docx"
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#yaml-front-matter",
+    "title": "JupyterLab",
+    "section": "YAML Front Matter",
+    "text": "The first cell of your notebook should be a Raw cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to Raw using the notebook toolbar:\n\nIn this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on Authoring and Output Formats for additional details."
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#markdown-cells",
+    "title": "JupyterLab",
+    "section": "Markdown Cells",
+    "text": "Here’s the underlying code for the markdown cell:\n\nNote that a Quarto cross-reference (@fig-polar) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells."
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#output-options",
+    "title": "JupyterLab",
+    "section": "Output Options",
+    "text": "Quarto uses leading comments with a special prefix (#|) to denote cell options. Here we specify the label and fig.cap options so that the plot generated from the cell can be cross-referenced.\n\nNote that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.\nThere are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on Output Outputs for additional details."
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#cell-execution",
+    "title": "JupyterLab",
+    "section": "Cell Execution",
+    "text": "Note that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render jupyter-document.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Document\"\nexecute: true\njupyter: python3\n---\nThere are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in Execution Options."
+  },
+  {
+    "href": "docs/tools/jupyter-lab.html#plain-text-editing",
+    "title": "JupyterLab",
+    "section": "Plain Text Editing",
+    "text": "It’s also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.\nHere is the plain text markdown version of the notebook used in the previous examples:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\ndate: \"May 22nd, 2021\"\nformat: \n  html:\n    code-fold: true\njupyter: python3\n---\n\n## Polar Axis\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n```{python}\n#| label: fig-polar\n#| fig.cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```\nNote that we’ve added the jupyter: python3 option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:\nquarto render basics-jupyter.qmd\nMarkdown files with embedded code chunks should use the file extension .qmd.\n\n\n\n\n\n\nTip\n\n\n\nIf you are doing most of your work in .qmd files you should consider using RStudio, which includes full support for editing .qmd files that use Python and Jupyter (including code completion, cell-at-a-time execution, and side-by-side preview). See the article on using RStudio for additional details.\n\n\n\nConverting Notebooks\nYou can convert between .ipynb and .qmd representations of a notebook using the quarto convert command. For example:\nquarto convert basics-jupyter.ipynb --to markdown\nquarto convert basics-jupyter.qmd --to notebook\nSee quarto convert help for additional details on converting notebooks."
+  },
+  {
+    "href": "docs/tools/rstudio.html#overview",
+    "title": "RStudio IDE",
+    "section": "Overview",
+    "text": "The currently daily build of RStudio (v2021-07.0.275 or higher) includes support for editing and preview of Quarto documents. This works for plain markdown as well as both the Knitr and Jupyter engines.\nIf you are using Quarto within RStudio it is strongly recommended that you use this version (the documentation below assumes you are using this build).\nYou can download the RStudio daily build from https://dailies.rstudio.com.\n\nCreating Documents\nUse the File : New File : Quarto Doc… command to create new Quarto documents:\n\n\n\nRender and Preview\nUse the Render button to preview documents as you edit them:\n\nIf you prefer to automatically render whenever you save you can check the Render on Save option on the editor toolbar.\nThe preview will appear alongside the editor:\n\nThe preview will update whenever you re-render the document. Side-by-side preview works for both HTML and PDF output."
+  },
+  {
+    "href": "docs/tools/rstudio.html#projects",
+    "title": "RStudio IDE",
+    "section": "Projects",
+    "text": "If you want to create a new project for a Quarto document or set of documents, use the File : New Project… command, specify New Directory, then choose Quarto Project:\n\nYou can use this UI to create both vanilla projects as well as websites and books. Options are also provided for creating a git repository and initializing an renv environment for the project."
+  },
+  {
+    "href": "docs/tools/rstudio.html#knitr-engine",
+    "title": "RStudio IDE",
+    "section": "Knitr Engine",
+    "text": "Quarto is designed to be highly compatible with existing R Markdown documents. You should generally be able to use Quarto to render any existing Rmd document without changes.\nOne important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are typically included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:\n```{r}\n#| echo: false\n#| fig.cap: \"Air Quality\"\n\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\nQuarto uses this approach to both better accommodate longer options like fig.cap, fig.subcap, and fig.alt as well as to make it straightforward to edit chunk options within more structured editors that don’t have an easy way to edit chunk metadata (e.g. most traditional notebook UIs).\n\n\n\n\n\n\nNote\n\n\n\nNote that if you prefer it is still possible to include chunk options on the first line (e.g. ```{r, echo = FALSE}). That said, we recommend using the comment-based syntax to make documents more portable and consistent across execution engines.\n\n\nChunk options included this way use YAML syntax rather than R syntax for consistency with options provided in YAML front matter. You can still however use R code for option values by prefacing them with !expr. For example:\n#| fig.cap: !expr paste(\"Air\", \"Quality\")"
+  },
+  {
+    "href": "docs/tools/rstudio.html#jupyter-engine",
+    "title": "RStudio IDE",
+    "section": "Jupyter Engine",
+    "text": "You can also work with Quarto markdown documents that target the Jupyter engine within RStudio. These files will typically include a jupyter option in the YAML front matter indicating which kernel to use. For example:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\njupyter: python3\n---\nIf you want to work within a virtual environment (venv), use the File : New Project… command, specify the Jupyter engine with a venv, and specify which packages you’d like to seed the venv with:\n\nRStudio will automatically activate this virtual environment whenever you open the project. You can install additional Python packages into the environment using the RStudio Terminal tab. For example:"
+  },
+  {
+    "href": "docs/tools/rstudio.html#r-package",
+    "title": "RStudio IDE",
+    "section": "R Package",
+    "text": "If you are not using RStudio and/or you prefer to render from the R console, you can do so using the quarto R package. To install the R package:\nremotes::install_github(\"quarto-dev/quarto-r\")\nThen, to render a document:\nlibrary(quarto)\nquarto_render(\"document.qmd\")\nTo live preview (automatically render & refresh the browser on save) for a document you are working on, use the quarto_preview() function:\nlibrary(quarto)\nquarto_preview(\"document.qmd\")\nIf you working on a website or book project, you can run the Quarto development server with:\nlibrary(quarto)\nquarto_serve()"
+  },
+  {
     "href": "docs/projects/virtual-environments.html#using-venv",
     "title": "Virtual Environments",
     "section": "Using venv",
@@ -27,7 +159,13 @@
     "href": "docs/projects/virtual-environments.html#rstudio",
     "title": "Virtual Environments",
     "section": "RStudio",
-    "text": "If you are using RStudio with Quarto, it is strongly recommended that you run the daily build of RStudio v1.5, as it has many small improvements required to handle Quarto documents correctly.\nFor virtual environments in particular, you should make sure you are using version 1.5.122 or higher. You can download the daily build at https://dailies.rstudio.com.\n\nrenv\nIf you are using renv, RStudio v1.5 will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project-local environments.\nIf you need to install R packages ust use install.packages; if you need to install Python packages simply use pip or conda within the Terminal as described above.\n\n\nvenv / condaenv\nStarting with version 1.5.122, RStudio will automatically activate any venv or condaenv that it finds within a project directory. Just be sure to create an RStudio project within the same directory where you created your env and things will work as expected with no additional configuration.\nIf you need to install Python packages simply use pip or conda within the Terminal as described above."
+    "text": "If you are using Quarto within RStudio it is strongly recommended that you use the daily build of RStudio from https://dailies.rstudio.com (the documentation below assumes you are using this build).\n\nrenv\nIf you are using renv, RStudio will automatically do the right thing in terms of binding Quarto to the R and/or Python packages in your project-local environments.\nIf you need to install R packages ust use install.packages; if you need to install Python packages simply use pip or conda within the Terminal as described above.\n\n\nvenv / condaenv\nRStudio will automatically activate any venv or condaenv that it finds within a project directory. Just be sure to create an RStudio project within the same directory where you created your env and things will work as expected with no additional configuration.\nIf you need to install Python packages simply use pip or conda within the Terminal as described above."
+  },
+  {
+    "href": "docs/projects/virtual-environments.html#vs-code",
+    "title": "Virtual Environments",
+    "section": "VS Code",
+    "text": "If you create a virtual environment in the env/ directory as described above, Visual Studio Code should automatically discover that environment when you load a workspace from the environment’s parent directory.\nNote that this applies only to venv not Conda environments (which have a separate mechansim for binding to the current VS Code session).\nYou can read more about VS Code support for virtual environments here: https://code.visualstudio.com/docs/python/environments."
   },
   {
     "href": "docs/projects/code-execution.html#freeze",
@@ -87,7 +225,7 @@
     "href": "docs/books/index.html#overview",
     "title": "Creating a Book",
     "section": "Overview",
-    "text": "Quarto Books are combinations of multiple documents (chapters) into a single manuscript. Books can be created in a variety of formats:\n\nPDF\nHTML\nEPUB\nMS Word\n\n<<<<<<< HEAD:docs/books/book-basics.qmd HTML books are not that different from Quarto Websites save for the fact that chapters and sections are numbered and therefore support Cross References. ======= HTML books are not that different from Quarto Websites save for the fact that chapters and sections are numbered and therefore support Cross References. >>>>>>> c378433b805390ff90c1dc0d3c03b6de810f086b:docs/books/book-basics.md\nHere are some examples of books created with Quarto:\n\nHands on Programming with R\nVisualization Curriculum"
+    "text": "Quarto Books are combinations of multiple documents (chapters) into a single manuscript. Books can be created in a variety of formats:\n\nPDF\nHTML\nEPUB\nMS Word\n\nHTML books are not that different from Quarto Websites save for the fact that chapters and sections are numbered and therefore support Cross References.\nHere are some examples of books created with Quarto:\n\nHands on Programming with R\nVisualization Curriculum"
   },
   {
     "href": "docs/books/index.html#getting-started",
@@ -165,7 +303,7 @@
     "href": "docs/computations/execution-options.html#engine-options",
     "title": "Execution Options",
     "section": "Engine Options",
-    "text": "Caching\nQuarto integrates with the Jupyter Cache and Knitr Cache to to cache time consuming code chunks. Note that to use Jupyter Cache you’ll want to install the jupyter-cache package:\n\n\n\n\n\n\n\nPlatform\nCommand\n\n\n\n\nWindows\npy -m pip install jupyter-cache\n\n\nMac/Linux\npython3 -m pip install jupyter-cache\n\n\n\nTo enable caching for a document just add the cache option:\nexecute: \n  cache: true\nYou can also use `quarto` command line options to control caching behavior without changing the document’s code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it’s specified in options), or to force a refresh of the cache even if it has not been invalidated:\nquarto render example.qmd --cache \nquarto render example.qmd --no-cache \nquarto render example.qmd --cache-refresh \nNote that for Jupyter, the cache for a document is invalidated if any of the code blocks change. For Knitr, invalidation occurs on a per-cell basis.\n\n\nDisabling Execution\nIn some cases, you may want to prevent execution entirely. This is especially useful if you author using a standard notebook editor (e.g. JupyterLab) and plan on executing chunks only within the notebook UI. Specify execute: false to skip execution when rendering (you’ll naturally still get the output that was generated within the notebook editor):\nexecute: false\nIf you are temporarily disabling execution and don’t want to overwrite other execute options, you can alternatively just add enabled: false to the execute options:\nexecute:\n  enabled: false\n  echo: true\n  warning: false\nYou might want to have different execution policies for Jupyter Notebooks (.ipynb) and text-based computational markdown (.qmd). You can do this using the ipynb option:\nexecute:\n  ipynb: false\nYou might use this option if you are implementing of policy of having all notebook execution occur within Jupyter / Jupyter Lab, while having Quarto still handle converting the notebook to HTML, PDF, etc.\n\n\nJupyter Kernel\nThe Jupyter kernel is determined using the jupyter metdata option. For example, to use the Xeus Python kernel, do this:\n---\ntitle: \"My Document\"\njupyter: xpython\n---\nNote that you can also provide a full kerenlspec, for example:\n---\ntitle: \"My Document\"\njupyter: \n  kernelspec:\n    name: \"xpython\"\n    language: \"python\"\n    display_name: \"Python 3.7 (XPython)\"\n---\nIf no Jupyter kernel is specified, then the kernel is determined by finding an available kernel that supports the language of the first executable code block found within the file (e.g. ```{python}).\n\n\nJupyter Daemon\nTo mitigate the ~ 2 second start-up time for the Jupyter Python kernel (and potentially much longer start-up times for other kernels), Quarto keeps a daemon with a running Jupyter kernel alive for each document. This enables subsequent renders to proceed immediately without having to wait for kernel start-up.\nThe purpose of the daemon is to make render more responsive during interactive sessions. Accordingly, no daemon is created when documents are rendered without an active tty or when they are part of a batch rendering (e.g. in a Quarto Project).\n\n\n\n\n\n\nNote\n\n\n\nNote that Quarto does not use a daemon by default on Windows (as some Windows systems will not allow the socket connection required by the daemon).\n\n\nYou can customize this behavior using the daemon execution option. Set it to false to prevent the use of a daemon, or set it to a value (in seconds) to determine the period after which the daemon will timeout (the default is 300 seconds). For example:\nexecute:\n  daemon: false\nexecute:\n  daemon: 60\nNote that if you want to use a daemon on Windows you need to enable it explicitly:\nexecute:\n  daemon: true\n\nCommand Line\nYou can also control use of the Jupyter daemon using the following command line options:\n# use a daemon w/ default timeout (300 sec)\nquarto render document.qmd --execute-daemon\n\n# use a daemon w/ an explicit timeout\nquarto render document.qmd --execute-daemon 60\n\n# prevent use of a daemon\nquarto render document.qmd --no-execute-daemon\nYou can also force an existing daemon to restart using the --execute-daemon-restart command line flag:\nquarto render document.qmd --execute-daemon-restart \nThis might be useful if you suspect that the re-use of notebook sessions is causing an error.\nFinally, you can print extended debugging information about daemon usage (startup, shutdown, connections, etc.) using the --execute-debug flag:\nquarto render document.qmd --execute-debug"
+    "text": "Caching\nQuarto integrates with the Jupyter Cache and Knitr Cache to to cache time consuming code chunks. Note that to use Jupyter Cache you’ll want to install the jupyter-cache package:\n\n\n\n\n\n\n\nPlatform\nCommand\n\n\n\n\nWindows\npy -m pip install jupyter-cache\n\n\nMac/Linux\npython3 -m pip install jupyter-cache\n\n\n\nTo enable caching for a document just add the cache option:\nexecute: \n  cache: true\nYou can also use `quarto` command line options to control caching behavior without changing the document’s code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it’s specified in options), or to force a refresh of the cache even if it has not been invalidated:\nquarto render example.qmd --cache \nquarto render example.qmd --no-cache \nquarto render example.qmd --cache-refresh \nNote that for Jupyter, the cache for a document is invalidated if any of the code blocks change. For Knitr, invalidation occurs on a per-cell basis.\n\n\nDisabling Execution\nIn some cases, you may want to prevent execution entirely. This is especially useful if you author using a standard notebook editor (e.g. JupyterLab) and plan on executing chunks only within the notebook UI. Specify execute: false to skip execution when rendering (you’ll naturally still get the output that was generated within the notebook editor):\nexecute: false\nIf you are temporarily disabling execution and don’t want to overwrite other execute options, you can alternatively just add enabled: false to the execute options:\nexecute:\n  enabled: false\n  echo: true\n  warning: false\nYou might want to have different execution policies for Jupyter Notebooks (.ipynb) and text-based computational markdown (.qmd). You can do this using the ipynb option:\nexecute:\n  ipynb: false\nYou might use this option if you are implementing of policy of having all notebook execution occur within Jupyter / JupyterLab, while having Quarto still handle converting the notebook to HTML, PDF, etc.\n\n\nJupyter Kernel\nThe Jupyter kernel is determined using the jupyter metdata option. For example, to use the Xeus Python kernel, do this:\n---\ntitle: \"My Document\"\njupyter: xpython\n---\nNote that you can also provide a full kerenlspec, for example:\n---\ntitle: \"My Document\"\njupyter: \n  kernelspec:\n    name: \"xpython\"\n    language: \"python\"\n    display_name: \"Python 3.7 (XPython)\"\n---\nIf no Jupyter kernel is specified, then the kernel is determined by finding an available kernel that supports the language of the first executable code block found within the file (e.g. ```{python}).\n\n\nJupyter Daemon\nTo mitigate the ~ 2 second start-up time for the Jupyter Python kernel (and potentially much longer start-up times for other kernels), Quarto keeps a daemon with a running Jupyter kernel alive for each document. This enables subsequent renders to proceed immediately without having to wait for kernel start-up.\nThe purpose of the daemon is to make render more responsive during interactive sessions. Accordingly, no daemon is created when documents are rendered without an active tty or when they are part of a batch rendering (e.g. in a Quarto Project).\n\n\n\n\n\n\nNote\n\n\n\nNote that Quarto does not use a daemon by default on Windows (as some Windows systems will not allow the socket connection required by the daemon).\n\n\nYou can customize this behavior using the daemon execution option. Set it to false to prevent the use of a daemon, or set it to a value (in seconds) to determine the period after which the daemon will timeout (the default is 300 seconds). For example:\nexecute:\n  daemon: false\nexecute:\n  daemon: 60\nNote that if you want to use a daemon on Windows you need to enable it explicitly:\nexecute:\n  daemon: true\n\nCommand Line\nYou can also control use of the Jupyter daemon using the following command line options:\n# use a daemon w/ default timeout (300 sec)\nquarto render document.qmd --execute-daemon\n\n# use a daemon w/ an explicit timeout\nquarto render document.qmd --execute-daemon 60\n\n# prevent use of a daemon\nquarto render document.qmd --no-execute-daemon\nYou can also force an existing daemon to restart using the --execute-daemon-restart command line flag:\nquarto render document.qmd --execute-daemon-restart \nThis might be useful if you suspect that the re-use of notebook sessions is causing an error.\nFinally, you can print extended debugging information about daemon usage (startup, shutdown, connections, etc.) using the --execute-debug flag:\nquarto render document.qmd --execute-debug"
   },
   {
     "href": "docs/computations/running-code.html#overview",
@@ -177,7 +315,7 @@
     "href": "docs/computations/running-code.html#code-blocks",
     "title": "Running Code",
     "section": "Code Blocks",
-    "text": "Code blocks that use braces around the language name (e.g. ```{python}) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).\n\nPython (Jupyter)\n---\ntitle: \"Jupyter Document\"\nformat: \n  html:\n    code-background: true\njupyter: python3\n---\n\n```{python}\nimport matplotlib.pyplot as plt\nplt.plot([1,2,3,4])\nplt.show()\n```\n\n```{python}\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n```\n\nNote that we added the code-background: true option to provide a background color for the code chunks (see the documentation on Code Block options for additional details on customizing code block output).\n\n\nR (Knitr)\n---\ntitle: \"Knitr Document\"\nformat: \n  html:\n    code-background: true\nexecute:\n  warning: false\n---\n\n```{r}\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\n\n```{r}\nsummary(airquality)\n```\n\nNote that we added the execute: warning: false option to suppress printing of warnings. See Execution Options for additional details.\nYou can produce a wide variety of output types from executable code blocks, including:\n\nStatic plots (e.g. from matplotlib or ggplot2).\nInteractive plots (e.g. from plotly or leaflet).\nTabular output (e.g. from printing R or Pandas data frames)\nPlain text output (e.g. printing the results of statistical summaries).\n\n\n\nNon-Executable Blocks\nNote that code blocks that use convential markdown code block syntax (either ```python or ```{.python}) are not executable:\n\n\n\n\n\n\n\nCode Block Syntax\nExecutable?\n\n\n\n\n```{python}\n1 + 1\n```\nYes\n\n\n```python\n1 + 1\n```\nNo\n\n\n```{.python}\n1 + 1\n```\nNo\n\n\n\nNon-executable code blocks are printed but not executed."
+    "text": "Code blocks that use braces around the language name (e.g. ```{python}) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown on the Output tab):\n\nPython (Jupyter)\nCodeOutput\n\n\n---\ntitle: \"Jupyter Document\"\nformat: \n  html:\n    code-background: true\njupyter: python3\n---\n\n```{python}\nimport matplotlib.pyplot as plt\nplt.plot([1,2,3,4])\nplt.show()\n```\n\n```{python}\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n```\n\n\n\n\n\nNote that we added the code-background: true option to provide a background color for the code chunks (see the documentation on Code Block options for additional details on customizing code block output).\n\n\nR (Knitr)\nCodeOutput\n\n\n---\ntitle: \"Knitr Document\"\nformat: \n  html:\n    code-background: true\nexecute:\n  warning: false\n---\n\n```{r}\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\n\n```{r}\nsummary(airquality)\n```\n\n\n\n\n\nNote that we added the execute: warning: false option to suppress printing of warnings. See Execution Options for additional details.\nYou can produce a wide variety of output types from executable code blocks, including:\n\nStatic plots (e.g. from matplotlib or ggplot2).\nInteractive plots (e.g. from plotly or leaflet).\nTabular output (e.g. from printing R or Pandas data frames)\nPlain text output (e.g. printing the results of statistical summaries).\n\n\n\nNon-Executable Blocks\nNote that code blocks that use convential markdown code block syntax (either ```python or ```{.python}) are not executable:\n\n\n\n\n\n\n\nCode Block Syntax\nExecutable?\n\n\n\n\n```{python}\n1 + 1\n```\nYes\n\n\n```python\n1 + 1\n```\nNo\n\n\n```{.python}\n1 + 1\n```\nNo\n\n\n\nNon-executable code blocks are printed but not executed."
   },
   {
     "href": "docs/computations/running-code.html#rendering",
@@ -198,66 +336,6 @@
     "text": "Earlier we said that the engine used for computations was determined automatically. You may want to customize this—for example you may want to use the Jupyter R kernel rather than Knitr, or you may want to use Knitr with Python code (via reticulate).\nHere are the basic rules for automatic binding:\n\n\n\n\n\n\n\nExtension\nEngine Binding\n\n\n\n\n.qmd\nUse Knitr engine if an {r} code block is discovered within the file\nUse Jupyter engine if an executable code block (e.g. {python}) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered.\nUse no engine if no executable code blocks are discovered.\n\n\n.ipynb\nJupyter engine\n\n\n.Rmd\nKnitr engine\n\n\n.md\nNo engine\n\n\n\nYou can override the engine used via the engine option. For example:\nengine: jupyter\nengine: knitr\nYou can also specify that no engine should be used via engine: none.\nThe presence of the knitr or jupyter option will also override the default engine:\nknitr: true\njupyter: python3\nVariations with additional engine-specific options also work to override the default engine:\nknitr:\n  opts_knit:\n    verbose: true\njupyter:\n  kernelspec:\n    display_name: Python 3\n    language: python\n    name: python3"
   },
   {
-    "href": "docs/computations/using-rstudio.html#overview",
-    "title": "Using RStudio",
-    "section": "Overview",
-    "text": "RStudio IDE v1.5.184 or higher includes support for editing and preview of Quarto documents. This works for plain markdown as well as both the Knitr and Jupyter engines.\nThe version of RStudio that works with Quarto (v1.5) is currently available as a daily build. If you are using Quarto within RStudio it is strongly recommended that you use this version (the documentation below assumes you are using this build).\nYou can download the RStudio daily build from https://dailies.rstudio.com.\n\nCreating a Document\nUse the File : New File : Quarto Doc… command to create new Quarto documents:"
-  },
-  {
-    "href": "docs/computations/using-rstudio.html#knitr-engine",
-    "title": "Using RStudio",
-    "section": "Knitr Engine",
-    "text": "Quarto is designed to be highly compatible with existing R Markdown documents. You should generally be able to use Quarto to render any existing Rmd document without changes.\nOne important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are typically included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:\n```{r}\n#| echo: false\n#| fig.cap: \"Air Quality\"\n\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\nQuarto uses this approach to both better accommodate longer options like fig.cap, fig.subcap, and fig.alt as well as to make it straightforward to edit chunk options within more structured editors that don’t have an easy way to edit chunk metadata (e.g. most traditional notebook UIs).\n\n\n\n\n\n\nNote\n\n\n\nNote that if you prefer it is still possible to include chunk options on the first line (e.g. ```{r, echo = FALSE}). That said, we recommend using the comment-based syntax to make documents more portable and consistent across execution engines.\n\n\nChunk options included this way use YAML syntax rather than R syntax for consistency with options provided in YAML front matter. You can still however use R code for option values by prefacing them with !expr. For example:\n#| fig.cap: !expr paste(\"Air\", \"Quality\")"
-  },
-  {
-    "href": "docs/computations/using-rstudio.html#jupyter-engine",
-    "title": "Using RStudio",
-    "section": "Jupyter Engine",
-    "text": "You can also work with Quarto markdown documents that target the Jupyter engine within RStudio. These files will typically include a jupyter option in the YAML front matter indicating which kernel to use. For example:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\njupyter: python3\n---\nIf you want to work within a virtual environment (venv), use the File : New Project… command and specify which packages you’d like to seed the venv with:\n\nRStudio will automatically activate this virtual environment whenever you open the project. You can install additional Python packages into the environment using the RStudio Terminal tab. For example:"
-  },
-  {
-    "href": "docs/computations/using-rstudio.html#r-package",
-    "title": "Using RStudio",
-    "section": "R Package",
-    "text": "If you are not using RStudio and/or you prefer to render from the R console, you can do so using the quarto R package. To install the R package:\nremotes::install_github(\"quarto-dev/quarto-r\")\nThen, to render a document:\nlibrary(quarto)\nquarto_render(\"document.qmd\")\nIf you working on a website or book project, you can run the Quarto development server with:\nlibrary(quarto)\nquarto_serve()"
-  },
-  {
-    "href": "docs/computations/using-jupyter-lab.html#overview",
-    "title": "Using JupyterLab",
-    "section": "Overview",
-    "text": "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use JupyterLab as your editor.\nHere is the “Hello, Quarto” example from the homepage inside JupyterLab:\n\nThere are a few things to point out about this notebook:\n\nThe first cell contains document level options in a YAML front matter block.\nThe markdown cell immediately below uses the Quarto markdown cross-reference syntax (@fig-polar) to refer to the figure below.\nThere are a couple of comment lines at the top of the code cell providing output options.\n\nWe’ll describe each of these in more depth below. First though, let’s render the notebook to HTML with Quarto:\nquarto render basics-jupyter.ipynb\n\nNote that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render jupyter-document.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Document\"\nexecute: true\njupyter: python3\n---\nThere are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in Execution Options."
-  },
-  {
-    "href": "docs/computations/using-jupyter-lab.html#running-jupyterlab",
-    "title": "Using JupyterLab",
-    "section": "Running JupyterLab",
-    "text": "To run JupyterLab, invoke the jupyter module from within the shell where you are using Quarto:\n\n\n\n\n\n\n\nPlatform\nCommand\n\n\n\n\nWindows\npy -m jupyter lab\n\n\nMac/Linux\npython3 -m jupyter lab"
-  },
-  {
-    "href": "docs/computations/using-jupyter-lab.html#yaml-front-matter",
-    "title": "Using JupyterLab",
-    "section": "YAML Front Matter",
-    "text": "The first cell of your notebook should be a Raw cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to Raw using the notebook toolbar:\n\nIn this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on Authoring and Output Formats for additional details."
-  },
-  {
-    "href": "docs/computations/using-jupyter-lab.html#markdown-cells",
-    "title": "Using JupyterLab",
-    "section": "Markdown Cells",
-    "text": "Here’s the underlying code for the markdown cell:\n\nNote that a Quarto cross-reference (@fig-polar) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells."
-  },
-  {
-    "href": "docs/computations/using-jupyter-lab.html#output-options",
-    "title": "Using JupyterLab",
-    "section": "Output Options",
-    "text": "Quarto uses leading comments with a special prefix (#|) to denote cell options. Here we specify the label and fig.cap options so that the plot generated from the cell can be cross-referenced.\n\nNote that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.\nThere are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on Output Outputs for additional details."
-  },
-  {
-    "href": "docs/computations/using-jupyter-lab.html#plain-text-editing",
-    "title": "Using JupyterLab",
-    "section": "Plain Text Editing",
-    "text": "It’s also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.\nMarkdown files with embedded code chunks should use the file extension .qmd to indicate that they aren’t ordinary markdown files but rather contain embedded computations to be run by Quarto.\nTo make a code block executable in a markdown notebook, just add braces around the name of the language. For example:\n```{python}\n1 + 1\n```\nHere is the plain text markdown version of the notebook used in the previous examples:\n---\ntitle: \"Matplotlib Demo\"\nauthor: \"Norah Smith\"\ndate: \"May 22nd, 2021\"\nformat: \n  html:\n    code-fold: true\njupyter: python3\n---\n\n## Polar Axis\n\nFor a demonstration of a line plot on a polar axis, see @fig-polar.\n\n```{python}\n#| label: fig-polar\n#| fig.cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(subplot_kw={'projection': 'polar'})\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n```\nNote that we’ve added the jupyter: python3 option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:\nquarto render basics-jupyter.qmd\nYou can convert between .ipynb and .qmd representations of a notebook using the quarto convert command. For example:\nquarto convert basics-jupyter.ipynb --to markdown\nquarto convert basics-jupyter.qmd --to notebook\nSee quarto convert help for additional details on converting notebooks."
-  },
-  {
     "href": "docs/computations/parameters.html#overview",
     "title": "Parameters",
     "section": "Overview",
@@ -274,18 +352,6 @@
     "title": "Parameters",
     "section": "Rendering",
     "text": "To render using different parameters you can pass them on the command line using the -P flag:\nquarto render notebook.ipynb -P alpha:0.2 -P ratio:0.3\nAlternatively you can create a YAML file that defines the parameter values you want to render with, then call quarto render with the --execute-params flag:\nquarto render notebook.ipynb --execute-params params.yml"
-  },
-  {
-    "href": "docs/computations/exporting-notebooks.html#overview",
-    "title": "Exporting Notebooks",
-    "section": "Overview",
-    "text": "If you have an existing Jupyter Notebook (.ipynb file) that you want to export to one of the formats supported by Pandoc, you can do this using quarto render. For example:\nquarto render notebook.ipynb # html by default\nquarto render notebook.ipynb --to pdf\nquarto render notebook.ipynb --to docx\nBy default, Quarto will not re-execute the code cells in the notebook. If you want to execute code cells during render, specify the --execute flag. For example:\nquarto render notebook.ipynb --execute"
-  },
-  {
-    "href": "docs/computations/exporting-notebooks.html#export-options",
-    "title": "Exporting Notebooks",
-    "section": "Export Options",
-    "text": "There are dozens of options that you can use to customize exported output. You can specify these options by adding a raw YAML block at the top of your notebook:\n\nAlternatively, you can keep these options in a separate YAML file and reference this file using the --metadata-file command line argument. For example:\nquarto render notebook.ipynb --metadata-file options.yml\nSee the Basic Usage article to learn more about the various metadata options that can be used to customize output."
   },
   {
     "href": "docs/authoring/cross-references.html#overview",
@@ -516,30 +582,6 @@
     "text": "Markdown Syntax\nOutput\n\n\n\n\n> Blockquote\n\nBlockquote\n\n\n\n::: {.classname}\nDiv\n:::\n\nDiv\n\n\n\n| Line Block\n|   Spaces and newlines\n|   are preserved\nLine Block\n   Spaces and newlines\n   are preserved\n\n\n\n\nSpecial Characters\n\n\n\n\n\n\n\nMarkdown Syntax\nOutput\n\n\n\n\nendash: --\nendash: –\n\n\nemdash: ---\nemdash: —"
   },
   {
-    "href": "docs/getting-started/running-code.html#overview",
-    "title": "Running Code",
-    "section": "Overview",
-    "text": "Quarto supports executable code blocks within markdown. This allows you to create fully reproducible documents and reports—the code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.\nThere are currently two engines supported for running computations:\n\nJupyter, for running code from Python, Julia, and many other languages.\nKnitr, for running code from R.\n\nExtensive customization of code chunk output is supported, including the ability to hide code and/or output as well as fold code (make it visible only on demand)."
-  },
-  {
-    "href": "docs/getting-started/running-code.html#code-blocks",
-    "title": "Running Code",
-    "section": "Code Blocks",
-    "text": "Code blocks that use braces around the language name (e.g. ```{python}) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).\n\nPython (Jupyter)\n---\ntitle: \"Jupyter Document\"\nformat: \n  html:\n    code-background: true\njupyter: python3\n---\n\n```{python}\nimport matplotlib.pyplot as plt\nplt.plot([1,2,3,4])\nplt.show()\n```\n\n```{python}\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n```\n\nNote that we added the code-background: true option to provide a background color for the code chunks (see the documentation on Code Block options for additional details on customizing code block output).\n\n\nR (Knitr)\n---\ntitle: \"Knitr Document\"\nformat: \n  html:\n    code-background: true\nexecute:\n  warning: false\n---\n\n```{r}\nlibrary(ggplot2)\nggplot(airquality, aes(Temp, Ozone)) + \n        geom_point() + \n        geom_smooth(method = \"loess\", se = FALSE)\n```\n\n```{r}\nsummary(airquality)\n```\n\nNote that we added the execute: warning: false option to suppress printing of warnings. See Execution Options for additional details.\nYou can produce a wide variety of output types from executable code blocks, including:\n\nStatic plots (e.g. from matplotlib or ggplot2).\nInteractive plots (e.g. from plotly or leaflet).\nTabular output (e.g. from printing R or Pandas data frames)\nPlain text output (e.g. printing the results of statistical summaries).\n\n\n\nNon-Executable Blocks\nNote that code blocks that use convential markdown code block syntax (either ```python or ```{.python}) are not executable:\n\n\n\n\n\n\n\nCode Block Syntax\nExecutable?\n\n\n\n\n```{python}\n1 + 1\n```\nYes\n\n\n```python\n1 + 1\n```\nNo\n\n\n```{.python}\n1 + 1\n```\nNo\n\n\n\nNon-executable code blocks are printed but not executed."
-  },
-  {
-    "href": "docs/getting-started/running-code.html#rendering",
-    "title": "Running Code",
-    "section": "Rendering",
-    "text": "Markdown\nQuarto will automatically run computations in any markdown document that contains executable code blocks. For example, the Python example shown above might be rendered with:\nquarto render jupyter-document.qmd\nThe R example might have been rendered with:\nquarto render knitr-document.qmd\n\n\nNotebooks\nThe Python example above uses a markdown input file, Quarto can also render any Jupyter notebook (.ipynb):\nquarto render jupyter-document.ipynb\nNote that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render jupyter-document.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Document\"\nexecute: true\njupyter: python3\n---"
-  },
-  {
-    "href": "docs/getting-started/running-code.html#inline-code",
-    "title": "Running Code",
-    "section": "Inline Code",
-    "text": "Both Jupyter and Knitr support executing inline code within markdown (e.g. to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines.\n\nJupyter\nTo include executable expressions within markdown in a Jupyter notebook, you use IPython.display.Markdown to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable radius we can use it within markdown as follows:\n```{python}\n#| echo: false\n\nfrom IPython.display import Markdown\nMarkdown(\"\"\"\n## Circle\n\nThe radius of the circle is {radius}.\n\"\"\".format(radius = radius))\n```\nNote that we also include the echo: false option to ensure that the code used to generate markdown isn’t included in the final output.\n\n\nKnitr\nTo include executable expressions within markdown for Knitr, enclose the expression in `r `. For example, if we have a variable radius we can use it within markdown as follows:\n## Circle\n\nThe radius of the circle is `r radius`."
-  },
-  {
     "href": "docs/getting-started/learning-more.html",
     "title": "Learning More",
     "section": "",
@@ -580,36 +622,6 @@
     "title": "Quarto Basics",
     "section": "Learning More",
     "text": "Running Code covers creating computational documents with Quarto in more depth, including how to use Quarto with JupyterLab and RStudio.\nThe Authoring section describes the capabilities of Pandoc markdown, as well as Quarto extensions for Cross References, Figures and Layout, and Callout Blocks.\nThe output formats section provides additional details on creating HTML, PDF, and MS Word documents, as well as describes a few special output types including Presentations, EPUBs, and pages in Hugo static sites.\nCreating a Website and Creating a Book describe some special Quarto project types."
-  },
-  {
-    "href": "docs/getting-started/quarto-projects.html#overview",
-    "title": "Quarto Projects",
-    "section": "Overview",
-    "text": "Quarto projects are directories that provide:\n\nA way to render all or some of the files in a directory with a single command (e.g. quarto render myproject).\nA way to share YAML configuration across multiple documents.\nThe ability to redirect output artifacts to another directory.\nThe ability to freeze rendered output (i.e. don’t re-execute documents unless they have changed).\n\nIn addition, projects can have special “types” that introduce additional behavior (e.g. websites or books).\n\n\n\n\n\n\nNote\n\n\n\nIf you are just getting started with Quarto and/or you don’t have previous experience with markdown publishing systems, you probably want to skip learning about projects for now. Once you are comfortable with the basics, come back to this article to learn more."
-  },
-  {
-    "href": "docs/getting-started/quarto-projects.html#creating-projects",
-    "title": "Quarto Projects",
-    "section": "Creating Projects",
-    "text": "Use the quarto create-project command to create a new project. If you have an existing directory of documents that you want to treat as a project just invoke create-project with no arguments from within the directory:\nquarto create-project\nTo create a project in a new directory just provide a directory name on the command line:\nquarto create-project myproject"
-  },
-  {
-    "href": "docs/getting-started/quarto-projects.html#shared-metadata",
-    "title": "Quarto Projects",
-    "section": "Shared Metadata",
-    "text": "When you create a project, a _quarto.yml config file is created. Here is an example of what the _quarto.yml file might look like:\nproject:\n  output-dir: _output\n\ntoc: true\nnumber-sections: true\nbibliography: references.bib  \n  \nformat:\n  html:\n    css: styles.css\n    html-math-method: katex\n  pdf:\n    documentclass: report\n    margin-left: 30mm\n    margin-right: 30mm\nAny document rendered within the project directory will automatically inherit the metadata defined at the project level.\nNote that the project file contains both global options that apply to all formats (e.g. toc and bibliograph) as well as format-specific options."
-  },
-  {
-    "href": "docs/getting-started/quarto-projects.html#rendering-projects",
-    "title": "Quarto Projects",
-    "section": "Rendering Projects",
-    "text": "You can render files within a project either one-by-one or all at once (in either case, shared project metadata will be used).\nTo render all of the documents within a project, just use quarto render within the project directory (or target a specific directory with a command line argument):\n# render project in current dir\nquarto render \n\n# render project in 'myproject'\nquarto render myproject\nYou can also render only the files within a sub-directory of a project. For example, if the current directory contains a project with sub-directories tutorials, how-to, and articles, you can render just the contents of articles as follows:\n# render only documents in the 'articles' sub-directory\nquarto render articles\nNote that when rendering a project, command line arguments you pass to quarto render will be used for each file in the project. For example. this command will render each document in a project as a PDF:\nquarto render --to pdf\nquarto render myproject --to pdf\nIf you are working with Quarto from R, you can also render a project from the R console using the quarto R package.\nlibrary(quarto)\nquarto_render()"
-  },
-  {
-    "href": "docs/getting-started/quarto-projects.html#render-targets",
-    "title": "Quarto Projects",
-    "section": "Render Targets",
-    "text": "By default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the project directory will be rendered, save for ones with a file or directory prefix of . (hidden files) or _ (typically used for non top-level files, e.g. ones included in other files).\nIf you don’t want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a project: render: [files] entry to your project metadata. For example:\nproject:\n  render:\n    - section1.md\n    - section2.md\nNote that you can use wildcards when defining the render list. For example:\nproject:\n  render:\n    - section*.md"
   },
   {
     "href": "docs/getting-started/installation.html#quarto-cli",
@@ -1011,7 +1023,7 @@
     "href": "docs/websites/website-navigation.html#top-navigation",
     "title": "Website Navigation",
     "section": "Top Navigation",
-    "text": "To add top-navigation to a website, add a navbar entry to the site config in _quarto.yml. For example, the following YAML:\nsite:\n  navbar:\n    type: dark\n    background: primary\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.qmd\n      - talks.qmd\n      - about.qmd \nWould result in a navigation bar that looks something like this:\n\nAbove we use the left option to specify items for the left side of the navigation bar. You can also use the right option to specify items for the right side.\nThe text for navigation bar items will be taken from the underlying target document’s title. Note that in the above example we provide a custom text: \"Home\" value for index.qmd.\nYou can also create a navigation menu by including a menu (which is list of items much like left and right). For example:\nleft:\n  - text: \"More\"\n    menu:\n      - talks.qmd\n      - about.qmd \nHere are all of the options available for top navigation:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\ntitle\nNavbar title (uses the site-title if none is specified).\n\n\nlogo\nOptional logo image to be displayed left of the title.\n\n\ntype\n“dark” or “light” (each Bootstrap theme has a light and dark variation of the navigation bar)\n\n\nbackground\nBackground color (“primary”, “secondary”, “success”, “danger”, “warning”, “info”, “light”, or “dark”)\n\n\nsearch\nInclude a search box (true or false)\n\n\nleft / right\nLists of navigation items for left and right side of navbar\n\n\npinned\nAlways show the navbar (true or false). Defaults to false, and uses headroom.js to automatically show the navbar when the user scrolls up on the page.\n\n\ncollapse\nCollapse the navbar items into a hamburger menu when the display gets narrow (defaults to true)\n\n\ncollapse-below\nResponsive breakpoint at which to collapse navbar items to a hamburger menu (“sm”, “md”, “lg”, “xl”, or “xxl”, defaults to “lg”)\n\n\n\nHere are the options available for individual navigation items:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\nfile\nLink to file contained with the project.\n\n\nurl\nLink to external URL.\n\n\ntext\nText to display for navigation item (defaults to the document title if not provided).\n\n\nicon\nName of one of the standard Bootstrap 5 icons (e.g. “github”, “twitter”, “share”, etc.).\n\n\naria-label\nAccessible label for the navigation item.\n\n\nmenu\nList of navigation items to populate a drop-down menu."
+    "text": "To add top-navigation to a website, add a navbar entry to the site config in _quarto.yml. For example, the following YAML:\nsite:\n  navbar:\n    type: dark\n    background: primary\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.qmd\n      - talks.qmd\n      - about.qmd \nWould result in a navigation bar that looks something like this:\n\nAbove we use the left option to specify items for the left side of the navigation bar. You can also use the right option to specify items for the right side.\nThe text for navigation bar items will be taken from the underlying target document’s title. Note that in the above example we provide a custom text: \"Home\" value for index.qmd.\nYou can also create a navigation menu by including a menu (which is list of items much like left and right). For example:\nleft:\n  - text: \"More\"\n    menu:\n      - talks.qmd\n      - about.qmd \nHere are all of the options available for top navigation:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\ntitle\nNavbar title (uses the site: title if none is specified). Use title: false to surpress the display of the title on the navbar.\n\n\nlogo\nLogo image to be displayed left of the title.\n\n\ntype\n“dark” or “light” (each Bootstrap theme has a light and dark variation of the navigation bar)\n\n\nbackground\nBackground color (“primary”, “secondary”, “success”, “danger”, “warning”, “info”, “light”, or “dark”)\n\n\nsearch\nInclude a search box (true or false)\n\n\nleft / right\nLists of navigation items for left and right side of navbar\n\n\npinned\nAlways show the navbar (true or false). Defaults to false, and uses headroom.js to automatically show the navbar when the user scrolls up on the page.\n\n\ncollapse\nCollapse the navbar items into a hamburger menu when the display gets narrow (defaults to true)\n\n\ncollapse-below\nResponsive breakpoint at which to collapse navbar items to a hamburger menu (“sm”, “md”, “lg”, “xl”, or “xxl”, defaults to “lg”)\n\n\n\nHere are the options available for individual navigation items:\n\n\n\n\n\n\n\nOption\nDescription\n\n\n\n\nfile\nLink to file contained with the project.\n\n\nurl\nLink to external URL.\n\n\ntext\nText to display for navigation item (defaults to the document title if not provided).\n\n\nicon\nName of one of the standard Bootstrap 5 icons (e.g. “github”, “twitter”, “share”, etc.).\n\n\naria-label\nAccessible label for the navigation item.\n\n\nmenu\nList of navigation items to populate a drop-down menu."
   },
   {
     "href": "docs/websites/website-navigation.html#side-navigation",
@@ -1023,7 +1035,7 @@
     "href": "docs/websites/website-navigation.html#hybrid-navigation",
     "title": "Website Navigation",
     "section": "Hybrid Navigation",
-    "text": "If you have a website with dozens or even hundreds of pages you will likely want to use top and side navigation together (where the top navigation links to various sections, each with their own side navigation).\nTo do this, provide a list of nav-side entries and give them each an id, which you then use to reference them from the nav-top. For example, if you are using the Diátaxis Framework for documentation, you might have separate sections for tutorials, how-to guides, explanations, and reference documents:\n\nYour configuration for this site might look something like this:\nsite:\n  navbar:\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.qmd\n      - sidebar:tutorials\n      - sidebar:howto\n      - sidebar:fundamentals\n      - sidebar:reference\n\n  sidebar:\n    - id: tutorials\n      title: \"Tutorials\"\n      contents: \n        # navigation items\n        \n    - id: howto\n      title: \"How-To\"\n      contents:\n        # navigation items\n        \n    - id: fundamentals\n      title: \"Fundamentals\"\n      contents: :\n        # navigation items\n        \n    - id: reference\n      title: \"Reference\"\n      contents: \n        # navigation items"
+    "text": "If you have a website with dozens or even hundreds of pages you will likely want to use top and side navigation together (where the top navigation links to various sections, each with their own side navigation).\nTo do this, provide a list of nav-side entries and give them each an id, which you then use to reference them from the nav-top. For example, if you are using the Diátaxis Framework for documentation, you might have separate sections for tutorials, how-to guides, explanations, and reference documents:\n\nYour configuration for this site might look something like this:\nsite:\n  navbar:\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.qmd\n      - sidebar:tutorials\n      - sidebar:howto\n      - sidebar:fundamentals\n      - sidebar:reference\n\n  sidebar:\n    - id: tutorials\n      title: \"Tutorials\"\n      style: \"docked\"\n      background: light\n      collapse-level: 2\n      contents: \n        # navigation items\n        \n    - id: howto\n      title: \"How-To\"\n      contents:\n        # navigation items\n        \n    - id: fundamentals\n      title: \"Fundamentals\"\n      contents: :\n        # navigation items\n        \n    - id: reference\n      title: \"Reference\"\n      contents: \n        # navigation items\n    \nNote that the first sidebar definition contains a few options (e.g. style and background). These options are automatically inherited by the other sidebars."
   },
   {
     "href": "docs/websites/website-navigation.html#hiding-navigation",
@@ -1143,13 +1155,13 @@
     "href": "docs/websites/index.html#overview",
     "title": "Creating a Website",
     "section": "Overview",
-    "text": "Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style.\nWebsite navigation can be provided through a global navbar, a sidebar with links, or a combination of both for sites that have multiple levels of content. You can also enable full text search for websites.\nThis site is an example of a Quarto Website (you can see the source code for it here: https://github.com/quarto-dev/quarto-docs)."
+    "text": "Quarto Websites are a convenient way to publish groups of documents. Document published as part of a website share navigational elements, rendering options, and visual style.\nWebsite navigation can be provided through a global navbar, a sidebar with links, or a combination of both for sites that have multiple levels of content. You can also enable full text search for websites.\nThis site is an example of a Quarto Website (you can see the source code for it here: https://github.com/quarto-dev/quarto-web)."
   },
   {
     "href": "docs/websites/index.html#getting-started",
     "title": "Creating a Website",
     "section": "Getting Started",
-    "text": "To create a new website project, use the Quarto create-project command:\nquarto create-project mysite --type site\nThis will create the scaffolding for a simple website in the mysite subdirectory. Here is what the _quarto.yml config file will look like for the site:\nproject:\n  type: site\n\nsite:\n  title: \"mysite\"\n  navbar:\n    type: dark\n    background: primary\n    left:\n      - href: index.md\n        text: Home\n      - about.md\n\nformat:\n  html:\n    theme: cosmo\n    css: styles.css\n    toc: true\nTo build the website into the _site directory:\nquarto render\n<<<<<<< HEAD:docs/websites/website-basics.qmd See the Quarto Projects article to learn more about working with projects. ======= See the Quarto Projects article to learn more about working with projects. >>>>>>> c378433b805390ff90c1dc0d3c03b6de810f086b:docs/websites/website-basics.md"
+    "text": "To create a new website project, use the Quarto create-project command:\nquarto create-project mysite --type site\nThis will create the scaffolding for a simple website in the mysite subdirectory. Here is what the _quarto.yml config file will look like for the site:\nproject:\n  type: site\n\nsite:\n  title: \"mysite\"\n  navbar:\n    type: dark\n    background: primary\n    left:\n      - href: index.md\n        text: Home\n      - about.md\n\nformat:\n  html:\n    theme: cosmo\n    css: styles.css\n    toc: true\nTo build the website into the _site directory:\nquarto render\nSee the Project Basics article to learn more about working with projects."
   },
   {
     "href": "docs/websites/index.html#workflow",
@@ -1167,7 +1179,7 @@
     "href": "index.html#introduction",
     "title": "Welcome to Quarto",
     "section": "Introduction",
-    "text": "Quarto is an open-source scientific and technical publishing system built on Pandoc. Quarto documents are authored using markdown, an easy to write plain text format.\nIn addition to the core capabilities of Pandoc, Quarto includes:\n\nSupport for embedding output from Python, R, and Julia via integration with Jupyter and Knitr .\nA variety of extensions to Pandoc markdown useful for technical writing including callouts (admonitions), cross-references, sub-figures, layout panels, hover-able citations and footnotes, and more.\nA project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like books and websites.\nHTML output based on Bootstrap (including support for Bootswatch themes).\nAutomatic installation of required LaTeX packages when rendering PDF output.\n\nThe overall design of Quarto is influenced heavily by R Markdown, however unlike R Markdown the architecture is language agnostic. In its current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents."
+    "text": "Quarto is an open-source scientific and technical publishing system built on Pandoc. Quarto documents are authored using markdown, an easy to write plain text format.\nIn addition to the core capabilities of Pandoc, Quarto includes:\n\nSupport for embedding output from Python, R, and Julia via integration with Jupyter and Knitr .\nA variety of extensions to Pandoc markdown useful for technical writing including callouts (admonitions), cross-references, sub-figures, layout panels, hover-able citations and footnotes, and more.\nCompatibility with a wide variety of authoring tools including JupyterLab, RStudio, and VS Code.\nA project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like books and websites.\nHTML output based on Bootstrap (including support for Bootswatch themes).\n\nThe overall design of Quarto is influenced heavily by R Markdown, however unlike R Markdown the architecture is language agnostic. In its current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr (Rmd) documents."
   },
   {
     "href": "index.html#hello-quarto",
@@ -1179,6 +1191,6 @@
     "href": "index.html#getting-started",
     "title": "Welcome to Quarto",
     "section": "Getting Started",
-    "text": "Installation will get you up and running with Quarto (including additional dependencies required for computational documents).\nQuarto Basics will help you learn the core mechanics of rendering markdown from the command line as well as how to specify document formats and options.\nRunning Code covers creating computational documents with Quarto in more depth, including how to use Quarto with JupyterLab and RStudio."
+    "text": "Installation will get you up and running with Quarto (including additional dependencies required for computational documents).\nQuarto Basics will help you learn the core mechanics of rendering markdown from the command line as well as how to specify document formats and options.\nRunning Code explains how to work with Jupyter and Knitr based computational documents in more depth.\nArticles on using JupyterLab, RStudio, and VS Code with Quarto will help you create an optimal workflow in your editing tool(s) of choice."
   }
 ]

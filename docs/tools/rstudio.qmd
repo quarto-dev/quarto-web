@@ -1,22 +1,45 @@
 ---
-title: Using RStudio
-description: "Use RStudio v1.5 to work with Quarto documents that use either the Knitr or Jupyter engine."
-format: html
+title: RStudio IDE
+description: | 
+  Use RStudio v1.5 to work with Quarto documents that use either the 
+  Knitr or Jupyter engine.
 ---
 
 ## Overview
 
-RStudio IDE [v1.5.184](https://dailies.rstudio.com) or higher includes support for editing and preview of Quarto documents. This works for plain markdown as well as both the Knitr and Jupyter engines.
+The currently [daily build](https://dailies.rstudio.com) of RStudio (v2021-07.0.275 or higher) includes support for editing and preview of Quarto documents. This works for plain markdown as well as both the Knitr and Jupyter engines.
 
-The version of RStudio that works with Quarto (v1.5) is currently available as a daily build. If you are using Quarto within RStudio it is **strongly** recommended that you use this version (the documentation below assumes you are using this build).
+If you are using Quarto within RStudio it is **strongly** recommended that you use this version (the documentation below assumes you are using this build).
 
 You can download the RStudio daily build from <https://dailies.rstudio.com>.
 
-#### Creating a Document
+### Creating Documents
 
 Use the **File :** **New File : Quarto Doc...** command to create new Quarto documents:
 
 ![](images/new-quarto-doc.png){width="471"}
+
+### Render and Preview
+
+Use the **Render** button to preview documents as you edit them:
+
+![](images/rstudio-render.png){.border-bottom width="612"}
+
+If you prefer to automatically render whenever you save you can check the **Render on Save** option on the editor toolbar.
+
+The preview will appear alongside the editor:
+
+![](images/rstudio-preview.png){.border}
+
+The preview will update whenever you re-render the document. Side-by-side preview works for both HTML and PDF output.
+
+## Projects
+
+If you want to create a new project for a Quarto document or set of documents, use the **File : New Project...** command, specify **New Directory**, then choose **Quarto Project**:
+
+![](images/rstudio-new-knitr-project.png){.border width="533"}
+
+You can use this UI to create both vanilla projects as well as [websites](../websites/website-basics.qmd) and [books](../books/book-basics.qmd). Options are also provided for creating a [git](https://git-scm.com/) repository and initializing an [renv](https://rstudio.github.io/renv/) environment for the project.
 
 ## Knitr Engine
 
@@ -60,7 +83,7 @@ jupyter: python3
 ---
 ```
 
-If you want to work within a virtual environment ([venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)), use the **File :** **New Project...** command and specify which packages you'd like to seed the venv with:
+If you want to work within a virtual environment ([venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)), use the **File :** **New Project...** command, specify the **Jupyter** engine with a venv, and specify which packages you'd like to seed the venv with:
 
 ![](images/rstudio-new-project.png){width="552"}
 
@@ -81,6 +104,13 @@ Then, to render a document:
 ``` r
 library(quarto)
 quarto_render("document.qmd")
+```
+
+To live preview (automatically render & refresh the browser on save) for a document you are working on, use the `quarto_preview()` function:
+
+``` r
+library(quarto)
+quarto_preview("document.qmd")
 ```
 
 If you working on a [website](../websites/website-basics.qmd) or [book](../books/book-basics.qmd) project, you can run the Quarto development server with:

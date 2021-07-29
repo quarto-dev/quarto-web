@@ -1,4 +1,3 @@
-
 ## Overview
 
 Quarto supports executable code blocks within markdown. This allows you to create fully reproducible documents and reports---the code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
@@ -13,9 +12,12 @@ Extensive customization of code chunk output is supported, including the ability
 
 ## Code Blocks
 
-Code blocks that use braces around the language name (e.g. ```` ```{python} ````) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown beneath the code).
+Code blocks that use braces around the language name (e.g. ```` ```{python} ````) are executable, and will be run by Quarto during render. Here are a couple of simple examples in Python and R to illustrate (the output produced by the code block is shown on the Output tab):
 
 ### Python (Jupyter)
+
+::: panel-tabset
+## Code
 
 ```` python
 ---
@@ -41,11 +43,17 @@ df
 ```
 ````
 
-![](images/jupyter-document.png){.border}
+## Output
+
+![](/docs/computations/images/jupyter-document.png){.border}
+:::
 
 Note that we added the `code-background: true` option to provide a background color for the code chunks (see the documentation on [Code Block](/docs/output-formats/html-code.qmd) options for additional details on customizing code block output).
 
 ### R (Knitr)
+
+::: panel-tabset
+## Code
 
 ```` r
 ---
@@ -69,7 +77,10 @@ summary(airquality)
 ```
 ````
 
-![](images/knitr-document.png){.border .preview-image}
+## Output
+
+![](/docs/computations/images/knitr-document.png){.border .preview-image}
+:::
 
 Note that we added the `execute: warning: false` option to suppress printing of warnings. See [Execution Options](/docs/computations/execution-options.md) for additional details.
 
@@ -87,21 +98,21 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+-------------------+--------------+
-| Code Block Syntax | Executable?  |
-+===================+:============:+
-|     ```{python}   | Yes          |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
-|     ```python     | No           |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
-|     ```{.python}  | No           |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
++-------------------+-------------+
+| Code Block Syntax | Executable? |
++===================+:===========:+
+|     ```{python}   | Yes         |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```python     | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```{.python}  | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
 
 Non-executable code blocks are printed but not executed.
 

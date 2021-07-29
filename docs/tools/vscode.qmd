@@ -1,0 +1,143 @@
+---
+title: VS Code
+description: "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use the VS Code notebook interface as your editor."
+---
+
+## Overview
+
+Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). One benefit of using .ipynb is that you can use the [VS Code Jupyter Notebook UI](https://code.visualstudio.com/docs/datascience/jupyter-notebooks) as your editor.
+
+Here is the "Hello, Quarto" example from the homepage inside VSCode:
+
+![](images/vscode.png){.border}
+
+If you look at the source code you'll note that YAML options were provided both at the top of the document and within the code cell. We'll describe working with YAML options in more detail below.
+
+## Workflow
+
+The ideal workflow for authoring Quarto notebooks in VS Code is to run the `quarto preview` command from within a terminal:
+
+``` bash
+quarto preview notebook.ipynb
+```
+
+The notebook will be rendered and a web browser with a "live preview" opened. Position this browser so that you can see it as you edit and save the notebook:
+
+![](images/vscode-preview.png)
+
+Every time you save within VS Code the preview will be automatically updated. You can use `quarto preview` for both HTML and PDF output.
+
+In the screenshot above you'll note that we ran `quarto preview` inside a VS Code terminal window---this is generally recommended so that you can see progress and error messages when renders occur.
+
+::: {.callout-note appearance="simple"}
+Note that if you are authoring a book or website you should use [`quarto serve`](../websites/website-basics.qmd#workflow) instead, which will create a live preview for the entire project.
+:::
+
+#### Render without Preview
+
+You can render a notebook (or group of notebooks) without previewing them using the `quarto render` command:
+
+``` bash
+quarto render notebook.ipynb
+```
+
+Use the `--to` argument to render to different formats:
+
+``` bash
+quarto render notebook.ipynb --to docx
+```
+
+## YAML Front Matter
+
+The first cell of your notebook should be a **Raw** cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to **Raw** using the cell type menu at the bottom right of the cell:
+
+![](images/vscode-raw.png){.border}
+
+In this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on [Authoring](../authoring/markdown-basics.qmd) and [Output Formats](../output-formats/html-basics.qmd) for additional details.
+
+## Markdown Cells
+
+Here's the underlying code for the markdown cell:
+
+![](images/vscode-markdown.png){.border}
+
+Note that a Quarto cross-reference (`@fig-polar`) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells.
+
+## Output Options
+
+Quarto uses leading comments with a special prefix (`#|`) to denote cell options. Here we specify the `label` and `fig.cap` options so that the plot generated from the cell can be cross-referenced.
+
+![](images/vscode-cell-options.png){.border}
+
+Note that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.
+
+There are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on [Output Outputs](../computations/execution-options.qmd#output-options) for additional details.
+
+## Cell Execution
+
+``` include
+../computations/_jupyter-execute.md
+```
+
+There are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in [Execution Options](../computations/execution-options.qmd).
+
+## Plain Text Editing
+
+It's also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.
+
+Here is the plain text markdown version of the notebook used in the previous examples:
+
+```` python
+---
+title: "Matplotlib Demo"
+author: "Norah Smith"
+date: "May 22nd, 2021"
+format: 
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+## Polar Axis
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
+```{python}
+#| label: fig-polar
+#| fig.cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
+Note that we've added the `jupyter: python3` option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:
+
+``` bash
+quarto render basics-jupyter.qmd
+```
+
+Markdown files with embedded code chunks should use the file extension `.qmd`.
+
+::: callout-tip
+If you are doing most of your work in .qmd files you should consider using RStudio, which includes full support for editing .qmd files that use Python and Jupyter (including code completion, cell-at-a-time execution, and side-by-side preview). See the article on using [RStudio](rstudio.qmd) for additional details.
+:::
+
+#### Converting Notebooks
+
+You can convert between .ipynb and .qmd representations of a notebook using the `quarto convert` command. For example:
+
+``` bash
+quarto convert basics-jupyter.ipynb --to markdown
+quarto convert basics-jupyter.qmd --to notebook
+```
+
+See `quarto convert help` for additional details on converting notebooks.
