@@ -2,6 +2,164 @@
 title: "JavaScript"
 ---
 
+Quarto supports JavaScript natively, enabling you to easily create interactive documents. 
+In this example adapted [from John Alexis Guerra Gómez](https://observablehq.com/@berkeleyvis/crossfilter), we create three histograms showing the distribution of attributes from Allison Horst's [Palmer Penguins dataset](https://allisonhorst.github.io/palmerpenguins/):
+
+```{ojs}
+//| echo: false
+//| label: fig-crossfilter
+//| fig.cap: Histograms of measurements from the Palmer Penguin dataset. Brush regions to change selections.
+{
+  const div = html`<div style="display:flex">`;
+
+  const charts = new Map();
+  for (let a of attribs) {
+    const chart = BrushableBarChart()
+      .x("value")
+      .y("key")
+      .width(width / attribs.length)
+      .height(300)
+      .onBrush(selection => {
+        const keys = selection.map(d => d.key);
+        cs.dims.get(a).filter(keys.length === 0 ? null : d => keys.includes(d));
+        update();
+      });
+    charts.set(a, chart);
+  }
+
+  function update() {
+    d3.select(div)
+      .selectAll(".charts")
+      .data(attribs)
+      .join("div")
+      .attr("class", "charts")
+      .style("width", width / attribs.length)
+      .each(function(a) {
+        const data =
+          a === "Nationality"
+            ? cs.groups.get(a).top(10)
+            : cs.groups.get(a).all();
+        d3.select(this)
+          .datum(data)
+          .call(charts.get(a));
+      });
+  }
+
+  update();
+
+  return div;
+}
+```
+
+**FIXME: I need to rewrite this example so the code we show to users is clear; I like having a crossfilter example, but the observable code we're using needs to be cleaned up.**
+
+Quarto provides support for this through a dialect of JavaScript developed by [Observable](https://www.observablehq.com). 
+The visualization part is created here using JavaScript and some libraries: 
+
+```js
+{
+  const div = html`<div style="display:flex">`;
+
+  const charts = new Map();
+  for (let a of attribs) {
+    const chart = BrushableBarChart()
+      .x("value")
+      .y("key")
+      .width(width / attribs.length)
+      .height(300)
+      .onBrush(selection => {
+        const keys = selection.map(d => d.key);
+        cs.dims.get(a).filter(keys.length === 0 ? null : d => keys.includes(d));
+        update();
+      });
+    charts.set(a, chart);
+  }
+
+  function update() {
+    d3.select(div)
+      .selectAll(".charts")
+      .data(attribs)
+      .join("div")
+      .attr("class", "charts")
+      .style("width", width / attribs.length)
+      .each(function(a) {
+        const data =
+          a === "Nationality"
+            ? cs.groups.get(a).top(10)
+            : cs.groups.get(a).all();
+        d3.select(this)
+          .datum(data)
+          .call(charts.get(a));
+      });
+  }
+
+  update();
+
+  return div;
+}
+
+cs = {
+  const cs = crossfilter(data);
+
+  cs.dims = new Map();
+  cs.groups = new Map();
+  
+  for (let a of attribs) {
+    const dim = cs.dimension(d => d[a]);
+    
+    cs.dims.set(a, dim);
+    cs.groups.set(a, dim.group(d => ~~d));
+  }
+  
+  return cs;
+}
+```
+
+The data itself comes from R directly from the `palmerpenguins` library:
+
+```{r}
+#| echo: false
+library(palmerpenguins)
+ojs_define(penguins)
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+attribs = ["bill_length_mm", "bill_depth_mm", "flipper_length_mm"]
+data = transpose(penguins)
+transpose = function(df)
+{
+  const keys = Object.keys(df);
+  return df[keys[0]]
+    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))
+    .filter(v => Object.values(v).every(e => e !== undefined));
+}
+
+cs = {
+  const cs = crossfilter(data);
+
+  cs.dims = new Map();
+  cs.groups = new Map();
+  
+  for (let a of attribs) {
+    const dim = cs.dimension(d => d[a]);
+    
+    cs.dims.set(a, dim);
+    cs.groups.set(a, dim.group(d => ~~d));
+  }
+  
+  return cs;
+}
+d3 = require("d3@6")
+crossfilter = require("crossfilter2")
+import { BrushableBarChart } from "@john-guerra/d3-reusable-brushable-barchart-pattern"
+```
+
+
+
+## Text
+
 - overall concept and quick demo
 - code for quick demo
 - another demo with code
