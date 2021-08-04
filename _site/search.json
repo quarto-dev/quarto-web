@@ -237,7 +237,7 @@
     "href": "docs/books/index.html#workflow",
     "title": "Creating a Book",
     "section": "Workflow",
-    "text": "Development\nWhen working on a book, you’ll typically run the local development server as described above and incrementally preview content as you work:\nquarto serve\nIf you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.\nNote that development server updates do not cause an update to the final book output. Consequently, you should always quarto render your site before deploying it as described below in Publishing.\n\n\nRStudio\nNote that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the quarto R package:\nlibrary(quarto)\nquarto_serve()\nNote that you should also be sure to disable the standard RStudio preview behavior when using this workflow:\n\nNote that the (No Preview) option is checked to disable the normal preview on render behavior.\nRStudio v1.4 automatically uses Quarto to render Rmd documents whenever it sees a format key in the YAML front matter (as opposed to an output key). For projects, you typically provide the format configuration in _quarto.yml so may not have a format key in individual documents.\nHowever, since RStudio v1.4 is not aware of Quarto projects, you should add an explicit entry in YAML front-matter to ensure that Quarto (rather than the rmarkdown package) is used for rendering:\n---\ntitle: \"My Page\"\nknit: quarto render\n---\n\n\nPublishing\nWhen you are ready to publish the book, use the render command to render all output formats:\nquarto render --to all\nIf you pass no arguments to quarto render the default format (HTML) will be rendered. You can also render individual formats via the --to argument:\nquarto render           # render default format (HTML)\nquarto render --to pdf  # render PDF format only\nThe output of your book will be written to the _book sub-directory of your book project:\nmybook/\n  _book/\n    index.html # and other website files\n    mybook.pdf\n    mybook.epub\nSee the documentation on Publishing Websites for details on how to publish books to GitHub Pages, Netlify, and other services. Note that in that documentation the output-dir may be referred to as _site: for publishing books you should use _book rather than _site."
+    "text": "Development\nWhen working on a book, you’ll typically run the local development server as described above and incrementally preview content as you work:\nquarto serve\nIf you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.\nNote that development server updates do not cause an update to the final book output. Consequently, you should always quarto render your site before deploying it as described below in Publishing.\n\n\nRStudio\nNote that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the quarto R package:\nlibrary(quarto)\nquarto_serve()\n\n\nPublishing\nWhen you are ready to publish the book, use the render command to render all output formats:\nquarto render --to all\nIf you pass no arguments to quarto render the default format (HTML) will be rendered. You can also render individual formats via the --to argument:\nquarto render           # render default format (HTML)\nquarto render --to pdf  # render PDF format only\nThe output of your book will be written to the _book sub-directory of your book project:\nmybook/\n  _book/\n    index.html # and other website files\n    mybook.pdf\n    mybook.epub\nSee the documentation on Publishing Websites for details on how to publish books to GitHub Pages, Netlify, and other services. Note that in that documentation the output-dir may be referred to as _site: for publishing books you should use _book rather than _site."
   },
   {
     "href": "docs/books/index.html#learning-more",
@@ -798,10 +798,52 @@
     "text": "Global and project options that affect the way markdown is written can also be customized on a per-file basis . You can do this by including an editor_options: markdown key in the YAML front matter of your document. For example:\n---\ntitle: \"My Document\"\nauthor: \"Jane Doe\"\neditor_options:\n  markdown:\n    wrap: 72\n---\nYou might want to do this to ensure that multiple authors on different workstations use the same markdown writing options.\nYou can also instruct RStudio to use these same options when saving files from source mode. To do this add the canonical option. For example:\n---\neditor_options:\n  markdown:\n    wrap: 72\n    canonical: true\n---\nWith canonical: true, edits in visual mode and source mode will result in identical markdown output. This is especially useful if you have multiple authors collaborating using version control, with a mixture of source and visual mode editing among the authors.\nSee the documentation on Writer Options for additional details on markdown writing options."
   },
   {
-    "href": "docs/interactive/shiny/index.html",
-    "title": "Shiny",
+    "href": "docs/interactive/shiny/execution.html",
+    "title": "Execution Contexts",
     "section": "",
-    "text": ""
+    "text": "Render vs. Server\nSetup, Data, Server Start\nMore Complete Example"
+  },
+  {
+    "href": "docs/interactive/shiny/ojs.html",
+    "title": "JavaScript & Shiny",
+    "section": "",
+    "text": "Quick intro to OJS\nReactive ojs_define\nExample\nCustomizing binding"
+  },
+  {
+    "href": "docs/interactive/shiny/index.html#introduction",
+    "title": "Shiny",
+    "section": "Introduction",
+    "text": "If you are an R user, you may already be familiar with Shiny, a package that makes it easy to build interactive web apps with R.\nWhen using the Knitr computation engine, Quarto documents can include embedded Shiny components (e.g. a plot with sliders that control it’s inputs) or even simple Shiny applications that include several components.\nThis section covers integrating Shiny with Quarto and assumes that you already have basic familiarity with Shiny. To learn more about Shiny please visit https://shiny.rstudio.com.\n\n\n\n\n\n\nIn order to run the examples below you will need the development version of the rmarkdown package, which you can install with:\n remotes::install_github(\"rstudio/rmarkdown\")"
+  },
+  {
+    "href": "docs/interactive/shiny/index.html#hello-shiny",
+    "title": "Shiny",
+    "section": "Hello, Shiny",
+    "text": "For example, here’s a document that contains a plot of the “Old Faithful” dataset along with a slider to control the number of bins:\n\nHere’s the source code for this example:\n---\ntitle: \"Old Faithful\"\nformat: html\nserver: shiny\n---\n\n```{r}\n#| echo: false\nsliderInput(\"bins\", \"Number of bins:\", \n            min = 1, max = 50, value = 30)\nplotOutput(\"distPlot\")\n```\n\n```{r}\n#| context: server\noutput$distPlot <- renderPlot({\n  x <- faithful[, 2]  # Old Faithful Geyser data\n  bins <- seq(min(x), max(x), length.out = input$bins + 1)\n  hist(x, breaks = bins, col = 'darkgray', border = 'white')\n})\n```\nThere are two important differences between this document and a normal static document:\n\nThe inclusion server: shiny within the document’s options, which instructs Quarto to run a Shiny Server behind the document:\n---\ntitle: \"Old Faithful\"\nformat: html\nserver: shiny\n---\nThe inclusion of context: server as an option in the second code chunk, which delineates this R code as running within the Shiny Server (this is the code you would typically put in server.R):\n```{r}\n#| context: server\n\n```\n\nWe’ll cover running and deploying Quarto documents with Shiny components in the article on Running Documents. Before that though, let’s cover a more in-depth example."
+  },
+  {
+    "href": "docs/interactive/shiny/index.html#k-means-example",
+    "title": "Shiny",
+    "section": "K-Means Example",
+    "text": "Here’s an example that includes multiple inputs as well as a more application like page layout with a sidebar:\n\nHere’s the source code for this example:\n---\ntitle: \"Iris K-Means Clustering\"\nformat: \n  html:\n    page-layout: custom\nexecute:\n  echo: false\nserver: shiny\n---\n\n```{r}\n#| classes: panel-sidebar\nvars <- setdiff(names(iris), \"Species\")\nselectInput('xcol', 'X Variable', vars)\nselectInput('ycol', 'Y Variable', vars, selected = vars[[2]])\nnumericInput('clusters', 'Cluster count', 3, min = 1, max = 9)\n```\n\n```{r}\n#| classes: panel-fill\nplotOutput('plot1')\n```\n\n```{r}\n#| context: server\n\nselectedData <- reactive({\n    iris[, c(input$xcol, input$ycol)]\n  })\n\nclusters <- reactive({\n  kmeans(selectedData(), input$clusters)\n})\n\noutput$plot1 <- renderPlot({\n  palette(c(\"#E41A1C\", \"#377EB8\", \"#4DAF4A\", \"#984EA3\",\n    \"#FF7F00\", \"#FFFF33\", \"#A65628\", \"#F781BF\", \"#999999\"))\n\n  par(mar = c(5.1, 4.1, 0, 1))\n  plot(selectedData(),\n       col = clusters()$cluster,\n       pch = 20, cex = 3)\n  points(clusters()$centers, pch = 4, cex = 4, lwd = 4)\n})\n```\nThere are a few things worth noting in this example:\n\nThe YAML front-matter includes the page-layout: custom option (to indicate we want our content to occupy the entire page rather than being centered with padding).\nThe YAML front-matter includes the echo: false option (to indicate that we don’t want R code chunks to print their source code by default).\nWe add classes: panel-sidebar and classes: panel-fill to the first two R code chunks to specify that we want them layed out in special panel types.\nWe again use context: server on the last R code chunk to indicate that it contains the Shiny Server code.\n\n\nPage Layout\nSome interactive documents you create will use narrative interspersed with Shiny components and some (like this example) will be full page applications. Some may even by hybrids—for example imagine a sidebar on the left containing inputs that control outputs interspersed with narrative in the main document body.\nSee the article on Page Layout to learn more about the available tools for managing the layout of interactive documents."
+  },
+  {
+    "href": "docs/interactive/shiny/index.html#learning-more",
+    "title": "Shiny",
+    "section": "Learning More",
+    "text": "To learn more about Shiny interactive documents see the following articles:\n\nRunning Documents covers how to run interactive documents both within RStudio and at the command line, as well as how to deploy them to end users.\nExecution Contexts goes in depth on when different code blocks (e.g. rendering vs. serving) run as well as how to cache expensive computations for more responsive documents.\nExternal Resources describes how to make sure that Shiny can locate resources (e.g. CSS, JS, images, etc.) that you include in your document.\nJavaScript & Shiny explains how to use Shiny to dynamically transform data for use in interactive graphics created with Observable JavaScript.\nPage Layout enumerates the various techniques you can use to layout interactive components within your documents."
+  },
+  {
+    "href": "docs/interactive/shiny/running.html",
+    "title": "Running Documents",
+    "section": "",
+    "text": "IDE\nquarto run\nDeployment"
+  },
+  {
+    "href": "docs/interactive/shiny/resources.html",
+    "title": "External Resources",
+    "section": "",
+    "text": "External Resources\nRendering Step"
   },
   {
     "href": "docs/interactive/js/data-sources.html",
@@ -1365,7 +1407,7 @@
     "href": "docs/websites/index.html#workflow",
     "title": "Creating a Website",
     "section": "Workflow",
-    "text": "Quarto includes a live-reloading development server that you will likely find convenient to use while working on websites. Start the server with:\nquarto serve\nThe browser will automatically refresh whenever you save a markdown file (.md) or Jupyter Notebook (.ipynb). The browser will also refresh whenever you render a .qmd file.\nChanges to configuration files (e.g. _quarto.yml) as well site resources (e.g. theme or CSS files) will also cause an automatic refresh.\nNote that development server updates do not cause an update to the final site output. Consequently, you should always quarto render your site before deploying it, even if you have already previewed the changes with the development server.\n\nRStudio\nIf you are using Quarto from R, you can also use the quarto package to run the development server:\nlibrary(quarto)\nquarto_serve()\nNote that you should also be sure to disable the standard RStudio preview behavior when using this workflow:\n\nNote that the (No Preview) option is checked to disable the normal preview on render behavior.\nRStudio v1.4 automatically uses Quarto to render Rmd documents whenever it sees a format key in the YAML front matter (as opposed to an output key). For projects, you typically provide the format configuration in _quarto.yml so may not have a format key in individual documents.\nHowever, since RStudio v1.4 is not aware of Quarto projects, you should add an explicit entry in YAML front-matter to ensure that Quarto (rather than the rmarkdown package) is used for rendering:\n---\ntitle: \"My Page\"\nknit: quarto render\n---"
+    "text": "Quarto includes a live-reloading development server that you will likely find convenient to use while working on websites. Start the server with:\nquarto serve\nThe browser will automatically refresh whenever you save a markdown file (.md) or Jupyter Notebook (.ipynb). The browser will also refresh whenever you render a .qmd file.\nChanges to configuration files (e.g. _quarto.yml) as well site resources (e.g. theme or CSS files) will also cause an automatic refresh.\nNote that development server updates do not cause an update to the final site output. Consequently, you should always quarto render your site before deploying it, even if you have already previewed the changes with the development server.\n\nRStudio\nIf you are using Quarto from R, you can also use the quarto package to run the development server:\nlibrary(quarto)\nquarto_serve()"
   },
   {
     "href": "docs/websites/index.html#resources",
