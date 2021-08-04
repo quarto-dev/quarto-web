@@ -34,7 +34,6 @@ server: shiny
 ---
 
 ```{r}
-#| echo: false
 sliderInput("bins", "Number of bins:", 
             min = 1, max = 50, value = 30)
 plotOutput("distPlot")
@@ -87,13 +86,11 @@ title: "Iris K-Means Clustering"
 format: 
   html:
     page-layout: custom
-execute:
-  echo: false
 server: shiny
 ---
 
 ```{r}
-#| classes: panel-sidebar
+#| panel: sidebar
 vars <- setdiff(names(iris), "Species")
 selectInput('xcol', 'X Variable', vars)
 selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
@@ -101,13 +98,12 @@ numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
 ```
 
 ```{r}
-#| classes: panel-fill
+#| panel: fill
 plotOutput('plot1')
 ```
 
 ```{r}
 #| context: server
-
 selectedData <- reactive({
     iris[, c(input$xcol, input$ycol)]
   })
@@ -132,9 +128,8 @@ output$plot1 <- renderPlot({
 There are a few things worth noting in this example:
 
 1.  The YAML front-matter includes the `page-layout: custom` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
-2.  The YAML front-matter includes the `echo: false` option (to indicate that we don't want R code chunks to print their source code by default).
-3.  We add `classes: panel-sidebar` and `classes: panel-fill` to the first two R code chunks to specify that we want them layed out in special panel types.
-4.  We again use `context: server` on the last R code chunk to indicate that it contains the Shiny Server code.
+2.  We add `panel: sidebar` and `panel: fill` to the two code chunks that define the user-interface to specify that we want them laid out in special panel containers.
+3.  We again use `context: server` on the last R code chunk to indicate that it contains the Shiny Server code.
 
 #### Page Layout
 
