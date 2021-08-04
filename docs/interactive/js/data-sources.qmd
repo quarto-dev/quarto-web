@@ -2,5 +2,57 @@
 title: "Data Sources"
 ---
 
-- File attachments
-- ojs_define
+TBF: Turn these into interactive documents.
+
+One of Quarto's core capabilities is its ability to embed output from Python, R, etc. 
+When the output produced by a Python or R computation is required in interactive documents, there are two possible simple approaches.
+
+## File attachments
+
+The first approach uses the notion of "file attachments" from Observable's runtime system. If you include a file as a resource from a Quarto project (FIXME: where in the docs do we describe resources?), then you can directly use that file in Javascript.
+
+Let's take a NOAA's Monthly CO2 concentration data from Mauna Loa, obtained from their website (and mildly processed to remove comments):
+
+```{ojs}
+data = {
+  const v = await FileAttachment("co2_mm_mlo_clean.csv").csv();
+  return v.map(d => { 
+    d["decimal date"] = Number(d["decimal date"]);
+    d.average = Number(d.average); 
+    return d; 
+  });
+}
+Plot.plot({
+  marks: [
+    Plot.line(data, {x: "decimal date", y: "average"}, { stroke: "black" })
+  ]})
+```
+
+## `ojs_define`
+
+Sometimes, you might want to do some preprocessing of the data in R or Python before visualizing it in your interactive document. Although it's often possible to use the file system and file attachments to communicate such values, the most direct way to do this is using the `ojs_define` command, which is available in both R and Python:
+
+```{r}
+library(tidyverse)
+df = read.csv("co2_mm_mlo_clean.csv", row.names=NULL)
+ojs_define(co2 = df %>% group_by(year) %>% summarize(max = max(average)))
+```
+
+```{ojs}
+Plot.plot({
+  marks: [
+    Plot.line(transpose(co2), {x: "year", y: "max"}, { stroke: "black" })
+  ]})
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+transpose = function(df)
+{
+  const keys = Object.keys(df);
+  return df[keys[0]]
+    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))
+    .filter(v => Object.values(v).every(e => e !== undefined));
+}
+```
