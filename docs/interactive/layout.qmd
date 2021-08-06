@@ -1,3 +1,263 @@
 ---
-title: "Page Layout"
+title: "Component Layout"
+execute:
+  echo: false
 ---
+
+## Overview
+
+When you introduce interactive components into a document you'll want to be sure to lay them out in a fashion that optimizes for readability and navigation.
+
+There are of course a wide variety of ways you can incorporate interactivity spanning from visualizations embedded within a longer-form article all the way up to a more application/dashboard style layout. We'll cover both of these layout scenarios below.
+
+We'll use examples from both [JavaScript](js/) and [Shiny](shiny/) interactive documents---if you aren't familiar with the code/syntax used for a given example just focus on the enclosing layout markup rather than the application code.
+
+## Articles
+
+When using interactive components inside an article, it's often optimal to lay out inputs directly above or below the main component. If there is only a single input the source code might be as simple as the input and output surrounded by markdown narrative. Here's a simple Shiny example to illustrate:
+
+```` markdown
+## Old Faithful
+
+Data on eruptions of the Old Faithful geyser in Yellowstone National Park, Wyoming, USA. The data was collected continuously from August 1st until August 15th, 1985.
+
+```{r}
+sliderInput("bins", "Number of bins:", min = 1, max = 50, value = 30)
+plotOutput("distPlot")
+```
+
+The data consists of 299 pairs of measurements, referring to the time interval between the starts of successive eruptions and the duration of the subsequent eruption.
+````
+
+Which would look like this when running:
+
+![](images/article-simple.png){.border}
+
+### Input Panel
+
+If you have several inputs, you may want to group them inside an input panel (div with class `.panel-input`). For example, here's a document containing a JavaScript map visualization with three inputs to control it:
+
+![](images/article-input-panel-columns.png)
+
+The inputs are grouped in a panel and laid out in three columns using the following markup:
+
+1.  A div with class `.panel-input` provides the background color and border treatment.
+2.  Adding the `layout-ncol=3` to the div lays out the input horizontally.
+
+Here's the source code for the input panel:
+
+```` {.python .ojs-example}
+::: {.panel-input layout-ncol=3}
+
+```{}
+viewof ch = checkbox({
+  title: "Passport color:",
+  options: [
+    { value: "red", label: "Red" },
+    { value: "green", label: "Green" },
+    { value: "blue", label: "Blue" },
+    { value: "black", label: "Black" }
+  ],
+  value: ["red", "green", "blue", "black"],
+  submit: false
+})
+```
+
+```{}
+viewof type = radio({
+  title: "Representation:",
+  options: [
+    { label: 'Passports', value: 'p' },
+    { label: 'Circles', value: 'c' }
+  ],
+  value: 'p'
+})
+```
+
+```{}
+viewof k = slider({
+  title: "Symbol size:",
+  min: 1,
+  max: 10,
+  value: 3,
+  step: 1
+})
+```
+
+:::
+````
+
+See the [Passports & Colors](js/examples/passeports-colors.qmd) example for the full source code of this document.
+
+### Tabset Panel
+
+If you want to allow users to toggle between multiple visualizations, use a tabset (div with class `.panel-tabset`). Include a heading for each tab in the tabset.
+
+For example, the following JavaScript code:
+
+```` {.python .ojs-example}
+::: {.panel-tabset}
+
+## Plot
+
+```{}
+//| echo: false
+vl
+  .markPoint()    
+  .data(penguins)
+  .encode(
+    vl.x().fieldQ('body_mass_g')
+          .scale({domain: [2000, 6500]}) 
+          .axis({title: "Mass (g)"}),
+    vl.y().fieldQ('bill_length_mm')     
+          .scale({domain: [30, 60]}),
+    vl.color().fieldN('species'),
+    vl.tooltip(['species', 'sex', 'year', 'island'])
+).render()
+```
+
+## Data
+
+```{}
+//| echo: false
+penguins.view()
+```
+
+:::
+````
+
+Will result in a tabset with **Plot** and **Data** tabs:
+
+![](images/article-tabset-panel.png)
+
+## Applications
+
+Some documents are composed entirely of interactive components---these "documents" are really applications, and therefore benefit from some distinct layout tools.
+
+### Full Page Layout
+
+By default Quarto documents center their content within the document viewport, and don't exceed a maximum width of around 900 pixels. This behavior exists to optimize readability, but for an application layout you generally want to do occupy the entire page.
+
+To do this, add tbe `page-layout: custom` option. For example:
+
+``` yaml
+format: 
+  html:
+    page-layout: custom
+```
+
+Here's an example of a Shiny application that occupies the full width of the browser:
+
+![](shiny/images/iris-k-means.png){.border}
+
+You'll also note that the inputs are contained within a sidebar---the next section describes how to create sidebars.
+
+### Sidebar Panel
+
+Sidebars are created using divs with class `.panel-sidebar`. You can do this using a markdown div container (as illustrated above for `.panel-input`), or, if the entire contents of your sidebar is created from a single code cell, by adding the `panel: sidebar` option to the cell. For example, here is the source code of the user-interface portion of the Shiny application displayed above:
+
+```` python
+---
+title: "Iris K-Means Clustering"
+format: 
+  html:
+    page-layout: custom
+server: shiny
+---
+
+```{r}
+#| panel: sidebar
+vars <- setdiff(names(iris), "Species")
+selectInput('xcol', 'X Variable', vars)
+selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
+numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+```
+
+```{r}
+#| panel: fill
+plotOutput('plot1')
+```
+````
+
+Note that the `panel: fill` option is added to the plot output chunk. You can alternately use `panel: center` if you want to leave some horiziontal margin around the contents of the panel.
+
+#### Sidebar Div
+
+In JavaScript interactive documents each input must be in it's own `{ojs}` cell, so you'll need to use the `.panel-sidebar` class on a div enclosing the inputs. For example, to create this layout:
+
+[https://observablehq.com/\@neocartocnrs/vaccination-against-covid-19-in-france](https://observablehq.com/@neocartocnrs/vaccination-against-covid-19-in-france){.uri}
+
+You would use the following code:
+
+### Markdown 
+
+\<https://observablehq.com/\@d3/kernel-density-estimation>
+
+### Panel Layout
+
+```{=html}
+<script type="application/javascript">
+document.querySelectorAll(".ojs-example code > span")
+  .forEach(function(span) { 
+    if (span.innerText === "```{}")
+      span.innerText = "```{ojs}";
+  });
+</script>
+```
+##  {.hidden .unlisted}
+
+[https://observablehq.com/\@d3/quadtree-findincircle](https://observablehq.com/@d3/quadtree-findincircle){.uri}
+
+[https://observablehq.com/\@d3/simulation-tick](https://observablehq.com/@d3/simulation-tick){.uri}
+
+[https://observablehq.com/\@d3/force-directed-lattice](https://observablehq.com/@d3/force-directed-lattice){.uri}
+
+[https://observablehq.com/\@d3/voronoi-neighbors](https://observablehq.com/@d3/voronoi-neighbors){.uri}
+
+[https://observablehq.com/\@d3/zoomable-area-chart](https://observablehq.com/@d3/zoomable-area-chart){.uri}
+
+[https://observablehq.com/\@d3/seamless-zoomable-map-tiles](https://observablehq.com/@d3/seamless-zoomable-map-tiles){.uri}
+
+[https://observablehq.com/\@d3/zoomable-map-tiles](https://observablehq.com/@d3/zoomable-map-tiles){.uri}
+
+[https://observablehq.com/\@julesblm/food-com-nutritional-ternary-plot-with-d3-ternary](https://observablehq.com/@julesblm/food-com-nutritional-ternary-plot-with-d3-ternary){.uri}
+
+[https://observablehq.com/\@neocartocnrs/dotdensity-map](https://observablehq.com/@neocartocnrs/dotdensity-map){.uri}
+
+[https://observablehq.com/\@neocartocnrs/world-elevation-line-map](https://observablehq.com/@neocartocnrs/world-elevation-line-map){.uri}
+
+[https://observablehq.com/\@neocartocnrs/countries-vs-billionaires](https://observablehq.com/@neocartocnrs/countries-vs-billionaires){.uri}
+
+[https://observablehq.com/\@neocartocnrs/dead-and-missing-migrants-in-calais](https://observablehq.com/@neocartocnrs/dead-and-missing-migrants-in-calais){.uri}
+
+[https://observablehq.com/\@neocartocnrs/passeports-colors](https://observablehq.com/@neocartocnrs/passeports-colors){.uri}
+
+[https://observablehq.com/\@neocartocnrs/how-to-draw-an-age-pyramid-at-different-levels-of-aggregatio](https://observablehq.com/@neocartocnrs/how-to-draw-an-age-pyramid-at-different-levels-of-aggregatio){.uri}
+
+[https://observablehq.com/\@neocartocnrs/vaccination-in-france-by-age-group](https://observablehq.com/@neocartocnrs/vaccination-in-france-by-age-group){.uri}
+
+[https://observablehq.com/\@neocartocnrs/bars-pubs-in-paris](https://observablehq.com/@neocartocnrs/bars-pubs-in-paris){.uri}
+
+[https://observablehq.com/\@julesblm/rotterdam-morphing-transit-map](https://observablehq.com/@julesblm/rotterdam-morphing-transit-map){.uri}
+
+[https://observablehq.com/\@d3/animated-treemap](https://observablehq.com/@d3/animated-treemap){.uri}
+
+[https://observablehq.com/\@d3/sankey-diagram](https://observablehq.com/@d3/sankey-diagram){.uri}
+
+[https://observablehq.com/\@d3/calendar-view](https://observablehq.com/@d3/calendar-view){.uri}
+
+[https://observablehq.com/\@d3/index-chart](https://observablehq.com/@d3/index-chart){.uri}
+
+[https://observablehq.com/\@d3/zoomable-sunburst](https://observablehq.com/@d3/zoomable-sunburst){.uri}
+
+[https://observablehq.com/\@d3/realtime-horizon-chart](https://observablehq.com/@d3/realtime-horizon-chart){.uri}
+
+[https://observablehq.com/\@d3/parallel-coordinates](https://observablehq.com/@d3/parallel-coordinates){.uri}
+
+[https://observablehq.com/\@d3/kernel-density-estimation](https://observablehq.com/@d3/kernel-density-estimation){.uri}
+
+[https://observablehq.com/\@d3/hexbin](https://observablehq.com/@d3/hexbin){.uri}
+
+[https://observablehq.com/\@d3/brushable-scatterplot-matrix](https://observablehq.com/@d3/brushable-scatterplot-matrix){.uri}
+
+[https://observablehq.com/\@d3/multi-line-chart](https://observablehq.com/@d3/multi-line-chart){.uri}

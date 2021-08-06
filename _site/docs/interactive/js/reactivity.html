@@ -11,6 +11,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
 
   <!--[if lt IE 9]>
@@ -46,6 +109,8 @@
   gtag('js', new Date());
   gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
   </script>
+  <script type="module" src="../../../site_libs/quarto-ojs/ojs-bundle.js"></script>
+  <link href="../../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
   <link rel="stylesheet" href="../../../styles.css">
 <meta name="og:title" content="Quarto - Reactivity">
 <meta name="og:image" content="https://quarto.org/quarto.png">
@@ -267,20 +332,175 @@
   </div>
 </nav>
   </div>
-  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"></div>
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#basics" class="nav-link active" data-scroll-target="#basics">Basics</a>
+<ul class="collapse">
+<li><a href="#inputs" class="nav-link" data-scroll-target="#inputs">Inputs</a></li>
+<li><a href="#outputs" class="nav-link" data-scroll-target="#outputs">Outputs</a></li>
+</ul></li>
+<li><a href="#example-conditioning-on-a-collider" class="nav-link" data-scroll-target="#example-conditioning-on-a-collider">Example: <span>conditioning on a collider</span></a></li>
+<li><a href="#more-details" class="nav-link" data-scroll-target="#more-details">More details</a>
+<ul class="collapse">
+<li><a href="#all-the-inputs-in-the-standard-library" class="nav-link" data-scroll-target="#all-the-inputs-in-the-standard-library">All the inputs in the standard library</a></li>
+<li><a href="#reactivity-in-depth" class="nav-link" data-scroll-target="#reactivity-in-depth">Reactivity in depth</a></li>
+</ul></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/interactive/js/reactivity.qmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
 <main>
 <header id="title-block-header">
 <h1 class="title d-none d-lg-block display-7">Reactivity</h1>
 </header>
+
+<p>The interactivity in interactive Quarto documents comes from the <em>reactive</em> values provided by Observable’s JavaScript dialect.</p>
+<section id="basics" class="level1">
+<h1>Basics</h1>
+<section id="inputs" class="level2">
+<h2 class="anchored" data-anchor-id="inputs">Inputs</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-1">
+
+</div>
+</div>
+</div>
+<p>To obtain values from user input, start with Observable’s Inputs library, which gives you a simple way to create interactive inputs:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>viewof number <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">10</span><span class="op">,</span> <span class="dv">100</span>]<span class="op">,</span> { <span class="dt">value</span><span class="op">:</span> <span class="dv">50</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span> })</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>viewof text <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">text</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-2-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-2-2">
+
+</div>
+</div>
+</div>
+</div>
+<p>That <code>viewof</code> statement is special to Observable’s runtime. For now, just remember that input value expressions should have <code>viewof</code> in front of them.</p>
+</section>
+<section id="outputs" class="level2">
+<h2 class="anchored" data-anchor-id="outputs">Outputs</h2>
+<p>An interactive output is just a JavaScript expression. If that expression includes reactive inputs, the Observable runtime library will automatically update the output when the input changes:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">md</span><span class="vs">`Output: **You typed "</span><span class="sc">${</span>text<span class="sc">}</span><span class="vs">" into the text box, and the slider value is </span><span class="sc">${</span>number<span class="sc">}</span><span class="vs">.**`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-3">
+
+</div>
+</div>
+</div>
+<p>Outputs can be anything that JavaScript can create, including HTML and SVG elements. This green rectangle below will change with the value of the slider:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-4">
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="example-conditioning-on-a-collider" class="level1">
+<h1>Example: <a href="http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/">conditioning on a collider</a></h1>
+<p>Imagine a simplistic scenario where the <strong>fame</strong> of an actor is a weighted function of <strong>talent</strong> and <strong>looks</strong>, each measured as independent quantities.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-5-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-5-2">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-5-3">
+
+</div>
+</div>
+</div>
+</div>
+<p>The data for the actors visualization is computed in Python:</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ojs_define(points <span class="op">=</span> pd.DataFrame(<span class="bu">dict</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> scipy.random.randn(<span class="dv">100</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> scipy.random.randn(<span class="dv">100</span>))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <em>fame</em> value for each actor, on the other hand, uses the JavaScript UI elements and so is computed as a JavaScript value:</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>actors <span class="op">=</span> <span class="fu">transpose</span>(points)<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> ({</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">talent</span><span class="op">:</span> v<span class="op">.</span><span class="at">x</span><span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">looks</span><span class="op">:</span> v<span class="op">.</span><span class="at">y</span><span class="op">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fame</span><span class="op">:</span> v<span class="op">.</span><span class="at">x</span> <span class="op">*</span> talentWeight <span class="op">+</span> v<span class="op">.</span><span class="at">y</span> <span class="op">*</span> looksWeight</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}))<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display hidden">
+<div id="ojs-cell-6">
+
+</div>
+</div>
+</div>
+<p>If we look at actors that are talented or good-looking, a surprising phenomenon happens: there appears to be a causal relationship between two independent variables. This idea that “the better a famous actor looks, the less talented they are” manifests itself in our model as a sloped line fit. The reality, however, is that it’s simply more common for actors to be good-looking but not too talented or talented but not too good-looking, than it is for actors to be good-looking <em>and</em> talented.</p>
+<div class="cell" data-fig.cap="An example of conditioning on a collider. When you fit a regression line to a dataset that has undergone a selection process that depends on multiple values, there exists a dependency between the two values, but there's no causation relationship.">
+<div id="fig-collider" class="cell-output-display quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<div id="ojs-cell-7">
+
+</div>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Figure 1: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="more-details" class="level1">
+<h1>More details</h1>
+<section id="all-the-inputs-in-the-standard-library" class="level2">
+<h2 class="anchored" data-anchor-id="all-the-inputs-in-the-standard-library">All the inputs in the standard library</h2>
+<p>There are many ready-made input UI elements: see the <a href="">Observable documentation</a> for details.</p>
+</section>
+<section id="reactivity-in-depth" class="level2">
+<h2 class="anchored" data-anchor-id="reactivity-in-depth">Reactivity in depth</h2>
+<p>TBF</p>
 <ul>
-<li>Inputs and outputs</li>
-<li>viewof</li>
-<li>Example with 3 inputs and some standard data science visualization</li>
-<li>All the inputs</li>
-<li>Reactivity in depth</li>
+<li>Generators</li>
+<li>Converting callback style to reactive style</li>
+<li>Converting reactive style to callback style</li>
 </ul>
+<!-- Includes + Definitions -->
+<div class="cell">
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-8-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display hidden">
+<div>
+<div id="ojs-cell-8-2">
+
+</div>
+</div>
+</div>
+</div>
 <!-- -->
+</section>
+</section>
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
@@ -308,6 +528,16 @@ if (!kPlatformMac) {
    });
 }
 
+</script>
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"md`There are a number of built-in reactive values in Observable you can use, and they automatically change as needed. For example, the local time of day (in milliseconds) is available as the \\`now\\` variable: ${now}; the width of the Quarto text area is available as \\`width\\`: ${width}. If you use these values as inputs in your code, you expressions will automatically be recomputed as the values change. For the full set of built-in values, see the [standard library documentation](https://github.com/observablehq/stdlib/blob/main/README.md).`"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof number = Inputs.range([10, 100], { value: 50, step: 1 })\nviewof text = Inputs.text()"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"md`Output: **You typed \"${text}\" into the text box, and the slider value is ${number}.**`"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"{\n  let result = DOM.svg(width, 50);\n  let rect = svg`<rect width=${number} height=\"30\" y=\"10\" x=\"10\" fill=\"green\"></rect>`\n  let label = svg`<text>${text}</text>`;\n  result.appendChild(rect);\n  rect.appendChild(label);\n  return result;\n}"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"viewof talentWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: \"talent weight\" })\nviewof looksWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: \"looks weight\" })\nviewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: \"minimum fame\" })"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"actors = transpose(points).map(v => ({\n  talent: v.x,\n  looks: v.y,\n  fame: v.x * talentWeight + v.y * looksWeight\n}));"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"{\n  const result = d3.create(\"svg\").attr(\"width\", width).attr(\"height\", 300);\n  const margin = 20;\n  const xScale = d3.scaleLinear().domain([-2, 2]).range([margin, 300 - margin]);\n  const yScale = d3.scaleLinear().domain([-2, 2]).range([300 - margin, margin]);\n  const points = result\n    .append(\"g\")\n    .selectAll(\"circle\")\n    .data(actors)\n    .join(enter => {\n       const sel = enter\n         .append(\"circle\")\n         .attr(\"r\", 3)\n         .attr(\"cx\", d => xScale(d.talent))\n         .attr(\"cy\", d => yScale(d.looks))\n         .attr(\"fill\", d3.lab(50, 40, 20));\n       return sel.filter(d => d.fame <= minimum)\n         .attr(\"fill\", \"rgb(200, 200, 200)\")\n         .attr(\"r\", 2);\n    });\n    \n  const linearRegression = regression.regressionLinear()\n    .x(d => d.talent)\n    .y(d => d.looks)\n    .domain([-2, 2]);\n\n  const chosenActors = actors\n    .filter(d => d.fame > minimum);\n\n  const line = result\n    .append(\"g\")\n    .append(\"line\")\n    .attr(\"stroke\", d3.lab(20, 40, 20))\n    .attr(\"stroke-width\", 1.5)\n    .datum(linearRegression(chosenActors))\n    .attr(\"x1\", d => xScale(d[0][0]))\n    .attr(\"x2\", d => xScale(d[1][0]))\n    .attr(\"y1\", d => yScale(d[0][1]))\n    .attr(\"y2\", d => yScale(d[1][1]));\n\n\n  const xAxis = d3.axisBottom(xScale).ticks(3);\n  result.append(\"g\")\n    .attr(\"transform\", `translate(0, ${yScale(0)})`)\n    .call(xAxis);\n\n  result.append(\"text\")\n    .attr(\"x\", xScale(0.05))\n    .attr(\"y\", yScale(2))\n    .text(\"Looks\");\n\n  result.append(\"text\")\n    .attr(\"y\", yScale(0))\n    .attr(\"x\", xScale(2))\n    .text(\"Talent\");\n\n  const yAxis = d3.axisLeft(yScale).ticks(3);\n  result.append(\"g\")\n    .attr(\"transform\", `translate(${xScale(0)}, 0)`)\n    .call(yAxis);\n  \n  return result.node();\n}"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"transpose = function(df)\n{\n  const keys = Object.keys(df);\n  return df[keys[0]]\n    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))\n    .filter(v => Object.values(v).every(e => e !== undefined));\n}\nregression = require('d3-regression@1');"},{"methodName":"interpretQuiet","source":"shinyInput('number')"},{"methodName":"interpretQuiet","source":"shinyInput('text')"},{"methodName":"interpretQuiet","source":"shinyInput('talentWeight')"},{"methodName":"interpretQuiet","source":"shinyInput('looksWeight')"},{"methodName":"interpretQuiet","source":"shinyInput('minimum')"}]}
+</script>
+<script type="module">
+window._ojs.paths.runtimeToDoc = "../../docs/interactive/js";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
 </script>
 
 
