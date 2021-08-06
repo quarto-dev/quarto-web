@@ -154,7 +154,11 @@ You'll also note that the inputs are contained within a sidebar---the next secti
 
 ### Sidebar Panel
 
-Sidebars are created using divs with class `.panel-sidebar`. You can do this using a markdown div container (as illustrated above for `.panel-input`), or, if the entire contents of your sidebar is created from a single code cell, by adding the `panel: sidebar` option to the cell. For example, here is the source code of the user-interface portion of the Shiny application displayed above:
+Sidebars are created using divs with class `.panel-sidebar`. You can do this using a markdown div container (as illustrated above for `.panel-input`), or, if the entire contents of your sidebar is created from a single code cell, by adding the `panel: sidebar` option to the cell.
+
+Sidebar panels should always have an adjacent panel with class `.panel-fill` or `.panel-center` which they will be laid out next to. The former (`.panel-fill`) will fill all available space, the latter (`.panel-center`) will leave some horizontal margin around it's content.
+
+For example, here is the source code of the user-interface portion of the Shiny application displayed above:
 
 ```` python
 ---
@@ -179,21 +183,77 @@ plotOutput('plot1')
 ```
 ````
 
-Note that the `panel: fill` option is added to the plot output chunk. You can alternately use `panel: center` if you want to leave some horiziontal margin around the contents of the panel.
+The `panel: fill` option is added to the plot output chunk. You can alternately use `panel: center` if you want to leave some horizontal margin around the contents of the panel.
+
+Adding the `panel` option to a code chunk is shorthand for adding the CSS class to it's containing div (i.e. it's equivalent to surrounding the code chunk with a div with class e.g. `panel-fill`).
 
 #### Sidebar Div
 
 In JavaScript interactive documents each input must be in it's own `{ojs}` cell, so you'll need to use the `.panel-sidebar` class on a div enclosing the inputs. For example, to create this layout:
 
-[https://observablehq.com/\@neocartocnrs/vaccination-against-covid-19-in-france](https://observablehq.com/@neocartocnrs/vaccination-against-covid-19-in-france){.uri}
+![](images/application-sidebar-panel.png)
 
 You would use the following code:
 
-### Markdown 
+```` {.python .ojs-example}
+::: {.panel-sidebar}
 
-\<https://observablehq.com/\@d3/kernel-density-estimation>
+```{}
+viewof myage = {
+  const myage = select({
+    title: "Quelle classe d'âge voulez-vous cartographier ?",
+    options: ages,
+    value: "80etplus"
+  });
+  return myage;
+}
+```
+
+```{}
+viewof pctvax = slider({
+  title: '<br/>Objectif de vaccination',
+  description: '200% signifie 2 doses par personnes pour tout le monde',
+  min: 50,
+  max: 200,
+  value: 200,
+  step: 10,
+  format: v => v + "%"
+})
+```
+
+```{}
+viewof overlay = radio({
+  title: "Écarter les cercles",
+  options: [{ label: 'Oui', value: 'Y' }, { label: 'Non', value: 'N' }],
+  value: 'N'
+})
+```
+
+```{}
+viewof label = radio({
+  title: "Numéros des départements",
+  options: [{ label: 'Afficher', value: 'Y' }, { label: 'Masquer', value: 'N' }],
+  value: 'N'
+})
+```
+
+:::
+
+
+```{}
+//| panel: fill
+
+/*
+  ...vaccine visualization code
+*/
+```
+````
+
+See the [France Vaccination](js/examples/france-vaccination.qmd) example for the full source code of this document.
 
 ### Panel Layout
+
+https://observablehq.com/\@d3/kernel-density-estimation
 
 ```{=html}
 <script type="application/javascript">

@@ -292,10 +292,13 @@
       <div class="collapse  " id="examples-collapse">
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
-  <a href="../../docs/interactive/js/examples/dotdensity-map.html" class="">Dot Density Map</a>
+  <a href="../../docs/interactive/js/examples/dotdensity-map.html" class="" data-resolve-title="true">Dot Density Map</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../docs/interactive/js/examples/passeports-colors.html" class="">Passports &amp; Colors</a>
+  <a href="../../docs/interactive/js/examples/passeports-colors.html" class="" data-resolve-title="true">Passports &amp; Colors</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../docs/interactive/js/examples/france-vaccination.html" class="">France Vaccination</a>
 </li>
         </ul>
       </div>
@@ -362,7 +365,6 @@
 <ul class="collapse">
 <li><a href="#full-page-layout" class="nav-link" data-scroll-target="#full-page-layout">Full Page Layout</a></li>
 <li><a href="#sidebar-panel" class="nav-link" data-scroll-target="#sidebar-panel">Sidebar Panel</a></li>
-<li><a href="#markdown" class="nav-link" data-scroll-target="#markdown">Markdown</a></li>
 <li><a href="#panel-layout" class="nav-link" data-scroll-target="#panel-layout">Panel Layout</a></li>
 </ul></li>
 </ul>
@@ -496,7 +498,9 @@
 </section>
 <section id="sidebar-panel" class="level3">
 <h3 class="anchored" data-anchor-id="sidebar-panel">Sidebar Panel</h3>
-<p>Sidebars are created using divs with class <code>.panel-sidebar</code>. You can do this using a markdown div container (as illustrated above for <code>.panel-input</code>), or, if the entire contents of your sidebar is created from a single code cell, by adding the <code>panel: sidebar</code> option to the cell. For example, here is the source code of the user-interface portion of the Shiny application displayed above:</p>
+<p>Sidebars are created using divs with class <code>.panel-sidebar</code>. You can do this using a markdown div container (as illustrated above for <code>.panel-input</code>), or, if the entire contents of your sidebar is created from a single code cell, by adding the <code>panel: sidebar</code> option to the cell.</p>
+<p>Sidebar panels should always have an adjacent panel with class <code>.panel-fill</code> or <code>.panel-center</code> which they will be laid out next to. The former (<code>.panel-fill</code>) will fill all available space, the latter (<code>.panel-center</code>) will leave some horizontal margin around it’s content.</p>
+<p>For example, here is the source code of the user-interface portion of the Shiny application displayed above:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">---</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>title: <span class="st">"Iris K-Means Clustering"</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">format</span>: </span>
@@ -517,20 +521,70 @@
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| panel: fill</span></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>plotOutput(<span class="st">'plot1'</span>)</span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that the <code>panel: fill</code> option is added to the plot output chunk. You can alternately use <code>panel: center</code> if you want to leave some horiziontal margin around the contents of the panel.</p>
+<p>The <code>panel: fill</code> option is added to the plot output chunk. You can alternately use <code>panel: center</code> if you want to leave some horizontal margin around the contents of the panel.</p>
+<p>Adding the <code>panel</code> option to a code chunk is shorthand for adding the CSS class to it’s containing div (i.e.&nbsp;it’s equivalent to surrounding the code chunk with a div with class e.g.&nbsp;<code>panel-fill</code>).</p>
 <section id="sidebar-div" class="level4">
 <h4 class="anchored" data-anchor-id="sidebar-div">Sidebar Div</h4>
 <p>In JavaScript interactive documents each input must be in it’s own <code>{ojs}</code> cell, so you’ll need to use the <code>.panel-sidebar</code> class on a div enclosing the inputs. For example, to create this layout:</p>
-<p><a href="https://observablehq.com/@neocartocnrs/vaccination-against-covid-19-in-france" class="uri">https://observablehq.com/@neocartocnrs/vaccination-against-covid-19-in-france</a></p>
+<p><img src="images/application-sidebar-panel.png" class="img-fluid"></p>
 <p>You would use the following code:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python ojs-example code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>::: {.panel<span class="op">-</span>sidebar}</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>```{}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>viewof myage <span class="op">=</span> {</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  const myage <span class="op">=</span> select({</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    title: <span class="st">"Quelle classe d'âge voulez-vous cartographier ?"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    options: ages,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    value: <span class="st">"80etplus"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> myage<span class="op">;</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>```{}</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>viewof pctvax <span class="op">=</span> slider({</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  title: <span class="st">'&lt;br/&gt;Objectif de vaccination'</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  description: <span class="st">'200</span><span class="sc">% s</span><span class="st">ignifie 2 doses par personnes pour tout le monde'</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">min</span>: <span class="dv">50</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="bu">max</span>: <span class="dv">200</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  value: <span class="dv">200</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  step: <span class="dv">10</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="bu">format</span>: v <span class="op">=&gt;</span> v <span class="op">+</span> <span class="st">"%"</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>```{}</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>viewof overlay <span class="op">=</span> radio({</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  title: <span class="st">"Écarter les cercles"</span>,</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  options: [{ label: <span class="st">'Oui'</span>, value: <span class="st">'Y'</span> }, { label: <span class="st">'Non'</span>, value: <span class="st">'N'</span> }],</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  value: <span class="st">'N'</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>```{}</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>viewof label <span class="op">=</span> radio({</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  title: <span class="st">"Numéros des départements"</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  options: [{ label: <span class="st">'Afficher'</span>, value: <span class="st">'Y'</span> }, { label: <span class="st">'Masquer'</span>, value: <span class="st">'N'</span> }],</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  value: <span class="st">'N'</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>```{}</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="op">//|</span> panel: fill</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="op">/*</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  ...vaccine visualization code</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="op">*/</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>See the <a href="../../docs/interactive/js/examples/france-vaccination.html">France Vaccination</a> example for the full source code of this document.</p>
 </section>
-</section>
-<section id="markdown" class="level3">
-<h3 class="anchored" data-anchor-id="markdown">Markdown</h3>
-<p>https://observablehq.com/@d3/kernel-density-estimation</p>
 </section>
 <section id="panel-layout" class="level3">
 <h3 class="anchored" data-anchor-id="panel-layout">Panel Layout</h3>
+<p>https://observablehq.com/@d3/kernel-density-estimation</p>
 <script type="application/javascript">
 document.querySelectorAll(".ojs-example code > span")
   .forEach(function(span) { 
