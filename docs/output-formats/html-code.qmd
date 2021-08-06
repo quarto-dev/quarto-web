@@ -14,10 +14,11 @@ There are wide variety of options available to customize the display of source c
 
 1.  Hiding some or all code that was executed by [Knitr](https://yihui.name/knitr) or [Jupyter](https://jupyter.org).
 2.  Code folding for executed code (hidden by default and expandable by readers).
-3.  View the source code of the markdown file used to generate the document.
-4.  Syntax highlighting themes and other options to control the appearance of code.
-5.  Copy to clipboard button for code blocks.
-6.  Generating hyperlinks to online documentation for functions used within code blocks via the [downlit](https://downlit.r-lib.org/) package (note that this option currently only works when using the Knitr engine).
+3.  Handling code that overflows the available horizontal display space.
+4.  View the source code of the markdown file used to generate the document.
+5.  Syntax highlighting themes and other options to control the appearance of code.
+6.  Copy to clipboard button for code blocks.
+7.  Generating hyperlinks to online documentation for functions used within code blocks via the [downlit](https://downlit.r-lib.org/) package (note that this option currently only works when using the Knitr engine).
 
 Details on using all of these options are provided below.
 
@@ -53,7 +54,7 @@ Code block options are included in a special comment at the top of the block (li
 Use the `code-fold` option to include code but have it hidden by default using the HTML `<details>` tag. For example, click the **Code** button to see the code that produced this plot.
 
 ```{r}
-#| fold: true
+#| code-fold: true
 
 library(ggplot2)
 dat <- data.frame(cond = rep(c("A", "B"), each=10),
@@ -82,15 +83,54 @@ Valid values for `code-fold` include:
 | `true`  | Fold code (initially hidden) |
 | `show`  | Fold code (initially shown)  |
 
-Use the `fold` and `summary` chunk attributes to control this on a chunk-by-chunk basis:
+Use the `code-fold` and `code-summary` chunk attributes to control this on a chunk-by-chunk basis:
 
 ```` python
 ```{r}`r ''`
-#| fold: true
-#| summary: "Show the code"
+#| code-fold: true
+#| code-summary: "Show the code"
 
 ```
 ````
+
+## Code Overflow
+
+In some cases the width of source code will overflow the available horizontal display space. By default, this will result in a horizontal scroll bar for the code block. However if you prefer not to have scrollbars you can have the longer lines wrap instead.
+
+To set the global default behavior use the `code-overflow` option. For example:
+
+``` yaml
+format:
+  html:
+    code-overflow: wrap
+```
+
+Valid values for `code-overflow` are:
+
+| Option   | Description                                                                                  |
+|----------|----------------------------------------------------------------------------------------------|
+| `scroll` | Scroll code blocks that exceed available width (default, corresponds to `white-space: pre`). |
+| `wrap`   | Wrap lines of code that exceed available width (corresponds to `white-space: pre-wrap`).     |
+
+You can also override the global default on a per-code-block basis. For computational cells you do this with the `code-overflow` cell option:
+
+```` python
+```{python}`r ''`
+#| code-overflow: wrap
+
+# very long line of code....
+```
+````
+
+For a static code block, add the `.code-overflow-scroll` or `.code-overflow-wrap` CSS class:
+
+```` python
+```{.python .code-overflow-wrap}
+# very long line of code....
+```
+````
+
+Note that irrespective of these options, code will always wrap within printed HTML output (as it would otherwise be clipped off the edge of the page).
 
 ## Code Tools
 
