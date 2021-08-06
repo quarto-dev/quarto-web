@@ -111,6 +111,9 @@
   </script>
   <script type="module" src="../../../site_libs/quarto-ojs/ojs-bundle.js"></script>
   <link href="../../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+  <script type="ojs-define">
+  {"contents":[{"name":"co2","value":{"year":[1958,1959,1960,1961,1962,1963,1964,1965,1966,1967,1968,1969,1970,1971,1972,1973,1974,1975,1976,1977,1978,1979,1980,1981,1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021],"max":[317.51,318.29,320.04,320.58,321.02,322.25,322.26,322.17,324.08,325,325.57,327.38,328.13,328.93,330.07,332.48,333.19,333.95,334.74,336.93,338.02,339.26,341.45,343.04,344.77,346.14,347.78,349.28,350.52,352.15,354.35,355.95,357.38,359.23,359.71,360.3,361.78,363.83,365.25,366.77,369.56,371.15,371.98,374.03,375.93,378.78,380.8,382.64,385.22,386.78,388.78,390.36,393.21,394.41,396.93,400.02,401.96,404.15,407.9,409.89,411.44,414.86,417.31,419.13]}}]}
+  </script>
   <link rel="stylesheet" href="../../../styles.css">
 <meta name="og:title" content="Quarto - Data Sources">
 <meta name="og:image" content="https://quarto.org/quarto.png">
@@ -407,15 +410,29 @@
 <h2 class="anchored" data-anchor-id="ojs_define"><code>ojs_define</code></h2>
 <p>Sometimes, you might want to do some preprocessing of the data in R or Python before visualizing it in your interactive document. Although it’s often possible to use the file system and file attachments to communicate such values, the most direct way to do this is using the <code>ojs_define</code> command, which is available in both R and Python:</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"co2_mm_mlo_clean.csv"</span>, <span class="at">row.names=</span><span class="cn">NULL</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">co2 =</span> df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">max =</span> <span class="fu">max</span>(average)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+</div>
+<div class="cell-output-stderr">
+<pre><code>✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+✓ tibble  3.1.3     ✓ dplyr   1.0.7
+✓ tidyr   1.1.2     ✓ stringr 1.4.0
+✓ readr   2.0.0     ✓ forcats 0.5.0</code></pre>
+</div>
+<div class="cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"co2_mm_mlo_clean.csv"</span>, <span class="at">row.names=</span><span class="cn">NULL</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">co2 =</span> df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">max =</span> <span class="fu">max</span>(average)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">transpose</span>(co2)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"year"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"max"</span>}<span class="op">,</span> { <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span> })</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  ]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">transpose</span>(co2)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"year"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"max"</span>}<span class="op">,</span> { <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span> })</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ]})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-2">
 
