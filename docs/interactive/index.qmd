@@ -6,7 +6,7 @@ title: "Interactive Documents"
 
 Adding interactivity to an article is a great way to help readers explore the concepts and data you are presenting more deeply. There are three ways to add interactive components to Quarto documents:
 
-1.  Create custom JavaScript visualizations using the [Observable Runtime](https://github.com/observablehq/runtime).
+1.  Create custom JavaScript visualizations using [Observable](https://observablehq.com/@observablehq/five-minute-introduction).
 
 2.  Use the [Shiny](https://shiny.rstudio.com) R package to add interactivity to Knitr engine documents.
 
@@ -19,3 +19,26 @@ Each of these techniques has distinct benefits and drawbacks in terms of express
 ## Shiny
 
 ## Widgets
+
+[Jupyter Widgets](https://jupyter.org/widgets) and [htmlwidgets](https://www.htmlwidgets.org/) are great ways to incorporate interactivity into your documents if you don't know JavaScript and prefer to work exclusively in Python or R. They also run entirely client-side so can be deployed within normal static HTML documents.
+
+For example, the following Python code is all that is required to embed a Leaflet map into a Jupyter engine document:
+
+```{python}
+from ipyleaflet import Map, Marker, basemaps, basemap_to_tiles
+m = Map(
+  basemap=basemap_to_tiles(
+    basemaps.NASAGIBS.ModisTerraTrueColorCR, "2017-04-08"
+  ),
+  center=(52.204793, 360.121558),
+  zoom=4
+)
+m.add_layer(Marker(location=(52.204793, 360.121558)))
+m
+```
+
+These articles contain additional examples as well as links to widgets available for the respective environments:
+
+-   [Jupyter Widgets](widgets/jupyter.qmd) (Jupyter engine).
+
+-   [htmlwidgets](widgets/htmlwidgets.qmd) (Knitr engine).
