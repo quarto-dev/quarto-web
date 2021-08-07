@@ -182,6 +182,18 @@ if (!kPlatformMac) {
    });
 }
 
+// repopulate code block type for ojs and python examples
+function fixupExamples(lang) {
+  document.querySelectorAll("." + lang + "-example code > span")
+  .forEach(function(span) { 
+    if (span.innerText === "```{}")
+      span.innerText = "```{" + lang + "}";
+  });
+}
+fixupExamples("ojs")
+fixupExamples("python")
+
+
 </script>
 <script type="ojs-module-contents">
 {"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { aq } from '@uwdata/arquero'\nimport { vl } from \"@vega/vega-lite-api\"\npenguins = await aq.loadCSV(\n  'https://gist.githubusercontent.com/slopp/ce3b90b9168f2f921784de84fa445651/raw/4ecf3041f0ed4913e7c230758733948bc561f434/penguins.csv'\n)"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"vl\n  .markPoint()    \n  .data(penguins)\n  .encode(\n    vl.x().fieldQ('body_mass_g')\n          .scale({domain: [2000, 6500]}) \n          .axis({title: \"Mass (g)\"}),\n    vl.y().fieldQ('bill_length_mm')     \n          .scale({domain: [30, 60]}),\n    vl.color().fieldN('species'),\n    vl.tooltip(['species', 'sex', 'year', 'island'])\n).render()"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"penguins.view()"}]}
