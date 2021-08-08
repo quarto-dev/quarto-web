@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Mike Bostock">
+  <meta name="dcterms.date" content="2019-06-15">
+  <title>Quarto – Brushable Scatterplot Matrix</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+  <meta name="quarto:offset" content="../../../../../">
+  <script src="../../../../../site_libs/quarto-search/autocomplete.min.js"></script>
+  <script src="../../../../../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../../../../../site_libs/quarto-search/quarto-search.js"></script>
+  <link href="../../../../../docs/interactive/shiny/index.html" rel="next">
+  <link href="../../../../../docs/interactive/js/examples/mens-tennis/mens-tennis.html" rel="prev">
+  <script src="../../../../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../../../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
+  <script src="../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../../../site_libs/bootstrap/bootstrap-dark.min.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-FV9Z7SDZ0M"></script>
+
+  <script type="text/javascript">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
+  </script>
+  <script type="module" src="../../../../../site_libs/quarto-ojs/ojs-bundle.js"></script>
+  <link href="../../../../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../../styles.css">
+<meta name="og:title" content="Quarto - Brushable Scatterplot Matrix">
+<meta name="og:image" content="https://quarto.org/quarto.png">
+<meta name="og:site-name" content="Quarto">
+<meta name="og:image:height" content="152">
+<meta name="og:image:width" content="624">
+<meta name="twitter:title" content="Quarto - Brushable Scatterplot Matrix">
+<meta name="twitter:image" content="https://quarto.org/quarto.png">
+<meta name="twitter:image-height" content="152">
+<meta name="twitter:image-width" content="624">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+<header id="quarto-header" class="headroom fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light ">
+    <div class="container-fluid">
+  <a class="navbar-brand" href="../../../../../index.html">
+    <img src="../../../../../quarto.png" alt="">
+  </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../index.html">
+ Get Started</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../../../../docs/authoring/markdown-basics.html" aria-current="page">
+ Using</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../docs/output-formats/html-basics.html">
+ Formats</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../docs/projects/quarto-projects.html">
+ Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../about.html">
+ About</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/quarto-dev/quarto-cli"><i class="bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+          <div>
+            <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;"><i class="bi"></i></a>
+          </div>
+          <form class="d-flex mb-0">
+  <input id="quarto-search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+      </div> <!-- /navcollapse -->
+  </div> <!-- /container-fluid -->
+</nav>
+<nav class="quarto-secondary-nav py-2 d-lg-none d-md-block " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <div class="container-fluid d-flex justify-content-between">
+    <h1 class="quarto-secondary-nav-title mb-0 fs-3 d-inline">Brushable Scatterplot Matrix</h1>
+    <button type="button" class="quarto-btn-toggle btn d-lg-none py-0 px-1 d-inline-block border-0 ">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+</nav>
+</header>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article">
+<div class="row flex-fill" id="quarto-content">
+  <div id="quarto-sidebar" class="col col-12 col-lg-3 d-lg-flex px-0 pt-0 sidebar collapse sidebar-navigation">
+    <nav class="me-lg-auto py-2 docked  overflow-scroll">
+  <div class="sidebar-menu-container"> 
+  <ul class="list-unstyled mt-3 px-3">
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto ">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#authoring-collapse" aria-expanded="true">
+              <div class="me-auto  sidebar-section-item">Authoring</div>
+            <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="authoring-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/authoring/markdown-basics.html" class="">Markdown Basics</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/authoring/footnotes-and-citations.html" class="">Citations &amp; Footnotes</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/authoring/figures-and-layout.html" class="">Figures &amp; Layout</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/authoring/cross-references.html" class="">Cross References</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/authoring/callouts.html" class="">Callout Blocks</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/authoring/shortcodes-and-filters.html" class="">Shortcodes &amp; Filters</a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto ">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#computations-collapse" aria-expanded="true">
+              <div class="me-auto  sidebar-section-item">Computations</div>
+            <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="computations-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/computations/running-code.html" class="">Running Code</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/computations/execution-options.html" class="">Execution Options</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/computations/parameters.html" class="">Parameters</a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+      <ul class="list-unstyled sidebar-section depth1">
+    <li class="">
+        <div class="me-auto ">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#interactivedocs-collapse" aria-expanded="true">
+              <div class="me-auto  sidebar-section-item">Interactive Docs</div>
+            <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="interactivedocs-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/index.html" class="">Overview</a>
+</li>
+          <ul class="list-unstyled sidebar-section depth2">
+    <li class="">
+        <div class="me-auto ">
+          <div class="d-inline-flex w-100 sidebar-item">
+            <div class="sidebar-section-link me-auto ">
+            <a href="../../../../../docs/interactive/js/index.html" class="">JavaScript</a>
+            </div>
+            <a class="text-start  " data-bs-toggle="collapse" data-bs-target="#javascript-collapse" aria-expanded="true">
+              <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  show" id="javascript-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/index.html" class="">Introduction</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/reactivity.html" class="">Reactivity</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/data-sources.html" class="">Data Sources</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/components.html" class="">Components</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/scaling-up.html" class="">Scaling Up</a>
+</li>
+          <ul class="list-unstyled sidebar-section depth3">
+    <li class="">
+        <div class="me-auto ">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 " data-bs-toggle="collapse" data-bs-target="#examples-collapse" aria-expanded="true">
+              <div class="me-auto  sidebar-item">Examples</div>
+            <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+        </div>
+      <div class="collapse  show" id="examples-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/examples/dotdensity-map.html" class="" data-resolve-title="true">Dot Density Map</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/examples/passeports-colors.html" class="" data-resolve-title="true">Passports &amp; Colors</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/examples/france-vaccination.html" class="">France Vaccination</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/examples/mens-tennis/mens-tennis.html" class="" data-resolve-title="true">Men's Tennis</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/js/examples/brushable-scatterplot-matrix/brushable-scatterplot-matrix.html" class="active">Scatterplot Matrix</a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+        </ul>
+      </div>
+    </li>
+  </ul>
+          <ul class="list-unstyled sidebar-section depth2">
+    <li class="">
+        <div class="me-auto ">
+          <div class="d-inline-flex w-100 sidebar-item">
+            <div class="sidebar-section-link me-auto ">
+            <a href="../../../../../docs/interactive/shiny/index.html" class="">Shiny</a>
+            </div>
+            <a class="text-start collapsed " data-bs-toggle="collapse" data-bs-target="#shiny-collapse" aria-expanded="false">
+              <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+            </div>
+        </div>
+      <div class="collapse  " id="shiny-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/shiny/index.html" class="">Introduction</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/shiny/running.html" class="">Running Documents</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/shiny/execution.html" class="">Execution Contexts</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/shiny/resources.html" class="">External Resources</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/shiny/ojs.html" class="">JavaScript &amp; Shiny</a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+          <ul class="list-unstyled sidebar-section depth2">
+    <li class="">
+        <div class="me-auto ">
+            <a class="sidebar-section-item d-inline-flex text-start w-100 collapsed" data-bs-toggle="collapse" data-bs-target="#widgets-collapse" aria-expanded="false">
+              <div class="me-auto  sidebar-item">Widgets</div>
+            <div><i class="bi bi-chevron-right ms-2 "></i></div>
+            </a>
+        </div>
+      <div class="collapse  " id="widgets-collapse">
+        <ul class="list-unstyled sidebar-item-contents">
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/widgets/jupyter.html" class="">Jupyter Widgets</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/widgets/htmlwidgets.html" class="">htmlwidgets for R</a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+          <li class="sidebar-item">
+  <a href="../../../../../docs/interactive/layout.html" class="">Layout</a>
+</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  </ul>
+  </div>
+</nav>
+  </div>
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<div class="quarto-title-block d-none d-lg-block"><div><h1 class="title d-none d-lg-block">Brushable Scatterplot Matrix</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="author">Mike Bostock</p>
+<p class="date">2019-06-15</p>
+</header>
+<p>This scatterplot matrix allows brushing to select data points in one cell, and highlight them across all other cells.</p>
+<div class="cell">
+<div class="sourceCode hidden" id="cb1"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">swatches</span>({<span class="dt">color</span><span class="op">:</span> z})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-1">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode hidden" id="cb2"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>viewof selection <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> svg <span class="op">=</span> d3<span class="op">.</span><span class="fu">create</span>(<span class="st">"svg"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"viewBox"</span><span class="op">,</span> [<span class="op">-</span>padding<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> width<span class="op">,</span> width])<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  svg<span class="op">.</span><span class="fu">append</span>(<span class="st">"style"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">text</span>(<span class="vs">`circle.hidden { fill: #000; fill-opacity: 1; r: 1px; }`</span>)<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  svg<span class="op">.</span><span class="fu">append</span>(<span class="st">"g"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">call</span>(xAxis)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  svg<span class="op">.</span><span class="fu">append</span>(<span class="st">"g"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">call</span>(yAxis)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> cell <span class="op">=</span> svg<span class="op">.</span><span class="fu">append</span>(<span class="st">"g"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">selectAll</span>(<span class="st">"g"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">data</span>(d3<span class="op">.</span><span class="fu">cross</span>(d3<span class="op">.</span><span class="fu">range</span>(columns<span class="op">.</span><span class="at">length</span>)<span class="op">,</span> d3<span class="op">.</span><span class="fu">range</span>(columns<span class="op">.</span><span class="at">length</span>)))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">join</span>(<span class="st">"g"</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"transform"</span><span class="op">,</span> ([i<span class="op">,</span> j]) <span class="kw">=&gt;</span> <span class="vs">`translate(</span><span class="sc">${</span>i <span class="op">*</span> size<span class="sc">}</span><span class="vs">,</span><span class="sc">${</span>j <span class="op">*</span> size<span class="sc">}</span><span class="vs">)`</span>)<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  cell<span class="op">.</span><span class="fu">append</span>(<span class="st">"rect"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"fill"</span><span class="op">,</span> <span class="st">"none"</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"stroke"</span><span class="op">,</span> <span class="st">"#aaa"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"x"</span><span class="op">,</span> padding <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"y"</span><span class="op">,</span> padding <span class="op">/</span> <span class="dv">2</span> <span class="op">+</span> <span class="fl">0.5</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"width"</span><span class="op">,</span> size <span class="op">-</span> padding)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"height"</span><span class="op">,</span> size <span class="op">-</span> padding)<span class="op">;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  cell<span class="op">.</span><span class="fu">each</span>(<span class="kw">function</span>([i<span class="op">,</span> j]) {</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    d3<span class="op">.</span><span class="fu">select</span>(<span class="kw">this</span>)<span class="op">.</span><span class="fu">selectAll</span>(<span class="st">"circle"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">data</span>(data<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> <span class="op">!</span><span class="pp">isNaN</span>(d[columns[i]]) <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="pp">isNaN</span>(d[columns[j]])))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">join</span>(<span class="st">"circle"</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">attr</span>(<span class="st">"cx"</span><span class="op">,</span> d <span class="kw">=&gt;</span> x[i](d[columns[i]]))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">attr</span>(<span class="st">"cy"</span><span class="op">,</span> d <span class="kw">=&gt;</span> y[j](d[columns[j]]))<span class="op">;</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> circle <span class="op">=</span> cell<span class="op">.</span><span class="fu">selectAll</span>(<span class="st">"circle"</span>)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"r"</span><span class="op">,</span> <span class="fl">3.5</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"fill-opacity"</span><span class="op">,</span> <span class="fl">0.7</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"fill"</span><span class="op">,</span> d <span class="kw">=&gt;</span> <span class="fu">z</span>(d<span class="op">.</span><span class="at">species</span>))<span class="op">;</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  cell<span class="op">.</span><span class="fu">call</span>(brush<span class="op">,</span> circle<span class="op">,</span> svg)<span class="op">;</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  svg<span class="op">.</span><span class="fu">append</span>(<span class="st">"g"</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">style</span>(<span class="st">"font"</span><span class="op">,</span> <span class="st">"bold 10px sans-serif"</span>)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">style</span>(<span class="st">"pointer-events"</span><span class="op">,</span> <span class="st">"none"</span>)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">selectAll</span>(<span class="st">"text"</span>)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">data</span>(columns)</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">join</span>(<span class="st">"text"</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"transform"</span><span class="op">,</span> (d<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="vs">`translate(</span><span class="sc">${</span>i <span class="op">*</span> size<span class="sc">}</span><span class="vs">,</span><span class="sc">${</span>i <span class="op">*</span> size<span class="sc">}</span><span class="vs">)`</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"x"</span><span class="op">,</span> padding)</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"y"</span><span class="op">,</span> padding)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"dy"</span><span class="op">,</span> <span class="st">".71em"</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">text</span>(d <span class="kw">=&gt;</span> d)<span class="op">;</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  svg<span class="op">.</span><span class="fu">property</span>(<span class="st">"value"</span><span class="op">,</span> [])</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> svg<span class="op">.</span><span class="fu">node</span>()<span class="op">;</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-2">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>selection</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-3">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">brush</span>(cell<span class="op">,</span> circle<span class="op">,</span> svg) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> brush <span class="op">=</span> d3<span class="op">.</span><span class="fu">brush</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">extent</span>([[padding <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> padding <span class="op">/</span> <span class="dv">2</span>]<span class="op">,</span> [size <span class="op">-</span> padding <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> size <span class="op">-</span> padding <span class="op">/</span> <span class="dv">2</span>]])</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">on</span>(<span class="st">"start"</span><span class="op">,</span> brushstarted)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">on</span>(<span class="st">"brush"</span><span class="op">,</span> brushed)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">on</span>(<span class="st">"end"</span><span class="op">,</span> brushended)<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  cell<span class="op">.</span><span class="fu">call</span>(brush)<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> brushCell<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Clear the previously-active brush, if any.</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">brushstarted</span>() {</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (brushCell <span class="op">!==</span> <span class="kw">this</span>) {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      d3<span class="op">.</span><span class="fu">select</span>(brushCell)<span class="op">.</span><span class="fu">call</span>(brush<span class="op">.</span><span class="at">move</span><span class="op">,</span> <span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      brushCell <span class="op">=</span> <span class="kw">this</span><span class="op">;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Highlight the selected circles.</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">brushed</span>({selection}<span class="op">,</span> [i<span class="op">,</span> j]) {</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> selected <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (selection) {</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> [[x0<span class="op">,</span> y0]<span class="op">,</span> [x1<span class="op">,</span> y1]] <span class="op">=</span> selection<span class="op">;</span> </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>      circle<span class="op">.</span><span class="fu">classed</span>(<span class="st">"hidden"</span><span class="op">,</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        d <span class="kw">=&gt;</span> x0 <span class="op">&gt;</span> x[i](d[columns[i]])</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>          <span class="op">||</span> x1 <span class="op">&lt;</span> x[i](d[columns[i]])</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>          <span class="op">||</span> y0 <span class="op">&gt;</span> y[j](d[columns[j]])</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>          <span class="op">||</span> y1 <span class="op">&lt;</span> y[j](d[columns[j]]))<span class="op">;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>      selected <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        d <span class="kw">=&gt;</span> x0 <span class="op">&lt;</span> x[i](d[columns[i]])</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>          <span class="op">&amp;&amp;</span> x1 <span class="op">&gt;</span> x[i](d[columns[i]])</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>          <span class="op">&amp;&amp;</span> y0 <span class="op">&lt;</span> y[j](d[columns[j]])</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>          <span class="op">&amp;&amp;</span> y1 <span class="op">&gt;</span> y[j](d[columns[j]]))<span class="op">;</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    svg<span class="op">.</span><span class="fu">property</span>(<span class="st">"value"</span><span class="op">,</span> selected)<span class="op">.</span><span class="fu">dispatch</span>(<span class="st">"input"</span>)<span class="op">;</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  <span class="co">// If the brush is empty, select all circles.</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>  <span class="kw">function</span> <span class="fu">brushended</span>({selection}) {</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (selection) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    svg<span class="op">.</span><span class="fu">property</span>(<span class="st">"value"</span><span class="op">,</span> [])<span class="op">.</span><span class="fu">dispatch</span>(<span class="st">"input"</span>)<span class="op">;</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    circle<span class="op">.</span><span class="fu">classed</span>(<span class="st">"hidden"</span><span class="op">,</span> <span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-4">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> columns<span class="op">.</span><span class="fu">map</span>(c <span class="kw">=&gt;</span> d3<span class="op">.</span><span class="fu">scaleLinear</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">domain</span>(d3<span class="op">.</span><span class="fu">extent</span>(data<span class="op">,</span> d <span class="kw">=&gt;</span> d[c]))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">rangeRound</span>([padding <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> size <span class="op">-</span> padding <span class="op">/</span> <span class="dv">2</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-5">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x<span class="op">.</span><span class="fu">map</span>(x <span class="kw">=&gt;</span> x<span class="op">.</span><span class="fu">copy</span>()<span class="op">.</span><span class="fu">range</span>([size <span class="op">-</span> padding <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> padding <span class="op">/</span> <span class="dv">2</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-6">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleOrdinal</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">domain</span>(data<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">species</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">range</span>(d3<span class="op">.</span><span class="at">schemeCategory10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-7">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>xAxis <span class="op">=</span> {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> axis <span class="op">=</span> d3<span class="op">.</span><span class="fu">axisBottom</span>()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">ticks</span>(<span class="dv">6</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">tickSize</span>(size <span class="op">*</span> columns<span class="op">.</span><span class="at">length</span>)<span class="op">;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> g <span class="kw">=&gt;</span> g<span class="op">.</span><span class="fu">selectAll</span>(<span class="st">"g"</span>)<span class="op">.</span><span class="fu">data</span>(x)<span class="op">.</span><span class="fu">join</span>(<span class="st">"g"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"transform"</span><span class="op">,</span> (d<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="vs">`translate(</span><span class="sc">${</span>i <span class="op">*</span> size<span class="sc">}</span><span class="vs">,0)`</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">each</span>(<span class="kw">function</span>(d) { <span class="cf">return</span> d3<span class="op">.</span><span class="fu">select</span>(<span class="kw">this</span>)<span class="op">.</span><span class="fu">call</span>(axis<span class="op">.</span><span class="fu">scale</span>(d))<span class="op">;</span> })</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">call</span>(g <span class="kw">=&gt;</span> g<span class="op">.</span><span class="fu">select</span>(<span class="st">".domain"</span>)<span class="op">.</span><span class="fu">remove</span>())</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">call</span>(g <span class="kw">=&gt;</span> g<span class="op">.</span><span class="fu">selectAll</span>(<span class="st">".tick line"</span>)<span class="op">.</span><span class="fu">attr</span>(<span class="st">"stroke"</span><span class="op">,</span> <span class="st">"#ddd"</span>))<span class="op">;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-8">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>yAxis <span class="op">=</span> {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> axis <span class="op">=</span> d3<span class="op">.</span><span class="fu">axisLeft</span>()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">ticks</span>(<span class="dv">6</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">tickSize</span>(<span class="op">-</span>size <span class="op">*</span> columns<span class="op">.</span><span class="at">length</span>)<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> g <span class="kw">=&gt;</span> g<span class="op">.</span><span class="fu">selectAll</span>(<span class="st">"g"</span>)<span class="op">.</span><span class="fu">data</span>(y)<span class="op">.</span><span class="fu">join</span>(<span class="st">"g"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">attr</span>(<span class="st">"transform"</span><span class="op">,</span> (d<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="vs">`translate(0,</span><span class="sc">${</span>i <span class="op">*</span> size<span class="sc">}</span><span class="vs">)`</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">each</span>(<span class="kw">function</span>(d) { <span class="cf">return</span> d3<span class="op">.</span><span class="fu">select</span>(<span class="kw">this</span>)<span class="op">.</span><span class="fu">call</span>(axis<span class="op">.</span><span class="fu">scale</span>(d))<span class="op">;</span> })</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">call</span>(g <span class="kw">=&gt;</span> g<span class="op">.</span><span class="fu">select</span>(<span class="st">".domain"</span>)<span class="op">.</span><span class="fu">remove</span>())</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">call</span>(g <span class="kw">=&gt;</span> g<span class="op">.</span><span class="fu">selectAll</span>(<span class="st">".tick line"</span>)<span class="op">.</span><span class="fu">attr</span>(<span class="st">"stroke"</span><span class="op">,</span> <span class="st">"#ddd"</span>))<span class="op">;</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-9">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> d3<span class="op">.</span><span class="fu">csvParse</span>(<span class="cf">await</span> <span class="fu">FileAttachment</span>(<span class="st">"penguins.csv"</span>)<span class="op">.</span><span class="fu">text</span>()<span class="op">,</span> d3<span class="op">.</span><span class="at">autoType</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-10">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>columns <span class="op">=</span> data<span class="op">.</span><span class="at">columns</span><span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> <span class="kw">typeof</span> data[<span class="dv">0</span>][d] <span class="op">===</span> <span class="st">"number"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-11">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="dv">954</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-12">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>size <span class="op">=</span> (width <span class="op">-</span> (columns<span class="op">.</span><span class="at">length</span> <span class="op">+</span> <span class="dv">1</span>) <span class="op">*</span> padding) <span class="op">/</span> columns<span class="op">.</span><span class="at">length</span> <span class="op">+</span> padding</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-13">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>padding <span class="op">=</span> <span class="dv">28</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-14">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="pp">require</span>(<span class="st">"d3@6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-15">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {swatches} <span class="im">from</span> <span class="st">"@d3/color-legend"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-16">
+
+</div>
+</div>
+</div>
+<!-- -->
+<div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Brushable Scatterplot Matrix"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtile:</span><span class="co"> "Originally published at &lt;https://observablehq.com/@d3/brushable-scatterplot-matrix&gt;"</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Mike Bostock"</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2019-06-15</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="an">license:</span><span class="co"> isc</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">    keep-hidden: true</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>This scatterplot matrix allows brushing to select data points in one cell, and highlight them across all other cells.</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="in">//| echo: false</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="in">swatches({color: z})</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="in">//| echo: false</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="in">viewof selection = {</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="in">  const svg = d3.create("svg")</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("viewBox", [-padding, 0, width, width]);</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="in">  svg.append("style")</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="in">      .text(`circle.hidden { fill: #000; fill-opacity: 1; r: 1px; }`);</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="in">  svg.append("g")</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="in">      .call(xAxis);</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="in">  svg.append("g")</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="in">      .call(yAxis);</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="in">  const cell = svg.append("g")</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="in">    .selectAll("g")</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="in">    .data(d3.cross(d3.range(columns.length), d3.range(columns.length)))</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="in">    .join("g")</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", ([i, j]) =&gt; `translate(${i * size},${j * size})`);</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="in">  cell.append("rect")</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill", "none")</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("stroke", "#aaa")</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("x", padding / 2 + 0.5)</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("y", padding / 2 + 0.5)</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("width", size - padding)</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("height", size - padding);</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="in">  cell.each(function([i, j]) {</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="in">    d3.select(this).selectAll("circle")</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="in">      .data(data.filter(d =&gt; !isNaN(d[columns[i]]) &amp;&amp; !isNaN(d[columns[j]])))</span></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="in">      .join("circle")</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="in">        .attr("cx", d =&gt; x[i](d[columns[i]]))</span></span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="in">        .attr("cy", d =&gt; y[j](d[columns[j]]));</span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="in">  });</span></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="in">  const circle = cell.selectAll("circle")</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("r", 3.5)</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill-opacity", 0.7)</span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill", d =&gt; z(d.species));</span></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a><span class="in">  cell.call(brush, circle, svg);</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="in">  svg.append("g")</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("font", "bold 10px sans-serif")</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("pointer-events", "none")</span></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="in">    .selectAll("text")</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="in">    .data(columns)</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a><span class="in">    .join("text")</span></span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", (d, i) =&gt; `translate(${i * size},${i * size})`)</span></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("x", padding)</span></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("y", padding)</span></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("dy", ".71em")</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="in">      .text(d =&gt; d);</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a><span class="in">  svg.property("value", [])</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a><span class="in">  return svg.node();</span></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a><span class="in">selection</span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="in">function brush(cell, circle, svg) {</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a><span class="in">  const brush = d3.brush()</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a><span class="in">      .extent([[padding / 2, padding / 2], [size - padding / 2, size - padding / 2]])</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("start", brushstarted)</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("brush", brushed)</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("end", brushended);</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="in">  cell.call(brush);</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="in">  let brushCell;</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a><span class="in">  // Clear the previously-active brush, if any.</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a><span class="in">  function brushstarted() {</span></span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a><span class="in">    if (brushCell !== this) {</span></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a><span class="in">      d3.select(brushCell).call(brush.move, null);</span></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="in">      brushCell = this;</span></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="in">  // Highlight the selected circles.</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="in">  function brushed({selection}, [i, j]) {</span></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a><span class="in">    let selected = [];</span></span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a><span class="in">    if (selection) {</span></span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="in">      const [[x0, y0], [x1, y1]] = selection; </span></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a><span class="in">      circle.classed("hidden",</span></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="in">        d =&gt; x0 &gt; x[i](d[columns[i]])</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="in">          || x1 &lt; x[i](d[columns[i]])</span></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="in">          || y0 &gt; y[j](d[columns[j]])</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="in">          || y1 &lt; y[j](d[columns[j]]));</span></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="in">      selected = data.filter(</span></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a><span class="in">        d =&gt; x0 &lt; x[i](d[columns[i]])</span></span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a><span class="in">          &amp;&amp; x1 &gt; x[i](d[columns[i]])</span></span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a><span class="in">          &amp;&amp; y0 &lt; y[j](d[columns[j]])</span></span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a><span class="in">          &amp;&amp; y1 &gt; y[j](d[columns[j]]));</span></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a><span class="in">    }</span></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="in">    svg.property("value", selected).dispatch("input");</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="in">  // If the brush is empty, select all circles.</span></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a><span class="in">  function brushended({selection}) {</span></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="in">    if (selection) return;</span></span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a><span class="in">    svg.property("value", []).dispatch("input");</span></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a><span class="in">    circle.classed("hidden", false);</span></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a><span class="in">x = columns.map(c =&gt; d3.scaleLinear()</span></span>
+<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a><span class="in">    .domain(d3.extent(data, d =&gt; d[c]))</span></span>
+<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a><span class="in">    .rangeRound([padding / 2, size - padding / 2]))</span></span>
+<span id="cb17-147"><a href="#cb17-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-148"><a href="#cb17-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a><span class="in">y = x.map(x =&gt; x.copy().range([size - padding / 2, padding / 2]))</span></span>
+<span id="cb17-153"><a href="#cb17-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-154"><a href="#cb17-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-157"><a href="#cb17-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-158"><a href="#cb17-158" aria-hidden="true" tabindex="-1"></a><span class="in">z = d3.scaleOrdinal()</span></span>
+<span id="cb17-159"><a href="#cb17-159" aria-hidden="true" tabindex="-1"></a><span class="in">    .domain(data.map(d =&gt; d.species))</span></span>
+<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a><span class="in">    .range(d3.schemeCategory10)</span></span>
+<span id="cb17-161"><a href="#cb17-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-162"><a href="#cb17-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-165"><a href="#cb17-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-166"><a href="#cb17-166" aria-hidden="true" tabindex="-1"></a><span class="in">xAxis = {</span></span>
+<span id="cb17-167"><a href="#cb17-167" aria-hidden="true" tabindex="-1"></a><span class="in">  const axis = d3.axisBottom()</span></span>
+<span id="cb17-168"><a href="#cb17-168" aria-hidden="true" tabindex="-1"></a><span class="in">      .ticks(6)</span></span>
+<span id="cb17-169"><a href="#cb17-169" aria-hidden="true" tabindex="-1"></a><span class="in">      .tickSize(size * columns.length);</span></span>
+<span id="cb17-170"><a href="#cb17-170" aria-hidden="true" tabindex="-1"></a><span class="in">  return g =&gt; g.selectAll("g").data(x).join("g")</span></span>
+<span id="cb17-171"><a href="#cb17-171" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", (d, i) =&gt; `translate(${i * size},0)`)</span></span>
+<span id="cb17-172"><a href="#cb17-172" aria-hidden="true" tabindex="-1"></a><span class="in">      .each(function(d) { return d3.select(this).call(axis.scale(d)); })</span></span>
+<span id="cb17-173"><a href="#cb17-173" aria-hidden="true" tabindex="-1"></a><span class="in">      .call(g =&gt; g.select(".domain").remove())</span></span>
+<span id="cb17-174"><a href="#cb17-174" aria-hidden="true" tabindex="-1"></a><span class="in">      .call(g =&gt; g.selectAll(".tick line").attr("stroke", "#ddd"));</span></span>
+<span id="cb17-175"><a href="#cb17-175" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb17-176"><a href="#cb17-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-177"><a href="#cb17-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-180"><a href="#cb17-180" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-181"><a href="#cb17-181" aria-hidden="true" tabindex="-1"></a><span class="in">yAxis = {</span></span>
+<span id="cb17-182"><a href="#cb17-182" aria-hidden="true" tabindex="-1"></a><span class="in">  const axis = d3.axisLeft()</span></span>
+<span id="cb17-183"><a href="#cb17-183" aria-hidden="true" tabindex="-1"></a><span class="in">      .ticks(6)</span></span>
+<span id="cb17-184"><a href="#cb17-184" aria-hidden="true" tabindex="-1"></a><span class="in">      .tickSize(-size * columns.length);</span></span>
+<span id="cb17-185"><a href="#cb17-185" aria-hidden="true" tabindex="-1"></a><span class="in">  return g =&gt; g.selectAll("g").data(y).join("g")</span></span>
+<span id="cb17-186"><a href="#cb17-186" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", (d, i) =&gt; `translate(0,${i * size})`)</span></span>
+<span id="cb17-187"><a href="#cb17-187" aria-hidden="true" tabindex="-1"></a><span class="in">      .each(function(d) { return d3.select(this).call(axis.scale(d)); })</span></span>
+<span id="cb17-188"><a href="#cb17-188" aria-hidden="true" tabindex="-1"></a><span class="in">      .call(g =&gt; g.select(".domain").remove())</span></span>
+<span id="cb17-189"><a href="#cb17-189" aria-hidden="true" tabindex="-1"></a><span class="in">      .call(g =&gt; g.selectAll(".tick line").attr("stroke", "#ddd"));</span></span>
+<span id="cb17-190"><a href="#cb17-190" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb17-191"><a href="#cb17-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-192"><a href="#cb17-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-195"><a href="#cb17-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-196"><a href="#cb17-196" aria-hidden="true" tabindex="-1"></a><span class="in">data = d3.csvParse(await FileAttachment("penguins.csv").text(), d3.autoType)</span></span>
+<span id="cb17-197"><a href="#cb17-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-198"><a href="#cb17-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-201"><a href="#cb17-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a><span class="in">columns = data.columns.filter(d =&gt; typeof data[0][d] === "number")</span></span>
+<span id="cb17-203"><a href="#cb17-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-207"><a href="#cb17-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-208"><a href="#cb17-208" aria-hidden="true" tabindex="-1"></a><span class="in">width = 954</span></span>
+<span id="cb17-209"><a href="#cb17-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-210"><a href="#cb17-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-213"><a href="#cb17-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-214"><a href="#cb17-214" aria-hidden="true" tabindex="-1"></a><span class="in">size = (width - (columns.length + 1) * padding) / columns.length + padding</span></span>
+<span id="cb17-215"><a href="#cb17-215" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-216"><a href="#cb17-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-219"><a href="#cb17-219" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-220"><a href="#cb17-220" aria-hidden="true" tabindex="-1"></a><span class="in">padding = 28</span></span>
+<span id="cb17-221"><a href="#cb17-221" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-222"><a href="#cb17-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-225"><a href="#cb17-225" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-226"><a href="#cb17-226" aria-hidden="true" tabindex="-1"></a><span class="in">d3 = require("d3@6")</span></span>
+<span id="cb17-227"><a href="#cb17-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-228"><a href="#cb17-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-231"><a href="#cb17-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb17-232"><a href="#cb17-232" aria-hidden="true" tabindex="-1"></a><span class="in">import {swatches} from "@d3/color-legend"</span></span>
+<span id="cb17-233"><a href="#cb17-233" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+<!-- -->
+</main>
+<div class="page-navigation page-navigation-docked">
+  <div class="nav-page nav-page-previous">
+      <a href="../../../../../docs/interactive/js/examples/mens-tennis/mens-tennis.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Men's Tennis</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../../../docs/interactive/shiny/index.html">
+        <span class="nav-page-text">Shiny</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+<script type="text/javascript">
+
+// replace cmd keyboard shortcut w/ control on non-Mac platforms
+const kPlatformMac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) : false;
+if (!kPlatformMac) {
+   var kbds = document.querySelectorAll("kbd")
+   kbds.forEach(function(kbd) {
+      kbd.innerHTML = kbd.innerHTML.replace(/⌘/g, '⌃');
+   });
+}
+
+// repopulate code block type for ojs and python examples
+function fixupExamples(lang) {
+  document.querySelectorAll("." + lang + "-example code > span")
+  .forEach(function(span) { 
+    if (span.innerText === "```{}")
+      span.innerText = "```{" + lang + "}";
+  });
+}
+fixupExamples("ojs")
+fixupExamples("python")
+
+
+</script>
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"swatches({color: z})"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof selection = {\n  const svg = d3.create(\"svg\")\n      .attr(\"viewBox\", [-padding, 0, width, width]);\n\n  svg.append(\"style\")\n      .text(`circle.hidden { fill: #000; fill-opacity: 1; r: 1px; }`);\n\n  svg.append(\"g\")\n      .call(xAxis);\n\n  svg.append(\"g\")\n      .call(yAxis);\n\n  const cell = svg.append(\"g\")\n    .selectAll(\"g\")\n    .data(d3.cross(d3.range(columns.length), d3.range(columns.length)))\n    .join(\"g\")\n      .attr(\"transform\", ([i, j]) => `translate(${i * size},${j * size})`);\n\n  cell.append(\"rect\")\n      .attr(\"fill\", \"none\")\n      .attr(\"stroke\", \"#aaa\")\n      .attr(\"x\", padding / 2 + 0.5)\n      .attr(\"y\", padding / 2 + 0.5)\n      .attr(\"width\", size - padding)\n      .attr(\"height\", size - padding);\n\n  cell.each(function([i, j]) {\n    d3.select(this).selectAll(\"circle\")\n      .data(data.filter(d => !isNaN(d[columns[i]]) && !isNaN(d[columns[j]])))\n      .join(\"circle\")\n        .attr(\"cx\", d => x[i](d[columns[i]]))\n        .attr(\"cy\", d => y[j](d[columns[j]]));\n  });\n\n  const circle = cell.selectAll(\"circle\")\n      .attr(\"r\", 3.5)\n      .attr(\"fill-opacity\", 0.7)\n      .attr(\"fill\", d => z(d.species));\n\n  cell.call(brush, circle, svg);\n\n  svg.append(\"g\")\n      .style(\"font\", \"bold 10px sans-serif\")\n      .style(\"pointer-events\", \"none\")\n    .selectAll(\"text\")\n    .data(columns)\n    .join(\"text\")\n      .attr(\"transform\", (d, i) => `translate(${i * size},${i * size})`)\n      .attr(\"x\", padding)\n      .attr(\"y\", padding)\n      .attr(\"dy\", \".71em\")\n      .text(d => d);\n\n  svg.property(\"value\", [])\n  return svg.node();\n}"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"selection"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"function brush(cell, circle, svg) {\n  const brush = d3.brush()\n      .extent([[padding / 2, padding / 2], [size - padding / 2, size - padding / 2]])\n      .on(\"start\", brushstarted)\n      .on(\"brush\", brushed)\n      .on(\"end\", brushended);\n\n  cell.call(brush);\n\n  let brushCell;\n\n  // Clear the previously-active brush, if any.\n  function brushstarted() {\n    if (brushCell !== this) {\n      d3.select(brushCell).call(brush.move, null);\n      brushCell = this;\n    }\n  }\n\n  // Highlight the selected circles.\n  function brushed({selection}, [i, j]) {\n    let selected = [];\n    if (selection) {\n      const [[x0, y0], [x1, y1]] = selection; \n      circle.classed(\"hidden\",\n        d => x0 > x[i](d[columns[i]])\n          || x1 < x[i](d[columns[i]])\n          || y0 > y[j](d[columns[j]])\n          || y1 < y[j](d[columns[j]]));\n      selected = data.filter(\n        d => x0 < x[i](d[columns[i]])\n          && x1 > x[i](d[columns[i]])\n          && y0 < y[j](d[columns[j]])\n          && y1 > y[j](d[columns[j]]));\n    }\n    svg.property(\"value\", selected).dispatch(\"input\");\n  }\n\n  // If the brush is empty, select all circles.\n  function brushended({selection}) {\n    if (selection) return;\n    svg.property(\"value\", []).dispatch(\"input\");\n    circle.classed(\"hidden\", false);\n  }\n}"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"x = columns.map(c => d3.scaleLinear()\n    .domain(d3.extent(data, d => d[c]))\n    .rangeRound([padding / 2, size - padding / 2]))"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"y = x.map(x => x.copy().range([size - padding / 2, padding / 2]))"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"z = d3.scaleOrdinal()\n    .domain(data.map(d => d.species))\n    .range(d3.schemeCategory10)"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"xAxis = {\n  const axis = d3.axisBottom()\n      .ticks(6)\n      .tickSize(size * columns.length);\n  return g => g.selectAll(\"g\").data(x).join(\"g\")\n      .attr(\"transform\", (d, i) => `translate(${i * size},0)`)\n      .each(function(d) { return d3.select(this).call(axis.scale(d)); })\n      .call(g => g.select(\".domain\").remove())\n      .call(g => g.selectAll(\".tick line\").attr(\"stroke\", \"#ddd\"));\n}"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"yAxis = {\n  const axis = d3.axisLeft()\n      .ticks(6)\n      .tickSize(-size * columns.length);\n  return g => g.selectAll(\"g\").data(y).join(\"g\")\n      .attr(\"transform\", (d, i) => `translate(0,${i * size})`)\n      .each(function(d) { return d3.select(this).call(axis.scale(d)); })\n      .call(g => g.select(\".domain\").remove())\n      .call(g => g.selectAll(\".tick line\").attr(\"stroke\", \"#ddd\"));\n}"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"data = d3.csvParse(await FileAttachment(\"penguins.csv\").text(), d3.autoType)"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"columns = data.columns.filter(d => typeof data[0][d] === \"number\")"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"width = 954"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"size = (width - (columns.length + 1) * padding) / columns.length + padding"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"padding = 28"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"d3 = require(\"d3@6\")"},{"methodName":"interpret","cellName":"ojs-cell-16","inline":false,"source":"import {swatches} from \"@d3/color-legend\""},{"methodName":"interpretQuiet","source":"shinyInput('selection')"}]}
+</script>
+<script type="module">
+window._ojs.paths.runtimeToDoc = "../../docs/interactive/js/examples/brushable-scatterplot-matrix";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../../../../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+
+
+</body></html>
