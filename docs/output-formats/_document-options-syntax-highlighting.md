@@ -17,9 +17,9 @@ By default, code is highlighted using the `arrow` theme, which is optimized for 
 ::: panel-tabset
 #### Light
 
-![](images/arrow.png)
+![](images/arrow.png){fig-alt="A block of code showcasing the Arrow light theme."}
 
 #### Dark
 
-![](images/arrow-dark.png)
+![](images/arrow-dark.png){fig-alt="A block of code showcasing the Arrow dark theme."}
 :::
