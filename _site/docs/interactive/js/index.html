@@ -556,18 +556,6 @@ if (!kPlatformMac) {
    });
 }
 
-// repopulate code block type for ojs and python examples
-function fixupExamples(lang) {
-  document.querySelectorAll("." + lang + "-example code > span")
-  .forEach(function(span) { 
-    if (span.innerText === "```{}")
-      span.innerText = "```{" + lang + "}";
-  });
-}
-fixupExamples("ojs")
-fixupExamples("python")
-
-
 </script>
 <script type="ojs-module-contents">
 {"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"{\n  const div = html`<div style=\"display:flex\">`;\n\n  const charts = new Map();\n  for (let a of attribs) {\n    const chart = BrushableBarChart()\n      .x(\"value\")\n      .y(\"key\")\n      .width(width / attribs.length)\n      .height(300)\n      .onBrush(selection => {\n        const keys = selection.map(d => d.key);\n        cs.dims.get(a).filter(keys.length === 0 ? null : d => keys.includes(d));\n        update();\n      });\n    charts.set(a, chart);\n  }\n\n  function update() {\n    d3.select(div)\n      .selectAll(\".charts\")\n      .data(attribs)\n      .join(\"div\")\n      .attr(\"class\", \"charts\")\n      .style(\"width\", width / attribs.length)\n      .each(function(a) {\n        const data =\n          a === \"Nationality\"\n            ? cs.groups.get(a).top(10)\n            : cs.groups.get(a).all();\n        d3.select(this)\n          .datum(data)\n          .call(charts.get(a));\n      });\n  }\n\n  update();\n\n  return div;\n}"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"attribs = [\"bill_length_mm\", \"bill_depth_mm\", \"flipper_length_mm\"]\ndata = transpose(penguins)\ntranspose = function(df)\n{\n  const keys = Object.keys(df);\n  return df[keys[0]]\n    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))\n    .filter(v => Object.values(v).every(e => e !== undefined));\n}\n\ncs = {\n  const cs = crossfilter(data);\n\n  cs.dims = new Map();\n  cs.groups = new Map();\n  \n  for (let a of attribs) {\n    const dim = cs.dimension(d => d[a]);\n    \n    cs.dims.set(a, dim);\n    cs.groups.set(a, dim.group(d => ~~d));\n  }\n  \n  return cs;\n}\nd3 = require(\"d3@6\")\ncrossfilter = require(\"crossfilter2\")\nimport { BrushableBarChart } from \"@john-guerra/d3-reusable-brushable-barchart-pattern\""}]}

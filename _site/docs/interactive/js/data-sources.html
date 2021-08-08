@@ -501,18 +501,6 @@ if (!kPlatformMac) {
    });
 }
 
-// repopulate code block type for ojs and python examples
-function fixupExamples(lang) {
-  document.querySelectorAll("." + lang + "-example code > span")
-  .forEach(function(span) { 
-    if (span.innerText === "```{}")
-      span.innerText = "```{" + lang + "}";
-  });
-}
-fixupExamples("ojs")
-fixupExamples("python")
-
-
 </script>
 <script type="ojs-module-contents">
 {"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = {\n  const v = await FileAttachment(\"co2_mm_mlo_clean.csv\").csv();\n  return v.map(d => { \n    d[\"decimal date\"] = Number(d[\"decimal date\"]);\n    d.average = Number(d.average); \n    return d; \n  });\n}\nPlot.plot({\n  marks: [\n    Plot.line(data, {x: \"decimal date\", y: \"average\"}, { stroke: \"black\" })\n  ]})"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"Plot.plot({\n  marks: [\n    Plot.line(transpose(co2), {x: \"year\", y: \"max\"}, { stroke: \"black\" })\n  ]})"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"transpose = function(df)\n{\n  const keys = Object.keys(df);\n  return df[keys[0]]\n    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))\n    .filter(v => Object.values(v).every(e => e !== undefined));\n}"}]}
