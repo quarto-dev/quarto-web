@@ -1,167 +1,156 @@
 ---
 title: "JavaScript"
+execute:
+  echo: false
+  output: auto
 ---
 
-Quarto supports JavaScript natively, enabling you to easily create interactive documents. 
-In this example adapted [from John Alexis Guerra Gómez](https://observablehq.com/@berkeleyvis/crossfilter), we create three histograms showing the distribution of attributes from Allison Horst's [Palmer Penguins dataset](https://allisonhorst.github.io/palmerpenguins/):
+## Overview
+
+Quarto includes native support for [Observable JavaScript](https://observablehq.com/@observablehq/observables-not-javascript), a set of enhancements to vanilla JavaScript created by [Mike Bostock](https://en.wikipedia.org/wiki/Mike_Bostock) (also the author of [D3](https://d3js.org/)). Observable is distinguished by its [reactive runtime](https://github.com/observablehq/runtime), which is especially well suited for interactive data exploration and analysis.
+
+The creators of Observable run a hosted service at <https://observablehq.com/> where you can create and publish notebooks. Additionally, you can use Observable in standalone documents and websites via the [open-source libraries](https://github.com/observablehq) at its core.
+
+Quarto uses these core libraries to enable the use of Observable JavaScript ("OJS") within Quarto documents. You do this by creating `{ojs}` executable code blocks (much like you create `{python}` and `{r}` code blocks in order to execute Python or R code). The rest of this article explains the basics of using OJS with Quarto.
+
+## Example
+
+We'll start with a simple example based on Allison Horst's [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):
 
 ```{ojs}
-//| echo: false
-//| label: fig-crossfilter
-//| fig-cap: Histograms of measurements from the Palmer Penguin dataset. Brush regions to change selections.
-{
-  const div = html`<div style="display:flex">`;
-
-  const charts = new Map();
-  for (let a of attribs) {
-    const chart = BrushableBarChart()
-      .x("value")
-      .y("key")
-      .width(width / attribs.length)
-      .height(300)
-      .onBrush(selection => {
-        const keys = selection.map(d => d.key);
-        cs.dims.get(a).filter(keys.length === 0 ? null : d => keys.includes(d));
-        update();
-      });
-    charts.set(a, chart);
-  }
-
-  function update() {
-    d3.select(div)
-      .selectAll(".charts")
-      .data(attribs)
-      .join("div")
-      .attr("class", "charts")
-      .style("width", width / attribs.length)
-      .each(function(a) {
-        const data =
-          a === "Nationality"
-            ? cs.groups.get(a).top(10)
-            : cs.groups.get(a).all();
-        d3.select(this)
-          .datum(data)
-          .call(charts.get(a));
-      });
-  }
-
-  update();
-
-  return div;
-}
-```
-
-**FIXME: I need to rewrite this example so the code we show to users is clear; I like having a crossfilter example, but the observable code we're using needs to be cleaned up.**
-
-Quarto provides support for this through a dialect of JavaScript developed by [Observable](https://www.observablehq.com). 
-The visualization part is created here using JavaScript and some libraries: 
-
-```js
-{
-  const div = html`<div style="display:flex">`;
-
-  const charts = new Map();
-  for (let a of attribs) {
-    const chart = BrushableBarChart()
-      .x("value")
-      .y("key")
-      .width(width / attribs.length)
-      .height(300)
-      .onBrush(selection => {
-        const keys = selection.map(d => d.key);
-        cs.dims.get(a).filter(keys.length === 0 ? null : d => keys.includes(d));
-        update();
-      });
-    charts.set(a, chart);
-  }
-
-  function update() {
-    d3.select(div)
-      .selectAll(".charts")
-      .data(attribs)
-      .join("div")
-      .attr("class", "charts")
-      .style("width", width / attribs.length)
-      .each(function(a) {
-        const data =
-          a === "Nationality"
-            ? cs.groups.get(a).top(10)
-            : cs.groups.get(a).all();
-        d3.select(this)
-          .datum(data)
-          .call(charts.get(a));
-      });
-  }
-
-  update();
-
-  return div;
-}
-
-cs = {
-  const cs = crossfilter(data);
-
-  cs.dims = new Map();
-  cs.groups = new Map();
-  
-  for (let a of attribs) {
-    const dim = cs.dimension(d => d[a]);
-    
-    cs.dims.set(a, dim);
-    cs.groups.set(a, dim.group(d => ~~d));
-  }
-  
-  return cs;
-}
-```
-
-The data itself comes from R directly from the `palmerpenguins` library:
-
-```{r}
-#| echo: false
-library(palmerpenguins)
-ojs_define(penguins)
+data = FileAttachment("examples/palmer-penguins.csv").csv()
 ```
 
 ```{ojs}
-//| echo: false
-//| output: false
-attribs = ["bill_length_mm", "bill_depth_mm", "flipper_length_mm"]
-data = transpose(penguins)
-transpose = function(df)
-{
-  const keys = Object.keys(df);
-  return df[keys[0]]
-    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))
-    .filter(v => Object.values(v).every(e => e !== undefined));
-}
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
 
-cs = {
-  const cs = crossfilter(data);
-
-  cs.dims = new Map();
-  cs.groups = new Map();
-  
-  for (let a of attribs) {
-    const dim = cs.dimension(d => d[a]);
-    
-    cs.dims.set(a, dim);
-    cs.groups.set(a, dim.group(d => ~~d));
+```{ojs}
+//| output: true
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
   }
-  
-  return cs;
-}
+)
+```
+
+```{ojs}
+//| output: true
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+
+Let's take a look at the source code for this example. First we create an `{ojs}` cell that reads in some data from a CSV file using a [FileAttachment](https://observablehq.com/@observablehq/file-attachments):
+
+```` java
+```{{ojs}}
+data = FileAttachment("palmer-penguins.csv").csv()
+```
+````
+
+The example above doesn't plot all of the data but rather a filtered subset. To create our filter we'll need some inputs, and we'll want to be able to use the values of these inputs in our filtering function. To do this, we use the `viewof` keyword and with some standard [Inputs](https://observablehq.com/@observablehq/inputs):
+
+```` java
+```{{ojs}}
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+````
+
+Now we write the filtering function that will transform the `data` read from the CSV using the values of `bill_length_min` and `island`.
+
+``` java
+{ojs}
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+
+Here we see reactivity in action: we don't need any special syntax to refer to the dynamic input values, they "just work", and the filtering code is automatically re-run when the inputs change.
+
+Finally, we'll plot the filtered data using [Observable Plot](https://observablehq.com/@observablehq/plot) (an open-source JavaScript library for quick visualization of tabular data):
+
+``` java
+{ojs}
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+
+Note that as with our inputs, we refer to the `filtered` variable with no special syntax---the plotting code will be automatically re-run whenever `filtered` changes (which in turn is updated whenever an input changes).
+
+That's a basic end-to-end example of a simple interactive plot. Below we cover a few more basics then provide links to additional articles that go into more depth.
+
+## Libraries
+
+Our example above made use of several standard libraries, including:
+
+1.  [Observable stdlib](https://github.com/observablehq/stdlib) --- Core primitives for DOM manipulation, file handling, importing code, and much more.
+
+2.  [Observable Inputs](https://github.com/observablehq/inputs) --- Standard inputs controls including sliders, drop-downs, tables, check-boxes, etc.
+
+3.  [Observable Plot](https://github.com/observablehq/plot) --- High level plotting library for exploratory data visualization.
+
+The libraries are somewhat special because they are automatically available within notebooks on <https://observablehq.com> as well as within `{ojs}` cells in Quarto documents.
+
+Using other JavaScript libraries is also straightforward, they just need to be explicitly imported. For example, here we import a few libraries commonly used in JavaScript data visualization:
+
+``` java
+```{{ojs}}
 d3 = require("d3@6")
-crossfilter = require("crossfilter2")
-import { BrushableBarChart } from "@john-guerra/d3-reusable-brushable-barchart-pattern"
+arquero = require("arquero") 
+vegalite = require("vega-lite")
+topojson = require('topojson')
 ```
 
+## Data Sources
 
+## OJS Cells
 
-## Text
-
-- overall concept and quick demo
-- code for quick demo
-- another demo with code
-
-
+## Learning More
