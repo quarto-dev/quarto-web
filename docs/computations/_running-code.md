@@ -28,13 +28,13 @@ format:
 jupyter: python3
 ---
 
-```{python}
+```{{python}}
 import matplotlib.pyplot as plt
 plt.plot([1,2,3,4])
 plt.show()
 ```
 
-```{python}
+```{{python}}
 import pandas as pd
 d = {'one' : [1., 2., 3., 4.],
      'two' : [4., 3., 2., 1.]}
@@ -65,14 +65,14 @@ execute:
   warning: false
 ---
 
-```{r}
+```{{r}}
 library(ggplot2)
 ggplot(airquality, aes(Temp, Ozone)) + 
         geom_point() + 
         geom_smooth(method = "loess", se = FALSE)
 ```
 
-```{r}
+```{{r}}
 summary(airquality)
 ```
 ````
@@ -98,21 +98,21 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+-------------------+--------------+
-| Code Block Syntax | Executable?  |
-+===================+:============:+
-|     ```{python}   | Yes          |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
-|     ```python     | No           |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
-|     ```{.python}  | No           |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
++-------------------+---------------+
+| Code Block Syntax | Executable?   |
++===================+:=============:+
+|     ```{python}   | Yes           |
+|     1 + 1         |               |
+|     ```           |               |
++-------------------+---------------+
+|     ```python     | No            |
+|     1 + 1         |               |
+|     ```           |               |
++-------------------+---------------+
+|     ```{.python}  | No            |
+|     1 + 1         |               |
+|     ```           |               |
++-------------------+---------------+
 
 Non-executable code blocks are printed but not executed.
 
@@ -165,7 +165,7 @@ Both Jupyter and Knitr support executing inline code within markdown (e.g. to al
 To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
 
 ```` python
-```{python}
+```{{python}}
 #| echo: false
 
 from IPython.display import Markdown

@@ -18,11 +18,7 @@ Quarto uses these core libraries to enable the use of Observable JavaScript ("OJ
 We'll start with a simple example based on Allison Horst's [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):
 
 ```{ojs}
-data = FileAttachment("examples/palmer-penguins.csv").csv()
-```
-
-```{ojs}
-filtered = data.filter(function(penguin) {
+filtered = transpose(data).filter(function(penguin) {
   return bill_length_min < penguin.bill_length &&
          islands.includes(penguin.island);
 })
@@ -90,20 +86,21 @@ viewof islands = Inputs.checkbox(
 
 Now we write the filtering function that will transform the `data` read from the CSV using the values of `bill_length_min` and `island`.
 
-``` java
-{ojs}
+```` java
+```{{ojs}}
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length &&
          islands.includes(penguin.island);
 })
 ```
+````
 
 Here we see reactivity in action: we don't need any special syntax to refer to the dynamic input values, they "just work", and the filtering code is automatically re-run when the inputs change. This works in much the same way a spreadsheet works when you update a cell and other cells that refer to it are recalculated.
 
 Finally, we'll plot the filtered data using [Observable Plot](https://observablehq.com/@observablehq/plot) (an open-source JavaScript library for quick visualization of tabular data):
 
 ``` java
-{ojs}
+```{{ojs}}
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -141,13 +138,14 @@ The libraries are somewhat special because they are automatically available with
 
 Using other JavaScript libraries is also straightforward, they just need to be explicitly imported. For example, here we import a few libraries commonly used in JavaScript data visualization:
 
-``` java
+```` java
 ```{{ojs}}
 d3 = require("d3@6")
 arquero = require("arquero") 
 vegalite = require("vega-lite")
 topojson = require("topojson")
 ```
+````
 
 The [require](https://github.com/observablehq/stdlib#require) function loads libraries from <https://www.jsdelivr.com/> (which in turn can load NPM modules and libraries hosted on GitHub)
 
@@ -155,6 +153,46 @@ See the article on [Libraries](libraries.qmd) to learn more about using standard
 
 ## Data Sources
 
+In our initial example we used a [FileAttachment](https://github.com/observablehq/stdlib#file-attachments) as our data source. File attachments support many formats including CSV, TSV, JSON, SQLite, and Arrow so are a convenient way to read a dataset that has already been prepared for analysis.
+
+Frequently though you'll need to do some pre-processing of your data in Python or R before it's ready for visualization. Within Quarto, you can do this pre-processing during document render then make the results available to OJS.
+
+Use the `ojs_define()` function from Python or R to define variables that you want to use within JavaScript. For example, to reproduce the simple CSV read in Python you might do this:
+
+```{python}
+import pandas as pd
+penguins = pd.read_csv("examples/palmer-penguins.csv")
+ojs_define(data = penguins)
+```
+
+``` java
+```{{python}}
+import pandas as pd
+penguins = pd.read_csv("palmer-penguins.csv")
+ojs_define(data = penguins)
+```
+
+The call to `ojs_define(data = penguins)` says that we want to make a variable named `data` (with the value of the `penguins` data frame) available to OJS
+
+Depending on the visualization library you use, one additional step may be required to consume the data from JavaScript. In this case, the `Plot` function expects data by row rather than by column, so we `transpose()` it before filtering:
+
+```` java
+```{{ojs}}
+filtered = transpose(data).filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+````
+
+See the article on [Data Sources](data-sources.qmd) to learn more about the various ways to prepare and read data.
+
 ## OJS Cells
+
+There are many options available to customize the appearance of `{ojs}` code cells and their output, including:
+
+-   Showing, hiding, and collapsing code
+
+-   Visibility and layout of outputs
 
 ## Learning More

@@ -17,13 +17,13 @@ format: html
 server: shiny
 ---
 
-```{r}
+```{{r}}
 sliderInput("bins", "Number of bins:", 
             min = 1, max = 50, value = 30)
 plotOutput("distPlot")
 ```
 
-```{r}
+```{{r}}
 #| context: server
 output$distPlot <- renderPlot({
   x <- faithful[, 2]  # Old Faithful Geyser data
@@ -62,14 +62,14 @@ format: html
 server: shiny
 ---
 
-```{r}
+```{{r}}
 sliderInput("bins", "Number of bins:", 
             min = 1, max = 50, value = 30)
 plotOutput("distPlot")
 ```
 ````
 
-##### server.R {.tabset}
+##### server.R
 
 ``` r
 function(input, output, session) {
@@ -94,7 +94,7 @@ Sharing code between rendering contexts works a bit differently depending on if 
 To have code execute in both rendering and serving contexts, create a code chunk with `context: setup`. For example:
 
 ```` python
-```{r}
+```{{r}}
 #| context: setup
 #| include: false
 
@@ -116,7 +116,7 @@ The loading and manipulation of data often dominates the startup time of Shiny a
 You can define prerendered data by adding the `context: data` option to an R code chunk. The chunk will be executed during render and any R objects it creates will be saved to an .RData file, which will then be loaded during Shiny server startup. For example, we could take the the setup chunk illustrated above and factor out the data loading into its own chunk:
 
 ```` python
-```{r}
+```{{r}}
 #| context: data
 #| include: false
 
@@ -132,7 +132,7 @@ Note that R objects created within a `context: data` chunk are available to both
 You can further improve the performance of data rendering by adding the `cache: true` option to the data chunk. This will cause the code chunk to be re-executed only when required. For example:
 
 ```` python
-```{r}
+```{{r}}
 #| context: data
 #| include: false
 #| cache: true
@@ -158,7 +158,7 @@ There is one additional execution context that enables you to share code and dat
 For example:
 
 ```` python
-```{r}
+```{{r}}
 #| context: server-start
 
 library(DBI)
