@@ -233,33 +233,58 @@ export class OJSConnector {
           element.style.display = "none";
         }
 
-        // determine if we need to handle output:auto
+        // determine if we need to handle output:all
         let el = targetElement;
         let cellOutputDisplay;
-        while (!el.classList.contains("cell") && el !== null) {
+        while (el !== null && !el.classList.contains("cell")) {
           el = el.parentElement;
-          if (el.classList.contains("cell-output-display")) {
+          if (el && el.classList.contains("cell-output-display")) {
             cellOutputDisplay = el;
           }
         }
-        if (el === null) {
-          throw new Error("Internal error: Couldn't find container cell while handling output:auto");
-        }
-        if (el.dataset.output === "auto") {
-          const config = { childList: true };
-          const callback = function(mutationsList, observer) {
-            for (const mutation of mutationsList) {
-              if (Array.from(mutation.addedNodes).filter(
-                n => n.classList.contains("observablehq--inspect")).length > 0) {
-                cellOutputDisplay.style.display = "none";
+        // we may fail to find a cell in inline settings; but inline
+        // settings don't have inspectors anyway, so in this case we
+        // skip the check for output:all anyway.
+        
+        const config = { childList: true };
+        const callback = function(mutationsList, observer) {
+          for (const mutation of mutationsList) {
+            if (el && el.dataset.output !== "all") {
+              if (mutation.target.classList.contains("observablehq--error")) {
+                cellOutputDisplay.classList.remove("quarto-ojs-hide");
+              } else {
+                if (Array.from(mutation.target.childNodes).every(
+                  n => n.classList.contains("observablehq--inspect"))) {
+                  cellOutputDisplay.classList.add("quarto-ojs-hide");
+                }
+                Array.from(mutation.target.childNodes)
+                  .filter(
+                    n => n.classList.contains("observablehq--inspect"))
+                  .forEach(
+                    n => n.classList.add("quarto-ojs-hide")
+                  );
               }
             }
-          };
-          const observer = new MutationObserver(callback);
-          observer.observe(element, config);
-          if (cellOutputDisplay === undefined) {
-            throw new Error("Internal error: Couldn't find output display cell while handling output:auto");
+            // don't echo the import statement
+            for (const added of mutation.addedNodes) {
+              // We search here for code.javascript and node span.hljs-... because
+              // at this point in the DOM, observable's runtime hasn't called
+              // HLJS yet. if you inspect the DOM yourself, you're likely to see
+              // HLJS, so this comment is here to prevent future confusion.
+              const result = added.querySelectorAll("code.javascript");
+              if (result.length !== 1) {
+                continue;
+              }
+              if (result[0].innerText.trim().startsWith("import")) {
+                mutation.target.parentElement.parentElement.parentElement.classList.add("quarto-ojs-hide");
+              }
+            }
           }
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(element, config);
+        if (cellOutputDisplay === undefined) {
+          throw new Error("Internal error: Couldn't find output display cell while handling output:!all");
         }
         
         element.classList.add("ojs-in-a-box-waiting-for-module-import");
@@ -298,9 +323,9 @@ function es6ImportAsObservableModule(m) {
   };
 }
 
-// this is the import resolution code from observable's runtime. we'd
-// like to use it from their modules directly but they don't export
-// it.
+// this is essentially the import resolution code from observable's
+// runtime. we change it to add a license check for permissive
+// open-source licenses before resolving the import
 function defaultResolveImportPath(path) {
   const extractPath = (path) => {
     let source = path;
@@ -317,9 +342,31 @@ function defaultResolveImportPath(path) {
     return source;
   };
   const source = extractPath(path);
-  return import(`https://api.observablehq.com/${source}.js?v=3`).then((m) => {
-    return m.default;
-  });
+  const metadataURL = `https://api.observablehq.com/document/${source}`;
+  const moduleURL = `https://api.observablehq.com/${source}.js?v=3`;
+
+  // return fetch(metadataURL, { mode: 'no-cors' })
+  //   .then(r => r.json())
+  //   .then(json => {
+  //     if (["isc", "mit", "bsd-3-clause", "apache-2.0"].indexOf(json.license) === -1) {
+  //       throw new Error(`Notebook doesn't have a permissive open-source license`);
+  //     }
+  //     return import(moduleURL);
+  //   })
+  //   .then(m => m.default);
+
+  return import(moduleURL)
+    .then(m => m.default);
+
+  /*
+  const metadata = await fetch(metadataURL, { mode: 'no-cors' });
+  const nbJson = metadata.json();
+  if (["isc", "mit", "bsd-3-clause", "apache-2.0"].indexOf(nbJson.license) === -1) {
+    throw new Error(`Notebook doesn't have a permissive open-source license`);
+  }
+  */
+  // const m = await import(moduleURL);
+  // return m.default;
 }
 
 /*

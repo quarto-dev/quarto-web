@@ -233,6 +233,35 @@ export class OJSConnector {
           element.style.display = "none";
         }
 
+        // determine if we need to handle output:auto
+        let el = targetElement;
+        let cellOutputDisplay;
+        while (!el.classList.contains("cell") && el !== null) {
+          el = el.parentElement;
+          if (el.classList.contains("cell-output-display")) {
+            cellOutputDisplay = el;
+          }
+        }
+        if (el === null) {
+          throw new Error("Internal error: Couldn't find container cell while handling output:auto");
+        }
+        if (el.dataset.output === "auto") {
+          const config = { childList: true };
+          const callback = function(mutationsList, observer) {
+            for (const mutation of mutationsList) {
+              if (Array.from(mutation.addedNodes).filter(
+                n => n.classList.contains("observablehq--inspect")).length > 0) {
+                cellOutputDisplay.style.display = "none";
+              }
+            }
+          };
+          const observer = new MutationObserver(callback);
+          observer.observe(element, config);
+          if (cellOutputDisplay === undefined) {
+            throw new Error("Internal error: Couldn't find output display cell while handling output:auto");
+          }
+        }
+        
         element.classList.add("ojs-in-a-box-waiting-for-module-import");
 
         return new this.inspectorClass(element);
@@ -737,6 +766,14 @@ export function createRuntime() {
     extendObservableStdlib(lib);
   }
 
+  function transpose(df) {
+    const keys = Object.keys(df);
+    return df[keys[0]]
+      .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))
+      .filter(v => Object.values(v).every(e => e !== undefined));
+  }
+  lib.transpose = () => transpose;
+  
   const mainEl = document.querySelector("main");
   function width() {
     return lib.Generators.observe(function (change) {

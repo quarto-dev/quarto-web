@@ -280,9 +280,6 @@
   <a href="../../../docs/interactive/js/ojs-cells.html" class="">OJS Cells</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../../docs/interactive/js/reactivity.html" class="">Reactivity</a>
-</li>
-          <li class="sidebar-item">
   <a href="../../../docs/interactive/js/code-reuse.html" class="">Code Reuse</a>
 </li>
           <ul class="list-unstyled sidebar-section depth3">
@@ -297,6 +294,15 @@
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
   <a href="../../../docs/interactive/js/examples/penguins.html" class="">Penguins</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../docs/interactive/js/examples/sunburst.html" class="">Sunburst</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../docs/interactive/js/examples/arquero.html" class="">Arquero</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../docs/interactive/js/examples/population.html" class="">Population</a>
 </li>
         </ul>
       </div>
@@ -384,12 +390,13 @@
 </header>
 
 <p>TBF: Turn these into interactive documents.</p>
+<p>https://github.com/observablehq/examples/tree/main/custom-live-data</p>
 <p>One of Quarto’s core capabilities is its ability to embed output from Python, R, etc. When the output produced by a Python or R computation is required in interactive documents, there are two possible simple approaches.</p>
 <section id="file-attachments" class="level2">
 <h2 class="anchored" data-anchor-id="file-attachments">File attachments</h2>
 <p>The first approach uses the notion of “file attachments” from Observable’s runtime system. If you include a file as a resource from a Quarto project (FIXME: where in the docs do we describe resources?), then you can directly use that file in Javascript.</p>
 <p>Let’s take a NOAA’s Monthly CO2 concentration data from Mauna Loa, obtained from their website (and mildly processed to remove comments):</p>
-<div class="cell" data-output="auto">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> v <span class="op">=</span> <span class="cf">await</span> <span class="fu">FileAttachment</span>(<span class="st">"co2_mm_mlo_clean.csv"</span>)<span class="op">.</span><span class="fu">csv</span>()<span class="op">;</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> v<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> { </span>
@@ -426,7 +433,7 @@
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"co2_mm_mlo_clean.csv"</span>, <span class="at">row.names=</span><span class="cn">NULL</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">co2 =</span> df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="at">max =</span> <span class="fu">max</span>(average)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-output="auto">
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span>(<span class="fu">transpose</span>(co2)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"year"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"max"</span>}<span class="op">,</span> { <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span> })</span>
@@ -443,10 +450,14 @@
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
-      <a href="../../../docs/interactive/js/libraries.html">Libraries</a>          
+      <a href="../../../docs/interactive/js/libraries.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Libraries</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../docs/interactive/js/ojs-cells.html">OJS Cells</a>
+      <a href="../../../docs/interactive/js/ojs-cells.html">
+        <span class="nav-page-text">OJS Cells</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </div>
 </div> <!-- /main column -->

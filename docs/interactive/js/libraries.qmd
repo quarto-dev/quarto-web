@@ -1,42 +1,327 @@
 ---
 title: "Libraries"
+format: html
+execute:
+  output: true
 ---
 
-When creating interactive documents using Quarto, you can take
-advantage of a number of existing components from the JavaScript and
-Observable ecosystems.
+## Overview
 
-# The JavaScript libraries ecosystem
+There are four types of library you'll generally use with OJS:
 
-### Standard library/npm packages
+1.  [Observable core libraries](https://github.com/observablehq) automatically available in every document.
 
-If you want to use JavaScript modules, many NPM modules are directly
-available as [JavaScript
-modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-with the [skypack CDN](https://skypack.dev).
+2.  Third-party JavaScript libraries from [npm](https://docs.npmjs.com/about-packages-and-modules) and [ObservableHQ](https://observablehq.com).
+
+3.  Custom libraries you and/or your colleagues have created
+
+In this document we'll provide a high-level overview of the core libraries and some examples of using third-party libraries ([D3](#d3) and [Arquero](#arquero)). Creating your own libraries is covered in the article on [Code Reuse](code-reuse.qmd).
+
+## Stdlib
+
+The Observable standard library provides the core capabilities that underlie rendering content and loading code and data. Some particularly important components of the standard library include:
+
+| Component                                                                  | Description                                       |
+|----------------------------------------------------------------------------|---------------------------------------------------|
+| [DOM](https://github.com/observablehq/stdlib#dom)                          | Dynamically creating DOM elements                 |
+| [FileAttachments](https://github.com/observablehq/stdlib#file-attachments) | Reading files in a variety of formats             |
+| [require](https://github.com/observablehq/stdlib#require)                  | Importing third-party modules from NPM and GitHub |
+
+You can find complete documentation for the standard library at <https://github.com/observablehq/stdlib>.
+
+## Inputs
+
+The Observable inputs library provides widgets that can be bound to reactive expressions via the `viewof` keyword. Some particularly useful input include:
+
+| Component                                                   | Description                                   |
+|-------------------------------------------------------------|-----------------------------------------------|
+| [Radio](https://github.com/observablehq/inputs#Radio)       | Choose from mutually exclusive set of options |
+| [Checkbox](https://github.com/observablehq/inputs#Checkbox) | Choose one or more options from a list        |
+| [Range](https://github.com/observablehq/inputs#Range)       | Slider for continuous numeric values          |
+| [Select](https://github.com/observablehq/inputs#Select)     | Drop down select box                          |
+| [Table](https://github.com/observablehq/inputs#Table)       | Select one or more rows from a table          |
+
+You can find complete documentation for all of the inputs at <https://github.com/observablehq/inputs>.
+
+## Plot
+
+Observable Plot is a JavaScript library for exploratory data visualization. Plot is built upon a set of core concepts ([Marks](https://observablehq.com/@observablehq/plot-marks), [Scales](https://observablehq.com/@observablehq/plot-scales), [Transforms](https://observablehq.com/@observablehq/plot-transforms), and [Facets](https://observablehq.com/@observablehq/plot-facets)) that can be composed together to create custom visualizations.
+
+Here's an example of a scatterplot of the height and weight of Olympic athletes created with Plot:
 
 ```{ojs}
-import { sequential } from 'https://cdn.skypack.dev/@tensorflow/tfjs';
+//| echo: true
+athletes = FileAttachment("athletes.csv").csv({typed: true})
 ```
-
-# Observablehq.com modules
-
-Here, we highlight some libraries that are particularly useful in
-Quarto interactive documents.
-
-
-## Data manipulation: arquero
-
-[Arquero](https://github.com/uwdata/arquero) is "a JavaScript library
-for query processing and transformation of array-backed data tables". If you've used Pandas in Python (or especially dplyr in R), arquero will feel familiar. Here, we import Arquero from its Observable modules
 
 ```{ojs}
-import { aq, op } from '@uwdata/arquero';
+//| echo: true
+Plot.plot({
+  grid: true,
+  facet: {
+    data: athletes,
+    y: "sex"
+  },
+  marks: [
+    Plot.rectY(
+      athletes, 
+      Plot.binX({y: "count"}, {x: "weight", fill: "sex"})
+    ),
+    Plot.ruleY([0])
+  ]
+})
 ```
 
-## Plotting: vega-lite / Observable plot
+You can find complete documentation for Observable plot <https://github.com/observablehq/plot>.
+
+## D3 {#d3}
+
+[D3.js](https://d3js.org/) is a JavaScript library for manipulating documents based on data. D3 is capable of creating just about any interactive graphic you can imagine!
+
+Here's a zoomable sunburst diagram (originally published [here](https://observablehq.com/@d3/zoomable-sunburst%3E)) created with D3. Only two layers of the hierarchy are shown at a time. Click a node to zoom in, or the center to zoom out.
 
 ```{ojs}
-import { vl } from '@vega/vega-lite-api-v5';
+//| echo: false
+//| output: true
+sunburst = {
+  const root = partition(flareData);
+
+  root.each(d => d.current = d);
+
+  const svg = d3.create("svg")
+      .attr("viewBox", [0, 0, width, width])
+      .style("font", "15px sans-serif");
+
+  const g = svg.append("g")
+      .attr("transform", `translate(${width / 2},${width / 2})`);
+
+  const path = g.append("g")
+    .selectAll("path")
+    .data(root.descendants().slice(1))
+    .join("path")
+      .attr("fill", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
+      .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+      .attr("d", d => arc(d.current));
+
+  path.filter(d => d.children)
+      .style("cursor", "pointer")
+      .on("click", clicked);
+
+  path.append("title")
+      .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
+
+  const label = g.append("g")
+      .attr("pointer-events", "none")
+      .attr("text-anchor", "middle")
+      .style("user-select", "none")
+    .selectAll("text")
+    .data(root.descendants().slice(1))
+    .join("text")
+      .attr("dy", "0.35em")
+      .attr("fill-opacity", d => +labelVisible(d.current))
+      .attr("transform", d => labelTransform(d.current))
+      .text(d => d.data.name);
+
+  const parent = g.append("circle")
+      .datum(root)
+      .attr("r", radius)
+      .attr("fill", "none")
+      .attr("pointer-events", "all")
+      .on("click", clicked);
+
+  function clicked(event, p) {
+    parent.datum(p.parent || root);
+
+    root.each(d => d.target = {
+      x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+      y0: Math.max(0, d.y0 - p.depth),
+      y1: Math.max(0, d.y1 - p.depth)
+    });
+
+    const t = g.transition().duration(750);
+
+    // Transition the data on all arcs, even the ones that aren’t visible,
+    // so that if this transition is interrupted, entering arcs will start
+    // the next transition from the desired position.
+    path.transition(t)
+        .tween("data", d => {
+          const i = d3.interpolate(d.current, d.target);
+          return t => d.current = i(t);
+        })
+      .filter(function(d) {
+        return +this.getAttribute("fill-opacity") || arcVisible(d.target);
+      })
+        .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
+        .attrTween("d", d => () => arc(d.current));
+
+    label.filter(function(d) {
+        return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+      }).transition(t)
+        .attr("fill-opacity", d => +labelVisible(d.target))
+        .attrTween("transform", d => () => labelTransform(d.current));
+  }
+  
+  function arcVisible(d) {
+    return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+  }
+
+  function labelVisible(d) {
+    return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;
+  }
+
+  function labelTransform(d) {
+    const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+    const y = (d.y0 + d.y1) / 2 * radius;
+    return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+  }
+
+  return svg.node();
+}
 ```
 
+To use D3 in an `{ojs}` cell, first import it using the [require](https://github.com/observablehq/stdlib#require) function (which loads modules hosted at [jsDelivr](https://www.jsdelivr.com/)):
+
+```` java
+```{{ojs}}
+d3 = require("d3@6")
+```
+````
+
+Then, use d3 as needed to create your visualization. For example, here are the first few lines of the cell that creates the visualization above:
+
+``` java
+```{{ojs}}
+sunburst = {
+  const root = partition(flareData);
+  root.each(d => d.current = d);
+  const svg = d3.create("svg")
+      .attr("viewBox", [0, 0, width, width])
+      .style("font", "15px sans-serif");
+
+  // ...remainder of implementation
+  
+  return svg.node();
+}
+```
+
+See the [Sunburst](examples/sunburst.qmd) example for the complete source code. To learn more about D3, visit <https://d3js.org/>.
+
+## Arquero {#arquero}
+
+[Arquero](https://uwdata.github.io/arquero/) is a JavaScript library for query processing and transformation of array-backed data tables. Following the [relational algebra](https://en.wikipedia.org/wiki/Relational_algebra) and inspired by the design of [dplyr](https://dplyr.tidyverse.org/), Arquero provides a fluent API for manipulating column-oriented data frames.
+
+Import Arquero (`aq`) and ab alias to Arquero operations (`op`) with the following:
+
+```{ojs}
+//| output: false
+import { aq, op } from '@uwdata/arquero'
+```
+
+Read datasets using a reader function (here we load a CSV):
+
+```{ojs}
+penguins = aq.loadCSV("palmer-penguins.csv")
+```
+
+Filter and aggregate data, then view it:
+
+```{ojs}
+penguins
+  .groupby('species')
+  .filter(p => p.body_mass > 0)
+  .rollup({
+    count: op.count(),
+    avg_mass: op.average('body_mass')
+   })
+  .view()
+```
+
+See the [Arquero](examples/arquero.qmd) example for complete source code. To learn more about using Arquero, see the [Introducing Arquero](https://observablehq.com/@uwdata/introducing-arquero) tutorial.
+
+## Modules
+
+### NPM
+
+The [require](https://github.com/observablehq/stdlib#require) function in the standard library can be used to import [npm modules](https://docs.npmjs.com/about-packages-and-modules) (which are served from the [jsDeliver](https://www.jsdelivr.com/) CDN)
+
+Modules can optionally include an `@` sign with a version. For example, above we loaded version 6 of D3 with the following code:
+
+```` java
+```{{ojs}}
+d3 = require("d3@6")
+```
+````
+
+See the [jsDeliver documentation](https://www.jsdelivr.com/features#npm) for additional details. Note that the require function automatically prepends the prefix `https://cdn.jsdelivr.net/npm/` when resolving imports, so where the jsDeliver documentation says to use this URL:
+
+    https://cdn.jsdelivr.net/npm/package@version/file
+
+You need only pass this to `require`:
+
+    package@version/file
+
+### ObservableHQ
+
+Notebooks published on <http://observablehq.com> can also be compiled and downloaded as [JavaScript modules](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks#notebooks-as-es-modules).
+
+While notebooks often have their own embedded dataset, you can actually replace this data with your own when you import them! Returning to the sunburst example from above, here we `import` a notebook and use the `with` keyword to provide our own value for `data`:
+
+```{ojs}
+pdata = FileAttachment("population.json").json()
+import { chart } with { pdata as data } from "@d3/zoomable-sunburst"
+chart
+```
+
+::: {.callout-warning appearance="simple"}
+One important restriction to be aware of is that not all notebooks published on ObservableHQ have an open-source license. Notebooks need to [explicitly tagged with a license](https://observablehq.com/@observablehq/licenses) as an indication that it's okay to use them outside of ObservableHQ.
+
+Consequently, when Quarto encounters an `import` of an ObservableHQ notebook it checks for a permissive license (MIT, ISC, Apache, or BSD) and prevents the import if one is not found.
+:::
+
+## Appendix {.hidden .unlisted}
+
+```{ojs}
+flareData = FileAttachment("examples/flare-2.json").json()
+```
+
+```{ojs}
+partition = flareData => {
+  const root = d3.hierarchy(flareData)
+      .sum(d => d.value)
+      .sort((a, b) => b.value - a.value);
+  return d3.partition()
+      .size([2 * Math.PI, root.height + 1])
+    (root);
+}
+```
+
+```{ojs}
+color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, flareData.children.length + 1))
+```
+
+```{ojs}
+format = d3.format(",d")
+```
+
+```{ojs}
+width = 932
+```
+
+```{ojs}
+radius = width / 6
+```
+
+```{ojs}
+arc = d3.arc()
+    .startAngle(d => d.x0)
+    .endAngle(d => d.x1)
+    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
+    .padRadius(radius * 1.5)
+    .innerRadius(d => d.y0 * radius)
+    .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
+```
+
+```{ojs}
+d3 = require("d3@6")
+```

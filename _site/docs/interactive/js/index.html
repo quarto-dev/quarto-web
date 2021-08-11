@@ -280,9 +280,6 @@
   <a href="../../../docs/interactive/js/ojs-cells.html" class="">OJS Cells</a>
 </li>
           <li class="sidebar-item">
-  <a href="../../../docs/interactive/js/reactivity.html" class="">Reactivity</a>
-</li>
-          <li class="sidebar-item">
   <a href="../../../docs/interactive/js/code-reuse.html" class="">Code Reuse</a>
 </li>
           <ul class="list-unstyled sidebar-section depth3">
@@ -297,6 +294,15 @@
         <ul class="list-unstyled sidebar-item-contents">
           <li class="sidebar-item">
   <a href="../../../docs/interactive/js/examples/penguins.html" class="">Penguins</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../docs/interactive/js/examples/sunburst.html" class="">Sunburst</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../docs/interactive/js/examples/arquero.html" class="">Arquero</a>
+</li>
+          <li class="sidebar-item">
+  <a href="../../../docs/interactive/js/examples/population.html" class="">Population</a>
 </li>
         </ul>
       </div>
@@ -396,7 +402,7 @@
 <section id="example" class="level2">
 <h2 class="anchored" data-anchor-id="example">Example</h2>
 <p>We’ll start with a simple example based on Allison Horst’s <a href="https://allisonhorst.github.io/palmerpenguins/">Palmer Penguins</a> dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):</p>
-<div class="cell" data-output="auto">
+<div class="cell">
 <div class="cell-output-display">
 <div id="ojs-cell-1">
 
@@ -471,7 +477,7 @@
 <span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
 <span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that as with our inputs, we refer to the <code>filtered</code> variable with no special syntax—the plotting code will be automatically re-run whenever <code>filtered</code> changes (which in turn is updated whenever an input changes).</p>
-<p>That’s a basic end-to-end example of a simple interactive plot. Below we cover a few more basics then provide links to additional articles that go into more depth.</p>
+<p>That covers a basic end-to-end use of OJS (see the <a href="../../../docs/interactive/js/examples/penguins.html">Penguins</a> examples for the full source code). Below we cover a few more basics then provide links to additional articles that go into more depth.</p>
 </section>
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
@@ -518,24 +524,51 @@
 </section>
 <section id="ojs-cells" class="level2">
 <h2 class="anchored" data-anchor-id="ojs-cells">OJS Cells</h2>
-<p>There are many options available to customize the appearance of <code>{ojs}</code> code cells and their output, including:</p>
-<ul>
-<li><p>Showing, hiding, and collapsing code</p></li>
-<li><p>Visibility and layout of outputs</p></li>
-</ul>
+<p>There are many options available to customize the behavior of <code>{ojs}</code> code cells, including showing, hiding, and collapsing code as well as controlling the visibility and layout of outputs.</p>
+<p>The most important cell option to be aware of is the <code>echo</code> option, which controls whether source code is displayed. You’ll have different preferences depending on whether you are embedding visualizations in an article or creating a notebook or full-on tutorial.</p>
+<p>Code in <code>{ojs}</code> cells is displayed by default. To prevent display of code for an entire document, set the <code>echo: false</code> option in YAML metadata:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">echo</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also specify this option on a per-cell basis. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">//| echo: false</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> <span class="fu">FileAttachment</span><span class="op">(</span><span class="st">"palmer-penguins.csv"</span><span class="op">).</span><span class="fu">csv</span><span class="op">()</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To learn about all of the options available, see the article on <a href="../../../docs/interactive/js/ojs-cells.html">OJS Cells</a>.</p>
 </section>
 <section id="learning-more" class="level2">
 <h2 class="anchored" data-anchor-id="learning-more">Learning More</h2>
+<p>These articles go into more depth on using OJS in Quarto documents:</p>
+<ul>
+<li><p><a href="../../../docs/interactive/js/libraries.html">Libraries</a> covers using standard libraries and external JavaScript libraries.</p></li>
+<li><p><a href="data-source.qmd">Data Sources</a> outlines the various ways to read and pre-process data.</p></li>
+<li><p><a href="../../../docs/interactive/js/ojs-cells.html">OJS Cells</a> describes the options available for customizing cell output and layout.</p></li>
+<li><p><a href="../../../docs/interactive/js/code-reuse.html">Code Reuse</a> delves into ways to re-use OJS code across multiple documents.</p></li>
+</ul>
+<p>If you want to learn more about the underlying mechanics of reactivity, check out these notebooks from <a href="https://observablehq.com/@mbostock">Mike Bostock</a>:</p>
+<ul>
+<li><p><a href="https://observablehq.com/@observablehq/five-minute-introduction">Five Minute Introduction</a></p></li>
+<li><p><a href="https://observablehq.com/@observablehq/observables-not-javascript">Observable’s not JavaScript</a></p></li>
+<li><p><a href="https://observablehq.com/@observablehq/introduction-to-views">Introduction to Views</a></p></li>
+<li><p><a href="https://observablehq.com/@observablehq/how-observable-runs">How Observable Runs</a></p></li>
+</ul>
 
 <!-- -->
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
   <div class="nav-page nav-page-previous">
-      <a href="../../../docs/interactive/index.html">Overview</a>          
+      <a href="../../../docs/interactive/index.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Overview</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../../docs/interactive/js/">Introduction</a>
+      <a href="../../../docs/interactive/js/">
+        <span class="nav-page-text">Introduction</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </div>
 </div> <!-- /main column -->

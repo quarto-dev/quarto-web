@@ -2,7 +2,6 @@
 title: "JavaScript"
 execute:
   echo: false
-  output: auto
 ---
 
 ## Overview
@@ -25,7 +24,6 @@ filtered = transpose(data).filter(function(penguin) {
 ```
 
 ```{ojs}
-//| output: true
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
@@ -122,7 +120,7 @@ Plot.rectY(filtered,
 
 Note that as with our inputs, we refer to the `filtered` variable with no special syntax---the plotting code will be automatically re-run whenever `filtered` changes (which in turn is updated whenever an input changes).
 
-That's a basic end-to-end example of a simple interactive plot. Below we cover a few more basics then provide links to additional articles that go into more depth.
+That covers a basic end-to-end use of OJS (see the [Penguins](examples/penguins.qmd) examples for the full source code). Below we cover a few more basics then provide links to additional articles that go into more depth.
 
 ## Libraries
 
@@ -189,10 +187,49 @@ See the article on [Data Sources](data-sources.qmd) to learn more about the vari
 
 ## OJS Cells
 
-There are many options available to customize the appearance of `{ojs}` code cells and their output, including:
+There are many options available to customize the behavior of `{ojs}` code cells, including showing, hiding, and collapsing code as well as controlling the visibility and layout of outputs.
 
--   Showing, hiding, and collapsing code
+The most important cell option to be aware of is the `echo` option, which controls whether source code is displayed. You'll have different preferences depending on whether you are embedding visualizations in an article or creating a notebook or full-on tutorial.
 
--   Visibility and layout of outputs
+Code in `{ojs}` cells is displayed by default. To prevent display of code for an entire document, set the `echo: false` option in YAML metadata:
+
+``` yaml
+---
+title: "My Document"
+execute:
+  echo: false
+---
+```
+
+You can also specify this option on a per-cell basis. For example:
+
+```` java
+```{{ojs}}
+//| echo: false
+data = FileAttachment("palmer-penguins.csv").csv()
+```
+````
+
+To learn about all of the options available, see the article on [OJS Cells](ojs-cells.qmd).
 
 ## Learning More
+
+These articles go into more depth on using OJS in Quarto documents:
+
+-   [Libraries](libraries.qmd) covers using standard libraries and external JavaScript libraries.
+
+-   [Data Sources](data-source.qmd) outlines the various ways to read and pre-process data.
+
+-   [OJS Cells](ojs-cells.qmd) describes the options available for customizing cell output and layout.
+
+-   [Code Reuse](code-reuse.qmd) delves into ways to re-use OJS code across multiple documents.
+
+If you want to learn more about the underlying mechanics of reactivity, check out these notebooks from [Mike Bostock](https://observablehq.com/@mbostock):
+
+-   [Five Minute Introduction](https://observablehq.com/@observablehq/five-minute-introduction)
+
+-   [Observable's not JavaScript](https://observablehq.com/@observablehq/observables-not-javascript)
+
+-   [Introduction to Views](https://observablehq.com/@observablehq/introduction-to-views)
+
+-   [How Observable Runs](https://observablehq.com/@observablehq/how-observable-runs)
