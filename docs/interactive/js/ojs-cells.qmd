@@ -1,3 +1,98 @@
 ---
 title: "OJS Cells"
 ---
+
+OJS code cells `{ojs}` have many options available to control their display and layout. This articles explores these options in depth.
+
+## Cell Output
+
+By default, OJS cells show their full source code and output within rendered documents. Depending on the type of document you are creating you might want to change this behavior either globally or for individual cells.
+
+### Code Visibility
+
+The `echo` option controls whether cells display their source code. To prevent display of code for an entire document, set the `echo: false` option in YAML metadata:
+
+``` yaml
+---
+title: "My Document"
+execute:
+  echo: false
+---
+```
+
+You can also specify this option on a per-cell basis. For example:
+
+```` java
+```{{ojs}}
+//| echo: false
+data = FileAttachment("palmer-penguins.csv").csv()
+```
+````
+
+### Output Visibility
+
+Above we said that OJS cell output is shown by default. This isn't *exactly* true though. There are two types of output you might see from an OJS cell:
+
+-   Display of inputs, plots, tables, and other content.
+
+-   Display of [Observable inspectors](https://github.com/observablehq/inspector) for variables, datasets, libraries and other intermediate objects.
+
+Inspectors are great when developing a notebook, but they aren't often what you want readers of a long-form article to see. Consequently, Quarto hides inspector output by default (you can cause inspector output to be visible by setting the `output: all` option).
+
+Here's an example to make things more concrete. We'll evaluate the `data` that we read in above and show what this looks like with various `output` settings. By default, you won't see any output at all:
+
+```` java
+```{{ojs}}
+data = FileAttachment("palmer-penguins.csv").csv()
+```
+````
+
+```{ojs}
+//| echo: false
+data = FileAttachment("palmer-penguins.csv").csv()
+```
+
+However, if we set the `output: all` option we get a dataset inspector:
+
+```` java
+```{{ojs}}
+//| output: all
+data = FileAttachment("palmer-penguins.csv").csv()
+```
+````
+
+```{ojs}
+//| echo: false
+//| output: all
+data
+```
+
+If you click the inspector you'll see it expand to reveal a subset of the data as JSON. Readers of an article might however prefer to see a scrolling HTML table version of the data, which you can get via the [Inputs.table](https://github.com/observablehq/inputs#Table) function:
+
+```` java
+```{{ojs}}
+data = FileAttachment("palmer-penguins.csv").csv()
+Inputs.table(data)
+```
+````
+
+```{ojs}
+//| echo: false
+Inputs.table(data)
+```
+
+Note that this output is displayed without any special use of `output: all` (because Quarto knows that the output isn't merely an inspector).
+
+### Code Display
+
+We talked about showing and hiding source code above, but what about controlling exactly how it's displayed?
+
+There are options available for customizing the appearance of code blocks (highlighting, background, border, etc.) as well as how horizontal overflow is handled. See the article on [HTML Code Blocks](../../output-formats/html-code.qmd) for all of the details.
+
+One option we wanted to specifically highlight here is code folding, which enables you to collapse code but still provide an option for users to view it. This is especially handy for custom JavaScript visualizations as they often span dozens of lines of code.
+
+For example, we use code folding for
+
+## Cell Layout
+
+## Cell Figures
