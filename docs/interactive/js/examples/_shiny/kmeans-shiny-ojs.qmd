@@ -1,0 +1,113 @@
+---
+title: "OJS and Shiny Reactives"
+format: 
+  html:
+    page-layout: custom
+server: shiny
+---
+
+[K-Means Clustering](https://shiny.rstudio.com/gallery/kmeans-example.html) example from the Shiny Gallery implemented with an OJS client and Shiny Server.
+
+```{ojs}
+//| panel: sidebar
+vars = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
+viewof xcol = Inputs.select(vars, {label: "X Variable"})
+viewof ycol = Inputs.select(vars, {label: "Y Variable", value: vars[1]})
+viewof count = Inputs.range([1, 9], {label: "Cluster Count", step: 1, value: 3})
+```
+
+```{ojs}
+//| panel: fill
+Plot.plot({
+  color: {
+    type: "ordinal",
+    scheme: "category10"
+  },
+  marks: [
+    Plot.dot(transpose(selectedData), {
+      x: xcol,
+      y: ycol,
+      fill: (d, i) => clusters.cluster[i],
+    }),
+    Plot.dot(clusters.centers, { 
+      x: d => d[0],
+      y: d => d[1],
+      r: 10,
+      stroke: "black",
+      fill: (d, i) => i + 1
+    }),
+  ]
+})
+```
+
+
+```{r}
+#| context: server
+selectedData <- reactive({
+  iris[, c(input$xcol, input$ycol)]
+})
+
+clusters <- reactive({
+  kmeans(selectedData(), input$count)
+})
+
+ojs_define(selectedData, clusters)
+```
+
+::: {.panel-tabset}
+
+### OJS Client
+
+````java
+```{{ojs}}
+//| panel: sidebar
+vars = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
+viewof xcol = Inputs.select(vars, {label: "X Variable"})
+viewof ycol = Inputs.select(vars, {label: "Y Variable", value: vars[1]})
+viewof count = Inputs.range([1, 9], {label: "Cluster Count", step: 1, value: 3})
+```
+
+```{{ojs}}
+//| panel: fill
+Plot.plot({
+  color: {
+    type: "ordinal",
+    scheme: "category10"
+  },
+  marks: [
+    Plot.dot(transpose(selectedData), {
+      x: xcol,
+      y: ycol,
+      fill: (d, i) => clusters.cluster[i],
+    }),
+    Plot.dot(clusters.centers, { 
+      x: d => d[0],
+      y: d => d[1],
+      r: 10,
+      stroke: "black",
+      fill: (d, i) => i + 1
+    }),
+  ]
+})
+```
+````
+
+### Shiny Server
+
+````java
+```{{r}}
+#| context: server
+
+selectedData <- reactive({
+  iris[, c(input$xcol, input$ycol)]
+})
+
+clusters <- reactive({
+  kmeans(selectedData(), input$count)
+})
+
+ojs_define(selectedData, clusters)
+```
+````
+
+:::
