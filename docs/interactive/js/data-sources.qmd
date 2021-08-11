@@ -1,32 +1,28 @@
 ---
 title: "Data Sources"
-format: 
-  html:
-    output: auto
+format: html
 ---
 
--   FileAttachment
+## Overview
 
--   ojs_define
+There are a wide variety of way to make data available to OJS:
 
--   Generators
+-   Read CSV, JSON, SQLite, and more using the [FileAttachments](https://github.com/observablehq/stdlib#file-attachments) API.
 
-TBF: Turn these into interactive documents.
+-   Use the `ojs_define()` function to make data processed in Python or R available to `{ojs}` cells.
 
-https://github.com/observablehq/examples/tree/main/custom-live-data
+-   Make calls to Web APIs for online services and data stores.
 
-One of Quarto's core capabilities is its ability to embed output from Python, R, etc. When the output produced by a Python or R computation is required in interactive documents, there are two possible simple approaches.
+We'll explore all of these techniques below, and also touch briefly on creating a live connection between OJS reactives and Shiny reactives.
 
-## File attachments
+## File Attachments
 
-The first approach uses the notion of "file attachments" from Observable's runtime system. If you include a file as a resource from a Quarto project (FIXME: where in the docs do we describe resources?), then you can directly use that file in Javascript.
-
-Let's take a NOAA's Monthly CO2 concentration data from Mauna Loa, obtained from their website (and mildly processed to remove comments):
+Use the [FileAttachment](https://github.com/observablehq/stdlib#file-attachments) function from the standard library to read data from a file. For example, here we read and plot a CSV of NOAA's Monthly [CO2 concentration data](https://gml.noaa.gov/ccgg/trends/data.html) from Mauna Loa:
 
 ```{ojs}
 data = {
-  const v = await FileAttachment("co2_mm_mlo_clean.csv").csv();
-  return v.map(d => { 
+  const co2data = await FileAttachment("co2_mm.csv").csv();
+  return co2data.map(d => { 
     d["decimal date"] = Number(d["decimal date"]);
     d.average = Number(d.average); 
     return d; 
@@ -34,23 +30,114 @@ data = {
 }
 Plot.plot({
   marks: [
-    Plot.line(data, {x: "decimal date", y: "average"}, { stroke: "black" })
-  ]})
+    Plot.line(data, 
+      { x: "decimal date", y: "average"}, 
+      { stroke: "black" }
+    )
+  ]
+})
 ```
 
-## `ojs_define`
+This example used the `csv()` method of `FileAttachment`. A similar method is available for each supported format:
 
-Sometimes, you might want to do some preprocessing of the data in R or Python before visualizing it in your interactive document. Although it's often possible to use the file system and file attachments to communicate such values, the most direct way to do this is using the `ojs_define` command, which is available in both R and Python:
+| Method                                                             | Description               |
+|--------------------------------------------------------------------|---------------------------|
+| [csv](https://github.com/observablehq/stdlib#attachment_csv)       | Comma separated values    |
+| [tsv](https://github.com/observablehq/stdlib#attachment_tsv)       | Tab separated values      |
+| [json](https://github.com/observablehq/stdlib#attachment_json)     | JSON (JavaScript objects) |
+| [sqlite](https://github.com/observablehq/stdlib#attachment_sqlite) | SQLite database client    |
+
+There are also methods to get the raw data as a [blob](https://github.com/observablehq/stdlib#attachment_blob), [text](https://github.com/observablehq/stdlib#attachment_text), [image](https://github.com/observablehq/stdlib#attachment_image), or [stream](https://github.com/observablehq/stdlib#attachment_stream).
+
+## Python and R
+
+The data you want to use with OJS might not always be available in raw form. Often you'll need to read and preprocess the raw data using Python or R. You can perform this preprocessing during document render (in an `{r}` or `{python}` code cell) and then make it available to `{ojs}` cells via the `ojs_define()` function.
+
+Here's an example. We'll read the same data into R, do some grouping and summarization, then make it available to OJS using `ojs_define`:
 
 ```{r}
-library(tidyverse)
-df = read.csv("co2_mm_mlo_clean.csv", row.names=NULL)
-ojs_define(co2 = df %>% group_by(year) %>% summarize(max = max(average)))
+#| output: false
+#| warning: false
+library(readr)
+library(dplyr)
+
+co2 = read_csv("co2_mm.csv")  %>% 
+  group_by(year) %>% 
+  summarize(max = max(average))
+
+ojs_define(co2data = co2)
 ```
+
+Note that we could have done the same thing using Python (the `ojs_define` function is available in any document that uses R or Python).
+
+Now we plot the data using [Observable Plot](https://github.com/observablehq/plot):
 
 ```{ojs}
 Plot.plot({
   marks: [
-    Plot.line(transpose(co2), {x: "year", y: "max"}, { stroke: "black" })
-  ]})
+    Plot.line(transpose(co2data), 
+      {x: "year", y: "max"}, 
+      { stroke: "black" }
+    )
+  ]}
+)
 ```
+
+See the [NOAA C02](examples/noaa-co2.qmd) example for the full source code.
+
+### Transpose
+
+You'll note one additional twist in the OJS code above: we call the `transpose` function on our `co2data` before plotting it. The `transpose` function is built in to Quarto's OJS engine, and will convert column-oriented datasets (like the ones used in Python and R) into the row-oriented datasets used by many JavaScript plotting libraries (including [Plot](https://github.com/observablehq/plot)).
+
+For example, the following JSON data emitted from R or Python:
+
+``` json
+{
+  "year": [1958, 1959, 1960],
+  "max":  [317.51, 318.29, 320.04]
+}
+```
+
+Is converted to the following via the call to `transpose`:
+
+``` json
+[
+  { "year": 1959, "max": 317.51 },
+  { "year": 1960, "max": 318.29 },
+  { "year": 1960, "max": 320.04 }
+]
+```
+
+Check the documentation for whatever plotting library you are using from OJS to see whether a call to `transpose` is required.
+
+## Web APIs
+
+You can use the [`d3.json()`](https://github.com/d3/d3-fetch/blob/v3.0.1/README.md#json) function to read JSON data from web services and data sources. Here we query the GitHub API for data on contributions to the Python pandas package:
+
+```{ojs}
+d3 = require('d3')
+
+contributors = await d3.json(
+  "https://api.github.com/repos/pandas-dev/pandas/stats/contributors"
+)
+
+commits = contributors.map(contributor => {
+  const author = contributor.author;
+  return {
+    name: author.login,
+    title: author.login,
+    group: author.type,
+    value: contributor.total
+  }
+})
+```
+
+View the data sorted by number of commits:
+
+```{ojs}
+Inputs.table(commits, { sort: "value", reverse: true })
+```
+
+See the [GitHub API](examples/github.qmd) example for the full source code.
+
+## Shiny Reactives
