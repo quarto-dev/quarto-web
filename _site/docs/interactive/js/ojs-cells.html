@@ -466,11 +466,160 @@
 <p>We talked about showing and hiding source code above, but what about controlling exactly how it’s displayed?</p>
 <p>There are options available for customizing the appearance of code blocks (highlighting, background, border, etc.) as well as how horizontal overflow is handled. See the article on <a href="../../../docs/output-formats/html-code.html">HTML Code Blocks</a> for all of the details.</p>
 <p>One option we wanted to specifically highlight here is code folding, which enables you to collapse code but still provide an option for users to view it. This is especially handy for custom JavaScript visualizations as they often span dozens of lines of code.</p>
-<p>For example, we use code folding for</p>
+<p>Add the <code>code-fold: true</code> option to a code cell to enable code folding (you can also enable this globally). For example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">//| code-fold: true</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here’s a demonstration (click the “Code” button to show the code):</p>
+<div class="cell">
+<p></p><details>
+<summary>Code</summary><p></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pdata <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"palmer-penguins.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">facet</span><span class="op">:</span> {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">data</span><span class="op">:</span> pdata<span class="op">,</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> <span class="st">"sex"</span><span class="op">,</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">80</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">frame</span>()<span class="op">,</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">rectY</span>(pdata<span class="op">,</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">binX</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        {<span class="dt">x</span><span class="op">:</span> <span class="st">"body_mass"</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"species"</span>}</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    )<span class="op">,</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">tickX</span>(pdata<span class="op">,</span> </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">groupZ</span>(</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        {<span class="dt">x</span><span class="op">:</span> <span class="st">"median"</span>}<span class="op">,</span> </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        {<span class="dt">x</span><span class="op">:</span> <span class="st">"body_mass"</span><span class="op">,</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>         <span class="dt">z</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">sex</span> <span class="op">+</span> d<span class="op">.</span><span class="at">species</span><span class="op">,</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>         <span class="dt">stroke</span><span class="op">:</span> <span class="st">"#333"</span><span class="op">,</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>         <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">2</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-4-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-4-2">
+
+</div>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="cell-layout" class="level2">
 <h2 class="anchored" data-anchor-id="cell-layout">Cell Layout</h2>
+<p>There are additional <code>panel</code> and <code>layout</code> options which you can add to OJS cells to customize how their output is presented. Here’s a version of some of the previous examples we’ve used presented with a sidebar and tabset:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-5">
+
+</div>
+</div>
+</div>
+<div class="row layout-sidebar ms-md-0">
+<div class="cell panel-sidebar card bg-light p-2 col col-12 col-lg-3">
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-6-1">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-6-2">
+
+</div>
+</div>
+</div>
+</div>
+<div class="panel-tabset col col-12 col-lg-9 pt-3 pt-lg-0 ps-0 ps-lg-3">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Data</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labeledby="tabset-1-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-7">
+
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labeledby="tabset-1-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-8">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>We created this layout by first adding the <code>panel: sidebar</code> option to the cell with our inputs:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">//| panel: sidebar</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>viewof bill_length_min <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span><span class="op">(</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">[</span><span class="dv">32</span><span class="op">,</span> <span class="dv">50</span><span class="op">],</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span>value<span class="op">:</span> <span class="dv">35</span><span class="op">,</span> step<span class="op">:</span> <span class="dv">1</span><span class="op">,</span> label<span class="op">:</span> <span class="st">"Bill length (min):"</span><span class="op">}</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>viewof islands <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span><span class="op">(</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">[</span><span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span><span class="op">,</span> <span class="st">"Dream"</span><span class="op">],</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">{</span> value<span class="op">:</span> <span class="op">[</span><span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span><span class="op">],</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    label<span class="op">:</span> <span class="st">"Islands:"</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We then added a tabset (div of class <code>.panel-tabset</code>) with <strong>Plot</strong> and <strong>Data</strong> tabs (headings within the div):</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">:::</span> <span class="op">{.</span><span class="fu">panel</span><span class="op">-</span>tabset<span class="op">}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>## Plot</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">rectY</span><span class="op">(</span>filtered<span class="op">,</span> </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  Plot<span class="op">.</span><span class="fu">binX</span><span class="op">(</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>y<span class="op">:</span> <span class="st">"count"</span><span class="op">},</span> </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span>x<span class="op">:</span> <span class="st">"body_mass"</span><span class="op">,</span> fill<span class="op">:</span> <span class="st">"species"</span><span class="op">,</span> thresholds<span class="op">:</span> <span class="dv">20</span><span class="op">}</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">))</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">plot</span><span class="op">({</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    facet<span class="op">:</span> <span class="op">{</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      data<span class="op">:</span> filtered<span class="op">,</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      x<span class="op">:</span> <span class="st">"sex"</span><span class="op">,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      y<span class="op">:</span> <span class="st">"species"</span><span class="op">,</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>      marginRight<span class="op">:</span> <span class="dv">80</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">},</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    marks<span class="op">:</span> <span class="op">[</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">frame</span><span class="op">(),</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">]</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>## <span class="bu">Data</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span><span class="op">(</span>filtered<span class="op">)</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="op">:::</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="cell-figures" class="level2">
 <h2 class="anchored" data-anchor-id="cell-figures">Cell Figures</h2>
@@ -506,7 +655,7 @@ if (!kPlatformMac) {
 
 </script>
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = FileAttachment(\"palmer-penguins.csv\").csv()"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"data"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Inputs.table(data)"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = FileAttachment(\"palmer-penguins.csv\").csv()"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"data"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Inputs.table(data)"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"pdata = FileAttachment(\"palmer-penguins.csv\").csv({typed: true})\n\nPlot.plot({\n  facet: {\n    data: pdata,\n    x: \"sex\",\n    y: \"species\",\n    marginRight: 80\n  },\n  marks: [\n    Plot.frame(),\n    Plot.rectY(pdata, \n      Plot.binX(\n        {y: \"count\"}, \n        {x: \"body_mass\", thresholds: 20, fill: \"species\"}\n      )\n    ),\n    Plot.tickX(pdata, \n      Plot.groupZ(\n        {x: \"median\"}, \n        {x: \"body_mass\",\n         z: d => d.sex + d.species,\n         stroke: \"#333\",\n         strokeWidth: 2\n        }\n      )\n    )\n  ]\n})"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"filtered = pdata.filter(function(penguin) {\n  return bill_length_min < penguin.bill_length &&\n         islands.includes(penguin.island);\n})"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"viewof bill_length_min = Inputs.range(\n  [32, 50], \n  {value: 35, step: 1, label: \"Bill length (min):\"}\n)\nviewof islands = Inputs.checkbox(\n  [\"Torgersen\", \"Biscoe\", \"Dream\"], \n  { value: [\"Torgersen\", \"Biscoe\"], \n    label: \"Islands:\"\n  }\n)"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"Plot.rectY(filtered, \n  Plot.binX(\n    {y: \"count\"}, \n    {x: \"body_mass\", fill: \"species\", thresholds: 20}\n  ))\n  .plot({\n    facet: {\n      data: filtered,\n      x: \"sex\",\n      y: \"species\",\n      marginRight: 80\n    },\n    marks: [\n      Plot.frame(),\n    ]\n  }\n)"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"Inputs.table(filtered)"},{"methodName":"interpretQuiet","source":"shinyInput('bill_length_min')"},{"methodName":"interpretQuiet","source":"shinyInput('islands')"}]}
 </script>
 <script type="module">
 window._ojs.paths.runtimeToDoc = "../../docs/interactive/js";

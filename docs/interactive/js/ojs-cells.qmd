@@ -91,8 +91,164 @@ There are options available for customizing the appearance of code blocks (highl
 
 One option we wanted to specifically highlight here is code folding, which enables you to collapse code but still provide an option for users to view it. This is especially handy for custom JavaScript visualizations as they often span dozens of lines of code.
 
-For example, we use code folding for
+Add the `code-fold: true` option to a code cell to enable code folding (you can also enable this globally). For example:
+
+```` java
+```{{ojs}}
+//| code-fold: true
+
+```
+````
+
+Here's a demonstration (click the "Code" button to show the code):
+
+```{ojs}
+//| code-fold: true
+pdata = FileAttachment("palmer-penguins.csv").csv({typed: true})
+
+Plot.plot({
+  facet: {
+    data: pdata,
+    x: "sex",
+    y: "species",
+    marginRight: 80
+  },
+  marks: [
+    Plot.frame(),
+    Plot.rectY(pdata, 
+      Plot.binX(
+        {y: "count"}, 
+        {x: "body_mass", thresholds: 20, fill: "species"}
+      )
+    ),
+    Plot.tickX(pdata, 
+      Plot.groupZ(
+        {x: "median"}, 
+        {x: "body_mass",
+         z: d => d.sex + d.species,
+         stroke: "#333",
+         strokeWidth: 2
+        }
+      )
+    )
+  ]
+})
+```
 
 ## Cell Layout
+
+There are additional `panel` and `layout` options which you can add to OJS cells to customize how their output is presented. Here's a version of some of the previous examples we've used presented with a sidebar and tabset:
+
+```{ojs}
+//| echo: false
+filtered = pdata.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+
+```{ojs}
+//| echo: false
+//| output: true
+//| panel: sidebar
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+
+::: panel-tabset
+## Plot
+
+```{ojs}
+//| echo: false
+//| output: true
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+
+## Data
+
+```{ojs}
+//| echo: false
+Inputs.table(filtered)
+```
+:::
+
+We created this layout by first adding the `panel: sidebar` option to the cell with our inputs:
+
+```` java
+```{{ojs}}
+//| panel: sidebar
+
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+````
+
+We then added a tabset (div of class `.panel-tabset`) with **Plot** and **Data** tabs (headings within the div define the tabs):
+
+```` java
+::: {.panel-tabset}
+
+## Plot
+
+```{{ojs}}
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+
+## Data
+
+```{{ojs}}
+Inputs.table(filtered)
+```
+
+:::
+````
 
 ## Cell Figures

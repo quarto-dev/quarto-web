@@ -25,7 +25,7 @@ The inputs are grouped in a panel and laid out in three columns using the follow
 
 Here's the source code for the input panel:
 
-```` python
+```` java
 ::: {.panel-input layout-ncol=3}
 
 ```{{ojs}}
@@ -72,7 +72,7 @@ If you want to allow users to toggle between multiple visualizations, use a tabs
 
 For example, the following JavaScript code:
 
-```` python
+```` java
 ::: {.panel-tabset}
 
 ## Plot
@@ -160,18 +160,16 @@ The `panel: fill` option is added to the plot output chunk. You can alternately 
 
 Adding the `panel` option to a code chunk is shorthand for adding the CSS class to it's containing div (i.e. it's equivalent to surrounding the code chunk with a div with class e.g. `panel-fill`).
 
-#### Sidebar Div
-
-In JavaScript interactive documents each input must be in it's own `{ojs}` cell, so you'll need to use the `.panel-sidebar` class on a div enclosing the inputs. For example, to create this layout:
+Here's an example of using a sidebar with OJS inputs:
 
 ![](images/application-sidebar-panel.png)
 
-You would use the following code:
+To do this you would use the following code:
 
-```` python
-::: {.panel-sidebar}
-
+```` java
 ```{{ojs}}
+//| panel: sidebar
+
 viewof myage = {
   const myage = select({
     title: "Quelle classe d'âge voulez-vous cartographier ?",
@@ -180,9 +178,7 @@ viewof myage = {
   });
   return myage;
 }
-```
 
-```{{ojs}}
 viewof pctvax = slider({
   title: '<br/>Objectif de vaccination',
   description: '200% signifie 2 doses par personnes pour tout le monde',
@@ -192,26 +188,19 @@ viewof pctvax = slider({
   step: 10,
   format: v => v + "%"
 })
-```
 
-```{{ojs}}
 viewof overlay = radio({
   title: "Écarter les cercles",
   options: [{ label: 'Oui', value: 'Y' }, { label: 'Non', value: 'N' }],
   value: 'N'
 })
-```
 
-```{{ojs}}
 viewof label = radio({
   title: "Numéros des départements",
   options: [{ label: 'Afficher', value: 'Y' }, { label: 'Masquer', value: 'N' }],
   value: 'N'
 })
 ```
-
-:::
-
 
 ```{{ojs}}
 //| panel: fill
