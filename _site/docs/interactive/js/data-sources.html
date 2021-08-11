@@ -578,6 +578,62 @@
 </section>
 <section id="shiny-reactives" class="level2">
 <h2 class="anchored" data-anchor-id="shiny-reactives">Shiny Reactives</h2>
+<p>Earlier we described how to use the <code>ojs_define()</code> function to make data from Python and R available in OJS cells. In this scenario, data pre-processing is done once during render time then all subsequent interactions are handled on the client.</p>
+<p>But what if you want to do data transformation dynamically in response to user inputs? This is also possible with <code>ojs_define()</code>, as it can be passed not just static values but also Shiny reactives (assuming it’s running inside a Shiny <a href="../../../docs/interactive/shiny/ojs.html">interactive document</a>).</p>
+<p>Here is the <a href="https://shiny.rstudio.com/gallery/kmeans-example.html">K-Means Clustering</a> example from the Shiny Gallery implemented with an OJS client and Shiny Server:</p>
+<p><a href="https://jjallaire.shinyapps.io/kmeans-shiny-ojs/"><img src="images/kmeans-shiny-ojs.png" class="img-fluid border"></a></p>
+<p>You can see the document deployed at <a href="https://jjallaire.shinyapps.io/kmeans-shiny-ojs/" class="uri">https://jjallaire.shinyapps.io/kmeans-shiny-ojs/</a>.</p>
+<p>Let’s take a look at the source code. On the client we have familiar looking OJS inputs and a plot laid out using <code>panel: sidebar</code> and <code>panel: fill</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">//| panel: sidebar</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>vars <span class="op">=</span> <span class="op">[</span><span class="st">"Sepal.Length"</span><span class="op">,</span> <span class="st">"Sepal.Width"</span><span class="op">,</span> <span class="st">"Petal.Length"</span><span class="op">,</span> <span class="st">"Petal.Width"</span><span class="op">]</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>viewof xcol <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span><span class="op">(</span>vars<span class="op">,</span> <span class="op">{</span>label<span class="op">:</span> <span class="st">"X Variable"</span><span class="op">})</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>viewof ycol <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span><span class="op">(</span>vars<span class="op">,</span> <span class="op">{</span>label<span class="op">:</span> <span class="st">"Y Variable"</span><span class="op">,</span> value<span class="op">:</span> vars<span class="op">[</span><span class="dv">1</span><span class="op">]})</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>viewof count <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span><span class="op">([</span><span class="dv">1</span><span class="op">,</span> <span class="dv">9</span><span class="op">],</span> <span class="op">{</span>label<span class="op">:</span> <span class="st">"Cluster Count"</span><span class="op">,</span> step<span class="op">:</span> <span class="dv">1</span><span class="op">,</span> value<span class="op">:</span> <span class="dv">3</span><span class="op">})</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>```</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">//| panel: fill</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span><span class="op">({</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  color<span class="op">:</span> <span class="op">{</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    type<span class="op">:</span> <span class="st">"ordinal"</span><span class="op">,</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    scheme<span class="op">:</span> <span class="st">"category10"</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">},</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  marks<span class="op">:</span> <span class="op">[</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span><span class="op">(</span><span class="fu">transpose</span><span class="op">(</span>selectedData<span class="op">),</span> <span class="op">{</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>      x<span class="op">:</span> xcol<span class="op">,</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>      y<span class="op">:</span> ycol<span class="op">,</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> <span class="op">(</span>d<span class="op">,</span> i<span class="op">)</span> <span class="op">=&gt;</span> clusters<span class="op">.</span><span class="fu">cluster</span><span class="op">[</span>i<span class="op">],</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}),</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span><span class="op">(</span>clusters<span class="op">.</span><span class="fu">centers</span><span class="op">,</span> <span class="op">{</span> </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>      x<span class="op">:</span> d <span class="op">=&gt;</span> d<span class="op">[</span><span class="dv">0</span><span class="op">],</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>      y<span class="op">:</span> d <span class="op">=&gt;</span> d<span class="op">[</span><span class="dv">1</span><span class="op">],</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>      r<span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>      stroke<span class="op">:</span> <span class="st">"black"</span><span class="op">,</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>      fill<span class="op">:</span> <span class="op">(</span>d<span class="op">,</span> i<span class="op">)</span> <span class="op">=&gt;</span> i <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}),</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="op">]</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the plotting code references the variables <code>selectedData</code> and <code>clusters</code>. These will be provided by reactive expressions within the Shiny server code. Note also that we use the <code>transpose()</code> function to reshape the data into the row-oriented format that plot expects.</p>
+<p>Here is the server code:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>r<span class="op">}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>#<span class="op">|</span> context<span class="op">:</span> server</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>selectedData <span class="op">&lt;-</span> <span class="fu">reactive</span><span class="op">({</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  iris<span class="op">[,</span> <span class="fu">c</span><span class="op">(</span>input$xcol<span class="op">,</span> input$ycol<span class="op">)]</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>clusters <span class="op">&lt;-</span> <span class="fu">reactive</span><span class="op">({</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kmeans</span><span class="op">(</span><span class="fu">selectedData</span><span class="op">(),</span> input$count<span class="op">)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span><span class="op">(</span>selectedData<span class="op">,</span> clusters<span class="op">)</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We designate this code as running on the server via the <code>context: server</code> option.</p>
+<p>Note that we reference several inputs that were defined by <code>viewof</code> expressions on the client (e.g.&nbsp;<code>input$xcol</code>). When these inputs change they will cause the appropriate server side reactives to re-execute.</p>
+<p>We create two reactive values (<code>selectedData</code> and <code>clusters</code>) and provide them to the client using <code>ojs_define()</code>. The plot will be automatically re-drawn on the client side when these values change.</p>
+<p>Learn more about using OJS and Shiny together in the article on <a href="../../../docs/interactive/shiny/ojs.html">JavaScript and Shiny</a>.</p>
 
 <!-- -->
 </section>

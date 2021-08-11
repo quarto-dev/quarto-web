@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-(Local Development)">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Fil">
+  <meta name="dcterms.date" content="2021-05-04">
+  <title>Quarto – Plot Exploration: Penguins</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../../../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../../../../site_libs/quarto-nav/headroom.min.js"></script>
+  <meta name="quarto:offset" content="../../../../../">
+  <script src="../../../../../site_libs/quarto-search/autocomplete.min.js"></script>
+  <script src="../../../../../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../../../../../site_libs/quarto-search/quarto-search.js"></script>
+  <script src="../../../../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../../../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/clipboard.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/anchor.min.js"></script>
+  <script src="../../../../../site_libs/quarto-html/quarto-html.js"></script>
+  <link href="../../../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
+  <script src="../../../../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../../../site_libs/bootstrap/bootstrap-dark.min.css">
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-FV9Z7SDZ0M"></script>
+
+  <script type="text/javascript">
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
+  </script>
+  <script type="module" src="../../../../../site_libs/quarto-ojs/ojs-bundle.js"></script>
+  <link href="../../../../../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../../styles.css">
+<meta name="og:title" content="Quarto - Plot Exploration: Penguins">
+<meta name="og:image" content="https://quarto.org/quarto.png">
+<meta name="og:site-name" content="Quarto">
+<meta name="og:image:height" content="152">
+<meta name="og:image:width" content="624">
+<meta name="twitter:title" content="Quarto - Plot Exploration: Penguins">
+<meta name="twitter:image" content="https://quarto.org/quarto.png">
+<meta name="twitter:image-height" content="152">
+<meta name="twitter:image-width" content="624">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<div id="quarto-search-results"></div>
+<header id="quarto-header" class="headroom fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light ">
+    <div class="container-fluid">
+  <a class="navbar-brand" href="../../../../../index.html">
+    <img src="../../../../../quarto.png" alt="">
+  </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../index.html">Get Started</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../docs/authoring/markdown-basics.html">Using</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../docs/output-formats/html-basics.html">Formats</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../docs/projects/quarto-projects.html">Projects</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../../../about.html">About</a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/quarto-dev/quarto-cli"><i class="bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+          <div>
+            <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;"><i class="bi"></i></a>
+          </div>
+          <form class="d-flex mb-0">
+  <input id="quarto-search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+      </div> <!-- /navcollapse -->
+  </div> <!-- /container-fluid -->
+</nav>
+</header>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#table" class="nav-link active" data-scroll-target="#table">Table</a></li>
+<li><a href="#plot" class="nav-link" data-scroll-target="#plot">Plot</a></li>
+<li><a href="#appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
+</ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/interactive/js/examples2/plot-exploration-penguins/plot-exploration-penguins.qmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
+  <div class="col mx-auto col-sm-12 col-md-9 col-lg-8 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
+<main>
+<header id="title-block-header">
+<h1 class="title display-7">Plot Exploration: Penguins</h1>
+<p class="author">Fil</p>
+<p class="date">2021-05-04</p>
+</header>
+
+<p>&lt;img src=“${await FileAttachment(”penguins.png”).url()}” width=620&gt;</p>
+<p>Welcome to this semi-guided tutorial for learning <a href="../../../../../@observablehq/plot">Observable Plot</a>. We have prepared a tidy dataset, along with a series of exercises that will guide you in coding your own data visualizations.</p>
+<p>After a brief presentation of the dataset, you will find a series of questions that can be answered with a chart. All the questions are open! Feel free to try your own approach, or to peek at the working examples that are given at the end of each question.</p>
+<p><em>To begin the exploration, please fork this notebook. This way your work will be saved.</em></p>
+<hr>
+<p>Good day! Here is a fine dataset of <a href="https://allisonhorst.github.io/palmerpenguins/">penguins</a>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"palmer-penguins.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-1">
+
+</div>
+</div>
+</div>
+<p>Data were collected and made available by <a href="https://www.uaf.edu/cfos/people/faculty/detail/kristen-gorman.php">Dr.&nbsp;Kristen Gorman</a> and the <a href="https://pal.lternet.edu/">Palmer Station, Antarctica LTER</a>, a member of the Long Term Ecological Research Network. They are available by CC-0 license in accordance with the <a href="http://pal.lternet.edu/data/policies">Palmer Station LTER Data Policy</a> and the <a href="https://lternet.edu/data-access-policy/">LTER Data Access Policy for Type I data</a>.</p>
+<p><em>If you want to know more about the actual penguins we’re talking about, don’t forget to check the explanations on <a href="https://allisonhorst.github.io/palmerpenguins/">Allison Horst’s repo</a>, with beautiful illustrations:</em> <img src="https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png" style="max-width:450px"></p>
+<section id="table" class="level2">
+<h2 class="anchored" data-anchor-id="table">Table</h2>
+<p>Using Observable’s <a href="../../../../../@observablehq/input-table">Table</a> component, we can have a look at the contents, structure, and dimensions of this dataset:</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-2">
+
+</div>
+</div>
+</div>
+<p>As we can see, the data is tabular, and one row corresponds to one observation: the data is tidy (<a href="https://observablehq.com/@observablehq/plot-and-tidy-data"><em>read more about tidy data</em></a>).</p>
+<p>We have access, for each penguin (or data point), to its <em><span><span id="ojs-element-id-1"></span>.</span></em></p>
+<p>The numerical values are given in millimeters (for the bill and flipper’s lengths) and grams (for the body mass). Thanks to the <tt>{typed: true}</tt> option in the <a href="#data"><tt>FileAttachment</tt></a> cell, they are JavaScript numbers. Categories (<em>species, island</em>, and <em>sex</em>) are represented as strings.</p>
+<p>We are ready to use Plot 🚀</p>
+</section>
+<section id="plot" class="level2">
+<h2 class="anchored" data-anchor-id="plot">Plot</h2>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Plot <span class="co">// Plot is available in Observable by default</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-3">
+
+</div>
+</div>
+</div>
+<p><em>Here’s a link to the Plot <a href="../../../../../collection/@observablehq/plot">documentation collection</a> and the <a href="https://github.com/observablehq/plot">GitHub repository</a>, for reference.</em></p>
+<p>Now, here’s a few questions about this dataset that we can try to answer with Plot:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-4">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// change the code to replace … by the field’s name, e.g. body_mass</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"..."</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span> <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.2</span>})<span class="op">.</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-5">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-6">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-7">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// change the code to replace … by the field’s name, e.g. body_mass</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">dot</span>(data<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"…"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"…"</span>})<span class="op">.</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-8">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-9">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-10">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-11">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-12">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-13">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-14">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-15">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-16">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-17">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-18">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-19">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-20">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-21">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-22">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-23">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-24">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-25">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-26">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-27">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-28">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-29">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-30">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-31">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// type your code here</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-32">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-33">
+
+</div>
+</div>
+</div>
+<table class="table">
+<colgroup>
+<col style="width: 5%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+</tr>
+<tr class="even">
+<td>:::{.cell}</td>
+</tr>
+<tr class="odd">
+<td>```{.js .cell-code} // type your question here</td>
+</tr>
+<tr class="even">
+<td>```</td>
+</tr>
+<tr class="odd">
+<td>:::{.cell-output-display}</td>
+</tr>
+<tr class="even">
+<td>:::{#ojs-cell-34}</td>
+</tr>
+<tr class="odd">
+<td>:::</td>
+</tr>
+<tr class="even">
+<td>:::</td>
+</tr>
+<tr class="odd">
+<td>:::</td>
+</tr>
+<tr class="even">
+<td>:::{.cell}</td>
+</tr>
+<tr class="odd">
+<td>```{.js .cell-code} // type your code here</td>
+</tr>
+<tr class="even">
+<td>```</td>
+</tr>
+<tr class="odd">
+<td>:::{.cell-output-display}</td>
+</tr>
+<tr class="even">
+<td>:::{#ojs-cell-35}</td>
+</tr>
+<tr class="odd">
+<td>:::</td>
+</tr>
+<tr class="even">
+<td>:::</td>
+</tr>
+<tr class="odd">
+<td>:::</td>
+</tr>
+<tr class="even">
+<td><em>Don’t hesitate to share your notebook, and feel free to comment on the original notebook so we can make this tutorial better for the next person. Thank you!</em></td>
+</tr>
+<tr class="odd">
+<td><em>Thanks to everyone who tried our first draft and sent suggestions, in particular: <a href="../../../../../@john-guerra">John</a>, <a href="../../../../../@mayagans">Maya</a>, <a href="../../../../../@esperanc">Claudio</a>, <a href="../../../../../@mootari">Fabian</a>.</em></td>
+</tr>
+<tr class="even">
+<td><a href="https://observablehq.com/collection/@observablehq/plot-explorations"> &lt;img src=“${await FileAttachment(”weather.png”).url()}” width=620&gt; </a> If you enjoyed this, try out our other <a href="https://observablehq.com/collection/@observablehq/plot-explorations">Exploration Tutorials!</a></td>
+</tr>
+<tr class="odd">
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="appendix" class="level1">
+<h1>Appendix</h1>
+<p>If you’d like to see all of the hints and solutions expanded as a sort of “answer sheet”, click this checkbox:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="ojs-cell-36">
+
+</div>
+</div>
+</div>
+<p>This notebook is part of the <a href="https://observablehq.com/collection/@observablehq/plot-explorations">Plot Explorations</a> collection. The code below is used to generate the interactive questions:</p>
+<p>Usage: ~~~js import {Q, A, styles} from “<span class="citation" data-cites="observablehq/plot-exploration-penguins">(<a href="#ref-observablehq/plot-exploration-penguins" role="doc-biblioref"><strong>observablehq/plot-exploration-penguins?</strong></a>)</span>”;</p>
+<p>// separate Q &amp; A viewof q = Q(question); // shows the question A(q); // shows the answer styles; ~~~</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">answer</span>({</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  title<span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  questions <span class="op">=</span> []<span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  guides <span class="op">=</span> []<span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  hints <span class="op">=</span> []<span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  solutions <span class="op">=</span> []<span class="op">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  open <span class="op">=</span> <span class="op">!!</span>showAll</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>}) {</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> div <span class="op">=</span> d3<span class="op">.</span><span class="fu">create</span>(<span class="st">"div"</span>)<span class="op">.</span><span class="fu">classed</span>(<span class="st">"answer"</span><span class="op">,</span> <span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (title) {</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    div<span class="op">.</span><span class="fu">append</span>(<span class="st">"hr"</span>)<span class="op">;</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    div<span class="op">.</span><span class="fu">append</span>(<span class="st">"h2"</span>)<span class="op">.</span><span class="fu">html</span>(title)<span class="op">;</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  div<span class="op">.</span><span class="fu">call</span>(renderGroup<span class="op">,</span> questions<span class="op">,</span> <span class="st">"question"</span><span class="op">,</span> <span class="kw">true</span><span class="op">,</span> d <span class="kw">=&gt;</span> <span class="fu">md</span><span class="vs">`</span><span class="sc">${</span>d<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">// div.call(renderGroup, guides, "guide", open, d =&gt; md`${d}`);</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    div<span class="op">.</span><span class="fu">call</span>(renderGuide<span class="op">,</span> guides<span class="op">,</span> <span class="st">"guide"</span><span class="op">,</span> open<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="fu">md</span><span class="vs">`</span><span class="sc">${</span>d<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  div<span class="op">.</span><span class="fu">call</span>(renderGroup<span class="op">,</span> hints<span class="op">,</span> <span class="st">"hint"</span><span class="op">,</span> open<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="fu">code</span>(d<span class="op">,</span> <span class="st">"hint"</span>))<span class="op">;</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  div<span class="op">.</span><span class="fu">call</span>(renderGroup<span class="op">,</span> solutions<span class="op">,</span> <span class="st">"solution"</span><span class="op">,</span> open<span class="op">,</span> d <span class="kw">=&gt;</span> <span class="fu">code</span>(d<span class="op">,</span> <span class="st">"solution"</span><span class="op">,</span> renderSnippet))<span class="op">;</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> div<span class="op">.</span><span class="fu">node</span>()<span class="op">;</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-37">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Q</span>(q) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">assign</span>(<span class="fu">answer</span>({</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>q<span class="op">,</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">guides</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">hints</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">solutions</span><span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  })<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> q})</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-38">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">A</span>(q) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">answer</span>({</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>q<span class="op">,</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">title</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">questions</span><span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-39">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">renderGroup</span>(div<span class="op">,</span> group<span class="op">,</span> type<span class="op">,</span> open<span class="op">,</span> render) {</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (group<span class="op">?.</span><span class="at">length</span>) {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> details <span class="op">=</span> div<span class="op">.</span><span class="fu">append</span>(type<span class="op">===</span><span class="st">"question"</span> <span class="op">?</span> <span class="st">"div"</span> <span class="op">:</span> <span class="st">"details"</span>)<span class="op">;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (open) details<span class="op">.</span><span class="fu">attr</span>(<span class="st">"open"</span><span class="op">,</span> <span class="st">"open"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (type <span class="op">!==</span> <span class="st">"question"</span>) details<span class="op">.</span><span class="fu">append</span>(<span class="st">"summary"</span>)<span class="op">.</span><span class="fu">append</span>(<span class="st">"strong"</span>)<span class="op">.</span><span class="fu">text</span>(<span class="vs">`</span><span class="sc">${</span>type<span class="sc">}${</span>group<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">1</span> <span class="op">?</span> <span class="st">"s"</span> <span class="op">:</span> <span class="st">""</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    details<span class="op">.</span><span class="fu">append</span>(<span class="st">"ul"</span>)<span class="op">.</span><span class="fu">selectAll</span>()<span class="op">.</span><span class="fu">data</span>(group)<span class="op">.</span><span class="fu">join</span>(<span class="st">"li"</span>)<span class="op">.</span><span class="fu">append</span>(render)<span class="op">;</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-40">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb18"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">renderGuide</span>(div<span class="op">,</span> group<span class="op">,</span> type<span class="op">,</span> open<span class="op">,</span> render) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (group<span class="op">?.</span><span class="at">length</span>) {</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> details <span class="op">=</span> div<span class="op">.</span><span class="fu">append</span>(<span class="st">"div"</span>)<span class="op">;</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (open) details<span class="op">.</span><span class="fu">attr</span>(<span class="st">"open"</span><span class="op">,</span> <span class="st">"open"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// details.append("span").append("strong").text(`${type}${group.length &gt; 1 ? "s" : ""}`);</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    details<span class="op">.</span><span class="fu">append</span>(<span class="st">"ul"</span>)<span class="op">.</span><span class="fu">selectAll</span>()<span class="op">.</span><span class="fu">data</span>(group)<span class="op">.</span><span class="fu">join</span>(<span class="st">"li"</span>)<span class="op">.</span><span class="fu">append</span>(render)<span class="op">;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-41">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">renderSnippet</span>(str) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> {</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> func <span class="op">=</span> <span class="kw">new</span> <span class="bu">Function</span>(<span class="st">"data"</span><span class="op">,</span> <span class="st">"Plot"</span><span class="op">,</span> <span class="st">"d3"</span><span class="op">,</span> <span class="st">"width"</span><span class="op">,</span> <span class="vs">`return </span><span class="sc">${</span>str<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">func</span>(data<span class="op">,</span> Plot<span class="op">,</span> d3<span class="op">,</span> width)<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">catch</span>(e) {}</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-42">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">code</span>(code<span class="op">,</span> type<span class="op">,</span> visual) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">html</span><span class="vs">`</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;div class="copy"&gt;</span><span class="sc">${</span><span class="fu">Copier</span>(<span class="st">"Copy"</span><span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> code})<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;textarea class=</span><span class="sc">${</span>type<span class="sc">}</span><span class="vs"> rows=</span><span class="sc">${</span><span class="fu">rows</span>(code)<span class="sc">}</span><span class="vs">&gt;</span><span class="sc">${</span>code<span class="sc">}</span><span class="vs">&lt;/textarea&gt;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="sc">${</span>visual <span class="op">?</span> <span class="fu">visual</span>(code) <span class="op">:</span> <span class="st">""</span><span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-43">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">rows</span>(code) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> lines <span class="op">=</span> code<span class="op">.</span><span class="fu">trim</span>()<span class="op">.</span><span class="fu">split</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)<span class="op">.</span><span class="at">length</span><span class="op">;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(lines<span class="op">,</span> <span class="dv">15</span>)<span class="op">,</span> <span class="dv">2</span>)<span class="op">;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-44">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>styles <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;style&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer {</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="vs">  font-family: system-ui, sans-serif;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="vs">  font-size: 14px;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer summary strong {</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="vs">  text-transform: capitalize;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer li {</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="vs">  list-style: none;</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="vs">  position: relative;</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer textarea { </span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="vs">  font: var(--monospace-font); </span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="vs">  font-size: 12px; </span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="vs">  width: 100%; </span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="vs">  padding: 5px;</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="vs">  border: 2px solid #3b5fc0;</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="vs">  background: #F6F9FF;</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="vs">  border-radius: 5px;</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="vs">  margin-bottom: 2em;</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="vs">  resize: none;</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer .copy form {</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="vs">  position: absolute;</span></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="vs">  right: -4px;</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="vs">  top: 4px;</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="vs">  width: initial;</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer summary {</span></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="vs">  display: inline-block;</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="vs">  padding: 2px 6px;</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="vs">  border: 2px solid #3b5fc0;</span></span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="vs">  background: #F6F9FF;</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a><span class="vs">  border-radius: 5px;</span></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="vs">  margin: 2px 0;</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="vs">  outline-offset: -2px;</span></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="vs">  list-style: none;</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="vs">  cursor: pointer;</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a><span class="vs">  min-width: 62px;</span></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="vs">  text-align: center;</span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="vs">.answer details[open] &gt; summary {</span></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a><span class="vs">  background: #3b5fc0;</span></span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a><span class="vs">  color: white;</span></span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a><span class="vs">}</span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/style&gt;</span></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-45">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb23"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>html <span class="op">=</span> htl<span class="op">.</span><span class="at">html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-46">
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> {Copier} <span class="im">from</span> <span class="st">"@mbostock/pbcopy"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="ojs-cell-47">
+
+</div>
+</div>
+</div>
+
+<!-- -->
+<script type="ojs-module-contents">
+{"contents":[
+  {"methodName":"interpret","inline":"true","source":"htl.html`<span>${data.columns.join(\",\")}</span>`", "cellName":"ojs-element-id-1"}
+]}
+</script>
+</section>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+<script type="text/javascript">
+
+// replace cmd keyboard shortcut w/ control on non-Mac platforms
+const kPlatformMac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) : false;
+if (!kPlatformMac) {
+   var kbds = document.querySelectorAll("kbd")
+   kbds.forEach(function(kbd) {
+      kbd.innerHTML = kbd.innerHTML.replace(/⌘/g, '⌃');
+   });
+}
+
+</script>
+<script type="ojs-module-contents">
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = FileAttachment(\"palmer-penguins.csv\").csv({typed: true})"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"Inputs.table(data)"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Plot // Plot is available in Observable by default"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"viewof q0 = Q({\n  title: `Question 0: Distribution`,\n  questions: [\n    `Plot a dot for each penguin, using *body_mass* on the *x* axis.`\n  ],\n  guides: [\n    `Use [Plot.**dot**](https://observablehq.com/@observablehq/plot-dot)(data, {x: \"…\"}) to create a one-dimensional dot plot.`,\n    `Use the {fill} and {fillOpacity} options to visualize overlapping dots.`,\n    `Repeat with other dimensions.`\n  ],\n  hints: [\n    `// change the code here\nPlot.dot(data, {x: \"...\", fill: \"black\", fillOpacity: 0.2}).plot() // replace … by the field’s name, e.g. body_mass`\n    ],\n  solutions: [\n    ` Plot.dot(data, {x: \"body_mass\", fill: \"black\", fillOpacity: 0.2}).plot()`, \n    `Plot.dot(data, {x: \"flipper_length\", fill: \"black\", fillOpacity: 0.2}).plot()`],\n  // open: true\n})"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"// change the code to replace … by the field’s name, e.g. body_mass\nPlot.dot(data, {x: \"...\", fill: \"black\", fillOpacity: 0.2}).plot()"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"A(q0)"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"viewof q1 = Q({\n  title: \"Question 1: Correlation\",\n  questions: [\n    `How is _flipper length_ related to _body mass_? Do heavier penguins tend to have longer flippers?`,\n    ],\n  guides: [\n    `There are many ways to answer this question. To create a scatterplot, use a [Plot.**dot**](https://observablehq.com/@observablehq/plot-dot)({x: \"dimension 1\", y: \"dimension 2\"}) mark.`,\n  ],\n  hints: [\n    `Plot.dot(data, {x: \"…\", y: \"…\"}).plot() // replace … by the field names.`\n    ],\n  solutions: [\n    `Plot.dot(data, {x: \"flipper_length\", y: \"body_mass\"}).plot()`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"// change the code to replace … by the field’s name, e.g. body_mass\nPlot.dot(data, {x: \"…\", y: \"…\"}).plot()"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"A(q1)"},{"methodName":"interpret","cellName":"ojs-cell-10","inline":false,"source":"viewof q2 = Q({\n  title: \"Question 2: Species\",\n  questions: [\n    `How are these measurements of (flipper) size and (body) weight distributed across the species?`,\n    ],\n  guides: [\n    `Use a [color](https://github.com/observablehq/plot#color-options) to identify species. Also add a title to know which species each color represents!`,\n    `Let's also add a small configuration to the plot to show grid lines.`\n  ],\n  hints: [\n    `Plot.dot(data, {… fill: \"…\", stroke: \"…\", title: \"…\" }).plot({ grid: true }), // fill and stroke drive the color`\n  ],\n  solutions: [\n    `Plot.dot(data, {x: \"flipper_length\", y: \"body_mass\", fill: \"species\", title: \"species\"}).plot({ grid: true })`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-11","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-12","inline":false,"source":"A(q2)"},{"methodName":"interpret","cellName":"ojs-cell-13","inline":false,"source":"viewof q3 = Q({\n  title: \"Question 3: Sex\",\n  questions: [\n    `How do these measurements vary with sex? (Bonus: use an alternative encoding for *sex* so that we don’t lose the *species* encoding.)`,\n    ],\n  guides: [\n    `We could use a color to identify sex, like in the previous chart. But we can also reuse the previous code, and add a [facet](/@observablehq/plot-facets) on sex.`,\n  ],\n  hints: [\n    `Plot.dot(data, { \"...\" }).plot({\n  facet: {\n    data: data,\n    x: \"… facet dimension\"\n  },\n  grid: true\n})`\n  ],\n  solutions: [\n    ` Plot.dot(data, {x: \"flipper_length\", y: \"body_mass\", fill: \"species\", title: \"species\"}).plot({\n  facet: {\n    data,\n    x: \"sex\"\n  },\n  grid: true,\n  marks: [\n    // you can add more marks to the plot with the marks array\n    Plot.frame(),\n  ]\n})`,\n  `Plot.plot({\n  facet: {\n    data,\n    x: \"sex\"\n  },\n  grid: true,\n  marks: [\n    Plot.frame(),\n    Plot.dot(data, {x: \"flipper_length\", y: \"body_mass\", fill: \"species\", title: \"species\"})\n  ]\n})`\n  ]\n})"},{"methodName":"interpret","cellName":"ojs-cell-14","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-15","inline":false,"source":"A(q3)"},{"methodName":"interpret","cellName":"ojs-cell-16","inline":false,"source":"viewof q4 = Q({\n  title: \"Question 4: Counting\",\n  questions: [`How many species of penguins are present in the dataset, and how many individuals belong to each species?`],\n  guides: [\n    `You can use the [Plot.**groupX**](https://observablehq.com/@observablehq/plot-group)({y: \"count\"}, {x: \"species\"}) transform, and create a bar chart with [Plot.**barY**](https://observablehq.com/@observablehq/plot-bar).`,\n    `Don’t hesitate to use fill: \"species\" to reinforce the identification of species, as in the scatter plot above.`,\n  ],\n  hints: [\n    ` Plot.barY(data, Plot.groupX({y: \"count\"}, {x: \"…\"})).plot()`\n    ],\n  solutions: [`Plot.barY(data, Plot.groupX({y: \"count\"}, {x: \"species\", fill: \"species\"}))\n  .plot()`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-17","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-18","inline":false,"source":"A(q4)"},{"methodName":"interpret","cellName":"ojs-cell-19","inline":false,"source":"viewof q5 = Q({\n  title: \"Question 5: Islands\",\n  questions: [`The penguins in this dataset have been identified on three islands. How are the species distributed geographically?`],\n  guides: [\n    `Again, we can [facet](https://observablehq.com/@observablehq/plot-facet) our data on \"island\" to draw a bar chart for each of the islands.`,\n    `Another technique would be to create circles with x=\"species\" and y=\"island\", and a radius that corresponds to the number of individuals.`,\n  ],\n  hints: [\n    `Plot.barY(data, Plot.groupX({y: \"count\"}, {x: \"…\"})).plot({\n  facet: {\n    data,\n    x: \"island\"\n  },\n  marks: [\n    Plot.frame(),\n  ]\n})`,\n    `Plot.dot(data, Plot.group({r: \"count\"}, {x: \"…\", y: \"…\" })).plot()`\n    ],\n  solutions: [`Plot.barY(data, Plot.groupX({y: \"count\"}, {x: \"species\", fill: \"species\"}))\n  .plot({\n    facet: {\n      data,\n      x: \"island\"\n    },\n    marks: [\n      Plot.frame(),\n    ]\n  })`, `Plot.dot(data, Plot.group({r: \"count\"}, {x: \"island\", y: \"species\", stroke: \"species\" })).plot({\n  r: {\n    range: [0, 50] // adjusts the radius scale to make the marks more visible\n  },\n  marginLeft: 80,\n  height: 300\n})`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-20","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-21","inline":false,"source":"A(q5)"},{"methodName":"interpret","cellName":"ojs-cell-22","inline":false,"source":"viewof q6 = Q({\n  title: \"Question 6: Weights\",\n  questions: [`What is the distribution of weights?`],\n  guides: [\n    `To draw a histogram of a continuous variable (*body_mass*), we can use the [Plot.**bin**](https://observablehq.com/@observablehq/plot-bin) transform and create [Plot.**rectY**](https://observablehq.com/@observablehq/plot-rect) marks.`,\n    `Play with the thresholds option to create more rects.`\n  ],\n  hints: [\n    `Plot.rectY(data, Plot.binX({y: \"count\"}, {x: \"…\"})).plot()`\n    ],\n  solutions: [\n  `Plot.rectY(data, Plot.binX({y: \"count\"}, {x: \"body_mass\", thresholds: 20}))\n  .plot()`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-23","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-24","inline":false,"source":"A(q6)"},{"methodName":"interpret","cellName":"ojs-cell-25","inline":false,"source":"viewof q7 = Q({\n  title: \"Question 7: Weight, sex and species\",\n  questions: [`How does body mass vary across both sex _and_ species? Is the distribution of body mass similar for each sex-species combination?`],\n  guides: [\n    `You can use x and y [facets](https://observablehq.com/@observablehq/plot-facets) on the previous chart to show how this distribution varies.`,\n    `Go wild: try with x: \"sex\", then y: \"species\", then both x and y.`,\n    `An alternative approach is to [stack](https://observablehq.com/@observablehq/plot-stack) the results by *species*.`\n  ],\n  hints: [\n    `Plot.rectY(data, Plot.binX({y: \"count\"}, {x: \"…\"})).plot()`\n    ],\n  solutions: [ `Plot.rectY(data, Plot.binX({y: \"count\"}, {x: \"body_mass\", fill: \"species\", thresholds: 20})).plot({\n  facet: {\n    data,\n    x: \"sex\",\n    y: \"species\",\n    marginRight: 80\n  },\n  marks: [\n    Plot.frame(),\n  ]\n})`,\n  `Plot.rectY(data, Plot.stackY(Plot.binX({y: \"count\"}, {x: \"body_mass\", fill: \"species\", thresholds: 20}))).plot({\n  facet: {\n    data,\n    x: \"sex\"\n  },\n  marks: [\n    Plot.frame(),\n  ]\n})`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-26","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-27","inline":false,"source":"A(q7)"},{"methodName":"interpret","cellName":"ojs-cell-28","inline":false,"source":"viewof q8 = Q({\n  title: \"Question 8: Statistics\",\n  questions: [`On top of the previous plot, overlay a mark denoting the median of the body weights.`],\n  guides: [\n    `Use the [Plot.**groupZ**](https://observablehq.com/@observablehq/plot-group) transform with a ‘median’ reducer on x.`,\n    `[Plot.**tickX**](https://observablehq.com/@observablehq/plot-tick) can create a full-height tick at the computed value. Alternatively, try Plot.**dot**.`\n  ],\n  hints: [\n    `Plot.plot({\n  marks: [\n    Plot.rectY(…),\n    Plot.tickX(data, Plot.groupZ({x: \"median\"}, {x: \"body_mass\", z: d => \\`\\${d.sex}-\\`\\d.species}\\`}))\n  ]\n})`\n    ],\n  solutions: [\n    `Plot.plot({\n  facet: {\n    data,\n    x: \"sex\",\n    y: \"species\",\n    marginRight: 80\n  },\n  marks: [\n    Plot.frame(),\n    Plot.rectY(data, Plot.binX({y: \"count\"}, {x: \"body_mass\", thresholds: 20, fill: \"species\"})),\n    Plot.tickX(data, Plot.groupZ({x: \"median\"}, {\n      x: \"body_mass\",\n      z: d => d.sex + d.species,\n      stroke: \"#333\",\n      strokeWidth: 2\n    }))\n  ]\n})`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-29","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-30","inline":false,"source":"A(q8)"},{"methodName":"interpret","cellName":"ojs-cell-31","inline":false,"source":"viewof q9 = Q({\n  title: \"Question 9. Reduction\",\n  questions: [`How many females are heavier than the lightest male?`],\n  guides: [\n    `Use the [Plot.**selectMinX**](https://observablehq.com/@observablehq/plot-select) transform to show the lightest male (as a tickX mark), and [Plot.**filter**](https://observablehq.com/@observablehq/plot-transforms) to select male or females as dots?`,\n    `Additionally, use a [Plot.**groupZ**](https://observablehq.com/@observablehq/plot-group) median transform to give a hint of the females’ distribution of body mass.`\n  ],\n  hints: [\n    `Plot.plot({\n  facet: {\n    data,\n    y: \"species\"\n  },\n  marks: [\n    Plot.tickX(data, Plot.selectMinX({\n      x: \"body_mass\",\n      filter: …\n    })),\n    Plot.dot(data, {\n      x: \"body_mass\",\n      …\n    })\n  ]\n})`\n    ],\n  solutions: [\n    `Plot.plot({\n  facet: {\n    data,\n    y: \"species\",\n    marginLeft: 80\n  },\n  marks: [\n    Plot.frame(),\n    Plot.tickX(data, Plot.groupZ({x: \"median\"}, {\n      x: \"body_mass\",\n      filter: d => d.sex === \"FEMALE\",\n      stroke: \"species\",\n      strokeWidth: 3\n    })),\n    Plot.tickX(data, Plot.selectMinX({\n      x: \"body_mass\",\n      filter: d => d.sex === \"MALE\",\n      stroke: \"grey\",\n      strokeWidth: 3\n    })),\n    Plot.tickX(data, Plot.selectMaxX({\n      x: \"body_mass\",\n      filter: d => d.sex === \"MALE\",\n      stroke: \"grey\",\n      strokeWidth: 3\n    })),\n    Plot.dot(data, {\n      x: \"body_mass\",\n      filter: d => d.sex === \"MALE\",\n      fill: \"grey\",\n      r: 2\n    }),\n    Plot.dot(data, {\n      x: \"body_mass\",\n      filter: d => d.sex === \"FEMALE\",\n      fill: \"species\"\n    })\n  ]\n})`]\n})"},{"methodName":"interpret","cellName":"ojs-cell-32","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-33","inline":false,"source":"A(q9)"},{"methodName":"interpret","cellName":"ojs-cell-34","inline":false,"source":"// type your question here\n"},{"methodName":"interpret","cellName":"ojs-cell-35","inline":false,"source":"// type your code here\n"},{"methodName":"interpret","cellName":"ojs-cell-36","inline":false,"source":"viewof showAll = Inputs.toggle({label: html`<strong>Show all`})"},{"methodName":"interpret","cellName":"ojs-cell-37","inline":false,"source":"function answer({\n  title,\n  questions = [],\n  guides = [],\n  hints = [],\n  solutions = [],\n  open = !!showAll\n}) {\n\n  const div = d3.create(\"div\").classed(\"answer\", true);\n\n  if (title) {\n    div.append(\"hr\");\n    div.append(\"h2\").html(title);\n  }\n\n  div.call(renderGroup, questions, \"question\", true, d => md`${d}`);\n  // div.call(renderGroup, guides, \"guide\", open, d => md`${d}`);\n    div.call(renderGuide, guides, \"guide\", open, d => md`${d}`);\n  div.call(renderGroup, hints, \"hint\", open, d => code(d, \"hint\"));\n  div.call(renderGroup, solutions, \"solution\", open, d => code(d, \"solution\", renderSnippet));\n\n  return div.node();\n}"},{"methodName":"interpret","cellName":"ojs-cell-38","inline":false,"source":"function Q(q) {\n  return Object.assign(answer({\n    ...q,\n    guides: null,\n    hints: null,\n    solutions: null\n  }), {value: q})\n}"},{"methodName":"interpret","cellName":"ojs-cell-39","inline":false,"source":"function A(q) {\n  return answer({\n    ...q,\n    title: null,\n    questions: null\n  })\n}"},{"methodName":"interpret","cellName":"ojs-cell-40","inline":false,"source":"function renderGroup(div, group, type, open, render) {\n  if (group?.length) {\n    const details = div.append(type===\"question\" ? \"div\" : \"details\");\n    if (open) details.attr(\"open\", \"open\")\n    if (type !== \"question\") details.append(\"summary\").append(\"strong\").text(`${type}${group.length > 1 ? \"s\" : \"\"}`);\n    details.append(\"ul\").selectAll().data(group).join(\"li\").append(render);\n  }\n}"},{"methodName":"interpret","cellName":"ojs-cell-41","inline":false,"source":"function renderGuide(div, group, type, open, render) {\n  if (group?.length) {\n    const details = div.append(\"div\");\n    if (open) details.attr(\"open\", \"open\")\n    // details.append(\"span\").append(\"strong\").text(`${type}${group.length > 1 ? \"s\" : \"\"}`);\n    details.append(\"ul\").selectAll().data(group).join(\"li\").append(render);\n  }\n}"},{"methodName":"interpret","cellName":"ojs-cell-42","inline":false,"source":"function renderSnippet(str) {\n  try {\n    const func = new Function(\"data\", \"Plot\", \"d3\", \"width\", `return ${str}`)\n    return func(data, Plot, d3, width);\n  }\n  catch(e) {}\n}"},{"methodName":"interpret","cellName":"ojs-cell-43","inline":false,"source":"function code(code, type, visual) {\n  return html`\n<div class=\"copy\">${Copier(\"Copy\", {value: code})}</div>\n<textarea class=${type} rows=${rows(code)}>${code}</textarea>\n${visual ? visual(code) : \"\"}`;\n\n}"},{"methodName":"interpret","cellName":"ojs-cell-44","inline":false,"source":"function rows(code) {\n  const lines = code.trim().split(\"\\n\").length;\n  return Math.max(Math.min(lines, 15), 2);\n}"},{"methodName":"interpret","cellName":"ojs-cell-45","inline":false,"source":"styles = html`<style>\n.answer {\n  font-family: system-ui, sans-serif;\n  font-size: 14px;\n}\n.answer summary strong {\n  text-transform: capitalize;\n}\n.answer li {\n  list-style: none;\n  position: relative;\n}\n.answer textarea { \n  font: var(--monospace-font); \n  font-size: 12px; \n  width: 100%; \n  padding: 5px;\n  border: 2px solid #3b5fc0;\n  background: #F6F9FF;\n  border-radius: 5px;\n  margin-bottom: 2em;\n  resize: none;\n}\n.answer .copy form {\n  position: absolute;\n  right: -4px;\n  top: 4px;\n  width: initial;\n}\n.answer summary {\n  display: inline-block;\n  padding: 2px 6px;\n  border: 2px solid #3b5fc0;\n  background: #F6F9FF;\n  border-radius: 5px;\n  margin: 2px 0;\n  outline-offset: -2px;\n  list-style: none;\n  cursor: pointer;\n  min-width: 62px;\n  text-align: center;\n}\n\n.answer details[open] > summary {\n  background: #3b5fc0;\n  color: white;\n}\n\n</style>\n`"},{"methodName":"interpret","cellName":"ojs-cell-46","inline":false,"source":"html = htl.html"},{"methodName":"interpret","cellName":"ojs-cell-47","inline":false,"source":"import {Copier} from \"@mbostock/pbcopy\""},{"methodName":"interpretQuiet","source":"shinyInput('q0')"},{"methodName":"interpretQuiet","source":"shinyInput('q1')"},{"methodName":"interpretQuiet","source":"shinyInput('q2')"},{"methodName":"interpretQuiet","source":"shinyInput('q3')"},{"methodName":"interpretQuiet","source":"shinyInput('q4')"},{"methodName":"interpretQuiet","source":"shinyInput('q5')"},{"methodName":"interpretQuiet","source":"shinyInput('q6')"},{"methodName":"interpretQuiet","source":"shinyInput('q7')"},{"methodName":"interpretQuiet","source":"shinyInput('q8')"},{"methodName":"interpretQuiet","source":"shinyInput('q9')"},{"methodName":"interpretQuiet","source":"shinyInput('showAll')"}]}
+</script>
+<script type="module">
+window._ojs.paths.runtimeToDoc = "../../docs/interactive/js/examples2/plot-exploration-penguins";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "../../../../..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+
+
+</body></html>

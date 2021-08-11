@@ -251,4 +251,47 @@ Inputs.table(filtered)
 :::
 ````
 
+Learn more in the article on [Layout](../layout.qmd) for interactive documents.
+
 ## Cell Figures
+
+OJS cells can also be rendered as numbered, [cross-referenceable](../../authoring/cross-references.qmd) figures. To do this, add the `label` and `fig-cap` options to the cell. For example:
+
+``` python
+```{{ojs}}
+//| label: fig-penguin-body-mass
+//| fig-cap: "Penguin body mass by sex and species"
+```
+
+Then to reference the figure use it's label in a markdown [cross reference](../../authoring/cross-references.qmd):
+
+``` markdown
+See @fig-penguin-body-mass for further illustration.
+```
+
+Here's how the cross-reference and figure will render:
+
+See @fig-penguin-body-mass for further illustration.
+
+```{ojs}
+//| echo: false
+//| label: fig-penguin-body-mass
+//| fig-cap: "Penguin body mass by sex and species"
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
