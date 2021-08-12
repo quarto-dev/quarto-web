@@ -2,41 +2,41 @@
 title: "Code Reuse"
 ---
 
-As you build bigger Quarto projects, you'll find it convenient to reuse code across different pages.
-Quarto JavaScript offers a few different ways to support code reuse.
+As you build larger Quarto projects (like [websites](../../websites/) and [books](../../books/)) that incorporate OJS, you'll likely want to re-use code, data, and output across different pages.
 
-## Importing JavaScript Modules
+## Modules
 
-JavaScript modules are directly supported by Quarto JavaScript. If you use an import statement like the following:
+JavaScript modules are directly supported in OJS. For example, if we have the following source file `square.js`:
 
-```{ojs}
-import { square } from "./square.js";
+``` js
+export function square(x) {
+  return x * x;
+}
 ```
 
-Then you can use the `square` value (imported from [a JavaScript module](square.js)) directly in OJS expressions. In this case, `square` is a function:
+Then you can import and use the `square()` function as follows:
 
 ```{ojs}
+import { square } from "./square.js"
 square(5)
 ```
 
-## Importing from Quarto Pages
+## Data
 
-Interactive content in Quarto pages can be directly reused by other pages.
+You may be using Python or R to pre-process data that is then provided to OJS via the `ojs_define()` function (this is described in more depth in the [Data Sources](data-sources.html#python-and-r) article). If you want to share data prepared in this fashion you can import it directly from another `.qmd`.
 
-### Reactive Values
+For example, here we import the `co2data` that we read and pre-processed with dplyr in `data-sources.qmd`:
 
-You can import reactive values directly from other Quarto JavaScript pages. Here, we're reusing a chart directly from the [data sources page](data-sources.qmd):
+```{ojs}
+import { co2data } from "./data-sources.qmd";
+Inputs.table(transpose(co2data))
+```
+
+## Output
+
+You can import any reactive value from another `.qmd` file. Here, we're reusing a chart directly from `data-sources.qmd`:
 
 ```{ojs}
 import { yearlyChart } from "./data-sources.qmd";
 yearlyChart
-```
-
-### Data/results
-
-Similarly, you can always just import a result computed by Python or R in a different page, simply by referring to the name of the value in the `ojs_define` declaration. 
-
-```{ojs}
-import { co2data } from "./data-sources.qmd";
-co2data
 ```

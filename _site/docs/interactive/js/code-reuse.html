@@ -388,12 +388,9 @@
   <div id="quarto-toc-sidebar" class="col col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-toc order-last"><nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#importing-javascript-modules" class="nav-link active" data-scroll-target="#importing-javascript-modules">Importing JavaScript Modules</a></li>
-<li><a href="#importing-from-quarto-pages" class="nav-link" data-scroll-target="#importing-from-quarto-pages">Importing from Quarto Pages</a>
-<ul class="collapse">
-<li><a href="#reactive-values" class="nav-link" data-scroll-target="#reactive-values">Reactive Values</a></li>
-<li><a href="#dataresults" class="nav-link" data-scroll-target="#dataresults">Data/results</a></li>
-</ul></li>
+<li><a href="#modules" class="nav-link active" data-scroll-target="#modules">Modules</a></li>
+<li><a href="#data" class="nav-link" data-scroll-target="#data">Data</a></li>
+<li><a href="#output" class="nav-link" data-scroll-target="#output">Output</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/interactive/js/code-reuse.qmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
@@ -402,37 +399,62 @@
 <h1 class="title d-none d-lg-block display-7">Code Reuse</h1>
 </header>
 
-<p>As you build bigger Quarto projects, you’ll find it convenient to reuse code across different pages. Quarto JavaScript offers a few different ways to support code reuse.</p>
-<section id="importing-javascript-modules" class="level2">
-<h2 class="anchored" data-anchor-id="importing-javascript-modules">Importing JavaScript Modules</h2>
-<p>JavaScript modules are directly supported by Quarto JavaScript. If you use an import statement like the following:</p>
+<p>As you build larger Quarto projects (like <a href="../../websites/">websites</a> and <a href="../../books/">books</a>) that incorporate OJS, you’ll likely want to re-use code, data, and output across different pages.</p>
+<section id="modules" class="level2">
+<h2 class="anchored" data-anchor-id="modules">Modules</h2>
+<p>JavaScript modules are directly supported in OJS. For example, if we have the following source file <code>square.js</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">square</span>(x) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> x <span class="op">*</span> x<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then you can import and use the <code>square()</code> function as follows:</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { square } <span class="im">from</span> <span class="st">"./square.js"</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { square } <span class="im">from</span> <span class="st">"./square.js"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">square</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-1" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<p>Then you can use the <code>square</code> value (imported from <a href="square.js">a JavaScript module</a>) directly in OJS expressions. In this case, <code>square</code> is a function:</p>
-<div class="cell">
-<div class="sourceCode" id="cb2"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">square</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-2" data-nodetype="expression">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="expression">
 
+</div>
 </div>
 </div>
 </div>
 </section>
-<section id="importing-from-quarto-pages" class="level2">
-<h2 class="anchored" data-anchor-id="importing-from-quarto-pages">Importing from Quarto Pages</h2>
-<p>Interactive content in Quarto pages can be directly reused by other pages.</p>
-<section id="reactive-values" class="level3">
-<h3 class="anchored" data-anchor-id="reactive-values">Reactive Values</h3>
-<p>You can import reactive values directly from other Quarto JavaScript pages. Here, we’re reusing a chart directly from the <a href="../../../docs/interactive/js/data-sources.html">data sources page</a>:</p>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>You may be using Python or R to pre-process data that is then provided to OJS via the <code>ojs_define()</code> function (this is described in more depth in the <a href="data-sources.html#python-and-r">Data Sources</a> article). If you want to share data prepared in this fashion you can import it directly from another <code>.qmd</code>.</p>
+<p>For example, here we import the <code>co2data</code> that we read and pre-processed with dplyr in <code>data-sources.qmd</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { yearlyChart } <span class="im">from</span> <span class="st">"./data-sources.qmd"</span><span class="op">;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>yearlyChart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { co2data } <span class="im">from</span> <span class="st">"./data-sources.qmd"</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span>(<span class="fu">transpose</span>(co2data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">Output</h2>
+<p>You can import any reactive value from another <code>.qmd</code> file. Here, we’re reusing a chart directly from <code>data-sources.qmd</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { yearlyChart } <span class="im">from</span> <span class="st">"./data-sources.qmd"</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>yearlyChart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <div id="ojs-cell-3-1" data-nodetype="declaration">
@@ -448,31 +470,8 @@
 </div>
 </div>
 </div>
-</section>
-<section id="dataresults" class="level3">
-<h3 class="anchored" data-anchor-id="dataresults">Data/results</h3>
-<p>Similarly, you can always just import a result computed by Python or R in a different page, simply by referring to the name of the value in the <code>ojs_define</code> declaration.</p>
-<div class="cell">
-<div class="sourceCode" id="cb4"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { co2data } <span class="im">from</span> <span class="st">"./data-sources.qmd"</span><span class="op">;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>co2data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<div id="ojs-cell-4-1" data-nodetype="declaration">
-
-</div>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<div id="ojs-cell-4-2" data-nodetype="expression">
-
-</div>
-</div>
-</div>
-</div>
 
 <!-- -->
-</section>
 </section>
 </main>
 <div class="page-navigation page-navigation-docked">
@@ -503,7 +502,7 @@ if (!kPlatformMac) {
 
 </script>
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { square } from \"./square.js\";"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"square(5)"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"import { yearlyChart } from \"./data-sources.qmd\";\nyearlyChart"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"import { co2data } from \"./data-sources.qmd\";\nco2data"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"import { square } from \"./square.js\"\nsquare(5)"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"import { co2data } from \"./data-sources.qmd\";\nInputs.table(transpose(co2data))"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"import { yearlyChart } from \"./data-sources.qmd\";\nyearlyChart"}]}
 </script>
 <script type="module">
 window._ojs.paths.runtimeToDoc = "../../docs/interactive/js";
