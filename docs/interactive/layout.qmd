@@ -14,21 +14,17 @@ We'll use examples from both [JavaScript](js/) and [Shiny](shiny/) interactive d
 
 ## Input Panel
 
-If you have several inputs, you may want to group them inside an input panel (div with class `.panel-input`). For example, here's a document containing a JavaScript map visualization with three inputs to control it:
+If you have several inputs, you may want to group them inside an input panel (code block with option `panel: input` or div with class `.panel-input`). For example:
 
 ![](images/article-input-panel-columns.png)
 
-The inputs are grouped in a panel and laid out in three columns using the following markup:
-
-1.  A div with class `.panel-input` provides the background color and border treatment.
-2.  Adding the `layout-ncol=3` to the div lays out the inputs horizontally.
-
-Here's the source code for the input panel:
+The inputs are grouped in a panel and laid out in three columns by adding the `panel: input` and `layout-ncol: 3` options to the OJS code cell: 
 
 ```` java
-::: {.panel-input layout-ncol=3}
-
 ```{{ojs}}
+//| panel: input
+//| layout-ncol: 3
+
 viewof ch = checkbox({
   title: "Passport color:",
   options: [
@@ -40,9 +36,7 @@ viewof ch = checkbox({
   value: ["red", "green", "blue", "black"],
   submit: false
 })
-```
 
-```{{ojs}}
 viewof type = radio({
   title: "Representation:",
   options: [
@@ -51,9 +45,7 @@ viewof type = radio({
   ],
   value: 'p'
 })
-```
 
-```{{ojs}}
 viewof k = slider({
   title: "Symbol size:",
   min: 1,
@@ -63,14 +55,48 @@ viewof k = slider({
 })
 ```
 
-:::
 ````
 
 ## Tabset Panel
 
-If you want to allow users to toggle between multiple visualizations, use a tabset (div with class `.panel-tabset`). Include a heading for each tab in the tabset.
+If you want to allow users to toggle between multiple visualizations, use a tabset (div with class `.panel-tabset`). Include a heading (e.g. `##`) for each tab in the tabset.
 
-For example, the following JavaScript code:
+For example, here are a plot and data each presented in their own tab:
+
+```{ojs}
+data = FileAttachment("js/palmer-penguins.csv").csv({typed: true})
+```
+
+
+::: {.panel-tabset}
+
+## Plot
+
+```{ojs}
+Plot.rectY(data, 
+  Plot.stackY(
+    Plot.binX( 
+      {y: "count"}, 
+      {x: "body_mass", fill: "species", thresholds: 20})
+    )
+  ).plot({
+    facet: {
+      data,
+      x: "sex"
+    },
+    marks: [Plot.frame()]
+  })
+```
+
+## Data
+
+```{ojs}
+Inputs.table(data)
+```
+
+:::
+
+Here is the markup and code used to create the tabset:
 
 ```` java
 ::: {.panel-tabset}
@@ -78,40 +104,36 @@ For example, the following JavaScript code:
 ## Plot
 
 ```{{ojs}}
-//| echo: false
-vl
-  .markPoint()    
-  .data(penguins)
-  .encode(
-    vl.x().fieldQ('body_mass_g')
-          .scale({domain: [2000, 6500]}) 
-          .axis({title: "Mass (g)"}),
-    vl.y().fieldQ('bill_length_mm')     
-          .scale({domain: [30, 60]}),
-    vl.color().fieldN('species'),
-    vl.tooltip(['species', 'sex', 'year', 'island'])
-).render()
+Plot.rectY(data, 
+  Plot.stackY(
+    Plot.binX( 
+      {y: "count"}, 
+      {x: "body_mass", fill: "species", thresholds: 20})
+    )
+  ).plot({
+    facet: {
+      data,
+      x: "sex"
+    },
+    marks: [Plot.frame()]
+  })
 ```
 
 ## Data
 
 ```{{ojs}}
-//| echo: false
-penguins.view()
+Inputs.table(filtered)
 ```
 
 :::
 ````
 
-Will result in a tabset with **Plot** and **Data** tabs:
-
-![](images/article-tabset-panel.png)
 
 ## Full Page Layout
 
 By default Quarto documents center their content within the document viewport, and don't exceed a maximum width of around 900 pixels. This behavior exists to optimize readability, but for an application layout you generally want to do occupy the entire page.
 
-To do this, add tbe `page-layout: custom` option. For example:
+To do this, add the `page-layout: custom` option. For example:
 
 ``` yaml
 format: 
