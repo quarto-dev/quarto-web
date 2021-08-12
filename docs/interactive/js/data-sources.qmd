@@ -21,7 +21,8 @@ Use the [FileAttachment](https://github.com/observablehq/stdlib#file-attachments
 
 ```{ojs}
 data = {
-  const co2data = await FileAttachment("co2_mm.csv").csv();
+  const co2data = await FileAttachment("co2_mm.csv")
+    .csv({ typed: true } );
   return co2data.map(d => { 
     d["decimal date"] = Number(d["decimal date"]);
     d.average = Number(d.average); 
@@ -38,7 +39,9 @@ Plot.plot({
 })
 ```
 
-This example used the `csv()` method of `FileAttachment`. A similar method is available for each supported format:
+Note that we specified the `typed: true` option to the `csv()` function. When this option is specified [d3.autoType](https://observablehq.com/@d3/d3-autotype) is used to automatically detect numbers, dates, etc. and convert them to the correct JavaScript types. This is highly recommend when you know that your data is compatible with automatic type detection.
+
+Here are the methods available for structured data formats:
 
 | Method                                                             | Description               |
 |--------------------------------------------------------------------|---------------------------|
@@ -140,8 +143,3 @@ Inputs.table(commits, { sort: "value", reverse: true })
 ```
 
 See the [GitHub API](examples/github.qmd) example for the full source code.
-
-
-
-
-
