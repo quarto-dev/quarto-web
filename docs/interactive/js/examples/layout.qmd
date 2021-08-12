@@ -1,16 +1,27 @@
 ---
-title: "Penguins"
+title: "Layout"
 format:
   html:
-    toc: false
+    echo: false
     code-tools: true
-    keep-hidden: true
+    page-layout: custom
 ---
 
-A simple example based on Allison Horst's [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):
+This example uses `page-layout: custom` to have it's contents occupy the entire width of the page:
+
+```yaml
+---
+title: "Layout"
+format: 
+  html: 
+    page-layout: custom
+---
+```
+
+Enclose the inputs in a sidebar panel and the outputs in a tabset panel (click the "Code" button at top right to see the full source code):
 
 ```{ojs}
-//| code-fold: true
+//| panel: sidebar
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
@@ -23,8 +34,11 @@ viewof islands = Inputs.checkbox(
 )
 ```
 
+::: panel-tabset
+
+## Plot
+
 ```{ojs}
-//| code-fold: true
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -44,19 +58,25 @@ Plot.rectY(filtered,
 )
 ```
 
+## Data
+
 ```{ojs}
 Inputs.table(filtered)
 ```
 
+:::
+
+
+Read and filter the data based on the user's inputs:
 
 ```{ojs}
-data = FileAttachment("palmer-penguins.csv").csv()
-```
+//| echo: true
+data = FileAttachment("palmer-penguins.csv").csv({typed: true})
 
-```{ojs}
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length &&
          islands.includes(penguin.island);
 })
 ```
+
 
