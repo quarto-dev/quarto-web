@@ -31,57 +31,39 @@ data = FileAttachment("palmer-penguins.csv").csv()
 
 ### Output Visibility
 
-Above we said that OJS cell output is shown by default. This isn't *exactly* true though. There are two types of output you might see from an OJS cell:
-
--   Display of inputs, plots, tables, and other content.
-
--   Display of [Observable inspectors](https://github.com/observablehq/inspector) for variables, datasets, libraries and other intermediate objects.
-
-Inspectors are great when developing a notebook, but they aren't often what you want readers of a long-form article to see. Consequently, Quarto hides inspector output by default (you can cause inspector output to be visible by setting the `output: all` option).
-
-Here's an example to make things more concrete. We'll evaluate the `data` that we read in above and show what this looks like with various `output` settings. By default, you won't see any output at all:
+OJS cell output is also displayed by default. You can change this at a global or (more likely) per-cell level using the `output` option. For example, here we disable output for a cell:
 
 ```` java
 ```{{ojs}}
-data = FileAttachment("palmer-penguins.csv").csv()
-```
-````
-
-```{ojs}
-//| echo: false
-data = FileAttachment("palmer-penguins.csv").csv()
-```
-
-However, if we set the `output: all` option we get a dataset inspector:
-
-```` java
-```{{ojs}}
-//| output: all
-data = FileAttachment("palmer-penguins.csv").csv()
-```
-````
-
-```{ojs}
-//| echo: false
-//| output: all
+//| output: false
 data
 ```
+````
 
-If you click the inspector you'll see it expand to reveal a subset of the data as JSON. Readers of an article might however prefer to see a scrolling HTML table version of the data, which you can get via the [Inputs.table](https://github.com/observablehq/inputs#Table) function:
+Note that cells which only carry assignments do not print their output by default. For example, this assignment won't print anything:
 
 ```` java
 ```{{ojs}}
 data = FileAttachment("palmer-penguins.csv").csv()
-Inputs.table(data)
+```
+````
+
+If you want to print even the results of assignments, you can specify the `output: all` option. For example:
+
+```` java
+```{{ojs}}
+//| output: all
+data = FileAttachment("palmer-penguins.csv").csv()
 ```
 ````
 
 ```{ojs}
 //| echo: false
-Inputs.table(data)
+//| output: all
+data = FileAttachment("palmer-penguins.csv").csv()
 ```
 
-Note that this output is displayed without any special use of `output: all` (because Quarto knows that the output isn't merely an inspector).
+If you click the inspector you'll see it expand to reveal a subset of the data as JSON.
 
 ### Code Display
 
