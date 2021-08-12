@@ -2,6 +2,41 @@
 title: "Code Reuse"
 ---
 
-- importing modules
-- importing qmds
-- importing data/results
+As you build bigger Quarto projects, you'll find it convenient to reuse code across different pages.
+Quarto JavaScript offers a few different ways to support code reuse.
+
+## Importing JavaScript Modules
+
+JavaScript modules are directly supported by Quarto JavaScript. If you use an import statement like the following:
+
+```{ojs}
+import { square } from "./square.js";
+```
+
+Then you can use the `square` value (imported from [a JavaScript module](square.js)) directly in OJS expressions. In this case, `square` is a function:
+
+```{ojs}
+square(5)
+```
+
+## Importing from Quarto Pages
+
+Interactive content in Quarto pages can be directly reused by other pages.
+
+### Reactive Values
+
+You can import reactive values directly from other Quarto JavaScript pages. Here, we're reusing a chart directly from the [data sources page](data-sources.qmd):
+
+```{ojs}
+import { yearlyChart } from "./data-sources.qmd";
+yearlyChart
+```
+
+### Data/results
+
+Similarly, you can always just import a result computed by Python or R in a different page, simply by referring to the name of the value in the `ojs_define` declaration. 
+
+```{ojs}
+import { co2data } from "./data-sources.qmd";
+co2data
+```
