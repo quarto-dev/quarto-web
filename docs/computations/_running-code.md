@@ -4,7 +4,7 @@ Quarto supports executable code blocks within markdown. This allows you to creat
 
 There are currently two engines supported for running computations:
 
--   [Jupyter](https://jupyter.org/), for running code from Python, Julia, and many other languages.
+-   [Jupyter](https://jupyter.org/), for running code from Python and many other languages.
 
 -   [Knitr](https://yihui.org/knitr/), for running code from R.
 
