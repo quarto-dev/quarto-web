@@ -3,14 +3,15 @@ title: "Penguins"
 format:
   html:
     toc: false
-    code-tools: true
+    echo: false
     keep-hidden: true
+    code-tools: true
 ---
 
 A simple example based on Allison Horst's [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):
 
 ```{ojs}
-//| code-fold: true
+//| panel: input
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
@@ -23,8 +24,11 @@ viewof islands = Inputs.checkbox(
 )
 ```
 
+::: {.panel-tabset}
+
+## Plot
+
 ```{ojs}
-//| code-fold: true
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -44,10 +48,13 @@ Plot.rectY(filtered,
 )
 ```
 
+## Data
+
 ```{ojs}
 Inputs.table(filtered)
 ```
 
+:::
 
 ```{ojs}
 data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
