@@ -1,0 +1,82 @@
+---
+title: "Layout"
+format:
+  html:
+    echo: false
+    code-tools: true
+    page-layout: custom
+---
+
+This example uses `page-layout: custom` to have its contents occupy the entire width of the page:
+
+```yaml
+---
+title: "Layout"
+format: 
+  html: 
+    page-layout: custom
+---
+```
+
+Enclose the inputs in a sidebar panel and the outputs in a tabset panel (click the "Code" button at top right to see the full source code):
+
+```{ojs}
+//| panel: sidebar
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+
+::: panel-tabset
+
+## Plot
+
+```{ojs}
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+
+## Data
+
+```{ojs}
+Inputs.table(filtered)
+```
+
+:::
+
+
+Read and filter the data based on the user's inputs:
+
+```{ojs}
+//| echo: true
+data = FileAttachment("palmer-penguins.csv").csv({typed: true})
+
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+
+

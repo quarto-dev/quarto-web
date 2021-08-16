@@ -1,0 +1,56 @@
+---
+title: "NOAA CO2"
+format: 
+  html:
+    code-tools: true
+---
+
+Read and plot a CSV of NOAA's Monthly [CO2 concentration data](https://gml.noaa.gov/ccgg/trends/data.html) from Mauna Loa:
+
+```{ojs}
+data = {
+  const co2data = await FileAttachment("co2_mm.csv")
+    .csv({ typed: true });
+  return co2data.map(d => { 
+    d["decimal date"] = Number(d["decimal date"]);
+    d.average = Number(d.average); 
+    return d; 
+  });
+}
+Plot.plot({
+  marks: [
+    Plot.line(data, 
+      { x: "decimal date", y: "average"}, 
+      { stroke: "black" }
+    )
+  ]
+})
+```
+
+Read the same data into R, do some grouping and summarization, then make it available using `ojs_define`:
+
+```{r}
+#| output: false
+#| warning: false
+library(readr)
+library(dplyr)
+
+co2 = read_csv("co2_mm.csv")  %>% 
+  group_by(year) %>% 
+  summarize(max = max(average))
+
+ojs_define(co2data = co2)
+```
+
+Now plot the summarized data:
+
+```{ojs}
+Plot.plot({
+  marks: [
+    Plot.line(transpose(co2data), 
+      {x: "year", y: "max"}, 
+      { stroke: "black" }
+    )
+  ]}
+)
+```

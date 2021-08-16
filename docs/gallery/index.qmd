@@ -1,0 +1,75 @@
+---
+title: "Gallery"
+subtitle: "Quarto can produce dozens of output formats including articles, reports, presentations, interactive documents, websites, and books. Here are some examples for inspiration."
+format:
+  html:
+    toc: false
+execute:
+  echo: false
+---
+
+```{r}
+library(htmltools)
+library(yaml)
+
+# gallery is a list of categories
+gallery <- function(gallery) {
+  tagList(lapply(gallery, category))
+}
+
+# category is a list of items with a header
+category <- function(category) {
+  withTags(tagList(
+    h2(category$category),
+    p(category$description),
+    div(
+      class = "row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3",
+      lapply(category$items, item)
+    )
+  ))
+}
+
+# item is a bootstrap card with a thumbnail
+item <- function(item) {
+  withTags({
+    div(class = "col",
+      div(class = "card border-2 rounded-3",
+        div(class = "card-header py-1 px-2 border-bottom border-1",
+          small(class = "card-text text-nowrap inline-block",
+            a(href = item$href, item$title), 
+            span(" "),
+            span(class = "fw-light", item$subtitle)
+          ),
+          a(class = "source-code card-text float-end inline-block", 
+            href = item$code,
+            title = "View source code",
+            i(class="bi-code-slash")
+          )
+        ),
+        a(href = item$href,
+          img(
+            class = "card-img-top",
+            src = item$thumbnail,
+            alt = item$description
+          )
+        )
+      )
+    )
+  })
+}
+
+# read and render the gallery
+gallery(yaml.load_file("gallery.yml"))
+```
+
+```{=html}
+<style type="text/css">
+.card a {
+  text-decoration: none;
+}
+
+.card .source-code {
+  margin-top: 3px;
+}
+</style>
+```
