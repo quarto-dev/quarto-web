@@ -1,0 +1,82 @@
+---
+title: "Visualizing 1 million points with OJS + Shiny"
+code-tools: true
+server: shiny
+---
+
+This example visualizes 1 million x/y points using 2D binning. The user can 
+choose the number of bins.
+
+This version uses client-side OJS to provide an input slider and the
+visualization, but uses server-side Shiny code to provide the data and 
+perform the binning. 
+
+Combining OJS and Shiny in this way gives us huge gains in efficiency and
+performance. Compare this to a client-only implementation here:
+<https://connect.rstudioservices.com/01-binning-ojs/01-binning-ojs.html>.
+
+Click the **Code** button above to see the source code.
+
+```{ojs}
+viewof bins = Inputs.range([10, 100], {value: 10, step: 1, label: "Bins"})
+```
+
+```{ojs}
+Plot.plot({
+  width: 600,
+  height: 600,
+  color: {
+    scheme: "blues"
+  },
+  marks: [
+    Plot.rect(transpose(rects), {x1: "x1", x2: "x2", y1: "y1", y2: "y2", fill: "z"})
+  ]
+})
+```
+
+```{r}
+#| context: server-start
+library(readr)
+library(ggplot2)
+library(dplyr)
+
+points <- read_csv("points.csv", col_types = "dd")
+
+# Quick and dirty 2D binning implementation
+bin2d <- function(x, y, breaks = 30) {
+  stopifnot(length(x) == length(y))
+  
+  # Create cut points for the x dimension's bins
+  xbreaks <- seq.int(min(x), max(x), length.out = breaks)
+  # Put each x coordinate in a bin
+  xbin <- cut(x, breaks = xbreaks, include.lowest = TRUE)
+  
+  # Now the same for y
+  ybreaks <- seq.int(min(y), max(y), length.out = breaks)
+  ybin <- cut(y, breaks = ybreaks, include.lowest = TRUE)
+  
+  # Count the number of x/y points in each 2D bin; result is a matrix
+  binned <- table(xbin, ybin)
+
+  # Convert to the data frame format that Observable Plot expects.
+  # Note that the order of arguments to expand.grid matters; the
+  # results need to line up with the matrix when it's turned into a vector
+  cbind(
+    expand.grid(x1 = head(xbreaks, -1), y1 = head(ybreaks, -1)),
+    expand.grid(x2 = tail(xbreaks, -1), y2 = tail(ybreaks, -1)),
+    z = as.vector(binned)
+  )
+}
+```
+
+```{r}
+#| context: server
+
+bins_debounced <- reactive(req(input$bins)) %>% debounce(125)
+
+df <- reactive({
+  bin2d(points$x, points$y, bins_debounced())
+})
+
+ojs_define(rects = df)
+```
