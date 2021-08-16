@@ -650,8 +650,11 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#example" class="nav-link" data-scroll-target="#example">Example</a></li>
+<li><a href="#hello-shiny" class="nav-link" data-scroll-target="#hello-shiny">Hello, Shiny</a>
+<ul class="collapse">
 <li><a href="#source-code" class="nav-link" data-scroll-target="#source-code">Source Code</a></li>
+</ul></li>
+<li><a href="#examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/interactive/js/shiny.qmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
@@ -665,8 +668,8 @@
 <p>Earlier we described how to use the <code>ojs_define()</code> function to make data from Python and R available in OJS cells. In this scenario, data pre-processing is done once during render time then all subsequent interactions are handled on the client.</p>
 <p>But what if you want to do data transformation dynamically in response to user inputs? This is also possible with <code>ojs_define()</code>, as it can be passed not just static values but also Shiny reactives (assuming it’s running inside a Shiny <a href="../shiny/ojs.qmd">interactive document</a>).</p>
 </section>
-<section id="example" class="level2">
-<h2 class="anchored" data-anchor-id="example">Example</h2>
+<section id="hello-shiny" class="level2">
+<h2 class="anchored" data-anchor-id="hello-shiny">Hello, Shiny</h2>
 <p>Here is the <a href="https://shiny.rstudio.com/gallery/kmeans-example.html">K-Means Clustering</a> example from the Shiny Gallery implemented with an OJS client and Shiny Server:</p>
 <div id="fig-anonymous-8401878" class="border quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -674,9 +677,8 @@
 </figure>
 </div>
 <p>You can see the document deployed at <a href="https://jjallaire.shinyapps.io/kmeans-shiny-ojs/" class="uri">https://jjallaire.shinyapps.io/kmeans-shiny-ojs/</a>.</p>
-</section>
-<section id="source-code" class="level2">
-<h2 class="anchored" data-anchor-id="source-code">Source Code</h2>
+<section id="source-code" class="level3">
+<h3 class="anchored" data-anchor-id="source-code">Source Code</h3>
 <p>Let’s take a look at the source code. On the client we have familiar looking OJS inputs and a plot laid out using <code>panel: sidebar</code> and <code>panel: fill</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">//| panel: sidebar</span></span>
@@ -727,6 +729,37 @@
 <p>We designate this code as running on the server via the <code>context: server</code> option.</p>
 <p>Note that we reference several inputs that were defined by <code>viewof</code> expressions on the client (e.g.&nbsp;<code>input$xcol</code>). When these inputs change they will cause the appropriate server side reactives to re-execute.</p>
 <p>We create two reactive values (<code>selectedData</code> and <code>clusters</code>) and provide them to the client using <code>ojs_define()</code>. The plot will be automatically re-drawn on the client side when these values change.</p>
+</section>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
+<p>Along with the simple example above, there are a couple of other examples available of using OJS and Shiny together:</p>
+<table class="table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 89%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>K-Means</td>
+<td>Simple example of binding OJS inputs to Shiny inputs and shiny reactives to OJS plot inputs.</td>
+</tr>
+<tr class="even">
+<td>Binning</td>
+<td>Demonstrates fast binning of a medium sized dataset (32mb) on the server.</td>
+</tr>
+<tr class="odd">
+<td>Data Binding</td>
+<td>Demonstrates importing a notebook from<a href="https://observablehq.com" class="uri">https://observablehq.com</a> and binding it’s data field to a Shiny reactive.</td>
+</tr>
+</tbody>
+</table>
 
 <!-- -->
 </section>
