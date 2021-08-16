@@ -1,0 +1,56 @@
+---
+title: "Notebook with Data from Shiny"
+format:
+  html:
+    code-tools: 
+      source: https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/ojs/examples/_shiny/data/data-shiny-ojs.qmd
+server: shiny
+---
+
+This example takes the existing Observable notebook
+[\@d3/hexbin](https://observablehq.com/@d3/hexbin) and renders the interesting
+parts in this page (the input slider and the output plot).
+
+We also replace the data in the original notebook with our own copy of the data
+from Shiny, adding the ability to filter the data. 
+
+Click the **Code** button above to see the source code.
+
+```{ojs}
+// Import the hexbin notebook, replacing its data with our own
+import {viewof radius, chart} with {data as data} from "@d3/hexbin";
+
+// The data used by the chart is this: a transposed version of the
+// diamonds Shiny reactive that is defined in the R chunk below.
+data = transpose(diamonds)
+```
+
+
+```{ojs}
+//| panel: sidebar
+viewof radius
+
+viewof cut = {
+  const levels = ["Fair", "Good", "Very Good", "Premium", "Ideal"];
+  return Inputs.select(levels, {value: levels, multiple: true, label: "Filter by cut:"});
+}
+```
+
+
+```{ojs}
+//| panel: fill
+chart
+```
+
+
+```{r}
+#| context: server
+library(dplyr)
+
+diamonds <- reactive({
+  ggplot2::diamonds %>%
+    filter(cut %in% input$cut) %>%
+    select(x = carat, y = price)
+})
+ojs_define(diamonds)
+```

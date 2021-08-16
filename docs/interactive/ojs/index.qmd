@@ -1,0 +1,240 @@
+---
+title: "Observable JS"
+execute:
+  echo: false
+---
+
+## Overview
+
+Quarto includes native support for [Observable JS](https://observablehq.com/@observablehq/observables-not-javascript), a set of enhancements to vanilla JavaScript created by [Mike Bostock](https://en.wikipedia.org/wiki/Mike_Bostock) (also the author of [D3](https://d3js.org/)). Observable JS is distinguished by its [reactive runtime](https://github.com/observablehq/runtime), which is especially well suited for interactive data exploration and analysis.
+
+The creators of Observable JS (Observable, Inc.) run a hosted service at <https://observablehq.com/> where you can create and publish notebooks. Additionally, you can use Observable JS ("OJS") in standalone documents and websites via its [core libraries](https://github.com/observablehq). Quarto uses these libraries along with a [compiler](https://github.com/asg017/unofficial-observablehq-compiler/tree/beta) that is run at render time to enable the use of OJS within Quarto documents.
+
+OJS works in any Quarto document (plain markdown as well as Jupyter and Knitr documents). Just include your code in an `{ojs}` executable code block. The rest of this article explains the basics of using OJS with Quarto.
+
+## Example
+
+We'll start with a simple example based on Allison Horst's [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):
+
+```{ojs}
+filtered = transpose(data).filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+
+```{ojs}
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+
+```{ojs}
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+
+Let's take a look at the source code for this example. First we create an `{ojs}` cell that reads in some data from a CSV file using a [FileAttachment](https://observablehq.com/@observablehq/file-attachments):
+
+```` java
+```{{ojs}}
+data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
+```
+````
+
+The example above doesn't plot all of the data but rather a filtered subset. To create our filter we'll need some inputs, and we'll want to be able to use the values of these inputs in our filtering function. To do this, we use the `viewof` keyword and with some standard [Inputs](https://observablehq.com/@observablehq/inputs):
+
+```` java
+```{{ojs}}
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+````
+
+Now we write the filtering function that will transform the `data` read from the CSV using the values of `bill_length_min` and `island`.
+
+```` java
+```{{ojs}}
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+````
+
+Here we see reactivity in action: we don't need any special syntax to refer to the dynamic input values, they "just work", and the filtering code is automatically re-run when the inputs change. This works in much the same way a spreadsheet works when you update a cell and other cells that refer to it are recalculated.
+
+Finally, we'll plot the filtered data using [Observable Plot](https://observablehq.com/@observablehq/plot) (an open-source JavaScript library for quick visualization of tabular data):
+
+```` java
+```{{ojs}}
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
+````
+
+Note that as with our inputs, we refer to the `filtered` variable with no special syntax---the plotting code will be automatically re-run whenever `filtered` changes (which in turn is updated whenever an input changes).
+
+That covers a basic end-to-end use of OJS (see the [Penguins](examples/penguins.qmd) examples for the full source code).
+
+::: {.callout-tip appearance="simple"}
+If you take a look at the [Penguins](examples/penguins.qmd) code, you'll notice something curious: the inputs and plotting code are defined *before* the data processing code. This demonstrates a critical difference between OJS cell execution and traditional notebooks: cells do not need to be defined in any particular order.
+
+Because execution is fully reactive, the runtime will automatically execute cells in the correct order based on how they reference each other. This is more akin to a spreadsheet than a traditional notebook with linear cell execution.
+:::
+
+## Libraries
+
+Our example above made use of several standard libraries, including:
+
+1.  [Observable stdlib](https://github.com/observablehq/stdlib) --- Core primitives for DOM manipulation, file handling, importing code, and much more.
+
+2.  [Observable Inputs](https://github.com/observablehq/inputs) --- Standard inputs controls including sliders, drop-downs, tables, check-boxes, etc.
+
+3.  [Observable Plot](https://github.com/observablehq/plot) --- High level plotting library for exploratory data visualization.
+
+The libraries are somewhat special because they are automatically available within notebooks on <https://observablehq.com> as well as within `{ojs}` cells in Quarto documents.
+
+Using other JavaScript libraries is also straightforward, they just need to be explicitly imported. For example, here we import a some libraries using the [require](https://github.com/observablehq/stdlib#require) function (which in turn loads NPM modules from [jsDelivr](https://www.jsdelivr.com/){.uri}):
+
+```` java
+```{{ojs}}
+d3 = require("d3@6")
+topojson = require("topojson")
+```
+````
+
+See the article on [Libraries](libraries.qmd) to learn more about using standard and third-party libraries.
+
+## Data Sources
+
+In our initial example we used a [FileAttachment](https://github.com/observablehq/stdlib#file-attachments) as our data source. File attachments support many formats including CSV, TSV, JSON, SQLite, and Arrow so are a convenient way to read a dataset that has already been prepared for analysis.
+
+Frequently though you'll need to do some pre-processing of your data in Python or R before it's ready for visualization. Within Quarto, you can do this pre-processing during document render then make the results available to OJS.
+
+Use the `ojs_define()` function from Python or R to define variables that you want to use within JavaScript. For example, to reproduce the simple CSV read in Python you might do this:
+
+```{python}
+import pandas as pd
+penguins = pd.read_csv("examples/palmer-penguins.csv")
+ojs_define(data = penguins)
+```
+
+```` java
+```{{python}}
+import pandas as pd
+penguins = pd.read_csv("palmer-penguins.csv")
+ojs_define(data = penguins)
+```
+````
+
+The call to `ojs_define(data = penguins)` says that we want to make a variable named `data` (with the value of the `penguins` data frame) available to OJS
+
+Depending on the visualization library you use, one additional step may be required to consume the data from JavaScript. In this case, the `Plot` function expects data by row rather than by column, so we `transpose()` it before filtering:
+
+```` java
+```{{ojs}}
+filtered = transpose(data).filter(function(penguin) {
+  return bill_length_min < penguin.bill_length &&
+         islands.includes(penguin.island);
+})
+```
+````
+
+See the article on [Data Sources](data-sources.qmd) to learn more about the various ways to prepare and read data.
+
+## OJS Cells
+
+There are many options available to customize the behavior of `{ojs}` code cells, including showing, hiding, and collapsing code as well as controlling the visibility and layout of outputs.
+
+The most important cell option to be aware of is the `echo` option, which controls whether source code is displayed. You'll have different preferences depending on whether you are embedding visualizations in an article or creating a notebook or full-on tutorial.
+
+Code in `{ojs}` cells is displayed by default. To prevent display of code for an entire document, set the `echo: false` option in YAML metadata:
+
+``` yaml
+---
+title: "My Document"
+execute:
+  echo: false
+---
+```
+
+You can also specify this option on a per-cell basis. For example:
+
+```` java
+```{{ojs}}
+//| echo: false
+data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
+```
+````
+
+To learn about all of the options available, see the article on [OJS Cells](ojs-cells.qmd).
+
+## Learning More
+
+These articles go into more depth on using OJS in Quarto documents:
+
+-   [Libraries](libraries.qmd) covers using standard libraries and external JavaScript libraries.
+
+-   [Data Sources](data-source.qmd) outlines the various ways to read and pre-process data.
+
+-   [OJS Cells](ojs-cells.qmd) goes into more depth on cell execution, output, and layout.
+
+-   [Shiny Reactives](shiny.qmd) describes how to integrate Shiny with OJS.
+
+-   [Code Reuse](code-reuse.qmd) delves into ways to re-use OJS code across multiple documents.
+
+If you want to learn more about the underlying mechanics of reactivity, check out these notebooks from [Mike Bostock](https://observablehq.com/@mbostock):
+
+-   [Five Minute Introduction](https://observablehq.com/@observablehq/five-minute-introduction)
+
+-   [Observable's not JavaScript](https://observablehq.com/@observablehq/observables-not-javascript)
+
+-   [Introduction to Views](https://observablehq.com/@observablehq/introduction-to-views)
+
+-   [How Observable Runs](https://observablehq.com/@observablehq/how-observable-runs)

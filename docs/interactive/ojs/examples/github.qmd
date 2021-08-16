@@ -1,0 +1,51 @@
+---
+title: "GitHub API"
+format: 
+  html:
+    toc: false
+    code-tools: true
+---
+
+Demonstration of using the [GitHub API](https://developer.github.com/v3). 
+
+```{ojs}
+//| code-fold: true
+viewof repo = Inputs.radio(
+  [
+    "pandas-dev/pandas",
+    "tidyverse/ggplot2",
+  ], 
+  { label: "Repo:", value: "pandas-dev/pandas"}
+)
+```
+
+```{ojs}
+//| code-fold: true
+import { chart } with { commits as data } from "@d3/d3-bubble-chart"
+chart
+```
+
+
+## Data
+
+```{ojs}
+d3 = require('d3')
+contributors = await d3.json(
+  "https://api.github.com/repos/" + repo + "/stats/contributors"
+)
+commits = contributors.map(contributor => {
+  const author = contributor.author;
+  return {
+    name: author.login,
+    title: author.login,
+    group: author.type,
+    value: contributor.total
+  }
+})
+```
+
+```{ojs}
+Inputs.table(commits, { sort: "value", reverse: true })
+```
+
+

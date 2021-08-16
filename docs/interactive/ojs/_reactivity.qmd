@@ -1,0 +1,188 @@
+---
+title: "Reactivity"
+---
+
+The interactivity in interactive Quarto documents comes from the
+*reactive* values provided by Observable's JavaScript dialect.
+
+# Basics
+
+## Inputs
+
+```{ojs}
+//| echo: false
+md`There are a number of built-in reactive values in Observable you can use, and they automatically change as needed. For example, the local time of day (in milliseconds) is available as the \`now\` variable: ${now}; the width of the Quarto text area is available as \`width\`: ${width}. If you use these values as inputs in your code, you expressions will automatically be recomputed as the values change. For the full set of built-in values, see the [standard library documentation](https://github.com/observablehq/stdlib/blob/main/README.md).`
+```
+
+To obtain values from user input, start with Observable's Inputs
+library, which gives you a simple way to create interactive inputs:
+
+```{ojs}
+viewof number = Inputs.range([10, 100], { value: 50, step: 1 })
+viewof text = Inputs.text()
+```
+
+That `viewof` statement is special to Observable's runtime.  For now,
+just remember that input value expressions should have `viewof` in
+front of them.
+
+## Outputs
+
+An interactive output is just a JavaScript expression. If that
+expression includes reactive inputs, the Observable runtime library will
+automatically update the output when the input changes:
+
+```{ojs}
+md`Output: **You typed "${text}" into the text box, and the slider value is ${number}.**`
+```
+
+Outputs can be anything that JavaScript can create, including HTML and
+SVG elements. This green rectangle below will change with the value of the
+slider:
+
+```{ojs}
+//| echo: false
+{
+  let result = DOM.svg(width, 50);
+  let rect = svg`<rect width=${number} height="30" y="10" x="10" fill="green"></rect>`
+  let label = svg`<text>${text}</text>`;
+  result.appendChild(rect);
+  rect.appendChild(label);
+  return result;
+}
+```
+
+# Example: [conditioning on a collider](http://www.the100.ci/2017/03/14/that-one-weird-third-variable-problem-nobody-ever-mentions-conditioning-on-a-collider/)
+
+Imagine a simplistic scenario where the **fame** of an actor is a weighted function of **talent** and **looks**, each measured as independent quantities.
+
+```{ojs}
+//| echo: false
+viewof talentWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: "talent weight" })
+viewof looksWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: "looks weight" })
+viewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: "minimum fame" })
+```
+
+The data for the actors visualization is computed in Python:
+
+```{python}
+import numpy
+import pandas as pd
+ojs_define(points = pd.DataFrame(dict(
+    x = numpy.random.randn(100),
+    y = numpy.random.randn(100))))
+```
+
+The *fame* value for each actor, on the other hand, uses the JavaScript UI elements and so
+is computed as a JavaScript value:
+
+```{ojs}
+//| output: false 
+actors = transpose(points).map(v => ({
+  talent: v.x,
+  looks: v.y,
+  fame: v.x * talentWeight + v.y * looksWeight
+}));
+```
+
+If we look at actors that are talented or good-looking, a surprising phenomenon happens: there appears to be a causal relationship between two independent variables. 
+This idea that "the better a famous actor looks, the less talented they are" manifests itself in our model as a sloped line fit.
+The reality, however, is that it's simply more common for actors to be good-looking but not too talented or talented but not too good-looking, than it is for actors to be good-looking *and* talented. 
+
+```{ojs}
+//| label: fig-collider
+//| fig-cap: "An example of conditioning on a collider. When you fit a regression line to a dataset that has undergone a selection process that depends on multiple values, there exists a dependency between the two values, but there's no causation relationship."
+//| echo: false
+{
+  const result = d3.create("svg").attr("width", width).attr("height", 300);
+  const margin = 20;
+  const xScale = d3.scaleLinear().domain([-2, 2]).range([margin, 300 - margin]);
+  const yScale = d3.scaleLinear().domain([-2, 2]).range([300 - margin, margin]);
+  const points = result
+    .append("g")
+    .selectAll("circle")
+    .data(actors)
+    .join(enter => {
+       const sel = enter
+         .append("circle")
+         .attr("r", 3)
+         .attr("cx", d => xScale(d.talent))
+         .attr("cy", d => yScale(d.looks))
+         .attr("fill", d3.lab(50, 40, 20));
+       return sel.filter(d => d.fame <= minimum)
+         .attr("fill", "rgb(200, 200, 200)")
+         .attr("r", 2);
+    });
+    
+  const linearRegression = regression.regressionLinear()
+    .x(d => d.talent)
+    .y(d => d.looks)
+    .domain([-2, 2]);
+
+  const chosenActors = actors
+    .filter(d => d.fame > minimum);
+
+  const line = result
+    .append("g")
+    .append("line")
+    .attr("stroke", d3.lab(20, 40, 20))
+    .attr("stroke-width", 1.5)
+    .datum(linearRegression(chosenActors))
+    .attr("x1", d => xScale(d[0][0]))
+    .attr("x2", d => xScale(d[1][0]))
+    .attr("y1", d => yScale(d[0][1]))
+    .attr("y2", d => yScale(d[1][1]));
+
+
+  const xAxis = d3.axisBottom(xScale).ticks(3);
+  result.append("g")
+    .attr("transform", `translate(0, ${yScale(0)})`)
+    .call(xAxis);
+
+  result.append("text")
+    .attr("x", xScale(0.05))
+    .attr("y", yScale(2))
+    .text("Looks");
+
+  result.append("text")
+    .attr("y", yScale(0))
+    .attr("x", xScale(2))
+    .text("Talent");
+
+  const yAxis = d3.axisLeft(yScale).ticks(3);
+  result.append("g")
+    .attr("transform", `translate(${xScale(0)}, 0)`)
+    .call(yAxis);
+  
+  return result.node();
+}
+```
+
+# More details
+
+## All the inputs in the standard library
+
+There are many ready-made input UI elements: see the [Observable documentation]() for details.
+
+## Reactivity in depth
+
+TBF
+
+* Generators
+* Converting callback style to reactive style
+* Converting reactive style to callback style
+
+<!-- Includes + Definitions -->
+
+```{ojs}
+//| echo: false
+//| output: false
+transpose = function(df)
+{
+  const keys = Object.keys(df);
+  return df[keys[0]]
+    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))
+    .filter(v => Object.values(v).every(e => e !== undefined));
+}
+regression = require('d3-regression@1');
+```
