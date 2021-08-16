@@ -652,8 +652,13 @@
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
 <li><a href="#hello-shiny" class="nav-link" data-scroll-target="#hello-shiny">Hello, Shiny</a>
 <ul class="collapse">
-<li><a href="#how-it-works" class="nav-link" data-scroll-target="#how-it-works">How It Works</a></li>
+<li><a href="#source-code" class="nav-link" data-scroll-target="#source-code">Source Code</a></li>
+</ul></li>
 <li><a href="#examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+<li><a href="#bindings" class="nav-link" data-scroll-target="#bindings">Bindings</a>
+<ul class="collapse">
+<li><a href="#ojs-to-shiny" class="nav-link" data-scroll-target="#ojs-to-shiny">OJS to Shiny</a></li>
+<li><a href="#shiny-to-ojs" class="nav-link" data-scroll-target="#shiny-to-ojs">Shiny to OJS</a></li>
 </ul></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/interactive/ojs/shiny.qmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
@@ -677,8 +682,8 @@
 </figure>
 </div>
 <p>You can see the document deployed at <a href="https://jjallaire.shinyapps.io/kmeans-shiny-ojs/" class="uri">https://jjallaire.shinyapps.io/kmeans-shiny-ojs/</a>.</p>
-<section id="how-it-works" class="level3">
-<h3 class="anchored" data-anchor-id="how-it-works">How It Works</h3>
+<section id="source-code" class="level3">
+<h3 class="anchored" data-anchor-id="source-code">Source Code</h3>
 <p>Let’s take a look at the source code. On the client we have familiar looking OJS inputs and a plot laid out using <code>panel: sidebar</code> and <code>panel: fill</code>:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode java code-with-copy"><code class="sourceCode java"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">//| panel: sidebar</span></span>
@@ -730,14 +735,15 @@
 <p>Note that we reference several inputs that were defined by <code>viewof</code> expressions on the client (e.g.&nbsp;<code>input$xcol</code>). When these inputs change they will cause the appropriate server side reactives to re-execute.</p>
 <p>We create two reactive values (<code>selectedData</code> and <code>clusters</code>) and provide them to the client using <code>ojs_define()</code>. The plot will be automatically re-drawn on the client side when these values change.</p>
 </section>
-<section id="examples" class="level3">
-<h3 class="anchored" data-anchor-id="examples">Examples</h3>
+</section>
+<section id="examples" class="level2">
+<h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>Here are some examples that demonstrate various ways to use OJS with Shiny:</p>
 <table class="table">
 <colgroup>
-<col style="width: 20%">
-<col style="width: 41%">
-<col style="width: 37%">
+<col style="width: 30%">
+<col style="width: 14%">
+<col style="width: 55%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -749,21 +755,53 @@
 <tbody>
 <tr class="odd">
 <td><a href="https://jjallaire.shinyapps.io/kmeans-shiny-ojs/">K-Means</a></td>
-<td><a href="https://jjallaire.shinyapps.io/kmeans-shiny-ojs/">Code</a></td>
+<td><a href="https://git.io/J0kPK">Code</a></td>
 <td>Simple example of binding OJS inputs to Shiny inputs and shiny reactives to OJS plots.</td>
 </tr>
 <tr class="even">
 <td><a href="https://jjallaire.shinyapps.io/binning-shiny-ojs/">Binning</a></td>
-<td><a href="https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/ojs/examples/_shiny/binning/binning-shiny-ojs.qmd">Code</a></td>
+<td><a href="https://git.io/J0kPu">Code</a></td>
 <td>Demonstrates fast binning of a medium sized dataset (32mb) on the server.</td>
 </tr>
 <tr class="odd">
 <td><a href="https://jjallaire.shinyapps.io/data-shiny-ojs/">Data Binding</a></td>
-<td><a href="https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/ojs/examples/_shiny/data/data-shiny-ojs.qmd">Code</a></td>
+<td><a href="https://git.io/J0kPl">Code</a></td>
 <td>Demonstrates importing a notebook from <a href="https://observablehq.com" class="uri">https://observablehq.com</a> and binding it’s data field to a Shiny reactive.</td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="bindings" class="level2">
+<h2 class="anchored" data-anchor-id="bindings">Bindings</h2>
+<section id="ojs-to-shiny" class="level3">
+<h3 class="anchored" data-anchor-id="ojs-to-shiny">OJS to Shiny</h3>
+<p>In the example above we took advantage of the fact that by default OJS <code>viewof</code> expressions are automatically propagated to Shiny inputs (e.g <code>input$xcol</code>). This provides a reasonable separation of concerns, and prevents excess network traffic in the case that you have large OJS variables.</p>
+<p>However, if you want to use other OJS variables as Shiny inputs this is also possible using the <code>ojs-export</code> option. The default behavior maps to the following configuration:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">server</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shiny</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ojs-export</span><span class="kw">:</span><span class="at"> viewof</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also specify <code>ojs-export: all</code> to cause all OJS reactives to be bound to Shiny inputs:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">server</span><span class="kw">:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shiny</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ojs-export</span><span class="kw">:</span><span class="at"> all</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Alternatively, you can specify a list of OJS reactives by name (including using <code>~</code> to filter out reactives), and optionally combine this with the <code>viewof</code> and/or <code>all</code> options. For example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">server</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shiny</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ojs-export</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">all</span><span class="kw">,</span><span class="at"> ~large_dataset</span><span class="kw">]</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="shiny-to-ojs" class="level3">
+<h3 class="anchored" data-anchor-id="shiny-to-ojs">Shiny to OJS</h3>
+<p>Less common but occasionally useful is the ability to bind Shiny inputs into OJS. By default no such bindings occur, however you can use the <code>ojs-import</code> option to opt-in for specific Shiny inputs. For example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">server</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> shiny</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ojs-import</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">minimum</span><span class="kw">,</span><span class="at"> maximum</span><span class="kw">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 <!-- -->
 </section>
