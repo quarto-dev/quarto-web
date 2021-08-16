@@ -91,3 +91,50 @@ Here are some examples that demonstrate various ways to use OJS with Shiny:
 | [K-Means](https://jjallaire.shinyapps.io/kmeans-shiny-ojs/)    | [Code](https://git.io/J0kPK) | Simple example of binding OJS inputs to Shiny inputs and shiny reactives to OJS plots.                             |
 | [Binning](https://jjallaire.shinyapps.io/binning-shiny-ojs/)   | [Code](https://git.io/J0kPu) | Demonstrates fast binning of a medium sized dataset (32mb) on the server.                                          |
 | [Data Binding](https://jjallaire.shinyapps.io/data-shiny-ojs/) | [Code](https://git.io/J0kPl) | Demonstrates importing a notebook from <https://observablehq.com> and binding it's data field to a Shiny reactive. |
+
+## Bindings
+
+### OJS to Shiny
+
+In the example above we took advantage of the fact that by default OJS `viewof` expressions are automatically propagated to Shiny inputs (e.g `input$xcol`). This provides a reasonable separation of concerns, and prevents excess network traffic in the case that you have large OJS variables.
+
+However, if you want to use other OJS variables as Shiny inputs this is also possible using the `ojs-export` option. The default behavior maps to the following configuration:
+
+``` yaml
+---
+server:
+  type: shiny
+  ojs-export: viewof
+---
+```
+
+You can also specify `ojs-export: all` to cause all OJS reactives to be bound to Shiny inputs:
+
+``` yaml
+---
+server:
+  type: shiny
+  ojs-export: all
+---
+```
+
+Alternatively, you can specify a list of OJS reactives by name (including using `~` to filter out reactives), and optionally combine this with the `viewof` and/or `all` options. For example:
+
+``` yaml
+---
+server:
+  type: shiny
+  ojs-export: [all, ~large_dataset]
+---
+```
+
+### Shiny to OJS
+
+Less common but occasionally useful is the ability to bind Shiny inputs into OJS. By default no such bindings occur, however you can use the `ojs-import` option to opt-in for specific Shiny inputs. For example:
+
+``` yaml
+---
+server: 
+  type: shiny
+  ojs-import: [minimum, maximum]
+```
