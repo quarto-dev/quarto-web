@@ -95,14 +95,21 @@ html-math-method:
 
 Available math rendering methods include:
 
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Method    | Description                                                                                                                                                                                                                      |
-|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
++===========+==================================================================================================================================================================================================================================+
 | `mathjax` | Use [MathJax](https://www.mathjax.org/) to display embedded TeX math in HTML output.                                                                                                                                             |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `katex`   | Use [KaTeX](https://github.com/Khan/KaTeX) to display embedded TeX math in HTML output.                                                                                                                                          |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `webtex`  | Convert TeX formulas to `<img>` tags that link to an external script that converts formulas to images.                                                                                                                           |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `gladtex` | Enclose TeX math in `<eq>` tags in HTML output. The resulting HTML can then be processed by [GladTeX](https://humenda.github.io/GladTeX/) to produce images of the typeset formulas and an HTML file with links to these images. |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mathml`  | Convert TeX math to [MathML](https://www.w3.org/Math/) (note that currently only Firefox and Safari natively support MathML)                                                                                                     |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `plain`   | No special processing (formulas are put inside a `span` with `class="math").`                                                                                                                                                    |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Note that this is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
 
@@ -248,19 +255,45 @@ format:
 
 Anchor links are also automatically added to figures and tables that have a [cross reference](../authoring/cross-references.md) defined.
 
-## Reference Popups
+## External Links
 
-Hover over @xie2015 to see a reference to the definitive book on knitr[^1].
+By default external links (i.e. links that don't target the current site) receive no special visual adornment or navigation treatment (the current page is navigated). You can use the following options to modify this behavior:
 
-[^1]: knitr is an R package for creating dynamic documents.
+| Option                    | Description                                                                                            |
+|---------------------------|--------------------------------------------------------------------------------------------------------|
+| `link-external-icon`      | `true` to show an icon next to the link to indicate that it's external (e.g. [external](#){.external}) |
+| `link-external-newwindow` | `true` to open external links in a new browser window or tab (rather than navigating the current tab). |
 
-Control this behavior with the following options:
+For example, here we enable both options:
 
 ``` yaml
 format:
   html:
-    hover-citations: true
-    hover-footnotes: true
+    link-external-icon: true
+    link-external-newwindow: true
+```
+
+You can also specify one or both of these behaviors for an individual link using the `.external` class and `target` attribute. For example:
+
+``` python
+[example](https://example.com){.external target="_blank"}
+```
+
+## Reference Popups
+
+If you hover your mouse over the citation and footnote in this sentence you'll see a popup displaying the reference contents:
+
+   Hover over @xie2015 to see a reference to the definitive book on knitr[^1].
+
+[^1]: knitr is an R package for creating dynamic documents.
+
+This behavior is enabled by default. You can disable it with the following options:
+
+``` yaml
+format:
+  html:
+    hover-citations: false
+    hover-footnotes: false
 ```
 
 ## Commenting
@@ -280,7 +313,7 @@ comments:
     theme: clean
 ```
 
-You can enable [Utterances](https://utteranc.es/) commenting using the `utterances` option. Here you need to specify at least the Git repo you want to use for storing comments:
+You can enable [Utterances](https://utteranc.es/){.external} commenting using the `utterances` option. Here you need to specify at least the Git repo you want to use for storing comments:
 
 ``` yaml
 comments:
