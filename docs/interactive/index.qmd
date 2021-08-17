@@ -9,7 +9,7 @@ execute:
 
 Adding interactivity to an article is a great way to help readers explore the concepts and data you are presenting more deeply. There are three ways to add interactive components to Quarto documents:
 
-1.  Create custom [JavaScript](js/) visualizations using Observable.
+1.  Create custom JavaScript visualizations using [Observable JS](ojs/).
 
 2.  Use the [Shiny](shiny/) R package to add interactivity to Knitr engine documents.
 
@@ -19,10 +19,10 @@ Each of these techniques has distinct benefits and drawbacks in terms of express
 
 ## JavaScript
 
-Quarto includes native support for executing [Observable JavaScript](https://observablehq.com/@observablehq/five-minute-introduction), a set of extensions to JavaScript created by [Mike Bostock](https://en.wikipedia.org/wiki/Mike_Bostock) (the creator of [D3](https://d3js.org/)). Observable is distinguished by its [reactive runtime](https://github.com/observablehq/runtime), which is especially well suited for interactive data exploration and analysis.
+Quarto includes native support for [Observable JS](https://observablehq.com/@observablehq/observables-not-javascript), a set of enhancements to vanilla JavaScript created by [Mike Bostock](https://en.wikipedia.org/wiki/Mike_Bostock) (also the author of [D3](https://d3js.org/)). Observable JS is distinguished by its [reactive runtime](https://github.com/observablehq/runtime), which is especially well suited for interactive data exploration and analysis.
+
 
 Here's an example that provides slider inputs to condition the behavior of a visualization:
-
 
 ```{ojs}
 //| echo: false
@@ -32,7 +32,6 @@ viewof talentWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: "ta
 viewof looksWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: "looks weight" })
 viewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: "minimum fame" })
 ```
-
 
 ```{ojs}
 //| echo: false
@@ -105,7 +104,6 @@ viewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: "minimum f
 }
 ```
 
-
 ```{python}
 #| echo: false
 #| output: true
@@ -115,7 +113,6 @@ ojs_define(points = pd.DataFrame(dict(
     x = numpy.random.randn(100),
     y = numpy.random.randn(100))))
 ```
-
 
 ```{ojs}
 //| output: false 
@@ -139,10 +136,9 @@ transpose = function(df)
 regression = require('d3-regression@1');
 ```
 
-
 Observable JavaScript uses some special keywords and a custom runtime to make JavaScript reactive. For example, the "minimum fame" slider in the example above was created with the following code:
 
-```js
+``` js
 viewof minimum = Inputs.range([-2, 2], { 
   value: 1, step: 0.01, 
   label: "minimum fame"
@@ -151,7 +147,7 @@ viewof minimum = Inputs.range([-2, 2], {
 
 It's then referenced as a normal JavaScript variable in code that creates the plot:
 
-```js
+``` js
 sel.filter(d => d.fame <= minimum)
 ```
 
@@ -159,8 +155,7 @@ As the user interacts with the slider, the `minimum` value is updated and any co
 
 One benefit of using JavaScript for interactive documents is that all the logic and computation is performed on the client (so no server is required for deployment).
 
-To learn more see the articles on [Using JavaScript with Quarto](js/).
-
+To learn more see the articles on [Observable JS](ojs/).
 
 ## Shiny
 
@@ -193,7 +188,7 @@ mainPanel(
   plotOutput(outputId = "lineplot", 
              height = "300px"),
 )
-```   
+```
 
 Build your plots or tables as you normally would in R, and make them reactive with a call to the appropriate render function:
 
@@ -220,7 +215,7 @@ To learn more see the articles on [Using Shiny with Quarto](shiny/).
 
 For example, the following Python code is all that is required to embed a Leaflet map into a Jupyter engine document:
 
-````{.python}
+```` python
 ```{{python}}
 from ipyleaflet import Map, Marker, basemaps, basemap_to_tiles
 m = Map(
