@@ -1,6 +1,9 @@
 ---
 title: "Old Faithful"
-format: html
+format: 
+  html:
+    code-tools: 
+      source: https://github.com/quarto-dev/quarto-web/tree/main/docs/interactive/shiny/_examples/old-faithful/shiny-old-faithful.qmd
 server: shiny
 ---
 
@@ -12,3 +15,14 @@ plotOutput("distPlot")
 ```
 
 The data consists of 299 pairs of measurements, referring to the time interval between the starts of successive eruptions and the duration of the subsequent eruption.
+
+Click the **Code** button above to see the source code for this example.
+
+```{r}
+#| context: server
+output$distPlot <- renderPlot({
+  x <- faithful[, 2]  # Old Faithful Geyser data
+  bins <- seq(min(x), max(x), length.out = input$bins + 1)
+  hist(x, breaks = bins, col = 'darkgray', border = 'white')
+})
+```
