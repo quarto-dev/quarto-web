@@ -10,18 +10,19 @@ format:
 
 Quarto Books are combinations of multiple documents (chapters) into a single manuscript. Books can be created in a variety of formats:
 
--   PDF
 -   HTML
--   EPUB
+-   PDF
 -   MS Word
+-   EPUB
 
-
-HTML books are not that different from [Quarto Websites](../websites/website-basics.qmd) save for the fact that chapters and sections are numbered and therefore support [Cross References](../authoring/cross-references.qmd).
+HTML books are actually just a special type of [Quarto Website](../websites/website-basics.qmd) and consequently support all of the same features as websites including full-text search. The most important difference is that HTML books use chapter numbers and therefore support [Cross References](../authoring/cross-references.qmd) between different chapters.
 
 Here are some examples of books created with Quarto:
 
--   [Hands on Programming with R](https://jjallaire.github.io/hopr/)
--   [Visualization Curriculum](https://jjallaire.github.io/visualization-curriculum)
+| Book                                                                             | Source                                                     |
+|----------------------------------------------------------------------------------|------------------------------------------------------------|
+| [Hands on Programming with R](https://jjallaire.github.io/hopr/)                 | [Code](https://github.com/jjallaire/hopr)                  |
+| [Visualization Curriculum](https://jjallaire.github.io/visualization-curriculum) | [Code](https://github.com/uwdata/visualization-curriculum) |
 
 ## Getting Started
 
@@ -31,10 +32,11 @@ To create a new book project, use the Quarto `create-project` command:
 quarto create-project mybook --type book
 ```
 
-This will create the scaffolding for a simple book in the `mybook` subdirectory. To build and view the HTML version of the book use the `serve` command:
+This will create the scaffolding for a simple book in the `mybook` sub-directory. To build and view the HTML version of the book use the `serve` command:
 
 ``` bash
-quarto serve mybook
+cd mybook
+quarto serve
 ```
 
 This will build the HTML version of the book and run a local web server to view it. Here's what you'll see in your browser for the simple book scaffolding:
@@ -52,7 +54,7 @@ project:
 book:
   title: "mybook"
   author: "Jane Doe"
-  date: "5/11/2021"
+  date: "8/18/2021"
   chapters:
     - index.qmd
     - intro.qmd
@@ -65,10 +67,18 @@ format:
   html:
     theme: cosmo
   pdf:
-    documentclass: report
+    documentclass: scrreport
   epub:
-    epub-cover-image: cover.png
+    cover-image: cover.png
 ```
+
+### RStudio
+
+If you are using RStudio you can also create a Quarto book via the **New Project** command:
+
+![](images/rstudio-new-book.png){.border width="531"}
+
+Render chapters within the book using the **Render** command, render the entire book using the **Render Book** command on the **Build** tab.
 
 ## Workflow
 
@@ -80,18 +90,11 @@ When working on a book, you'll typically run the local development server as des
 quarto serve
 ```
 
-If you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.
+If you are authoring within RStudio, you can run the development server within the RStudio Viewer pane using the **Server Book** command on the **Build Tab**.
+
+If you have a plain markdown file (with no computations) or a Jupyter notebook, then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (i.e. a `.qmd` file using the Knitr or Jupyter engine) then you need to explicitly re-render it to update the preview.
 
 Note that development server updates do not cause an update to the final book output. Consequently, you should always `quarto render` your site before deploying it as described below in [Publishing].
-
-### RStudio
-
-Note that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the **quarto** R package:
-
-``` r
-library(quarto)
-quarto_serve()
-```
 
 ### Publishing
 
@@ -122,14 +125,14 @@ See the documentation on [Publishing Websites](../websites/publishing-websites.q
 
 ## Learning More
 
-Once you are familiar with the basic mechanics, read the article on [Book Authoring](book-authoring.qmd) to learn about:
+Once you've got the basic book template up and running check out these articles for various ways to enhance your book:
 
--   How to structure your book (numbered and unnumbered chapters/sections, creating multiple parts, adding appendices, etc.)
+[Book Structure](book-structure.qmd) delves into different ways to structure a book (numbered and unnumbered chapters/sections, creating multiple parts, adding appendices, etc.)
 
--   Incorporating computational output from knitr or Jupyter (including tools for caching the results of longer running chapters/sections).
+[Book Crossrefs](book-crossrefs.qmd) explains how to create cross references to sections, figures, tables, equations and more within books.
 
--   Creating cross-references to chapters, sections, figures, tables, etc.
+[Book Output](book-output.qmd) covers customizing the style and appearance of your book in the various output format as well as how to provide navigation and other tools for readers.
 
--   Customizing the style and appearance of your book in the various output formats.
+[Code Execution](../projects/code-execution.qmd) provides tips for optimizing the rendering of books with large numbers of documents or expensive computations.
 
--   Providing navigation and other tools for readers (e.g. download other formats, share on twitter, suggest changes, etc.)
+[Publishing Websites](publishing-websites.qmd) enumerates the various options for publishing your book as a website including GitHub Pages, Netlify, Google Firebase, and RStudio Connect.

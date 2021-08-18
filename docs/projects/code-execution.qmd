@@ -3,7 +3,20 @@ title: "Code Execution"
 format: html
 ---
 
+## Overview
+
 Rendering a list of input files has the potential to be quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations.
+
+## Incremental Render
+
+When working on a project you are typically iterating on a single document at a time. You can render a single file (or single directory or list of files) incrementally by specifying it on the command-line:
+
+```bash
+quarto render introduction.qmd
+quarto render subdir/
+```
+
+Even though you are rendering only part of the project, any associated project-handling code is still executed. So for exmaple in a book project the entire book is still produced (using previously rendered versions of the other chapters).
 
 ## Freeze
 
@@ -34,6 +47,10 @@ quarto render articles
 Freeze is generally used when you have either a large number of collaborators or many computational documents created over a longer period of time. In both cases it can be challenging to fully re-execute every document when you render the site. This could be because some documents have esoteric or environment-specific requirements (e.g. require access/authentication to a data source) or due to general fragility of dependencies over time. Using freeze ensures that you can always reproducibly render your site.
 
 The computational results of documents executed with `freeze` are stored in the `_freeze` directory, and re-used when needed to fulfill document renders. You should check the contents of `_freeze` into version control so that others rendering the project don't need to reproduce your computational environment to render it in their environment.
+
+Note that you'll still want to take care to fully re-render your project when things outside of source code change (e.g. input data). You can remove previously frozen output by deleting the `_freeze` folder at the root of yourproject.
+
+
 
 ### Virtual Environments {#freeze-virtual-environments}
 
