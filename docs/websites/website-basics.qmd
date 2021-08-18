@@ -22,7 +22,7 @@ To create a new website project, use the Quarto `create-project` command:
 quarto create-project mysite --type site
 ```
 
-This will create the scaffolding for a simple website in the `mysite` subdirectory. Here is what the `_quarto.yml` config file will look like for the site:
+This will create the scaffolding for a simple website in the `mysite` sub-directory. Here is what the `_quarto.yml` config file will look like for the site:
 
 ``` yaml
 project:
@@ -34,9 +34,9 @@ site:
     type: dark
     background: primary
     left:
-      - href: index.md
+      - href: index.qmd
         text: Home
-      - about.md
+      - about.qmd
 
 format:
   html:
@@ -45,13 +45,22 @@ format:
     toc: true
 ```
 
-To build the website into the `_site` directory:
+To render the website into the `_site` directory:
 
 ``` bash
+cd mysite
 quarto render
 ```
 
 See the [Project Basics](../projects/quarto-projects.qmd) article to learn more about working with projects.
+
+### RStudio
+
+If you are using RStudio you can also create a Quarto website via the **New Project** command:
+
+![](images/rstudio-new-website.png){.border width="531"}
+
+Render documents within the site using the **Render** command, render the entire site using the **Render Site** command on the **Build** tab.
 
 ## Workflow
 
@@ -65,42 +74,27 @@ The browser will automatically refresh whenever you save a markdown file (`.md`)
 
 Changes to configuration files (e.g. `_quarto.yml`) as well as site resources (e.g. theme or CSS files) will also cause an automatic refresh.
 
+If you are using RStudio a site development server will be run automatically when you render a document or the site. You can also start the development server directly using the **Serve Site** command on the **Build** tab.
+
 Note that development server updates do not cause an update to the final site output. Consequently, you should always `quarto render` your site before deploying it, even if you have already previewed the changes with the development server.
 
-### RStudio {.unlisted}
+## Linking
 
-If you are using Quarto from R, you can also use the **quarto** package to run the development server:
-
-``` r
-library(quarto)
-quarto_serve()
-```
-
-## Resources
-
-Besides input and configuration files, your site likely also includes a variety of resources (e.g. images) that you will want to publish along with your site. Quarto will automatically detect any files that you reference within your site and copy them to the output directory (e.g. `_site`).
-
-If this auto-detection fails for any reason, or if you want to publish a file not explicitly linked to from within your site, you can add a `resources` entry to your configuration. For example, here we specify that we want to include all Excel spreadsheets within the project directory as part of the website:
-
-``` {.yaml .yml}
-project:
-  type: site
-  resources: 
-    - "*.xlsx"
-```
-
-Note that the `*.xslx` value is quoted: this is because YAML requires that strings that begin with non-alphanumeric characters be quoted.
-
-You can also add a `resources` metadata value to individual files. For example:
-
-``` yaml
-title: "My Page"
-resources:
-  - "sheet.xlsx"
-```
-
-Images are the most commonly used type of resource file. If you have global images (e.g. a logo) that you want to reference from various pages within your site, you can use a site-absolute path to refer to the images, and it will be automatically converted to a relative path during publishing. For example:
+When creating links between pages on your site, you can provide the source file as the link target (rather than the `.html` file). You can also add hash identifiers (`#)` to the source file if you want to link to a particular section in the document. For example:
 
 ``` markdown
-![](/images/logo.png)
+[about](about.qmd)
+[about](about.qmd#section)
 ```
+
+One benefit of using this style of link as opposed to targeting `.html` files directly is that if you at some point convert your site to a [book](../books/book-basics.qmd) the file-based links will automatically resolve to section links for formats that produce a single file (e.g. PDF or MS Word).
+
+## Learning More
+
+Once you've got a basic website up and running check out these articles for various ways to enhance your site:
+
+[Website Navigation](website-navigation.qmd) describes various ways to add navigation to a website, including top-level navigation bars, sidebars, or hybrid designs that uses both. This article also covers adding full-text search as well as a site-wide footer.
+
+[Website Tools](website-tools.qmd) covers adding social metadata (e.g. for Twitter Cards) and Google Analytics to your site, as well as enabling users to toggle between dark and light color schemes.
+
+[Publishing Websites](publishing-websites.qmd) enumerates the various options for publishing websites including GitHub Pages, Netlify, Google Firebase, and RStudio Connect.
