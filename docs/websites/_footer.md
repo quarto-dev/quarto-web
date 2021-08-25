@@ -26,12 +26,14 @@ You can use the `background` and `border` options to further control the appeara
 
 ``` yaml
 {{< meta project-type >}}:
-  border: false
+  footer:
+    border: false
 ```
 
 To use a light background (e.g. to match a navigation bar) you would do this:
 
 ``` yaml
 {{< meta project-type >}}:
-  background: light
+  footer:
+    background: light
 ```
