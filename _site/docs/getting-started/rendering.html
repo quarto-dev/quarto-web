@@ -535,6 +535,9 @@
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
 <li><a href="#our-document-so-far" class="nav-link" data-scroll-target="#our-document-so-far">Our Document So Far</a></li>
+<li><a href="#output-format-as-a-command-line-argument" class="nav-link" data-scroll-target="#output-format-as-a-command-line-argument">Output Format as a Command Line Argument</a></li>
+<li><a href="#output-format-as-yaml-options" class="nav-link" data-scroll-target="#output-format-as-yaml-options">Output Format as YAML Options</a></li>
+<li><a href="#multiple-formats" class="nav-link" data-scroll-target="#multiple-formats">Multiple Formats</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs\getting-started\rendering.qmd">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new">Report an issue</a></p></div></div></nav></div>
   <div class="col mx-auto col-sm-12 col-md-9 col-lg-7 col-xl-7 px-lg-4 pe-xxl-4 ps-xxl-0">
@@ -545,11 +548,11 @@
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>In the last section, we created <code>first_quarto.qmd</code>, our first Quarto document and got familiar with the <a href="your-first-quarto.html#the-quarto-workflow">Quarto Workflow</a>. Something worth noting is that there will be a <code>first_quarto.html</code> in the directory that you’re working out of. This is the rendered HTML version of the document that Quarto creates for the live preview. By default, Quarto renders all documents to HTML. But what if you’d prefer the document to be in a <code>pdf</code> or <code>docx</code> file? In this section, we’ll learn how to do just that.</p>
+<p>In the last section, we created <code>first_quarto.qmd</code>, our first Quarto document and got familiar with the <a href="your-first-quarto.html#the-quarto-workflow">Quarto Workflow</a>. Something worth noting is that there will be a <code>first_quarto.html</code> in the directory that you’re working out of. This is the rendered HTML version of the document that Quarto creates for the live preview. But what if you’d prefer the document to be in a <code>pdf</code> or <code>docx</code> file? In this section, we’ll learn how to do just that.</p>
 </section>
 <section id="our-document-so-far" class="level2">
 <h2 class="anchored" data-anchor-id="our-document-so-far">Our Document So Far</h2>
-<p>In case you didn’t follow along from the previous section, here is the contents of <code>first_quarto.qmd</code>, the document that we’re working with:</p>
+<p>In case you didn’t follow along from the previous section, here are the contents of <code>first_quarto.qmd</code>, the document that we’re working with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> My first Quarto doc</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
@@ -566,11 +569,120 @@
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="al">![](surus.png)</span>{fig-alt="A painting of Surus."}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If you don’t have <code>surus.png</code>, download it from <a href="images/surus.png">here</a> and save it to the same directory as <code>first_quarto.qmd</code>. Here is what the above Markdown looks like in the live preview:</p>
-<p><img src="images/first_render_4.png" class="borderless-screenshot img-fluid" alt="A screenshot of the above Markdown chunk rendered by Quarto."></p>
-<p>Right now, there are two main ways to change the final output format of <code>first_quarto.qmd</code>:</p>
+<p><img src="images/first_render_4.png" class="borderless-screenshot img-fluid" alt="A screenshot of the above Markdown chunk rendered by Quarto." width="500"></p>
+<p>What’s going on behind the scenes of the Quarto live preview is that Quarto is rendering the document to HTML and pushing it to either your browser or viewer pane in RStudio. There are two main ways to change the final output format of <code>first_quarto.qmd</code>:</p>
 <ol type="1">
-<li>Using the</li>
+<li>Passing the output format to the <code>quarto render</code> command from the command line</li>
+<li>Adding the output format to the <code>yaml</code> front matter</li>
 </ol>
+</section>
+<section id="output-format-as-a-command-line-argument" class="level2">
+<h2 class="anchored" data-anchor-id="output-format-as-a-command-line-argument">Output Format as a Command Line Argument</h2>
+<p>Open your command line interface and enter the following command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render first_quarto.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The console output will look something like this:</p>
+<p><img src="images/render_output_1.png" class="img-fluid" style="margin-left: auto; margin-right: auto; display: block; width: 33%" alt="The output of running quarto render first_quarto.qmd."></p>
+<p>Notice that the document is being rendered to HTML. By default, Quarto will render all documents to HTML unless you tell it otherwise, which we can do by using the <code>--to &lt;output-format&gt;</code> command line option. For example, to render <code>first_quarto.qmd</code> to a <code>docx</code>, enter:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render first_quarto.qmd <span class="at">--to</span> docx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Notice that the console output changed to reflect that we’re now rendering the document to a <code>docx</code> file:</p>
+<p><img src="images/render_output_2.png" class="img-fluid" style="margin-left: auto; margin-right: auto; display: block; width: 40%" alt="The output of running quarto render first_quarto.qmd."></p>
+<p>The final document will look something like:</p>
+<p><img src="images/docx_render_1.png" class="borderless-screenshot img-fluid" alt="The output of running quarto render first_quarto.qmd --to pdf." width="417"></p>
+<p>We can use a similar command to render the document to a <code>pdf</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render first_quarto.qmd <span class="at">--to</span> pdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The output will be something like:</p>
+<p><img src="images/pdf_render_1.png" class="borderless-screenshot img-fluid" alt="The output of running quarto render first_quarto.qmd --to pdf." width="417"></p>
+<p>Besides different output formats, Pandoc supports a wide variety of <a href="https://pandoc.org/MANUAL.html#general-options">command line options</a>, and since Quarto uses Pandoc to render the documents, all of these options are supported by <code>quarto render</code>. For example, to number the sections of the final output document, we can pass <code>--number-sections</code> as a command line argument</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Command</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Rendered Document</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labeledby="tabset-1-1-tab">
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render first_quarto.qmd <span class="at">--to</span> docx <span class="at">--number-sections</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labeledby="tabset-1-2-tab">
+<p><img src="images/docx_render_2.png" class="borderless-screenshot img-fluid" alt="A screenshot of first_quarto.qmd rendered to docx."></p>
+</div>
+</div>
+</div>
+</section>
+<section id="output-format-as-yaml-options" class="level2">
+<h2 class="anchored" data-anchor-id="output-format-as-yaml-options">Output Format as YAML Options</h2>
+<p>Note that while it is possible to pass many options via the command line, it’s often much more convenient to provide these options within the document itself as YAML front matter. For example, let’s add the <code>number-sections</code> option to our document like so:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My First Quarto Document"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>After making these changes and saving the document, you’ll notice that the preview now has numbered sections:</p>
+<p><img src="images/first_render_5.png" class="borderless-screenshot img-fluid" alt="A screenshot of the above Markdown chunk rendered by Quarto."></p>
+<p>Now we can render the document to a <code>docx</code> without passing the <code>--number-sections</code> option:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render first_quarto.qmd <span class="at">--to</span> docx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The resulting <code>first_quarto.docx</code> will have numbered sections without us having to pass the argument.</p>
+<p>Similarly, we can add the desired output format to the YAML front matter. For instance, to output to <code>docx</code> by default, we can do:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My First Quarto Document"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> docx</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now that we have put these options in the YAML front matter, we can simply call <code>quarto render</code> to get the desired result:</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Command</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Rendered Document</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labeledby="tabset-2-1-tab">
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render first_quarto.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labeledby="tabset-2-2-tab">
+<p><img src="images/docx_render_2.png" class="borderless-screenshot img-fluid" alt="A screenshot of first_quarto.qmd rendered to docx."></p>
+</div>
+</div>
+</div>
+<p>Note that in this case rendering with no explicit <code>--to</code> argument results in a <code>docx</code>, since <code>format: docx</code> is specified in the YAML.</p>
+<p>Options may include any of the defined Pandoc metadata <a href="https://pandoc.org/MANUAL.html#variables">variables</a> or <a href="https://pandoc.org/MANUAL.html#default-files">defaults</a>. For example, here we take advantage of quite a few more options for PDF generation:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My First Quarto Document"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Jane Doe"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> pdf</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">documentclass</span><span class="kw">:</span><span class="at"> report</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">geometry</span><span class="kw">:</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> top=30mm</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> left=20mm</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> heightrounded</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Render the document with <code>quarto render first_quarto.qmd</code> and see how all the options affected the final output.</p>
+<p>This method of including options in the YAML front matter is usually preferable to passing them on the command line because:</p>
+<ol type="1">
+<li>It is much easier to reproduce a document this way since all of the options are in the document itself</li>
+<li>As you add more options, the command will become very big and difficult to edit. Editing options in the YAML of a document is much easier to do.</li>
+</ol>
+</section>
+<section id="multiple-formats" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-formats">Multiple Formats</h2>
+<p>The above example included a simple <code>format: pdf</code> value to set the default format. It’s also possible to provide multiple formats along with YAML options set on a per-format basis. For example, this document defines HTML, PDF, and Word output:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My First Quarto Document"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Jane Doe"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">toc-depth</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">max-width</span><span class="kw">:</span><span class="at"> 800px</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">fontsize</span><span class="kw">:</span><span class="at"> 18px</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">html-math-method</span><span class="kw">:</span><span class="at"> katex</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">pdf</span><span class="kw">:</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">documentclass</span><span class="kw">:</span><span class="at"> report</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">margin-left</span><span class="kw">:</span><span class="at"> 30mm</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">margin-right</span><span class="kw">:</span><span class="at"> 30mm</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">docx</span><span class="kw">:</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the <code>toc</code> and <code>toc-depth</code> options are shared across all formats, and the options listed below <code>html</code>, <code>pdf</code>, and <code>docx</code> are only applied to their respective formats.</p>
+<p>If you render this document without a <code>--to</code> argument, it will be rendered as <code>html</code> since that is the first format listed in the file. To render as another format just provide an explicit <code>--to</code> argument:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.qmd <span class="co"># will render to html</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.qmd <span class="at">--to</span> pdf</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render document.qmd <span class="at">--to</span> docx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can learn about the available options for each format in the Pandoc documentation on metadata <a href="https://pandoc.org/MANUAL.html#variables">variables</a> and <a href="https://pandoc.org/MANUAL.html#default-files">defaults</a>.</p>
+<p>Note that you can share format options across a set of documents using <a href="quarto-projects.html">Quarto Projects</a>.</p>
 
 <!-- -->
 </section>
