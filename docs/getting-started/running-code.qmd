@@ -1,9 +1,191 @@
 ---
-title: Running Code
-description: "Quarto supports executable code blocks within markdown. This allows you to create fully reproducible documents and reports---the code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered."
-search: false
+title: "Code Chunks"
 ---
 
-```{.include}
-../computations/_running-code.md
+## Overview
+
+So far, we've only used plain Markdown in our document. 
+In this section, we'll learn how to insert code into our document with code chunks.
+
+## Our Document So Far
+
+In case you didn't follow along from the previous section, here is a simplified version of `first_quarto.qmd`, the document we've been working with, and the rendered output. If you don't have `surus.png`, download it from [here](images/surus.png) and save it to the same directory as `first_quarto.qmd`:
+
+::: {.panel-tabset}
+## `first_quarto.qmd`
+``` markdown
+---
+title: My first Quarto doc
+toc: true
+---
+
+## Surus
+
+From [Wikipedia](https://en.wikipedia.org/wiki/Surus):
+
+> **Surus** ("the Syrian") was believed to be the last war elephant of Carthaginian general Hannibal's army in Italy.
+
+![](surus.png){fig-alt="A painting of Surus."}
 ```
+
+## Output
+
+Calling `quarto render first_quarto.qmd` results in:
+
+![](images/code_render_0.png){.borderless-screenshot fig-alt="A screenshot of the above Markdown chunk rendered by Quarto."}
+:::
+
+## Our First Code Chunk
+
+You can insert a code chunk into a Quarto document by surrounding the code block with three backticks. For example, we can add an R plot to our document with:
+
+
+
+    ```{{r}}
+    library(ggplot2)
+    ggplot(airquality, aes(Temp, Ozone)) + 
+            geom_point() + 
+            geom_smooth(method = "loess", se = FALSE)
+
+    ```
+
+Add the following lines to the bottom of our document. 
+The Output tab contains only the plot from the rendered document:
+
+::: {.panel-tabset}
+## Code
+```` r
+## Our First Code Chunk
+
+```{{r}}
+library(ggplot2)
+ggplot(airquality, aes(Temp, Ozone)) + 
+        geom_point() + 
+        geom_smooth(method = "loess", se = FALSE)
+
+```
+````
+
+## Output
+
+![](images/code_render_1.png){.borderless-screenshot fig-alt="A screenshot of the above Markdown chunk rendered by Quarto." width="500"}
+
+:::
+
+We're getting somewhere! 
+We would like to get rid of those warning messages, though.
+
+The good news is that since Quarto uses Knitr to execute R code, it respects all the chunk options you may be familiar with from RMarkdown. 
+This means we can use the `warning` knitr chunk option to supress the warning messages on this plot.
+However, one important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are typically included in special comments at the top of code chunks rather than within the line that begins the chunk.
+
+Add the following lines to the code chunk and refresh the preview to see it in action:
+
+::: {.panel-tabset}
+## Code
+
+```` r
+```{{r}}
+#| warning: false
+library(ggplot2)
+ggplot(airquality, aes(Temp, Ozone)) + 
+        geom_point() + 
+        geom_smooth(method = "loess", se = FALSE)
+
+```
+````
+
+## Output
+
+![](images/code_render_2.png){.borderless-screenshot fig-alt="A screenshot of the above Markdown chunk rendered by Quarto."}
+
+:::
+
+Now the warning message is gone. Similarly, we can add a figure caption by adding the `fig-cap` chunk option followed by a string. For instance:
+
+::: {.panel-tabset}
+## Code
+
+```` r
+```{{r}}
+#| warning: false
+#| fig-cap: A plot of the `airquality` dataset fit with a polynomial regression.
+library(ggplot2)
+ggplot(airquality, aes(Temp, Ozone)) + 
+        geom_point() + 
+        geom_smooth(method = "loess", se = FALSE)
+
+```
+````
+
+## Output
+
+![](images/code_render_3.png){.borderless-screenshot fig-alt="A screenshot of the above Markdown chunk rendered by Quarto."}
+
+:::
+
+::: callout-note
+If you prefer, it is still possible to include chunk options on the first line (e.g. ```` ```{r, echo = FALSE} ````). That said, we recommend using the comment-based syntax to make documents more portable and consistent across execution engines.
+:::
+
+
+
+## Rendering again
+
+Now that we've added some code to our document, let's take a look at what the entire document looks like:
+
+```` r
+---
+title: My first Quarto doc
+toc: true
+---
+
+## Surus
+
+From [Wikipedia](https://en.wikipedia.org/wiki/Surus):
+
+> **Surus** ("the Syrian") was believed to be the last war elephant of Carthaginian general Hannibal's army in Italy.
+
+![](images/surus.png){fig-alt="A painting of Surus."}
+
+## Our First Code Chunk
+
+```{{r}}
+#| warning: false
+#| fig-cap: A plot of the `airquality` dataset fit with a polynomial regression.
+library(ggplot2)
+ggplot(airquality, aes(Temp, Ozone)) + 
+        geom_point() + 
+        geom_smooth(method = "loess", se = FALSE)
+
+```
+
+````
+
+Let's use the `quarto render` command to render this document to different output formats:
+
+``` bash
+quarto render first_quarto.qmd # will render to html
+quarto render first_quarto.qmd --to pdf
+quarto render first_quarto.qmd --to docx
+```
+
+## Recap
+
+Congratulations on your first Quarto document! You learned how to:
+
+* Use `quarto preview` (or **Render on Save**) to see a live preview of your document
+* Render the same document to different formats
+* Add rendering options to the document YAML
+* Incorporate code into your document
+* Use Quarto chunk options to alter the behavior of code chunks at render time
+
+## Next Steps
+
+[Running Code](../computations/running-code.qmd) covers creating computational documents with Quarto in more depth, including how to use Quarto with [JupyterLab](../computations/using-jupyter-lab.qmd) and [RStudio](../computations/using-rstudio.qmd).
+
+The [Authoring](../authoring/markdown-basics.qmd) section describes the capabilities of Pandoc markdown, as well as Quarto extensions for [Cross References](../authoring/cross-references.qmd), [Figures and Layout](../authoring/figures-and-layout.qmd), and [Callout Blocks](../authoring/callouts.qmd).
+
+The output formats section provides additional details on creating [HTML](../output-formats/html-basics.qmd), [PDF](../output-formats/pdf-basics.qmd), and [MS Word](../output-formats/ms-word.qmd) documents, as well as describes a few special output types including [Presentations](../output-formats/presentations.qmd), [EPUBs](../output-formats/epub.qmd), and pages in [Hugo](../output-formats/hugo.qmd) static sites.
+
+[Creating a Website](../websites/website-basics.qmd) and [Creating a Book](../books/book-basics.qmd) describe some special Quarto project types.
