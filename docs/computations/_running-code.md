@@ -118,15 +118,23 @@ Non-executable code blocks are printed but not executed.
 
 ### Escaping
 
-If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, use two curly braces rather than one:
+If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, enclose the code block in 4-backticks (with language as appropriate) and use two curly braces rather than one:
 
-``` python
+`````{.python}
+````{.python}
 ```{{{python}}}
+1 + 1
 ```
+````
+`````
 
 This will be output into the document as:
 
-    ```{{python}}
+````{.python}
+```{{python}}
+1 + 1
+```
+````
 
 ## Rendering
 
