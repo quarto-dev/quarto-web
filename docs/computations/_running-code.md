@@ -98,21 +98,21 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+-------------------+---------------+
-| Code Block Syntax | Executable?   |
-+===================+:=============:+
-|     ```{python}   | Yes           |
-|     1 + 1         |               |
-|     ```           |               |
-+-------------------+---------------+
-|     ```python     | No            |
-|     1 + 1         |               |
-|     ```           |               |
-+-------------------+---------------+
-|     ```{.python}  | No            |
-|     1 + 1         |               |
-|     ```           |               |
-+-------------------+---------------+
++-------------------+-------------+
+| Code Block Syntax | Executable? |
++===================+:===========:+
+|     ```{python}   | Yes         |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```python     | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```{.python}  | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
 
 Non-executable code blocks are printed but not executed.
 
@@ -120,7 +120,7 @@ Non-executable code blocks are printed but not executed.
 
 If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, enclose the code block in 4-backticks (with language as appropriate) and use two curly braces rather than one:
 
-`````{.python}
+````` python
 ````{.python}
 ```{{{python}}}
 1 + 1
@@ -130,7 +130,7 @@ If you need to write *about* executable code blocks (e.g. a Quarto tutorial like
 
 This will be output into the document as:
 
-````{.python}
+```` python
 ```{{python}}
 1 + 1
 ```
