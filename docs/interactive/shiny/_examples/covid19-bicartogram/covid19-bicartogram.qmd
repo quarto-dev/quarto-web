@@ -1,33 +1,11 @@
 ---
 title: "COVID-19 cases per state"
-format: html
-server: 
-  type: shiny
-  ojs-export: [ojsDateStart, ojsDateEnd]
+format:
+  html:
+    code-tools:
+      source: https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/shiny/_examples/covid19-bicartogram/covid19-bicartogram.qmd
+server: shiny
 ---
-
-```{r}
-#| context: server
-library(tidyverse)
-
-covid_data <- read.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
-
-get_cases <- function(s, e) {
-  t1 <- covid_data %>% filter(date == s) %>% select(cases, deaths, state);
-  t2 <- covid_data %>% filter(date == e) %>% select(cases, deaths, state);
-  t3 <- inner_join(t1, t2, "state");
-  t3 %>% mutate(cases = cases.y - cases.x, deaths = deaths.y - deaths.x) %>% select(state, cases, deaths)
-}
-
-echo_stuff = reactive({
-  input$ojsDateStart
-})
-summary_data = reactive({
-  get_cases(substring(input$ojsDateStart, 1, 10), 
-            substring(input$ojsDateEnd, 1, 10))
-})
-ojs_define(summary_data, echo_stuff)
-```
 
 ```{ojs}
 //| panel: sidebar
@@ -123,3 +101,31 @@ covidDorlingData = {
 ### About
 
 The map displayed in this dashboard is a [bivariate cartogram](https://observablehq.com/@cscheid/bivariate-dorling-cartogram).
+
+
+```{r}
+#| context: server-start
+covid_data <- read.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+```
+
+```{r}
+#| context: server
+library(tidyverse)
+
+get_cases <- function(s, e) {
+  t1 <- covid_data %>% filter(date == s) %>% select(cases, deaths, state);
+  t2 <- covid_data %>% filter(date == e) %>% select(cases, deaths, state);
+  t3 <- inner_join(t1, t2, "state");
+  t3 %>% mutate(cases = cases.y - cases.x, deaths = deaths.y - deaths.x) %>% select(state, cases, deaths)
+}
+
+echo_stuff = reactive({
+  input$ojsDateStart
+})
+summary_data = reactive({
+  get_cases(substring(input$ojsDateStart, 1, 10), 
+            substring(input$ojsDateEnd, 1, 10))
+})
+ojs_define(summary_data, echo_stuff)
+```
+
