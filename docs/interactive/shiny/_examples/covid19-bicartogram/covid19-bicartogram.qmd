@@ -105,13 +105,12 @@ The map displayed in this dashboard is a [bivariate cartogram](https://observabl
 
 ```{r}
 #| context: server-start
-covid_data <- read.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+library(tidyverse)
+covid_data <- read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
 ```
 
 ```{r}
 #| context: server
-library(tidyverse)
-
 get_cases <- function(s, e) {
   t1 <- covid_data %>% filter(date == s) %>% select(cases, deaths, state);
   t2 <- covid_data %>% filter(date == e) %>% select(cases, deaths, state);
@@ -119,13 +118,10 @@ get_cases <- function(s, e) {
   t3 %>% mutate(cases = cases.y - cases.x, deaths = deaths.y - deaths.x) %>% select(state, cases, deaths)
 }
 
-echo_stuff = reactive({
-  input$ojsDateStart
-})
 summary_data = reactive({
   get_cases(substring(input$ojsDateStart, 1, 10), 
             substring(input$ojsDateEnd, 1, 10))
 })
-ojs_define(summary_data, echo_stuff)
+ojs_define(summary_data)
 ```
 
