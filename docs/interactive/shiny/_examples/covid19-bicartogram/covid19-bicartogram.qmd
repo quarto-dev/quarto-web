@@ -1,0 +1,125 @@
+---
+title: "COVID-19 cases per state"
+format: html
+server: 
+  type: shiny
+  ojs-export: [ojsDateStart, ojsDateEnd]
+---
+
+```{r}
+#| context: server
+library(tidyverse)
+
+covid_data <- read.csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
+
+get_cases <- function(s, e) {
+  t1 <- covid_data %>% filter(date == s) %>% select(cases, deaths, state);
+  t2 <- covid_data %>% filter(date == e) %>% select(cases, deaths, state);
+  t3 <- inner_join(t1, t2, "state");
+  t3 %>% mutate(cases = cases.y - cases.x, deaths = deaths.y - deaths.x) %>% select(state, cases, deaths)
+}
+
+echo_stuff = reactive({
+  input$ojsDateStart
+})
+summary_data = reactive({
+  get_cases(substring(input$ojsDateStart, 1, 10), 
+            substring(input$ojsDateEnd, 1, 10))
+})
+ojs_define(summary_data, echo_stuff)
+```
+
+```{ojs}
+//| panel: sidebar
+viewof ojsDateStart = Inputs.text({label: "Date start", type: "date", min: "2020-01-01", max:"2021-08-31", value: "2021-08-01"});
+viewof ojsDateEnd = Inputs.text({label: "Date end", type: "date", min: "2020-01-01", max:"2021-08-31", value: "2021-08-08"});
+```
+
+::: {.panel-tabset}
+
+## Map
+
+```{ojs}
+import { chart, objectMap } with { covidDorlingData as data, casesScale as areaScaleA, deathsScale as areaScaleB } from "@cscheid/bivariate-dorling-cartogram";
+chart
+```
+
+## Scatter
+
+```{ojs}
+Plot.plot({
+  x: {
+    type: "log"
+  },
+  y: {
+    type: "log"
+  },
+  marks: [
+    Plot.dot(covidDorlingData, {x: "cases", y: "deaths"})
+  ]
+})
+```
+
+## Data
+
+```{ojs}
+{
+  const result = covidDorlingData.map(d => ({
+    state: d.name,
+    cases: d.cases,
+    deaths: d.deaths
+  }));
+  return Inputs.table(result)
+}
+```
+
+:::
+
+```{ojs}
+function datePicker(min, max, value, label)
+{
+  const div = html`<div></div>`;
+  const id = `${String(Math.random()).slice(2)}`
+  const labelEl = html`<label for=${id}> ${label}</label>`;
+  const inputEl = html`<input type=date min="${min}$ max="${max}" value="${value}" id=${id}>`;
+  div.appendChild(inputEl);
+  div.appendChild(labelEl);
+  div.date = inputEl;
+  return div;
+}
+
+rows = transpose(summary_data)
+
+casesScale =  d3.scaleSqrt().domain([0, d3.max(rows, d => d.cases)]).range([0, 60])
+
+deathsScale = d3.scaleSqrt().domain([0, d3.max(rows, d => d.deaths)]).range([0, 60])
+
+covidDorlingData = {
+  const allStates = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Guam","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Northern Mariana Islands","Ohio","Oklahoma","Oregon","Pennsylvania","Puerto Rico","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virgin Islands","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
+  const fmt = d3.format(",");
+  const result = rows.map(d => ({
+    cases: d.cases,
+    deaths: d.deaths,
+    areaA: d.cases,
+    areaB: d.deaths,
+    name: d.state,
+    tooltip: `${d.state}:\n${fmt(d.cases)} cases\n${fmt(d.deaths)} deaths`,
+    fixed: ["Hawaii", "Alaska"].indexOf(d.state) !== -1
+  }));
+  const existingRows = new Set();
+  rows.forEach(d => {
+    existingRows.add(d.state);
+  })
+  allStates.forEach(state => {
+    if (existingRows.has(state))
+      return;
+    result.push({ name: state, areaA: 0, areaB: 0, fillA: "none",  fillB: "none", stroke: "none", fixed: false });
+  });
+
+  return result;
+}
+```
+
+### About
+
+The map displayed in this dashboard is a [bivariate cartogram](https://observablehq.com/@cscheid/bivariate-dorling-cartogram).
