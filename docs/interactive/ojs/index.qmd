@@ -58,15 +58,12 @@ Plot.rectY(filtered,
 
 Let's take a look at the source code for this example. First we create an `{ojs}` cell that reads in some data from a CSV file using a [FileAttachment](https://observablehq.com/@observablehq/file-attachments):
 
-```` java
 ```{{ojs}}
 data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
 ```
-````
 
 The example above doesn't plot all of the data but rather a filtered subset. To create our filter we'll need some inputs, and we'll want to be able to use the values of these inputs in our filtering function. To do this, we use the `viewof` keyword and with some standard [Inputs](https://observablehq.com/@observablehq/inputs):
 
-```` java
 ```{{ojs}}
 viewof bill_length_min = Inputs.range(
   [32, 50], 
@@ -79,24 +76,20 @@ viewof islands = Inputs.checkbox(
   }
 )
 ```
-````
 
 Now we write the filtering function that will transform the `data` read from the CSV using the values of `bill_length_min` and `island`.
 
-```` java
 ```{{ojs}}
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length &&
          islands.includes(penguin.island);
 })
 ```
-````
 
 Here we see reactivity in action: we don't need any special syntax to refer to the dynamic input values, they "just work", and the filtering code is automatically re-run when the inputs change. This works in much the same way a spreadsheet works when you update a cell and other cells that refer to it are recalculated.
 
 Finally, we'll plot the filtered data using [Observable Plot](https://observablehq.com/@observablehq/plot) (an open-source JavaScript library for quick visualization of tabular data):
 
-```` java
 ```{{ojs}}
 Plot.rectY(filtered, 
   Plot.binX(
@@ -116,7 +109,6 @@ Plot.rectY(filtered,
   }
 )
 ```
-````
 
 Note that as with our inputs, we refer to the `filtered` variable with no special syntax---the plotting code will be automatically re-run whenever `filtered` changes (which in turn is updated whenever an input changes).
 
@@ -142,12 +134,10 @@ The libraries are somewhat special because they are automatically available with
 
 Using other JavaScript libraries is also straightforward, they just need to be explicitly imported. For example, here we import a some libraries using the [require](https://github.com/observablehq/stdlib#require) function (which in turn loads NPM modules from [jsDelivr](https://www.jsdelivr.com/){.uri}):
 
-```` java
 ```{{ojs}}
 d3 = require("d3@6")
 topojson = require("topojson")
 ```
-````
 
 See the article on [Libraries](libraries.qmd) to learn more about using standard and third-party libraries.
 
@@ -165,26 +155,22 @@ penguins = pd.read_csv("examples/palmer-penguins.csv")
 ojs_define(data = penguins)
 ```
 
-```` java
 ```{{python}}
 import pandas as pd
 penguins = pd.read_csv("palmer-penguins.csv")
 ojs_define(data = penguins)
 ```
-````
 
 The call to `ojs_define(data = penguins)` says that we want to make a variable named `data` (with the value of the `penguins` data frame) available to OJS
 
 Depending on the visualization library you use, one additional step may be required to consume the data from JavaScript. In this case, the `Plot` function expects data by row rather than by column, so we `transpose()` it before filtering:
 
-```` java
 ```{{ojs}}
 filtered = transpose(data).filter(function(penguin) {
   return bill_length_min < penguin.bill_length &&
          islands.includes(penguin.island);
 })
 ```
-````
 
 See the article on [Data Sources](data-sources.qmd) to learn more about the various ways to prepare and read data.
 
@@ -206,12 +192,10 @@ execute:
 
 You can also specify this option on a per-cell basis. For example:
 
-```` java
 ```{{ojs}}
 //| echo: false
 data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
 ```
-````
 
 To learn about all of the options available, see the article on [OJS Cells](ojs-cells.qmd).
 

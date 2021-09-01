@@ -19,7 +19,7 @@ Code blocks that use braces around the language name (e.g. ```` ```{python} ````
 ::: panel-tabset
 ## Code
 
-```` python
+````
 ---
 title: "Jupyter Document"
 format: 
@@ -55,7 +55,7 @@ Note that we added the `code-background: true` option to provide a background co
 ::: panel-tabset
 ## Code
 
-```` r
+````
 ---
 title: "Knitr Document"
 format: 
@@ -130,11 +130,9 @@ If you need to write *about* executable code blocks (e.g. a Quarto tutorial like
 
 This will be output into the document as:
 
-```` python
 ```{{python}}
 1 + 1
 ```
-````
 
 ## Rendering
 
@@ -172,7 +170,6 @@ Both Jupyter and Knitr support executing inline code within markdown (e.g. to al
 
 To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
 
-```` python
 ```{{python}}
 #| echo: false
 
@@ -183,7 +180,6 @@ Markdown("""
 The radius of the circle is {radius}.
 """.format(radius = radius))
 ```
-````
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
 

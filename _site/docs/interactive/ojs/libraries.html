@@ -930,7 +930,8 @@
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ...remainder of implementation</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> svg<span class="op">.</span><span class="fu">node</span><span class="op">();</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>See the <a href="../../../docs/interactive/ojs/examples/sunburst.html">Sunburst</a> example for the complete source code. To learn more about D3, visit <a href="https://d3js.org/" class="uri">https://d3js.org/</a>.</p>
 </section>
 <section id="arquero" class="level2">
@@ -938,7 +939,7 @@
 <p><a href="https://uwdata.github.io/arquero/">Arquero</a> is a JavaScript library for query processing and transformation of array-backed data tables. Following the <a href="https://en.wikipedia.org/wiki/Relational_algebra">relational algebra</a> and inspired by the design of <a href="https://dplyr.tidyverse.org/">dplyr</a>, Arquero provides a fluent API for manipulating column-oriented data frames.</p>
 <p>Import Arquero (<code>aq</code>) and ab alias to Arquero operations (<code>op</code>) with the following:</p>
 <div class="cell">
-<div class="sourceCode" id="cb6" data-startfrom="218" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 217;"><span id="cb6-218"><a href="#cb6-218" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">'@uwdata/arquero'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6" data-startfrom="215" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 214;"><span id="cb6-215"><a href="#cb6-215" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { aq<span class="op">,</span> op } <span class="im">from</span> <span class="st">'@uwdata/arquero'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display hidden">
 <div id="ojs-cell-4" data-nodetype="declaration">
 
@@ -947,7 +948,7 @@
 </div>
 <p>Read datasets using a reader function (here we load a CSV):</p>
 <div class="cell">
-<div class="sourceCode" id="cb7" data-startfrom="224" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 223;"><span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> aq<span class="op">.</span><span class="fu">loadCSV</span>(<span class="st">"palmer-penguins.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7" data-startfrom="221" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 220;"><span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> aq<span class="op">.</span><span class="fu">loadCSV</span>(<span class="st">"palmer-penguins.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-5" data-nodetype="declaration">
 
@@ -956,14 +957,14 @@
 </div>
 <p>Filter and aggregate data, then view it:</p>
 <div class="cell">
-<div class="sourceCode" id="cb8" data-startfrom="230" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 229;"><span id="cb8-230"><a href="#cb8-230" aria-hidden="true" tabindex="-1"></a>penguins</span>
-<span id="cb8-231"><a href="#cb8-231" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">groupby</span>(<span class="st">'species'</span>)</span>
-<span id="cb8-232"><a href="#cb8-232" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(p <span class="kw">=&gt;</span> p<span class="op">.</span><span class="at">body_mass</span> <span class="op">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb8-233"><a href="#cb8-233" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">rollup</span>({</span>
-<span id="cb8-234"><a href="#cb8-234" aria-hidden="true" tabindex="-1"></a>    <span class="dt">count</span><span class="op">:</span> op<span class="op">.</span><span class="fu">count</span>()<span class="op">,</span></span>
-<span id="cb8-235"><a href="#cb8-235" aria-hidden="true" tabindex="-1"></a>    <span class="dt">avg_mass</span><span class="op">:</span> op<span class="op">.</span><span class="fu">average</span>(<span class="st">'body_mass'</span>)</span>
-<span id="cb8-236"><a href="#cb8-236" aria-hidden="true" tabindex="-1"></a>   })</span>
-<span id="cb8-237"><a href="#cb8-237" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8" data-startfrom="227" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 226;"><span id="cb8-227"><a href="#cb8-227" aria-hidden="true" tabindex="-1"></a>penguins</span>
+<span id="cb8-228"><a href="#cb8-228" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">groupby</span>(<span class="st">'species'</span>)</span>
+<span id="cb8-229"><a href="#cb8-229" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>(p <span class="kw">=&gt;</span> p<span class="op">.</span><span class="at">body_mass</span> <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb8-230"><a href="#cb8-230" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">rollup</span>({</span>
+<span id="cb8-231"><a href="#cb8-231" aria-hidden="true" tabindex="-1"></a>    <span class="dt">count</span><span class="op">:</span> op<span class="op">.</span><span class="fu">count</span>()<span class="op">,</span></span>
+<span id="cb8-232"><a href="#cb8-232" aria-hidden="true" tabindex="-1"></a>    <span class="dt">avg_mass</span><span class="op">:</span> op<span class="op">.</span><span class="fu">average</span>(<span class="st">'body_mass'</span>)</span>
+<span id="cb8-233"><a href="#cb8-233" aria-hidden="true" tabindex="-1"></a>   })</span>
+<span id="cb8-234"><a href="#cb8-234" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">view</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-6" data-nodetype="expression">
 
@@ -995,9 +996,9 @@
 <p>Notebooks published on <a href="http://observablehq.com" class="uri">http://observablehq.com</a> can also be compiled and downloaded as <a href="https://observablehq.com/@observablehq/downloading-and-embedding-notebooks#notebooks-as-es-modules">JavaScript modules</a>.</p>
 <p>While notebooks often have their own embedded dataset, you can actually replace this data with your own when you import them! Returning to the sunburst example from above, here we <code>import</code> a notebook and use the <code>with</code> keyword to provide our own value for <code>data</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb13" data-startfrom="278" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 277;"><span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a>pdata <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"population.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
-<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { chart } <span class="cf">with</span> { pdata <span class="im">as</span> data } <span class="im">from</span> <span class="st">"@d3/zoomable-sunburst"</span></span>
-<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a>chart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13" data-startfrom="271" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 270;"><span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a>pdata <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"population.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { chart } <span class="cf">with</span> { pdata <span class="im">as</span> data } <span class="im">from</span> <span class="st">"@d3/zoomable-sunburst"</span></span>
+<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a>chart</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <div id="ojs-cell-7-1" data-nodetype="declaration">
@@ -1038,7 +1039,7 @@
 <section id="appendix" class="level2 hidden unlisted">
 <h2 class="hidden unlisted anchored" data-anchor-id="appendix">Appendix</h2>
 <div class="cell">
-<div class="sourceCode" id="cb14" data-startfrom="296" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 295;"><span id="cb14-296"><a href="#cb14-296" aria-hidden="true" tabindex="-1"></a>flareData <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"examples/flare-2.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14" data-startfrom="289" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 288;"><span id="cb14-289"><a href="#cb14-289" aria-hidden="true" tabindex="-1"></a>flareData <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"examples/flare-2.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-8" data-nodetype="declaration">
 
@@ -1046,14 +1047,14 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb15" data-startfrom="300" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 299;"><span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>partition <span class="op">=</span> flareData <span class="kw">=&gt;</span> {</span>
-<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> <span class="bu">root</span> <span class="op">=</span> d3<span class="op">.</span><span class="fu">hierarchy</span>(flareData)</span>
-<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sum</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">value</span>)</span>
-<span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> b<span class="op">.</span><span class="at">value</span> <span class="op">-</span> a<span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
-<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> d3<span class="op">.</span><span class="fu">partition</span>()</span>
-<span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">size</span>([<span class="dv">2</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="cn">PI</span><span class="op">,</span> <span class="bu">root</span><span class="op">.</span><span class="at">height</span> <span class="op">+</span> <span class="dv">1</span>])</span>
-<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a>    (<span class="bu">root</span>)<span class="op">;</span></span>
-<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15" data-startfrom="293" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 292;"><span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a>partition <span class="op">=</span> flareData <span class="kw">=&gt;</span> {</span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> <span class="bu">root</span> <span class="op">=</span> d3<span class="op">.</span><span class="fu">hierarchy</span>(flareData)</span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sum</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">value</span>)</span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> b<span class="op">.</span><span class="at">value</span> <span class="op">-</span> a<span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> d3<span class="op">.</span><span class="fu">partition</span>()</span>
+<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">size</span>([<span class="dv">2</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="cn">PI</span><span class="op">,</span> <span class="bu">root</span><span class="op">.</span><span class="at">height</span> <span class="op">+</span> <span class="dv">1</span>])</span>
+<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>    (<span class="bu">root</span>)<span class="op">;</span></span>
+<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-9" data-nodetype="declaration">
 
@@ -1061,7 +1062,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb16" data-startfrom="311" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 310;"><span id="cb16-311"><a href="#cb16-311" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleOrdinal</span>(d3<span class="op">.</span><span class="fu">quantize</span>(d3<span class="op">.</span><span class="at">interpolateRainbow</span><span class="op">,</span> flareData<span class="op">.</span><span class="at">children</span><span class="op">.</span><span class="at">length</span> <span class="op">+</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16" data-startfrom="304" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 303;"><span id="cb16-304"><a href="#cb16-304" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleOrdinal</span>(d3<span class="op">.</span><span class="fu">quantize</span>(d3<span class="op">.</span><span class="at">interpolateRainbow</span><span class="op">,</span> flareData<span class="op">.</span><span class="at">children</span><span class="op">.</span><span class="at">length</span> <span class="op">+</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-10" data-nodetype="declaration">
 
@@ -1069,7 +1070,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb17" data-startfrom="315" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 314;"><span id="cb17-315"><a href="#cb17-315" aria-hidden="true" tabindex="-1"></a>format <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">",d"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17" data-startfrom="308" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 307;"><span id="cb17-308"><a href="#cb17-308" aria-hidden="true" tabindex="-1"></a>format <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">",d"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-11" data-nodetype="declaration">
 
@@ -1077,7 +1078,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb18" data-startfrom="319" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 318;"><span id="cb18-319"><a href="#cb18-319" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="dv">932</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18" data-startfrom="312" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 311;"><span id="cb18-312"><a href="#cb18-312" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="dv">932</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-12" data-nodetype="declaration">
 
@@ -1085,7 +1086,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb19" data-startfrom="323" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 322;"><span id="cb19-323"><a href="#cb19-323" aria-hidden="true" tabindex="-1"></a>radius <span class="op">=</span> width <span class="op">/</span> <span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19" data-startfrom="316" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 315;"><span id="cb19-316"><a href="#cb19-316" aria-hidden="true" tabindex="-1"></a>radius <span class="op">=</span> width <span class="op">/</span> <span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-13" data-nodetype="declaration">
 
@@ -1093,13 +1094,13 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb20" data-startfrom="327" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 326;"><span id="cb20-327"><a href="#cb20-327" aria-hidden="true" tabindex="-1"></a>arc <span class="op">=</span> d3<span class="op">.</span><span class="fu">arc</span>()</span>
-<span id="cb20-328"><a href="#cb20-328" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">startAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x0</span>)</span>
-<span id="cb20-329"><a href="#cb20-329" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">endAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x1</span>)</span>
-<span id="cb20-330"><a href="#cb20-330" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padAngle</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>((d<span class="op">.</span><span class="at">x1</span> <span class="op">-</span> d<span class="op">.</span><span class="at">x0</span>) <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> <span class="fl">0.005</span>))</span>
-<span id="cb20-331"><a href="#cb20-331" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padRadius</span>(radius <span class="op">*</span> <span class="fl">1.5</span>)</span>
-<span id="cb20-332"><a href="#cb20-332" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">innerRadius</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius)</span>
-<span id="cb20-333"><a href="#cb20-333" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">outerRadius</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius<span class="op">,</span> d<span class="op">.</span><span class="at">y1</span> <span class="op">*</span> radius <span class="op">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20" data-startfrom="320" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 319;"><span id="cb20-320"><a href="#cb20-320" aria-hidden="true" tabindex="-1"></a>arc <span class="op">=</span> d3<span class="op">.</span><span class="fu">arc</span>()</span>
+<span id="cb20-321"><a href="#cb20-321" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">startAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x0</span>)</span>
+<span id="cb20-322"><a href="#cb20-322" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">endAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x1</span>)</span>
+<span id="cb20-323"><a href="#cb20-323" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padAngle</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>((d<span class="op">.</span><span class="at">x1</span> <span class="op">-</span> d<span class="op">.</span><span class="at">x0</span>) <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> <span class="fl">0.005</span>))</span>
+<span id="cb20-324"><a href="#cb20-324" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padRadius</span>(radius <span class="op">*</span> <span class="fl">1.5</span>)</span>
+<span id="cb20-325"><a href="#cb20-325" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">innerRadius</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius)</span>
+<span id="cb20-326"><a href="#cb20-326" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">outerRadius</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius<span class="op">,</span> d<span class="op">.</span><span class="at">y1</span> <span class="op">*</span> radius <span class="op">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-14" data-nodetype="declaration">
 
@@ -1107,7 +1108,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb21" data-startfrom="337" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 336;"><span id="cb21-337"><a href="#cb21-337" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="pp">require</span>(<span class="st">"d3@6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21" data-startfrom="330" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 329;"><span id="cb21-330"><a href="#cb21-330" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="pp">require</span>(<span class="st">"d3@6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="ojs-cell-15" data-nodetype="declaration">
 
