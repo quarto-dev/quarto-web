@@ -26,28 +26,26 @@ For example, here's a document that contains a plot of the "Old Faithful" datase
 
 Here's the source code for this example:
 
-````
----
-title: "Old Faithful"
-format: html
-server: shiny
----
+    ---
+    title: "Old Faithful"
+    format: html
+    server: shiny
+    ---
 
-```{{r}}
-sliderInput("bins", "Number of bins:", 
-            min = 1, max = 50, value = 30)
-plotOutput("distPlot")
-```
+    ```{{r}}
+    sliderInput("bins", "Number of bins:", 
+                min = 1, max = 50, value = 30)
+    plotOutput("distPlot")
+    ```
 
-```{{r}}
-#| context: server
-output$distPlot <- renderPlot({
-  x <- faithful[, 2]  # Old Faithful Geyser data
-  bins <- seq(min(x), max(x), length.out = input$bins + 1)
-  hist(x, breaks = bins, col = 'darkgray', border = 'white')
-})
-```
-````
+    ```{{r}}
+    #| context: server
+    output$distPlot <- renderPlot({
+      x <- faithful[, 2]  # Old Faithful Geyser data
+      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    })
+    ```
 
 There are two important differences between this document and a normal static document:
 
@@ -63,9 +61,8 @@ There are two important differences between this document and a normal static do
 
 2.  The inclusion of `context: server` as an option in the second code chunk, which delineates this R code as running within the Shiny Server (this is the code you would typically put in `server.R`):
 
-    ```{{r}}
+    ``` {{r}}
     #| context: server
-
     ```
 
 We'll cover running and deploying Quarto documents with Shiny components in the article on [Running Documents](running.qmd). Before that though, let's cover a more in-depth example.
@@ -78,50 +75,48 @@ Here's an example that includes multiple inputs as well as a more application li
 
 Here's the source code for this example:
 
-````
----
-title: "Iris K-Means Clustering"
-format: 
-  html:
-    page-layout: custom
-server: shiny
----
+    ---
+    title: "Iris K-Means Clustering"
+    format: 
+      html:
+        page-layout: custom
+    server: shiny
+    ---
 
-```{{r}}
-#| panel: sidebar
-vars <- setdiff(names(iris), "Species")
-selectInput('xcol', 'X Variable', vars)
-selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
-numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
-```
+    ```{{r}}
+    #| panel: sidebar
+    vars <- setdiff(names(iris), "Species")
+    selectInput('xcol', 'X Variable', vars)
+    selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
+    numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    ```
 
-```{{r}}
-#| panel: fill
-plotOutput('plot1')
-```
+    ```{{r}}
+    #| panel: fill
+    plotOutput('plot1')
+    ```
 
-```{{r}}
-#| context: server
-selectedData <- reactive({
-    iris[, c(input$xcol, input$ycol)]
-  })
+    ```{{r}}
+    #| context: server
+    selectedData <- reactive({
+        iris[, c(input$xcol, input$ycol)]
+      })
 
-clusters <- reactive({
-  kmeans(selectedData(), input$clusters)
-})
+    clusters <- reactive({
+      kmeans(selectedData(), input$clusters)
+    })
 
-output$plot1 <- renderPlot({
-  palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
-    "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
+    output$plot1 <- renderPlot({
+      palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+        "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
 
-  par(mar = c(5.1, 4.1, 0, 1))
-  plot(selectedData(),
-       col = clusters()$cluster,
-       pch = 20, cex = 3)
-  points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
-})
-```
-````
+      par(mar = c(5.1, 4.1, 0, 1))
+      plot(selectedData(),
+           col = clusters()$cluster,
+           pch = 20, cex = 3)
+      points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
+    })
+    ```
 
 There are a few things worth noting in this example:
 
