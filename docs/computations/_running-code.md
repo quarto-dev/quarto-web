@@ -19,29 +19,27 @@ Code blocks that use braces around the language name (e.g. ```` ```{python} ````
 ::: panel-tabset
 ## Code
 
-````
----
-title: "Jupyter Document"
-format: 
-  html:
-    code-background: true
-jupyter: python3
----
+    ---
+    title: "Jupyter Document"
+    format: 
+      html:
+        code-background: true
+    jupyter: python3
+    ---
 
-```{{python}}
-import matplotlib.pyplot as plt
-plt.plot([1,2,3,4])
-plt.show()
-```
+    ```{{python}}
+    import matplotlib.pyplot as plt
+    plt.plot([1,2,3,4])
+    plt.show()
+    ```
 
-```{{python}}
-import pandas as pd
-d = {'one' : [1., 2., 3., 4.],
-     'two' : [4., 3., 2., 1.]}
-df = pd.DataFrame(d)
-df
-```
-````
+    ```{{python}}
+    import pandas as pd
+    d = {'one' : [1., 2., 3., 4.],
+         'two' : [4., 3., 2., 1.]}
+    df = pd.DataFrame(d)
+    df
+    ```
 
 ## Output
 
@@ -55,7 +53,7 @@ Note that we added the `code-background: true` option to provide a background co
 ::: panel-tabset
 ## Code
 
-````
+```` r
 ---
 title: "Knitr Document"
 format: 
@@ -98,58 +96,41 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+-------------------+-------------+
-| Code Block Syntax | Executable? |
-+===================+:===========:+
-|     ```{python}   | Yes         |
-|     1 + 1         |             |
-|     ```           |             |
-+-------------------+-------------+
-|     ```python     | No          |
-|     1 + 1         |             |
-|     ```           |             |
-+-------------------+-------------+
-|     ```{.python}  | No          |
-|     1 + 1         |             |
-|     ```           |             |
-+-------------------+-------------+
++-------------------+--------------+
+| Code Block Syntax | Executable?  |
++===================+:============:+
+|     ```{python}   | Yes          |
+|     1 + 1         |              |
+|     ```           |              |
++-------------------+--------------+
+|     ```python     | No           |
+|     1 + 1         |              |
+|     ```           |              |
++-------------------+--------------+
+|     ```{.python}  | No           |
+|     1 + 1         |              |
+|     ```           |              |
++-------------------+--------------+
 
 Non-executable code blocks are printed but not executed.
 
 ### Escaping
 
-If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, use two curly braces rather than one. For example:
+If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, enclose the code block in 4-backticks (with language as appropriate) and use two curly braces rather than one:
 
+````` python
+````{.python}
 ```{{{python}}}
 1 + 1
 ```
+````
+`````
 
 This will be output into the document as:
 
-```{{python}}
+``` {{python}}
 1 + 1
 ```
-
-If you want to show an example with multiple code blocks and other markdown, just enclose the entire example in 4 backticks (e.g. ````` ```` `````) and use the two curly brace syntax for code blocks within. For example:
-
-`````
-````
----
-title: "My document"
----
-
-Some markdown content.
-
-```{{{python}}}
-1 + 1
-```
-
-Some additional markdown content.
-
-````
-`````
-
-
 
 ## Rendering
 
@@ -187,15 +168,15 @@ Both Jupyter and Knitr support executing inline code within markdown (e.g. to al
 
 To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
 
-```{{python}}
+``` {{python}}
 #| echo: false
-radius = 10
-from IPython.display import display, Markdown
-display(Markdown("""
+
+from IPython.display import Markdown
+Markdown("""
 ## Circle
 
 The radius of the circle is {radius}.
-""".format(radius = radius)))
+""".format(radius = radius))
 ```
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
