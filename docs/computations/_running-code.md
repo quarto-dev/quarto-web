@@ -189,13 +189,13 @@ To include executable expressions within markdown in a Jupyter notebook, you use
 
 ```{{python}}
 #| echo: false
-
-from IPython.display import Markdown
-Markdown("""
+radius = 10
+from IPython.display import display, Markdown
+display(Markdown("""
 ## Circle
 
 The radius of the circle is {radius}.
-""".format(radius = radius))
+""".format(radius = radius)))
 ```
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
