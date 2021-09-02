@@ -18,7 +18,7 @@ jupyter: python3
 
 Note that we can override this option on a per code-block basis. For example:
 
-```{{python}}
+``` {{python}}
 #| echo: true
 
 import matplotlib.pyplot as plt
@@ -30,44 +30,42 @@ Code block options are included in a special comment at the top of the block (li
 
 Options available for customizing output include:
 
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| Option    | Description                                                                                                                                  |
-+===========+==============================================================================================================================================+
-| `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                   |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| `echo`    | Include the source code in output                                                                                                            |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| `output`  | Include the results of executing the code in the output                                                                                      |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| `warning` | Include warnings in the output.                                                                                                              |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                   |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
-| `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block). |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------+
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Option    | Description                                                                                                                                                                                       |
++===========+===================================================================================================================================================================================================+
+| `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                                                                        |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `echo`    | Include the source code in output                                                                                                                                                                 |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `output`  | Include the results of executing the code in the output (`true`, `false`, or `asis` to indicate that the output is raw markdown and should not have any of Quarto's standard enclosing markdown). |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `warning` | Include warnings in the output.                                                                                                                                                                   |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                                                                        |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block).                                                      |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here's a Knitr example with some of these additional options included:
 
-````
----
-title: "Knitr Document"
-execute:
-  echo: false
----
+    ---
+    title: "Knitr Document"
+    execute:
+      echo: false
+    ---
 
-```{{r}}
-#| warning: false
+    ```{{r}}
+    #| warning: false
 
-library(ggplot2)
-ggplot(airquality, aes(Temp, Ozone)) + 
-        geom_point() + 
-        geom_smooth(method = "loess", se = FALSE)
-```
+    library(ggplot2)
+    ggplot(airquality, aes(Temp, Ozone)) + 
+            geom_point() + 
+            geom_smooth(method = "loess", se = FALSE)
+    ```
 
-```{{r}}
-summary(airquality)
-```
-````
+    ```{{r}}
+    summary(airquality)
+    ```
 
 ::: callout-tip
 When using the Knitr engine, you can also use any of the available native options (e.g. `collapse`, `tidy`, `comment`, etc.). See the [Knitr options documentation](https://yihui.org/knitr/options/) for additional details. You can include these native options in option comment blocks as shown above, or on the same line as the `{r}` as shown in the Knitr documentation.
@@ -116,7 +114,7 @@ How do these sizes make their way into the engine-level defaults for generating 
 
 You can specify the caption and alt text for figures generated from code using the `fig-cap` and `fig-alt` options. For example, here we add these options to a Python code cell that creates a plot:
 
-```{{python}}
+``` {{python}}
 #| fig-cap: "Polar axis plot"
 #| fig-alt: "A line plot on a polar axis"
 
@@ -131,6 +129,41 @@ ax.set_rticks([0.5, 1, 1.5, 2])
 ax.grid(True)
 plt.show()
 ```
+
+## Raw Output
+
+The `output: asis` option enables you to generate raw markdown output. When `output: asis` is specified none of Quarto's standard enclosing divs will be included. For example, here we specify `output: asis` in order to generate a pair of headings:
+
+``` {{python}}
+#| echo: false
+#| output: asis
+
+print("# Heading 1\n")
+print("## Heading 2\n")
+```
+
+Which generates the following output:
+
+``` default
+# Heading 1
+
+## Heading 2
+```
+
+Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
+
+If we had not specified `output: asis` then the output would have been this:
+
+```` default
+::: {.cell-output-stdout}
+```
+# Heading 1
+
+## Heading 2
+
+```
+:::
+````
 
 ## Intermediates
 
@@ -161,17 +194,17 @@ jupyter: python3
 
 Quarto integrates with the [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) and [Knitr Cache](https://bookdown.org/yihui/rmarkdown-cookbook/cache.html) to to cache time consuming code chunks. Note that to use Jupyter Cache you'll want to install the `jupyter-cache` package:
 
-+-------------+--------------------------------------+
-| Platform    | Command                              |
-+=============+======================================+
-| Windows     | ``` bash                             |
-|             | py -m pip install jupyter-cache      |
-|             | ```                                  |
-+-------------+--------------------------------------+
-| Mac/Linux   | ``` bash                             |
-|             | python3 -m pip install jupyter-cache |
-|             | ```                                  |
-+-------------+--------------------------------------+
++--------------+--------------------------------------+
+| Platform     | Command                              |
++==============+======================================+
+| Windows      | ``` bash                             |
+|              | py -m pip install jupyter-cache      |
+|              | ```                                  |
++--------------+--------------------------------------+
+| Mac/Linux    | ``` bash                             |
+|              | python3 -m pip install jupyter-cache |
+|              | ```                                  |
++--------------+--------------------------------------+
 
 To enable caching for a document just add the `cache` option:
 
