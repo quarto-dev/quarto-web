@@ -2,7 +2,7 @@
 title: "Libraries"
 format: html
 execute:
-  output: true
+  echo: fenced
 ---
 
 ## Overview
@@ -50,12 +50,8 @@ Observable Plot is a JavaScript library for exploratory data visualization. Plot
 Here's an example of a scatterplot of the height and weight of Olympic athletes created with Plot:
 
 ```{ojs}
-//| echo: true
 athletes = FileAttachment("athletes.csv").csv({typed: true})
-```
 
-```{ojs}
-//| echo: true
 Plot.plot({
   grid: true,
   facet: {
@@ -208,22 +204,11 @@ See the [Sunburst](examples/sunburst.qmd) example for the complete source code. 
 
 [Arquero](https://uwdata.github.io/arquero/) is a JavaScript library for query processing and transformation of array-backed data tables. Following the [relational algebra](https://en.wikipedia.org/wiki/Relational_algebra) and inspired by the design of [dplyr](https://dplyr.tidyverse.org/), Arquero provides a fluent API for manipulating column-oriented data frames.
 
-Import Arquero (`aq`) and ab alias to Arquero operations (`op`) with the following:
+Here we'll import Arquero (`aq`) and an alias to Arquero operations (`op`), read a dataset, then filter, aggregate, and view the data:
 
 ```{ojs}
-//| output: false
 import { aq, op } from '@uwdata/arquero'
-```
-
-Read datasets using a reader function (here we load a CSV):
-
-```{ojs}
 penguins = aq.loadCSV("palmer-penguins.csv")
-```
-
-Filter and aggregate data, then view it:
-
-```{ojs}
 penguins
   .groupby('species')
   .filter(p => p.body_mass > 0)
