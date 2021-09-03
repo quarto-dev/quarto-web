@@ -2,7 +2,6 @@
 title: "Interactive Documents"
 execute: 
   echo: false
-  output: false
 ---
 
 ## Overview
@@ -25,8 +24,6 @@ Quarto includes native support for [Observable JS](https://observablehq.com/@obs
 Here's an example that provides slider inputs to condition the behavior of a visualization:
 
 ```{ojs}
-//| echo: false
-//| output: true
 //| panel: sidebar
 viewof talentWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: "talent weight" })
 viewof looksWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: "looks weight" })
@@ -34,8 +31,6 @@ viewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: "minimum f
 ```
 
 ```{ojs}
-//| echo: false
-//| output: true
 //| panel: fill
 {
   const w = 400
@@ -105,8 +100,6 @@ viewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: "minimum f
 ```
 
 ```{python}
-#| echo: false
-#| output: true
 import numpy
 import pandas as pd
 ojs_define(points = pd.DataFrame(dict(
@@ -115,7 +108,6 @@ ojs_define(points = pd.DataFrame(dict(
 ```
 
 ```{ojs}
-//| output: false 
 actors = transpose(points).map(v => ({
   talent: v.x,
   looks: v.y,
@@ -124,8 +116,6 @@ actors = transpose(points).map(v => ({
 ```
 
 ```{ojs}
-//| echo: false
-//| output: false
 transpose = function(df)
 {
   const keys = Object.keys(df);
@@ -215,21 +205,8 @@ To learn more see the articles on [Using Shiny with Quarto](shiny/).
 
 For example, the following Python code is all that is required to embed a Leaflet map into a Jupyter engine document:
 
-```{{python}}
-from ipyleaflet import Map, Marker, basemaps, basemap_to_tiles
-m = Map(
-  basemap=basemap_to_tiles(
-    basemaps.NASAGIBS.ModisTerraTrueColorCR, "2017-04-08"
-  ),
-  center=(52.204793, 360.121558),
-  zoom=4
-)
-m.add_layer(Marker(location=(52.204793, 360.121558)))
-m
-```
-
 ```{python}
-#| output: true
+#| echo: fenced
 from ipyleaflet import Map, Marker, basemaps, basemap_to_tiles
 m = Map(
   basemap=basemap_to_tiles(
