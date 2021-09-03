@@ -22,39 +22,37 @@ You can see the document deployed at <https://jjallaire.shinyapps.io/kmeans-shin
 
 Let's take a look at the source code. On the client we have familiar looking OJS inputs and a plot laid out using `panel: sidebar` and `panel: fill`:
 
-````
-```{{ojs}}
-//| panel: sidebar
-vars = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
-viewof xcol = Inputs.select(vars, {label: "X Variable"})
-viewof ycol = Inputs.select(vars, {label: "Y Variable", value: vars[1]})
-viewof count = Inputs.range([1, 9], {label: "Cluster Count", step: 1, value: 3})
-```
+    ```{{ojs}}
+    //| panel: sidebar
+    vars = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
+    viewof xcol = Inputs.select(vars, {label: "X Variable"})
+    viewof ycol = Inputs.select(vars, {label: "Y Variable", value: vars[1]})
+    viewof count = Inputs.range([1, 9], {label: "Cluster Count", step: 1, value: 3})
+    ```
 
-```{{ojs}}
-//| panel: fill
-Plot.plot({
-  color: {
-    type: "ordinal",
-    scheme: "category10"
-  },
-  marks: [
-    Plot.dot(transpose(selectedData), {
-      x: xcol,
-      y: ycol,
-      fill: (d, i) => clusters.cluster[i],
-    }),
-    Plot.dot(clusters.centers, { 
-      x: d => d[0],
-      y: d => d[1],
-      r: 10,
-      stroke: "black",
-      fill: (d, i) => i + 1
-    }),
-  ]
-})
-```
-````
+    ```{{ojs}}
+    //| panel: fill
+    Plot.plot({
+      color: {
+        type: "ordinal",
+        scheme: "category10"
+      },
+      marks: [
+        Plot.dot(transpose(selectedData), {
+          x: xcol,
+          y: ycol,
+          fill: (d, i) => clusters.cluster[i],
+        }),
+        Plot.dot(clusters.centers, { 
+          x: d => d[0],
+          y: d => d[1],
+          r: 10,
+          stroke: "black",
+          fill: (d, i) => i + 1
+        }),
+      ]
+    })
+    ```
 
 Note that the plotting code references the variables `selectedData` and `clusters`. These will be provided by reactive expressions within the Shiny server code. Note also that we use the `transpose()` function to reshape the data into the row-oriented format that the Plot library expects.
 

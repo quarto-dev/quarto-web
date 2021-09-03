@@ -53,27 +53,25 @@ Note that we added the `code-background: true` option to provide a background co
 ::: panel-tabset
 ## Code
 
-```` r
----
-title: "Knitr Document"
-format: 
-  html:
-    code-background: true
-execute:
-  warning: false
----
+    ---
+    title: "Knitr Document"
+    format: 
+      html:
+        code-background: true
+    execute:
+      warning: false
+    ---
 
-```{{r}}
-library(ggplot2)
-ggplot(airquality, aes(Temp, Ozone)) + 
-        geom_point() + 
-        geom_smooth(method = "loess", se = FALSE)
-```
+    ```{{r}}
+    library(ggplot2)
+    ggplot(airquality, aes(Temp, Ozone)) + 
+            geom_point() + 
+            geom_smooth(method = "loess", se = FALSE)
+    ```
 
-```{{r}}
-summary(airquality)
-```
-````
+    ```{{r}}
+    summary(airquality)
+    ```
 
 ## Output
 
@@ -96,41 +94,54 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+-------------------+--------------+
-| Code Block Syntax | Executable?  |
-+===================+:============:+
-|     ```{python}   | Yes          |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
-|     ```python     | No           |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
-|     ```{.python}  | No           |
-|     1 + 1         |              |
-|     ```           |              |
-+-------------------+--------------+
++-------------------+-------------+
+| Code Block Syntax | Executable? |
++===================+:===========:+
+|     ```{python}   | Yes         |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```python     | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
+|     ```{.python}  | No          |
+|     1 + 1         |             |
+|     ```           |             |
++-------------------+-------------+
 
 Non-executable code blocks are printed but not executed.
 
 ### Escaping
 
-If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, enclose the code block in 4-backticks (with language as appropriate) and use two curly braces rather than one:
+If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, use two curly braces rather than one. For example:
 
-````` python
-````{.python}
-```{{{python}}}
+``` {{{python}}}
 1 + 1
 ```
-````
-`````
 
 This will be output into the document as:
 
 ``` {{python}}
 1 + 1
 ```
+
+If you want to show an example with multiple code blocks and other markdown, just enclose the entire example in 4 backticks (e.g. ````` ```` `````) and use the two curly brace syntax for code blocks within. For example:
+
+    ````
+    ---
+    title: "My document"
+    ---
+
+    Some markdown content.
+
+    ```{{{python}}}
+    1 + 1
+    ```
+
+    Some additional markdown content.
+
+    ````
 
 ## Rendering
 
@@ -170,13 +181,13 @@ To include executable expressions within markdown in a Jupyter notebook, you use
 
 ``` {{python}}
 #| echo: false
-
-from IPython.display import Markdown
-Markdown("""
+radius = 10
+from IPython.display import display, Markdown
+display(Markdown("""
 ## Circle
 
 The radius of the circle is {radius}.
-""".format(radius = radius))
+""".format(radius = radius)))
 ```
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
