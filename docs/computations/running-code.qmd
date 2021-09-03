@@ -67,3 +67,81 @@ jupyter:
     language: python
     name: python3
 ```
+
+## Fenced Echo
+
+If you are writing a tutorial or documentation on using Quarto code blocks, you'll likely want to include the fenced code delimiter (e.g. ```` ```{python} ````) in your code output to emphasize that executable code requires that delimiter. You can do this using the `echo: fenced` option. For example, the following code block:
+
+``` {{python}}
+#| echo: fenced
+1 + 1
+```
+
+Will be rendered as:
+
+```{python}
+#| echo: fenced
+1 + 1
+```
+
+This is especially useful when you want to demonstrate the use of cell options. For example, here we demonstrate the use of the `output` and `code-overflow` options:
+
+```{{python}}
+#| echo: fenced
+#| output: false
+#| code-overflow: wrap
+1 + 1
+```
+
+This code block appears in the rendered document as:
+
+```{python}
+#| echo: fenced
+#| output: false
+#| code-overflow: wrap
+1 + 1
+```
+
+Note that all YAML options will be included in the fenced code output _except for_ `echo: fenced` (as that might be confusing to readers).
+
+This behavior can also be specified at the document level if you want all of your executable code blocks to include the fenced delimiter and YAML options:
+
+```yaml
+---
+title: "My Document"
+format: html
+execute:
+  echo: fenced
+---
+```
+
+You can also include non-executable code blocks adorned with the fenced syntax by using two curly braces rather than one. For example:
+
+``` {{{python}}}
+1 + 1
+```
+
+This will be output into the document as:
+
+``` {{python}}
+1 + 1
+```
+
+If you want to show an example with multiple code blocks and other markdown, just enclose the entire example in 4 backticks (e.g. ````` ```` `````) and use the two curly brace syntax for code blocks within. For example:
+
+`````
+````
+---
+title: "My document"
+---
+
+Some markdown content.
+
+```{{{python}}}
+1 + 1
+```
+
+Some additional markdown content.
+
+````
+`````
