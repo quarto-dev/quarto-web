@@ -94,54 +94,23 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 Note that code blocks that use convential markdown code block syntax (either ```` ```python ```` or ```` ```{.python} ````) are not executable:
 
-+-------------------+-------------+
-| Code Block Syntax | Executable? |
-+===================+:===========:+
-|     ```{python}   | Yes         |
-|     1 + 1         |             |
-|     ```           |             |
-+-------------------+-------------+
-|     ```python     | No          |
-|     1 + 1         |             |
-|     ```           |             |
-+-------------------+-------------+
-|     ```{.python}  | No          |
-|     1 + 1         |             |
-|     ```           |             |
-+-------------------+-------------+
++-------------------+--------------+
+| Code Block Syntax | Executable?  |
++===================+:============:+
+|     ```{python}   | Yes          |
+|     1 + 1         |              |
+|     ```           |              |
++-------------------+--------------+
+|     ```python     | No           |
+|     1 + 1         |              |
+|     ```           |              |
++-------------------+--------------+
+|     ```{.python}  | No           |
+|     1 + 1         |              |
+|     ```           |              |
++-------------------+--------------+
 
 Non-executable code blocks are printed but not executed.
-
-### Escaping
-
-If you need to write *about* executable code blocks (e.g. a Quarto tutorial like this one) without the blocks themselves becoming executable, use two curly braces rather than one. For example:
-
-``` {{{python}}}
-1 + 1
-```
-
-This will be output into the document as:
-
-``` {{python}}
-1 + 1
-```
-
-If you want to show an example with multiple code blocks and other markdown, just enclose the entire example in 4 backticks (e.g. ````` ```` `````) and use the two curly brace syntax for code blocks within. For example:
-
-    ````
-    ---
-    title: "My document"
-    ---
-
-    Some markdown content.
-
-    ```{{{python}}}
-    1 + 1
-    ```
-
-    Some additional markdown content.
-
-    ````
 
 ## Rendering
 
