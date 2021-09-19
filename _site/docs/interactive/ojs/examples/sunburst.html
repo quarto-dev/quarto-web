@@ -734,246 +734,230 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb2" data-startfrom="115" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 114;"><span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>flareData <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"flare-2.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2" data-startfrom="115" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 114;"><span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>flareData <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"flare-2.json"</span>)<span class="op">.</span><span class="fu">json</span>()</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>partition <span class="op">=</span> flareData <span class="kw">=&gt;</span> {</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> <span class="bu">root</span> <span class="op">=</span> d3<span class="op">.</span><span class="fu">hierarchy</span>(flareData)</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sum</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">value</span>)</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> b<span class="op">.</span><span class="at">value</span> <span class="op">-</span> a<span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> d3<span class="op">.</span><span class="fu">partition</span>()</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">size</span>([<span class="dv">2</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="cn">PI</span><span class="op">,</span> <span class="bu">root</span><span class="op">.</span><span class="at">height</span> <span class="op">+</span> <span class="dv">1</span>])</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>    (<span class="bu">root</span>)<span class="op">;</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleOrdinal</span>(</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>  d3<span class="op">.</span><span class="fu">quantize</span>(d3<span class="op">.</span><span class="at">interpolateRainbow</span><span class="op">,</span> flareData<span class="op">.</span><span class="at">children</span><span class="op">.</span><span class="at">length</span> <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>format <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">",d"</span>)</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="dv">932</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>radius <span class="op">=</span> width <span class="op">/</span> <span class="dv">6</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>arc <span class="op">=</span> d3<span class="op">.</span><span class="fu">arc</span>()</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">startAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x0</span>)</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">endAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x1</span>)</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padAngle</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>((d<span class="op">.</span><span class="at">x1</span> <span class="op">-</span> d<span class="op">.</span><span class="at">x0</span>) <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> <span class="fl">0.005</span>))</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padRadius</span>(radius <span class="op">*</span> <span class="fl">1.5</span>)</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">innerRadius</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius)</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">outerRadius</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius<span class="op">,</span> d<span class="op">.</span><span class="at">y1</span> <span class="op">*</span> radius <span class="op">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-2" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb3" data-startfrom="119" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 118;"><span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>partition <span class="op">=</span> flareData <span class="kw">=&gt;</span> {</span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> <span class="bu">root</span> <span class="op">=</span> d3<span class="op">.</span><span class="fu">hierarchy</span>(flareData)</span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sum</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">value</span>)</span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> b<span class="op">.</span><span class="at">value</span> <span class="op">-</span> a<span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> d3<span class="op">.</span><span class="fu">partition</span>()</span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">size</span>([<span class="dv">2</span> <span class="op">*</span> <span class="bu">Math</span><span class="op">.</span><span class="cn">PI</span><span class="op">,</span> <span class="bu">root</span><span class="op">.</span><span class="at">height</span> <span class="op">+</span> <span class="dv">1</span>])</span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>    (<span class="bu">root</span>)<span class="op">;</span></span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-3" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb4" data-startfrom="130" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 129;"><span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> d3<span class="op">.</span><span class="fu">scaleOrdinal</span>(</span>
-<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a>  d3<span class="op">.</span><span class="fu">quantize</span>(d3<span class="op">.</span><span class="at">interpolateRainbow</span><span class="op">,</span> flareData<span class="op">.</span><span class="at">children</span><span class="op">.</span><span class="at">length</span> <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-4" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-3" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb5" data-startfrom="136" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 135;"><span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a>format <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">",d"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-5" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-4" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb6" data-startfrom="140" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 139;"><span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="dv">932</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-6" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-5" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb7" data-startfrom="144" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 143;"><span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a>radius <span class="op">=</span> width <span class="op">/</span> <span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-7" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-6" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode" id="cb8" data-startfrom="148" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 147;"><span id="cb8-148"><a href="#cb8-148" aria-hidden="true" tabindex="-1"></a>arc <span class="op">=</span> d3<span class="op">.</span><span class="fu">arc</span>()</span>
-<span id="cb8-149"><a href="#cb8-149" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">startAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x0</span>)</span>
-<span id="cb8-150"><a href="#cb8-150" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">endAngle</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">x1</span>)</span>
-<span id="cb8-151"><a href="#cb8-151" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padAngle</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>((d<span class="op">.</span><span class="at">x1</span> <span class="op">-</span> d<span class="op">.</span><span class="at">x0</span>) <span class="op">/</span> <span class="dv">2</span><span class="op">,</span> <span class="fl">0.005</span>))</span>
-<span id="cb8-152"><a href="#cb8-152" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">padRadius</span>(radius <span class="op">*</span> <span class="fl">1.5</span>)</span>
-<span id="cb8-153"><a href="#cb8-153" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">innerRadius</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius)</span>
-<span id="cb8-154"><a href="#cb8-154" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">outerRadius</span>(d <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(d<span class="op">.</span><span class="at">y0</span> <span class="op">*</span> radius<span class="op">,</span> d<span class="op">.</span><span class="at">y1</span> <span class="op">*</span> radius <span class="op">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="ojs-cell-8" data-nodetype="declaration">
+<div>
+<div id="ojs-cell-2-7" data-nodetype="declaration">
 
 </div>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb9" data-startfrom="158" data-source-offset="-0"><pre class="sourceCode js cell-code code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 157;"><span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="pp">require</span>(<span class="st">"d3@6"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div id="ojs-cell-9" data-nodetype="declaration">
-
 </div>
 </div>
 </div>
 
 <!-- -->
 <div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title anchored" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Sunburst"</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Originally published at &lt;https://observablehq.com/@d3/zoomable-sunburst&gt;"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Mike Bostock"</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2018-04-30</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="an">license:</span><span class="co"> isc</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: false</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>This variant of a <span class="co">[</span><span class="ot">sunburst diagram</span><span class="co">](https://observablehq.com/@d3/sunburst)</span> shows only two layers of the hierarchy at a time. Click a node to zoom in, or the center to zoom out. Compare to an <span class="co">[</span><span class="ot">icicle</span><span class="co">](https://observablehq.com/@d3/zoomable-icicle)</span>.</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="in">//| code-fold: true</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="in">sunburst = {</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="in">  const root = partition(flareData);</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="in">  root.each(d =&gt; d.current = d);</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="in">  const svg = d3.create("svg")</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("viewBox", [0, 0, width, width])</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("font", "15px sans-serif");</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="in">  const g = svg.append("g")</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", `translate(${width / 2},${width / 2})`);</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="in">  const path = g.append("g")</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="in">    .selectAll("path")</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="in">    .data(root.descendants().slice(1))</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="in">    .join("path")</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill", d =&gt; { while (d.depth &gt; 1) d = d.parent; return color(d.data.name); })</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill-opacity", d =&gt; arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)</span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("d", d =&gt; arc(d.current));</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="in">  path.filter(d =&gt; d.children)</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("cursor", "pointer")</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("click", clicked);</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="in">  path.append("title")</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="in">      .text(d =&gt; `${d.ancestors().map(d =&gt; d.data.name).reverse().join("/")}\n${format(d.value)}`);</span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="in">  const label = g.append("g")</span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("pointer-events", "none")</span></span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("text-anchor", "middle")</span></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("user-select", "none")</span></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="in">    .selectAll("text")</span></span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="in">    .data(root.descendants().slice(1))</span></span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="in">    .join("text")</span></span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("dy", "0.35em")</span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill-opacity", d =&gt; +labelVisible(d.current))</span></span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", d =&gt; labelTransform(d.current))</span></span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="in">      .text(d =&gt; d.data.name);</span></span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="in">  const parent = g.append("circle")</span></span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="in">      .datum(root)</span></span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("r", radius)</span></span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill", "none")</span></span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("pointer-events", "all")</span></span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("click", clicked);</span></span>
-<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a><span class="in">  function clicked(event, p) {</span></span>
-<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="in">    parent.datum(p.parent || root);</span></span>
-<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a><span class="in">    root.each(d =&gt; d.target = {</span></span>
-<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a><span class="in">      x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,</span></span>
-<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="in">      x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,</span></span>
-<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a><span class="in">      y0: Math.max(0, d.y0 - p.depth),</span></span>
-<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a><span class="in">      y1: Math.max(0, d.y1 - p.depth)</span></span>
-<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="in">    });</span></span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a><span class="in">    const t = g.transition().duration(750);</span></span>
-<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a><span class="in">    // Transition the data on all arcs, even the ones that aren’t visible,</span></span>
-<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a><span class="in">    // so that if this transition is interrupted, entering arcs will start</span></span>
-<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="in">    // the next transition from the desired position.</span></span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="in">    path.transition(t)</span></span>
-<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="in">        .tween("data", d =&gt; {</span></span>
-<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="in">          const i = d3.interpolate(d.current, d.target);</span></span>
-<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="in">          return t =&gt; d.current = i(t);</span></span>
-<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a><span class="in">        })</span></span>
-<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="in">      .filter(function(d) {</span></span>
-<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="in">        return +this.getAttribute("fill-opacity") || arcVisible(d.target);</span></span>
-<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a><span class="in">      })</span></span>
-<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="in">        .attr("fill-opacity", d =&gt; arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)</span></span>
-<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="in">        .attrTween("d", d =&gt; () =&gt; arc(d.current));</span></span>
-<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="in">    label.filter(function(d) {</span></span>
-<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a><span class="in">        return +this.getAttribute("fill-opacity") || labelVisible(d.target);</span></span>
-<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="in">      }).transition(t)</span></span>
-<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="in">        .attr("fill-opacity", d =&gt; +labelVisible(d.target))</span></span>
-<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="in">        .attrTween("transform", d =&gt; () =&gt; labelTransform(d.current));</span></span>
-<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
-<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a><span class="in">  function arcVisible(d) {</span></span>
-<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a><span class="in">    return d.y1 &lt;= 3 &amp;&amp; d.y0 &gt;= 1 &amp;&amp; d.x1 &gt; d.x0;</span></span>
-<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a><span class="in">  function labelVisible(d) {</span></span>
-<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a><span class="in">    return d.y1 &lt;= 3 &amp;&amp; d.y0 &gt;= 1 &amp;&amp; (d.y1 - d.y0) * (d.x1 - d.x0) &gt; 0.03;</span></span>
-<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a><span class="in">  function labelTransform(d) {</span></span>
-<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="in">    const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;</span></span>
-<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a><span class="in">    const y = (d.y0 + d.y1) / 2 * radius;</span></span>
-<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a><span class="in">    return `rotate(${x - 90}) translate(${y},0) rotate(${x &lt; 180 ? 0 : 180})`;</span></span>
-<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="in">  return svg.node();</span></span>
-<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="in">flareData = FileAttachment("flare-2.json").json()</span></span>
-<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a><span class="in">partition = flareData =&gt; {</span></span>
-<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="in">  const root = d3.hierarchy(flareData)</span></span>
-<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="in">      .sum(d =&gt; d.value)</span></span>
-<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="in">      .sort((a, b) =&gt; b.value - a.value);</span></span>
-<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="in">  return d3.partition()</span></span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="in">      .size([2 * Math.PI, root.height + 1])</span></span>
-<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="in">    (root);</span></span>
-<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="in">color = d3.scaleOrdinal(</span></span>
-<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="in">  d3.quantize(d3.interpolateRainbow, flareData.children.length + 1)</span></span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
-<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a><span class="in">format = d3.format(",d")</span></span>
-<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a><span class="in">width = 932</span></span>
-<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a><span class="in">radius = width / 6</span></span>
-<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a><span class="in">arc = d3.arc()</span></span>
-<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a><span class="in">    .startAngle(d =&gt; d.x0)</span></span>
-<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="in">    .endAngle(d =&gt; d.x1)</span></span>
-<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="in">    .padAngle(d =&gt; Math.min((d.x1 - d.x0) / 2, 0.005))</span></span>
-<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="in">    .padRadius(radius * 1.5)</span></span>
-<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a><span class="in">    .innerRadius(d =&gt; d.y0 * radius)</span></span>
-<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a><span class="in">    .outerRadius(d =&gt; Math.max(d.y0 * radius, d.y1 * radius - 1))</span></span>
-<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
-<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a><span class="in">d3 = require("d3@6")</span></span>
-<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Sunburst"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Originally published at &lt;https://observablehq.com/@d3/zoomable-sunburst&gt;"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Mike Bostock"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 2018-04-30</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="an">license:</span><span class="co"> isc</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: false</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>This variant of a <span class="co">[</span><span class="ot">sunburst diagram</span><span class="co">](https://observablehq.com/@d3/sunburst)</span> shows only two layers of the hierarchy at a time. Click a node to zoom in, or the center to zoom out. Compare to an <span class="co">[</span><span class="ot">icicle</span><span class="co">](https://observablehq.com/@d3/zoomable-icicle)</span>.</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="in">//| code-fold: true</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="in">sunburst = {</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="in">  const root = partition(flareData);</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="in">  root.each(d =&gt; d.current = d);</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="in">  const svg = d3.create("svg")</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("viewBox", [0, 0, width, width])</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("font", "15px sans-serif");</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="in">  const g = svg.append("g")</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", `translate(${width / 2},${width / 2})`);</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="in">  const path = g.append("g")</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="in">    .selectAll("path")</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="in">    .data(root.descendants().slice(1))</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="in">    .join("path")</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill", d =&gt; { while (d.depth &gt; 1) d = d.parent; return color(d.data.name); })</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill-opacity", d =&gt; arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("d", d =&gt; arc(d.current));</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="in">  path.filter(d =&gt; d.children)</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("cursor", "pointer")</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("click", clicked);</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="in">  path.append("title")</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="in">      .text(d =&gt; `${d.ancestors().map(d =&gt; d.data.name).reverse().join("/")}\n${format(d.value)}`);</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="in">  const label = g.append("g")</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("pointer-events", "none")</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("text-anchor", "middle")</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="in">      .style("user-select", "none")</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="in">    .selectAll("text")</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="in">    .data(root.descendants().slice(1))</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="in">    .join("text")</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("dy", "0.35em")</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill-opacity", d =&gt; +labelVisible(d.current))</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("transform", d =&gt; labelTransform(d.current))</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="in">      .text(d =&gt; d.data.name);</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="in">  const parent = g.append("circle")</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="in">      .datum(root)</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("r", radius)</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("fill", "none")</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="in">      .attr("pointer-events", "all")</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="in">      .on("click", clicked);</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="in">  function clicked(event, p) {</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="in">    parent.datum(p.parent || root);</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="in">    root.each(d =&gt; d.target = {</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="in">      x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="in">      x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="in">      y0: Math.max(0, d.y0 - p.depth),</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="in">      y1: Math.max(0, d.y1 - p.depth)</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="in">    });</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="in">    const t = g.transition().duration(750);</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="in">    // Transition the data on all arcs, even the ones that aren’t visible,</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="in">    // so that if this transition is interrupted, entering arcs will start</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="in">    // the next transition from the desired position.</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="in">    path.transition(t)</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="in">        .tween("data", d =&gt; {</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="in">          const i = d3.interpolate(d.current, d.target);</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="in">          return t =&gt; d.current = i(t);</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="in">        })</span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="in">      .filter(function(d) {</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="in">        return +this.getAttribute("fill-opacity") || arcVisible(d.target);</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="in">      })</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="in">        .attr("fill-opacity", d =&gt; arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="in">        .attrTween("d", d =&gt; () =&gt; arc(d.current));</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="in">    label.filter(function(d) {</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="in">        return +this.getAttribute("fill-opacity") || labelVisible(d.target);</span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="in">      }).transition(t)</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="in">        .attr("fill-opacity", d =&gt; +labelVisible(d.target))</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="in">        .attrTween("transform", d =&gt; () =&gt; labelTransform(d.current));</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="in">  function arcVisible(d) {</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="in">    return d.y1 &lt;= 3 &amp;&amp; d.y0 &gt;= 1 &amp;&amp; d.x1 &gt; d.x0;</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="in">  function labelVisible(d) {</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="in">    return d.y1 &lt;= 3 &amp;&amp; d.y0 &gt;= 1 &amp;&amp; (d.y1 - d.y0) * (d.x1 - d.x0) &gt; 0.03;</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="in">  function labelTransform(d) {</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="in">    const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="in">    const y = (d.y0 + d.y1) / 2 * radius;</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="in">    return `rotate(${x - 90}) translate(${y},0) rotate(${x &lt; 180 ? 0 : 180})`;</span></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="in">  return svg.node();</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="in">flareData = FileAttachment("flare-2.json").json()</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a><span class="in">partition = flareData =&gt; {</span></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a><span class="in">  const root = d3.hierarchy(flareData)</span></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a><span class="in">      .sum(d =&gt; d.value)</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="in">      .sort((a, b) =&gt; b.value - a.value);</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a><span class="in">  return d3.partition()</span></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a><span class="in">      .size([2 * Math.PI, root.height + 1])</span></span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="in">    (root);</span></span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a><span class="in">color = d3.scaleOrdinal(</span></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a><span class="in">  d3.quantize(d3.interpolateRainbow, flareData.children.length + 1)</span></span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a><span class="in">format = d3.format(",d")</span></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a><span class="in">width = 932</span></span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="in">radius = width / 6</span></span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="in">arc = d3.arc()</span></span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a><span class="in">    .startAngle(d =&gt; d.x0)</span></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a><span class="in">    .endAngle(d =&gt; d.x1)</span></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a><span class="in">    .padAngle(d =&gt; Math.min((d.x1 - d.x0) / 2, 0.005))</span></span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a><span class="in">    .padRadius(radius * 1.5)</span></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="in">    .innerRadius(d =&gt; d.y0 * radius)</span></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a><span class="in">    .outerRadius(d =&gt; Math.max(d.y0 * radius, d.y1 * radius - 1))</span></span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 <script type="application/javascript">
@@ -1220,7 +1204,7 @@ if (!kPlatformMac) {
 
 </script>
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"sunburst = {\n  const root = partition(flareData);\n\n  root.each(d => d.current = d);\n\n  const svg = d3.create(\"svg\")\n      .attr(\"viewBox\", [0, 0, width, width])\n      .style(\"font\", \"15px sans-serif\");\n\n  const g = svg.append(\"g\")\n      .attr(\"transform\", `translate(${width / 2},${width / 2})`);\n\n  const path = g.append(\"g\")\n    .selectAll(\"path\")\n    .data(root.descendants().slice(1))\n    .join(\"path\")\n      .attr(\"fill\", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })\n      .attr(\"fill-opacity\", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)\n      .attr(\"d\", d => arc(d.current));\n\n  path.filter(d => d.children)\n      .style(\"cursor\", \"pointer\")\n      .on(\"click\", clicked);\n\n  path.append(\"title\")\n      .text(d => `${d.ancestors().map(d => d.data.name).reverse().join(\"/\")}\\n${format(d.value)}`);\n\n  const label = g.append(\"g\")\n      .attr(\"pointer-events\", \"none\")\n      .attr(\"text-anchor\", \"middle\")\n      .style(\"user-select\", \"none\")\n    .selectAll(\"text\")\n    .data(root.descendants().slice(1))\n    .join(\"text\")\n      .attr(\"dy\", \"0.35em\")\n      .attr(\"fill-opacity\", d => +labelVisible(d.current))\n      .attr(\"transform\", d => labelTransform(d.current))\n      .text(d => d.data.name);\n\n  const parent = g.append(\"circle\")\n      .datum(root)\n      .attr(\"r\", radius)\n      .attr(\"fill\", \"none\")\n      .attr(\"pointer-events\", \"all\")\n      .on(\"click\", clicked);\n\n  function clicked(event, p) {\n    parent.datum(p.parent || root);\n\n    root.each(d => d.target = {\n      x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,\n      x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,\n      y0: Math.max(0, d.y0 - p.depth),\n      y1: Math.max(0, d.y1 - p.depth)\n    });\n\n    const t = g.transition().duration(750);\n\n    // Transition the data on all arcs, even the ones that aren’t visible,\n    // so that if this transition is interrupted, entering arcs will start\n    // the next transition from the desired position.\n    path.transition(t)\n        .tween(\"data\", d => {\n          const i = d3.interpolate(d.current, d.target);\n          return t => d.current = i(t);\n        })\n      .filter(function(d) {\n        return +this.getAttribute(\"fill-opacity\") || arcVisible(d.target);\n      })\n        .attr(\"fill-opacity\", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)\n        .attrTween(\"d\", d => () => arc(d.current));\n\n    label.filter(function(d) {\n        return +this.getAttribute(\"fill-opacity\") || labelVisible(d.target);\n      }).transition(t)\n        .attr(\"fill-opacity\", d => +labelVisible(d.target))\n        .attrTween(\"transform\", d => () => labelTransform(d.current));\n  }\n  \n  function arcVisible(d) {\n    return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;\n  }\n\n  function labelVisible(d) {\n    return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;\n  }\n\n  function labelTransform(d) {\n    const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;\n    const y = (d.y0 + d.y1) / 2 * radius;\n    return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;\n  }\n\n  return svg.node();\n}"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"flareData = FileAttachment(\"flare-2.json\").json()"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"partition = flareData => {\n  const root = d3.hierarchy(flareData)\n      .sum(d => d.value)\n      .sort((a, b) => b.value - a.value);\n  return d3.partition()\n      .size([2 * Math.PI, root.height + 1])\n    (root);\n}"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"color = d3.scaleOrdinal(\n  d3.quantize(d3.interpolateRainbow, flareData.children.length + 1)\n)"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"format = d3.format(\",d\")"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"width = 932"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"radius = width / 6"},{"methodName":"interpret","cellName":"ojs-cell-8","inline":false,"source":"arc = d3.arc()\n    .startAngle(d => d.x0)\n    .endAngle(d => d.x1)\n    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))\n    .padRadius(radius * 1.5)\n    .innerRadius(d => d.y0 * radius)\n    .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))"},{"methodName":"interpret","cellName":"ojs-cell-9","inline":false,"source":"d3 = require(\"d3@6\")"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"sunburst = {\n  const root = partition(flareData);\n\n  root.each(d => d.current = d);\n\n  const svg = d3.create(\"svg\")\n      .attr(\"viewBox\", [0, 0, width, width])\n      .style(\"font\", \"15px sans-serif\");\n\n  const g = svg.append(\"g\")\n      .attr(\"transform\", `translate(${width / 2},${width / 2})`);\n\n  const path = g.append(\"g\")\n    .selectAll(\"path\")\n    .data(root.descendants().slice(1))\n    .join(\"path\")\n      .attr(\"fill\", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })\n      .attr(\"fill-opacity\", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)\n      .attr(\"d\", d => arc(d.current));\n\n  path.filter(d => d.children)\n      .style(\"cursor\", \"pointer\")\n      .on(\"click\", clicked);\n\n  path.append(\"title\")\n      .text(d => `${d.ancestors().map(d => d.data.name).reverse().join(\"/\")}\\n${format(d.value)}`);\n\n  const label = g.append(\"g\")\n      .attr(\"pointer-events\", \"none\")\n      .attr(\"text-anchor\", \"middle\")\n      .style(\"user-select\", \"none\")\n    .selectAll(\"text\")\n    .data(root.descendants().slice(1))\n    .join(\"text\")\n      .attr(\"dy\", \"0.35em\")\n      .attr(\"fill-opacity\", d => +labelVisible(d.current))\n      .attr(\"transform\", d => labelTransform(d.current))\n      .text(d => d.data.name);\n\n  const parent = g.append(\"circle\")\n      .datum(root)\n      .attr(\"r\", radius)\n      .attr(\"fill\", \"none\")\n      .attr(\"pointer-events\", \"all\")\n      .on(\"click\", clicked);\n\n  function clicked(event, p) {\n    parent.datum(p.parent || root);\n\n    root.each(d => d.target = {\n      x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,\n      x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,\n      y0: Math.max(0, d.y0 - p.depth),\n      y1: Math.max(0, d.y1 - p.depth)\n    });\n\n    const t = g.transition().duration(750);\n\n    // Transition the data on all arcs, even the ones that aren’t visible,\n    // so that if this transition is interrupted, entering arcs will start\n    // the next transition from the desired position.\n    path.transition(t)\n        .tween(\"data\", d => {\n          const i = d3.interpolate(d.current, d.target);\n          return t => d.current = i(t);\n        })\n      .filter(function(d) {\n        return +this.getAttribute(\"fill-opacity\") || arcVisible(d.target);\n      })\n        .attr(\"fill-opacity\", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)\n        .attrTween(\"d\", d => () => arc(d.current));\n\n    label.filter(function(d) {\n        return +this.getAttribute(\"fill-opacity\") || labelVisible(d.target);\n      }).transition(t)\n        .attr(\"fill-opacity\", d => +labelVisible(d.target))\n        .attrTween(\"transform\", d => () => labelTransform(d.current));\n  }\n  \n  function arcVisible(d) {\n    return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;\n  }\n\n  function labelVisible(d) {\n    return d.y1 <= 3 && d.y0 >= 1 && (d.y1 - d.y0) * (d.x1 - d.x0) > 0.03;\n  }\n\n  function labelTransform(d) {\n    const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;\n    const y = (d.y0 + d.y1) / 2 * radius;\n    return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;\n  }\n\n  return svg.node();\n}"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"flareData = FileAttachment(\"flare-2.json\").json()\n\npartition = flareData => {\n  const root = d3.hierarchy(flareData)\n      .sum(d => d.value)\n      .sort((a, b) => b.value - a.value);\n  return d3.partition()\n      .size([2 * Math.PI, root.height + 1])\n    (root);\n}\n\ncolor = d3.scaleOrdinal(\n  d3.quantize(d3.interpolateRainbow, flareData.children.length + 1)\n)\n\nformat = d3.format(\",d\")\n\nwidth = 932\n\nradius = width / 6\n\narc = d3.arc()\n    .startAngle(d => d.x0)\n    .endAngle(d => d.x1)\n    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))\n    .padRadius(radius * 1.5)\n    .innerRadius(d => d.y0 * radius)\n    .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))"}]}
 </script>
 <script type="module">
 window._ojs.paths.runtimeToDoc = "../../docs/interactive/ojs/examples";
