@@ -12,4 +12,4 @@ file    = File.read(indexFile)
 records = JSON.parse(file)
 
 # The API client automatically batches your records
-index.save_objects(records, { autoGenerateObjectIDIfNotExist: true })
+index.save_objects(records, {})
