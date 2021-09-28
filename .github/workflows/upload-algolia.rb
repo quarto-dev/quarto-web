@@ -1,5 +1,5 @@
 require 'json'
-require 'algolia
+require 'algolia'
 
 apiKey = ENV["ALGOLIA_API_KEY"]
 appId = ENV["ALGOLIA_APP_ID"]
