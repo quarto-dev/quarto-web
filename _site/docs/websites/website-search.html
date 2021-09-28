@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-99.9.9">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index..">
+  <meta name="description" content="Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index.">
   <title>Quarto – Website Search</title>
   <style>
     code{white-space: pre-wrap;}
@@ -140,13 +140,13 @@
   </script>
   <link rel="stylesheet" href="../../styles.css">
 <meta name="og:title" content="Quarto - Website Search">
-<meta name="og:description" content="Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index..">
+<meta name="og:description" content="Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index.">
 <meta name="og:image" content="https://quarto.org/quarto.png">
 <meta name="og:site-name" content="Quarto">
 <meta name="og:image:height" content="77">
 <meta name="og:image:width" content="320">
 <meta name="twitter:title" content="Quarto - Website Search">
-<meta name="twitter:description" content="Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index..">
+<meta name="twitter:description" content="Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index.">
 <meta name="twitter:image" content="https://quarto.org/quarto.png">
 <meta name="twitter:image-height" content="77">
 <meta name="twitter:image-width" content="320">
@@ -484,11 +484,7 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#search-appearance" class="nav-link" data-scroll-target="#search-appearance">Search Appearance</a>
-<ul class="collapse">
-<li><a href="#textbox" class="nav-link" data-scroll-target="#textbox">Textbox</a></li>
-<li><a href="#overlay" class="nav-link" data-scroll-target="#overlay">Overlay</a></li>
-</ul></li>
+<li><a href="#search-appearance" class="nav-link" data-scroll-target="#search-appearance">Search Appearance</a></li>
 <li><a href="#customizing-results" class="nav-link" data-scroll-target="#customizing-results">Customizing Results</a></li>
 <li><a href="#using-algolia" class="nav-link" data-scroll-target="#using-algolia">Using Algolia</a>
 <ul class="collapse">
@@ -508,16 +504,15 @@
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>Quarto includes support for allowing users to search the contents of your website. Using your <code>_quarto.yml</code> file, you can configure and customize where the search interface appears in your website, how the search interface behaves, as well as other options for controlling the search experience.</p>
-<p>By default, Quarto will automatically index the contents of your site and make it searchable using <a href="https://fusejs.io">Fuse.js</a>, but this can also be customized to connect to a hosted <a href="https://www.algolia.com/products/search-and-discovery/hosted-search-api/">Algolia index</a>.</p>
+<p>Quarto includes support for full text search of websites and books. By default, Quarto will automatically index the contents of your site and make it searchable using a locally built index. You can also configure Quarto search to use a hosted <a href="https://www.algolia.com/products/search-and-discovery/hosted-search-api/">Algolia</a> index.</p>
 </section>
 <section id="search-appearance" class="level2">
 <h2 class="anchored" data-anchor-id="search-appearance">Search Appearance</h2>
-<p>By default, search will be enabled for websites created using Quarto and the search UI will be adapted to the overall navigational structure of the website. If a Navbar is defined, the search UI will appear as a button on the Navbar. If a Navbar is not defined, but a Sidebar is defined, the search UI will appear as a textbox on the sidebar. You can also explicitly control how the search UI appears within your site’s navigation using the following options:</p>
+<p>Search is enabled by default for websites and books. If the site has a navbar the search UI will appear on the navbar, otherwise it will appear on the sidebar. You can control the location of search with the following options:</p>
 <table class="table">
 <colgroup>
-<col style="width: 3%">
-<col style="width: 96%">
+<col style="width: 10%">
+<col style="width: 89%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -528,41 +523,22 @@
 <tbody>
 <tr class="odd">
 <td><code>location</code></td>
-<td>Which navigational element should contain the search UI. Specify <code>navbar</code> if you’d like the search UI to appear in the Navbar or <code>sidebar</code> if you’d like the search UI to appear in the sidebar. If not specified, the search UI will appear in a Navbar if present, otherwise in the sidebar, or not at all if no navigation is present.</td>
+<td><code>navbar</code> or <code>sidebar</code> (defaults to <code>navbar</code> if one is present on the page).</td>
 </tr>
 <tr class="even">
 <td><code>type</code></td>
-<td>The type of search UI to include in the specified location. If you specify <code>textbox</code>, a traditional web textbox will appears in the Navbar or sidebar. If you specify <code>overlay</code>, a button will appear in the Navbar or Sidebar and pressing the button will launch a more full screen search experience.</td>
+<td><code>overlay</code> or <code>textbox</code> (<code>overlay</code> provides a button that pops up a search UI, <code>textbox</code> does search inline)</td>
 </tr>
 </tbody>
 </table>
-<section id="textbox" class="level3">
-<h3 class="anchored" data-anchor-id="textbox">Textbox</h3>
-<p>Below is an example of the appearance of search when the type is specified as <code>textbox</code>.</p>
-<section id="navbar" class="level4">
-<h4 class="anchored" data-anchor-id="navbar">Navbar</h4>
-<p><img src="images/Screen%20Shot%202021-09-23%20at%204.55.10%20PM.png" class="img-fluid"></p>
-</section>
-<section id="sidebar" class="level4">
-<h4 class="anchored" data-anchor-id="sidebar">Sidebar</h4>
-<p><img src="images/Screen%20Shot%202021-09-23%20at%205.11.00%20PM.png" class="img-fluid"></p>
-</section>
-</section>
-<section id="overlay" class="level3">
-<h3 class="anchored" data-anchor-id="overlay">Overlay</h3>
-<p>Below is an example of the appearance of search when the type is specified as <code>overlay</code>.</p>
-<section id="navbar-1" class="level4">
-<h4 class="anchored" data-anchor-id="navbar-1">Navbar</h4>
-<p><img src="images/Screen%20Shot%202021-09-23%20at%204.54.27%20PM.png" class="img-fluid"></p>
-</section>
-<section id="sidebar-1" class="level4">
-<h4 class="anchored" data-anchor-id="sidebar-1">Sidebar</h4>
-<p><img src="images/Screen%20Shot%202021-09-23%20at%205.12.49%20PM.png" class="img-fluid"></p>
-</section>
-</section>
+<p>The <code>overlay</code> option displays the search UI as follows:</p>
+<p><img src="images/navbar-overlay.png" class="border img-fluid"></p>
+<p>The <code>textbox</code> option displays search like this:</p>
+<p><img src="images/navbar-textbox.png" class="border img-fluid"></p>
 </section>
 <section id="customizing-results" class="level2">
 <h2 class="anchored" data-anchor-id="customizing-results">Customizing Results</h2>
+<p>You can use the following options to customize how search results are displayed:</p>
 <table class="table">
 <colgroup>
 <col style="width: 7%">
@@ -577,24 +553,24 @@
 <tbody>
 <tr class="odd">
 <td><code>limit</code></td>
-<td>The number of results to display in the search results. Defaults to 25.</td>
+<td>The number of results to display in the search results. Defaults to 20.</td>
 </tr>
 <tr class="even">
 <td><code>collapse-after</code></td>
 <td><p>The number of sections matching a document to show before hiding additional sections behind a ‘more matches’ link. Defaults to 2.</p>
-<p><img src="images/Screen%20Shot%202021-09-23%20at%205.20.24%20PM.png" class="img-fluid"></p></td>
+<p><img src="images/collapse-after.png" class="border img-fluid"></p></td>
 </tr>
 <tr class="odd">
 <td><code>copy-button</code></td>
 <td><p>If true, the search textbox will include a small icon that when clicked will copy a url to the search results to the clipboard (this is useful if users would like to share a particular search with results). Defaults to false.</p>
-<p><img src="images/Screen%20Shot%202021-09-23%20at%205.22.22%20PM.png" class="img-fluid"></p></td>
+<p><img src="images/copy-button.png" class="border img-fluid"></p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="using-algolia" class="level2">
 <h2 class="anchored" data-anchor-id="using-algolia">Using Algolia</h2>
-<p>In addition to the built in search capability using Fuse.js, a Quarto website can also be configured to use an existing search index. In addition, as a part of rendering the website when search is enabled, Quarto will produce a JSON file `_site/search.json` which can be used to update an Algolia index (via directly uploading the file or by using their API). For more on creating indexes with Algolia, see <a href="https://www.algolia.com/doc/guides/sending-and-managing-data/send-and-update-your-data/">Send and Update Your Data</a> using Algolia.</p>
+<p>In addition to the built in search capability, Quarto websites can also be configured to use an external Algolia search index. When rendering a website, Quarto will produce a JSON file (<code>search.json</code> in the site output directory) which can be used to update an Algolia index. For more on creating indexes with Algolia, see <a href="https://www.algolia.com/doc/guides/sending-and-managing-data/send-and-update-your-data/">Send and Update Your Data</a> using Algolia.</p>
 <section id="basic-configuration" class="level3">
 <h3 class="anchored" data-anchor-id="basic-configuration">Basic Configuration</h3>
 <p>In order for Quarto to connect to your Algolia index, you need to provide basic connection information in your Quarto project file. You can find this connection information for your Algolia index in the Dashboard in the <a href="https://www.algolia.com/api-keys">API Keys</a> section. The following basic connection information is required:</p>
@@ -647,7 +623,8 @@ Important
 </section>
 <section id="custom-index-schema" class="level3">
 <h3 class="anchored" data-anchor-id="custom-index-schema">Custom Index Schema</h3>
-<p>If you are simply using the <code>search.json</code> file generated by Quarto as a part of rendering your site to update your Algolia index, the above configuration information is all that is required to set up search using Algolia. If you are generating an index some other way, however, including perhaps additional or different fields in the index, you may need to provide additional information to specify which fields Quarto should use when searching. You do this by including an <code>index-fields</code> key under <code>aloglia</code> which specifies the names of specific fields in your index.</p>
+<p>If you are simply using the <code>search.json</code> file generated by Quarto as your Algolia index, the above configuration information is all that is required to set up search using Algolia.</p>
+<p>However, if you are generating an index in some other fashion, you may need to provide additional information to specify which fields Quarto should use when searching. You do this by including an <code>index-fields</code> key under <code>aloglia</code> which specifies the names of specific fields in your index.</p>
 <table class="table">
 <colgroup>
 <col style="width: 5%">
@@ -671,14 +648,14 @@ Important
 <p>This field is required (either as an existing field in your index or with a mapped field name).</p></td>
 </tr>
 <tr class="odd">
-<td><code>section</code></td>
-<td><p>The field to use to read the section of the index entry. Quarto groups results by URL and uses the section information (if present) to show matching subsections of the same document.</p>
-<p>This field is optional.</p></td>
-</tr>
-<tr class="even">
 <td><code>text</code></td>
 <td><p>The field to use to read the text of the index entry.</p>
 <p>This field is required (either as an existing field in your index or with a mapped field name).</p></td>
+</tr>
+<tr class="even">
+<td><code>section</code></td>
+<td><p>The field to use to read the section of the index entry. Quarto groups results by URL and uses the section information (if present) to show matching subsections of the same document.</p>
+<p>This field is optional.</p></td>
 </tr>
 </tbody>
 </table>
@@ -705,7 +682,7 @@ Important
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">application-id</span><span class="kw">:</span><span class="at"> &lt;my-application-id&gt;</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">search-only-api-key</span><span class="kw">:</span><span class="at"> &lt;my-search-only-api-key&gt;</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">analytics-events</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You can confirm that events are being properly sent to Algolia using the <a href="https://www.algolia.com/events/debugger">Event Debugger</a>. Note that the click and conversion events use cookies to maintain an anonymous user identifier- if cookie consent is enabled, search events will only be enabled if cookie consent has been granted.</p>
+<p>You can confirm that events are being properly sent to Algolia using the <a href="https://www.algolia.com/events/debugger">Event Debugger</a>. Note that the click and conversion events use cookies to maintain an anonymous user identifier—if <a href="../../docs/websites/website-tools.html#cookie-consent">cookie consent</a> is enabled, search events will only be enabled if cookie consent has been granted.</p>
 </section>
 <section id="advanced-configuration" class="level3">
 <h3 class="anchored" data-anchor-id="advanced-configuration">Advanced Configuration</h3>
@@ -727,9 +704,14 @@ Important
 </section>
 <section id="disabling-search" class="level2">
 <h2 class="anchored" data-anchor-id="disabling-search">Disabling Search</h2>
-<p>If you’d like to disable search support for your website, you can do so by including the following in your <code>_quarto.yml</code> file:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site</span><span class="kw">:</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">search</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can disable search for an indvidual document by adding <code>search: false</code> to the document metadata. For example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Document"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">search</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you’d like to disable search support for an entire website, you can do so by including the following in your <code>_quarto.yml</code> file:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">site</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">search</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </section>
 <script type="application/javascript">

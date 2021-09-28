@@ -1,69 +1,53 @@
 ---
 title: "Website Search"
-description: "Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index.."
+description: "Quarto includes built in support for searching the contents of your site using either integration with a locally created index or by connecting to an Algolia index."
 ---
 
 ## Overview
 
-Quarto includes support for allowing users to search the contents of your website. Using your `_quarto.yml` file, you can configure and customize where the search interface appears in your website, how the search interface behaves, as well as other options for controlling the search experience.
-
-By default, Quarto will automatically index the contents of your site and make it searchable using [Fuse.js](https://fusejs.io), but this can also be customized to connect to a hosted [Algolia index](https://www.algolia.com/products/search-and-discovery/hosted-search-api/).
+Quarto includes support for full text search of websites and books. By default, Quarto will automatically index the contents of your site and make it searchable using a locally built index. You can also configure Quarto search to use a hosted [Algolia](https://www.algolia.com/products/search-and-discovery/hosted-search-api/) index.
 
 ## Search Appearance
 
-By default, search will be enabled for websites created using Quarto and the search UI will be adapted to the overall navigational structure of the website. If a Navbar is defined, the search UI will appear as a button on the Navbar. If a Navbar is not defined, but a Sidebar is defined, the search UI will appear as a textbox on the sidebar. You can also explicitly control how the search UI appears within your site's navigation using the following options:
+Search is enabled by default for websites and books. If the site has a navbar the search UI will appear on the navbar, otherwise it will appear on the sidebar. You can control the location of search with the following options:
 
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option     | Description                                                                                                                                                                                                                                                                                                                               |
-+============+===========================================================================================================================================================================================================================================================================================================================================+
-| `location` | Which navigational element should contain the search UI. Specify `navbar` if you'd like the search UI to appear in the Navbar or `sidebar` if you'd like the search UI to appear in the sidebar. If not specified, the search UI will appear in a Navbar if present, otherwise in the sidebar, or not at all if no navigation is present. |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `type`     | The type of search UI to include in the specified location. If you specify `textbox`, a traditional web textbox will appears in the Navbar or sidebar. If you specify `overlay`, a button will appear in the Navbar or Sidebar and pressing the button will launch a more full screen search experience.                                  |
-+------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++------------+-------------------------------------------------------------------------------------------------------------+
+| Option     | Description                                                                                                 |
++============+=============================================================================================================+
+| `location` | `navbar` or `sidebar` (defaults to `navbar` if one is present on the page).                                 |
++------------+-------------------------------------------------------------------------------------------------------------+
+| `type`     | `overlay` or `textbox` (`overlay` provides a button that pops up a search UI, `textbox` does search inline) |
++------------+-------------------------------------------------------------------------------------------------------------+
 
-### Textbox
+The `overlay` option displays the search UI as follows:
 
-Below is an example of the appearance of search when the type is specified as `textbox`.
+![](images/navbar-overlay.png){.border}
 
-#### Navbar
+The `textbox` option displays search like this:
 
-![](images/navbar-textbox.png)
-
-#### Sidebar
-
-![](images/sidebar-textbox.png)
-
-### Overlay
-
-Below is an example of the appearance of search when the type is specified as `overlay`.
-
-#### Navbar
-
-![](images/navbar-overlay.png)
-
-#### Sidebar
-
-![](images/sidebar-overlay.png)
+![](images/navbar-textbox.png){.border}
 
 ## Customizing Results
+
+You can use the following options to customize how search results are displayed:
 
 +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option           | Description                                                                                                                                                                                                                       |
 +==================+===================================================================================================================================================================================================================================+
-| `limit`          | The number of results to display in the search results. Defaults to 25.                                                                                                                                                           |
+| `limit`          | The number of results to display in the search results. Defaults to 20.                                                                                                                                                           |
 +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `collapse-after` | The number of sections matching a document to show before hiding additional sections behind a 'more matches' link. Defaults to 2.                                                                                                 |
 |                  |                                                                                                                                                                                                                                   |
-|                  | ![](images/collapse-after.png)                                                                                                                                                                                                    |
+|                  | ![](images/collapse-after.png){.border}                                                                                                                                                                                           |
 +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `copy-button`    | If true, the search textbox will include a small icon that when clicked will copy a url to the search results to the clipboard (this is useful if users would like to share a particular search with results). Defaults to false. |
 |                  |                                                                                                                                                                                                                                   |
-|                  | ![](images/copy-button.png)                                                                                                                                                                                                       |
+|                  | ![](images/copy-button.png){.border}                                                                                                                                                                                              |
 +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ## Using Algolia
 
-In addition to the built in search capability using Fuse.js, a Quarto website can also be configured to use an existing search index. In addition, as a part of rendering the website when search is enabled, Quarto will produce a JSON file \`\_site/search.json\` which can be used to update an Algolia index (via directly uploading the file or by using their API). For more on creating indexes with Algolia, see [Send and Update Your Data](https://www.algolia.com/doc/guides/sending-and-managing-data/send-and-update-your-data/) using Algolia.
+In addition to the built in search capability, Quarto websites can also be configured to use an external Algolia search index. When rendering a website, Quarto will produce a JSON file (`search.json` in the site output directory) which can be used to update an Algolia index. For more on creating indexes with Algolia, see [Send and Update Your Data](https://www.algolia.com/doc/guides/sending-and-managing-data/send-and-update-your-data/) using Algolia.
 
 ### Basic Configuration
 
@@ -96,7 +80,9 @@ site:
 
 ### Custom Index Schema
 
-If you are simply using the `search.json` file generated by Quarto as a part of rendering your site to update your Algolia index, the above configuration information is all that is required to set up search using Algolia. If you are generating an index some other way, however, including perhaps additional or different fields in the index, you may need to provide additional information to specify which fields Quarto should use when searching. You do this by including an `index-fields` key under `aloglia` which specifies the names of specific fields in your index.
+If you are simply using the `search.json` file generated by Quarto as your Algolia index, the above configuration information is all that is required to set up search using Algolia.
+
+However, if you are generating an index in some other fashion, you may need to provide additional information to specify which fields Quarto should use when searching. You do this by including an `index-fields` key under `aloglia` which specifies the names of specific fields in your index.
 
 +-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option    | Description                                                                                                                                                                                                                |
@@ -109,13 +95,13 @@ If you are simply using the `search.json` file generated by Quarto as a part of 
 |           |                                                                                                                                                                                                                            |
 |           | This field is required (either as an existing field in your index or with a mapped field name).                                                                                                                            |
 +-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `section` | The field to use to read the section of the index entry. Quarto groups results by URL and uses the section information (if present) to show matching subsections of the same document.                                     |
-|           |                                                                                                                                                                                                                            |
-|           | This field is optional.                                                                                                                                                                                                    |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `text`    | The field to use to read the text of the index entry.                                                                                                                                                                      |
 |           |                                                                                                                                                                                                                            |
 |           | This field is required (either as an existing field in your index or with a mapped field name).                                                                                                                            |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `section` | The field to use to read the section of the index entry. Quarto groups results by URL and uses the section information (if present) to show matching subsections of the same document.                                     |
+|           |                                                                                                                                                                                                                            |
+|           | This field is optional.                                                                                                                                                                                                    |
 +-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Any or all of the above may be specified in your Quarto project file. For example:
@@ -148,7 +134,7 @@ site:
       analytics-events: true
 ```
 
-You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger). Note that the click and conversion events use cookies to maintain an anonymous user identifier- if cookie consent is enabled, search events will only be enabled if cookie consent has been granted.
+You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger). Note that the click and conversion events use cookies to maintain an anonymous user identifier---if [cookie consent](website-tools.qmd#cookie-consent) is enabled, search events will only be enabled if cookie consent has been granted.
 
 ### Advanced Configuration
 
@@ -173,7 +159,16 @@ site:
 
 ## Disabling Search
 
-If you'd like to disable search support for your website, you can do so by including the following in your `_quarto.yml` file:
+You can disable search for an indvidual document by adding `search: false` to the document metadata. For example:
+
+``` yaml
+---
+title: "My Document"
+search: false
+---
+```
+
+If you'd like to disable search support for an entire website, you can do so by including the following in your `_quarto.yml` file:
 
 ``` yaml
 site:
