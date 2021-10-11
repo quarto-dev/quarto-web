@@ -31,7 +31,7 @@ async function run() {
   releaseInfo.assets = [];
   for (asset of releaseRaw.assets) {
     const assetFile = await octokit.rest.repos.getReleaseAsset({
-      accept: "application/octet-stream"
+      accept: "application/octet-stream",
       owner,
       repo,
       asset_id: asset.id
