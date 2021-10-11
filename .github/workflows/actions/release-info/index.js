@@ -11,6 +11,7 @@ async function run() {
 
   // Path info
   const pathToWrite = core.getInput("out-path");
+  const template = core.getInput("out-template");
 
   // GH Api
   const myToken = core.getInput("github-token");
@@ -44,7 +45,13 @@ async function run() {
       size: asset.size,
     });
   }
-  fs.writeFileSync(pathToWrite, JSON.stringify(releaseInfo));
+
+  const strJson = JSON.stringify(releaseInfo);
+  const output = template
+    ? template.replace("$$DOWNLOAD_JSON$$", strJson)
+    : strJson;
+
+  fs.writeFileSync(pathToWrite, output);
 }
 
 try {
