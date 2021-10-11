@@ -34,7 +34,7 @@ async function run() {
     const assetFile = octokit.rest.repos.getReleaseAsset({
       owner,
       repo,
-      asset.id
+      asset_id: asset.id
     });
     console.log(assetFile);
     
