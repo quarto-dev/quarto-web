@@ -22,10 +22,23 @@ async function run() {
   const releaseRaw = latestRelease.data;
   
   const releaseInfo = {};
+  
+  // Release metadata
   releaseInfo.version = releaseRaw.tag_name.slice(1);
   releaseInfo.name = releaseRaw.name;
+  
+  // Release assets
   releaseInfo.assets = [];
   releaseRaw.assets.forEach(asset => {
+    
+    const assetFile = octokit.rest.repos.getReleaseAsset({
+      owner,
+      repo,
+      asset.id,
+    });
+    console.log(assetFile);
+    
+    
     releaseInfo.assets.push({
       name: asset.name,
       download_url: asset.browser_download_url,
