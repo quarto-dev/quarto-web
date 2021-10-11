@@ -2,6 +2,7 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const fetch = require("node-fetch");
 const hasha = require("hasha");
+const fs = require("fs");
 
 async function run() {
   // Repo information
@@ -43,8 +44,7 @@ async function run() {
       size: asset.size,
     });
   }
-
-  console.log(releaseInfo);
+  fs.writeFileSync(pathToWrite, JSON.stringify(releaseInfo));
 }
 
 try {
