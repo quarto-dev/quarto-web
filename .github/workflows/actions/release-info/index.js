@@ -18,7 +18,19 @@ async function run() {
     owner,
     repo
   });
-  console.log(latestRelease);
+  
+  const releaseRaw = latestRelease.data;
+  console.log(releaseRaw);
+  
+  const releaseInfo = {};
+  releaseInfo.version = releaseRaw.tag_name.slice(1);
+  releaseInfo.name = releaseRaw.name;
+  releaseInfo.assets = [];
+  releaseRaw.assets.forEach(asset => {
+    console.log(asset);
+  });
+  
+  console.log(releaseInfo);
 }
 
 try {
