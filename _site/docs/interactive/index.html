@@ -149,32 +149,38 @@
       {
         name: "quarto-0.2.210-linux-amd64.deb",
         download_url: "https://github.com/quarto-dev/quarto-cli/releases/download/v0.2.210/quarto-0.2.210-linux-amd64.deb",
-        checksum: "b99cd7ae692b4abfcad3d3b55ce29a7f0a0e580806190247f8a2d5a54c491248"
+        checksum: "b99cd7ae692b4abfcad3d3b55ce29a7f0a0e580806190247f8a2d5a54c491248",
+        size: 60626382
       },
       {
         name: "quarto-0.2.210-linux-amd64.tar.gz",
         download_url: "https://github.com/quarto-dev/quarto-cli/releases/download/v0.2.210/quarto-0.2.210-linux-amd64.tar.gz",
-        checksum: "4a23076dbfc9c19c56c72360a7c1248c2c07aac1b0461931945f9beb3db4a6ee"
+        checksum: "4a23076dbfc9c19c56c72360a7c1248c2c07aac1b0461931945f9beb3db4a6ee",
+        size: 61278845
         },
       {
         name: "quarto-0.2.210-macos.pkg",
         download_url: "https://github.com/quarto-dev/quarto-cli/releases/download/v0.2.210/quarto-0.2.210-macos.pkg",
-        checksum: "989b11aaed2305f69ed3dd6fc1bb6a68515ea19949835139ecd38d32d8d3bc65"
+        checksum: "989b11aaed2305f69ed3dd6fc1bb6a68515ea19949835139ecd38d32d8d3bc65",
+        size: 62628299
       },
       {
         name: "quarto-0.2.210-macos.tar.gz",
         download_url: "https://github.com/quarto-dev/quarto-cli/releases/download/v0.2.210/quarto-0.2.210-macos.tar.gz",
-        checksum: "37b68d587f9c489016b39adde0151bc3bdb69c0d0bb71b1f86fd0d9ffdd72376"
+        checksum: "37b68d587f9c489016b39adde0151bc3bdb69c0d0bb71b1f86fd0d9ffdd72376",
+        size: 62571484
       },
       {
         name: "quarto-0.2.210-win.msi",
         download_url: "https://github.com/quarto-dev/quarto-cli/releases/download/v0.2.210/quarto-0.2.210-win.msi",
-        checksum: "d5b8a27e1ae5574727eed63bc27f4cf8bfd9371f87efaf3f0300ec477cde5691"
+        checksum: "d5b8a27e1ae5574727eed63bc27f4cf8bfd9371f87efaf3f0300ec477cde5691",
+        size: 60928000
       },
       {
         name: "quarto-0.2.210-win.zip",
         download_url: "https://github.com/quarto-dev/quarto-cli/releases/download/v0.2.210/quarto-0.2.210-win.zip",
-        checksum: "172c50ae0fa5621f74c32675d13bc23a6505bf721a78f262e951966059a976e3"
+        checksum: "172c50ae0fa5621f74c32675d13bc23a6505bf721a78f262e951966059a976e3",
+        size: 60736394
       },
     ]
   }
@@ -244,40 +250,106 @@
 
   function downloadMappings(version) {
     return {
-      [`quarto-${version}-win.zip`] : "download-link-win-zip" ,
-      [`quarto-${version}-win.msi`] : "download-link-win-installer" ,
-      [`quarto-${version}-macos.tar.gz`]: "download-link-mac-zip"  ,
-      [`quarto-${version}-macos.pkg`]: "download-link-mac-installer" ,
-      [`quarto-${version}-linux-amd64.tar.gz`]: "download-link-linux-zip",
-      [`quarto-${version}-linux-amd64.deb`]: "download-link-linux-installer" ,
-      [`quarto-${version}-checksums.txt`]: "download-link-checksums" 
+      [`quarto-${version}-win.msi`] : "Windows" ,
+      [`quarto-${version}-macos.pkg`]: "Mac OS" ,
+      [`quarto-${version}-linux-amd64.deb`]: "Linux" ,
     }
   }
 
   function populateDownloadTable(version, assets) {
     const downloadTableContainer = window.document.getElementById('download-table');
     
+    
+    const table = createTable();
+    createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
+    
     const mappings = downloadMappings(version);
+    
+    const tbody = table.createTBody();
     assets.forEach(asset => { 
-      
-      const elId = mappings[asset.name];
-      if (elId) {
-        const linkEl = window.document.getElementById(elId);
-        if (linkEl) {
-          linkEl.innerText = `${asset.name}`;  
-          linkEl.href = asset.download_url;
-          
-
-          if (asset.checksum) {
-            const checkSumId = `${elId}-checksum`;
-            const checksumEl = window.document.getElementById(checkSumId);
-            checksumEl.innerText = asset.checksum.slice(0, 7);
-            checksumEl.setAttribute('data-tippy-content', asset.checksum);
-          }
-        }
-      }
-    })
+      createDownloadRow(tbody, version, asset);
+    });
+    createMoreRow(tbody);
+    
+    downloadTableContainer.append(table);
+    window.tippy('.checksum[data-tippy-content]', {interactive: true, placement: 'top-end', maxWidth: 'none',});
   }
+
+
+  function createTable() {
+    const table = window.document.createElement("table");
+    table.className = "table";
+    return table;
+  }
+
+  function createHeadingRow(table, headings) {
+    const header = table.createTHead();
+    var row = header.insertRow(0);    
+    row.className = "header";
+    let cellCount = 0;
+    headings.forEach(heading => {
+      
+      const cell = row.insertCell(cellCount).outerHTML = `<th>${heading}</th>`;
+      cellCount = cellCount + 1;
+    });
+  }
+
+  function createDownloadRow(tbody, version, asset) {
+    // Ignore assets that aren't in the download mapping structure
+    const mapping = downloadMappings(version);
+    if (mapping[asset.name]) {
+      const row = tbody.insertRow();
+      
+      let i = 0;
+      const platformCell = row.insertCell(i++);
+      platformCell.innerText = mapping[asset.name];
+      
+      const downloadCell = row.insertCell(i++);
+      const downloadLinkEl = window.document.createElement("a");
+      downloadLinkEl.href = asset.download_url;
+      downloadLinkEl.innerText = asset.name;
+
+      downloadCell.appendChild(downloadLinkEl);
+      
+      const sizeCell = row.insertCell(i++);
+      if (asset.size) {
+        sizeCell.innerText = humanFileSize(asset.size);
+      }  
+      
+      const checksumCell = row.insertCell(i++);
+      if (asset.checksum) {
+        const checkSumSlice = asset.checksum.slice(0, 7);
+        
+        const checksumEl = window.document.createElement("div");
+        checksumEl.className = "checksum font-monospace";
+        checksumEl.setAttribute("data-tippy-content", asset.checksum);
+        checksumEl.innerText = checkSumSlice;
+        checksumCell.appendChild(checksumEl);
+      }    
+    }
+  }
+
+  function createMoreRow(tbody) {
+    const moreRow = tbody.insertRow();
+    moreRow.insertCell(0);
+    const cell = moreRow.insertCell(1);
+    
+    const moreLinkEl = window.document.createElement("a");
+    moreLinkEl.href = "https://github.com/quarto-dev/quarto-cli/releases/latest";
+    moreLinkEl.innerText = "more downloads…";
+    cell.appendChild(moreLinkEl);
+    
+    
+    moreRow.insertCell(2);
+    moreRow.insertCell(3);
+    
+    
+  }
+
+  function humanFileSize(size) {
+      var i = Math.floor( Math.log(size) / Math.log(1024) );
+      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+  };
 
 
   window.document.addEventListener("DOMContentLoaded", function () {
@@ -939,7 +1011,7 @@
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<script type="ojs-define">{"contents": [{"name": "points", "value": {"x": [-0.7121488661, 1.048151961, -0.848153572, -1.2554213716, -0.9622088604, -0.6468837523, -1.4988168855, 1.0867912248, -0.8007637433, 1.1790274991, 0.4762911328, 0.1389243285, 0.7829439606, 0.0689220786, 1.0607205404, 0.1641958874, 0.7971261139, 0.4483044197, 0.9072914651, 0.333565711, 1.1758084113, -0.130100583, 0.2459650044, 1.1006375668, -0.0834037372, -0.3948461097, -0.5806890644, -1.2869541532, -2.1568002623, -1.430626439, 0.5710687942, -0.2342213512, 0.3900859125, 0.2461750989, -0.3091375781, -0.8242717992, 0.2839270662, -0.0638814902, 0.7977539538, -0.7140778465, 1.3944758039, -0.0602322684, -0.6567161006, -0.1980261822, -2.5052392615, -1.1865061348, 0.1127796205, 0.3369669328, -0.3859599896, 0.29353565, 0.8023392571, 0.7615917102, -0.7452103459, 0.0504601686, -0.3077344718, -0.9098553117, 1.3169006438, -0.0998343881, -0.2733582705, -1.4236946699, 0.8447631567, 2.0048308373, -0.4967021832, -0.4796290684, -0.4283273725, 1.1387701662, -0.2801045567, -0.1154841014, 0.4695184045, 2.3776583886, 1.3410710612, -1.2469135004, 0.8020242645, 0.1275261548, -0.7880406547, 0.4253420391, 1.2429035556, 1.1709630652, -0.1109020539, 0.0653212597, 1.6204320147, 1.2263416668, 1.4893101438, 0.0105834991, -1.0980736659, 0.9644982012, -0.4456736564, -0.6279520798, 0.0624501086, -1.6884587489, 0.4769748476, 0.5534073161, 0.2271633696, -0.2642107705, 1.3891666618, 0.6708900956, 1.4803616772, -1.8658424566, -0.3110412903, -0.6306121282], "y": [0.1900417915, -0.5883335138, -0.9714428457, 0.7725950071, -0.9625387555, -0.2823819883, 0.4125465965, -1.0161957319, -0.0350810221, -0.5958761607, -0.6609565584, 0.0040841515, 1.3307335994, 0.7359792914, 0.7580258162, 0.2374269166, 0.2319300616, 0.9707825116, -0.2413812378, 1.5411022557, -2.2627461365, -0.9182417858, -0.7155584703, -1.4898821113, -0.4394049887, -1.4690119419, -0.6034232194, 0.5313768178, 0.391971634, -0.3613177942, 0.7929583937, -1.5337518786, 0.8980518793, 0.7378988263, -0.8975178402, 1.1565968316, -0.0447413059, -0.5846104294, 0.8587130098, -0.477820128, 0.4142976725, -2.3589972759, -0.0864322755, 0.5261911184, -0.9560090396, 2.902189894, 0.881488694, -1.2340481691, -0.4816738645, -1.0784274735, 0.8688065338, -0.5648248716, 0.4375499658, 0.5783015341, -0.3168357928, -3.3338577471, -0.552221937, -1.3722847986, 1.0822398932, -1.0457571525, 0.4667701832, 0.1742127487, -0.3718876118, -0.8449959445, 0.8790101326, -0.0524412548, 0.0840482648, 1.6140745305, -0.198499122, -0.5680756527, 0.0304588601, 0.3193124681, 2.7702521895, -0.0887931473, 1.2925304927, -0.7217416108, -1.8990150247, -0.1016655682, 0.264572994, 0.1172068957, -0.2021328135, 1.0365665155, 0.3653176523, 1.8778696679, 0.1689412221, 0.0383013164, -1.2906445222, 0.9548838765, -0.8501168125, 0.7875632962, -0.1202235932, 0.6951256796, -0.167913786, -0.8271322499, 0.036213077, -0.29131799, 0.3970792776, 1.3038653076, 1.0088878628, -0.5345414296]}}]}</script>
+<script type="ojs-define">{"contents": [{"name": "points", "value": {"x": [0.8739889036, -0.0472300875, 0.3262009902, -0.2509582152, -0.0037072114, -0.2785586285, 0.6501911648, -0.5908541138, 0.2588564576, 0.1748583961, -0.4715463534, -0.8681383854, -0.758969473, 2.1262228829, -0.9347393754, 0.4151898213, 0.1395437895, 1.3909433605, 0.7285038186, -1.5474945896, 0.6314721909, -0.5312766894, 0.4457715356, -0.2187773786, -0.0096497591, -1.2591343902, 0.440221686, -0.2779344957, 0.1697407153, -1.2419427674, 1.0644401156, -0.6250723348, -0.6830947315, -0.7659516297, 1.1907089124, -0.1542232555, -0.6737433467, -0.2538147583, -2.05270371, 0.7290038302, 0.2841658804, -1.3490715915, 0.8941380697, -0.8849372895, 0.3903184058, -0.2737277446, -1.3609561467, -1.0369164003, 0.9047472395, -0.6143034768, -0.1401045742, -0.3607011023, 0.5338079045, -0.987302279, -1.1503191713, -0.962866059, -0.5021371929, -0.8116832875, -1.0425875222, -0.1182942724, 0.3519509342, -0.6048972128, -1.5145489794, -0.0246545646, -0.9865339634, -0.111785726, -1.586835958, 1.3365570403, -1.465580833, -0.9130101885, -1.9276025619, -0.1972055013, 1.5125558993, 0.8018432225, 0.955186563, 0.0572654046, 0.6083314804, -0.0952406984, -0.0382606528, -0.9123668995, -1.2126152195, -0.0173501935, 0.3398967664, -2.4990854466, 0.8420111509, -0.5619776091, 1.0345659039, -0.7975466044, 0.647658318, -1.1129538477, 1.0842574566, -1.3751578964, 1.683642269, -0.0423578495, 0.5810575173, 0.6622329951, 0.0932677414, 0.0900024385, 0.756135951, 0.4963411799], "y": [-0.9966008624, -2.3993949794, 0.8218278556, 1.0612003847, 1.1742968162, 0.3999781932, 0.8736723756, 0.6652547773, 1.054795044, 0.6891707887, 0.9659296754, -1.3753159174, -0.6024523629, -0.2795732852, 0.8006261635, 1.6206889537, -1.7100587835, -1.3473230793, 0.3180066969, 0.4895087544, 2.1493692627, -0.1768637468, -0.3628534332, -0.4968696452, 0.5130476449, -1.0323277414, 0.4708549298, 1.3209394099, 0.160937763, -1.3913184774, 2.3710617121, -1.4115241485, -2.3490573879, 0.7251635702, -1.0648015153, -1.2554842876, -0.7088736696, 3.2407875414, 0.4698681508, -0.1845571441, 0.0932398662, 1.0636129372, -0.6929949479, 2.1739078472, -0.4833054991, 1.1040640432, -0.8978008016, 0.3449185983, 1.3100885218, -0.6276323555, 0.4292455788, 0.7241016278, -0.8882332496, 0.2466175861, -0.6243827106, -0.7642619015, 0.3423770513, 0.1645861563, -1.6051226624, 0.3481503601, -0.020372355, 0.3571560908, 0.0534933791, 1.1161361035, 0.0990134293, -3.0269621725, 1.5316731728, 1.0725286551, 0.3157263535, 2.8449113497, -1.5904665974, -0.2228253002, -2.0354354352, 0.6844750183, -0.5622380179, 0.3955138208, -0.8762334867, -0.0333545546, -0.6102676464, 1.9794536672, 0.0811441624, -0.2928033245, 1.1666653714, 0.2561606913, 1.3302039898, 1.6045697691, 2.2290578061, 0.4221654972, -0.8054167143, -0.5251229821, -1.5591219583, 0.070975346, 0.8270478064, -0.3268630921, -2.0662754558, -0.3717610541, 1.0210273853, -0.1756030639, -0.2378007832, -1.9135028135]}}]}</script>
 </div>
 </div>
 <div class="cell">
@@ -1044,7 +1116,7 @@
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"5b987d4f719b4123953265d9b2b2f3c0","version_major":2,"version_minor":0}
+{"model_id":"317840c2ce1f4caa944623b8d896ce6d","version_major":2,"version_minor":0}
 </script>
 </div>
 </div>
@@ -1278,7 +1350,7 @@ window._ojs.selfContained = false;
 window._ojs.runtime.interpretFromScriptTags();
 </script>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state":{"29503db7b1bc4bab8a7eb47d26bd6da7":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletAttributionControlModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletAttributionControlModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletAttributionControlView","options":["position","prefix"],"position":"bottomright","prefix":"ipyleaflet"}},"29aa2ca01c48458596386c01b929bbb6":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapStyleModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","cursor":"grab"}},"34c3a6b8f7a84460bd9a91bd00c98eed":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletZoomControlModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletZoomControlModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletZoomControlView","options":["position","zoom_in_text","zoom_in_title","zoom_out_text","zoom_out_title"],"position":"topleft","zoom_in_text":"+","zoom_in_title":"Zoom in","zoom_out_text":"-","zoom_out_title":"Zoom out"}},"4a9cb84b2bad471182605cdac4c84e4b":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"5b987d4f719b4123953265d9b2b2f3c0":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapModel","state":{"_dom_classes":[],"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletMapView","bottom":0,"bounce_at_zoom_limits":true,"box_zoom":true,"center":[52.204793,360.121558],"close_popup_on_click":true,"controls":["IPY_MODEL_34c3a6b8f7a84460bd9a91bd00c98eed","IPY_MODEL_29503db7b1bc4bab8a7eb47d26bd6da7"],"crs":{"custom":false,"name":"EPSG3857"},"default_style":"IPY_MODEL_29aa2ca01c48458596386c01b929bbb6","double_click_zoom":true,"dragging":true,"dragging_style":"IPY_MODEL_f99f1438194445b384120655fc0d77eb","east":0,"fullscreen":false,"inertia":true,"inertia_deceleration":3000,"inertia_max_speed":1500,"interpolation":"bilinear","keyboard":true,"keyboard_pan_offset":80,"keyboard_zoom_offset":1,"layers":["IPY_MODEL_736362349fac459f9e6492a27ebbd6d4","IPY_MODEL_64a02fe786a546b4988b308eab9e6653"],"layout":"IPY_MODEL_4a9cb84b2bad471182605cdac4c84e4b","left":9007199254740991,"max_zoom":18,"min_zoom":1,"modisdate":"yesterday","north":0,"options":["bounce_at_zoom_limits","box_zoom","center","close_popup_on_click","double_click_zoom","dragging","fullscreen","inertia","inertia_deceleration","inertia_max_speed","interpolation","keyboard","keyboard_pan_offset","keyboard_zoom_offset","max_zoom","min_zoom","scroll_wheel_zoom","tap","tap_tolerance","touch_zoom","world_copy_jump","zoom","zoom_animation_threshold","zoom_delta","zoom_snap","zoom_start"],"right":0,"scroll_wheel_zoom":false,"south":0,"style":"IPY_MODEL_92f0362145fe42cc954c0d7e4306d7a4","tap":true,"tap_tolerance":15,"top":9007199254740991,"touch_zoom":true,"west":0,"window_url":"","world_copy_jump":false,"zoom":4,"zoom_animation_threshold":4,"zoom_delta":1,"zoom_snap":1,"zoom_start":12}},"64a02fe786a546b4988b308eab9e6653":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMarkerModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMarkerModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletMarkerView","alt":"","base":false,"bottom":false,"draggable":true,"icon":null,"keyboard":true,"location":[52.204793,360.121558],"name":"","opacity":1,"options":["alt","draggable","keyboard","rise_offset","rise_on_hover","rotation_angle","rotation_origin","title","z_index_offset"],"popup":null,"popup_max_height":null,"popup_max_width":300,"popup_min_width":50,"rise_offset":250,"rise_on_hover":false,"rotation_angle":0,"rotation_origin":"","title":"","visible":true,"z_index_offset":0}},"736362349fac459f9e6492a27ebbd6d4":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletTileLayerModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletTileLayerModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletTileLayerView","attribution":"\nImagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href=\"https://earthdata.nasa.gov\">ESDIS</a>) with funding provided by NASA/HQ.\n","base":true,"bottom":true,"detect_retina":false,"loading":false,"max_native_zoom":18,"max_zoom":9,"min_native_zoom":0,"min_zoom":1,"name":"NASAGIBS.ModisTerraTrueColorCR","no_wrap":false,"opacity":1,"options":["attribution","detect_retina","max_native_zoom","max_zoom","min_native_zoom","min_zoom","no_wrap","tile_size","tms"],"popup":null,"popup_max_height":null,"popup_max_width":300,"popup_min_width":50,"show_loading":false,"tile_size":256,"tms":false,"url":"https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2017-04-08/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg","visible":true}},"92f0362145fe42cc954c0d7e4306d7a4":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapStyleModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","cursor":"grab"}},"f99f1438194445b384120655fc0d77eb":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapStyleModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","cursor":"move"}}},"version_major":2,"version_minor":0}
+{"state":{"0afc6fc1baf9408584a309bcf1b19296":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapStyleModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","cursor":"grab"}},"16045d322b5546ce9fcc4e60eaa980b2":{"model_module":"@jupyter-widgets/base","model_module_version":"1.2.0","model_name":"LayoutModel","state":{"_model_module":"@jupyter-widgets/base","_model_module_version":"1.2.0","_model_name":"LayoutModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"LayoutView","align_content":null,"align_items":null,"align_self":null,"border":null,"bottom":null,"display":null,"flex":null,"flex_flow":null,"grid_area":null,"grid_auto_columns":null,"grid_auto_flow":null,"grid_auto_rows":null,"grid_column":null,"grid_gap":null,"grid_row":null,"grid_template_areas":null,"grid_template_columns":null,"grid_template_rows":null,"height":null,"justify_content":null,"justify_items":null,"left":null,"margin":null,"max_height":null,"max_width":null,"min_height":null,"min_width":null,"object_fit":null,"object_position":null,"order":null,"overflow":null,"overflow_x":null,"overflow_y":null,"padding":null,"right":null,"top":null,"visibility":null,"width":null}},"1b9f7f43aff143dca54ac5802ae3e223":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapStyleModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","cursor":"move"}},"2f16c4df254a4d36abb80f8e69e7fec9":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletTileLayerModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletTileLayerModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletTileLayerView","attribution":"\nImagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href=\"https://earthdata.nasa.gov\">ESDIS</a>) with funding provided by NASA/HQ.\n","base":true,"bottom":true,"detect_retina":false,"loading":false,"max_native_zoom":18,"max_zoom":9,"min_native_zoom":0,"min_zoom":1,"name":"NASAGIBS.ModisTerraTrueColorCR","no_wrap":false,"opacity":1,"options":["attribution","detect_retina","max_native_zoom","max_zoom","min_native_zoom","min_zoom","no_wrap","tile_size","tms"],"popup":null,"popup_max_height":null,"popup_max_width":300,"popup_min_width":50,"show_loading":false,"tile_size":256,"tms":false,"url":"https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/2017-04-08/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg","visible":true}},"317840c2ce1f4caa944623b8d896ce6d":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapModel","state":{"_dom_classes":[],"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletMapView","bottom":0,"bounce_at_zoom_limits":true,"box_zoom":true,"center":[52.204793,360.121558],"close_popup_on_click":true,"controls":["IPY_MODEL_7019a01aea3e4324926e8defac4fc333","IPY_MODEL_f878e9314ebe441596cc242c5801b864"],"crs":{"custom":false,"name":"EPSG3857"},"default_style":"IPY_MODEL_0afc6fc1baf9408584a309bcf1b19296","double_click_zoom":true,"dragging":true,"dragging_style":"IPY_MODEL_1b9f7f43aff143dca54ac5802ae3e223","east":0,"fullscreen":false,"inertia":true,"inertia_deceleration":3000,"inertia_max_speed":1500,"interpolation":"bilinear","keyboard":true,"keyboard_pan_offset":80,"keyboard_zoom_offset":1,"layers":["IPY_MODEL_2f16c4df254a4d36abb80f8e69e7fec9","IPY_MODEL_d4aec32468c948b7b458a92c0ebc13f5"],"layout":"IPY_MODEL_16045d322b5546ce9fcc4e60eaa980b2","left":9007199254740991,"max_zoom":18,"min_zoom":1,"modisdate":"yesterday","north":0,"options":["bounce_at_zoom_limits","box_zoom","center","close_popup_on_click","double_click_zoom","dragging","fullscreen","inertia","inertia_deceleration","inertia_max_speed","interpolation","keyboard","keyboard_pan_offset","keyboard_zoom_offset","max_zoom","min_zoom","scroll_wheel_zoom","tap","tap_tolerance","touch_zoom","world_copy_jump","zoom","zoom_animation_threshold","zoom_delta","zoom_snap","zoom_start"],"right":0,"scroll_wheel_zoom":false,"south":0,"style":"IPY_MODEL_37db4b6f01c6499ea1f6dd40d869c048","tap":true,"tap_tolerance":15,"top":9007199254740991,"touch_zoom":true,"west":0,"window_url":"","world_copy_jump":false,"zoom":4,"zoom_animation_threshold":4,"zoom_delta":1,"zoom_snap":1,"zoom_start":12}},"37db4b6f01c6499ea1f6dd40d869c048":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMapStyleModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMapStyleModel","_view_count":null,"_view_module":"@jupyter-widgets/base","_view_module_version":"1.2.0","_view_name":"StyleView","cursor":"grab"}},"7019a01aea3e4324926e8defac4fc333":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletZoomControlModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletZoomControlModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletZoomControlView","options":["position","zoom_in_text","zoom_in_title","zoom_out_text","zoom_out_title"],"position":"topleft","zoom_in_text":"+","zoom_in_title":"Zoom in","zoom_out_text":"-","zoom_out_title":"Zoom out"}},"d4aec32468c948b7b458a92c0ebc13f5":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletMarkerModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletMarkerModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletMarkerView","alt":"","base":false,"bottom":false,"draggable":true,"icon":null,"keyboard":true,"location":[52.204793,360.121558],"name":"","opacity":1,"options":["alt","draggable","keyboard","rise_offset","rise_on_hover","rotation_angle","rotation_origin","title","z_index_offset"],"popup":null,"popup_max_height":null,"popup_max_width":300,"popup_min_width":50,"rise_offset":250,"rise_on_hover":false,"rotation_angle":0,"rotation_origin":"","title":"","visible":true,"z_index_offset":0}},"f878e9314ebe441596cc242c5801b864":{"model_module":"jupyter-leaflet","model_module_version":"^0.14.0","model_name":"LeafletAttributionControlModel","state":{"_model_module":"jupyter-leaflet","_model_module_version":"^0.14.0","_model_name":"LeafletAttributionControlModel","_view_count":null,"_view_module":"jupyter-leaflet","_view_module_version":"^0.14.0","_view_name":"LeafletAttributionControlView","options":["position","prefix"],"position":"bottomright","prefix":"ipyleaflet"}}},"version_major":2,"version_minor":0}
 </script>
 
 
