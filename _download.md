@@ -1,9 +1,9 @@
 ::: {#download-button}
-
 <div>
-[\_](_){#download-url .btn .btn-primary}
-</div>
 
+[\_](_ "Download Quarto"){#download-url .btn .btn-primary}
+
+</div>
 :::
 
 ::: {#download-table}
