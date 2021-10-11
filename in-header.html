@@ -62,40 +62,106 @@ function populateDownloadButton(version, assets) {
 
 function downloadMappings(version) {
   return {
-    [`quarto-${version}-win.zip`] : "download-link-win-zip" ,
-    [`quarto-${version}-win.msi`] : "download-link-win-installer" ,
-    [`quarto-${version}-macos.tar.gz`]: "download-link-mac-zip"  ,
-    [`quarto-${version}-macos.pkg`]: "download-link-mac-installer" ,
-    [`quarto-${version}-linux-amd64.tar.gz`]: "download-link-linux-zip",
-    [`quarto-${version}-linux-amd64.deb`]: "download-link-linux-installer" ,
-    [`quarto-${version}-checksums.txt`]: "download-link-checksums" 
+    [`quarto-${version}-win.msi`] : "Windows" ,
+    [`quarto-${version}-macos.pkg`]: "Mac OS" ,
+    [`quarto-${version}-linux-amd64.deb`]: "Linux" ,
   }
 }
 
 function populateDownloadTable(version, assets) {
   const downloadTableContainer = window.document.getElementById('download-table');
   
+  
+  const table = createTable();
+  createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
+  
   const mappings = downloadMappings(version);
+  
+  const tbody = table.createTBody();
   assets.forEach(asset => { 
-    
-    const elId = mappings[asset.name];
-    if (elId) {
-      const linkEl = window.document.getElementById(elId);
-      if (linkEl) {
-        linkEl.innerText = `${asset.name}`;  
-        linkEl.href = asset.download_url;
-        
-
-        if (asset.checksum) {
-          const checkSumId = `${elId}-checksum`;
-          const checksumEl = window.document.getElementById(checkSumId);
-          checksumEl.innerText = asset.checksum.slice(0, 7);
-          checksumEl.setAttribute('data-tippy-content', asset.checksum);
-        }
-      }
-    }
-  })
+    createDownloadRow(tbody, version, asset);
+  });
+  createMoreRow(tbody);
+  
+  downloadTableContainer.append(table);
+  window.tippy('.checksum[data-tippy-content]', {interactive: true, placement: 'top-end', maxWidth: 'none',});
 }
+
+
+function createTable() {
+  const table = window.document.createElement("table");
+  table.className = "table";
+  return table;
+}
+
+function createHeadingRow(table, headings) {
+  const header = table.createTHead();
+  var row = header.insertRow(0);    
+  row.className = "header";
+  let cellCount = 0;
+  headings.forEach(heading => {
+    
+    const cell = row.insertCell(cellCount).outerHTML = `<th>${heading}</th>`;
+    cellCount = cellCount + 1;
+  });
+}
+
+function createDownloadRow(tbody, version, asset) {
+  // Ignore assets that aren't in the download mapping structure
+  const mapping = downloadMappings(version);
+  if (mapping[asset.name]) {
+    const row = tbody.insertRow();
+    
+    let i = 0;
+    const platformCell = row.insertCell(i++);
+    platformCell.innerText = mapping[asset.name];
+    
+    const downloadCell = row.insertCell(i++);
+    const downloadLinkEl = window.document.createElement("a");
+    downloadLinkEl.href = asset.download_url;
+    downloadLinkEl.innerText = asset.name;
+
+    downloadCell.appendChild(downloadLinkEl);
+    
+    const sizeCell = row.insertCell(i++);
+    if (asset.size) {
+      sizeCell.innerText = humanFileSize(asset.size);
+    }  
+    
+    const checksumCell = row.insertCell(i++);
+    if (asset.checksum) {
+      const checkSumSlice = asset.checksum.slice(0, 7);
+      
+      const checksumEl = window.document.createElement("div");
+      checksumEl.className = "checksum font-monospace";
+      checksumEl.setAttribute("data-tippy-content", asset.checksum);
+      checksumEl.innerText = checkSumSlice;
+      checksumCell.appendChild(checksumEl);
+    }    
+  }
+}
+
+function createMoreRow(tbody) {
+  const moreRow = tbody.insertRow();
+  moreRow.insertCell(0);
+  const cell = moreRow.insertCell(1);
+  
+  const moreLinkEl = window.document.createElement("a");
+  moreLinkEl.href = "https://github.com/quarto-dev/quarto-cli/releases/latest";
+  moreLinkEl.innerText = "more downloads…";
+  cell.appendChild(moreLinkEl);
+  
+  
+  moreRow.insertCell(2);
+  moreRow.insertCell(3);
+  
+  
+}
+
+function humanFileSize(size) {
+    var i = Math.floor( Math.log(size) / Math.log(1024) );
+    return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+};
 
 
 window.document.addEventListener("DOMContentLoaded", function () {
