@@ -11,9 +11,8 @@ async function run() {
   const pathToWrite = core.getInput('out-path');
 
 
-  const octokit = new github.GitHub(
-    core.getInput('github_token', { required: true })
-  )
+  const myToken = core.getInput('github-token');
+  const octokit = github.getOctokit(myToken)
 
   const latestRelease = await octokit.repos.getLatestRelease({
     owner,
