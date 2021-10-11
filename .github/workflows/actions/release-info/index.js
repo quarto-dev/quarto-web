@@ -20,14 +20,18 @@ async function run() {
   });
   
   const releaseRaw = latestRelease.data;
-  console.log(releaseRaw);
   
   const releaseInfo = {};
   releaseInfo.version = releaseRaw.tag_name.slice(1);
   releaseInfo.name = releaseRaw.name;
   releaseInfo.assets = [];
   releaseRaw.assets.forEach(asset => {
-    console.log(asset);
+    releaseInfo.assets.push({
+      name: asset.name,
+      download_url: asset.browser_download_url,
+      checksum: "",
+      size: asset.size
+    });
   });
   
   console.log(releaseInfo);
