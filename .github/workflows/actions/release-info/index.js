@@ -14,7 +14,7 @@ async function run() {
   const myToken = core.getInput('github-token');
   const octokit = github.getOctokit(myToken)
 
-  const latestRelease = await octokit.repos.getLatestRelease({
+  const latestRelease = await octokit.rest.repos.getLatestRelease({
     owner,
     repo
   });
