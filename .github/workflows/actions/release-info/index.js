@@ -29,7 +29,7 @@ async function run() {
   
   // Release assets
   releaseInfo.assets = [];
-  for (asset of assets) {
+  for (asset of releaseRaw.assets) {
     const assetFile = await octokit.rest.repos.getReleaseAsset({
       owner,
       repo,
