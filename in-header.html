@@ -84,7 +84,14 @@ function populateDownloadTable(version, assets) {
       if (linkEl) {
         linkEl.innerText = `${asset.name}`;  
         linkEl.href = asset.download_url;
-        const parentEl = linkEl.parentElement;
+        
+
+        if (asset.checksum) {
+          const checkSumId = `${elId}-checksum`;
+          const checksumEl = window.document.getElementById(checkSumId);
+          checksumEl.innerText = asset.checksum.slice(0, 7);
+          checksumEl.setAttribute('data-tippy-content', asset.checksum);
+        }
       }
     }
   })
@@ -96,6 +103,8 @@ window.document.addEventListener("DOMContentLoaded", function () {
   const dlData = window["quarto-dl-data"];
   populateDownloadButton(dlData.version, dlData.assets);
   populateDownloadTable(dlData.version, dlData.assets);
+  
+  window.tippy('a.checksum[data-tippy-content]', {interactive: true, placement: 'top-end', maxWidth: 'none',});
 });
 
 </script> 

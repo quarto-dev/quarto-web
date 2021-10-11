@@ -7,10 +7,10 @@
 :::
 
 ::: {#download-table}
-| Platform  | Installer                                          | Zip                                    |
-|-----------|----------------------------------------------------|----------------------------------------|
-| Windows   | [\_](_){#download-link-win-installer .installer}   | [\_](_){#download-link-win-zip .zip}   |
-| Mac OS    | [\_](_){#download-link-mac-installer .installer}   | [\_](_){#download-link-mac-zip .zip}   |
-| Linux     | [\_](_){#download-link-linux-installer .installer} | [\_](_){#download-link-linux-zip .zip} |
-| Checksums | [\_](_){#download-link-checksums}                  |                                        |
+| Platform | Installer                                                                                      | SHA-256                                                   |
+|----------|------------------------------------------------------------------------------------------------|------------------------------------------------------------|
+| Windows  | [\_](_){#download-link-win-installer .installer}                                               | [\_](#){#download-link-win-installer-checksum .checksum .font-monospace}   |
+| Mac OS   | [\_](_){#download-link-mac-installer .installer}                                               | [\_](#){#download-link-mac-installer-checksum .checksum .font-monospace}   |
+| Linux    | [\_](_){#download-link-linux-installer .installer}                                             | [\_](#){#download-link-linux-installer-checksum .checksum .font-monospace} |
+|          | [more downloads...](https://github.com/quarto-dev/quarto-cli/releases/latest "More Downloads") |                                                            |
 :::
