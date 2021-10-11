@@ -46,7 +46,7 @@ async function run() {
     });
   }
 
-  const strJson = JSON.stringify(releaseInfo);
+  const strJson = JSON.stringify(releaseInfo, undefined, 2);
   const output = template
     ? template.replace("$$DOWNLOAD_JSON$$", strJson)
     : strJson;
