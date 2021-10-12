@@ -50,7 +50,8 @@ async function run() {
   const output = template
     ? template.replace("$$DOWNLOAD_JSON$$", strJson)
     : strJson;
-
+  console.log(`Writing to ${pathToWrite}`);
+  console.log(`${output}]\n\n`);
   fs.writeFileSync(pathToWrite, output);
 }
 
