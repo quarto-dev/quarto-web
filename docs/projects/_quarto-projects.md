@@ -1,4 +1,3 @@
-
 ## Overview
 
 Quarto projects are directories that provide:
@@ -112,4 +111,3 @@ project:
   render:
     - section*.md
 ```
-
