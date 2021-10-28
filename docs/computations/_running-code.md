@@ -78,7 +78,7 @@ Note that we added the `code-background: true` option to provide a background co
 ![](/docs/computations/images/knitr-document.png){.border .preview-image fig-alt="The resulting document rendered from the source code in the `Code` tab using the Knitr engine. At the top of the page is the title `Knitr Document` in large text. There is a block of code with a gray background underneath the title. Underneath this block is a scatterplot of the `airquality` dataset fit with a polynomial regression line and overlaid with a grey ribbon representing the confidence interval. There is another code block with a gray background under this plot with the output of `summary(airquality)`."}
 :::
 
-Note that we added the `execute: warning: false` option to suppress printing of warnings. See [Execution Options](/docs/computations/execution-options.md) for additional details.
+Note that we added the `execute: warning: false` option to suppress printing of warnings. See [Execution Options](/docs/computations/execution-options.qmd) for additional details.
 
 You can produce a wide variety of output types from executable code blocks, including:
 
