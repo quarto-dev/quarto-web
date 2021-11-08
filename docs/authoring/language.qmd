@@ -1,0 +1,49 @@
+---
+title: "Document Language"
+---
+
+## Overview
+
+Document language plays a role in Pandoc's processing of most formats, and controls hyphenation in PDF output when using LaTeX (through [`babel`](https://ctan.org/pkg/babel) and [`polyglossia`](https://ctan.org/pkg/polyglossia)) or ConTeXt.
+
+Additonally, Quarto, Pandoc, and LaTeX will sometimes generate textual output that requires localization. For example, "Figure" or "List of Figures" for cross references, callout captions like "Note" or "Warning", or the "Code" caption for folded code chunks.
+
+## `lang` Option
+
+The [`lang`](https://pandoc.org/MANUAL.html#language-variables) document option is used to identifies the main language of the document using IETF language tags (following the [BCP 47](https://tools.ietf.org/html/bcp47) standard), such as `en` or `en-GB`. The [Language subtag lookup](https://r12a.github.io/app-subtags/) tool can look up or verify these tags.
+
+For example, this document specifies the use of French:
+
+``` yaml
+---
+title: "My Document"
+lang: fr    
+---
+```
+
+This will result in the use of French translations as well as the application of other language specific rules to document processing.
+
+## Translations
+
+Quarto includes built-in translations for the following languages:
+
+-   English (`en`, used by default)
+-   French (`fr`)
+
+You can also create and use a custom translation as follows:
+
+1.  Make a copy of the default `_language.yml` file (<https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/language/_language.yml>).
+
+2.  Provide translations from the default English values.
+
+3.  Specify the custom translation file using the `language` option. For example:
+
+    ``` yaml
+    ---
+    language: custom.yml
+    ---
+    ```
+
+The `language` option can be specified at a project or document level. Additionally, if you include a `_language.yml` file in the root of your project alongside your `_quarto.yml` config file it will be automatically used.
+
+If you create a language translation file please consider contributing it so others can benefit from it. See the documentation on [contributing language translations](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/language) for additional details.
