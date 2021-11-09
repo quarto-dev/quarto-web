@@ -77,7 +77,7 @@ You can also render only the files within a sub-directory of a project. For exam
 quarto render articles
 ```
 
-Note that when rendering a project, command line arguments you pass to `quarto render` will be used for each file in the project. For example. this command will render each document in a project as a PDF:
+Note that when rendering a project, command line arguments you pass to `quarto render` will be used for each file in the project. For example. this command will render only the PDF format:
 
 ``` bash
 quarto render --to pdf
