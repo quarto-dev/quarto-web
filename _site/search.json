@@ -560,25 +560,179 @@
     "text": "To render using different parameters you can pass them on the command line using the -P flag:\nquarto render notebook.ipynb -P alpha:0.2 -P ratio:0.3\nAlternatively you can create a YAML file that defines the parameter values you want to render with, then call quarto render with the --execute-params flag:\nquarto render notebook.ipynb --execute-params params.yml"
   },
   {
+    "objectID": "docs/presentations/powerpoint.html#overview",
+    "href": "docs/presentations/powerpoint.html#overview",
+    "title": "PowerPoint",
+    "section": "Overview",
+    "text": "You can create PowerPoint presentations using the pptx format. PowerPoint presentations support core presentation features like incremental bullets, 2-column layouts, and speaker notes, and can also be rendered using custom PowerPoint templates."
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#creating-slides",
+    "href": "docs/presentations/powerpoint.html#creating-slides",
+    "title": "PowerPoint",
+    "section": "Creating Slides",
+    "text": "In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (##):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: pptx\n---\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nYou can also divide slide shows into sections with title slides using a level 1 header (#). For example:\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: pptx\n---\n\n# In the morning\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Breakfast\n\n- Eat eggs\n- Drink coffee\n\n# In the evening\n\n## Dinner\n\n- Eat spaghetti\n- Drink wine\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nFinally, you can also delineate slides using horizontal rules (for example, if you have a slide without a title):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: pptx\n---\n\n- Turn off alarm\n- Get out of bed\n\n---\n\n- Get in bed\n- Count sheep\nThe examples above all use level 2 headings for slides and level 1 headings for sections/title slides. You can customize this using the slide-level option (See the Pandoc documentation on structuring the slide show for additional details."
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#incremental-lists",
+    "href": "docs/presentations/powerpoint.html#incremental-lists",
+    "title": "PowerPoint",
+    "section": "Incremental Lists",
+    "text": "By default number and bullet lists within slides are displayed all at once. You can override this globally using the incremental option. For example:\ntitle: \"My Presentation\"\nformat:\n  pptx:\n    incremental: true   \nYou can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:\n::: {.incremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nTo make a list non-incremental do this:\n::: {.nonincremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::"
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#multiple-columns",
+    "href": "docs/presentations/powerpoint.html#multiple-columns",
+    "title": "PowerPoint",
+    "section": "Multiple Columns",
+    "text": "To put material in side by side columns, you can use a native div container with class .columns, containing two or more div containers with class .column and a width attribute:\n:::: {.columns}\n\n::: {.column width=\"40%\"}\ncontents...\n:::\n\n::: {.column width=\"60%\"}\ncontents...\n:::\n\n::::"
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#speaker-notes",
+    "href": "docs/presentations/powerpoint.html#speaker-notes",
+    "title": "PowerPoint",
+    "section": "Speaker Notes",
+    "text": "You can add speaker notes to a slide using a div with class .notes. For example:\n## Slide with speaker notes\n\nSlide content\n\n::: {.notes}\nSpeaker notes go here.\n:::"
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#powerpoint-templates",
+    "href": "docs/presentations/powerpoint.html#powerpoint-templates",
+    "title": "PowerPoint",
+    "section": "PowerPoint Templates",
+    "text": "By default PowerPoint output uses a fairly plain looking template. You can customize what template is used via the reference-doc option. For example:\n---\ntitle: \"Presentation\"\nformat:\n  pptx:\n    reference-doc: template.pptx\n---\nNearly all templates included with recent versions of PowerPoint (either with .pptx or .potx extension) are known to work, as are most templates derived from these.\nThe specific requirement is that the template should contain layouts with the following names (as seen within PowerPoint, click on Layout under the Home menu to check):\n\nTitle Slide\nTitle and Content\nSection Header\nTwo Content\nComparison\nContent with Caption\nBlank\n\nFor each name, the first layout found with that name will be used. If no layout is found with one of the names, Pandoc will output a warning and use the layout with that name from the default reference-doc instead.\n\nCreating a Template\nTo create a template from scratch, start with the default PowerPoint template as follows:\nquarto pandoc -o template.pptx --print-default-data-file reference.pptx \nThen edit the template.pptx file within PowerPoint as desired, and use it as the value for reference-doc (as shown above) when rendering your slides:"
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#slide-layouts",
+    "href": "docs/presentations/powerpoint.html#slide-layouts",
+    "title": "PowerPoint",
+    "section": "Slide Layouts",
+    "text": "When creating slides, the pptx writer chooses from a number of pre-defined layouts, based on the content of the slide:\n\nTitle Slide\nThis layout is used for the initial slide, which is generated and filled from the metadata fields date, author, and title, if they are present.\n\nSection Header\nThis layout is used for what pandoc calls “title slides”, i.e. slides which start with a header which is above the slide level in the hierarchy.\n\nTwo Content\nThis layout is used for two-column slides, i.e. slides containing a div with class columns which contains at least two divs with class column.\n\nComparison\nThis layout is used instead of “Two Content” for any two-column slides in which at least one column contains text followed by non-text (e.g. an image or a table).\n\nContent with Caption\nThis layout is used for any non-two-column slides which contain text followed by non-text (e.g. an image or a table).\n\nBlank\nThis layout is used for any slides which only contain blank content, e.g. a slide containing only speaker notes, or a slide containing only a non-breaking space.\n\nTitle and Content\nThis layout is used for all slides which do not match the criteria for another layout.\n\n\nThese layouts are chosen from the default pptx reference doc included with Pandoc, unless an alternative reference doc is specified using reference-doc."
+  },
+  {
+    "objectID": "docs/presentations/powerpoint.html#background-images",
+    "href": "docs/presentations/powerpoint.html#background-images",
+    "title": "PowerPoint",
+    "section": "Background Images",
+    "text": "To provide a common background image for multiple slides in a PowerPoint presentation, include the background image within the relevant slide layouts of a custom PowerPoint template (see Creating a Template for details on creating templates).\nTo add a background image to an individual slide, add the background-image attribute to the slide’s heading. For example:\n## Slide Title {background-image=\"background.png\"}\nNote that this also works even if you don’t have slide heading text. For example:\n## {background-image=\"background.png\"}\nFor background images, only the “stretch” mode is supported, and the background image is centred around the slide in the image’s larger axis, matching the observed default behaviour of PowerPoint."
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#overview",
+    "href": "docs/presentations/revealjs/index.html#overview",
+    "title": "Revealjs",
+    "section": "Overview",
+    "text": "You can create RevealJs presentations using the revealjs format. Reveal presentations support core presentation features like incremental content, 2-column layouts, and speaker notes, as well as a number of more advanced capabilities including:\n\nImage, video, and iframe slide backgrounds.\nEasy navigation between slides using the slide menu or thumbnail overview mode.\nA special speaker mode that displays notes, a timer, and the upcoming slide.\nPrinting slides to PDF"
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#creating-slides",
+    "href": "docs/presentations/revealjs/index.html#creating-slides",
+    "title": "Revealjs",
+    "section": "Creating Slides",
+    "text": "In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (##):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: revealjs\n---\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nYou can also divide slide shows into sections with title slides using a level 1 header (#). For example:\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: revealjs\n---\n\n# In the morning\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Breakfast\n\n- Eat eggs\n- Drink coffee\n\n# In the evening\n\n## Dinner\n\n- Eat spaghetti\n- Drink wine\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nFinally, you can also delineate slides using horizontal rules (for example, if you have a slide without a title):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: revealjs\n---\n\n- Turn off alarm\n- Get out of bed\n\n---\n\n- Get in bed\n- Count sheep\nThe examples above all use level 2 headings for slides and level 1 headings for sections/title slides. You can customize this using the slide-level option (See the Pandoc documentation on structuring the slide show for additional details."
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#incremental-lists",
+    "href": "docs/presentations/revealjs/index.html#incremental-lists",
+    "title": "Revealjs",
+    "section": "Incremental Lists",
+    "text": "By default number and bullet lists within slides are displayed all at once. You can override this globally using the incremental option. For example:\ntitle: \"My Presentation\"\nformat:\n  revealjs:\n    incremental: true   \nYou can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:\n::: {.incremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nTo make a list non-incremental do this:\n::: {.nonincremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nYou can also insert a pause within a slide (keeping the content after the pause hidden) by inserting three dots separated by spaces:\n## Slide with a pause\n\ncontent before the pause\n\n. . .\n\ncontent after the pause"
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#multiple-columns",
+    "href": "docs/presentations/revealjs/index.html#multiple-columns",
+    "title": "Revealjs",
+    "section": "Multiple Columns",
+    "text": "To put material in side by side columns, you can use a native div container with class .columns, containing two or more div containers with class .column and a width attribute:\n:::: {.columns}\n\n::: {.column width=\"40%\"}\ncontents...\n:::\n\n::: {.column width=\"60%\"}\ncontents...\n:::\n\n::::"
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#speaker-notes",
+    "href": "docs/presentations/revealjs/index.html#speaker-notes",
+    "title": "Revealjs",
+    "section": "Speaker Notes",
+    "text": "You can add speaker notes to a slide using a div with class .notes. For example:\n## Slide with speaker notes\n\nSlide content\n\n::: {.notes}\nSpeaker notes go here.\n:::\nPress the s key (or use the Slide Menu) to show the presentation speaker view. You’ll typically use this view on one screen (e.g. your laptop) while presenting the slides on another screen."
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#slide-backgrounds",
+    "href": "docs/presentations/revealjs/index.html#slide-backgrounds",
+    "title": "Revealjs",
+    "section": "Slide Backgrounds",
+    "text": "Slides are contained within a limited portion of the screen by default to allow them to fit any display and scale uniformly. You can apply full page backgrounds outside of the slide area by adding a background attribute to your slide headers. Four different types of backgrounds are supported: color, image, video and iframe.\n\nColor Backgrounds\nAll CSS color formats are supported, including hex values, keywords, rgba() or hsl(). For example:\n## Slide Title {background-color=\"aquamarine\"}\n\n\nImage Backgrounds\nBy default, background images are resized to cover the full page. Available options:\n\n\n\n\n\n\n\n\nAttribute\nDefault\nDescription\n\n\n\n\nbackground-image\n\nURL of the image to show. GIFs restart when the slide opens.\n\n\nbackground-size\ncover\nSee background-size on MDN.\n\n\nbackground-position\ncenter\nSee background-position on MDN.\n\n\nbackground-repeat\nno-repeat\nSee background-repeat on MDN.\n\n\nbackground-opacity\n1\nOpacity of the background image on a 0-1 scale. 0 is transparent and 1 is fully opaque.\n\n\n\nFor example:\n## Slide Title {background-image=\"image.png\" background-size=\"100px\" background-repeat=\"repeat\"}\n\nThis slide's background image will be sized to 100px and repeated.\n\n\nVideo Backgrounds\nAutomatically plays a full size video behind the slide.\n\n\n\n\n\n\n\n\nAttribute\nDefault\nDescription\n\n\n\n\nbackground-video\n\nA single video source, or a comma separated list of video sources.\n\n\nbackground-video-loop\nfalse\nFlags if the video should play repeatedly.\n\n\nbackground-video-muted\nfalse\nFlags if the audio should be muted.\n\n\nbackground-size\ncover\nUse cover for full screen and some cropping or contain for letterboxing.\n\n\nbackground-opacity\n1\nOpacity of the background video on a 0-1 scale. 0 is transparent and 1 is fully opaque.\n\n\n\nFor example:\n## Slide Title {background-video=\"video.mp4\" background-video-loop=\"true\" background-video-muted=\"true\"}\n\nThis slides's background video will play in a loop with audio muted.\n\n\nIFrame Backgrounds\nEmbeds a web page as a slide background that covers 100% of the reveal.js width and height. The iframe is in the background layer, behind your slides, and as such it’s not possible to interact with it by default. To make your background interactive, you can add the background-interactive attribute.\n\n\n\n\n\n\n\n\nAttribute\nDefault\nDescription\n\n\n\n\nbackground-iframe\n\nURL of the iframe to load\n\n\nbackground-interactive\nfalse\nInclude this attribute to make it possible to interact with the iframe contents. Enabling this will prevent interaction with the slide content.\n\n\n\nFor example:\n## Slide Title {background-iframe=\"https://example.com\"}"
+  },
+  {
+    "objectID": "docs/presentations/revealjs/index.html#slide-menu",
+    "href": "docs/presentations/revealjs/index.html#slide-menu",
+    "title": "Revealjs",
+    "section": "Slide Menu",
+    "text": "Revealjs presentations include a menu in the bottom-left of the slide which provide access to both slide navigation and several presentation tools.\nIf you prefer to not show the slide menu set the menu option to false:\n---\ntitle: \"Presentation\"\nformat:\n  revealjs:\n    menu: false\n---\nNote that even if the slide menu is hidden you can still activate it by pressing the m key."
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#overview",
+    "href": "docs/presentations/beamer.html#overview",
+    "title": "Beamer",
+    "section": "Overview",
+    "text": "You can create Beamer (LaTeX/PDF) presentations using the beamer format. Beamer presentations support core presentation features like incremental content and 2-column layouts, and also provide facilities for customizing column layout, specifying frame attributes, and using Beamer themes."
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#creating-slides",
+    "href": "docs/presentations/beamer.html#creating-slides",
+    "title": "Beamer",
+    "section": "Creating Slides",
+    "text": "In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (##):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: beamer\n---\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nYou can also divide slide shows into sections with title slides using a level 1 header (#). For example:\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: beamer\n---\n\n# In the morning\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Breakfast\n\n- Eat eggs\n- Drink coffee\n\n# In the evening\n\n## Dinner\n\n- Eat spaghetti\n- Drink wine\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nFinally, you can also delineate slides using horizontal rules (for example, if you have a slide without a title):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: beamer\n---\n\n- Turn off alarm\n- Get out of bed\n\n---\n\n- Get in bed\n- Count sheep\nThe examples above all use level 2 headings for slides and level 1 headings for sections/title slides. You can customize this using the slide-level option (See the Pandoc documentation on structuring the slide show for additional details."
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#incremental-lists",
+    "href": "docs/presentations/beamer.html#incremental-lists",
+    "title": "Beamer",
+    "section": "Incremental Lists",
+    "text": "By default number and bullet lists within slides are displayed all at once. You can override this globally using the incremental option. For example:\ntitle: \"My Presentation\"\nformat:\n  beamer:\n    incremental: true   \nYou can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:\n::: {.incremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nTo make a list non-incremental do this:\n::: {.nonincremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nYou can also insert a pause within a slide (keeping the content after the pause hidden) by inserting three dots separated by spaces:\n## Slide with a pause\n\ncontent before the pause\n\n. . .\n\ncontent after the pause"
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#multiple-columns",
+    "href": "docs/presentations/beamer.html#multiple-columns",
+    "title": "Beamer",
+    "section": "Multiple Columns",
+    "text": "To put material in side by side columns, you can use a native div container with class .columns, containing two or more div containers with class .column and a width attribute:\n:::: {.columns}\n\n::: {.column width=\"40%\"}\ncontents...\n:::\n\n::: {.column width=\"60%\"}\ncontents...\n:::\n\n::::\nThe div containers with classes columns and column can optionally have an align attribute. The class columns can optionally have a totalwidth attribute or an onlytextwidth class.\n:::: {.columns align=center totalwidth=8em}\n\n::: {.column width=\"40%\"}\ncontents...\n:::\n\n::: {.column width=\"60%\" align=bottom}\ncontents...\n:::\n\n:::: \nThe align attributes on columns and column can be used with the values top, top-baseline, center and bottom to vertically align the columns. It defaults to top in columns.\nThe totalwidth attribute limits the width of the columns to the given value.\n::::  {.columns align=top .onlytextwidth}\n\n::: {.column width=\"40%\" align=center}\ncontents...\n:::\n\n::: {.column width=\"60%\"}\ncontents...\n:::\n\n:::: \nThe class onlytextwidth sets the totalwidth to \\textwidth.\nSee Section 12.7 of the Beamer User’s Guide for more details."
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#beamer-options",
+    "href": "docs/presentations/beamer.html#beamer-options",
+    "title": "Beamer",
+    "section": "Beamer Options",
+    "text": "These variables change the appearance of PDF slides using beamer.\n\naspectratio\nslide aspect ratio (43 for 4:3 [default], 169 for 16:9, 1610 for 16:10, 149 for 14:9, 141 for 1.41:1, 54 for 5:4, 32 for 3:2)\n\nbeamerarticle\nproduce an article from Beamer slides\n\nbeameroption\nadd extra beamer option with \\setbeameroption{}\n\ninstitute\nauthor affiliations: can be a list when there are multiple authors\n\nlogo\nlogo image for slides\n\nnavigation\ncontrols navigation symbols (default is empty for no navigation symbols; other valid values are frame, vertical, and horizontal)\n\nsection-titles\nenables “title pages” for new sections (default is true)\n\ntheme, colortheme, fonttheme, innertheme, outertheme\nbeamer themes\n\nthemeoptions\noptions for LaTeX beamer themes (a list).\n\ntitlegraphic\nimage for title slide\n\n\nFor example, here we use several of these options:\n---\ntitle: \"Presentation\"\nformat: \n  beamer: \n    aspectratio: 32\n    navigation: horizontal\n    theme: AnnArbor\n    colortheme: lily\n---"
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#frame-attributes",
+    "href": "docs/presentations/beamer.html#frame-attributes",
+    "title": "Beamer",
+    "section": "Frame Attributes",
+    "text": "Sometimes it is necessary to add the LaTeX [fragile] option to a frame in beamer (for example, when using the minted environment). This can be forced by adding the fragile class to the heading introducing the slide:\n# Fragile slide {.fragile}\nAll of the other frame attributes described in Section 8.1 of the Beamer User’s Guide may also be used: allowdisplaybreaks, allowframebreaks, b, c, t, environment, label, plain, shrink, standout, noframenumbering."
+  },
+  {
+    "objectID": "docs/presentations/beamer.html#background-images",
+    "href": "docs/presentations/beamer.html#background-images",
+    "title": "Beamer",
+    "section": "Background Images",
+    "text": "To provide a common background image for all slides in a Beamer presentation, use the background-image format option. For example:\n---\nformat:\n  beamer:\n    background-image: background.png"
+  },
+  {
     "objectID": "docs/presentations/index.html#overview",
     "href": "docs/presentations/index.html#overview",
     "title": "Presentations",
     "section": "Overview",
-    "text": "Pandoc markdown supports a wide variety of formats for creating presentations, including:\n\npptx — PowerPoint (MS Office)\nbeamer — Beamer (LaTeX/PDF)\nrevealjs — reveal.js (HTML)\n\nThis article covers the core syntax for presentations (slides, incremental bullets, columns, etc.). This documentation is an edited version of the complete Pandoc documentation on slide shows. After you learn the basics here you should consult the full documentation to learn about all available options."
+    "text": "Quarto supports a variety of formats for creating presentations, including:\n\nrevealjs — reveal.js (HTML)\npptx — PowerPoint (MS Office)\nbeamer — Beamer (LaTeX/PDF)\n\nThere are pros and cons to each of these formats. The most capable format by far is revealjs so is highly recommended unlesss you have specific requirements for Office or LaTeX output. Note that revealjs presentations can be presented as HTML slides or can be printed to PDF for easier distribution.\nBelow we’ll describe the basic syntax for presentations that applies to all formats. See the format specific articles for additional details on their native capabilities."
   },
   {
-    "objectID": "docs/presentations/index.html#slide-markdown",
-    "href": "docs/presentations/index.html#slide-markdown",
+    "objectID": "docs/presentations/index.html#creating-slides",
+    "href": "docs/presentations/index.html#creating-slides",
     "title": "Presentations",
-    "section": "Slide Markdown",
-    "text": "Here’s an example of a simple markdown side show. The H1 headers are used to delimit sections; the H2 headers and horizontal rule are used to delimit slides:\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\ndate: \"March 22, 2005\"\nformat: revealjs\n---\n\n# In the morning\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Breakfast\n\n- Eat eggs\n- Drink coffee\n\n# In the evening\n\n## Dinner\n\n- Eat spaghetti\n- Drink wine\n\n------------------\n\n![picture of spaghetti](images/spaghetti.jpg)\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nBy default, the slide level is the highest heading level in the hierarchy that is followed immediately by content, and not another heading, somewhere in the document.\nIn the example above, level-1 headings are always followed by level-2 headings, which are followed by content, so the slide level is 2. This default can be overridden using the slide-level option. See the Pandoc documentation on structuring the slide show for additional details."
+    "section": "Creating Slides",
+    "text": "In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (##):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: revealjs\n---\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nYou can also divide slide shows into sections with title slides using a level 1 header (#). For example:\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: revealjs\n---\n\n# In the morning\n\n## Getting up\n\n- Turn off alarm\n- Get out of bed\n\n## Breakfast\n\n- Eat eggs\n- Drink coffee\n\n# In the evening\n\n## Dinner\n\n- Eat spaghetti\n- Drink wine\n\n## Going to sleep\n\n- Get in bed\n- Count sheep\nFinally, you can also delineate slides using horizontal rules (for example, if you have a slide without a title):\n---\ntitle: \"Habits\"\nauthor: \"John Doe\"\nformat: revealjs\n---\n\n- Turn off alarm\n- Get out of bed\n\n---\n\n- Get in bed\n- Count sheep\nThe examples above all use level 2 headings for slides and level 1 headings for sections/title slides. You can customize this using the slide-level option (See the Pandoc documentation on structuring the slide show for additional details."
   },
   {
     "objectID": "docs/presentations/index.html#incremental-lists",
     "href": "docs/presentations/index.html#incremental-lists",
     "title": "Presentations",
     "section": "Incremental Lists",
-    "text": "By default number and bullet lists within slides are displayed all at once. You can override this globally using the incremental option. For example:\ntitle: \"My Presentation\"\nformat:\n  revealjs:\n    incremental: true   \nYou can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:\n::: {.incremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nTo make a list non-incremental do this:\n::: {.nonincremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nYou can also insert a pause within a slide (keeping the content after the pause hidden) by inserting three dots separated by spaces:\n## Slide with a pause\n\ncontent before the pause\n\n. . .\n\ncontent after the pause\n\n\n\n\n\n\nWarning\n\n\n\nThe incremental/nonincremental and pause markdown syntax described above do not currently work for PowerPoint output."
+    "text": "By default number and bullet lists within slides are displayed all at once. You can override this globally using the incremental option. For example:\ntitle: \"My Presentation\"\nformat:\n  revealjs:\n    incremental: true   \nYou can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:\n::: {.incremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::\nTo make a list non-incremental do this:\n::: {.nonincremental}\n\n- Eat spaghetti\n- Drink wine\n\n:::"
   },
   {
     "objectID": "docs/presentations/index.html#multiple-columns",
@@ -588,11 +742,11 @@
     "text": "To put material in side by side columns, you can use a native div container with class .columns, containing two or more div containers with class .column and a width attribute:\n:::: {.columns}\n\n::: {.column width=\"40%\"}\ncontents...\n:::\n\n::: {.column width=\"60%\"}\ncontents...\n:::\n\n::::"
   },
   {
-    "objectID": "docs/presentations/index.html#speaker-notes",
-    "href": "docs/presentations/index.html#speaker-notes",
+    "objectID": "docs/presentations/index.html#learning-more",
+    "href": "docs/presentations/index.html#learning-more",
     "title": "Presentations",
-    "section": "Speaker Notes",
-    "text": "Speaker notes are supported in reveal.js and PowerPoint (pptx) output. You can add notes to your Markdown document thus:\n## Slide with speaker notes\n\nSlide content\n\n::: {.notes}\n\nSpeaker notes go here.\n\n:::\nTo show the notes window in reveal.js, press s while viewing the presentation. Speaker notes in PowerPoint will be available, as usual, in handouts and presenter view.\nNotes are not yet supported for other slide formats, but the notes will not appear on the slides themselves."
+    "section": "Learning More",
+    "text": "See these format specific articles for additional details on the additional capabilities of each format:\n\nrevealjs — reveal.js (HTML)\npptx — PowerPoint (MS Office)\nbeamer — Beamer (LaTeX/PDF)"
   },
   {
     "objectID": "docs/authoring/cross-references.html#overview",

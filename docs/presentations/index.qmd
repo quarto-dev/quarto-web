@@ -2,148 +2,36 @@
 title: Presentations
 description: "This article covers the core syntax for presentations (slides, incremental bullets, columns, etc.)."
 format: html
+slide-format: revealjs
 ---
 
 ## Overview
 
-Pandoc markdown supports a wide variety of formats for creating presentations, including:
+Quarto supports a variety of formats for creating presentations, including:
 
--   `pptx` --- [PowerPoint](https://en.wikipedia.org/wiki/Microsoft_PowerPoint) (MS Office)
+-   `revealjs` --- [reveal.js](revealjs/index.qmd) (HTML)
 
--   `beamer` --- [Beamer](https://en.wikipedia.org/wiki/Beamer_(LaTeX)) (LaTeX/PDF)
+-   `pptx` --- [PowerPoint](powerpoint.qmd) (MS Office)
 
--   `revealjs` --- [reveal.js](https://revealjs.com/) (HTML)
+-   `beamer` --- [Beamer](beamer.qmd) (LaTeX/PDF)
 
-This article covers the core syntax for presentations (slides, incremental bullets, columns, etc.). This documentation is an edited version of the complete Pandoc [documentation on slide shows](https://pandoc.org/MANUAL.html#slide-shows). After you learn the basics here you should consult the full documentation to learn about all available options.
+There are pros and cons to each of these formats. The most capable format by far is `revealjs` so is highly recommended unlesss you have specific requirements for Office or LaTeX output. Note that `revealjs` presentations can be presented as HTML slides or can be printed to PDF for easier distribution.
 
-## Slide Markdown
+Below we'll describe the basic syntax for presentations that applies to all formats. See the format specific articles for additional details on their native capabilities.
 
-Here's an example of a simple markdown side show. The H1 headers are used to delimit sections; the H2 headers and horizontal rule are used to delimit slides:
 
-``` markdown
----
-title: "Habits"
-author: "John Doe"
-date: "March 22, 2005"
-format: revealjs
----
-
-# In the morning
-
-## Getting up
-
-- Turn off alarm
-- Get out of bed
-
-## Breakfast
-
-- Eat eggs
-- Drink coffee
-
-# In the evening
-
-## Dinner
-
-- Eat spaghetti
-- Drink wine
-
-------------------
-
-![picture of spaghetti](images/spaghetti.jpg)
-
-## Going to sleep
-
-- Get in bed
-- Count sheep
+```{.include}
+_creating-slides.md
+_incremental-lists.md
+_columns.md
 ```
 
-By default, the *slide level* is the highest heading level in the hierarchy that is followed immediately by content, and not another heading, somewhere in the document.
+## Learning More
 
-In the example above, level-1 headings are always followed by level-2 headings, which are followed by content, so the slide level is 2. This default can be overridden using the [`slide-level`](https://pandoc.org/MANUAL.html#option--slide-level) option. See the Pandoc documentation on [structuring the slide show](https://pandoc.org/MANUAL.html#structuring-the-slide-show) for additional details.
+See these format specific articles for additional details on the additional capabilities of each format:
 
-## Incremental Lists
+-   `revealjs` --- [reveal.js](revealjs/index.qmd) (HTML)
 
-By default number and bullet lists within slides are displayed all at once. You can override this globally using the `incremental` option. For example:
+-   `pptx` --- [PowerPoint](powerpoint.qmd) (MS Office)
 
-``` yaml
-title: "My Presentation"
-format:
-  revealjs:
-    incremental: true   
-```
-
-You can also explicitly make any list incremental or non-incremental by surrounding it in a div with an explicit class that determines the mode. To make a list incremental do this:
-
-``` markdown
-::: {.incremental}
-
-- Eat spaghetti
-- Drink wine
-
-:::
-```
-
-To make a list non-incremental do this:
-
-``` markdown
-::: {.nonincremental}
-
-- Eat spaghetti
-- Drink wine
-
-:::
-```
-
-You can also insert a pause within a slide (keeping the content after the pause hidden) by inserting three dots separated by spaces:
-
-``` markdown
-## Slide with a pause
-
-content before the pause
-
-. . .
-
-content after the pause
-```
-
-::: callout-warning
-The incremental/nonincremental and pause markdown syntax described above do not currently work for PowerPoint output.
-:::
-
-## Multiple Columns
-
-To put material in side by side columns, you can use a native div container with class `.columns`, containing two or more div containers with class `.column` and a `width` attribute:
-
-``` markdown
-:::: {.columns}
-
-::: {.column width="40%"}
-contents...
-:::
-
-::: {.column width="60%"}
-contents...
-:::
-
-::::
-```
-
-## Speaker Notes
-
-Speaker notes are supported in reveal.js and PowerPoint (pptx) output. You can add notes to your Markdown document thus:
-
-``` markdown
-## Slide with speaker notes
-
-Slide content
-
-::: {.notes}
-
-Speaker notes go here.
-
-:::
-```
-
-To show the notes window in reveal.js, press <kbd>s</kbd> while viewing the presentation. Speaker notes in PowerPoint will be available, as usual, in handouts and presenter view.
-
-Notes are not yet supported for other slide formats, but the notes will not appear on the slides themselves.
+-   `beamer` --- [Beamer](beamer.qmd) (LaTeX/PDF)
