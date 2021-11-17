@@ -1,0 +1,3 @@
+-   [Presenting Slides](presenting.qmd) describes slide navigation, printing to PDF, drawing on slides using a chalkboard, and creating multicast presentations.
+-   [Advanced Reveal](advanced.qmd) delves into transitions, animations, advanced layout and positioning, and other options available for customizing presentations.
+-   [Reveal Themes](themes.qmd) talks about using and customizing existing themes as well as creating brand new themes.
