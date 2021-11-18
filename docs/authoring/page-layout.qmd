@@ -1,0 +1,461 @@
+---
+title: "Page Layout"
+description: "Page layout allows you to control the layout of figures, tables, and other content."
+format: html
+reference-location: margin
+citation-location: margin
+execute:
+  freeze: true
+---
+
+## Overview
+
+Quarto supports a variety of page layout options that enable you to author content that:
+
+-   Fills the main content region
+-   Overflows the content region
+-   Spans the entire page
+-   Occupies the document margin
+
+Quarto uses the concept of columns to describe page layout (e.g. the "body" column, the "margin" column, etc.). Below we'll describe how to arrange content into these columns.
+
+All of the layout capabilities described in this document work for HTML output and many work for PDF and LaTeX output. For details about the PDF / LaTeX output, see [PDF/LaTeX Layout].
+
+## Body Column
+
+By default, elements are position in the body of the document and are allowed to span the content of the document, like the below.
+
+::: {.layout-example .column-body}
+.column-body
+:::
+
+But if you'd like, you can extend content slightly outside the bounds of the body by creating a div with the .`column-body-outset` class. For example:
+
+``` markdown
+:::{.column-body-outset}
+Outset content...
+:::
+```
+
+::: {.layout-example .column-body-outset}
+.column-body-outset
+:::
+
+## Page Column
+
+If you need even more space for your content, you can use the `.column-page` class to make the content much wider, though stopping short of extending across the whole document.
+
+::: {.layout-example .column-page}
+.column-page
+:::
+
+For example, to create a wider image, you could use:
+
+``` markdown
+:::{.column-page}
+![](images/elephant.jpg)
+:::
+```
+
+::: column-page
+![](images/elephant.jpg)
+:::
+
+For computational output, you can specify the page column in your code cell options. For example:
+
+```{r}
+#| column: page
+#| echo: fenced
+
+knitr::kable(
+  mtcars[1:6, 1:10]
+)
+```
+
+## Screen Column
+
+You can have content span the full width of the page with no margin (full bleed). For this, use the `.column-screen` class or specify `column: screen` on a code cell. For example:
+
+``` md
+::: {.column-screen}
+![A full screen image](/image.png)
+:::
+```
+
+::: {.layout-example .column-screen}
+.column-screen
+:::
+
+The following code displays a Leaflet map across the whole page.
+
+```{r}
+#| column: screen
+#| echo: fenced
+
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+```
+
+### Screen Inset
+
+If you'd like a full width appearance, but would like to retain a margin, you can use inset or inset-shaded modifiers on the column. For example:
+
+``` md
+::: {.column-screen-inset}
+![A full screen image](/image.png)
+:::
+```
+
+::: {.layout-example .column-screen-inset}
+.column-screen-inset
+:::
+
+The inset-shaded modifier results in a block spanning the full width but wrapped with a lightly shaded background. For example:
+
+```{r}
+#| column: screen-inset-shaded
+#| echo: fenced
+
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+```
+
+Column layouts like `screen-inset-shaded` will work with advanced figure layout. For example, it is straightforward to create a multi column presentation of figures that spans the document:
+
+```{r}
+#| column: screen-inset-shaded
+#| layout-nrow: 1
+#| echo: fenced
+
+plot(cars)
+plot(iris)
+plot(pressure)
+```
+
+## Margin Content
+
+You can place content within the right margin of Quarto document. For example, here we use the `.column-margin` class to place an image in the margin:
+
+``` md
+::: {.column-margin}
+![A margin image](image.png)
+:::
+```
+
+::: {.layout-example .column-margin style="margin-top: 18px;"}
+.column-margin
+:::
+
+### Margin Figures
+
+Figures that you create using code cells can be placed in the margin by using the `column: margin` code cell option. If the code produces more than one figure, each of the figures will be placed in the margin.
+
+```{r}
+#| label: fig-mtcars
+#| fig-cap: "MPG vs horsepower, colored by transmission."
+#| column: margin
+#| echo: fenced
+
+library(ggplot2)
+mtcars2 <- mtcars
+mtcars2$am <- factor(
+  mtcars$am, labels = c('automatic', 'manual')
+)
+ggplot(mtcars2, aes(hp, mpg, color = am)) +
+  geom_point() +  geom_smooth(formula = y ~ x, method = "loess") +
+  theme(legend.position = 'bottom')
+```
+
+### Margin Tables
+
+You an also place tables in the margin of your document by specifying `column: margin`.
+
+```{r}
+#| column: margin
+#| echo: fenced
+
+knitr::kable(
+  mtcars[1:6, 1:3]
+)
+```
+
+### Multiple Outputs 
+
+You can also target specific output types (for example, figures) to be placed in the margin. For example, the following code will render a table summarizing the `mtcars` dataset and render a lot of the data in the margin next to the table.
+
+```{r}
+#| fig-column: margin
+#| echo: fenced
+
+mtcars2 <- mtcars
+mtcars2$am <- factor(
+  mtcars$am, labels = c('automatic', 'manual')
+)
+
+knitr::kable(
+  mtcars[1:6, 1:6]
+)
+
+library(ggplot2)
+ggplot(mtcars2, aes(hp, mpg, color = am)) +
+  geom_point() +  geom_smooth(formula = y ~ x, method = "loess") +
+  theme(legend.position = 'bottom')
+```
+
+## 
+
+### Other Content
+
+You can also place content in the margin by targeting the margin column using a div with the .`column-margin` class. For example:
+
+``` md
+::: {.column-margin}
+We know from *the first fundamental theorem of calculus* that for $x$ in $[a, b]$:
+
+$$\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).$$
+:::
+```
+
+::: column-margin
+We know from *the first fundamental theorem of calculus* that for $x$ in $[a, b]$:
+
+$$\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).$$
+:::
+
+## Margin References
+
+Footnotes and the bibliography typically appear at the end of the document, but you can choose to have them placed in the margin by setting the following option[^1] in the document front matter:
+
+[^1]: You can also position references in other location (such as the bottom of the block, section, or document).
+
+``` yaml
+---
+reference-location: margin
+citation-location: margin
+---
+```
+
+With these options set, footnotes and citations will (respectively) be automatically be placed in the margin of the document rather than the bottom of the page. As an example, when I cite @xie2018, the citation bibliography entry itself will now appear in the margin.
+
+### Asides
+
+Asides allow you to place content aside from the content it is placed in. Asides look like footnotes, but do not include the footnote mark (the superscript number). [This is a span that has the class `aside` which places it in the margin without a footnote number.]{.aside}
+
+``` markdown
+[This is a span that has the class aside which places it in the margin without a footnote number.]{.aside}
+```
+
+## Margin Captions
+
+For figures and tables, you may leave the content in the body of the document while placing the caption in the margin of the document. Using `caption-location: margin` in a code cell or document front matter to control this. For example:
+
+```{r}
+#| label: fig-cap-margin
+#| fig-cap: "MPG vs horsepower, colored by transmission."
+#| caption-location: margin
+#| echo: fenced
+
+library(ggplot2)
+mtcars2 <- mtcars
+mtcars2$am <- factor(
+  mtcars$am, labels = c('automatic', 'manual')
+)
+ggplot(mtcars2, aes(hp, mpg, color = am)) +
+  geom_point() +  geom_smooth(formula = y ~ x, method = "loess") +
+  theme(legend.position = 'bottom')
+```
+
+## Overflowing Content
+
+You can also extend content outside the body region on only the left or right side of the document by using the `right` and `left` versions of the `body`, `page`, and `screen` columns to layout your content. The `left` or `right` version of these columns are as follows:
+
+::: {.layout-example .column-body-outset-right .left}
+.column-body-outset-right
+:::
+
+::: {.layout-example .column-page-right .left}
+.column-page-right
+:::
+
+::: {.layout-example .column-screen-inset-right .left}
+.column-screen-inset-right
+:::
+
+::: {.layout-example .column-screen-right .left}
+.column-screen-right
+:::
+
+::: {.layout-example .column-body-outset-left .right}
+.column-body-outset-left
+:::
+
+::: {.layout-example .column-page-left .right}
+.column-page-left
+:::
+
+::: {.layout-example .column-screen-inset-left .right}
+.column-screen-inset-left
+:::
+
+::: {.layout-example .column-screen-left .right}
+.column-screen-left
+:::
+
+Use a div with one of the above classes to align content into one of the overflow regions. This also works using the `column` option of executable code cells:
+
+```{r}
+#| column: screen-inset-right
+#| echo: fenced
+
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+```
+
+## Options Reference
+
+### Global Options
+
+Some layout options can be specified globally in document yaml. For example:
+
+``` yaml
+---
+fig-cap-location: margin
+reference-location: margin
+---
+```
+
+All of the below options currently only support setting a value of `margin` which tells Quarto to place the corresponding element in the margin.
+
++----------------------+------------------------------------------------------------------+
+| Option               | Description                                                      |
++======================+==================================================================+
+| `reference-location` | Where to place footnotes. Defaults to `document.`\               |
+|                      | \[`document` \| `section` \| `block` \| `margin` \]              |
++----------------------+------------------------------------------------------------------+
+| `citation-location`  | Where to place citations. Defaults to `document`.\               |
+|                      | \[`document` \| `margin` \]                                      |
++----------------------+------------------------------------------------------------------+
+| `caption-location`   | Where to place figure and table captions. Defaults to `inline`.\ |
+|                      | \[`inline` \| `margin`\]                                         |
++----------------------+------------------------------------------------------------------+
+| `fig-cap-location`   | Where to place figure captions. Defaults to `inline`.\           |
+|                      | \[`inline` \| `margin`\]                                         |
++----------------------+------------------------------------------------------------------+
+| `tbl-cap-location`   | Where to place table captions. Defaults to `inline`.\            |
+|                      | \[`inline` \| `margin`\]                                         |
++----------------------+------------------------------------------------------------------+
+
+### Code Cell Options
+
+You can also set layout column on specific code cells. This controls the layout of content that is produced by the code cell.
+
+``` {{r}}
+#| column: page
+
+plot(cars)
+```
+
++--------------------+---------------------------------------------------------------------------------------------+
+| Option             | Description                                                                                 |
++====================+=============================================================================================+
+| `column`           | Layout column to use for code cell outputs. See column options below.                       |
++--------------------+---------------------------------------------------------------------------------------------+
+| `fig-column`       | Layout column to use for code cell figure outputs. See column options below.                |
++--------------------+---------------------------------------------------------------------------------------------+
+| `tbl-column`       | Layout column to use for code cell table outputs. See column options below.                 |
++--------------------+---------------------------------------------------------------------------------------------+
+| `caption-location` | Where to place figure and table captions produced by this code cell. Defaults to `inline`.\ |
+|                    | \[`inline` \| `margin`\]                                                                    |
++--------------------+---------------------------------------------------------------------------------------------+
+| `fig-cap-location` | Where to place captions for figures produced by this code cell. Defaults to `inline`.\      |
+|                    | \[`inline` \| `margin`\]                                                                    |
++--------------------+---------------------------------------------------------------------------------------------+
+| `tbl-cap-location` | Where to place captions for tables produced by this code cell. Defaults to `inline`.\       |
+|                    | \[`inline` \| `margin`\]                                                                    |
++--------------------+---------------------------------------------------------------------------------------------+
+
+### Using Classes
+
+In addition to global and code cell specific options, you may use divs with layout classes (prefixed with .`column-`) to arrange content into columns:
+
+``` md
+::: {.column-margin}
+This content will appear in the margin!
+:::
+```
+
+### Available Columns
+
+Here are all of the available column specifiers:
+
++----------------+----------------------------------+---------------------------------+
+| Column         | Code Cell `column`               | Class Name                      |
++================+==================================+=================================+
+| Body           |     column: body                 |     .column-body                |
+|                |     column: body-outset          |     .column-body-outset         |
+|                |     column: body-outset-left     |     .column-body-outset-left    |
+|                |     column: body-outset-right    |     .column-body-outset-right   |
++----------------+----------------------------------+---------------------------------+
+| Page           |     column: page                 |     .column-page                |
+|                |     column: page-left            |     .column-page-left           |
+|                |     column: page-right           |     .column-page-right          |
++----------------+----------------------------------+---------------------------------+
+| Screen Inset   |     column: screen-inset         |     .column-screen-inset        |
+|                |     column: screen-inset-shaded  |     .column-screen-inset-shaded |
+|                |     column: screen-inset-left    |     .column-screen-inset-left   |
+|                |     column: screen-inset-right   |     .column-screen-inset-right  |
++----------------+----------------------------------+---------------------------------+
+| Screen         |     column: screen               |     .column-screen              |
+|                |     column: screen-left          |     .column-screen-left         |
+|                |     column: screen-rightcolumn:  |     .column-screen-right        |
++----------------+----------------------------------+---------------------------------+
+| Margin         |     column: margin               |     .column-margin              |
++----------------+----------------------------------+---------------------------------+
+
+## PDF/LaTeX Layout {data-link="PDF/LaTeX Layout"}
+
+While most of the layout capabilities described are supported for both HTML and PDF output, some are available only for HTML output. You can use the full set of columns for HTML. Then, when you render PDF or LaTeX output, content will automatically be placed in the most appropriate related column (typically this will mean using the main column and right margin). Here is how columns are mapped:
+
+-   Any column that uses the right margin (e.g. `page`, `screen`, `screen-right`, etc. will be rendered as `page-right` in LaTeX.
+-   Any column that uses the left margin will be rendered as normal body content.
+
+### Page Geometry
+
+When you render a PDF using content in the margin or content that spans the page, Quarto automatically will adjust the page geometry for the default Quarto LaTeX document classes (KOMA `scrartcl`, `scrreport`, or `scrbook`) to create a slightly narrower body content region and a slightly wider margin region. This adjustment will incorporate known paper sizes to create a reasonable page geometry for most content.
+
+You can control the page geometry directly yourself by setting `geometry` options in your document's front matter. For example:
+
+``` yaml
+---
+geometry:
+  - left=.75in
+  - textwidth=4.5in
+  - marginparsep=.25in
+  - marginparwidth=2.25in
+---
+```
+
+You can use these options to control the page geometry for the built in document classes or to customize the geometry of other document classes that you may be using.
+
+::: {.callout-tip appearance="simple"}
+If you'd like to view the page geometry in your rendered PDF, you can pass `showframe` to the `geometry` option as in the below example.
+
+``` {.yaml style="background: none;"}
+---
+geometry:
+  - showframe
+---
+```
+:::
+
+### Code Blocks
+
+When rendering a PDF that uses the margins for content, Quarto automatically adjusts the appearance of code blocks. Rather than having a solid background color, a left border treatment is used.
+
+This enables non-breaking code to overflow into the margin without cosmetic issues created by the code block background (which does not overflow into the margin region).

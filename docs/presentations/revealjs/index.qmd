@@ -106,9 +106,62 @@ format:
 
 Most of the core capabilities of Quarto [HTML Code Blocks](../../output-formats/html-code.qmd) are available for Reveal slides, including code folding, code copy, and the ability to pick a custom syntax highlighting theme. Note that if you choose a dark Reveal theme then the default Quarto dark syntax highlighting theme will be used.
 
-### Line Numbers & Highlighting
+### Line Highlighting
 
-You may want to highlight specific lines of code output (or even highlight distinct lines over a progression of steps). You can do this using the `line-numbers` attribute of code blocks. For example:
+You may want to highlight specific lines of code output (or even highlight distinct lines over a progression of steps). You can do this using the `code-line-numbers` attribute of code blocks. For example:
+
+```` java
+```{.python code-line-numbers="6-8"}
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
+![](images/line-highlight.png)
+
+Note that you can also highlight disparate ranges of lines by separating them with a comma. For example:
+
+```` java
+```{.python code-line-numbers="7,9"}
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
+![](images/line-highlight-discontinuous.png)
+
+Finally, you can highlight different line ranges progressively by separating them with `|`. For example, here we start by showing all lines, then progress to highlighting line 6, and finally to highlighting line 9:
+
+```` java
+```{.python code-line-numbers="|6|9"}
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
 
 ### Executable Code
 
@@ -128,6 +181,8 @@ ax.set_rticks([0.5, 1, 1.5, 2])
 ax.grid(True)
 plt.show()
 ```
+
+Note that you can also use the `code-line-numbers` option within executable code blocks to highlight specific line ranges (as described above.
 
 ## Tabsets
 
