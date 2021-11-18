@@ -4,25 +4,146 @@ title: "Presenting Slides"
 
 ## Overview
 
-Keyboard
+This article covers the mechanics of presenting slides with Reveal. Basic navigation is done using the following keyboard shortcuts:
 
-## Slide Menu
+| Action                     | Keys                                       |
+|----------------------------|--------------------------------------------|
+| Next slide                 | <kbd>→</kbd> <kbd>SPACE</kbd> <kbd>N</kbd> |
+| Previous slide             | <kbd>←</kbd> <kbd>P</kbd>                  |
+| Navigate without fragments | <kbd>Alt →</kbd> <kbd>Alt ←</kbd>          |
+| Jump to first/last slide   | <kbd>Shift →</kbd> <kbd>Shift ←</kbd>      |
 
--   Overview mode
--   Fullscreen mode
--   Speaker notes
+::: {.callout-tip appearance="simple"}
+You will often want to enter fullscreen mode when presenting. You can do this by pressing the <kbd>F</kbd> key.
+:::
 
-## Speaker Notes
+In addition to basic keyboard navigation, Reveal supports several more advanced capabilities, including:
+
+-   Navigation menu and overview mode
+-   Speaker view (w/ speaker notes)
+-   Printing to PDF
+-   Drawing on slides & chalkboard mode
+
+These capabilities and others are described below.
+
+## Navigation Menu
+
+There is a navigation menu button <kbd>![](images/navigation-menu-icon.png){style="padding-bottom: 1px;" width="15" height="13"}</kbd> located in the bottom left corner of the presentation. Clicking the button opens a slide navigation menu that enables you to easily jump to any slide:
+
+::: {layout="[4,4]"}
+![](images/navigation-menu-button.png){.border}
+
+![](images/navigation-menu-open.png){.border}
+:::
+
+::: {.callout-tip appearance="simple"}
+You can also open the navigation menu by pressing the <kbd>M</kbd> key.
+:::
+
+The navigation menu also includes a **Tools** pane that provides access to the various other navigation tools including Fullscreen, Speaker View, Overview Mode, and Print to PDF.
+
+## Overview Mode
+
+Overview mode provides an alternate view that shows you a thumbnail for each slide:
+
+![](images/overview-mode.png){.border}
+
+::: {.callout-tip appearance="simple"}
+You can enable Overview Mode by pressing the <kbd>O</kbd> key.
+:::
+
+## Speaker View
+
+The speaker view shows the current slide along with the upcoming slide, a timer, and any speaker notes associated with the current slide:
+
+![](images/speaker-view.png){.border}
+
+::: {.callout-tip appearance="simple"}
+You can enable Speaker View by pressing the <kbd>S</kbd> key.
+:::
+
+You can add speaker notes to a slide using a div with class `.notes`. For example:
+
+``` markdown
+## Slide with speaker notes
+
+Slide content
+
+::: {.notes}
+Speaker notes go here.
+:::
+```
 
 ## Print to PDF
+
+Reveal presentations can be exported to PDF via a special print stylesheet.
+
+::: callout-note
+Note: This feature has only been confirmed to work in [Google Chrome](https://google.com/chrome) and [Chromium](https://www.chromium.org/Home).
+:::
+
+To Print to PDF, do the following:
+
+1.  Toggle into Print View using the <kbd>E</kbd> key (or using the [Navigation Menu])
+2.  Open the in-browser print dialog (CTRL/CMD+P).
+3.  Change the **Destination** setting to **Save as PDF**.
+4.  Change the **Layout** to **Landscape**.
+5.  Change the **Margins** to **None**.
+6.  Enable the **Background graphics** option.
+7.  Click **Save** 🎉
+
+Here's what the Chrome print dialog would look like with these settings enabled:
+
+![](images/print-to-pdf.png){.border}
+
+### Print Options
+
+There are a number of options that affected printed output that you may want to configure prior to printing:
+
+| Option                    | Description                                                                                                                                                                          |
+|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `show-notes`              | Include speaker notes (`true`, `false`, or `separate-page)`                                                                                                                          |
+| `slide-number`            | Include slide numbers (`true` or `false`)                                                                                                                                            |
+| `pdf-max-pages-per-slide` | Slides that are too tall to fit within a single page will expand onto multiple pages. You can limit how many pages a slide may expand to using the `pdf-max-pages-per-slide` option. |
+| `pdf-separate-fragments`  | Slides with multiple fragments are printed on a single page by default. To create a page for each fragment set this option to `true`.                                                |
+
+For example, the following specifies that we want to print speaker notes on their own page and include slide numbers:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    show-notes: separate-page
+    slide-number: true
+---
+```
+
+## Navigation Options
+
+There are several navigational cues provided as part of Reveal presentations and corresponding options that control them:
+
+| Option         | Description                                                                                                                          |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `progress`     | Show a progress bar at the bottom (defaults to `true`)                                                                               |
+| `slide-number` | Show the current slide number (defaults to `false`)                                                                                  |
+| `history`      | Push slide changes to the browser history. When this is `true` the browser Forward/Back buttons can be used for slide navigation.    |
+| `hash-type`    | Type of URL hash to use for slides. Defaults to `id` which uses an `id` derived from the slide title. You can also specify `number`. |
+
+For example, the following configuration hides the progress bar and adds slide numbers:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    progress: false
+    slide-number: true
+---
+```
 
 ## Chalkboard
 
 ## Multicast
 
-## Slide Navigation
-
--   Browser history
--   Slide numbers
--   Progress bar
--   Slide links / hash type
+## 
