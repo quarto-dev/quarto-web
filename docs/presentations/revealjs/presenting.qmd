@@ -28,7 +28,7 @@ These capabilities and others are described below.
 
 ## Navigation Menu
 
-There is a navigation menu button <kbd>![](images/navigation-menu-icon.png){style="padding-bottom: 1px;" width="15" height="13"}</kbd> located in the bottom left corner of the presentation. Clicking the button opens a slide navigation menu that enables you to easily jump to any slide:
+Quarto includes a built in version of the [reveal.js-menu](https://github.com/denehyg/reveal.js-menu) plugin. You can access the navigation menu using the button <kbd>![](images/navigation-menu-icon.png){style="padding-bottom: 1px;" width="15" height="13"}</kbd> located in the bottom left corner of the presentation. Clicking the button opens a slide navigation menu that enables you to easily jump to any slide:
 
 ::: {layout="[4,4]"}
 ![](images/navigation-menu-button.png){.border}
@@ -41,6 +41,16 @@ You can also open the navigation menu by pressing the <kbd>M</kbd> key.
 :::
 
 The navigation menu also includes a **Tools** pane that provides access to the various other navigation tools including Fullscreen, Speaker View, Overview Mode, and Print to PDF.
+
+You can hide the navigation menu by specifying the `menu: false` option:
+
+``` yaml
+format:
+  revealjs:
+    menu: false
+```
+
+Note that you can still open the menu using the <kbd>M</kbd> key even if the button is hidden.
 
 ## Overview Mode
 
@@ -144,6 +154,96 @@ format:
 
 ## Chalkboard
 
-## Multicast
+Quarto includes a built-in version of the [reveal.js-chalkboard](https://github.com/rajgoel/reveal.js-plugins/tree/master/chalkboard) plugin. Specify the `chalkboard: true` option to enable the plugin, which enables you to draw on a notes canvas on top of your slides and/or open up an empty chalkboard within your presentation:
 
-## 
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    chalkboard: true
+---
+```
+
+Here are what the notes canvas and chalkboard look like when activated:
+
+::: {layout="[4,4]"}
+![](images/drawing-canvas.png){.border}
+
+![](images/chalkboard.png){.border}
+:::
+
+To toggle the notes canvas on and off use the <kbd>![](images/canvas-icon.png){width="19" height="17"}</kbd> button or the <kbd>C</kbd> key.
+
+To toggle the chalkboard on and off use the <kbd>![](images/chalkboard-icon.png){width="19" height="20"}</kbd> button or the <kbd>B</kbd> key.
+
+Here are all of the keyboard shortcuts associated with the notes canvas and chalkboard:
+
+| Action                  | Key                  |
+|-------------------------|----------------------|
+| Toggle notes canvas     | <kbd>C</kbd>         |
+| Toggle chalkboard       | <kbd>B</kbd>         |
+| Reset all drawings      | <kbd>BACKSPACE</kbd> |
+| Clear drawings on slide | <kbd>DEL</kbd>       |
+| Cycle colors forward    | <kbd>X</kbd>         |
+| Cycle colors backward   | <kbd>Y</kbd>         |
+| Download drawings       | <kbd>D</kbd>         |
+
+The following mouse and touch gestures can be used for interacting with drawings:
+
+-   Click on the buttons at the bottom left to toggle the notes canvas or chalkboard
+
+-   Click on the color picker at the left to change the color (the color picker is only visible if the notes canvas or chalkboard is active)
+
+-   Click on the up/down arrows on the left to the switch among multiple chalkboard (the up/down arrows are only available for the chalkboard)
+
+-   Click the left mouse button and drag to write on notes canvas or chalkboard
+
+-   Click the right mouse button and drag to wipe away previous drawings
+
+-   Touch and move to write on notes canvas or chalkboard
+
+-   Touch and hold for half a second, then move to wipe away previous drawings
+
+### Restoring Drawings
+
+The <kbd>D</kbd> key downloads any active drawings into a JSON file. You can then restore these drawings when showing your presentation using the `src` option. For example:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    chalkboard:
+      src: drawings.json
+---
+```
+
+### Chalkboard Options
+
+The following options are available to customize the behavior and appearance of the chalkboard:
+
+| Option              | Description                                                                                                                                         |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `theme`             | Can be set to either `chalkboard` (default) or `whiteboard`.                                                                                        |
+| `boardmarker-width` | The drawing width of the boardmarker; larger values draw thicker line. Defaults to `3`.                                                             |
+| `chalk-width`       | The drawing width of the chalk; larger values draw thicker lines. Defaults to `7`.                                                                  |
+| `chalk-effect`      | A float in the range `[0.0, 1.0]`, the intensity of the chalk effect on the chalk board. Full effect (default) `1.0`, no effect `0.0`.              |
+| `src`               | Optional file name for pre-recorded drawings (download drawings using the <kbd>D</kbd> key).                                                        |
+| `read-only`         | Configuration option to prevent changes to existing drawings. If set to `true` no changes can be made, if set to false `false` changes can be made, |
+| `buttons`           | Add chalkboard buttons at the bottom of the slide (defaults to `true`)                                                                              |
+| `transition`        | Gives the duration (in milliseconds) of the transition for a slide change, so that the notes canvas is drawn after the transition is completed.     |
+
+For example, the following configuration specifies that we want to use the `whiteboard` theme with a (thicker) boardmarker width:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    theme: whiteboard
+    boardmarker-width: 5
+---
+```
+
+## Multicast
