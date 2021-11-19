@@ -20,11 +20,12 @@ You will often want to enter fullscreen mode when presenting. You can do this by
 In addition to basic keyboard navigation, Reveal supports several more advanced capabilities, including:
 
 -   Navigation menu and overview mode
--   Speaker view (w/ speaker notes)
--   Printing to PDF
--   Drawing on slides & chalkboard mode
+-   Speaker view (w/ speaker notes,timer, and preview of upcoming slides)
+-   Printing to PDF and publishing as self-contained HTML
+-   Drawing on top of slides & chalkboard/whiteboard mode
+-   Multiplex, which allows your audience to follow the slides of the presentation you are controlling on their own phone, tablet or laptop.
 
-These capabilities and others are described below.
+These capabilities are described below.
 
 ## Navigation Menu
 
@@ -128,6 +129,27 @@ format:
     slide-number: true
 ---
 ```
+
+## Publishing
+
+There are two main ways to publish Reveal presentations:
+
+1.  As a PDF file---see [Print to PDF] above for details on how to do this.
+
+2.  As an HTML file. For HTML, it's likely most convenient to distribute the presentation as a single self-contained file. To do this, specify the `self-contained` option:
+
+    ``` yaml
+    ---
+    title: "Presentation"
+    format:
+      revealjs:
+        self-contained: true
+    ---
+    ```
+
+    All of the dependent images, CSS styles, and other assets will be contained within the HTML file created by Quarto.
+
+See the documentation on [Publishing HTML](../../output-formats/html-publishing.qmd) for details on additional ways to publish Reveal presentations including GitHub Pages and RStudio Connect.
 
 ## Navigation Options
 
@@ -246,4 +268,66 @@ format:
 ---
 ```
 
-## Multicast
+## Multiplex
+
+Quarto includes a built-in version of the [Reveal Multiplex](https://github.com/reveal/multiplex) plugin. The multiplex plugin allows your audience to follow the slides of the presentation you are controlling on their own phone, tablet or laptop. When you change slides in your master presentations everyone will follow and see the same content on their own device.
+
+Creating a Reveal presentation that supports multiplex is straightforward. Just specify the `multiplex: true` option as follows:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    multiplex: true
+    self-contained: true
+---
+```
+
+Note that we also specify the `self-contained` option: this isn't required but will make it somewhat easier to publish your presentation (since it will be a single standalone HTML file).
+
+Rendering the presentation will result in two HTML files being created by Quarto:
+
+| File                        | Description                                                                                                                        |
+|-----------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `presentation.html`         | This is the file you should publish online and that your audience should view.                                                     |
+| `presentation-speaker.html` | This is the file that you should present from . This file can remain on your computer and does not need to be published elsewhere. |
+
+The two versions of the presentation will be synchronized such that when the speaker version switches slides the viewers also all switch to the same slide.
+
+### Multiplex Server {.unlisted}
+
+Behind the scenes there is a multiplex server that is synchronizing slide events between the viewer and speaker versions of the presentation. Note that the this server does not actually see any of the slide content, it is only used to synchronize events.
+
+By default, a server created and hosted by the Revealjs team is used for this: <https://reveal-multiplex.glitch.me/>. This server is used by default when you specify `multiplex: true`.
+
+#### Running your own server
+
+If you want to run your own version of this server its source code is here: <https://github.com/reveal/multiplex/blob/master/index.js>.
+
+You can then configure multiplex to use an alternate server as follows:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    multiplex: 
+      url: 'https://myserver.example.com/.
+---
+```
+
+Note that Quarto calls the multiplex server behind the scenes to provision a id and secret for your presentation. If you want to provision your own id and secret you can do so at <https://reveal-multiplex.glitch.me/> (or using your custom hosted server URL) and provide them explicitly in YAML:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    multiplex: 
+      id: '1ea875674b17ca76'
+      secret: '13652805320794272084'
+---
+```
+
+Note that the `secret` value will be included in only the speaker version of the presentation.
