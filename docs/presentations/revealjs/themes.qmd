@@ -4,8 +4,145 @@ title: "Reveal Themes"
 
 ## Using Themes
 
+``` include
+_theme-basics.md
+```
+
 ## Customizing Themes
 
-## CSS Variables
+You can customize the built in themes by adding your own [Sass](https://sass-lang.com/) theme file to the theme declaration. For example:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs: 
+    theme: [default, custom.scss]
+---
+```
+
+Here's what the contents of `custom.scss` might look like:
+
+``` default
+/*-- scss:defaults --*/
+
+$body-bg: #191919;
+$body-color: #fff;
+$link-color: #42affa;
+
+/*-- scss:rules --*/
+
+.reveal .slide blockquote {
+  border-left: 3px solid $text-muted;
+  padding-left: 0.5em;
+}
+```
+
+Theme files use [Saas](https://sass-lang.com/) (a variant of CSS that supports variables and other extended features) and are divided into sections.
+
+-   `/*-- scss:defaults --*/` is used to define variables that affect fonts, colors, borders, etc. (note that variables start with a `$`)
+
+-   `/*-- scss:rules --*/` is used to create CSS rules. Note that CSS rules that target Reveal content generally need to use the `.reveal .slide` prefix to successfully override the theme's default styles.
+
+## Saas Variables
+
+Here's a list of all Sass variables (and their default values) used by Reveal themes. Note that some variables are defined using other variables, and several of the color variables use the `lighten()` Sass function to create a lighter variant of another color.
+
+| Variable                               | Default                                  |
+|----------------------------------------|------------------------------------------|
+| `$font-family-sans-serif`              | "Source Sans Pro", Helvetica, sans-serif |
+| `$font-family-monospace`               | monospace                                |
+| `$presentation-font-size-root`         | 40px                                     |
+| `$presentation-font-smaller`           | 0.7                                      |
+| `$presentation-line-height`            | 1.3                                      |
+| `$body-bg`                             | #fff                                     |
+| `$body-color`                          | #222                                     |
+| `$text-muted`                          | lighten(\$body-color, 50%)               |
+| `$link-color`                          | #2a76dd                                  |
+| `$link-color-hover`                    | lighten(\$link-color, 15%)               |
+| `$selection-bg`                        | lighten(\$link-color, 25%)               |
+| `$selection-color`                     | \$body-bg                                |
+| `$border-color`                        | lighten(\$body-color, 30%)               |
+| `$border-width`                        | 1px                                      |
+| `$border-radius`                       | 3px                                      |
+| `$presentation-heading-font`           | \$font-family-sans-serif                 |
+| `$presentation-heading-color`          | \$body-color                             |
+| `$presentation-heading-line-height`    | 1.2                                      |
+| `$presentation-heading-letter-spacing` | normal                                   |
+| `$presentation-heading-text-transform` | none                                     |
+| `$presentation-heading-text-shadow`    | none                                     |
+| `$presentation-h1-text-shadow`         | none                                     |
+| `$presentation-heading-font-weight`    | 600                                      |
+| `$presentation-h1-font-size`           | 2.5em                                    |
+| `$presentation-h2-font-size`           | 1.6em                                    |
+| `$presentation-h3-font-size`           | 1.3em                                    |
+| `$presentation-h4-font-size`           | 1em                                      |
+| `$presentation-block-margin`           | 12px                                     |
+| `$presentation-slide-text-align`       | left                                     |
+| `$presentation-title-slide-text-align` | center                                   |
+| `$code-block-bg`                       | \$body-bg                                |
+| `$code-block-border-color`             | lighten(\$body-color, 60%)               |
+| `$code-block-font-size`                | 0.55em                                   |
+| `$code-color`                          | var(--quarto-hl-fu-color)                |
+| `$code-bg`                             | transparent                              |
+| `$tabset-border-color`                 | \$code-block-border-color                |
+
+::: callout-note
+You'll notice that some of the Sass variables use a `presentation-` prefix and some do not. The `presentation-` prefixed variables are specific to presentations, whereas the other variables are the same as ones used for standard Quarto [HTML Themes](../../output-formats/html-themes.qmd).
+
+Since all Quarto themes use the same Sass format, you can use a single theme file for both HTML / website documents and presentations.
+:::
 
 ## Creating Themes
+
+Creating a new theme is just a matter of re-defining one or more of the default Sass variables enumerated above (you don't need to re-specify values that you don't want to override) and adding any additional CSS rules you need to.
+
+For example, here is the source code for the built in `serif` theme:
+
+``` default
+/*-- scss:defaults --*/
+
+// fonts
+$font-family-sans-serif: "Palatino Linotype", "Book Antiqua", Palatino,
+  FreeSerif, serif !default;
+
+// colors
+$body-bg: #f0f1eb !default;
+$body-color: #000 !default;
+$link-color: #51483d !default;
+$selection-bg: #26351c !default;
+
+// headings
+$presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino,
+  FreeSerif, serif !default;
+$presentation-heading-color: #383d3d !default;
+
+/*-- scss:rules --*/
+
+.reveal a {
+  line-height: 1.3em;
+}
+
+@include dark-bg-text-color(#fff);
+```
+
+You'll notice a couple of new things in this theme file:
+
+1.  The `!default` suffix is placed after variable definitions. This is to make sure that anyone using this theme can override the variable value (without that the value is defined as not overrideable).
+
+2.  An `@include dark-bg-text-color(#fff);` rule is at the bottom --- this uses a built-in Reveal include directive to define a text color when a light slide them has a dark background color (e.g. via a `background-color` attribute on the slide).
+
+You can a custom theme by just specifying it as the `theme` option (all theme files implicitly inherit from the `default` theme). For example:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs: 
+    theme: mytheme.scss
+---
+```
+
+Here is the source code for all of the built-in themes for inspiration and examples:
+
+<https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes>
