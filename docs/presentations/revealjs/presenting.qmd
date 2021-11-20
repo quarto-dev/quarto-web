@@ -85,6 +85,39 @@ Speaker notes go here.
 :::
 ```
 
+## Slide Numbers
+
+You can add slide numbers to your presentation using the `slide-number` option. You can also control in which contexts slide numbers appear using the `show-slide-number` option. For example, here we configure slides numbers for printed output only:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    slide-number: true
+    show-slide-number: print
+---
+```
+
+In addition to a simple `true` or `false` value, the `slide-number` option can also specify a format. Available formats include:
+
+| Value | Description                           |
+|-------|---------------------------------------|
+| `c/t` | Slide number / total slides (default) |
+| `c`   | Slide number only                     |
+| `h/v` | Horizontal / Vertical slide number    |
+| `h.v` | Horizontal . Vertical slide number    |
+
+See [Vertical Slides](advanced.qmd#vertical-slides) for additional information on vertical slides.
+
+The `show-slide-number` option supports the following values:
+
+| Value     | Description                                  |
+|-----------|----------------------------------------------|
+| `all`     | Show slide numbers in all contexts (default) |
+| `print`   | Only show slide numbers when printing to PDF |
+| `speaker` | Only show slide numbers in the speaker view  |
+
 ## Print to PDF
 
 Reveal presentations can be exported to PDF via a special print stylesheet.
@@ -130,6 +163,34 @@ format:
 ---
 ```
 
+## Auto-Slide
+
+Presentations can be configured to step through slides automatically, without any user input. To enable this you will need to specify an interval for slide changes using the `auto-slide` option (the interval is provided in milliseconds). The `loop` option can additionally be specified to continue presenting in a loop once all the slides have been shown.
+
+For example, here we specify that we want to advance every 5 seconds and continue in a loop:
+
+``` yaml
+---
+title: "Presentation"
+format: 
+  revealjs: 
+    auto-slide: 5000
+    loop: true
+---
+```
+
+A play/pause control element will automatically appear for auto-sliding decks. Sliding is automatically paused if the user starts interacting with the deck. It's also possible to pause or resume sliding by pressing <kbd>A</kbd> on the keyboard.
+
+You can disable the auto-slide controls and prevent sliding from being paused by specifying `auto-slide-stoppable: false`.
+
+### Slide Timing
+
+It's also possible to override the slide duration for individual slides and fragments by using the `autoslide` attribute (this attribute also works on [Fragments](advanced.qmd#fragments){data-heading="Fragments"}). For example, here we set the auto-slide value to 2 seconds:
+
+``` markdown
+## Slide Title {autoslide=2000}
+```
+
 ## Publishing
 
 There are two main ways to publish Reveal presentations:
@@ -155,14 +216,13 @@ See the documentation on [Publishing HTML](../../output-formats/html-publishing.
 
 There are several navigational cues provided as part of Reveal presentations and corresponding options that control them:
 
-| Option         | Description                                                                                                                          |
-|----------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| `progress`     | Show a progress bar at the bottom (defaults to `true`)                                                                               |
-| `slide-number` | Show the current slide number (defaults to `false`)                                                                                  |
-| `history`      | Push slide changes to the browser history. When this is `true` the browser Forward/Back buttons can be used for slide navigation.    |
-| `hash-type`    | Type of URL hash to use for slides. Defaults to `id` which uses an `id` derived from the slide title. You can also specify `number`. |
+| Option      | Description                                                                                                                          |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `progress`  | Show a progress bar at the bottom (defaults to `true`)                                                                               |
+| `history`   | Push slide changes to the browser history. When this is `true` the browser Forward/Back buttons can be used for slide navigation.    |
+| `hash-type` | Type of URL hash to use for slides. Defaults to `id` which uses an `id` derived from the slide title. You can also specify `number`. |
 
-For example, the following configuration hides the progress bar and adds slide numbers:
+For example, the following configuration hides the progress bar and specifies that we want to use browser history:
 
 ``` yaml
 ---
@@ -170,7 +230,7 @@ title: "Presentation"
 format:
   revealjs:
     progress: false
-    slide-number: true
+    history: true
 ---
 ```
 
