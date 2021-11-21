@@ -1,4 +1,4 @@
-## Incremental Content
+## Incremental Lists
 
 By default number and bullet lists within slides are displayed all at once. You can override this globally using the `incremental` option. For example:
 
