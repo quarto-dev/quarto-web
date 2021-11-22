@@ -1,17 +1,17 @@
 ## Page Footer
 
-Use the `footer` option to provide a common footer for all of the pages in a {{< meta project-type >}}. The simplest footer just provides text that will be centered and displayed in a lighter typeface:
+Use the `page-footer` option to provide a common footer for all of the pages in a {{< meta project-type >}}. The simplest footer just provides text that will be centered and displayed in a lighter typeface:
 
 ``` yaml
 {{< meta project-type >}}:
-  footer: "Copyright 2021, Norah Jones" 
+  page-footer: "Copyright 2021, Norah Jones" 
 ```
 
 You can alternatively target the `left`, `right`, and `center` regions of the footer individually:
 
 ``` yaml
 {{< meta project-type >}}:
-  footer: 
+  page-footer: 
     left: "Copyright 2021, Norah Jones" 
     right: 
       - icon: github
@@ -26,7 +26,7 @@ You can use the `background`, `foreground`, and `border` options to further cont
 
 ``` yaml
 {{< meta project-type >}}:
-  footer:
+  page-footer:
     border: false
 ```
 
@@ -34,7 +34,7 @@ To use a light background (e.g. to match a navigation bar) you would do this:
 
 ``` yaml
 {{< meta project-type >}}:
-  footer:
+  page-footer:
     background: light
 ```
 
