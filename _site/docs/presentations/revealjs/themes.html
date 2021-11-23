@@ -582,8 +582,8 @@
 <ul>
 <li><a href="#using-themes" class="nav-link active" data-scroll-target="#using-themes">Using Themes</a></li>
 <li><a href="#customizing-themes" class="nav-link" data-scroll-target="#customizing-themes">Customizing Themes</a></li>
-<li><a href="#saas-variables" class="nav-link" data-scroll-target="#saas-variables">Saas Variables</a></li>
 <li><a href="#creating-themes" class="nav-link" data-scroll-target="#creating-themes">Creating Themes</a></li>
+<li><a href="#saas-variables" class="nav-link" data-scroll-target="#saas-variables">Saas Variables</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/presentations/revealjs/themes.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
 <!-- main -->
@@ -644,6 +644,45 @@
 <li><p><code>/*-- scss:defaults --*/</code> is used to define variables that affect fonts, colors, borders, etc. (note that variables start with a <code>$</code>)</p></li>
 <li><p><code>/*-- scss:rules --*/</code> is used to create CSS rules. Note that CSS rules that target Reveal content generally need to use the <code>.reveal .slide</code> prefix to successfully override the theme’s default styles.</p></li>
 </ul>
+<p>See the <a href="#saas-variables">Saas Variables</a> documentation for a list of what’s available to customize.</p>
+</section>
+<section id="creating-themes" class="level2">
+<h2 class="anchored" data-anchor-id="creating-themes">Creating Themes</h2>
+<p>Creating a new theme is just a matter of re-defining one or more of the default Sass variables (you don’t need to re-specify values that you don’t want to override) and adding any additional CSS rules you need to.</p>
+<p>See the <a href="#saas-variables">Saas Variables</a> documentation for a list of what can be customized within a theme.</p>
+<p>For example, here is the source code for the built in <code>serif</code> theme:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>/*-- scss:defaults --*/</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>// fonts</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>$font-family-sans-serif: "Palatino Linotype", "Book Antiqua", Palatino,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  FreeSerif, serif !default;</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>// colors</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>$body-bg: #f0f1eb !default;</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>$body-color: #000 !default;</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>$link-color: #51483d !default;</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>$selection-bg: #26351c !default;</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>// headings</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>$presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  FreeSerif, serif !default;</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>$presentation-heading-color: #383d3d !default;</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>/*-- scss:rules --*/</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>.reveal a {</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  line-height: 1.3em;</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In this theme file you’ll notice that the <code>!default</code> suffix is placed after variable definitions. This is to make sure that anyone using this theme can override the variable value (without that the value is defined as not overrideable).</p>
+<p>You can use a custom theme by just specifying it as the <code>theme</code> option (all theme files implicitly inherit from the <code>default</code> theme). For example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Presentation"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">revealjs</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> mytheme.scss</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here is the source code for all of the built-in themes for inspiration and examples:</p>
+<p><a href="https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes" class="uri">https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes</a></p>
 </section>
 <section id="saas-variables" class="level2">
 <h2 class="anchored" data-anchor-id="saas-variables">Saas Variables</h2>
@@ -826,57 +865,8 @@
 </tr>
 </tbody>
 </table>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-caption-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
 <p>You’ll notice that some of the Sass variables use a <code>presentation-</code> prefix and some do not. The <code>presentation-</code> prefixed variables are specific to presentations, whereas the other variables are the same as ones used for standard Quarto <a href="../../../docs/output-formats/html-themes.html">HTML Themes</a>.</p>
 <p>Since all Quarto themes use the same Sass format, you can use a single theme file for both HTML / website documents and presentations.</p>
-</div>
-</div>
-</section>
-<section id="creating-themes" class="level2">
-<h2 class="anchored" data-anchor-id="creating-themes">Creating Themes</h2>
-<p>Creating a new theme is just a matter of re-defining one or more of the default Sass variables enumerated above (you don’t need to re-specify values that you don’t want to override) and adding any additional CSS rules you need to.</p>
-<p>For example, here is the source code for the built in <code>serif</code> theme:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>/*-- scss:defaults --*/</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>// fonts</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>$font-family-sans-serif: "Palatino Linotype", "Book Antiqua", Palatino,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  FreeSerif, serif !default;</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>// colors</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>$body-bg: #f0f1eb !default;</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>$body-color: #000 !default;</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>$link-color: #51483d !default;</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>$selection-bg: #26351c !default;</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>// headings</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>$presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  FreeSerif, serif !default;</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>$presentation-heading-color: #383d3d !default;</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>/*-- scss:rules --*/</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>.reveal a {</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  line-height: 1.3em;</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>In this theme file you’ll notice that the <code>!default</code> suffix is placed after variable definitions. This is to make sure that anyone using this theme can override the variable value (without that the value is defined as not overrideable).</p>
-<p>You can a custom theme by just specifying it as the <code>theme</code> option (all theme files implicitly inherit from the <code>default</code> theme). For example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Presentation"</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">revealjs</span><span class="kw">:</span><span class="at"> </span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> mytheme.scss</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Here is the source code for all of the built-in themes for inspiration and examples:</p>
-<p><a href="https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes" class="uri">https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes</a></p>
 
 
 </section>

@@ -44,6 +44,58 @@ Theme files use [Saas](https://sass-lang.com/) (a variant of CSS that supports v
 
 -   `/*-- scss:rules --*/` is used to create CSS rules. Note that CSS rules that target Reveal content generally need to use the `.reveal .slide` prefix to successfully override the theme's default styles.
 
+See the [Saas Variables] documentation for a list of what's available to customize.
+
+## Creating Themes
+
+Creating a new theme is just a matter of re-defining one or more of the default Sass variables (you don't need to re-specify values that you don't want to override) and adding any additional CSS rules you need to.
+
+See the [Saas Variables] documentation for a list of what can be customized within a theme.
+
+For example, here is the source code for the built in `serif` theme:
+
+``` default
+/*-- scss:defaults --*/
+
+// fonts
+$font-family-sans-serif: "Palatino Linotype", "Book Antiqua", Palatino,
+  FreeSerif, serif !default;
+
+// colors
+$body-bg: #f0f1eb !default;
+$body-color: #000 !default;
+$link-color: #51483d !default;
+$selection-bg: #26351c !default;
+
+// headings
+$presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino,
+  FreeSerif, serif !default;
+$presentation-heading-color: #383d3d !default;
+
+/*-- scss:rules --*/
+
+.reveal a {
+  line-height: 1.3em;
+}
+```
+
+In this theme file you'll notice that the `!default` suffix is placed after variable definitions. This is to make sure that anyone using this theme can override the variable value (without that the value is defined as not overrideable).
+
+You can use a custom theme by just specifying it as the `theme` option (all theme files implicitly inherit from the `default` theme). For example:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs: 
+    theme: mytheme.scss
+---
+```
+
+Here is the source code for all of the built-in themes for inspiration and examples:
+
+<https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes>
+
 ## Saas Variables
 
 Here's a list of all Sass variables (and their default values) used by Reveal themes. Note that some variables are defined using other variables, and several of the color variables use the `lighten()` Sass function to create a lighter variant of another color.
@@ -93,56 +145,6 @@ Here's a list of all Sass variables (and their default values) used by Reveal th
 | `$dark-bg-link-color`                  | #42affa                                  |
 | `$dark-bg-code-color`                  | #ffa07a                                  |
 
-::: callout-note
 You'll notice that some of the Sass variables use a `presentation-` prefix and some do not. The `presentation-` prefixed variables are specific to presentations, whereas the other variables are the same as ones used for standard Quarto [HTML Themes](../../output-formats/html-themes.qmd).
 
 Since all Quarto themes use the same Sass format, you can use a single theme file for both HTML / website documents and presentations.
-:::
-
-## Creating Themes
-
-Creating a new theme is just a matter of re-defining one or more of the default Sass variables enumerated above (you don't need to re-specify values that you don't want to override) and adding any additional CSS rules you need to.
-
-For example, here is the source code for the built in `serif` theme:
-
-``` default
-/*-- scss:defaults --*/
-
-// fonts
-$font-family-sans-serif: "Palatino Linotype", "Book Antiqua", Palatino,
-  FreeSerif, serif !default;
-
-// colors
-$body-bg: #f0f1eb !default;
-$body-color: #000 !default;
-$link-color: #51483d !default;
-$selection-bg: #26351c !default;
-
-// headings
-$presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino,
-  FreeSerif, serif !default;
-$presentation-heading-color: #383d3d !default;
-
-/*-- scss:rules --*/
-
-.reveal a {
-  line-height: 1.3em;
-}
-```
-
-In this theme file you'll notice that the `!default` suffix is placed after variable definitions. This is to make sure that anyone using this theme can override the variable value (without that the value is defined as not overrideable).
-
-You can a custom theme by just specifying it as the `theme` option (all theme files implicitly inherit from the `default` theme). For example:
-
-``` yaml
----
-title: "Presentation"
-format:
-  revealjs: 
-    theme: mytheme.scss
----
-```
-
-Here is the source code for all of the built-in themes for inspiration and examples:
-
-<https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/themes>
