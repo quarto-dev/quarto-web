@@ -99,11 +99,12 @@ Add one or more filters to document rendering using the `filters` option. For ex
 
 ``` yaml
 filters:
-   - include-files.lua
    - pagebreak.lua
 ```
 
-By default, user filters are run before Quarto's built-in filters. If you prefer to control the order of filters visa-vi Quarto just include `quarto` explicitly as a filter. For example, to run `include-files.lua` before Quarto filters and `pagebreak.lua` after, use this:
+By default, user filters are run after Quarto's built-in filters. For some filters you'll want to modify this behavior (e.g. for `include-files.lua` you'll almost always want it to run before Quarto's filters so that it can make use of Quarto extensions features like callouts, tabsets, etc.).
+
+Fore example, here we arrange to run `include-files.lua` before Quarto;s filters and `pagebreak.lua` after:
 
 ``` yaml
 filters:
@@ -135,7 +136,12 @@ The [include-files](https://github.com/pandoc/lua-filters/tree/master/include-fi
 ``` yaml
 filters:
   - include-files.lua
+  - quarto
 ```
+
+::: callout-important
+Note that we've specified that `include-files.lua` should run prior to Quarto's built in filters. This is important so that you can use Quarto extended features (e.g. callouts, tabsets, shortcodes, etc.) within the included files.
+:::
 
 To include a file named `_common.md` you would use this markdown:
 
