@@ -97,14 +97,21 @@ html-math-method:
 
 Available math rendering methods include:
 
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Method    | Description                                                                                                                                                                                                                      |
-|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
++===========+==================================================================================================================================================================================================================================+
 | `mathjax` | Use [MathJax](https://www.mathjax.org/) to display embedded TeX math in HTML output.                                                                                                                                             |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `katex`   | Use [KaTeX](https://github.com/Khan/KaTeX) to display embedded TeX math in HTML output.                                                                                                                                          |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `webtex`  | Convert TeX formulas to `<img>` tags that link to an external script that converts formulas to images.                                                                                                                           |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `gladtex` | Enclose TeX math in `<eq>` tags in HTML output. The resulting HTML can then be processed by [GladTeX](https://humenda.github.io/GladTeX/) to produce images of the typeset formulas and an HTML file with links to these images. |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mathml`  | Convert TeX math to [MathML](https://www.w3.org/Math/) (note that currently only Firefox and Safari natively support MathML)                                                                                                     |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `plain`   | No special processing (formulas are put inside a `span` with `class="math").`                                                                                                                                                    |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Note that this is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
 
@@ -254,18 +261,28 @@ Anchor links are also automatically added to figures and tables that have a [cro
 
 By default external links (i.e. links that don't target the current site) receive no special visual adornment or navigation treatment (the current page is navigated). You can use the following options to modify this behavior:
 
-| Option                    | Description                                                                                            |
-|---------------------------|--------------------------------------------------------------------------------------------------------|
-| `link-external-icon`      | `true` to show an icon next to the link to indicate that it's external (e.g. [external](#){.external}) |
-| `link-external-newwindow` | `true` to open external links in a new browser window or tab (rather than navigating the current tab). |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Option                    | Description                                                                                                        |
++===========================+====================================================================================================================+
+| `link-external-icon`      | `true` to show an icon next to the link to indicate that it's external (e.g. [external](#){.external}).            |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| `link-external-newwindow` | `true` to open external links in a new browser window or tab (rather than navigating the current tab).             |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| `link-external-filter`    | A regular expression that can be used to determine whether a link is an internal link. For example                 |
+|                           |                                                                                                                    |
+|                           | `^(?:http:|https:)\/\/www\.quarto\.org\/custom`                                                                    |
+|                           |                                                                                                                    |
+|                           | will treat links that start with http://www.quarto.org as internal links (and others will be considered external). |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
 
-For example, here we enable both options:
+External links are identified either using the `site-url` (if provided) or using the `window.host` if no `site-url` or `link-external-filter` is provided. For example, here we enable both options an a custom filter:
 
 ``` yaml
 format:
   html:
     link-external-icon: true
     link-external-newwindow: true
+    link-external-filter: '^(?:http:|https:)\/\/www\.quarto\.org\/custom'
 ```
 
 You can also specify one or both of these behaviors for an individual link using the `.external` class and `target` attribute. For example:
