@@ -75,6 +75,27 @@ To "hide" those slides from then numbering system you can use `visibility="uncou
 ## Slide 3 {visibility="uncounted"}
 ```
 
+## Preview Links
+
+To open hyperlinks in an embedded iframe (convenient if you are presenting fullscreen and don't want the browser to exit the presentation) use the `preview-links` option:
+
+``` yaml
+---
+title: "Presentation"
+format:
+  revealjs:
+    preview-links: true
+---
+```
+
+You can also set this option on a per-link basis. These two links respectively enable and disable preview:
+
+``` markdown
+[Preview](https://example.com){preview-link="true"}
+
+[NoPreview](https://example.com){preview-link="false"}
+```
+
 ## Presentation Size
 
 All presentations have a "normal" size, that is, the resolution at which they are authored. This default "normal" size is 1050 x 700, which is used to match as nearly as possible the aspect ratio of most laptops.
@@ -90,6 +111,7 @@ You can change the slide size, the margin around content, as well as set limits 
 | `margin`    | Factor of the display size that should remain empty around the content (defaults to 0.1) |
 | `min-scale` | Smallest possible scale to apply to content (defaults to 0.2)                            |
 | `max-scale` | Largest possible scale to apply to content (defaults to 2.0)                             |
+
 ## Absolute Position
 
 The `absolute` class lets you position elements at arbitrary positions on a slide. These elements have CSS `position: absolute` and can be placed relative to the `top`, `left`, `bottom`, and/or `right` edges of the slide.
@@ -228,25 +250,69 @@ Animation
 ```{=html}
 <iframe class="reveal-demo border" height="300px;" src="demo/auto-animate-movement.html"></iframe>
 ```
-## Preview Links
+### Element Matching
 
-To open hyperlinks in an embedded iframe (convenient if you are presenting fullscreen and don't want the browser to exit the presentation) use the `preview-links` option:
+When you navigate between two auto-animated slides we'll do our best to automatically find matching elements in the two slides. For text, we consider it a match if both the text contents and node type are identical. For images, videos and iframes we compare the `src` attribute. We also take into account the order in which the element appears in the DOM.
+
+In situations where automatic matching is not feasible you can give the objects that you want to animate between a matching `data-id` attribute. We prioritize matching `data-id` values above our automatic matching.
+
+Here's an example where we've given several blocks a matching ID since automatic matching has no content to go on. This example also makes use of some additional animation attributes (`auto-animate-easing` and `auto-animate-delay`), which we'll describe the use of in the next section.
+
+``` markdown
+## {auto-animate=true auto-animate-easing="ease-in-out"}
+
+::: {.r-hstack}
+::: {data-id="box1" auto-animate-delay="0" style="background: #2780e3; width: 200px; height: 150px; margin: 10px;"}
+:::
+
+::: {data-id="box2" auto-animate-delay="0.1" style="background: #3fb618; width: 200px; height: 150px; margin: 10px;"}
+:::
+
+::: {data-id="box3" auto-animate-delay="0.2" style="background: #e83e8c; width: 200px; height: 150px; margin: 10px;"}
+:::
+:::
+
+## {auto-animate=true auto-animate-easing="ease-in-out"}
+
+::: {.r-stack}
+::: {data-id="box1" style="background: #2780e3; width: 350px; height: 350px; border-radius: 200px;"}
+:::
+
+::: {data-id="box2" style="background: #3fb618; width: 250px; height: 250px; border-radius: 200px;"}
+:::
+
+::: {data-id="box3" style="background: #e83e8c; width: 150px; height: 150px; border-radius: 200px;"}
+:::
+:::
+```
+
+```{=html}
+<iframe class="reveal-demo border" height="300" src="demo/auto-animate-stack.html"></iframe>
+```
+### Animation Settings
+
+You can override specific animation settings such as easing and duration either for the whole presentation, per-slide or individually for each animated element. The following configuration attributes can be used to change the settings for a specific slide or element:
+
+| **Attribute**            | **Default** | **Description**                                                                                                              |
+|:-------------------------|:-----------:|:-----------------------------------------------------------------------------------------------------------------------------|
+| `auto-animate-easing`    |    ease     | A CSS [easing function](https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function).                                   |
+| `auto-animate-unmatched` |    true     | Determines whether elements with no matching auto-animate target should fade in. Set to false to make them appear instantly. |
+| `auto-animate-duration`  |     1.0     | Animation duration in seconds.                                                                                               |
+| `auto-animate-delay`     |      0      | Animation delay in seconds (can only be set for specific elements, not at the slide level).                                  |
+| `auto-animate-id`        |  *absent*   | An id tying auto-animate slides together.                                                                                    |
+| `auto-animate-restart`   |  *absent*   | Breaks apart two adjacent auto-animate slides (even with the same id).                                                       |
+
+You can override the global defaults for easing, unmatched, and duration as follows:
 
 ``` yaml
 ---
-title: "Presentation"
+title: "My Slide"
 format:
   revealjs:
-    preview-links: true
+    auto-animate-easing: ease-in-out
+    auto-animate-unmatched: false
+    auto-animate-duration: 0.8
 ---
-```
-
-You can also set this option on a per-link basis. These two links respectively enable and disable preview:
-
-``` markdown
-[Preview](https://example.com){preview-link="true"}
-
-[NoPreview](https://example.com){preview-link="false"}
 ```
 
 ## Fragments {data-link="fragments"}
@@ -305,6 +371,41 @@ Here are all of the available fragment classes:
 | `highlight-current-red`   | Turn text red, then back to original on next step   |
 | `highlight-current-green` | Turn text green, then back to original on next step |
 | `highlight-current-blue`  | Turn text blue, then back to original on next step  |
+
+### Nested Fragments
+
+Multiple fragments can be applied to the same element sequentially by wrapping it, this will fade in the text on the first step, turn it red on the second and partially fade out on the third::
+
+``` markdown
+::: {.fragment .fade-in}
+::: {.fragment .highlight-red}
+::: {.fragment .semi-fade-out}
+Fade in > Turn red > Semi fade out
+:::
+:::
+:::
+```
+
+```{=html}
+<iframe class="reveal-demo border" src="demo/fragments-nested.html"></iframe>
+```
+### Fragment Order
+
+By default fragments will be stepped through in the order that they appear in the DOM. This display order can be changed using the `fragment-index` attribute. Note that multiple elements can appear at the same index:
+
+``` markdown
+::: {.fragment fragment-index=3}
+Appears last
+:::
+
+::: {.fragment fragment-index=1}
+Appears first
+:::
+
+::: {.fragment fragment-index=2}
+Appears second
+:::
+```
 
 ## Vertical Slides
 
@@ -412,3 +513,11 @@ Note that many of the most popular Reveal plugins are already included with the 
 -   [RevealMenu](https://github.com/denehyg/reveal.js-menu)
 -   [RevealChalkboard](https://github.com/rajgoel/reveal.js-plugins/tree/master/chalkboard)
 -   [PdfExport](https://github.com/McShelby/reveal-pdfexport)
+
+## Learning More
+
+See these articles lo learn more about using Reveal:
+
+-   [Reveal Basics](index.qmd) covers the basic mechanics of creating presentations.
+-   [Presenting Slides](presenting.qmd) describes slide navigation, printing to PDF, drawing on slides using a chalkboard, and creating multiplex presentations.
+-   [Reveal Themes](themes.qmd) talks about using and customizing existing themes as well as creating brand new themes.
