@@ -152,9 +152,40 @@ plt.show()
 ```
 ````
 
-### Executable Code
+You can use this same option within an executable code cell by using the `code-line-numbers` cell options:
 
-Note that within Quarto presentations executable code blocks do not `echo` their source code by default (this is because often the code produces a figure that wants to occupy as much vertical space as possible). You can override this behavior using the `echo` option. For example:
+``` {{python}}
+#| echo: true
+#| code-line-numbers: "|6|9"
+
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+## Executable Code
+
+You can include the output of executable code blocks on slides just the same as with other Quarto documents. This works essentially the same for slides as it does for other formats, however there are a couple of special considerations for slides covered below.
+
+### Figure Size
+
+You will frequently need to customize the size of figures created for slides so that they either fill the entire slide or whatever region of the slide you need them to. Quarto provides some help here: for Python the figure sizes for [Matplotlib](https://matplotlib.org/) and [Plotly Express](https://plotly.com/python/plotly-express/) are set to fill the slide area below the title, and for R the Knitr figure width and height are similarly defaulted.
+
+Nevertheless, you will frequently need to change these defaults for a given figure. The details on how to do this vary by graphics library. Here's an example of explicitly sizing an [Altair](https://altair-viz.github.io/) plot:
+
+``` python
+alt.Chart(cars).mark_point().encode(
+    x='Horsepower',
+    y='Miles_per_Gallon',
+    color='Origin',
+).properties(
+    width=800,
+    height=480
+).interactive()
+```
+
+### Code Echo
+
+Unlike with ordinary documents, within Quarto presentations executable code blocks do not `echo` their source code by default (this is because often the code produces a figure that wants to occupy as much vertical space as possible). You can override this behavior using the `echo` option. For example:
 
 ``` {{python}}
 #| echo: true
@@ -171,7 +202,7 @@ ax.grid(True)
 plt.show()
 ```
 
-Note that you can also use the `code-line-numbers` option within executable code blocks to highlight specific line ranges (as described above.
+See the documentation on [Running Code](../../computations/running-code.qmd) for more details on the various other ways to customize output from code execution.
 
 ## Tabsets
 
