@@ -7,12 +7,73 @@ window.QuartoSupport = function () {
   // implement controlsAudo
   function controlsAuto(deck) {
     if (deck.getConfig().controlsAuto === true) {
+      const iframe = window.location !== window.parent.location;
+      const localhost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
       deck.configure({
-        controls:
-          window.location !== window.parent.location ||
-          deck.hasVerticalSlides(),
+        controls: (iframe && !localhost) || deck.hasVerticalSlides(),
       });
     }
+  }
+
+  // helper to provide event handlers for all links in a container
+  function handleLinkClickEvents(deck, container) {
+    Array.from(container.querySelectorAll("a")).forEach((el) => {
+      const url = el.getAttribute("href");
+      if (/^(http|www)/gi.test(url)) {
+        el.addEventListener(
+          "click",
+          (ev) => {
+            const fullscreen = !!window.document.fullscreen;
+            const dataPreviewLink = el.getAttribute("data-preview-link");
+
+            // if there is a local specifcation then use that
+            if (dataPreviewLink) {
+              if (
+                dataPreviewLink === "true" ||
+                (dataPreviewLink === "auto" && fullscreen)
+              ) {
+                ev.preventDefault();
+                deck.showPreview(url);
+                return false;
+              }
+            } else {
+              const previewLinks = !!deck.getConfig().previewLinks;
+              const previewLinksAuto =
+                deck.getConfig().previewLinksAuto === true;
+              if (previewLinks == true || (previewLinksAuto && fullscreen)) {
+                ev.preventDefault();
+                deck.showPreview(url);
+                return false;
+              }
+            }
+
+            // if the user has set data-preview-link to "auto" we need to handle the event
+            // (because reveal will interpret "auto" as true)
+            if (dataPreviewLink === "auto") {
+              ev.preventDefault();
+              ev.stopImmediatePropagation();
+              const target =
+                el.getAttribute("target") ||
+                (ev.ctrlKey || ev.metaKey ? "_blank" : "");
+              if (target) {
+                window.open(url, target);
+              } else {
+                window.location.href = url;
+              }
+              return false;
+            }
+          },
+          false
+        );
+      }
+    });
+  }
+
+  // implement previewLinksAuto
+  function previewLinksAuto(deck) {
+    handleLinkClickEvents(deck, deck.getRevealElement());
   }
 
   // apply styles
@@ -39,6 +100,7 @@ window.QuartoSupport = function () {
     const defaultFooterDiv = document.querySelector(".footer-default");
     if (defaultFooterDiv) {
       revealParent.appendChild(defaultFooterDiv);
+      handleLinkClickEvents(deck, defaultFooterDiv);
       if (!isPrintView()) {
         deck.on("slidechanged", function (ev) {
           const prevSlideFooter = document.querySelector(
@@ -50,9 +112,9 @@ window.QuartoSupport = function () {
           const currentSlideFooter = ev.currentSlide.querySelector(".footer");
           if (currentSlideFooter) {
             defaultFooterDiv.style.display = "none";
-            deck
-              .getRevealElement()
-              .appendChild(currentSlideFooter.cloneNode(true));
+            const slideFooter = currentSlideFooter.cloneNode(true);
+            handleLinkClickEvents(deck, slideFooter);
+            deck.getRevealElement().appendChild(slideFooter);
           } else {
             defaultFooterDiv.style.display = "block";
           }
@@ -196,6 +258,7 @@ window.QuartoSupport = function () {
     id: "quarto-support",
     init: function (deck) {
       controlsAuto(deck);
+      previewLinksAuto(deck);
       fixupForPrint(deck);
       applyGlobalStyles(deck);
       addLogoImage(deck);
