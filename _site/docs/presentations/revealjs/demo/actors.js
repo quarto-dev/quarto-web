@@ -9,8 +9,8 @@ export function plotActors(actors, talentWeight, looksWeight, minimum) {
     fame: v.x * talentWeight + v.y * looksWeight
   }));
 
-  const w = 700;
-  const h = 500;
+  const w = 600;
+  const h = 470;
   const result = d3.create("svg").attr("width", w).attr("height", h);
   const margin = 20;
   const xScale = d3.scaleLinear().domain([-2, 2]).range([margin, w - margin]);
