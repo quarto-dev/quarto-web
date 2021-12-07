@@ -75,50 +75,48 @@ Here's an example that includes multiple inputs as well as a more application li
 
 Here's the source code for this example:
 
-````
----
-title: "Iris K-Means Clustering"
-format: 
-  html:
-    page-layout: custom
-server: shiny
----
+    ---
+    title: "Iris K-Means Clustering"
+    format: 
+      html:
+        page-layout: custom
+    server: shiny
+    ---
 
-```{{r}}
-#| panel: sidebar
-vars <- setdiff(names(iris), "Species")
-selectInput('xcol', 'X Variable', vars)
-selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
-numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
-```
+    ```{{r}}
+    #| panel: sidebar
+    vars <- setdiff(names(iris), "Species")
+    selectInput('xcol', 'X Variable', vars)
+    selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
+    numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
+    ```
 
-```{{r}}
-#| panel: fill
-plotOutput('plot1')
-```
+    ```{{r}}
+    #| panel: fill
+    plotOutput('plot1')
+    ```
 
-```{{r}}
-#| context: server
-selectedData <- reactive({
-    iris[, c(input$xcol, input$ycol)]
-  })
+    ```{{r}}
+    #| context: server
+    selectedData <- reactive({
+        iris[, c(input$xcol, input$ycol)]
+      })
 
-clusters <- reactive({
-  kmeans(selectedData(), input$clusters)
-})
+    clusters <- reactive({
+      kmeans(selectedData(), input$clusters)
+    })
 
-output$plot1 <- renderPlot({
-  palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
-    "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
+    output$plot1 <- renderPlot({
+      palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
+        "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
 
-  par(mar = c(5.1, 4.1, 0, 1))
-  plot(selectedData(),
-       col = clusters()$cluster,
-       pch = 20, cex = 3)
-  points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
-})
-```
-````
+      par(mar = c(5.1, 4.1, 0, 1))
+      plot(selectedData(),
+           col = clusters()$cluster,
+           pch = 20, cex = 3)
+      points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
+    })
+    ```
 
 There are a few things worth noting in this example:
 
@@ -136,15 +134,11 @@ See the article on [Component Layout](../layout.qmd) to learn more about the ava
 
 Here are some deployed examples of Quarto documents that use Shiny:
 
-+--------------------------------------------------------------------+------------------------------+----------------------------------------------------------------------------------------------+
 | Example                                                            | Source                       | Description                                                                                  |
-+====================================================================+==============================+==============================================================================================+
+|--------------------------------------------------------------------|------------------------------|----------------------------------------------------------------------------------------------|
 | [Old Faithful](https://jjallaire.shinyapps.io/shiny-old-faithful/) | [Code](https://git.io/J0qnQ) | Demonstrates incorporating an interactive plot into the main flow of a document.             |
-+--------------------------------------------------------------------+------------------------------+----------------------------------------------------------------------------------------------+
 | [K-Means](https://jjallaire.shinyapps.io/shiny-k-means/)           | [Code](https://git.io/J0qnj) | Demonstrates using a more "application-like" page layout (sidebar and main panel)            |
-+--------------------------------------------------------------------+------------------------------+----------------------------------------------------------------------------------------------+
 | [Diamonds](https://jjallaire.shinyapps.io/shiny-diamonds/)         | [Code](https://git.io/J0qcR) | Demonstrates an alternate way to layout inputs (at the bottom of the page in three columns). |
-+--------------------------------------------------------------------+------------------------------+----------------------------------------------------------------------------------------------+
 
 ## Learning More
 
@@ -158,4 +152,4 @@ To learn more about Shiny interactive documents see the following articles:
 
 -   [Component Layout](../layout.qmd) enumerates the various techniques you can use to layout interactive components within your documents.
 
-If you are using both JavaScript and Shiny to create interactive documents, you might also be interested in the article on using [Shiny Reactives with OJS](../js/shiny.qmd).
+If you are using both JavaScript and Shiny to create interactive documents, you might also be interested in the article on using [Shiny Reactives with OJS](../ojs/shiny.qmd).
