@@ -9,17 +9,32 @@ format: html
 
 Using the Quarto `hugo` format, you can incorporate computational output (e.g. R or Python code that produces plots) into Hugo websites. This article explains how.
 
+## Site Config
+
+There are a couple of changes you should make to your Hugo `config.toml` in preparation for using Quarto with Hugo. First, make sure that `.qmd` and `.ipynb` files are not published as part of the site:
+
+``` toml
+ignoreFiles = [ "\\.qmd$", "\\.ipynb$" ]
+```
+
+Next, configure Hugo's markdown renderer to allow raw HTML (as many R and Python packages will produce computational output using raw HTML rather than markdown):
+
+``` toml
+[markup.goldmark.renderer]
+unsafe= true
+```
+
 ## Creating a Page
 
 Hugo articles and posts that use Quarto should live in their own directory (taking advantage of the Hugo [Page Bundles](https://gohugo.io/content-management/page-bundles/) feature). This allows any content generated/referenced by the page (e.g. plot output) to live right alongside the markdown source.
 
-To create a new page that uses Quarto:
+To add Quarto documents to a Hugo site:
 
-1.  Create a new directory at the location in your site's `content` directory where you want the article to live.
+1.  Create a directory within `content` that will hold your Quarto article.
 
-2.  Add a markdown file to that directory (usually with the same name as the directory). This file should use the `.qmd` extension (to prevent Hugo from rendering it).
+2.  Add an `index.qmd` document to the directory. When rendered this will create an `index.md`, which in turn will ensure that Hugo treats it as a [Page Bundle](https://gohugo.io/content-management/page-bundles/) (automatically copying images and other referened resources to the publish directory).
 
-3.  Add the requisite Hugo metadata to the document's front matter, then also specify `format: hugo` and any other required Quarto options.
+3.  Add the requisite Hugo [front matter](https://gohugo.io/content-management/front-matter/), then also specify `format: hugo` and any other required Quarto options.
 
 For example, let's say we wanted to create a new article named `hello-quarto` within the `content` directory. The filesystem would look like this:
 
@@ -27,48 +42,50 @@ For example, let's say we wanted to create a new article named `hello-quarto` wi
 mysite/
   content/
     hello-quarto/
-      hello-quarto.qmd
+      index.qmd
 ```
 
 Here's what the source code `hello-quarto.qmd` might look like:
 
-````
----
-title: Hello, Quarto
-format: hugo
-jupyter: python3
----
+    ---
+    title: Hello, Quarto
+    date: "2012-04-06"
+    categories: 
+      - Matplotlib
+      - Coordinates
+    format: hugo
+    jupyter: python3
+    ---
 
-## Polar Axis
+    ## Polar Axis
 
-For a demonstration of a line plot on a polar axis, see @fig-polar.
+    For a demonstration of a line plot on a polar axis, see @fig-polar.
 
-```{{python}}
-#| label: fig-polar
-#| fig-cap: "A line plot on a polar axis"
+    ```{{python}}
+    #| label: fig-polar
+    #| fig-cap: "A line plot on a polar axis"
 
-import numpy as np
-import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.pyplot as plt
 
-r = np.arange(0, 2, 0.01)
-theta = 2 * np.pi * r
-fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-ax.plot(theta, r)
-ax.set_rticks([0.5, 1, 1.5, 2])
-ax.grid(True)
-plt.show()
-```
-````
+    r = np.arange(0, 2, 0.01)
+    theta = 2 * np.pi * r
+    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    ax.plot(theta, r)
+    ax.set_rticks([0.5, 1, 1.5, 2])
+    ax.grid(True)
+    plt.show()
+    ```
 
 ## Workflow
 
 Generating pages for Hugo requires just a simple Quarto render:
 
 ``` bash
-quarto render hello-quarto.qmd
+quarto render index.qmd
 ```
 
-Whenever your render the `hello-quarto.qmd` file, Quarto will execute the code in the file (writing any generated plots, etc. into the article's directory) and then generate an `index.md` file that is subsequently processed by Hugo.
+Whenever your render the `index.qmd` file, Quarto will execute the code in the file (writing any generated plots, etc. into the article's directory) and then generate an `index.md` file that is subsequently processed by Hugo.
 
 If you are running the `hugo server` command for live preview, you will see the updated version of your page whenever you render.
 
