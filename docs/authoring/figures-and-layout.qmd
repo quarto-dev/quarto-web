@@ -80,6 +80,30 @@ format:
 ![Elephant](elephant.png){fig-env="marginfigure"}
 ```
 
+::: {.callout-note appearance="simple"}
+Note that if you do in fact want to place figures in the margin, you should use Quarto's built in support for [margin content](page-layout.qmd#margin-content), which will work for both LaTeX and HTML output
+:::
+
+### PGF/Ti*k*Z Graphics
+
+If you are creating LaTeX output, Quarto will automatically emit the correct LaTeX for markdown images that reference `.tex` files containg [PGF/Ti*k*Z](https://en.wikipedia.org/wiki/PGF/TikZ) vector graphics. For example, the following markdown images:
+
+``` markdown
+![](image1.tex)
+
+![](image2.tex){width=80%}
+```
+
+Will be written to LaTeX as:
+
+``` tex
+\input{image1.tex}
+
+\resizebox{0.8\linewidth}{!}{\input{image2.tex}}
+```
+
+As shown above, `width` and `height` percentages are automatically converted to `\linewidth` scaled. Alternatively you can specify custom LaTeX for the `width` and `height` arguments of `\resizebox`.
+
 ## Figure Divs
 
 You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with `#fig-`. For example, here we create a figure that includes an embedded iframe:
