@@ -52,18 +52,23 @@ The following options are available for customizing automatic package installati
 
 ## Alternate PDF Engines {#alternate-pdf-engines}
 
-To disable Quarto's built in PDF engine, set the `latex-auto-mk` option to `false`:
+You can use the `pdf-engine` and `pdf-engine-opts` to control the PDF engine that Quarto uses to compile the LaTeX output into a PDF. For example:
 
 ``` yaml
 title: "My Document"
-latex-auto-mk: false
-```
-
-The above configuration will result in Pandoc's default behavior for PDF compilation (`pdf-engine: pdflatex` ). You can then use the `pdf-engine` and `pdf-engine-opts` to further customize Pandoc compilation. For example:
-
-``` yaml
-title: "My Document"
-latex-auto-mk: false
 pdf-engine: xelatex
 pdf-engine-opt: -outdir=out
+```
+
+The above example will use the `xelatex` PDF engine rather than the default `pdflatex`.
+
+## Latexmk
+
+Quarto includes a built in Latexmk engine, which will run the `pdf-engine` more than once to generate your PDF (for example if you're using cross references or a bibliography). In addition, this engine will detect and attempt to install missing packages, fonts, or commands if TeX Live is available.
+
+You can disable Quarto's built in Latexmk engine by settng the `latex-auto-mk` option to `false`. For example:
+
+``` yaml
+title: "My Document"
+latex-auto-mk: false
 ```
