@@ -99,7 +99,7 @@ Figures produced by Jupyter and Knitr can also be cross-referenced. To do this, 
 ![](images/crossref-figure-r.png){fig-alt="A scatter plot of speed versus distance for the `cars` dataset. The label 'Figure 1: Plot' is centered beneath it. The text 'For example, see fig. 1' is aligned to the left underneath that."}
 :::
 
-You can also create multiple figures within a Jupyter code cell and reference them as subfigures. To do this use `fig-cap` for the main caption, and `fig-subcap` to provide an array of subcaptions. For example:
+You can also create multiple figures within a code cell and reference them as subfigures. To do this use `fig-cap` for the main caption, and `fig-subcap` to provide an array of subcaptions. For example:
 
     ```{{python}}
     #| label: fig-plots
@@ -122,6 +122,15 @@ You can also create multiple figures within a Jupyter code cell and reference th
 ![](images/crossref-subfigures-jupyter.png){fig-alt="Two line plots side-by-side. The plot on the left has the caption '(a) Plot 1' centered underneath it. The plot on the right has the caption '(b) Plot 2' centered underneath it. The text 'Figure 1: Plots' is centered underneath both of these plots. The text 'See fig. 1 for examples. In particular, fig. 1(b)' is aligned to the left underneath that."}
 
 Note that subfigure reference labels are created automatically based on the main chunk label (e.g. `@fig-plots-1`, `@fig-plots-2`, etc.).
+
+If you'd like subfigure captions that include only an identifier, e.g. "(a)", and not a text caption, then specify `fig-subcap: true` rather than providing explicit subcaption text:
+
+``` {{python}}
+#| label: fig-plots
+#| fig-cap: "Plots" 
+#| fig-subcap: true
+#| layout-ncol: 2
+```
 
 ## Tables
 
@@ -175,28 +184,45 @@ Note that the "Main Caption" for the table is provided as the last block within 
 
 ### Computations
 
-You can also cross-reference tables created from code executed via computations. To do this, add a table caption and a `#tbl-` label with the caption of the table. For example:
+You can also cross-reference tables created from code executed via computations. To do this, add the `label` and `tbl-cap` cell options. For example:
 
 ``` {{r}}
+#| label: tbl-iris
+#| tbl-cap: "Iris Data"
+
 library(knitr)
-kable(head(iris), caption = "Iris Data {#tbl-iris}")
+kable(head(iris))
 ```
 
 ![](images/crossref-table-knitr.png){fig-alt="Example table output."}
 
-You can also create multiple tables within a code cell and reference them as subfigures. To do this, add a `tbl-cap` attribute and include `#tbl-` labels within the captions of the sub-tables. For example:
+You can also create multiple tables within a code cell and reference them as sutables. To do this, add a `tbl-subcap` option with an array of subcaptions. For example:
 
 ``` {{r}}
 #| label: tbl-tables
 #| tbl-cap: "Tables"
+#| tbl-subcap:
+#|   - "Cars"
+#|   - "Pressure"
 #| layout-ncol: 2
 
 library(knitr)
-kable(head(cars), caption = "Cars {#tbl-cars}")
-kable(head(pressure), caption = "Pressure {#tbl-pressure}")
+kable(head(cars))
+kable(head(pressure))
 ```
 
 ![](images/crossref-subtable-knitr.png){fig-alt="Two tables side-by-side. Each table has 2 columns and 8 rows. The table on the left is titled '(a) Cars'. The table on the right is titled '(b) Pressure'. Centered underneath both tables is the text 'Table 1: Tables.'"}
+
+If you'd like subtable captions that include only an identifier, e.g. "(a)", and not a text caption, then specify `tbl-subcap: true` rather than providing explicit subcaption text:
+
+``` {{r}}
+#| label: tbl-tables
+#| tbl-cap: "Tables"
+#| tbl-subcap: true
+#| layout-ncol: 2
+```
+
+![](images/crossref-subtable-nocaption-knitr.png)
 
 ## Equations
 
