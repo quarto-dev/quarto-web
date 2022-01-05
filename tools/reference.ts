@@ -1,5 +1,6 @@
 
-import { join } from "https://deno.land/std/path/mod.ts";
+import { basename, dirname, join, relative } from "https://deno.land/std/path/mod.ts";
+import { expandGlobSync } from "https://deno.land/std/fs/expand_glob.ts";
 import { parse } from "https://deno.land/std/encoding/yaml.ts";
 import { distinct } from "https://deno.land/std/collections/distinct.ts"
 
@@ -133,9 +134,17 @@ const optionsForFormat = (format: string) => {
 
 const writeOptions = (format: string, path: string) => {
   const options = JSON.stringify(optionsForFormat(format), undefined, 2);
-  Deno.writeTextFileSync(join("docs", "reference", "formats", path), options);
+  Deno.writeTextFileSync(path, options);
 }
 
-writeOptions("html", "html.json");
-writeOptions("pdf", "pdf.json");
-writeOptions("docx", "docx.json");
+for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
+  if (file.isFile) {
+    const format = basename(file.name, ".qmd");
+    writeOptions(format, join(dirname(file.path), format + ".json"));
+  }
+}
+
+
+// writeOptions("html", "html.json");
+// writeOptions("pdf", "pdf.json");
+// writeOptions("docx", "docx.json");
