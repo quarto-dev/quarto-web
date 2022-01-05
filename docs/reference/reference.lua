@@ -12,7 +12,42 @@ function Pandoc(doc)
     local refJson = io.read("*all")
     io.close(refJsonFile)
     
-    doc.blocks:insert(pandoc.Para({ pandoc.Str(refJson)}))
+    doc.blocks:insert(pandoc.CodeBlock("format: " .. stem, pandoc.Attr("", { "yaml" })))
+    
+    local groups = jsonDecode(refJson)
+    for _,group in ipairs(groups) do
+      -- title
+      doc.blocks:insert(pandoc.Header(2, markdownToInlines(group.title)))
+      -- optionalal description
+      if group.description then
+        doc.blocks:insert(pandoc.Para(markdownToInlines(group.description)))
+      end
+      -- options table
+      local rows = pandoc.List()
+      for _,option in ipairs(group.options) do
+        local name = { pandoc.Plain( { pandoc.Code(option.name) } ) }
+        local description = { pandoc.Plain(markdownToInlines(option.description)) }
+        local row = pandoc.List( { name, description } )
+        rows:insert(row)
+      end
+      
+      -- make the table
+      local optionTbl = pandoc.SimpleTable(
+        pandoc.List(), -- caption
+        { pandoc.AlignLeft, pandoc.AlignLeft },  
+        {  0.3, 0.7 },    
+        pandoc.List({}),
+        rows          
+      )
+      optionTbl = pandoc.utils.from_simple_table(optionTbl)
+      optionTbl.caption.short = nil
+      optionTbl.caption.long = pandoc.List()
+  
+  
+      doc.blocks:insert(optionTbl)
+    end
+    
+    
 
     
   end
@@ -23,6 +58,14 @@ function Pandoc(doc)
   
 end
 
+function markdownToInlines(str)
+  if str and str ~= '' then
+    local doc = pandoc.read(str)
+    return doc.blocks[1].content
+  else
+    return { pandoc.Str('') }
+  end
+end
 
 --
 -- json.lua

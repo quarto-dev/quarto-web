@@ -41,8 +41,10 @@ interface OptionSchema {
   hidden?: boolean;
 }
 const formatsFromOptionSchema = (option: OptionSchema) => {
-  if (option.disabled) {
-    const disabledFormats = resolveFormats(option.disabled);
+  // if the formats start with ! they are disabled
+  const disabled = option.disabled || option.tags?.formats?.filter(format => format.startsWith("!")).map(format => format.slice(1));
+  if (disabled && disabled.length > 0) {
+    const disabledFormats = resolveFormats(disabled);
     return allFormats.filter(format => !disabledFormats.includes(format));
   } else if (option.tags?.formats) {
     return resolveFormats(option.tags.formats);
@@ -61,6 +63,7 @@ interface Option {
 interface OptionGroup {
   name: string;
   title: string;
+  description?: string;
   options: Option[];
 }
 
@@ -89,10 +92,12 @@ const cellGroups = groups[0]["cell"];
 const cellOptions = cellGroups.map(group => {
   const name = Object.keys(group)[0];
   const title = Object.values(group)[0]["title"];
+  const description = Object.values(group)[0]["description"];
   const options = readGroupOptions("cell", name);
   return {
     name,
     title,
+    description,
     options
   }
 })
@@ -102,6 +107,7 @@ const documentGroups = groups[1]["document"];
 const documentOptions = documentGroups.map(group => {
   const name = Object.keys(group)[0];
   const title = Object.values(group)[0]["title"];
+  const description = Object.values(group)[0]["description"];
 
   // options are a combination of document group options and cell
   // options that are also available at the document level
@@ -115,6 +121,7 @@ const documentOptions = documentGroups.map(group => {
   return {
     name, 
     title,
+    description,
     options
   } as OptionGroup;
 });
@@ -126,7 +133,7 @@ const optionsForFormat = (format: string) => {
         ...group,
         options: group.options
           .filter(option => option.formats?.includes(format))
-          .map(option => ( { name: option.name, desciption: option.description }))
+          .map(option => ( { name: option.name, description: option.description }))
       }
     })
     .filter(group => group.options.length > 0)
