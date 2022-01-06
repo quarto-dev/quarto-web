@@ -136,13 +136,14 @@ const optionsForFormat = (format: string) => {
           .map(option => ( { name: option.name, description: option.description }))
       }
     })
-    .filter(group => group.options.length > 0)
+    .filter(group => group.name !== "hidden" && group.options.length > 0)
 }
 
 const writeOptions = (format: string, path: string) => {
   const options = JSON.stringify(optionsForFormat(format), undefined, 2);
   Deno.writeTextFileSync(path, options);
 }
+
 
 for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
   if (file.isFile) {
@@ -151,7 +152,3 @@ for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
   }
 }
 
-
-// writeOptions("html", "html.json");
-// writeOptions("pdf", "pdf.json");
-// writeOptions("docx", "docx.json");
