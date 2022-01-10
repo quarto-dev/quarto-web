@@ -12,7 +12,9 @@ function Pandoc(doc)
     local refJson = io.read("*all")
     io.close(refJsonFile)
     
-    doc.blocks:insert(pandoc.CodeBlock("format: " .. stem, pandoc.Attr("", { "yaml" })))
+    if doc.blocks:find_if(function(block) return block.t == "CodeBlock" end) == nil then
+      doc.blocks:insert(pandoc.CodeBlock("format: " .. stem, pandoc.Attr("", { "yaml" })))
+    end
     
     local groups = jsonDecode(refJson)
     for _,group in ipairs(groups) do
@@ -20,13 +22,13 @@ function Pandoc(doc)
       doc.blocks:insert(pandoc.Header(2, markdownToInlines(group.title)))
       -- optionalal description
       if group.description then
-        doc.blocks:insert(pandoc.Para(markdownToInlines(group.description)))
+        tappend(doc.blocks, pandoc.read(group.description).blocks)
       end
       -- options table
       local rows = pandoc.List()
       for _,option in ipairs(group.options) do
         local name = { pandoc.Plain( { pandoc.Code(option.name) } ) }
-        local description = { pandoc.Plain(markdownToInlines(option.description)) }
+        local description = pandoc.read(option.description).blocks
         local row = pandoc.List( { name, description } )
         rows:insert(row)
       end
