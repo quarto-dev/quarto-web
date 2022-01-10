@@ -85,17 +85,16 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
 
 
 // read baseline config
-const groups = readSchema("new/groups.yml") as Array< { [key: string]: Array<Record<string, { title: string, description?: string }>>}>;
+const groups = readSchema("new/groups.yml") as { [key: string]: { [key: string] : { title: string, description?: string }} };
 
 // cell options
-const cellGroups = groups[0]["cell"];
-const cellOptions = cellGroups.map(group => {
-  const name = Object.keys(group)[0];
-  const title = Object.values(group)[0]["title"];
-  const description = Object.values(group)[0]["description"];
-  const options = readGroupOptions("cell", name);
+const cellGroups = groups["cell"];
+const cellOptions = Object.keys(cellGroups).map(group => {
+  const title = cellGroups[group]["title"];
+  const description = cellGroups[group]["description"];
+  const options = readGroupOptions("cell", group);
   return {
-    name,
+    name: group,
     title,
     description,
     options
@@ -103,23 +102,28 @@ const cellOptions = cellGroups.map(group => {
 })
 
 // document options
-const documentGroups = groups[1]["document"];
-const documentOptions = documentGroups.map(group => {
-  const name = Object.keys(group)[0];
-  const title = Object.values(group)[0]["title"];
-  const description = Object.values(group)[0]["description"];
+const documentGroups = groups["document"];
+const documentOptions = Object.keys(documentGroups).map(group => {
+  
+  const title = documentGroups[group]["title"];
+  const description = documentGroups[group]["description"];
 
   // options are a combination of document group options and cell
   // options that are also available at the document level
-  const options = readGroupOptions("document", name);
+  const options = readGroupOptions("document", group);
 
-  const docCellOptions = cellOptions.flatMap(
-    group => group.options.filter(option => option.contexts?.includes("document-" + name))
-  );
-  options.push(...docCellOptions);
+  // look for cell options
+  for (const cellGroup of cellOptions) {
+    for (const cellOption of cellGroup.options) {
+      if (cellOption.contexts?.includes("document-" + group)) {
+        options.push(cellOption);
+      }
+    }
+  }
+
 
   return {
-    name, 
+    name: group, 
     title,
     description,
     options
