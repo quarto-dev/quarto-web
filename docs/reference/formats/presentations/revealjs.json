@@ -476,6 +476,18 @@
     "title": "Layout",
     "options": [
       {
+        "name": "cap-location",
+        "description": "Where to place figure and table captions."
+      },
+      {
+        "name": "fig-cap-location",
+        "description": "Where to place figure captions."
+      },
+      {
+        "name": "tbl-cap-location",
+        "description": "Where to place table captions."
+      },
+      {
         "name": "classoption",
         "description": "For LaTeX/PDF output, the options set for the document\nclass.\n\nFor HTML output using KaTeX, you can render display\nmath equations flush left using `classoption: fleqn`\n"
       },
@@ -498,18 +510,6 @@
       {
         "name": "margin-bottom",
         "description": "For HTML output, sets the `margin-bottom` property on the Body element.\n\nFor LaTeX output, sets the bottom margin if `geometry` is not \nused (otherwise `geometry` overrides this value)\n\nFor ConTeXt output, sets the bottom margin if `layout` is not used, \notherwise `layout` overrides these.\n\nFor `wkhtmltopdf` sets the bottom page margin.\n"
-      },
-      {
-        "name": "cap-location",
-        "description": "Where to place figure and table captions."
-      },
-      {
-        "name": "fig-cap-location",
-        "description": "Where to place figure captions."
-      },
-      {
-        "name": "tbl-cap-location",
-        "description": "Where to place table captions."
       }
     ]
   },
@@ -517,6 +517,22 @@
     "name": "code",
     "title": "Code",
     "options": [
+      {
+        "name": "code-fold",
+        "description": "Collapse code into an HTML `<details>` tag so the user can display it on-demand.\nSpecify `show` to have the code initiallly visible.\n"
+      },
+      {
+        "name": "code-summary",
+        "description": "Summary text to use for code blocks collapsed using `code-fold`"
+      },
+      {
+        "name": "code-overflow",
+        "description": "Choose whether to `scroll` or `wrap` when code lines are too wide for their container."
+      },
+      {
+        "name": "code-line-numbers",
+        "description": "Include line numbers in code block output."
+      },
       {
         "name": "code-copy",
         "description": "Enables a code copy icon for code blocks."
@@ -536,61 +552,14 @@
       {
         "name": "indented-code-classes",
         "description": "Specify classes to use for all indented code blocks"
-      },
-      {
-        "name": "code-fold",
-        "description": "Collapse code into an HTML `<details>` tag so the user can display it on-demand.\nSpecify `show` to have the code initiallly visible.\n"
-      },
-      {
-        "name": "code-summary",
-        "description": "Summary text to use for code blocks collapsed using `code-fold`"
-      },
-      {
-        "name": "code-overflow",
-        "description": "Choose whether to `scroll` or `wrap` when code lines are too wide for their container."
-      },
-      {
-        "name": "code-line-numbers",
-        "description": "Include line numbers in code block output."
       }
     ]
   },
   {
     "name": "execute",
     "title": "Execution",
+    "description": "Execution options should be specified within the `execute` key. For example:\n\n```yaml\nexecute:\n  echo: false\n  warning: false\n```\n",
     "options": [
-      {
-        "name": "engine",
-        "description": "Engine used for executable code blocks."
-      },
-      {
-        "name": "jupyter",
-        "description": "Configures the Jupyter engine."
-      },
-      {
-        "name": "knitr",
-        "description": "Set Knitr options."
-      },
-      {
-        "name": "cache",
-        "description": "Cache results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) \nfor R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) \nfor Jupyter documents).\n\nNote that cache invalidation is triggered by changes in chunk source code \n(or other cache attributes you've defined). Use `refresh` to force a refresh\nof the cache even if has not been otherwise invalidated.\n"
-      },
-      {
-        "name": "freeze",
-        "description": "Option to denote that computational documents should never be re-rendered during\na global project render (`freeze: true`), or alternatively only be re-rendered\nwhen their source file changes (`freeze: auto`).\n"
-      },
-      {
-        "name": "server",
-        "description": "Document server"
-      },
-      {
-        "name": "daemon",
-        "description": "Run Jupyter kernels within a peristent daemon (to mitigate kernel startup time).\nBy default a daemon with a timeout of 300 seconds will be used. Set `daemon`\nto another timeout value or to `false` to disable it altogether.\n"
-      },
-      {
-        "name": "debug",
-        "description": "Show code-execution related debug information."
-      },
       {
         "name": "eval",
         "description": "Evaluate code cells (if `false` just echos the code into output)."
@@ -614,6 +583,14 @@
       {
         "name": "include",
         "description": "Catch all for preventing any output (code or results) from being included in output.\n"
+      },
+      {
+        "name": "cache",
+        "description": "Cache results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) \nfor R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) \nfor Jupyter documents).\n\nNote that cache invalidation is triggered by changes in chunk source code \n(or other cache attributes you've defined). Use `refresh` to force a refresh\nof the cache even if has not been otherwise invalidated.\n"
+      },
+      {
+        "name": "freeze",
+        "description": "Option to denote that computational documents should never be re-rendered during\na global project render (`freeze: true`), or alternatively only be re-rendered\nwhen their source file changes (`freeze: auto`).\n"
       }
     ]
   },
@@ -710,16 +687,6 @@
     ]
   },
   {
-    "name": "crossref",
-    "title": "Crossrefs",
-    "options": [
-      {
-        "name": "crossref",
-        "description": ""
-      }
-    ]
-  },
-  {
     "name": "language",
     "title": "Language",
     "options": [
@@ -734,16 +701,6 @@
       {
         "name": "dir",
         "description": "The base script direction for the document.\n\nFor bidirectional documents, native pandoc `span`s and\n`div`s with the `dir` attribute (value `rtl` or `ltr`) can\nbe used to override the base direction in some output\nformats.  This may not always be necessary if the final\nrenderer (e.g. the browser, when generating HTML) supports\nthe [Unicode Bidirectional Algorithm].\n\nWhen using LaTeX for bidirectional documents, only the\n`xelatex` engine is fully supported (use\n`--pdf-engine=xelatex`).\n"
-      }
-    ]
-  },
-  {
-    "name": "comments",
-    "title": "Comments",
-    "options": [
-      {
-        "name": "comments",
-        "description": ""
       }
     ]
   },

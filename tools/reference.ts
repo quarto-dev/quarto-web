@@ -80,7 +80,7 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
       formats: formatsFromOptionSchema(optionSchema),
       contexts: optionSchema.tags?.contexts,
     }))
-    .filter(group => group.name !== "hidden");
+    .filter(group =>  group.name !== "hidden");
 };
 
 
@@ -103,32 +103,36 @@ const cellOptions = Object.keys(cellGroups).map(group => {
 
 // document options
 const documentGroups = groups["document"];
-const documentOptions = Object.keys(documentGroups).map(group => {
-  
-  const title = documentGroups[group]["title"];
-  const description = documentGroups[group]["description"];
+const documentOptions = Object.keys(documentGroups)
+  .filter(group => !["comments", "crossref"].includes(group))
+  .map(group => {
 
-  // options are a combination of document group options and cell
-  // options that are also available at the document level
-  const options = readGroupOptions("document", group);
+    const title = documentGroups[group]["title"];
+    const description = documentGroups[group]["description"];
 
-  // look for cell options
-  for (const cellGroup of cellOptions) {
-    for (const cellOption of cellGroup.options) {
-      if (cellOption.contexts?.includes("document-" + group)) {
-        options.push(cellOption);
+    const options: Option[] = [];
+
+    // look for cell options
+    for (const cellGroup of cellOptions) {
+      for (const cellOption of cellGroup.options) {
+        if (cellOption.contexts?.includes("document-" + group)) {
+          options.push(cellOption);
+        }
       }
     }
-  }
 
+    // document options
+    // options are a combination of document group options and cell
+    // options that are also available at the document level
+    readGroupOptions("document", group).forEach(option => options.push(option));
 
-  return {
-    name: group, 
-    title,
-    description,
-    options
-  } as OptionGroup;
-});
+    return {
+      name: group, 
+      title,
+      description,
+      options
+    } as OptionGroup;
+  });
 
 const optionsForFormat = (format: string) => {
   return documentOptions

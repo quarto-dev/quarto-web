@@ -1,5 +1,7 @@
 
 
+text = require 'text'
+
 function Pandoc(doc)
   
   -- json file
@@ -19,10 +21,13 @@ function Pandoc(doc)
     local groups = jsonDecode(refJson)
     for _,group in ipairs(groups) do
       -- title
-      doc.blocks:insert(pandoc.Header(2, markdownToInlines(group.title)))
+      doc.blocks:insert(pandoc.Header(2, markdownToInlines(group.title), pandoc.Attr(autoId(group.title))))
       -- optionalal description
       if group.description then
-        tappend(doc.blocks, pandoc.read(group.description).blocks)
+        local description = pandoc.read(group.description).blocks
+        for _,blk in ipairs(description) do
+          doc.blocks:insert(blk)
+        end
       end
       -- options table
       local rows = pandoc.List()
@@ -58,6 +63,10 @@ function Pandoc(doc)
   
   return doc
   
+end
+
+function autoId(title)
+  return text.lower(title):gsub("[  &]", "-"):gsub("%-%-+", "-")
 end
 
 function markdownToInlines(str)
