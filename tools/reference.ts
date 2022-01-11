@@ -1,5 +1,5 @@
 
-import { basename, dirname, join, relative } from "https://deno.land/std/path/mod.ts";
+import { basename, dirname, join } from "https://deno.land/std/path/mod.ts";
 import { expandGlobSync } from "https://deno.land/std/fs/expand_glob.ts";
 import { parse } from "https://deno.land/std/encoding/yaml.ts";
 import { distinct } from "https://deno.land/std/collections/distinct.ts"
@@ -69,6 +69,12 @@ interface OptionGroup {
   options: Option[];
 }
 
+function asDescriptionString(description?: string | { short: string, long?: string }) {
+  return typeof(description) === "string" 
+  ? description 
+  : description?.long || description?.short || "";
+}
+
 // helper to read a group schema
 const readGroupOptions = (context: string, name: string) : Array<Option> => {
   const groupOptions = readSchema(`new/${context}-${name}.yml`) as Array<OptionSchema>;
@@ -76,9 +82,7 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
     .filter(optionsSchema => !optionsSchema.hidden)
     .map(optionSchema => ({
       name: optionSchema.name,
-      description: typeof(optionSchema.description) === "string" 
-        ? optionSchema.description 
-        : optionSchema.description?.long || optionSchema.description?.short || "",
+      description: asDescriptionString(optionSchema.description),
       formats: formatsFromOptionSchema(optionSchema),
       contexts: optionSchema.tags?.contexts,
       engine: optionSchema.tags?.engine,
@@ -194,3 +198,73 @@ function writeCellPages(engine: string) {
 writeCellPages("jupyter");
 writeCellPages("knitr");
 writeCellPages("ojs");
+
+
+// project tables
+const definitions = readSchema("new/definitions.yml") as Array<{ object?: { id: string, properties: Record<string,unknown> } }>;
+const project = readSchema("new/project.yml") as Array<{ name: string}>;
+
+// read a project object
+function readProjectProperties(props: { [name: string]: Record<string,unknown> }, descriptions?: Record<string, string>) {
+  return Object.keys(props).map(key => ({
+    name: key,
+    description: descriptions?.[key] ||  asDescriptionString(findVal(props[key], "description"))
+  })) 
+}
+
+function readProjectObject(name: string) {
+  // deno-lint-ignore no-explicit-any
+  const obj = project.find(value => value.name == name) as any;
+  const props = obj["schema"]["object"]["properties"];
+  return readProjectProperties(props); 
+}
+
+function readDefinitionsObject(id: string, descriptions?: Record<string, string>) {
+  const obj = definitions.find(value => value.object?.id === id) as any;
+  const props = obj["object"]["properties"];
+  return readProjectProperties(props, descriptions);
+
+}
+
+// deno-lint-ignore no-explicit-any
+function findVal(object: any, key: string) {
+  let value;
+  Object.keys(object).some(function(k) {
+      if (k === key) {
+          value = object[k];
+          return true;
+      }
+      if (object[k] && typeof object[k] === 'object') {
+          value = findVal(object[k], key);
+          return value !== undefined;
+      }
+  });
+  return value;
+}
+
+
+function writeProjectTable(name: string, options: Array<Option>) {
+  const path = `docs/reference/projects/${name}.json`;
+  Deno.writeTextFileSync(path, JSON.stringify(options, undefined, 2));
+}
+
+const projectOptions = readProjectObject("project");
+writeProjectTable("project", projectOptions);
+
+const websiteOptions = readDefinitionsObject("base-website", {
+  "navbar": "Navbar options (see [Navbar])",
+  "sidebar": "Sidebar options (see [Sidebar])"
+})
+writeProjectTable("website", websiteOptions);
+
+const navbarOptions = readProjectProperties(findVal(definitions, "navbar")?.["oneOf"][1]["object"]["properties"]!, {
+  "left": "List of items for the left side of the navbar (see [Navbar Items])",
+  "right": "List of items for the left side of the navbar (see [Navbar Items])"
+});
+writeProjectTable("navbar", navbarOptions);
+
+const sidebarOptions = readProjectProperties(findVal(definitions, "sidebar")?.["oneOf"][1]["object"]["properties"]!, {
+  "tools": "List of sidebar tools (see [Sidebar Tools])"
+});
+writeProjectTable("sidebar", sidebarOptions);
+
