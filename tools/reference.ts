@@ -100,7 +100,7 @@ const cellOptions = Object.keys(cellGroups).map(group => {
     name: group,
     title,
     description,
-    options: options.filter(option => option.engine !== "knitr")
+    options
   }
 })
 
@@ -166,15 +166,31 @@ for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
 
 // cell pages
 const cellPages = {
-  cells: ["attributes", "codeoutput", "textoutput", "figure", "table","layout", "pagelayout"],
+  cells: ["attributes", "codeoutput", "textoutput", "figure", "table","layout", "pagelayout", "cache", "include"],
 } as Record<string,string[]>;
 
-for (const page of Object.keys(cellPages)) {
-  const groups = cellPages[page];
-  writeCellGroups(groups, `docs/reference/${page}.json`);
-}
+function writeCellGroups(engine: string, groups: string[], path: string) {
 
-function writeCellGroups(groups: string[], path: string) {
-  const writeGroups = cellOptions.filter(group => groups.includes(group.name));
+  let writeGroups = (structuredClone(cellOptions) as Array<OptionGroup>).filter(group => groups.includes(group.name));
+
+  // filter options on engine
+
+  writeGroups.forEach(writeGroup => {
+    writeGroup.options = writeGroup.options.filter(option => !option.engine || option.engine === engine);
+  });
+
+  // filter out groups with no options
+  writeGroups = writeGroups.filter(writeGroup => writeGroup.options.length > 0);
+
   Deno.writeTextFileSync(path, JSON.stringify(writeGroups, undefined, 2));
 }
+
+function writeCellPages(engine: string) {
+  for (const page of Object.keys(cellPages)) {
+    const groups = cellPages[page];
+    writeCellGroups(engine, groups, `docs/reference/cells/${page}-${engine}.json`);
+  }
+}
+writeCellPages("jupyter");
+writeCellPages("knitr");
+writeCellPages("ojs");
