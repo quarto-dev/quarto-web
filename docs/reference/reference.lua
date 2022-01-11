@@ -14,7 +14,8 @@ function Pandoc(doc)
     local refJson = io.read("*all")
     io.close(refJsonFile)
     
-    if doc.blocks:find_if(function(block) return block.t == "CodeBlock" end) == nil then
+    if doc.blocks:find_if(function(block) return block.t == "CodeBlock" end) == nil and
+       pandoc.system.get_working_directory():find("formats") then
       doc.blocks:insert(pandoc.CodeBlock("format: " .. stem, pandoc.Attr("", { "yaml" })))
     end
     

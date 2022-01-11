@@ -36,6 +36,7 @@ interface OptionSchema {
   tags?: {
     formats?: string[];
     contexts?: string[];
+    engine?: string;
   }
   description: string | { short: string, long?: string };
   hidden?: boolean;
@@ -59,6 +60,7 @@ interface Option {
   description: string;
   contexts?: string[];
   formats?: string[];
+  engine?: string;
 }
 interface OptionGroup {
   name: string;
@@ -79,6 +81,7 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
         : optionSchema.description?.long || optionSchema.description?.short || "",
       formats: formatsFromOptionSchema(optionSchema),
       contexts: optionSchema.tags?.contexts,
+      engine: optionSchema.tags?.engine,
     }))
     .filter(group =>  group.name !== "hidden");
 };
@@ -97,7 +100,7 @@ const cellOptions = Object.keys(cellGroups).map(group => {
     name: group,
     title,
     description,
-    options
+    options: options.filter(option => option.engine !== "knitr")
   }
 })
 
@@ -147,16 +150,31 @@ const optionsForFormat = (format: string) => {
     .filter(group => group.name !== "hidden" && group.options.length > 0)
 }
 
-const writeOptions = (format: string, path: string) => {
+const writeDocumentOptions = (format: string, path: string) => {
   const options = JSON.stringify(optionsForFormat(format), undefined, 2);
   Deno.writeTextFileSync(path, options);
 }
 
-
+// document formats
 for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
   if (file.isFile) {
     const format = basename(file.name, ".qmd");
-    writeOptions(format, join(dirname(file.path), format + ".json"));
+    writeDocumentOptions(format, join(dirname(file.path), format + ".json"));
   }
 }
 
+
+// cell pages
+const cellPages = {
+  cells: ["attributes", "codeoutput", "textoutput", "figure", "table","layout", "pagelayout"],
+} as Record<string,string[]>;
+
+for (const page of Object.keys(cellPages)) {
+  const groups = cellPages[page];
+  writeCellGroups(groups, `docs/reference/${page}.json`);
+}
+
+function writeCellGroups(groups: string[], path: string) {
+  const writeGroups = cellOptions.filter(group => groups.includes(group.name));
+  Deno.writeTextFileSync(path, JSON.stringify(writeGroups, undefined, 2));
+}
