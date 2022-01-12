@@ -219,11 +219,15 @@ function readProjectObject(name: string) {
   return readProjectProperties(props); 
 }
 
-function readDefinitionsObject(id: string, descriptions?: Record<string, string>) {
+function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
   const obj = definitions.find(value => value.object?.id === id) as any;
   const props = obj["object"]["properties"];
   return readProjectProperties(props, descriptions);
+}
 
+function readDefinitionsObject(name: string, descriptions?: Record<string, string>) {
+  const obj = findVal(definitions, name)?.["oneOf"][1]["object"]["properties"]!;
+  return readProjectProperties(obj, descriptions);
 }
 
 // deno-lint-ignore no-explicit-any
@@ -251,14 +255,14 @@ function writeProjectTable(name: string, options: Array<Option>) {
 const projectOptions = readProjectObject("project");
 writeProjectTable("project", projectOptions);
 
-const socialMetadataOptions = readDefinitionsObject("social-metadata");
-const twitterOptions = socialMetadataOptions.concat(readProjectProperties(findVal(definitions, "twitter-card")?.["oneOf"][1]["object"]["properties"]!));
+const socialMetadataOptions = readDefinitionsId("social-metadata");
+const twitterOptions = socialMetadataOptions.concat(readDefinitionsObject("twitter-card"));
 writeProjectTable("twitter", twitterOptions);
 
-const openGraphOptions = socialMetadataOptions.concat(readProjectProperties(findVal(definitions, "open-graph")?.["oneOf"][1]["object"]["properties"]!));
+const openGraphOptions = socialMetadataOptions.concat(readDefinitionsObject("open-graph"));
 writeProjectTable("open-graph", openGraphOptions);
 
-const websiteOptions = readDefinitionsObject("base-website", {
+const websiteOptions = readDefinitionsId("base-website", {
   "navbar": "Navbar options (see [Navbar](#navbar))",
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
   "page-footer": "Page footer. Text content or [page footer](#page-footer) definition.",
@@ -271,29 +275,29 @@ const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
 
-const navitemOptions = readDefinitionsObject("navigation-item", {
+const navitemOptions = readDefinitionsId("navigation-item", {
   "menu": "Submenu of [navigation items](#navbar-items)"
 });
 writeProjectTable("navitem", navitemOptions);
 
-const sidebarToolOptions = readDefinitionsObject("tool-item", {
+const sidebarToolOptions = readDefinitionsId("tool-item", {
   "menu": "Submenu of [navigation items](#navbar-items)"
 });
 writeProjectTable("sidebartool", sidebarToolOptions);
 
-const navbarOptions = readProjectProperties(findVal(definitions, "navbar")?.["oneOf"][1]["object"]["properties"]!, {
+const navbarOptions = readDefinitionsObject("navbar", {
   "left": "List of items for the left side of the navbar (see [Nav Items](#nav-items))",
   "right": "List of items for the left side of the navbar (see [Nav Items](#nav-items))"
 });
 writeProjectTable("navbar", navbarOptions);
 
-const sidebarOptions = readProjectProperties(findVal(definitions, "sidebar")?.["oneOf"][1]["object"]["properties"]!, {
+const sidebarOptions = readDefinitionsObject("sidebar", {
   "tools": "List of sidebar tools (see [Sidebar Tools](#sidebar-tools))",
   "contents": "List of [navigation items](#nav-items) to appear in the sidebar. Can also include `section` entries which in turn contain sub-lists of navigation items."
 });
 writeProjectTable("sidebar", sidebarOptions);
 
-const pageFooterOptions = readProjectProperties(findVal(definitions, "page-footer")?.["oneOf"][1]["object"]["properties"]!, {
+const pageFooterOptions = readDefinitionsObject("page-footer", {
   "left": "String, or list of [navigation items](#nav-items) to appear in the left region of the footer",
   "center": "String, or list of [navigation items](#nav-items) to appear in the center region of the footer",
   "right": "String, or list of [navigation items](#nav-items) to appear in the right region of the footer"
