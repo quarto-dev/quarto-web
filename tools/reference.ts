@@ -251,9 +251,19 @@ function writeProjectTable(name: string, options: Array<Option>) {
 const projectOptions = readProjectObject("project");
 writeProjectTable("project", projectOptions);
 
+const socialMetadataOptions = readDefinitionsObject("social-metadata");
+const twitterOptions = socialMetadataOptions.concat(readProjectProperties(findVal(definitions, "twitter-card")?.["oneOf"][1]["object"]["properties"]!));
+writeProjectTable("twitter", twitterOptions);
+
+const openGraphOptions = socialMetadataOptions.concat(readProjectProperties(findVal(definitions, "open-graph")?.["oneOf"][1]["object"]["properties"]!));
+writeProjectTable("open-graph", openGraphOptions);
+
 const websiteOptions = readDefinitionsObject("base-website", {
   "navbar": "Navbar options (see [Navbar](#navbar))",
-  "sidebar": "Sidebar options (see [Sidebar](#sidebar))"
+  "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
+  "page-footer": "Page footer. Text content or [page footer](#page-footer) definition.",
+  "open-graph": "Generate Open Graph metadata (see [Open Graph](#open-graph) options)",
+  "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) optoins)"
 })
 writeProjectTable("website", websiteOptions);
 
@@ -272,13 +282,20 @@ const sidebarToolOptions = readDefinitionsObject("tool-item", {
 writeProjectTable("sidebartool", sidebarToolOptions);
 
 const navbarOptions = readProjectProperties(findVal(definitions, "navbar")?.["oneOf"][1]["object"]["properties"]!, {
-  "left": "List of items for the left side of the navbar (see [Navbar Items](#navbar-items))",
-  "right": "List of items for the left side of the navbar (see [Navbar Items](#navbar-items))"
+  "left": "List of items for the left side of the navbar (see [Nav Items](#nav-items))",
+  "right": "List of items for the left side of the navbar (see [Nav Items](#nav-items))"
 });
 writeProjectTable("navbar", navbarOptions);
 
 const sidebarOptions = readProjectProperties(findVal(definitions, "sidebar")?.["oneOf"][1]["object"]["properties"]!, {
-  "tools": "List of sidebar tools (see [Sidebar Tools](#sidebar-tools))"
+  "tools": "List of sidebar tools (see [Sidebar Tools](#sidebar-tools))",
+  "contents": "List of [navigation items](#nav-items) to appear in the sidebar. Can also include `section` entries which in turn contain sub-lists of navigation items."
 });
 writeProjectTable("sidebar", sidebarOptions);
 
+const pageFooterOptions = readProjectProperties(findVal(definitions, "page-footer")?.["oneOf"][1]["object"]["properties"]!, {
+  "left": "String, or list of [navigation items](#nav-items) to appear in the left region of the footer",
+  "center": "String, or list of [navigation items](#nav-items) to appear in the center region of the footer",
+  "right": "String, or list of [navigation items](#nav-items) to appear in the right region of the footer"
+});
+writeProjectTable("pagefooter", pageFooterOptions);
