@@ -83,6 +83,45 @@ Action buttons that appear on the sidebar. For example:
 ::: {#table-pagefooter}
 :::
 
+## Search
+
+Search options are specified under the `search` key of `{{< meta project-type >}}`. For example:
+
+```yaml
+{{< meta project-type >}}:
+  search:
+    location: navbar
+    type: overlay
+---
+```
+
+::: {#table-search}
+:::
+
+### Algolia Options
+
+You can use an [Algolia](../../websites/website-search.qmd#using-algolia) index as the back end of {{< meta project-type >}} search. Specify Algolia options using the `algolia` sub-key of `search`, for example:
+
+```yaml
+---
+{{< meta project-type >}}:
+  search:
+    algolia:
+      index-name: <my-index-name>
+      application-id: <my-application-id>
+      search-only-api-key: <my-search-only-api-key>
+---
+```
+
+
+::: {#table-algolia}
+:::
+
+The `index-fields` option provides sub-fields within the Algolia index to target for searches:
+
+::: {#table-algolia-index-fields}
+:::
+
 ## Social
 
 Social metadata is provided as a subkey of `{{< meta project-type >}}` options. You can specify `true` to generate social metadata using a set of default option, or specify one or more Twitter or Open Graph specific options as enumerated below. For example:
@@ -106,4 +145,7 @@ Social metadata is provided as a subkey of `{{< meta project-type >}}` options. 
 
 ::: {#table-open-graph}
 :::
+
+
+
 

@@ -267,7 +267,8 @@ const websiteOptions = readDefinitionsId("base-website", {
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
   "page-footer": "Page footer. Text content or [page footer](#page-footer) definition.",
   "open-graph": "Generate Open Graph metadata (see [Open Graph](#open-graph) options)",
-  "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) optoins)"
+  "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) options)",
+  "search": "Site search (`true` or `false` to enable/disable, or provide custom [Search Options](#search)"
 })
 writeProjectTable("website", websiteOptions);
 
@@ -303,3 +304,16 @@ const pageFooterOptions = readDefinitionsObject("page-footer", {
   "right": "String, or list of [navigation items](#nav-items) to appear in the right region of the footer"
 });
 writeProjectTable("pagefooter", pageFooterOptions);
+
+const searchOptions = readDefinitionsObject("search", {
+  "algolia": "Use an Algolia index for site search (see [Algolia Options](#algolia-options))"
+});
+writeProjectTable("search", searchOptions)
+
+const algoliaOptions = readProjectProperties(findVal(definitions, "algolia")!["object"]["properties"], {
+  "index-fields": "Fields to target for searches (see below for details)"
+})
+writeProjectTable("algolia", algoliaOptions);
+
+const algoliaIndexFieldsOptions = readProjectProperties(findVal(definitions, "index-fields")!["object"]["properties"]);
+writeProjectTable("algolia-index-fields", algoliaIndexFieldsOptions);
