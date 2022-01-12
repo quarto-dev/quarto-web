@@ -2,7 +2,37 @@
 
 text = require 'text'
 
+local isProject = pandoc.system.get_working_directory():find("docs/reference/projects")
+
+function Div(el)
+  -- only process divs for projects
+  if isProject then
+    local tableType = el.attr.identifier:match("^table%-(.*)$")
+    if tableType then
+      local tableJsonPath = tableType .. ".json"
+      local tableJsonFile = io.open(tableJsonPath, "r")
+      if tableJsonFile ~= nil then
+        io.input(tableJsonFile)
+        local tableJson = io.read("*all")
+        io.close(tableJsonFile)
+        
+        local options = jsonDecode(tableJson)
+        el.content:insert(optionTable(options))
+        return el
+      end
+    end
+   
+  end
+  
+end
+
 function Pandoc(doc)
+  
+  -- skip for project docs
+  if isProject then
+    return doc
+  end
+  
   
   -- json file
   local stem, ext = pandoc.path.split_extension(PANDOC_STATE.output_file)
@@ -30,40 +60,39 @@ function Pandoc(doc)
           doc.blocks:insert(blk)
         end
       end
-      -- options table
-      local rows = pandoc.List()
-      for _,option in ipairs(group.options) do
-        local name = { pandoc.Plain( { pandoc.Code(option.name) } ) }
-        local description = pandoc.read(option.description).blocks
-        local row = pandoc.List( { name, description } )
-        rows:insert(row)
-      end
-      
-      -- make the table
-      local optionTbl = pandoc.SimpleTable(
-        pandoc.List(), -- caption
-        { pandoc.AlignLeft, pandoc.AlignLeft },  
-        {  0.3, 0.7 },    
-        pandoc.List({}),
-        rows          
-      )
-      optionTbl = pandoc.utils.from_simple_table(optionTbl)
-      optionTbl.caption.short = nil
-      optionTbl.caption.long = pandoc.List()
-  
-  
-      doc.blocks:insert(optionTbl)
-    end
-    
-    
 
-    
+      -- options table
+      doc.blocks:insert(optionTable(group.options))
+    end
   end
-  
-    
-  
+
   return doc
   
+end
+
+function optionTable(options)
+  -- options table
+  local rows = pandoc.List()
+  for _,option in ipairs(options) do
+    local name = { pandoc.Plain( { pandoc.Code(option.name) } ) }
+    local description = pandoc.read(option.description).blocks
+    local row = pandoc.List( { name, description } )
+    rows:insert(row)
+  end
+  
+  -- make the table
+  local optionTbl = pandoc.SimpleTable(
+    pandoc.List(), -- caption
+    { pandoc.AlignLeft, pandoc.AlignLeft },  
+    {  0.3, 0.7 },    
+    pandoc.List({}),
+    rows          
+  )
+  optionTbl = pandoc.utils.from_simple_table(optionTbl)
+  optionTbl.caption.short = nil
+  optionTbl.caption.long = pandoc.List()
+  
+  return optionTbl
 end
 
 function autoId(title)

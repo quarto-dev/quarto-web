@@ -252,10 +252,16 @@ const projectOptions = readProjectObject("project");
 writeProjectTable("project", projectOptions);
 
 const websiteOptions = readDefinitionsObject("base-website", {
-  "navbar": "Navbar options (see [Navbar])",
-  "sidebar": "Sidebar options (see [Sidebar])"
+  "navbar": "Navbar options (see [Navbar](#navbar))",
+  "sidebar": "Sidebar options (see [Sidebar](#sidebar))"
 })
 writeProjectTable("website", websiteOptions);
+
+const bookOptions = readProjectObject("book").concat(
+  websiteOptions.filter(option => option.name !== "title"));
+writeProjectTable("book", bookOptions);
+
+
 
 const navbarOptions = readProjectProperties(findVal(definitions, "navbar")?.["oneOf"][1]["object"]["properties"]!, {
   "left": "List of items for the left side of the navbar (see [Navbar Items])",
