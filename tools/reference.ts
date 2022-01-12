@@ -317,3 +317,28 @@ writeProjectTable("algolia", algoliaOptions);
 
 const algoliaIndexFieldsOptions = readProjectProperties(findVal(definitions, "index-fields")!["object"]["properties"]);
 writeProjectTable("algolia-index-fields", algoliaIndexFieldsOptions);
+
+const commentsSchema = readSchema(`new/document-comments.yml`);
+const utterancesOptions = readProjectProperties(findVal(commentsSchema, "utterances")!["object"]["properties"]);
+writeProjectTable("utterances", utterancesOptions);
+const hypothesisSchema = findVal(commentsSchema, "hypothesis")!["oneOf"][1]["object"]["properties"];
+const hypothesisOptions = readProjectProperties(hypothesisSchema, {
+  "services": "Array of service definitions",
+  "branding": "Custom branding/colors to apply to UI",
+  "focus": "User focused filter set for the available annotations on a page",
+  "requestConfigFromFrame": "Speicfy a host iframe to request configuration from"
+
+});
+writeProjectTable("hypothesis", hypothesisOptions);
+
+const hypothesisServiceOptions = readProjectProperties(findVal(hypothesisSchema, "services")!["arrayOf"]["object"]["properties"]);
+writeProjectTable("hypothesis-service", hypothesisServiceOptions);
+
+const hypothesisBrandingOptions = readProjectProperties(findVal(hypothesisSchema, "branding")!["object"]["properties"]);
+writeProjectTable("hypothesis-branding", hypothesisBrandingOptions);
+
+const hypothesisFocusUserOptions = readProjectProperties(findVal(hypothesisSchema, "focus")!["object"]["properties"]["user"]["object"]["properties"]);
+writeProjectTable("hypothesis-focus-user", hypothesisFocusUserOptions);
+
+const hypothesisIFrameconfig = readProjectProperties(findVal(hypothesisSchema, "requestConfigFromFrame")!["object"]["properties"]);
+writeProjectTable("hypothesis-iframe", hypothesisIFrameconfig);

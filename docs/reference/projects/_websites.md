@@ -133,7 +133,6 @@ Social metadata is provided as a subkey of `{{< meta project-type >}}` options. 
   twitter-card: 
     site: "@sitehandle"
 ---
-
 ```
 
 ### Twitter Card
@@ -146,6 +145,41 @@ Social metadata is provided as a subkey of `{{< meta project-type >}}` options. 
 ::: {#table-open-graph}
 :::
 
+## Comments
 
+You can add commenting to your {{< meta project-type >}} using either [Hypothesis](https://web.hypothes.is/) or [Utterances](https://utteranc.es/).
+
+### Hypothesis
+
+Enable and configure Hypothesis commenting via the top-level `comments` key. For example:
+
+```yaml
+---
+comments: 
+  hypothesis:
+    theme: clean
+    openSidebar: false
+---
+```
+
+::: {#table-hypothesis}
+:::
+
+For additional documentation on the Hypothesis options enumerated above, see the [Hypothesis Publisher Config](https://h.readthedocs.io/projects/client/en/latest/publishers/config/) documentation.
+
+### Utterances
+
+Enable and configure Utterances commenting via the top-level `comments` key. For example:
+
+```yaml
+---
+comments: 
+  utterances:
+    repo: quarto-dev/quarto-web
+---
+```
+
+::: {#table-utterances}
+:::
 
 
