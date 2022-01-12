@@ -14,9 +14,27 @@ Options that define the top navigation bar for a {{< meta project-type >}} For e
 ::: {#table-navbar}
 :::
 
+### Navbar Items
+
+Navbar items appear in the `left` or `right` key of `navbar` definitions. For example:
+
+```yaml
+---
+{{< meta project-type >}}:
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/
+---
+```
+
+::: {#table-navitem}
+:::
+
+
 ## Sidebar
 
-Options that define the side navigation area for a website. For example:
+Options that define the side navigation area for a {{< meta project-type >}}. For example:
 
 ```yaml
 ---
@@ -27,6 +45,23 @@ Options that define the side navigation area for a website. For example:
 ```
 
 ::: {#table-sidebar}
+:::
+
+### Sidebar Tools
+
+Action buttons that appear on the sidebar. For example:
+
+```yaml
+---
+{{< meta project-type >}}:
+  sidebar:
+    tools:
+      - icon: github
+        href: https://github.com/
+---
+```
+
+::: {#table-sidebartool}
 :::
 
 

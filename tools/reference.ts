@@ -261,16 +261,24 @@ const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
 
+const navitemOptions = readDefinitionsObject("navigation-item", {
+  "menu": "Submenu of [navigation items](#navbar-items)"
+});
+writeProjectTable("navitem", navitemOptions);
 
+const sidebarToolOptions = readDefinitionsObject("tool-item", {
+  "menu": "Submenu of [navigation items](#navbar-items)"
+});
+writeProjectTable("sidebartool", sidebarToolOptions);
 
 const navbarOptions = readProjectProperties(findVal(definitions, "navbar")?.["oneOf"][1]["object"]["properties"]!, {
-  "left": "List of items for the left side of the navbar (see [Navbar Items])",
-  "right": "List of items for the left side of the navbar (see [Navbar Items])"
+  "left": "List of items for the left side of the navbar (see [Navbar Items](#navbar-items))",
+  "right": "List of items for the left side of the navbar (see [Navbar Items](#navbar-items))"
 });
 writeProjectTable("navbar", navbarOptions);
 
 const sidebarOptions = readProjectProperties(findVal(definitions, "sidebar")?.["oneOf"][1]["object"]["properties"]!, {
-  "tools": "List of sidebar tools (see [Sidebar Tools])"
+  "tools": "List of sidebar tools (see [Sidebar Tools](#sidebar-tools))"
 });
 writeProjectTable("sidebar", sidebarOptions);
 
