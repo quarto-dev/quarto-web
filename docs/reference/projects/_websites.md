@@ -151,14 +151,15 @@ You can add commenting to your {{< meta project-type >}} using either [Hypothesi
 
 ### Hypothesis
 
-Enable and configure Hypothesis commenting via the top-level `comments` key. For example:
+Enable and configure Hypothesis commenting via `comments` key. For example:
 
 ```yaml
 ---
-comments: 
-  hypothesis:
-    theme: clean
-    openSidebar: false
+website:
+  comments: 
+    hypothesis:
+      theme: clean
+      openSidebar: false
 ---
 ```
 
@@ -169,13 +170,14 @@ For additional documentation on the Hypothesis options enumerated above, see the
 
 ### Utterances
 
-Enable and configure Utterances commenting via the top-level `comments` key. For example:
+Enable and configure Utterances commenting via the `comments` key. For example:
 
 ```yaml
 ---
-comments: 
-  utterances:
-    repo: quarto-dev/quarto-web
+website:
+  comments: 
+    utterances:
+      repo: quarto-dev/quarto-web
 ---
 ```
 
