@@ -77,7 +77,7 @@ function asDescriptionString(description?: string | { short: string, long?: stri
 
 // helper to read a group schema
 const readGroupOptions = (context: string, name: string) : Array<Option> => {
-  const groupOptions = readSchema(`new/${context}-${name}.yml`) as Array<OptionSchema>;
+  const groupOptions = readSchema(`${context}-${name}.yml`) as Array<OptionSchema>;
   return  groupOptions
     .filter(optionsSchema => !optionsSchema.hidden)
     .map(optionSchema => ({
@@ -92,7 +92,7 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
 
 
 // read baseline config
-const groups = readSchema("new/groups.yml") as { [key: string]: { [key: string] : { title: string, description?: string }} };
+const groups = readSchema("groups.yml") as { [key: string]: { [key: string] : { title: string, description?: string }} };
 
 // cell options
 const cellGroups = groups["cell"];
@@ -201,8 +201,11 @@ writeCellPages("ojs");
 
 
 // project tables
-const definitions = readSchema("new/definitions.yml") as Array<{ object?: { id: string, properties: Record<string,unknown> } }>;
-const project = readSchema("new/project.yml") as Array<{ name: string}>;
+const definitions = readSchema("definitions.yml") as Array<{ 
+  object?: { id: string, properties: Record<string,unknown> },
+  oneOf?: { id: string, schemas: Record<string,unknown>}
+}>;
+const project = readSchema("project.yml") as Array<{ name: string}>;
 
 // read a project object
 function readProjectProperties(props: { [name: string]: Record<string,unknown> }, descriptions?: Record<string, string>) {
@@ -225,8 +228,19 @@ function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
   return readProjectProperties(props, descriptions);
 }
 
+function readNavigationItem(descriptions?: Record<string, string>) {
+  const obj = definitions.find(value => value.oneOf?.id === "navigation-item") as any;
+  const props = obj["oneOf"]["schemas"][1]["object"]["properties"];
+  return readProjectProperties(props, descriptions);
+}
+
 function readDefinitionsObject(name: string, descriptions?: Record<string, string>) {
   const obj = findVal(definitions, name)?.["oneOf"][1]["object"]["properties"]!;
+  return readProjectProperties(obj, descriptions);
+}
+
+function readSidebarObject(descriptions?: Record<string, string>) {
+  const obj = findVal(definitions, "sidebar")?.["oneOf"][1]["maybeArrayOf"]["object"]["properties"]!;
   return readProjectProperties(obj, descriptions);
 }
 
@@ -276,7 +290,7 @@ const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
 
-const navitemOptions = readDefinitionsId("navigation-item", {
+const navitemOptions = readNavigationItem({
   "menu": "Submenu of [navigation items](#navbar-items)"
 });
 writeProjectTable("navitem", navitemOptions);
@@ -292,7 +306,7 @@ const navbarOptions = readDefinitionsObject("navbar", {
 });
 writeProjectTable("navbar", navbarOptions);
 
-const sidebarOptions = readDefinitionsObject("sidebar", {
+const sidebarOptions = readSidebarObject({
   "tools": "List of sidebar tools (see [Sidebar Tools](#sidebar-tools))",
   "contents": "List of [navigation items](#nav-items) to appear in the sidebar. Can also include `section` entries which in turn contain sub-lists of navigation items."
 });
@@ -318,10 +332,9 @@ writeProjectTable("algolia", algoliaOptions);
 const algoliaIndexFieldsOptions = readProjectProperties(findVal(definitions, "index-fields")!["object"]["properties"]);
 writeProjectTable("algolia-index-fields", algoliaIndexFieldsOptions);
 
-const commentsSchema = readSchema(`new/document-comments.yml`);
-const utterancesOptions = readProjectProperties(findVal(commentsSchema, "utterances")!["object"]["properties"]);
+const utterancesOptions = readProjectProperties(findVal(definitions, "utterances")!["object"]["properties"]);
 writeProjectTable("utterances", utterancesOptions);
-const hypothesisSchema = findVal(commentsSchema, "hypothesis")!["oneOf"][1]["object"]["properties"];
+const hypothesisSchema = findVal(definitions, "hypothesis")!["oneOf"][1]["object"]["properties"];
 const hypothesisOptions = readProjectProperties(hypothesisSchema, {
   "services": "Array of service definitions",
   "branding": "Custom branding/colors to apply to UI",
