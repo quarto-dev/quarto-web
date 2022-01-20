@@ -5,6 +5,10 @@ import { parse } from "https://deno.land/std/encoding/yaml.ts";
 import { distinct } from "https://deno.land/std/collections/distinct.ts"
 
 
+export function asArray<T>(x?: T | Array<T>): Array<T> {
+  return x ? Array.isArray(x) ? x : [x] : [];
+}
+
 // location of schema yaml and function to read from it
 const schemasDir = Deno.realPathSync(Deno.args[0] || "../quarto-cli/src/resources/schema");
 const readSchema = (file: string) => {
@@ -60,7 +64,7 @@ interface Option {
   description: string;
   contexts?: string[];
   formats?: string[];
-  engine?: string;
+  engine?: string | string[];
 }
 interface OptionGroup {
   name: string;
@@ -78,7 +82,8 @@ function asDescriptionString(description?: string | { short: string, long?: stri
 // helper to read a group schema
 const readGroupOptions = (context: string, name: string) : Array<Option> => {
   const groupOptions = readSchema(`${context}-${name}.yml`) as Array<OptionSchema>;
-  return  groupOptions
+  if (groupOptions) {
+    return  groupOptions
     .filter(optionsSchema => !optionsSchema.hidden)
     .map(optionSchema => ({
       name: optionSchema.name,
@@ -88,6 +93,9 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
       engine: optionSchema.tags?.engine,
     }))
     .filter(group =>  group.name !== "hidden");
+  } else {
+    return [];
+  }
 };
 
 
@@ -180,7 +188,9 @@ function writeCellGroups(engine: string, groups: string[], path: string) {
   // filter options on engine
 
   writeGroups.forEach(writeGroup => {
-    writeGroup.options = writeGroup.options.filter(option => !option.engine || option.engine === engine);
+    writeGroup.options = writeGroup.options.filter(option => {
+      return !option.engine || (asArray(option.engine).includes(engine)); 
+    });
   });
 
   // filter out groups with no options
