@@ -6,7 +6,7 @@ carousel <- function(id, duration, items) {
   index <- -1
   items <- lapply(items, function(item) {
     index <<- index + 1
-    carouselItem(item$title, item$caption, item$image, index, duration)
+    carouselItem(item$caption, item$image, index, duration)
   })
   
   indicators <- div(class = "carousel-indicators",
@@ -24,7 +24,7 @@ carousel <- function(id, duration, items) {
 }
 
 # carousel item
-carouselItem <- function(title, caption, image, index, interval) {
+carouselItem <- function(caption, image, index, interval) {
   id <- paste0("gallery-carousel-item-", index)
   button <- tags$button(type = "button", 
                         `data-bs-target` = paste0("#", id),
@@ -39,9 +39,8 @@ carouselItem <- function(title, caption, image, index, interval) {
   }
   item <- div(class = paste0("carousel-item", ifelse(index == 0, " active", "")),
               `data-bs-interval` = interval,
-              img(src = image, class = "d-block w-100"),
+              img(src = image, class = "d-block  mx-auto border"),
               div(class = "carousel-caption d-none d-md-block",
-                  tags$h5(title),
                   tags$p(caption)
               )
   )
