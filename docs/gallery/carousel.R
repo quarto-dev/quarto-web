@@ -41,7 +41,7 @@ carouselItem <- function(caption, image, index, interval) {
               `data-bs-interval` = interval,
               img(src = image, class = "d-block  mx-auto border"),
               div(class = "carousel-caption d-none d-md-block",
-                  tags$p(caption)
+                  tags$p(class = "fw-light", caption)
               )
   )
   list(
