@@ -2193,35 +2193,35 @@
   {
     "objectID": "docs/interactive/index.html#overview",
     "href": "docs/interactive/index.html#overview",
-    "title": "Interactive Documents",
+    "title": "Interactivity",
     "section": "Overview",
     "text": "Overview\nAdding interactivity to an article is a great way to help readers explore the concepts and data you are presenting more deeply. There are three ways to add interactive components to Quarto documents:\n\nCreate custom JavaScript visualizations using Observable JS.\nUse the Shiny R package to add interactivity to Knitr engine documents.\nIncorporate Jupyter Widgets or htmlwidgets (for the Jupyter and Knitr engines, respectively) into your document.\n\nEach of these techniques has distinct benefits and drawbacks in terms of expressiveness, ease of development, and deployment requirements. We’ll touch on these considerations briefly below, then provide links to more in depth documentation for learning more."
   },
   {
     "objectID": "docs/interactive/index.html#observable-js",
     "href": "docs/interactive/index.html#observable-js",
-    "title": "Interactive Documents",
+    "title": "Interactivity",
     "section": "Observable JS",
     "text": "Observable JS\nQuarto includes native support for Observable JS, a set of enhancements to vanilla JavaScript created by Mike Bostock (also the author of D3). Observable JS is distinguished by its reactive runtime, which is especially well suited for interactive data exploration and analysis.\nHere’s an example that provides slider inputs to condition the behavior of a visualization:\n\n\nviewof talentWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: \"talent weight\" })\nviewof looksWeight = Inputs.range([-2, 2], { value: 0.7, step: 0.01, label: \"looks weight\" })\nviewof minimum = Inputs.range([-2, 2], { value: 1, step: 0.01, label: \"minimum fame\" })\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n{\n  const w = 400\n  const h = 400;\n  const result = d3.create(\"svg\").attr(\"width\", w).attr(\"height\", h);\n  const margin = 20;\n  const xScale = d3.scaleLinear().domain([-2, 2]).range([margin, w - margin]);\n  const yScale = d3.scaleLinear().domain([-2, 2]).range([h - margin, margin]);\n  const points = result\n    .append(\"g\")\n    .selectAll(\"circle\")\n    .data(actors)\n    .join(enter => {\n       const sel = enter\n         .append(\"circle\")\n         .attr(\"r\", 3)\n         .attr(\"cx\", d => xScale(d.talent))\n         .attr(\"cy\", d => yScale(d.looks))\n         .attr(\"fill\", d3.lab(50, 40, 20));\n       return sel.filter(d => d.fame <= minimum)\n         .attr(\"fill\", \"rgb(200, 200, 200)\")\n         .attr(\"r\", 2);\n    });\n    \n  const linearRegression = regression.regressionLinear()\n    .x(d => d.talent)\n    .y(d => d.looks)\n    .domain([-2, 2]);\n\n  const chosenActors = actors\n    .filter(d => d.fame > minimum);\n\n  const line = result\n    .append(\"g\")\n    .append(\"line\")\n    .attr(\"stroke\", d3.lab(20, 40, 20))\n    .attr(\"stroke-width\", 1.5)\n    .datum(linearRegression(chosenActors))\n    .attr(\"x1\", d => xScale(d[0][0]))\n    .attr(\"x2\", d => xScale(d[1][0]))\n    .attr(\"y1\", d => yScale(d[0][1]))\n    .attr(\"y2\", d => yScale(d[1][1]));\n\n\n  const xAxis = d3.axisBottom(xScale).ticks(3);\n  result.append(\"g\")\n    .attr(\"transform\", `translate(0, ${yScale(0)})`)\n    .call(xAxis);\n\n  result.append(\"text\")\n    .attr(\"x\", xScale(0.05))\n    .attr(\"y\", yScale(2))\n    .text(\"Looks\");\n\n  result.append(\"text\")\n    .attr(\"y\", yScale(0.1))\n    .attr(\"x\", xScale(-2))\n    .text(\"Talent\");\n\n  const yAxis = d3.axisLeft(yScale).ticks(3);\n  result.append(\"g\")\n    .attr(\"transform\", `translate(${xScale(0)}, 0)`)\n    .call(yAxis);\n  \n  return result.node();\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nactors = transpose(points).map(v => ({\n  talent: v.x,\n  looks: v.y,\n  fame: v.x * talentWeight + v.y * looksWeight\n}));\n\n\n\n\n\n\n\ntranspose = function(df)\n{\n  const keys = Object.keys(df);\n  return df[keys[0]]\n    .map((v, i) => Object.fromEntries(keys.map(key => [key, df[key][i] || undefined])))\n    .filter(v => Object.values(v).every(e => e !== undefined));\n}\nregression = require('d3-regression@1');\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nObservable JS uses some special keywords and a custom runtime to make JavaScript reactive. For example, the “minimum fame” slider in the example above was created with the following code:\nviewof minimum = Inputs.range([-2, 2], { \n  value: 1, step: 0.01, \n  label: \"minimum fame\"\n})\nIt’s then referenced as a normal JavaScript variable in code that creates the plot:\nsel.filter(d => d.fame <= minimum)\nAs the user interacts with the slider, the minimum value is updated and any code that references it is automatically re-executed.\nOne benefit of using JavaScript for interactive documents is that all the logic and computation is performed on the client (so no server is required for deployment).\nTo learn more see the articles on Observable JS."
   },
   {
     "objectID": "docs/interactive/index.html#shiny",
     "href": "docs/interactive/index.html#shiny",
-    "title": "Interactive Documents",
+    "title": "Interactivity",
     "section": "Shiny",
     "text": "Shiny\nThe Shiny package provides a flexible, easy to use framework for creating interactive web applications with R. Quarto in turn includes support for embedding Shiny components and applets into documents created with the Knitr engine.\nHere’s a live example of Shiny interactive components along with a brief explanation of the code required to create them:\n\n\n\n \n\n\n\nShiny comes with a variety of built in input widgets. With minimal syntax it is possible to include widgets like the ones shown on the left in your apps:\n# Select type of trend to plot\nselectInput(inputId = \"type\", \n            label = strong(\"Trend index\"),\n            choices = unique(trend_data$type),\n            selected = \"Travel\")\nDisplaying outputs is equally hassle-free:\nmainPanel(\n  plotOutput(outputId = \"lineplot\", \n             height = \"300px\"),\n)\nBuild your plots or tables as you normally would in R, and make them reactive with a call to the appropriate render function:\noutput$lineplot <- renderPlot({\n  plot(x = selected_trends()$date, \n       y = selected_trends()$close, \n       type = \"l\",\n       xlab = \"Date\", \n       ylab = \"Trend index\")\n})\n\n\n\nShiny makes it very straightforward to create interactive documents using only R. Unlike using JavaScript though, you will need to deploy documents that use Shiny to a server.\nTo learn more see the articles on Using Shiny with Quarto."
   },
   {
     "objectID": "docs/interactive/index.html#widgets",
     "href": "docs/interactive/index.html#widgets",
-    "title": "Interactive Documents",
+    "title": "Interactivity",
     "section": "Widgets",
     "text": "Widgets\nJupyter Widgets and htmlwidgets are great ways to incorporate interactivity into your documents if you don’t know JavaScript and prefer to work exclusively in Python or R. They also run entirely client-side so can be deployed within normal static HTML documents.\nFor example, the following Python code is all that is required to embed a Leaflet map into a Jupyter engine document:\n\n```{python}\nfrom ipyleaflet import Map, Marker, basemaps, basemap_to_tiles\nm = Map(\n  basemap=basemap_to_tiles(\n    basemaps.NASAGIBS.ModisTerraTrueColorCR, \"2017-04-08\"\n  ),\n  center=(52.204793, 360.121558),\n  zoom=4\n)\nm.add_layer(Marker(location=(52.204793, 360.121558)))\nm\n```\n\n\n\n\nTo learn more see these articles on using widgets with Quarto:\n\nJupyter Widgets (Jupyter engine).\nhtmlwidgets (Knitr engine)."
   },
   {
     "objectID": "docs/interactive/index.html#layout",
     "href": "docs/interactive/index.html#layout",
-    "title": "Interactive Documents",
+    "title": "Interactivity",
     "section": "Layout",
     "text": "Layout\nOnce you’ve gotten familiar with using various interactive components see the article on Component Layout to learn how to:\n\nGroup inputs into an input panel.\nPresent multiple outputs in a tabset panel.\nUse a full page layout rather than the default article layout.\nAdd a sidebar panel for inputs in a full page layout.\nCreate custom panel layouts to arrange outputs into rows and columns."
   },
@@ -3085,5 +3085,12 @@
     "title": "Quarto Presentations",
     "section": "MPG and Horsepower",
     "text": "MPG and Horsepower\n\nlibrary(ggplot2)\nggplot(mtcars, aes(hp, mpg, color = am)) +\n  geom_point() +  geom_smooth(formula = y ~ x, method = \"loess\")\n\n\n\nLearn more: Executable Code"
+  },
+  {
+    "objectID": "docs/guide.html",
+    "href": "docs/guide.html",
+    "title": "Quarto Guide",
+    "section": "",
+    "text": "Editors\n\n\n\nJupyterLab\nRStudio IDE\nVS Code\nText Editors\nVisual Editor\n\n\n\n\n\nAuthoring\n\n\n\nMarkdown Basics\nCitations & Footnotes\nFigures & Layout\nCross References\nCallout Blocks\nPage Layout\nShortcodes & Filters\nDocument Language\n\n\n\n\n\nComputations\n\n\n\nRunning Code\nExecution Options\nParameters\n\n\n\n\n\nFormats\n\n\n\nHTML\nPDF\nMS Word\nPresentations\nMarkdown\nMore Foramts\n\n\n\n\n\nInteractivity\n\n\n\nOverview\nObservable JS\nShiny\nWidgets\nComponent Layout\n\n\n\n\n\nProjects\n\n\n\nBasic\nWebsite\nBook\nConfiguration"
   }
 ]
