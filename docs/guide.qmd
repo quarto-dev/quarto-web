@@ -1,98 +1,30 @@
 ---
 title: "Quarto Guide"
 toc: false
+anchor-sections: false
+execute:
+  echo: false
+  warning: false
 ---
 
-::: {.box}
+```{r}
+library(htmltools)
 
-::: {.card }
-::: {.card-header}
-Editors
-:::
-::: {.card-body}
--   JupyterLab
--   RStudio IDE
--   VS Code
--   Text Editors
--   Visual Editor
-:::
-:::
+card <- function(x) {
+  div(class = "card",
+    div(class = "card-body",
+      div(class = "card-title", tags$h4(x$title)),
+      div(class = "card-subtitle text-muted", tags$h6(HTML(x$subtitle))),
+      tags$ul(tagList(lapply(x$links, function(link) { 
+        tags$li(tags$a(href = link[[2]], link[[1]]))
+      })))
+    )    
+  )
+}
 
-::: {.card }
-::: {.card-header}
-Authoring
-:::
-::: {.card-body}
-- Markdown Basics
-- Citations & Footnotes
-- Figures & Layout
-- Cross References
-- Callout Blocks
-- Page Layout
-- Shortcodes & Filters
-- Document Language
-:::
-:::
-
-::: {.card }
-::: {.card-header}
-Computations
-:::
-::: {.card-body}
-- Running Code
-- Execution Options
-- Parameters
-:::
-:::
-
-::: {.card }
-::: {.card-header}
-Formats
-:::
-::: {.card-body}
-- HTML
-- PDF
-- MS Word
-- Presentations
-- Markdown
-- More Foramts
-:::
-:::
-
-::: {.card }
-::: {.card-header}
-Interactivity
-:::
-::: {.card-body}
-- Overview
-- Observable JS
-- Shiny
-- Widgets
-- Component Layout
-:::
-:::
-
-::: {.card }
-::: {.card-header}
-Projects
-:::
-::: {.card-body}
-- Basic
-- Website
-- Book
-- Configuration
-:::
-:::
-
-
-
-
-
-:::
-
-<!--
-https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items
--->
+cards <- yaml::yaml.load_file("guide.yml")
+div(class = "box", tagList(lapply(cards, card)))
+```
 
 
 ```{=html}
@@ -110,27 +42,39 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Masteri
 
 @media (min-width: 576px) { 
 .box {
-  height: 900px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
 }
 
 .card {
   margin: 12px;
   margin-left: 0;
-  width: 46%;
+  margin-top: 0;
+}
+
+.card-subtitle {
+  max-width: 180px;
 }
 
 }
 
-.card-header {
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
+
+.card {
+  border: none;
+  padding: 0;
 }
 
-.card-header p {
+.card-title h4 {
+  margin-top: 0;
+}
+
+.card-title p {
   margin-bottom: 0;
+}
+
+.card-subtitle {
+  margin-bottom: 0.7rem;
 }
 
 .card-body {
@@ -138,8 +82,17 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Masteri
 }
 
 .card-body ul {
-  margin-bottom: 0.5rem;
-  padding-left: 1.7rem;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.card-body ul a {
+  text-decoration: none;
+}
+
+.card-body ul li {
+  padding-bottom: 0.2rem;
 }
 
 </style>
