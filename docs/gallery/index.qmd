@@ -4,96 +4,18 @@ subtitle: "Quarto can produce dozens of output formats including articles, repor
 format:
   html:
     toc: false
+search: false
 execute:
   echo: false
-search: false
 ---
 
 ```{r}
-source("carousel.R")
-carousel("gallery-carousel", 5000, yaml.load_file("carousel.yml"))
+source("../../htmltools/carousel.R")
+carousel("gallery-carousel", 5000, 
+         yaml.load_file("carousel.yml"))
 ```
 
 ```{r}
-library(htmltools)
-library(yaml)
-
-# gallery is a list of categories
-gallery <- function(gallery) {
-  tagList(lapply(gallery, category))
-}
-
-# category is a list of items with a header
-category <- function(category) {
-  withTags(tagList(
-    h2(category$category),
-    p(category$description),
-    div(class = "category grid",
-      lapply(category$items, item)
-    )
-  ))
-}
-
-# item is a bootstrap card with a thumbnail
-item <- function(item) {
-  withTags({
-      div(class = "card border-2 rounded-3 g-col-24 g-col-sm-12 g-col-md-8 mb-2",
-        div(class = "card-header py-1 px-2 border-bottom border-1",
-          small(class = "card-text text-nowrap inline-block",
-            a(href = item$href, item$title), 
-            span(" "),
-            span(class = "fw-light", item$subtitle)
-          ),
-          a(class = "source-code card-text float-end inline-block", 
-            href = item$code,
-            title = "View source code",
-            i(class="bi-code-slash")
-          )
-        ),
-        a(href = item$href,
-          img(
-            class = "card-img-top",
-            src = item$thumbnail,
-            alt = item$description
-          )
-        )
-      )
-  })
-}
-
-# read and render the gallery
-gallery(yaml.load_file("gallery.yml"))
-```
-
-```{=html}
-<style type="text/css">
-.card {
-  font-size: 16px;
-}
-.card a {
-  text-decoration: none;
-}
-
-.category {
-  column-gap: 10px;
-}
-
-.card .source-code {
-  margin-top: 3px;
-}
-
-.carousel.card {
-  padding-top: 2em;
-}
-
-.carousel img {
-  width: 70%;
-  margin-bottom: 110px;
-}
-
-.carousel-control-prev-icon, .carousel-control-next-icon {
-  margin-bottom: 110px;
-}
-
-</style>
+source("../../htmltools/gallery.R")
+gallery("gallery.yml")
 ```
