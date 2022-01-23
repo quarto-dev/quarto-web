@@ -2,28 +2,30 @@
 title: "OJS and Shiny Reactives"
 format: 
   html:
-    page-layout: custom
     code-tools: 
       source: https://github.com/quarto-dev/quarto-web/blob/main/docs/interactive/ojs/examples/_shiny/kmeans/kmeans-shiny-ojs.qmd
-server: 
+server:
   type: shiny
 ---
 
 [K-Means Clustering](https://shiny.rstudio.com/gallery/kmeans-example.html) example 
 from the Shiny Gallery implemented with an OJS client and Shiny Server.
 
-Click the **Code** button above to see the source code.
+The source code for client and server are shown below. Alternatively,
+click **Code** and **View Source** above to see the source in full.
 
 ```{ojs}
 //| panel: sidebar
+
 vars = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
-viewof xcol = Inputs.select(vars, {label: "X Variable"})
+viewof xcol = Inputs.select(vars, {label: "X Variable", value: vars[0]})
 viewof ycol = Inputs.select(vars, {label: "Y Variable", value: vars[1]})
 viewof count = Inputs.range([1, 9], {label: "Cluster Count", step: 1, value: 3})
 ```
 
 ```{ojs}
 //| panel: fill
+
 Plot.plot({
   color: {
     type: "ordinal",
@@ -46,35 +48,48 @@ Plot.plot({
 })
 ```
 
+```{r}
+#| context: server-start
+
+library(readr)
+library(ggplot2)
+library(dplyr)
+```
 
 ```{r}
 #| context: server
+
 selectedData <- reactive({
+  req(input$xcol)
+  req(input$ycol)
   iris[, c(input$xcol, input$ycol)]
 })
 
 clusters <- reactive({
+  req(input$count)
   kmeans(selectedData(), input$count)
 })
 
 ojs_define(selectedData, clusters)
 ```
+
 
 ::: {.panel-tabset}
 
 ### OJS Client
 
-````
 ```{{ojs}}
 //| panel: sidebar
+
 vars = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
-viewof xcol = Inputs.select(vars, {label: "X Variable"})
+viewof xcol = Inputs.select(vars, {label: "X Variable", value: vars[0]})
 viewof ycol = Inputs.select(vars, {label: "Y Variable", value: vars[1]})
 viewof count = Inputs.range([1, 9], {label: "Cluster Count", step: 1, value: 3})
 ```
 
 ```{{ojs}}
 //| panel: fill
+
 Plot.plot({
   color: {
     type: "ordinal",
@@ -96,22 +111,33 @@ Plot.plot({
   ]
 })
 ```
-````
 
 ### Shiny Server
+
+```{{r}}
+#| context: server-start
+
+library(readr)
+library(ggplot2)
+library(dplyr)
+```
 
 ```{{r}}
 #| context: server
 
 selectedData <- reactive({
+  req(input$xcol)
+  req(input$ycol)
   iris[, c(input$xcol, input$ycol)]
 })
 
 clusters <- reactive({
+  req(input$count)
   kmeans(selectedData(), input$count)
 })
 
 ojs_define(selectedData, clusters)
 ```
+
 
 :::
