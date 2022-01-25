@@ -4,7 +4,9 @@ card <- function(x) {
   div(class = "card",
       div(class = "card-body",
           div(class = "card-title", tags$h4(x$title)),
-          div(class = "card-subtitle text-muted", tags$h6(HTML(x$subtitle))),
+          ifelse(!is.null(x$subtitle),
+                 tagList(div(class = "card-subtitle text-muted", tags$h6(HTML(x$subtitle)))),
+                 tagList()),
           tags$ul(tagList(lapply(x$links, function(link) { 
             tags$li(tags$a(href = link[[2]], link[[1]]))
           })))
