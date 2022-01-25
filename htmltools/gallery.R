@@ -20,7 +20,7 @@ category <- function(category) {
 # item is a bootstrap card with a thumbnail
 item <- function(item) {
   withTags({
-    div(class = "card border-2 rounded-3 g-col-24 g-col-sm-12 g-col-md-8 mb-2",
+    div(class = "card border-2 rounded-3 g-col-12 g-col-sm-6 g-col-md-4 mb-2",
         div(class = "card-header py-1 px-2 border-bottom border-1",
             small(class = "card-text text-nowrap inline-block",
                   a(href = item$href, item$title), 
