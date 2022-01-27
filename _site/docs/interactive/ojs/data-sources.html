@@ -958,18 +958,18 @@
 <p>The data you want to use with OJS might not always be available in raw form. Often you’ll need to read and preprocess the raw data using Python or R. You can perform this preprocessing during document render (in an <code>{r}</code> or <code>{python}</code> code cell) and then make it available to <code>{ojs}</code> cells via the <code>ojs_define()</code> function.</p>
 <p>Here’s an example. We’ll read the same data into R, do some grouping and summarization, then make it available to OJS using <code>ojs_define</code>:</p>
 <div class="cell">
-<div class="sourceCode" id="cb2"><pre class="sourceCode java cell-code code-with-copy"><code class="sourceCode java"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>r<span class="op">}</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>#<span class="op">|</span> output<span class="op">:</span> <span class="kw">false</span></span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown cell-code code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span><span class="op">(</span>readr<span class="op">)</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span><span class="op">(</span>dplyr<span class="op">)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>co2 <span class="op">=</span> <span class="fu">read_csv</span><span class="op">(</span><span class="st">"co2_mm.csv"</span><span class="op">)</span>  <span class="op">%&gt;%</span> </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span><span class="op">(</span>year<span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span><span class="op">(</span>max <span class="op">=</span> <span class="fu">max</span><span class="op">(</span>average<span class="op">))</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>co2 <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"co2_mm.csv"</span>)  <span class="sc">%&gt;%</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">max =</span> <span class="fu">max</span>(average))</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span><span class="op">(</span>co2data <span class="op">=</span> co2<span class="op">)</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ojs_define</span>(<span class="at">co2data =</span> co2)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that we could have done the same thing using Python (the <code>ojs_define</code> function is available in any document that uses R or Python).</p>
 <p>Now we plot the data using <a href="https://github.com/observablehq/plot">Observable Plot</a>:</p>
