@@ -41,6 +41,7 @@ interface OptionSchema {
     formats?: string[];
     contexts?: string[];
     engine?: string;
+    ["execute-only"]?: boolean;
   }
   description: string | { short: string, long?: string };
   hidden?: boolean;
@@ -84,7 +85,7 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
   const groupOptions = readSchema(`${context}-${name}.yml`) as Array<OptionSchema>;
   if (groupOptions) {
     return  groupOptions
-    .filter(optionsSchema => !optionsSchema.hidden)
+    .filter(optionsSchema => !optionsSchema.hidden && (name !== "execute" || optionsSchema.tags?.["execute-only"]))
     .map(optionSchema => ({
       name: optionSchema.name,
       description: asDescriptionString(optionSchema.description),
@@ -212,17 +213,21 @@ writeCellPages("ojs");
 
 // project tables
 const definitions = readSchema("definitions.yml") as Array<{ 
-  object?: { id: string, properties: Record<string,unknown> },
-  oneOf?: { id: string, schemas: Record<string,unknown>}
+  id: string,
+  object?: { properties: Record<string,unknown> },
+  oneOf?: { schemas: Record<string,unknown>}
 }>;
+
 const project = readSchema("project.yml") as Array<{ name: string}>;
 
 // read a project object
 function readProjectProperties(props: { [name: string]: Record<string,unknown> }, descriptions?: Record<string, string>) {
-  return Object.keys(props).map(key => ({
-    name: key,
-    description: descriptions?.[key] ||  asDescriptionString(findVal(props[key], "description"))
-  })) 
+  return Object.keys(props)
+    .filter(key => props[key].hidden !== true)
+    .map(key => ({
+      name: key,
+      description: descriptions?.[key] ||  asDescriptionString(findVal(props[key], "description"))
+    })) 
 }
 
 function readProjectObject(name: string) {
@@ -233,14 +238,14 @@ function readProjectObject(name: string) {
 }
 
 function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
-  const obj = definitions.find(value => value.object?.id === id) as any;
+  const obj = definitions.find(value => value.id === id) as any;
   const props = obj["object"]["properties"];
   return readProjectProperties(props, descriptions);
 }
 
 function readNavigationItem(descriptions?: Record<string, string>) {
-  const obj = definitions.find(value => value.oneOf?.id === "navigation-item") as any;
-  const props = obj["oneOf"]["schemas"][1]["object"]["properties"];
+  const obj = definitions.find(value => value.id === "navigation-item") as any;
+  const props = obj["anyOf"][1]["object"]["properties"];
   return readProjectProperties(props, descriptions);
 }
 
