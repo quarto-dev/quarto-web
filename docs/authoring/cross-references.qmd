@@ -20,9 +20,11 @@ See @fig-elephant for an illustration.
 
 Here is what this would look like rendered to HTML:
 
-<img src="images/crossref-figure.png" width="600" fig-alt="A line drawing of an elephant. The caption &apos;Figure 1: Elephant&apos; is centered beneath it."/>
+![](images/crossref-figure.png){.border fig-alt="A line drawing of an elephant. The caption 'Figure 1: Elephant' is centered beneath it." width="100%"}
 
-Quarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from knitr and Jupyter. The inline reference text ("fig. 1" in the above example) can also be customized (e.g. "figure 1" rather than the abbreviation).
+Quarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from Knitr and Jupyter.
+
+There are options available that control the text used for titles and references. For example, you could change "Figure 1" to read "Fig 1" or "fig. 1". See the [options documentation](#options) for details on how to customize the text used for crossrefs.
 
 ::: {.callout-note style="padding-bottom: 16px"}
 Quarto's syntax for cross-references is based on [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (which is in turn based on this discussion: <https://github.com/jgm/pandoc/issues/813>). There are however several differences (mostly related to handling computational output) to note:
@@ -61,7 +63,7 @@ See @fig-elephants for examples. In particular, @fig-hanno.
 
 Here is what this looks like when rendered as HTML:
 
-![](images/crossref-subfigures.png){.preview-image fig-alt="An artistic rendition of Surus, Hannibal's last war elephant, is on the left. Underneath this picture is the caption '(a) Surus.' On the right is a line drawing of Hanno, a famous elephant. Underneath this picture is the caption '(b) Hanno.' The words 'Figure 1: Famous elephants' are centered beneath both pictures. The text 'See fig. 1 for examples. In particular, fig. 1(b).' is underneath this text and is aligned to the left."}
+![](images/crossref-subfigures.png){.preview-image .border fig-alt="An artistic rendition of Surus, Hannibal's last war elephant, is on the left. Underneath this picture is the caption '(a) Surus.' On the right is a line drawing of Hanno, a famous elephant. Underneath this picture is the caption '(b) Hanno.' The words 'Figure 1: Famous elephants' are centered beneath both pictures. The text 'See fig. 1 for examples. In particular, fig. 1(b).' is underneath this text and is aligned to the left." width="100%"}
 
 Note that we also used the `layout-ncol` attribute to specify a two-column layout. See the article on [Figure Layout](figure-layout.qmd) for more details on laying out panels of figures.
 
@@ -148,7 +150,7 @@ To create a cross-referenceable table, add a caption to the table then include a
 See @tbl-letters.
 ```
 
-<img src="images/crossref-table.png" width="216" fig-alt="A table with 3 columns and four rows. The text &apos;Table 1: My Caption&apos; is above the header column. The text &apos;See tbl. 1&apos; is aligned to the left underneath the last column."/>
+![](images/crossref-table.png){fig-alt="A table with 3 columns and four rows. The text 'Table 1: My Caption' is above the header column. The text 'See tbl. 1' is aligned to the left underneath the last column." width="500"}
 
 ### Subtables
 
@@ -284,6 +286,7 @@ Theorems are commonly used in articles and books in mathematics. To include a re
 
 ``` markdown
 ::: {#thm-line}
+
 ## Line
 
 The equation of any straight line, called a linear equation, can be written as:
@@ -327,16 +330,18 @@ For LaTeX output the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is us
 
 ## References
 
-The examples above have all used the default syntax for inline references (e.g. `@fig-elephant`), which results in the use a short abbreviation for each object type (e.g. "fig. 1", "tbl. 1", etc.).
+The examples above have all used the default syntax for inline references (e.g. `@fig-elephant`), which results in the reference text "Figure 1", "Table 1", etc.
 
 You can customize the appearance of inline references by either changing the syntax of the inline reference or by setting options. Here are the various ways to compose a cross-reference and their resulting output:
 
-| Type          | Syntax                   | Output   |
-|---------------|--------------------------|----------|
-| Default       | `@fig-elephant`          | fig. 1   |
-| Capitalized   | `@Fig-elephant`          | Fig. 1   |
-| Custom Prefix | `[Figure @fig-elephant]` | Figure 1 |
-| No Prefix     | `[-@fig-elephant]`       | 1        |
+| Type          | Syntax                | Output   |
+|---------------|-----------------------|----------|
+| Default       | `@fig-elephant`       | Figure 1 |
+| Capitalized   | `@Fig-elephant`       | Figure 1 |
+| Custom Prefix | `[Fig @fig-elephant]` | Fig 1    |
+| No Prefix     | `[-@fig-elephant]`    | 1        |
+
+Note that the capitalized syntax makes no difference for the default output, but would indeed capitalize the first letter if the default had been change via an option to use lower case (e.g. "fig.").
 
 You can also group cross references using the following syntax:
 
@@ -354,6 +359,7 @@ You can use the `crossref: chapters` option to indicate that top-level headings 
 ---
 title: "My Document"
 author: "Jane Doe"
+number-sections: true
 crossref:
   chapters: true
 ---
@@ -384,7 +390,7 @@ format: pdf
 \listoffigures
 ```
 
-Note that the default titles for the lists use the form displayed above (i.e. "List of...\<Type>").
+Note that the default titles for the lists use the form displayed above (i.e. "List of...\<Type\>").
 
 ## Options
 
