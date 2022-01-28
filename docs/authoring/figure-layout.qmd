@@ -66,46 +66,6 @@ Note that the figure caption, title, and alt text can all be different. For exam
 <img src="elephant.png" title="Title: An elephant" alt="A drawing of an elephant.">
 ```
 
-### LaTeX Environments
-
-There are a number of LaTeX packages that provide custom figure environments. For example, the [mdframed](https://ctan.org/pkg/mdframed?lang=en) package includes an `mdframed` environment used to enclose figures in a special border style. By default, Quarto uses the standard `figure` environment, but you can use the `fig-env` attribute to specify a custom one. For example:
-
-``` markdown
----
-title: "Sidenotes"
-format:
-  pdf:
-    header-includes: |
-      \usepackage{sidenotes}
----
-
-![Elephant](elephant.png){fig-env="marginfigure"}
-```
-
-::: {.callout-note appearance="simple"}
-Note that if you do in fact want to place figures in the margin, you should use Quarto's built in support for [margin content](article-layout.qmd#margin-content), which will work for both LaTeX and HTML output
-:::
-
-### PGF/Ti*k*Z Graphics
-
-If you are creating LaTeX output, Quarto will automatically emit the correct LaTeX for markdown images that reference `.tex` files containg [PGF/Ti*k*Z](https://en.wikipedia.org/wiki/PGF/TikZ) vector graphics. For example, the following markdown images:
-
-``` markdown
-![](image1.tex)
-
-![](image2.tex){width=80%}
-```
-
-Will be written to LaTeX as:
-
-``` tex
-\input{image1.tex}
-
-\resizebox{0.8\linewidth}{!}{\input{image2.tex}}
-```
-
-As shown above, `width` and `height` percentages are automatically converted to `\linewidth` scaled. Alternatively you can specify custom LaTeX for the `width` and `height` arguments of `\resizebox`.
-
 ### Multiformat Figures
 
 You can write markdown that provides a distinct image file format depending on the target output format. To do this simply leave-off the extension, for example:
@@ -123,21 +83,6 @@ format:
   pdf:
     default-image-extension: tex
 ```
-
-## Figure Divs
-
-You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with `#fig-`. For example, here we create a figure that includes an embedded iframe:
-
-``` markdown
-::: {#fig-elephant}
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/SNggmeilXDQ"></iframe>
-
-Elephant
-:::
-```
-
-Note that the last paragraph in the div block is used as the figure caption.
 
 ## Subfigures
 
@@ -205,6 +150,97 @@ If you have more than 2 images, you might want to lay them out across multiple r
 ![](images/elephant-rows.png){fig-alt="A 2x2 grid of pictures of elephants. There are labels underneath each of the pictures. Clockwise from the upper left, the labels say: Surus, Hanno, Lin Wang, and Abdul Abbas."}
 
 More complex figure arrangements (e.g. rows with varying column layouts) are possible. See the [Complex Layouts](#complex-layouts) section below for more details.
+
+## Figure Divs
+
+You can treat any markdown content you want as a figure by enclosing it in Pandoc div block with an identifier prefaced with `#fig-`. For example, here we create a figure that includes an embedded iframe:
+
+``` markdown
+::: {#fig-elephant}
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/SNggmeilXDQ"></iframe>
+
+Elephant
+:::
+```
+
+Note that the last paragraph in the div block is used as the figure caption.
+
+## LaTeX Figures
+
+This section describes some figure handling options that are specific to LaTeX output.
+
+### Environments
+
+There are a number of LaTeX packages that provide custom figure environments. For example, the [mdframed](https://ctan.org/pkg/mdframed?lang=en) package includes an `mdframed` environment used to enclose figures in a special border style. By default, Quarto uses the standard `figure` environment, but you can use the `fig-env` attribute to specify a custom one. For example:
+
+``` markdown
+---
+title: "Sidenotes"
+format:
+  pdf:
+    header-includes: |
+      \usepackage{mdframed}
+---
+
+![Elephant](elephant.png){fig-env="mdframed"}
+```
+
+### Figure Position
+
+The default LaTeX `figure` is a floating environment, so the specific location it appears in your document will depend on its size and the nature of the other content around it. You can exercise some control over this behavior using the `fig-pos` option. The `fig-pos` option provides a placement specifier for the `figure` environment. For example, the `ht` in this LaTeX snippet is the `fig-pos`:
+
+``` latex
+\begin{figure}[ht]
+
+\end{figure}
+```
+
+You can specify `fig-pos` either at the document level, as a executable code block option, or within markdown. Here we do all three:
+
+```` markdown
+---
+title: "My Document"
+format:
+  pdf:
+    fig-pos: 'h'
+---
+
+```{{python}}
+#| fig-pos: 't'
+
+```
+
+![](figure.png){fig.pos='b'}
+````
+
+See [this article](https://www.latex-project.org/publications/2014-FMi-TUB-tb111mitt-float-placement.pdf) for additional details on LaTeX figure positioning.
+
+::: callout-note
+## Figures and Code Blocks
+
+If your figure was generated by an executable code block and the code was included in the output (`echo: true`), then `fig-pos` will be set to `H` by default (to try to keep it alongside the code that generated it). In all other cases, default LaTeX handing of figure position is used unless you specify an explicit `fig-pos`.
+:::
+
+### PGF/Ti*k*Z Graphics
+
+If you are creating LaTeX output, Quarto will automatically emit the correct LaTeX for markdown images that reference `.tex` files containg [PGF/Ti*k*Z](https://en.wikipedia.org/wiki/PGF/TikZ) vector graphics. For example, the following markdown images:
+
+``` markdown
+![](image1.tex)
+
+![](image2.tex){width=80%}
+```
+
+Will be written to LaTeX as:
+
+``` tex
+\input{image1.tex}
+
+\resizebox{0.8\linewidth}{!}{\input{image2.tex}}
+```
+
+As shown above, `width` and `height` percentages are automatically converted to `\linewidth` scaled. Alternatively you can specify custom LaTeX for the `width` and `height` arguments of `\resizebox`.
 
 ## Table Panels
 
