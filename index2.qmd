@@ -38,20 +38,20 @@ editor: source
 # Hello, Quarto 
 <ul class="nav nav-pills" id="hello-quarto-tab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="jupyter-tab" data-bs-toggle="pill" data-bs-target="#jupyter" type="button" role="tab" aria-controls="jupyter" aria-selected="true">Jupyter</button>
+    <button class="nav-link" id="jupyter-tab" data-bs-toggle="pill" data-bs-target="#jupyter" type="button" role="tab" aria-controls="jupyter" aria-selected="true">Jupyter</button>
   </li>
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="knitr-tab" data-bs-toggle="pill" data-bs-target="#knitr" type="button" role="tab" aria-controls="knitr" aria-selected="false">Knitr</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="observable-tab" data-bs-toggle="pill" data-bs-target="#observable" type="button" role="tab" aria-controls="observable" aria-selected="false">Observable</button>
+    <button class="nav-link active" id="observable-tab" data-bs-toggle="pill" data-bs-target="#observable" type="button" role="tab" aria-controls="observable" aria-selected="false">Observable</button>
   </li>
 </ul>
 :::
 
 <div class="tab-content" id="hello-quarto-tabcontent">
 
-<div class="tab-pane fade show active" id="jupyter" role="tabpanel" aria-labelledby="jupyter-tab">
+<div class="tab-pane fade" id="jupyter" role="tabpanel" aria-labelledby="jupyter-tab">
 
 Weave together narrative text and code to produce elegantly formatted output. Quarto documents are fully reproducible. Use markdown with executable code cells (shown below) or render existing Jupyter Notebooks using any Jupyter kernel.
 
@@ -77,11 +77,14 @@ import matplotlib.pyplot as plt
 
 r = np.arange(0, 2, 0.01)
 theta = 2 * np.pi * r
-fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
 ax.plot(theta, r)
 ax.set_rticks([0.5, 1, 1.5, 2])
 ax.grid(True)
 plt.show()
+
 ```
 ````
 :::
@@ -124,11 +127,12 @@ format:
 
 library(ggplot2)
 
-ggplot(airquality, aes(Temp, Ozone)) + 
-        geom_point() + 
-        geom_smooth(method = "loess")
+ggplot(airquality, 
+  aes(Temp, Ozone)) + 
+  geom_point() + 
+  geom_smooth(method = "loess"
+)
 ```
-
 ````
 :::
 
@@ -141,9 +145,54 @@ ggplot(airquality, aes(Temp, Ozone)) +
 
 </div>
 
-<div class="tab-pane fade" id="observable" role="tabpanel" aria-labelledby="observable-tab">
+<div class="tab-pane fade show active" id="observable" role="tabpanel" aria-labelledby="observable-tab">
 
-Observable
+Quarto is a multi-language, next generation version of R Markdown from RStudio, and includes dozens of new features and capabilities (while at the same being able to render most existing Rmd files without modification).
+
+
+::: {.grid}
+::: {.g-col-lg-6 .g-col-12}
+````markdown
+---
+title: "observable plot"
+author: "Norah Jones"
+date: "May 22nd, 2021"
+format: html
+---
+
+## Athletes
+
+@fig-athletes plots the relationship between weight and gender.
+
+```{{ojs}}
+//| echo: false
+athletes = FileAttachment("athletes.csv")
+  .csv({typed: true})
+```
+
+```{{ojs}}
+//| label: fig-athletes
+//| fig-cap: Athletes by weight and gender
+//| code-fold: true
+
+Plot.rectY(athletes, Plot.binX(
+  {y: "count"}, 
+  {x: "weight", fill: "sex"}
+ )).plot()
+
+```
+````
+:::
+
+
+::: {.hello-output .g-col-lg-6 .g-col-12}
+
+![](images/hello-observable.png)
+
+:::
+
+
+:::
 
 </div>
 
@@ -334,7 +383,7 @@ Publish collections of documents as a website. Create books and manuscripts in b
 
 .hello-output {
 background-color: white;
-  min-height: 581px;
+  min-height: 560px;
   border: 1px solid #dee2e6;
 }
 
