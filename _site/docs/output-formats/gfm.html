@@ -178,7 +178,7 @@
     <a class="nav-link" href="../../index.html">Overview</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../get-started.html">Get Started</a>
+    <a class="nav-link" href="../../docs/getting-started/index.html">Get Started</a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../../docs/guide/index.html" aria-current="page">Guide</a>
@@ -219,8 +219,6 @@
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-        <div class="sidebar-tools-main">
-</div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -863,6 +861,7 @@
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
 <li><a href="#gfm-format" class="nav-link" data-scroll-target="#gfm-format">GFM Format</a></li>
+<li><a href="#webtex-math" class="nav-link" data-scroll-target="#webtex-math">WebTeX Math</a></li>
 <li><a href="#github-wikis" class="nav-link" data-scroll-target="#github-wikis">GitHub Wikis</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/gfm.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -907,11 +906,25 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render README.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Which will create <code>README.md</code> alongside your input file.</p>
 </section>
+<section id="webtex-math" class="level2">
+<h2 class="anchored" data-anchor-id="webtex-math">WebTeX Math</h2>
+<p>The <code>gfm</code> format uses <a href="https://github.com/KTHse/webtex">WebTeX</a> to display LaTeX equations. This is done by setting the Pandoc <code>html-math-method</code> to <code>webtex</code> by default. The <code>webtex</code> method works for any web page that can display images, and requires no special JavaScript or CSS.</p>
+<p>Any inline or display equations contained within your document will be converted to an image URL that requests a rendered version of the equation. For example, the following markdown:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>$x + 1$</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Will be converted to:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="al">![](https://latex.codecogs.com/svg.latex?x%20%2B%201)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You may want to override this default beahvior if you have another means of rendering markdown equations. You can do this as follows:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">gfm</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">html-math-method</span><span class="kw">:</span><span class="at"> plain</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that you can also specify any of the other meth rendering techniques (e.g.&nbsp;<code>mathjax</code> or <code>katex</code>) however equations rendered this way won’t display correctly unless the environment hosting your markdown has direct support for it.</p>
+<p>See the Pandoc documentation on <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">Math Rendering in HTML</a> for additional details.</p>
+</section>
 <section id="github-wikis" class="level2">
 <h2 class="anchored" data-anchor-id="github-wikis">GitHub Wikis</h2>
 <p>If you want to use Quarto to incorporate computations into a GitHub wiki start by <a href="https://docs.github.com/en/communities/documenting-your-project-with-wikis/adding-or-editing-wiki-pages#adding-or-editing-wiki-pages-locally">cloning the wiki for local editing</a>.</p>
 <p>Then, simply create a computational markdown file (.ipynb, .qmd) for each page in the wiki. You can render all of these files at once into their corresponding .md files using <a href="../../docs/projects/quarto-projects.html">Quarto Projects</a>. For example:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You don’t even strictly need a Quarto project file to do this as <code>quarto render</code> will render all input files in a directory by default if there is no project file.</p>
 
 

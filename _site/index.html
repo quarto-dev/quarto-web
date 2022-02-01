@@ -3,7 +3,8 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-99.9.9">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Quarto - Welcome to Quarto</title>
+  <meta name="description" content="Quarto is an open-source scientific and technical publishing system built on Pandoc">
+  <title>Quarto</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -144,205 +145,26 @@
   gtag('js', new Date());
   gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
   </script>
-  <script type="application/javascript">
-
-  window.document.addEventListener("DOMContentLoaded", function () {
-    
-    fetch('/docs/download/_download.json').then(response => {
-      return response.json();
-    }).then(dlData => {
-      populateDownloadButton(dlData.version, dlData.assets);
-      populateDownloadTable(dlData.version, dlData.assets);
-      window.tippy('a.checksum[data-tippy-content]', {interactive: true, placement: 'top-end', maxWidth: 'none',});
-
-    }).catch(err => {
-      console.log(err);
-    });
-  });
-
-  // Only assets named in this list will be displayed in the list of downloads 
-  // (Using the label value)
-  function downloadMappings(version) {
-    return {
-      [`quarto-${version}-win.msi`] : "Windows" ,
-      [`quarto-${version}-macos.pkg`]: "Mac OS" ,
-      [`quarto-${version}-linux-amd64.deb`]: "Linux" ,
-    }
-  }
-
-  function populateDownloadButton(version, assets) {
-  	const osData = guessOS();
-  	const osAsset = assets.find(asset => asset.name.endsWith(osData.install_extension));
-  	const mainDownloadLink = window.document.getElementById('download-url');
-  	mainDownloadLink.href = osAsset.download_url;
-  	mainDownloadLink.innerText = "";
-  	
-  	const containerEl = window.document.createElement("div");
-  	containerEl.className = "container";
-
-    const iconEl = window.document.createElement("div");
-    iconEl.innerHTML = osData.icon;
-    iconEl.className = "icon-container";
-    if (osData.icon_margin) {
-      iconEl.style.paddingTop = osData.icon_margin;
-    }
-    containerEl.append(iconEl);
-  	
-  	const textContainerEl = window.document.createElement("div");
-  	textContainerEl.className = "text-container";
-  	
-  	const mainTextEl = window.document.createElement("div");
-  	mainTextEl.innerHTML = `Download Quarto CLI`;
-  	textContainerEl.append(mainTextEl);
-  	
-  	const secondaryTextEl = window.document.createElement("div");
-  	secondaryTextEl.className = "secondary";
-  	secondaryTextEl.innerText = `${version} (${osData.name})`;
-  	textContainerEl.append(secondaryTextEl);
-  	
-  	containerEl.append(textContainerEl);
-  	mainDownloadLink.append(containerEl);
-  }
-
-  function populateDownloadTable(version, assets) {
-    const downloadTableContainer = window.document.getElementById('download-table');
-    
-    
-    const table = createTable();
-    createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
-    
-    const mappings = downloadMappings(version);
-    
-    const tbody = table.createTBody();
-    assets.forEach(asset => { 
-      createDownloadRow(tbody, version, asset);
-    });
-    createMoreRow(tbody);
-    
-    downloadTableContainer.append(table);
-    window.tippy('.checksum[data-tippy-content]', {interactive: true, placement: 'top-end', maxWidth: 'none',});
-  }
-
-
-  function createTable() {
-    const table = window.document.createElement("table");
-    table.className = "table";
-    return table;
-  }
-
-  function createHeadingRow(table, headings) {
-    const header = table.createTHead();
-    var row = header.insertRow(0);    
-    row.className = "header";
-    let cellCount = 0;
-    headings.forEach(heading => {
-      
-      const cell = row.insertCell(cellCount).outerHTML = `<th>${heading}</th>`;
-      cellCount = cellCount + 1;
-    });
-  }
-
-  function createDownloadRow(tbody, version, asset) {
-    // Ignore assets that aren't in the download mapping structure
-    const mapping = downloadMappings(version);
-    if (mapping[asset.name]) {
-      const row = tbody.insertRow();
-      
-      let i = 0;
-      const platformCell = row.insertCell(i++);
-      platformCell.innerText = mapping[asset.name];
-      
-      const downloadCell = row.insertCell(i++);
-      const downloadLinkEl = window.document.createElement("a");
-      downloadLinkEl.href = asset.download_url;
-      downloadLinkEl.innerText = asset.name;
-
-      downloadCell.appendChild(downloadLinkEl);
-      
-      const sizeCell = row.insertCell(i++);
-      if (asset.size) {
-        sizeCell.innerText = humanFileSize(asset.size);
-      }  
-      
-      const checksumCell = row.insertCell(i++);
-      if (asset.checksum) {
-        const checkSumSlice = asset.checksum.slice(0, 7);
-        
-        const checksumEl = window.document.createElement("div");
-        checksumEl.className = "checksum font-monospace";
-        checksumEl.setAttribute("data-tippy-content", asset.checksum);
-        checksumEl.innerText = checkSumSlice;
-        checksumCell.appendChild(checksumEl);
-      }    
-    }
-  }
-
-  function createMoreRow(tbody) {
-    const moreRow = tbody.insertRow();
-    moreRow.insertCell(0);
-    const cell = moreRow.insertCell(1);
-    
-    const moreLinkEl = window.document.createElement("a");
-    moreLinkEl.href = "https://github.com/quarto-dev/quarto-cli/releases/latest";
-    moreLinkEl.innerText = "more downloads…";
-    cell.appendChild(moreLinkEl);
-    
-    
-    moreRow.insertCell(2);
-    moreRow.insertCell(3);
-  }
-
-  function guessOS() {
-  	const userAgent = window.navigator.userAgent;
-  	if (userAgent.includes('Mac OS')) {
-  		return {
-  			name: "Mac OS",
-  			install_extension: "pkg",
-  			icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>',
-  		};
-  	} else if (userAgent.includes("Windows")) {
-  		return {
-  			name: "Windows",
-  			install_extension: "msi",
-  			icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>',
-  			icon_margin: "6px"
-  			
-  		};
-  	} else {
-  		return {
-  			name: "Linux",
-  			install_extension: "deb",
-  			icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M220.8 123.3c1 .5 1.8 1.7 3 1.7 1.1 0 2.8-.4 2.9-1.5.2-1.4-1.9-2.3-3.2-2.9-1.7-.7-3.9-1-5.5-.1-.4.2-.8.7-.6 1.1.3 1.3 2.3 1.1 3.4 1.7zm-21.9 1.7c1.2 0 2-1.2 3-1.7 1.1-.6 3.1-.4 3.5-1.6.2-.4-.2-.9-.6-1.1-1.6-.9-3.8-.6-5.5.1-1.3.6-3.4 1.5-3.2 2.9.1 1 1.8 1.5 2.8 1.4zM420 403.8c-3.6-4-5.3-11.6-7.2-19.7-1.8-8.1-3.9-16.8-10.5-22.4-1.3-1.1-2.6-2.1-4-2.9-1.3-.8-2.7-1.5-4.1-2 9.2-27.3 5.6-54.5-3.7-79.1-11.4-30.1-31.3-56.4-46.5-74.4-17.1-21.5-33.7-41.9-33.4-72C311.1 85.4 315.7.1 234.8 0 132.4-.2 158 103.4 156.9 135.2c-1.7 23.4-6.4 41.8-22.5 64.7-18.9 22.5-45.5 58.8-58.1 96.7-6 17.9-8.8 36.1-6.2 53.3-6.5 5.8-11.4 14.7-16.6 20.2-4.2 4.3-10.3 5.9-17 8.3s-14 6-18.5 14.5c-2.1 3.9-2.8 8.1-2.8 12.4 0 3.9.6 7.9 1.2 11.8 1.2 8.1 2.5 15.7.8 20.8-5.2 14.4-5.9 24.4-2.2 31.7 3.8 7.3 11.4 10.5 20.1 12.3 17.3 3.6 40.8 2.7 59.3 12.5 19.8 10.4 39.9 14.1 55.9 10.4 11.6-2.6 21.1-9.6 25.9-20.2 12.5-.1 26.3-5.4 48.3-6.6 14.9-1.2 33.6 5.3 55.1 4.1.6 2.3 1.4 4.6 2.5 6.7v.1c8.3 16.7 23.8 24.3 40.3 23 16.6-1.3 34.1-11 48.3-27.9 13.6-16.4 36-23.2 50.9-32.2 7.4-4.5 13.4-10.1 13.9-18.3.4-8.2-4.4-17.3-15.5-29.7zM223.7 87.3c9.8-22.2 34.2-21.8 44-.4 6.5 14.2 3.6 30.9-4.3 40.4-1.6-.8-5.9-2.6-12.6-4.9 1.1-1.2 3.1-2.7 3.9-4.6 4.8-11.8-.2-27-9.1-27.3-7.3-.5-13.9 10.8-11.8 23-4.1-2-9.4-3.5-13-4.4-1-6.9-.3-14.6 2.9-21.8zM183 75.8c10.1 0 20.8 14.2 19.1 33.5-3.5 1-7.1 2.5-10.2 4.6 1.2-8.9-3.3-20.1-9.6-19.6-8.4.7-9.8 21.2-1.8 28.1 1 .8 1.9-.2-5.9 5.5-15.6-14.6-10.5-52.1 8.4-52.1zm-13.6 60.7c6.2-4.6 13.6-10 14.1-10.5 4.7-4.4 13.5-14.2 27.9-14.2 7.1 0 15.6 2.3 25.9 8.9 6.3 4.1 11.3 4.4 22.6 9.3 8.4 3.5 13.7 9.7 10.5 18.2-2.6 7.1-11 14.4-22.7 18.1-11.1 3.6-19.8 16-38.2 14.9-3.9-.2-7-1-9.6-2.1-8-3.5-12.2-10.4-20-15-8.6-4.8-13.2-10.4-14.7-15.3-1.4-4.9 0-9 4.2-12.3zm3.3 334c-2.7 35.1-43.9 34.4-75.3 18-29.9-15.8-68.6-6.5-76.5-21.9-2.4-4.7-2.4-12.7 2.6-26.4v-.2c2.4-7.6.6-16-.6-23.9-1.2-7.8-1.8-15 .9-20 3.5-6.7 8.5-9.1 14.8-11.3 10.3-3.7 11.8-3.4 19.6-9.9 5.5-5.7 9.5-12.9 14.3-18 5.1-5.5 10-8.1 17.7-6.9 8.1 1.2 15.1 6.8 21.9 16l19.6 35.6c9.5 19.9 43.1 48.4 41 68.9zm-1.4-25.9c-4.1-6.6-9.6-13.6-14.4-19.6 7.1 0 14.2-2.2 16.7-8.9 2.3-6.2 0-14.9-7.4-24.9-13.5-18.2-38.3-32.5-38.3-32.5-13.5-8.4-21.1-18.7-24.6-29.9s-3-23.3-.3-35.2c5.2-22.9 18.6-45.2 27.2-59.2 2.3-1.7.8 3.2-8.7 20.8-8.5 16.1-24.4 53.3-2.6 82.4.6-20.7 5.5-41.8 13.8-61.5 12-27.4 37.3-74.9 39.3-112.7 1.1.8 4.6 3.2 6.2 4.1 4.6 2.7 8.1 6.7 12.6 10.3 12.4 10 28.5 9.2 42.4 1.2 6.2-3.5 11.2-7.5 15.9-9 9.9-3.1 17.8-8.6 22.3-15 7.7 30.4 25.7 74.3 37.2 95.7 6.1 11.4 18.3 35.5 23.6 64.6 3.3-.1 7 .4 10.9 1.4 13.8-35.7-11.7-74.2-23.3-84.9-4.7-4.6-4.9-6.6-2.6-6.5 12.6 11.2 29.2 33.7 35.2 59 2.8 11.6 3.3 23.7.4 35.7 16.4 6.8 35.9 17.9 30.7 34.8-2.2-.1-3.2 0-4.2 0 3.2-10.1-3.9-17.6-22.8-26.1-19.6-8.6-36-8.6-38.3 12.5-12.1 4.2-18.3 14.7-21.4 27.3-2.8 11.2-3.6 24.7-4.4 39.9-.5 7.7-3.6 18-6.8 29-32.1 22.9-76.7 32.9-114.3 7.2zm257.4-11.5c-.9 16.8-41.2 19.9-63.2 46.5-13.2 15.7-29.4 24.4-43.6 25.5s-26.5-4.8-33.7-19.3c-4.7-11.1-2.4-23.1 1.1-36.3 3.7-14.2 9.2-28.8 9.9-40.6.8-15.2 1.7-28.5 4.2-38.7 2.6-10.3 6.6-17.2 13.7-21.1.3-.2.7-.3 1-.5.8 13.2 7.3 26.6 18.8 29.5 12.6 3.3 30.7-7.5 38.4-16.3 9-.3 15.7-.9 22.6 5.1 9.9 8.5 7.1 30.3 17.1 41.6 10.6 11.6 14 19.5 13.7 24.6zM173.3 148.7c2 1.9 4.7 4.5 8 7.1 6.6 5.2 15.8 10.6 27.3 10.6 11.6 0 22.5-5.9 31.8-10.8 4.9-2.6 10.9-7 14.8-10.4s5.9-6.3 3.1-6.6-2.6 2.6-6 5.1c-4.4 3.2-9.7 7.4-13.9 9.8-7.4 4.2-19.5 10.2-29.9 10.2s-18.7-4.8-24.9-9.7c-3.1-2.5-5.7-5-7.7-6.9-1.5-1.4-1.9-4.6-4.3-4.9-1.4-.1-1.8 3.7 1.7 6.5z"/></svg>',
-  		  icon_margin: "6px"
-  		};
-  	}
-  }
-
-  function humanFileSize(size) {
-      var i = Math.floor( Math.log(size) / Math.log(1024) );
-      return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-  };
-
-
-  </script> 
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
   <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Quarto - Welcome to Quarto">
-<meta property="og:description" content="A scientific and technical publishing system built on Pandoc">
-<meta property="og:image" content="https://quarto.org/docs/getting-started/images/hello-quarto.png">
+<meta property="og:title" content="Quarto">
+<meta property="og:description" content="Quarto is an open-source scientific and technical publishing system built on Pandoc
+">
+<meta property="og:image" content="https://quarto.org/quarto.png">
 <meta property="og:site-name" content="Quarto">
-<meta property="og:image:height" content="1610">
-<meta property="og:image:width" content="1356">
-<meta name="twitter:title" content="Quarto - Welcome to Quarto">
-<meta name="twitter:description" content="A scientific and technical publishing system built on Pandoc">
-<meta name="twitter:image" content="https://quarto.org/docs/getting-started/images/hello-quarto.png">
-<meta name="twitter:image-height" content="1610">
-<meta name="twitter:image-width" content="1356">
+<meta property="og:image:height" content="77">
+<meta property="og:image:width" content="320">
+<meta name="twitter:title" content="Quarto">
+<meta name="twitter:description" content="Quarto is an open-source scientific and technical publishing system built on Pandoc
+">
+<meta name="twitter:image" content="https://quarto.org/quarto.png">
+<meta name="twitter:image-height" content="77">
+<meta name="twitter:image-width" content="320">
 <meta name="twitter:card" content="summary_large_image">
 </head>
-<body>
+<body class="fullcontent">
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
@@ -359,7 +181,7 @@
     <a class="nav-link active" href="./index.html" aria-current="page">Overview</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./get-started.html">Get Started</a>
+    <a class="nav-link" href="./docs/getting-started/index.html">Get Started</a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./docs/guide/index.html">Guide</a>
@@ -389,114 +211,469 @@
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-layout-custom page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">On this page</h2>
-<ul>
-<li><a href="#introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-<li><a href="#hello-quarto" class="nav-link" data-scroll-target="#hello-quarto">Hello, Quarto</a></li>
-<li><a href="#getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a></li>
-</ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
-    </div>
 <!-- main -->
-<main class="content">
-<header id="title-block-header">
-<h1 class="title display-7">Welcome to Quarto</h1>
-<p class="subtitle lead">A scientific and technical publishing system built on Pandoc</p>
-</header>
-
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Quarto<sup><span class="trademark">®</span></sup> is an <a href="https://github.com/quarto-dev/quarto-cli">open-source</a> scientific and technical publishing system built on <a href="https://pandoc.org">Pandoc</a>. Quarto documents are authored using <a href="https://en.wikipedia.org/wiki/Markdown">markdown</a>, an easy to write plain text format.</p>
-<p>In addition to the core capabilities of Pandoc, Quarto includes:</p>
-<ol type="1">
-<li><p>Embedding code and output from Python, R, and JavaScript via integration with <a href="https://jupyter.org/">Jupyter</a>, <a href="https://yihui.org/knitr/">Knitr</a>, and <a href="https://github.com/observablehq/">Observable</a>.</p></li>
-<li><p>A variety of extensions to Pandoc markdown useful for technical writing including cross-references, sub-figures, layout panels, hoverable citations and footnotes, callouts, and more.</p></li>
-<li><p>A project system for rendering groups of documents at once, sharing options across documents, and producing aggregate output like <a href="./docs/websites/index.html">websites</a> and <a href="./docs/books/index.html">books</a>.</p></li>
-<li><p>Authoring using a wide variety of editors and notebooks including <a href="./docs/tools/jupyter-lab.html">JupyterLab</a>, <a href="./docs/tools/rstudio.html">RStudio</a>, and <a href="./docs/tools/vscode.html">VS Code</a>.</p></li>
-<li><p>A <a href="docs/visual-editor/">visual markdown editor</a> that provides a productive writing interface for composing long-form documents.</p></li>
-</ol>
-<p>To get a quick flavor of what you can create with Quarto, check out the <a href="docs/gallery/">Gallery</a> of examples.</p>
-<p>The overall design of Quarto is influenced heavily by <a href="https://rmarkdown.rstudio.com/">R Markdown</a>, however unlike R Markdown the architecture is language agnostic. In its current iteration, Quarto can render plain markdown, Jupyter Notebooks, and Knitr documents.</p>
+<div class="hero-banner">
+<div class="hero-image hero-image-left">
+<p><img src="images/hero_left.png" class="img-fluid"></p>
+</div>
+<section id="welcome-to-quarto" class="content-block">
+<h1>Welcome to Quarto</h1>
+<h3 id="quarto-is-an-open-source-scientific-and-technical-publishing-system-built-on-pandoc">Quarto<sup><span class="trademark">®</span></sup> is an open-source scientific and technical publishing system built on <a href="https://pandoc.org">Pandoc</a></h3>
+<ul>
+<li>Create dynamic documents with Python, R, and JavaScript via integration with <a href="https://jupyter.org/">Jupyter</a>, <a href="https://yihui.org/knitr/">Knitr</a>, and <a href="https://github.com/observablehq/">Observable</a></li>
+<li>Publish high-quality articles, reports, presentations, websites, and books in HTML, PDF, MS Word, ePub, and more.</li>
+<li>Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.</li>
+</ul>
+<div class="hero-buttons">
+<p><a href="get-started.html" class="btn-get-started btn-action btn btn-success btn-lg" role="button">Get Started</a> <a href="docs/guide/" id="btn-guide" class="btn-action btn btn-info btn-lg" role="button">Guide</a></p>
+</div>
 </section>
-<section id="hello-quarto" class="level2">
-<h2 class="anchored" data-anchor-id="hello-quarto">Hello, Quarto</h2>
-<p>Here’s a simple example of a markdown document that includes a cross-referenced figure generated by <a href="https://matplotlib.org/">Matplotlib</a>:</p>
+<div class="hero-image hero-image-right">
+<p><img src="images/hero_right.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="hello-quarto alt-background">
+<div class="content-block">
+<section id="hello-quarto" class="hello-quarto-banner">
+<h1>Hello, Quarto</h1>
+<ul class="nav nav-pills" id="hello-quarto-tab" role="tablist">
+<li class="nav-item" role="presentation">
+<button class="nav-link active" id="jupyter-tab" data-bs-toggle="pill" data-bs-target="#jupyter" type="button" role="tab" aria-controls="jupyter" aria-selected="true">
+Jupyter
+</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="knitr-tab" data-bs-toggle="pill" data-bs-target="#knitr" type="button" role="tab" aria-controls="knitr" aria-selected="false">
+Knitr
+</button>
+</li>
+<li class="nav-item" role="presentation">
+<button class="nav-link" id="observable-tab" data-bs-toggle="pill" data-bs-target="#observable" type="button" role="tab" aria-controls="observable" aria-selected="false">
+Observable
+</button>
+</li>
+</ul>
+</section>
+<div id="hello-quarto-tabcontent" class="tab-content">
+<div id="jupyter" class="tab-pane fade show active" role="tabpanel" aria-labelledby="jupyter-tab">
+<p>Weave together narrative text and code to produce elegantly formatted output. Quarto documents are fully reproducible. Use markdown with executable code cells (shown below) or render existing Jupyter Notebooks using any Jupyter kernel.</p>
+<div class="grid">
+<div class="g-col-lg-6 g-col-12">
 <div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Matplotlib Demo"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Norah Smith"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "May 22nd, 2021"</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "matplotlib demo"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>For a demonstration of a line plot on a polar axis, see @fig-polar.</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Polar Axis</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>For a demonstration of a line plot on a polar axis, see @fig-polar.</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-polar</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "A line plot on a polar axis"</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-polar</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "A line plot on a polar axis"</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(subplot_kw<span class="op">=</span>{<span class="st">'projection'</span>: <span class="st">'polar'</span>})</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Here’s what the document looks like when rendered by Quarto:</p>
-<p><img src="docs/getting-started/images/hello-quarto.png" class="border preview-image img-fluid" alt="This is an example of a Quarto document with one section containing one data visualization. At the top of the document in larger text is the title ('Matplotlib Demo'). On the following line in normal-sized text is the author (Norah Smith), and underneath that is the document date (May 22, 2021). Underneath that in large text is the section title, 'Polar Axis'. Afterwards, there is a line of text: 'For a demonstration of a line plot on a polar axis, see fig.1'. Under that is a triangle pointing at the word 'Code', indicating a code-fold button. Below this is a plot of a straight line in polar coordinates. There is a large black circle containing 4 smaller concentric gray circles with 4 axes overlaid on it. Angle measurements are indicated on the largest outer circle, starting at 0 degrees on the right side of the circle and continuing around the circle in 45 degree increments; 90 degrees is labeled at the top of the circle, 180 degrees is labeled at the left of the circle, and 270 degrees is labeled at the bottom of the circle. There are four axes on this circle, each of which are straight lines that run from one side of the circle through the origin. One axis begins at 0 degrees, goes through the origin, and ends at 180 degrees. The next starts at 45 degrees and ends at 225 degrees. Another one starts at 90 degrees and ends at 270 degrees. The last starts at 135 degrees and ends at 315 degrees. Each of the four gray concentric circles has a label on their border between the 0 degree and 45 degree marks indicating the length of their radius. From smallest to largest, the circles are labeled 0.5, 1, 1.5, and 2.0. There is a blue line that starts at the origin (the intersection of the four axes) and spirals outward. Below this plot is the caption: 'Figure 1: A line plot on a polar axis.'"></p>
-<p>You can render documents using the <code>quarto</code> command line tool:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render matplotlib-demo.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Embedded code blocks (in this case some Python code that generates a plot) are run by Quarto, and their output is included in the final document generated by Pandoc.</p>
-<p>Note that we use the file extension <code>.qmd</code> to indicate that this isn’t a plain markdown file but rather one with embedded computations to be run by Quarto.</p>
-<p>Don’t worry if all the mechanics of this example aren’t obvious, the main takeaway is that Quarto enables you to enhance <a href="https://pandoc.org/MANUAL.html#pandocs-markdown">Pandoc markdown</a> documents with features useful for scientific and technical communication including executable code, cross-references, and much more.</p>
-<div class="callout-note callout callout-style-default callout-captioned">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  subplot_kw <span class="op">=</span> {<span class="st">'projection'</span>: <span class="st">'polar'</span>} </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="callout-caption-container flex-fill">
-Note
+<div class="hello-output g-col-lg-6 g-col-12">
+<p><img src="images/hello-jupyter.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="callout-body-container callout-body">
-<p>While this example demonstrates rendering a <code>.qmd</code> markdown file, Quarto can also directly render existing computational document formats like Jupyter Notebooks (.ipynb) and R Markdown (.Rmd).</p>
 </div>
+<div id="knitr" class="tab-pane fade" role="tabpanel" aria-labelledby="knitr-tab">
+<p>Quarto is a multi-language, next generation version of R Markdown from RStudio, and includes dozens of new features and capabilities (while at the same being able to render most existing Rmd files without modification).</p>
+<div class="grid">
+<div class="g-col-lg-6 g-col-12">
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "ggplot2 demo"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Norah Jones"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "May 22nd, 2021"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-width: 8</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-height: 4</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Air Quality</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>@fig-airquality further explores the impact of temperature on ozone level.</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-airquality</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Temperature and ozone level.</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(airquality, <span class="fu">aes</span>(Temp, Ozone)) <span class="sc">+</span> </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="hello-output g-col-lg-6 g-col-12">
+<p><img src="images/hello-knitr.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<div id="observable" class="tab-pane fade" role="tabpanel" aria-labelledby="observable-tab">
+<p>Quarto includes native support for Observable JS, a set of JavaScript enhancements created by Mike Bostock (the author of D3). Observable JS uses a reactive execution model, and is especially well suited for interactive data exploration and analysis.</p>
+<div class="grid">
+<div class="g-col-lg-6 g-col-12">
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "observable plot"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Norah Jones"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Athletes</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>@fig-athletes plots the relationship between weight and gender.</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```{ojs}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">//| echo: false</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>athletes <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"athletes.csv"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">csv</span>({<span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span>})</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="vs">```</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="vs">```</span>{ojs}</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">//| label: fig-athletes</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">//| fig-cap: Athletes by weight and gender</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">//| code-fold: true</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">rectY</span>(athletes<span class="op">,</span> Plot<span class="op">.</span><span class="fu">binX</span>(</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span> </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">x</span><span class="op">:</span> <span class="st">"weight"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"sex"</span>}</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a> ))<span class="op">.</span><span class="fu">plot</span>()</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="vs">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="hello-output g-col-lg-6 g-col-12">
+<p><img src="images/hello-observable.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid">
+
+</div>
+</div>
+</div>
+<div class="content-block">
+<div class="features">
+<section id="dynamic-documents" class="feature">
+<h3>Dynamic Documents</h3>
+<p>Execute code with Jupyter, Knitr, and Observable. Create reproducible documents that can be regenerated when underlying assumptions or data change.</p>
+<div class="learn-more">
+<p><a href="./docs/computations/running-code.html">Learn more »</a></p>
 </div>
 </section>
-<section id="getting-started" class="level2">
-<h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
-<p>Installing the Quarto CLI (command-line interface) provides you with everything you need to render basic markdown documents (including a recent version of <a href="https://pandoc.org">Pandoc</a>).</p>
-<div id="download-button">
-<div>
-<p><a href="_" id="download-url" class="btn btn-primary" title="Download Quarto">_</a></p>
+<section id="beautiful-publications" class="feature">
+<h3>Beautiful Publications</h3>
+<p>Publish high-quality articles, reports, presentations, websites, and books in HTML, PDF, MS Word, ePub, and more. Use a single source document to target multiple formats.</p>
+<div class="learn-more">
+<p><a href="./docs/output-formats/all-formats.html">Learn more »</a></p>
 </div>
-</div>
-<div id="download-table">
-
-</div>
-<p><a href="./docs/getting-started/installation.html">Installation</a> will get you up and running with Quarto (including additional dependencies required for computational documents).</p>
-<p><a href="./docs/getting-started/quarto-basics.html">Quarto Basics</a> will help you learn the core mechanics of rendering markdown as well as how to specify document formats and options.</p>
-<p><a href="./docs/computations/running-code.html">Running Code</a> explains how to work with Jupyter and Knitr based computational documents in more depth.</p>
-<p><a href="./docs/tools/jupyter-lab.html">JupyterLab</a>, <a href="./docs/tools/rstudio.html">RStudio</a>, and <a href="./docs/tools/vscode.html">VS Code</a> help you create an optimal workflow in your code editing tool(s) of choice.</p>
-<p><a href="docs/visual-editor/">Visual Editor</a> describes how to use Quarto’s visual interface for composing long-form markdown documents.</p>
-<p><a href="docs/gallery/">Gallery</a> provides examples of articles, reports, presentations, interactive documents, websites, and books using various formats.</p>
-
-
 </section>
-</main> <!-- /main -->
+<section id="scientific-markdown" class="feature">
+<h3>Scientific Markdown</h3>
+<p>Pandoc markdown has excellent support for LaTeX equations and citations. Quarto adds extensions for cross-references, figure panels, callouts, advanced page layout, and more.</p>
+<div class="learn-more">
+<p><a href="./docs/authoring/markdown-basics.html">Learn more »</a></p>
+</div>
+</section>
+<section id="authoring-tools" class="feature">
+<h3>Authoring Tools</h3>
+<p>Use your favorite tools including Jupyter Lab, RStudio IDE, VS Code, or any text editor. Use the Quarto visual markdown editor for long-form documents.</p>
+<div class="learn-more">
+<p><a href="./docs/tools/jupyter-lab.html">Learn more »</a></p>
+</div>
+</section>
+<section id="interactivity" class="feature">
+<h3>Interactivity</h3>
+<p>Engage readers by adding interactive data exploration to your documents using Jupyter Widgets, htmlwidgets for R, Observable JS, and Shiny.</p>
+<div class="learn-more">
+<p><a href="docs/interactive/">Learn more »</a></p>
+</div>
+</section>
+<section id="websites-and-books" class="feature">
+<h3>Websites and Books</h3>
+<p>Publish collections of documents as a website. Create books and manuscripts in both print formats (PDF and MS Word) and online formats (HTML and ePub).</p>
+<div class="learn-more">
+<p><a href="docs/websites/">Learn more »</a></p>
+</div>
+</section>
+</div>
+</div>
+<div class="get-started alt-background">
+<section id="analyze.-share.-reproduce.-your-data-has-a-storytell-it-with-quarto." class="content-block">
+<h3>Analyze. Share. Reproduce. Your data has a story—tell it with Quarto.</h3>
+<p><a href="get-started.html" class="btn-get-started btn-action btn btn-success btn-lg" role="button">Get Started</a></p>
+</section>
+</div>
+<style type="text/css">
+
+.content-block {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+
+@media(min-width: 900px) {
+.content-block {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+}
+
+@media (min-width: 1200px) {
+.content-block {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+}
+
+.hero-banner {
+  position: relative;
+  background-color: rgb(237,243,249);
+  display: flex;
+  justify-content: center;
+}
+
+.hero-banner h1 {
+  color: rgb(75,149,208);
+  font-size: 2.5rem;
+}
+
+
+.hero-banner .hero-image {
+  position: absolute;
+  display: none;
+  height: auto;
+}
+
+@media (min-width: 1000px) {
+.hero-banner .hero-image {
+  display: initial;
+  width: 270px;
+}
+}
+
+@media (min-width: 1200px) {
+.hero-banner .hero-image {
+  width: 340px;
+}
+}
+
+@media (min-width: 1400px) {
+.hero-banner .hero-image {
+  width: 440px;
+}
+}
+
+.hero-banner .hero-image p {
+  margin-bottom: 0;
+}
+
+.hero-banner .hero-image-left {
+  left: 0;
+  bottom: 0;
+}
+
+.hero-banner .hero-image-right {
+  right: 0;
+  bottom: 0;
+}
+
+
+.hero-banner .content-block {
+  max-width: 600px;
+  z-index: 2;
+}
+
+.hero-banner a {
+  text-decoration: none;
+}
+
+.hero-banner h3 {
+  margin-top: 1.3rem;
+  margin-bottom: 1.3rem;
+}
+
+.hero-banner h4 {
+  margin-top: 0;
+}
+
+.hero-banner a[role="button"] {
+  margin-right: 17px;
+  margin-top: 0.6rem;
+  margin-bottom: 1.6rem;
+}
+
+.btn-get-started {
+  background-color: rgb(105,177,233) !important;
+}
+
+.btn-action {
+  min-width: 165px;
+  border-radius: 30px;
+  border: none;
+}
+
+.hero-banner #btn-guide {
+  background-color: rgb(169,189,210) !important;
+  border: none;
+}
+
+
+
+
+.hero-banner ul {
+  padding-inline-start: 21px;
+  font-size: 1.1rem;
+}
+
+.hero-banner ul li {
+  padding-bottom: 0.4rem;
+}
+
+
+.alt-background {
+  background-color: rgb(247,249,251);
+  border-top: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.hello-quarto {
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 600px) {
+.hello-quarto-banner {
+  display: inline-flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.hello-quarto-banner h1 {
+  margin-right: 40px;
+}
+
+.hello-quarto-banner ul {
+ 
+}
+}
+
+.hello-quarto-banner .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: #9954bb !important;
+  opacity: 0.7;
+}
+
+.hello-quarto-banner .nav-pills button {
+  border-radius: 10px;
+}
+
+.hello-quarto .tab-content {
+  border: none;
+  padding: 0;
+  color: rgb(84, 85, 85);
+}
+
+.hello-quarto .tab-content p {
+  font-size: 1.1em;
+  margin-bottom: 1.5em;
+}
+
+.hello-quarto div.sourceCode {
+  background-color: white;
+  border: 1px solid #dee2e6;
+}
+
+.hello-output {
+background-color: white;
+ 
+  border: 1px solid #dee2e6;
+}
+
+.features {
+  padding-bottom: 2em;
+}
+
+.feature {
+  margin-top: 20px;
+}
+
+@media (min-width: 800px) { 
+.features {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0 0 0 -30px;
+  width: calc(100% + 30px);
+}
+.feature {
+  width: calc(33% - 30px);
+  margin: 20px 0 0 30px;
+}
+}
+
+.feature h3 {
+  margin-top: 0;
+}
+
+.feature p:first-of-type {
+  margin-bottom: 0.2rem;
+  color: rgb(84, 85, 85);
+}
+
+.get-started {
+   text-align: center;
+   padding-bottom: 2rem;
+}
+
+.get-started h3 {
+   margin-top: 1rem;
+   margin-bottom: 2rem;
+}
+
+nav.page-navigation {
+  display: none;
+}
+
+.nav-footer {
+  border-top: none !important; 
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: #ff7518;
+}
+
+
+
+</style>
+
+
+
 <script type="text/javascript">
 
 // replace cmd keyboard shortcut w/ control on non-Mac platforms
@@ -585,12 +762,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-  </div>
-  <div class="nav-page nav-page-next">
-  </div>
-</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

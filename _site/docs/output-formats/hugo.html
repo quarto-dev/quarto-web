@@ -178,7 +178,7 @@
     <a class="nav-link" href="../../index.html">Overview</a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../get-started.html">Get Started</a>
+    <a class="nav-link" href="../../docs/getting-started/index.html">Get Started</a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../../docs/guide/index.html" aria-current="page">Guide</a>
@@ -219,8 +219,6 @@
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
-        <div class="sidebar-tools-main">
-</div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -865,6 +863,7 @@
 <li><a href="#site-config" class="nav-link" data-scroll-target="#site-config">Site Config</a></li>
 <li><a href="#creating-a-page" class="nav-link" data-scroll-target="#creating-a-page">Creating a Page</a></li>
 <li><a href="#workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a></li>
+<li><a href="#webtex-math" class="nav-link" data-scroll-target="#webtex-math">WebTeX Math</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/output-formats/hugo.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -940,6 +939,20 @@
 <p>Whenever your render the <code>index.qmd</code> file, Quarto will execute the code in the file (writing any generated plots, etc. into the article’s directory) and then generate an <code>index.md</code> file that is subsequently processed by Hugo.</p>
 <p>If you are running the <code>hugo server</code> command for live preview, you will see the updated version of your page whenever you render.</p>
 <p>Note that the <code>index.md</code> file is <em>only</em> updated when you explicitly render with Quarto. Running the <code>hugo</code> command to build your site just renders the <code>index.md</code> file — if you want to regenerate this file based on updated code or data you need to explicitly <code>quarto render</code> it.</p>
+</section>
+<section id="webtex-math" class="level2">
+<h2 class="anchored" data-anchor-id="webtex-math">WebTeX Math</h2>
+<p>The <code>hugo</code> format uses <a href="https://github.com/KTHse/webtex">WebTeX</a> to display LaTeX equations. This is done by setting the Pandoc <code>html-math-method</code> to <code>webtex</code> by default. The <code>webtex</code> method works for any web page that can display images, and requires no special JavaScript or CSS.</p>
+<p>Any inline or display equations contained within your document will be converted to an image URL that requests a rendered version of the equation. For example, the following markdown:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>$x + 1$</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Will be converted to:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="al">![](https://latex.codecogs.com/svg.latex?x%20%2B%201)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You may want to override this default beahvior if you have another means of rendering markdown equations. You can do this as follows:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hugo</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">html-math-method</span><span class="kw">:</span><span class="at"> plain</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that you can also specify any of the other meth rendering techniques (e.g.&nbsp;<code>mathjax</code> or <code>katex</code>) however equations rendered this way won’t display correctly unless the environment hosting your markdown has direct support for it.</p>
+<p>See the Pandoc documentation on <a href="https://pandoc.org/MANUAL.html#math-rendering-in-html">Math Rendering in HTML</a> for additional details.</p>
 
 
 </section>
