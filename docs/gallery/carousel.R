@@ -27,7 +27,7 @@ carousel <- function(id, duration, items) {
 carouselItem <- function(caption, image, link, index, interval) {
   id <- paste0("gallery-carousel-item-", index)
   button <- tags$button(type = "button", 
-                        `data-bs-target` = paste0("#", id),
+                        `data-bs-target` = "#gallery-carousel",
                         `data-bs-slide-to` = index,
                         `aria-label` = paste("Slide", index + 1)
   )
