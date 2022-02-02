@@ -1,3 +1,5 @@
+### Overview
+
 In this tutorial we'll show you how to use RStudio with Quarto.
 You'll edit code and markdown in RStudio just as you would with any computational document (e.g., R Markdown), and preview the rendered document in the Viewer tab as you work.
 
@@ -20,7 +22,7 @@ Open it [here](https://rstudio.cloud/project/3519977) on RStudio Cloud and click
 Remove Cloud link, add source code
 :::
 
-## Rendering
+### Rendering
 
 Use the ![](images/render.png){width="60"} (**Render**) button in the RStudio IDE to render the file and preview the output with a single click or keyboard shortcut (⇧⌘K).
 
@@ -41,7 +43,7 @@ You can also render the document using the functions from the [**quarto**](https
 quarto::quarto_render()
 ```
 
-## Authoring
+### Authoring
 
 The source code (on the left) looks very similar to the rendered output (on the right) since we are viewing the file in the [visual editor](https://rstudio.github.io/visual-markdown-editing/).
 Switching to the source editor reveals the plain text source code underlying the document.
@@ -54,7 +56,7 @@ TO DO: Break into two distinct screenshots w/ text headings above to make this e
 
 Notice that the file contains three types of content.
 
-### YAML header
+#### YAML header
 
 An (optional) YAML header surrounded by fences comprised of three dashes (`---`):
 
@@ -64,7 +66,7 @@ An (optional) YAML header surrounded by fences comprised of three dashes (`---`)
 TO DO: Add link to other YAML options
 :::
 
-### Code chunks
+#### Code chunks
 
 R code chunks identified with `{r}` with (optional) chunk options, in YAML style, identified by `#|` at the beginning of the line:
 
@@ -83,7 +85,7 @@ TO DO: Add gear icon
 
 ![](images/inline-output.png){.column-body-outset-right fig-alt="Run a code chunk and display output inline" fig-align="center"}
 
-### Text
+#### Markdown text
 
 Text with formatting, including section headers, hyperlinks, an embedded image, and an inline code chunk:
 
@@ -93,7 +95,7 @@ Text with formatting, including section headers, hyperlinks, an embedded image, 
 TO DO: Add narrative on under the hood this is just markdown...
 :::
 
-## How it works
+### How it works
 
 When you render a Quarto document, first [knitr](http://yihui.name/knitr/) executes all of the code chunks and creates a new markdown (.md) document which includes the code and its output.
 This markdown file generated is then processed by [pandoc](http://pandoc.org/), which creates the finished format.
