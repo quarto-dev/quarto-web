@@ -15,7 +15,7 @@ This is the basic model for Quarto publishing---take a source document (in this 
 We'll start out by opening a notebook in Jupyter Lab and rendering it to a couple of formats. If you want to follow along step-by-step in your own environment, download this notebook:
 
 ::: {.callout-note appearance="minimal"}
-<i class="bi bi-journal-code"></i> [Download Quarto Basics Notebook](basics.ipynb){download="basics.ipynb"}
+<i class="bi bi-journal-code"></i> [Download Quarto Basics Notebook](_basics.ipynb){download="basics.ipynb"}
 :::
 
 Create a new directory to work within and copy the notebook into the directory:
@@ -106,6 +106,10 @@ Code cells you are of course already familiar with:
 
 ![](images/jupyter-cell.png){.border .column-body-outset-right}
 
-One new twist are the options you see at the top of the cell (`label` and `fig-cap`). In this example, these options are used to make the figure cross-reference-able. It's not important to understand the details of cross references now, just know that there are variety of cell options that you can apply to tailor your output.
+One new twist are the options you see at the top of the cell (`label` and `fig-cap`). Cell options are written in YAML using a specially prefixed comment (`#|`).
 
-Try changing the `fig-cap` and/or the code, running the cell, and then saving the notebook to see the updated preview.
+In this example, the cell options are used to make the figure cross-reference-able. Try changing the `fig-cap` and/or the code, running the cell, and then saving the notebook to see the updated preview.
+
+There are a wide variety of cell options that you can apply to tailor your output. We'll delve into these options in the next tutorial.
+
+
