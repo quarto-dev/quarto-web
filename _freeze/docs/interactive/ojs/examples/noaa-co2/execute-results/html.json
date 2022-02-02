@@ -1,0 +1,18 @@
+{
+  "hash": "2ddd3a5841c63df04a8b3d96ef688a80",
+  "result": {
+    "markdown": "---\ntitle: \"NOAA CO2\"\nformat: \n  html:\n    code-tools: true\n---\n\nRead and plot a CSV of NOAA's Monthly [CO2 concentration data](https://gml.noaa.gov/ccgg/trends/data.html) from Mauna Loa:\n\n```{ojs}\ndata = {\n  const co2data = await FileAttachment(\"co2_mm.csv\")\n    .csv({ typed: true });\n  return co2data.map(d => { \n    d[\"decimal date\"] = Number(d[\"decimal date\"]);\n    d.average = Number(d.average); \n    return d; \n  });\n}\nPlot.plot({\n  marks: [\n    Plot.line(data, \n      { x: \"decimal date\", y: \"average\"}, \n      { stroke: \"black\" }\n    )\n  ]\n})\n```\n\nRead the same data into R, do some grouping and summarization, then make it available using `ojs_define`:\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readr)\nlibrary(dplyr)\n\nco2 = read_csv(\"co2_mm.csv\")  %>% \n  group_by(year) %>% \n  summarize(max = max(average))\n\nojs_define(co2data = co2)\n```\n:::\n\nNow plot the summarized data:\n\n```{ojs}\nPlot.plot({\n  marks: [\n    Plot.line(transpose(co2data), \n      {x: \"year\", y: \"max\"}, \n      { stroke: \"black\" }\n    )\n  ]}\n)\n```",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<script type=\"ojs-define\">\n{\"contents\":[{\"name\":\"co2data\",\"value\":{\"year\":[1958,1959,1960,1961,1962,1963,1964,1965,1966,1967,1968,1969,1970,1971,1972,1973,1974,1975,1976,1977,1978,1979,1980,1981,1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021],\"max\":[317.51,318.29,320.04,320.58,321.02,322.25,322.26,322.17,324.08,325,325.57,327.38,328.13,328.93,330.07,332.48,333.19,333.95,334.74,336.93,338.02,339.26,341.45,343.04,344.77,346.14,347.78,349.28,350.52,352.15,354.35,355.95,357.38,359.23,359.71,360.3,361.78,363.83,365.25,366.77,369.56,371.15,371.98,374.03,375.93,378.78,380.8,382.64,385.22,386.78,388.78,390.36,393.21,394.41,396.93,400.02,401.96,404.15,407.9,409.89,411.44,414.86,417.31,419.13]}}]}\n</script>\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": null
+  }
+}
