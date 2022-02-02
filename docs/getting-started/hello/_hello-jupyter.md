@@ -12,24 +12,24 @@ This is the basic model for Quarto publishing---take a source document (in this 
 
 ### Rendering
 
-We'll start out by opening a notebook in Jupyter Lab and rendering it to a couple of formats. If you want to follow along step-by-step in your own environment, download this notebook:
+We'll start out by opening a notebook (`polar-axis.ipynb`) in Jupyter Lab and rendering it to a couple of formats. If you want to follow along step-by-step in your own environment, download this notebook:
 
 ::: {.callout-note appearance="minimal"}
-<i class="bi bi-journal-code"></i> [Download Quarto Basics Notebook](_basics.ipynb){download="basics.ipynb"}
+<i class="bi bi-journal-code"></i> [Download polar-axis.ipynb](_polar-axis.ipynb){download="polar-axis.ipynb"}
 :::
 
 Create a new directory to work within and copy the notebook into the directory:
 
 ``` bash
-mkdir -p ~/quarto-tutorial/basics
-cd ~/quarto-tutorial/basics
-cp ~/Downloads/basics.ipynb .
+mkdir -p ~/quarto-tutorial/hello
+cd ~/quarto-tutorial/hello
+cp ~/Downloads/polar-axis.ipynb .
 ```
 
 Now, let's open Jupyter Lab and start working with the notebook:
 
 ``` bash
- python3 -m jupyter lab basics.ipynb
+ python3 -m jupyter lab polar-axis.ipynb
 ```
 
 ![](images/jupyter-basics.png){.column-body-outset-right}
@@ -41,25 +41,25 @@ Create a new Terminal within Jupyter Lab that you'll use for Quarto commands:
 Now let's render the notebook to a couple of formats:
 
 ``` bash
-quarto render basics.ipynb --to html
-quarto render basics.ipynb --to docx
+quarto render polar-axis.ipynb.ipynb --to html
+quarto render polar-axis.ipynb.ipynb --to docx
 ```
 
 If you want to try rendering to PDF, install `tinytex` (a LaTeX distribution) then use `--to pdf`:
 
 ``` bash
 quarto tools install tinytex
-quarto render basics.ipynb --to pdf
+quarto render polar-axis.ipynb --to pdf
 ```
 
 Note that if you already have LaTeX installed that will work fine too (no need to install TinyTeX).
 
 ### Authoring
 
-The `quarto render` command is used to create the final version of your document for distribution. However, during authoring you'll use the `quarto preview` command. Try it now from the Terminal with `basics.ipynb`:
+The `quarto render` command is used to create the final version of your document for distribution. However, during authoring you'll use the `quarto preview` command. Try it now from the Terminal with `polar-axis.ipynb`:
 
 ``` bash
-quarto preview basics.ipynb
+quarto preview polar-axis.ipynb
 ```
 
 This will render your document and then display it a web browser:
@@ -111,5 +111,3 @@ One new twist are the options you see at the top of the cell (`label` and `fig-c
 In this example, the cell options are used to make the figure cross-reference-able. Try changing the `fig-cap` and/or the code, running the cell, and then saving the notebook to see the updated preview.
 
 There are a wide variety of cell options that you can apply to tailor your output. We'll delve into these options in the next tutorial.
-
-
