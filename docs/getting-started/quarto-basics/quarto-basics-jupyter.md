@@ -32,11 +32,11 @@ Now, let's open Jupyter Lab and start working with the notebook:
  python3 -m jupyter lab basics.ipynb
 ```
 
-![](images/jupyter-basics.png)
+![](images/jupyter-basics.png){.column-body-outset-right}
 
 Create a new Terminal within Jupyter Lab that you'll use for Quarto commands:
 
-![](images/jupyter-terminal.png){.border}
+![](images/jupyter-terminal.png){.border .column-body-outset-right}
 
 Now let's render the notebook to a couple of formats:
 
@@ -80,7 +80,7 @@ There are few different types of cells in our notebook, let's work a bit with ea
 
 You are likely already familiar with markdown and code cells, but there is a new type of cell ("Raw") that is used for document-level YAML options:
 
-![](images/jupyter-yaml.png){.border}
+![](images/jupyter-yaml.png){.border .column-body-outset-right}
 
 Try changing the `code-fold` option to `true`:
 
@@ -96,7 +96,7 @@ Then save the notebook. You'll notice that the code is shown above the plot (whe
 
 Markdown cells contain raw markdown that will be passed through to Quarto during rendering. You can use any valid Quarto markdown syntax in these cells. Here we specify a header and a cross-reference to the figure created in the code cell below:
 
-![](images/jupyter-markdown.png){.border}
+![](images/jupyter-markdown.png){.border .column-body-outset-right}
 
 Try changing the header and saving the notebook---the preview will update with the new header text.
 
@@ -104,7 +104,7 @@ Try changing the header and saving the notebook---the preview will update with t
 
 Code cells you are of course already familiar with:
 
-![](images/jupyter-cell.png){.border}
+![](images/jupyter-cell.png){.border .column-body-outset-right}
 
 One new twist are the options you see at the top of the cell (`label` and `fig-cap`). In this example, these options are used to make the figure cross-reference-able. It's not important to understand the details of cross references now, just know that there are variety of cell options that you can apply to tailor your output.
 
