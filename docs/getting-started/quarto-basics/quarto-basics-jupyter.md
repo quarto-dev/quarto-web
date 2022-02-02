@@ -4,7 +4,7 @@ In this tutorial we'll show you how to use Jupyter Lab with Quarto. You'll edit 
 
 Here's how this will look:
 
-![](images/quarto-basics/jupyterlab-preview.png){.column-body-outset-right}
+![](images/jupyterlab-preview.png){.column-body-outset-right}
 
 The notebook is *rendered* into the HTML version you see on the right (it could have equally been rendered into PDF, MS Word, etc.).
 
