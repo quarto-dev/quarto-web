@@ -41,8 +41,8 @@ Create a new Terminal within Jupyter Lab that you'll use for Quarto commands:
 Now let's render the notebook to a couple of formats:
 
 ``` bash
-quarto render polar-axis.ipynb.ipynb --to html
-quarto render polar-axis.ipynb.ipynb --to docx
+quarto render polar-axis.ipynb --to html
+quarto render polar-axis.ipynb --to docx
 ```
 
 If you want to try rendering to PDF, install `tinytex` (a LaTeX distribution) then use `--to pdf`:
