@@ -3,14 +3,10 @@
 In this tutorial we'll show you how to use RStudio with Quarto.
 You'll edit code and markdown in RStudio just as you would with any computational document (e.g., R Markdown), and preview the rendered document in the Viewer tab as you work.
 
-The following is a Quarto file with the extension `.qmd`.
-On the left is the source code for the document.
-It is rendered into the HTML version you see on the right.
+The following is a Quarto document with the extension `.qmd` (on the left) along with its rendered version as HTML (on the right).
 You could also choose to render it into other formats like PDF, MS Word, etc.
 
-::: callout-note
-TO DO: Resize figure, maybe replace with GIF?
-:::
+![](images/rstudio-penquins-meet-quarto.png){.column-page-right fig-alt="RStudio IDE with a Quarto document titled \"Hello Quarto!\" open on the left side and a blank viewer pane on the right side."}
 
 ![](images/penquins-meet-quarto.png){.column-page-right fig-alt="RStudio IDE with a Quarto document titled \"Hello Quarto!\" open on the left side and a blank viewer pane on the right side."}
 
