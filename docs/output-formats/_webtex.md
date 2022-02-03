@@ -14,7 +14,17 @@ Will be converted to:
 ![](https://latex.codecogs.com/svg.latex?x%20%2B%201)
 ```
 
-You may want to override this default beahvior if you have another means of rendering markdown equations. You can do this as follows:
+SVG is used as the default rendering method because it has the best overall appearance. However, if your `{{< meta format-name >}}` document is being rendered on a dark background, you may want to switch to PNG. You can do this as follows:
+
+``` yaml
+format:
+   {{< meta format-name >}}:
+     html-math-method: 
+       method: webtex
+       url: https://latex.codecogs.com/png.latex?
+```
+
+You might wishto override the use of `webtex` if you have another means of rendering markdown equations. You can do this as follows:
 
 ``` yaml
 format:
@@ -25,4 +35,3 @@ format:
 Note that you can also specify any of the other meth rendering techniques (e.g. `mathjax` or `katex`) however equations rendered this way won't display correctly unless the environment hosting your markdown has direct support for it.
 
 See the Pandoc documentation on [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) for additional details.
-
