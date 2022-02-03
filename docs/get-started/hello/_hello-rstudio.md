@@ -13,7 +13,7 @@ Want to give it a try?
 Download the following `.qmd` file, open it in RStudio, and click on ![](images/rstudio-render-button.png){width="25" height="20"} **Render**.
 
 ::: {.callout-note appearance="minimal"}
-<i class="bi bi-journal-code"></i> [Download \_penguins-meet-quarto.qmd](_penguins-meet-quarto.qmd){download="penguins-meet-quarto.qmd"}
+<i class="bi bi-journal-code"></i> [Download penguins-meet-quarto.qmd](_penguins-meet-quarto.qmd){download="penguins-meet-quarto.qmd"}
 :::
 
 ### Rendering
@@ -31,18 +31,17 @@ Side-by-side preview works for both HTML and PDF outputs.
 When rendering, Quarto generates a new file that contains selected text, code, and results from the .qmd file.
 The new file can be an [HTML](https://quarto.org/docs/output-formats/all-formats.html), [PDF](https://quarto.org/docs/output-formats/pdf-basics.html), [MS Word](https://quarto.org/docs/output-formats/ms-word.html) document, [presentation](https://quarto.org/docs/presentations/), [website](https://quarto.org/docs/websites/), [book](https://quarto.org/docs/books/), [interactive document](https://quarto.org/docs/interactive/), or [other format](https://quarto.org/docs/output-formats/all-formats.html).
 
-You can also render the document using the functions from the [**quarto**](https://github.com/quarto-dev/quarto-r) package, which provides an R interface to the Quarto CLI:
-
-```{r}
-#| eval: false
-
-quarto::quarto_render()
-```
+You can also render the document using the functions from the [**quarto**](https://github.com/quarto-dev/quarto-r) package, which provides an R interface to the Quarto CLI. For example, to render the current document, use `quarto::quarto_render()`.
+You can also specify the name of the document you want to render as well as the output format, e.g., `quarto_render("penguins-meet-quarto.qmd", output_format = "pdf")`.
 
 ### Authoring
 
 In the earlier image, the source code (on the left) looks very similar to the rendered output (on the right) since we are viewing the file in the [visual editor](https://rstudio.github.io/visual-markdown-editing/).
 Switching to the source editor reveals the plain text source code underlying the document.
+
+::: callout-important
+This screenshot still looks too small.
+:::
 
 ![](images/rstudio-source-visual.png){.column-page-right fig-alt="On the left: Document in the source editor. On the right: Same document in the visual editor. The document shown is the \"Penguins, meet Quarto!\" document from a previous image on the page."}
 
@@ -91,9 +90,8 @@ When you render a Quarto document, first [knitr](http://yihui.name/knitr/) execu
 This markdown file generated is then processed by [pandoc](http://pandoc.org/), which creates the finished format.
 The Render button encapsulates these actions and executes them in the right order for you.
 
-::: callout-note
+::: callout-important
 TO DO: Update this for Quarto
 :::
 
-\
-![](https://lh5.googleusercontent.com/-ALPSgSaChMjwZQRxZZSMHFeX7R5VVn-B8mtf9u1Gwn8lZu_D9BkNj4PcaQ_Da6_pfzkzIjIv7fxqmaSeJZd02PHA_LrnG1yEPjGg4T6bjvPclqYgv3bqE906ubxP1248AklRhQq)\
+![](images/rstudio-knitr-flow.png)\
