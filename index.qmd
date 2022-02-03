@@ -163,28 +163,30 @@ Quarto includes native support for Observable JS, a set of JavaScript enhancemen
 ---
 title: "observable plot"
 author: "Norah Jones"
-format: html
+format: 
+  html: 
+    code-fold: true
 ---
 
-## Athletes
-
-@fig-athletes plots the relationship between weight and gender.
+## Seattle Precipitation by Day (2012 to 2016)
 
 ```{{ojs}}
-//| echo: false
-athletes = FileAttachment("athletes.csv")
+data = FileAttachment("seattle-weather.csv")
   .csv({typed: true})
-```
-
-```{{ojs}}
-//| label: fig-athletes
-//| fig-cap: Athletes by weight and gender
-//| code-fold: true
-
-Plot.rectY(athletes, Plot.binX(
-  {y: "count"}, 
-  {x: "weight", fill: "sex"}
- )).plot()
+  
+Plot.plot({
+  width: 800, height: 500, padding: 0,
+  color: { scheme: "blues", type: "sqrt"},
+  y: { tickFormat: i => "JFMAMJJASOND"[i] },
+  marks: [
+    Plot.cell(data, Plot.group({fill: "mean"}, {
+      x: d => d.date.getUTCDate(),
+      y: d => d.date.getUTCMonth(),
+      fill: "precipitation", 
+      inset: 0.5
+    }))
+  ]
+})
 ```
 ````
 :::
