@@ -82,6 +82,176 @@
   gtag('js', new Date());
   gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
   </script>
+  <style type="text/css">
+
+  .nav-tabs {
+    border-bottom: none;
+  }
+
+  .nav-tabs .nav-link {
+    text-align: center;
+    margin-top: 20px;
+    margin-right: 20px;
+    color: inherit;
+    width: 115px;
+    font-size: 0.9em;
+  }
+
+  .nav-tabs .nav-link, 
+  .nav-tabs .nav-link.active, 
+  .nav-tabs .nav-item.show .nav-link {
+    border: 1px solid  rgb(222, 226, 230);
+    border-radius: 10px;
+  }
+  .nav-tabs .nav-link:hover {
+     border-color: rgb(80,146,221);
+     border-width: 1px;
+  } 
+
+  .nav-tabs .nav-link.active, 
+  .nav-tabs .nav-item.show .nav-link {
+    border-color: rgb(80,146,221);
+    border-width: 2px;
+  }
+
+  .nav-tabs .nav-link img {
+    width: 77px;
+    height: 77px;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  #text-editor-logo {
+    opacity: 0.7;
+  }
+
+  .tab-content {
+    border: none;
+  }
+
+  .tab-content h3 {
+    font-size: 1.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+
+  h3[data-anchor-id=choose-your-tool] {
+    max-width: 90px;
+    margin-right: 30px;
+    font-weight: 300;
+    text-align: right;
+  }
+    
+  .step {
+    padding-top: 20px;
+    margin-bottom: 10px;
+    margin-right: 70px;
+  }
+  .step h2 {
+    border-bottom: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+  .step h4 {
+    margin-top: 0;
+  }
+
+  .step #download-button {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .step .btn-action {
+    font-size: 1.1em;
+  }
+
+  .step .btn-action svg {
+    margin-top: 5px;
+  }
+
+  .step .table>:not(caption)>*>* {
+    border-bottom-width: 0;
+  }
+
+  .tool {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    
+  }
+
+  .tool a[role="button"] {
+    width: 115px;
+    color: rgb(55, 58, 60);
+    text-align: center;
+    border: 1px solid rgb(222, 226, 230);
+    border-radius: 10px;
+    margin-right: 20px;
+    margin-botoom: 30px;
+    margin-top: 10px;
+    font-size: 0.9em;
+  }
+
+  .tool a[role="button"] img {
+    display: block;
+    width: 77px;
+    height: 77px;
+    margin: auto;
+    margin-bottom: 5px;
+  }
+  </style>
+
+  <script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function() {
+    // relocate choose your tool text
+    const choose = document.querySelector("[data-anchor-id=choose-your-tool]");
+    const tabs = document.querySelector("#choose-your-tool-tabs ul");
+    if (choose && tabs) {
+      tabs.prepend(choose);
+    }
+   
+    // function to select a tab
+    const selectTab = (id) => {
+      const tabEl = document.querySelector(id);
+      if (tabEl) {
+        const bsTab = new bootstrap.Tab(tabEl);
+        bsTab.show();
+      }
+    };
+    
+    // setup event handlers for detecting tab changes (save to local storage)
+    const kToolTabId = 'toolTabId';
+    const tabToggles = document.querySelectorAll('#choose-your-tool a[data-bs-toggle="tab"]');
+    for (const tabToggle of tabToggles) {
+      tabToggle.addEventListener('shown.bs.tab', function (event) {
+         const id = event.target.id;
+         window.localStorage.setItem(kToolTabId, '#' + id);
+      });
+    }
+    
+    // navigate to any requested tutorial
+    const hash = window.location.hash;
+    const navs = ["juptyer", "rstudio", "vscode", "text-editor"];
+    const navIdx = navs.indexOf(window.location.hash.slice(1));
+    if (navIdx > -1) {
+       const tabId = "#tabset-1-" + (navIdx + 1) + "-tab";
+       const tablEl = document.querySelector(tabId);
+       const bsTab = new bootstrap.Tab(tablEl);
+       bsTab.show();
+       window.history.replaceState({}, "", window.location.pathname);
+       window.localStorage.setItem(kToolTabId, tabId);
+    } else {
+      // see if we have someting in local storage
+      const storedTabId = localStorage.getItem(kToolTabId);
+      if (storedTabId) {
+        selectTab(storedTabId); 
+      }
+    }
+  });
+
+  </script>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
