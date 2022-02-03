@@ -32,6 +32,6 @@ format:
     html-math-method: plain
 ```
 
-Note that you can also specify any of the other meth rendering techniques (e.g. `mathjax` or `katex`) however equations rendered this way won't display correctly unless the environment hosting your markdown has direct support for it.
+Note that you can also specify any of the other math rendering techniques (e.g. `mathjax` or `katex`) however equations rendered this way won't display correctly unless the environment hosting your markdown has direct support for it.
 
 See the Pandoc documentation on [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) for additional details.
