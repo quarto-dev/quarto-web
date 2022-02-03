@@ -24,7 +24,7 @@ format:
        url: https://latex.codecogs.com/png.latex?
 ```
 
-You might wishto override the use of `webtex` if you have another means of rendering markdown equations. You can do this as follows:
+You might wish to override the use of `webtex` if you have another means of rendering markdown equations. You can do this as follows:
 
 ``` yaml
 format:
