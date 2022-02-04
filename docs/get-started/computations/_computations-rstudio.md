@@ -13,6 +13,7 @@ In this tutorial we'll show you how to author fully reproducible computational d
 ### Code blocks
 
 -   code-fold
+-   code-link!!
 -   code-line-numbers (also used for highlighting)
 
 ### Figures
