@@ -10,13 +10,13 @@ If you want to follow along step-by-step in your own environment, download this 
 
 Now, make sure you are in the directory containing `computations.ipynb`, then issue this command to open Jupyter Lab and start working with the notebook:
 
-+-----------------+------------------------------------------------+
-| Platform        | Command                                        |
-+=================+================================================+
-| Mac/Linux       |     python3 -m jupyter lab computations.ipynb  |
-+-----------------+------------------------------------------------+
-| Windows         |     py -m jupyter lab computations.ipynb       |
-+-----------------+------------------------------------------------+
++-----------------+-----------------------------------------------+
+| Platform        | Command                                       |
++=================+===============================================+
+| Mac/Linux       |     python3 -m jupyter lab computations.ipynb |
++-----------------+-----------------------------------------------+
+| Windows         |     py -m jupyter lab computations.ipynb      |
++-----------------+-----------------------------------------------+
 
 Here's the notebook as we start out (note that none of the cells are executed yet):
 
@@ -32,19 +32,67 @@ Finally, run `quarto preview` in the terminal and position Jupyter Lab side-by-s
 quarto preview computations.ipynb
 ```
 
-![](images/jupyter-computations-preview.png){.border .column-body-outset-right}
+![](images/jupyter-computations-preview.png){.border .column-page-right}
 
-### Controlling output
+Note that none of the cells have been executed yet. Go ahead and run all of the cells and then save the notebook---the preview in the browser should update with all of the output.
 
-(echo, warning, include, error)
+### Cell Output
 
-### Code blocks
+All of the code in the notebook is included within the document. However, for some documents you may want to hide all of the code and just show the output. Let's go ahead and speicfy `echo: false` within the document `execute` options to prevent code from printing:
 
-(folding, etc.)
+![](images/jupyter-execute-echo-false.png){.border}
+
+Save the notebook after making this change. The preview will update to show the output with no code:
+
+![](images/jupyter-exec-echo-false-preview.png){.border}
+
+You might want to selectively enable code `echo` for some cells. To do this add the `echo: true` cell option. Try this with the NumPy cell:
+
+![](images/jupyter-exec-echo-true.png){.border}
+
+Save the notebook and note that the code is now included for the NumPy cell:
+
+![](images/jupyter-exec-echo-true-preview.png){.border}
+
+There are lots of other options available for cell output. See the [Jupyter Cell Options](https://quarto.org/docs/reference/cells/cells-jupyter.html) documentation for additional details.
+
+### Code Folding
+
+Rather than hiding code entirely, you might want fold it and provide users the choice. You can do this via the `code-fold` option. Remove the `echo` we previously added and add the `code-fold` HTML format option:
+
+![](images/jupyter-code-fold.png)
+
+Save the notebook. Now a "Code" widget is available above the output of each cell:
+
+![](images/jupyter-code-fold-preview.png){.border}
+
+You can also provide global control over code folding. Try adding `code-tools: true` to the HTML format options:
+
+![](images/jupyter-code-tools.png){.border}
+
+Save the notebook---a code menu appears at the top right of the document:
+
+![](images/jupyter-code-tools-preview.png){.border}
 
 ### Figures
 
-(size, caption)
+Let's improve the appearance of our Matplotlib cell's output. It could stand to be quite a bit wider and it would be nice to provide a caption as well as a label for cross-referencing.
+
+Go ahead and Matplotlib cell to include `label` and `fig-cap` options as well as a call to `fig.set_size_inches()` to set a larger figure size with a more horizontal aspect ratio:
+
+![](images/jupyter-figure-options.png)
+
+Execute the cell to see the updated plot. Then, save the notebook to check out the Quarto preview:
+
+![](images/jupyter-figure-options-preview.png){.border}
+
+#### Multiple Figures
+
+TODO
+
+![](images/jupyter-plotly.png)
+
+![](images/jupyer-plotly-preview.png)
 
 ### Inline code
 
