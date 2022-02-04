@@ -5,20 +5,36 @@ This allows you to create fully reproducible documents and reports---the code re
 
 In this tutorial we'll show you how to author fully reproducible computational documents with Quarto in RStudio.
 
-...
-
 ### Controlling output
 
-(echo, warning, include, error)
+-   echo, warning, include, error
+-   fenced-echo go here? If you ever had to teach... https://quarto.org/docs/computations/running-code.html#fenced-echo
 
 ### Code blocks
 
-(folding, etc.)
+-   code-fold
+-   code-line-numbers (also used for highlighting)
 
 ### Figures
 
-(size, caption)
+-   fig-width and fig-height
+-   fig-cap (can you do referencing from here??)
+-   fig-alt (link to writing good alt text resource)
+
+### Tables
+
+Maybe a gt example would look nice and can show caption?
 
 ### Inline code
 
+https://quarto.org/docs/computations/running-code.html#knitr
+
 ### Caching
+
+-   under `execute` in YAML
+-   or chunk by chunk
+-   link to https://yihui.org/knitr/demo/cache/ for more info
+
+### Global options?
+
+-   maybe mention here?
