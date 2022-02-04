@@ -59,7 +59,7 @@ format:
 
 The `html` and `pdf` formats each provide an option or two (its not important at this point to understand what those options do, although you can probably guess from their names). The `docx` format is a bit different---it specifies `docx: default`. This means just use all of the default options for the format.
 
-#### Rendering 
+#### Rendering
 
 The formats specified within document options define what is rendered by default. So for the options above, if we executed this:
 
@@ -198,7 +198,13 @@ You can learn more about the different types of callouts and options for their a
 
 The body of Quarto articles have a default width of approximately 700 pixels. This width is chosen to [optimize readability](https://medium.com/ben-shoemate/optimum-web-readability-max-and-min-width-for-page-text-dee9987a27a0). This generally leaves some available space in the document margins, and there are a variety of tools available to take advantage of this space.
 
-In this notebook, we use the `reference-location` option to indicate that we'd like footnotes to be placed in the right margin and we use the `column: screen-inset` cell option to indicate we'd like our figure to occupy the full width of the screen (with a small inset):
+In this notebook, we use the `reference-location` option to indicate that we'd like footnotes to be placed in the right margin.
+
+We also use the `column: screen-inset` cell option to indicate we'd like our figure to occupy the full width of the screen (with a small inset). We therefore want a relatively wide figure, so we use `fig.set_size_inches()` to specify this:
+
+``` python
+fig.set_size_inches(20, 8)
+```
 
 ![](images/jupyter-layout.png){.border}
 

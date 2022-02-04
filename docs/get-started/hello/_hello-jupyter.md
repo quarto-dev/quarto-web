@@ -36,13 +36,13 @@ cp ~/Downloads/polar-axis.ipynb .
 
 Now, make sure you are in the directory containing `polar-axis.ipynb`, then issue this command to open Jupyter Lab and start working with the notebook:
 
-+-------------------+--------------------------------------------------+
-| Platform          | Command                                          |
-+===================+==================================================+
-| Mac/Linux         |     python3 -m jupyter lab polar-axis.ipynb      |
-+-------------------+--------------------------------------------------+
-| Windows           |     py -m jupyter lab polar-axis.ipynb           |
-+-------------------+--------------------------------------------------+
++------------------+-------------------------------------------------+
+| Platform         | Command                                         |
++==================+=================================================+
+| Mac/Linux        |     python3 -m jupyter lab polar-axis.ipynb     |
++------------------+-------------------------------------------------+
+| Windows          |     py -m jupyter lab polar-axis.ipynb          |
++------------------+-------------------------------------------------+
 
 ![](images/jupyter-basics.png){.column-body-outset-right}
 
