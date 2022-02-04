@@ -2,7 +2,7 @@
 
 In this tutorial we'll show you how to author Quarto documents in Jupyter Lab. In particular, we'll discuss the various document formats you can produce with the same source code and show you how to add components like table of contents, equations, citations, cross-references, and more.
 
-### Document Formats
+### Output Formats
 
 Quarto supports rendering notebooks to dozens of different output formats. By default, the `html` format is used, but you can specify an alternate format (or formats) within document options.
 
