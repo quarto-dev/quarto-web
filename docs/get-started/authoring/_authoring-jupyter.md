@@ -10,11 +10,11 @@ Quarto supports rendering notebooks to dozens of different output formats. By de
 
 Let's create a notebook and add some formats and options to it. As a reminder, document options are specified in YAML within a "Raw" cell at the beginning of the notebook. To create a Raw cell, add a cell at the top of the notebook and set its type to Raw using the notebook toolbar:
 
-![](images/jupyter-raw-cell.png){.border }
+![](images/jupyter-raw-cell.png){.border}
 
 Now, let's add some basic document metadata and a default output format:
 
-![](images/jupyter-format.png){.border }
+![](images/jupyter-format.png){.border}
 
 We specified `pdf` as the default output format (if we exclude the `format` option then it will default to `html`).
 
@@ -26,7 +26,7 @@ Let's add some options to control our PDF output:
 
 Some documents you create will have only a single output format, however in many cases it will be desirable to support multiple formats. Let's add the `html` and `docx` formats to our document:
 
-![](images/jupyter-formats.png){.border }
+![](images/jupyter-formats.png){.border}
 
 There's a lot to take in here! Let's break it down a bit. The first two lines are generic document metadata that aren't related to output formats at all:
 
@@ -92,11 +92,11 @@ Since the `odt` format isn't included within document options, the default optio
 
 You can use a table of contents and/or section numbering to make it easier for readers to navigate your document. Do this by adding the `toc` and/or `number-sections` options to document options (note that these options are typically specified at the root level because they are shared across all formats):
 
-![](images/jupyter-sections.png){.border }
+![](images/jupyter-sections.png){.border}
 
 Here's what this document looks like when rendered to HTML:
 
-![](images/jupyter-sections-render.png){.border }
+![](images/jupyter-sections-render.png){.border}
 
 There are lots of options available for controlling how the table of contents and section numbering behave. See the output format documentation (e.g. [HTML](/docs/output-formats/html-basics.qmd), [PDF](/docs/output-formats/pdf-basics.qmd), [MS Word](/docs/output-formats/ms-word.qmd)) for additional details.
 
@@ -104,11 +104,11 @@ There are lots of options available for controlling how the table of contents an
 
 You can add LaTeX equations to markdown cells within Jupyter Lab. For example:
 
-![](/docs/get-started/authoring/images/jupyter-equation.png){.border }
+![](/docs/get-started/authoring/images/jupyter-equation.png){.border}
 
 Equations are rendered when you run the cell:
 
-![](/docs/get-started/authoring/images/jupyter-equation-render.png){.border }
+![](/docs/get-started/authoring/images/jupyter-equation-render.png){.border}
 
 Inline equations are delimited with `$…$`. To create a display equation use `$$…$$`. See the documentation on [markdown equations](/docs/authoring/markdown-basics.html#equations) for additional details.
 
@@ -118,7 +118,7 @@ To cite other works within a Quarto document. First create a bibliography file i
 
 Here's a notebook that includes a bibliography and single citation (markdown cells are un-executed so you can see all of the syntax):
 
-![](/docs/get-started/authoring/images/jupyter-citations.png){.border }
+![](/docs/get-started/authoring/images/jupyter-citations.png){.border}
 
 Note that items within the bibliography are cited using the `@citeid` syntax:
 
@@ -130,7 +130,7 @@ References will be included at the end of the document, so we includ a `## Refer
 
 Here is what this document looks like when rendered:
 
-![](/docs/get-started/authoring/images/jupyter-citations-render.png){.border  width="600"}
+![](/docs/get-started/authoring/images/jupyter-citations-render.png){.border width="600"}
 
 \
 The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations. See the documentation on [Citations and Footnotes](/docs/authoring/footnotes-and-citations.qmd) to learn more.
@@ -141,38 +141,38 @@ Cross-references make it easier for readers to navigate your document by providi
 
 Here's a notebook that illustrates cross-referencing various types of entities (the markdown cells are again un-executed so that the syntax is visible):
 
-![](/docs/get-started/authoring/images/jupyter-crossref.png){.border }
+![](/docs/get-started/authoring/images/jupyter-crossref.png){.border}
 
 This example includes cross-referenced sections, figures, and equations. Here's how we expressed each of these:
 
-+---------------+---------------+----------------------------------+
-| Entity        | Reference     | Label / Caption                  |
-+===============+===============+==================================+
-| Section       | `@sec-plot`   | ID added to heading:             |
-|               |               |                                  |
-|               |               | ``` {.default code-copy="false"} |
-|               |               | # Plot {#sec-plot}               |
-|               |               | ```                              |
-+---------------+---------------+----------------------------------+
-| Figure        | `@fig-simple` | YAML options in code cell:       |
-|               |               |                                  |
-|               |               | ``` {.default code-copy="false"} |
-|               |               | #| label: fig-simple             |
-|               |               | #| fig-cap: Simple Plot          |
-|               |               | ```                              |
-+---------------+---------------+----------------------------------+
-| Equation      | `@eq-stddev`  | At end of display equation:      |
-|               |               |                                  |
-|               |               | ``` default                      |
-|               |               | $$ {#eq-stddev}                  |
-|               |               | ```                              |
-+---------------+---------------+----------------------------------+
++----------+---------------+----------------------------------+
+| Entity   | Reference     | Label / Caption                  |
++==========+===============+==================================+
+| Section  | `@sec-plot`   | ID added to heading:             |
+|          |               |                                  |
+|          |               | ``` {.default code-copy="false"} |
+|          |               | # Plot {#sec-plot}               |
+|          |               | ```                              |
++----------+---------------+----------------------------------+
+| Figure   | `@fig-simple` | YAML options in code cell:       |
+|          |               |                                  |
+|          |               | ``` {.default code-copy="false"} |
+|          |               | #| label: fig-simple             |
+|          |               | #| fig-cap: Simple Plot          |
+|          |               | ```                              |
++----------+---------------+----------------------------------+
+| Equation | `@eq-stddev`  | At end of display equation:      |
+|          |               |                                  |
+|          |               | ``` default                      |
+|          |               | $$ {#eq-stddev}                  |
+|          |               | ```                              |
++----------+---------------+----------------------------------+
 
 : {tbl-colwidths=\[20,30,50\]}
 
 Here's what this notebook looks like when rendered:
 
-![](/docs/get-started/authoring/images/crossref-render.png){.border  width="600"}
+![](/docs/get-started/authoring/images/crossref-render.png){.border width="600"}
 
 See the article on [Cross References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
 
@@ -182,15 +182,15 @@ Callouts are an excellent way to draw extra attention to certain concepts, or to
 
 Callouts are markdown divs that have special callout attributes. Here's an example of creating a callout within a markdown cell:
 
-![](/docs/get-started/authoring/images/jupyter-callout.png){.border }
+![](/docs/get-started/authoring/images/jupyter-callout.png){.border}
 
 Note that if we run this cell you'll see that the output looks nothing like a callout! This is because callouts aren't supported natively by the markdown renderer built in to Jupyter Lab.
 
-![](/docs/get-started/authoring/images/jupyter-callout-render.png){.border }
+![](/docs/get-started/authoring/images/jupyter-callout-render.png){.border}
 
 However, when we ultimatley render the document with Quarto the callout appears as intended:
 
-![](/docs/get-started/authoring/images/callout-render.png){.border }
+![](/docs/get-started/authoring/images/callout-render.png){.border}
 
 You can learn more about the different types of callouts and options for their appearance in the [Callouts](/docs/authoring/callouts.qmd) documentation.
 
@@ -202,10 +202,10 @@ In this notebook, we use the `reference-location` option to indicate that we'd l
 
 We also use the `column: screen-inset` cell option to indicate we'd like our figure to occupy the full width of the screen (with a small inset).
 
-![](images/jupyter-layout.png){.border }
+![](images/jupyter-layout.png){.border}
 
 Here's what this document looks like when rendered:
 
-![](images/jupyter-layout-render.png){.border }
+![](images/jupyter-layout-render.png){.border}
 
 You can locate citations, footnotes, and asides in the margin. You can also define custom column spans for figures, tables, or other content. See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.
