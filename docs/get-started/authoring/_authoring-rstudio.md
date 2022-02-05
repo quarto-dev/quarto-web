@@ -115,21 +115,18 @@ This indicates that we just want to use all of the default options for the forma
 
 ### Rendering
 
-Clicking the <kbd>![](images/rstudio-render-button.png){width="25" height="21"}<kbd> Render button in RStudio will render the document to the first format listed in the YAML.
-If you would like to render to all formats, you can do so with
+Clicking the <kbd>![](images/rstudio-render-button.png){width="25" height="21"}</kbd> Render button in RStudio will render the document to the first format listed in the YAML.
+If you would like to render to all formats, you can do so with `quarto::quarto_render()`:
 
 ``` r
-quarto_render("housing-prices.qmd", output_format = c("pdf", "html", "docx"))
+quarto::quarto_render("housing-prices.qmd", output_format = c("pdf", "html", "docx"))
 ```
 
-Once your document is rendered, you can publish on Rpubs, or ghpages or look at other options at https://quarto.org/docs/output-formats/html-publishing.html.
-
-::: callout-note
-TO DO: reformat this sentence.
-:::
+Once your document is rendered to HTML, you can publish to [RPubs](https://rpubs.com/) (a free service from RStudio for sharing documents on the web) simply by clicking the <kbd>![](images/rstudio-publish-button.png){width="25" height="23"}</kbd> Publish button on the editor toolbar or preview window.
+The [Publishing HTML](/docs/output-formats/html-publishing.html) article gives a much more detailed overview of your publishing options.
 
 Want to give it a try?
-Download the following `.qmd` file, open it in RStudio, and click on ![](images/rstudio-render-button.png){width="25" height="20"} **Render** to get started.
+Download the following `.qmd` file, open it in RStudio, and click on <kbd>![](images/rstudio-render-button.png){width="25" height="20"}</kbd> Render to get started.
 
 ::: {.callout-note appearance="minimal"}
 <i class="bi bi-journal-code"></i> [Download housing-prices.qmd](_housing-prices.qmd){download="housing-prices.qmd"}
