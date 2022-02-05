@@ -4,7 +4,7 @@ In this tutorial we'll show you how to use Jupyter Lab with Quarto. You'll edit 
 
 Here's how this will look:
 
-![](images/jupyter-quarto-preview.png){.column-body-outset-right}
+![](images/jupyter-quarto-preview.png)
 
 The notebook is *rendered* into the HTML version you see on the right (it could have equally been rendered into PDF, MS Word, etc.).
 
@@ -28,11 +28,11 @@ Create a new directory to work within and copy the notebook into the directory. 
 | Windows          |     py -m jupyter lab polar-axis.ipynb          |
 +------------------+-------------------------------------------------+
 
-![](images/jupyter-basics.png){.column-body-outset-right}
+![](images/jupyter-basics.png)
 
 Create a new Terminal within Jupyter Lab that you'll use for Quarto commands:
 
-![](images/jupyter-terminal.png){.border .column-body-outset-right}
+![](images/jupyter-terminal.png){.border}
 
 Now let's render the notebook to a couple of formats:
 
@@ -55,7 +55,7 @@ This will render your document and then display it a web browser:
 
 Position Jupyter Lab and the browser preview side-by-side so you can see changes as you work:
 
-![](images/jupyter-quarto-preview.png){.column-body-outset-right}
+![](images/jupyter-quarto-preview.png)
 
 Change some of the code, running the changed cell, then save the notebook. You'll see that the preview updates immediately. This is the basic workflow for authoring with Quarto.
 
@@ -67,7 +67,7 @@ There are few different types of cells in our notebook, let's work a bit with ea
 
 You are likely already familiar with markdown and code cells, but there is a new type of cell ("Raw") that is used for document-level YAML options:
 
-![](images/jupyter-yaml.png){.border .column-body-outset-right}
+![](images/jupyter-yaml.png){.border}
 
 Try changing the `code-fold` option to `false`:
 
@@ -83,7 +83,7 @@ Then save the notebook. You'll notice that the code is shown above the plot (whe
 
 Markdown cells contain raw markdown that will be passed through to Quarto during rendering. You can use any valid Quarto markdown syntax in these cells. Here we specify a header and a cross-reference to the figure created in the code cell below:
 
-![](images/jupyter-markdown.png){.border .column-body-outset-right}
+![](images/jupyter-markdown.png){.border}
 
 Try changing the header and saving the notebook---the preview will update with the new header text.
 
@@ -91,7 +91,7 @@ Try changing the header and saving the notebook---the preview will update with t
 
 Code cells you are of course already familiar with:
 
-![](images/jupyter-cell.png){.border .column-body-outset-right}
+![](images/jupyter-cell.png){.border}
 
 One new twist are the options you see at the top of the cell (`label` and `fig-cap`). Cell options are written in YAML using a specially prefixed comment (`#|`).
 

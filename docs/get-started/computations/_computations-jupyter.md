@@ -20,11 +20,11 @@ Create a new directory to work within and copy the notebook into the directory. 
 
 Here's the notebook as we start out (note that none of the cells are executed yet):
 
-![](images/jupyter-computations.png){.border .column-body-outset-right}
+![](images/jupyter-computations.png){.border }
 
 Create a new Terminal within Jupyter Lab that you'll use for Quarto commands:
 
-![](../hello/images/jupyter-terminal.png){.border .column-body-outset-right}
+![](../hello/images/jupyter-terminal.png){.border }
 
 Finally, run `quarto preview` in the terminal and position Jupyter Lab side-by-side with the browser showing the preview:
 
@@ -32,7 +32,7 @@ Finally, run `quarto preview` in the terminal and position Jupyter Lab side-by-s
 quarto preview computations.ipynb
 ```
 
-![](images/jupyter-computations-preview.png){.border .column-page-right}
+![](images/jupyter-computations-preview.png){.border}
 
 Go ahead and run all of the cells and then save the notebook---the preview in the browser should update with all of the output.
 
@@ -40,7 +40,7 @@ Go ahead and run all of the cells and then save the notebook---the preview in th
 
 All of the code in the notebook is displayed within the rendered document. However, for some documents you may want to hide all of the code and just show the output. Let's go ahead and specify `echo: false` within the document `execute` options to prevent code from being printed:
 
-![](images/jupyter-execute-echo-false.png){.border .column-body-outset-right}
+![](images/jupyter-execute-echo-false.png){.border }
 
 Save the notebook after making this change. The preview will update to show the output with no code:
 
@@ -48,11 +48,11 @@ Save the notebook after making this change. The preview will update to show the 
 
 You might want to selectively enable code `echo` for some cells. To do this add the `echo: true` cell option. Try this with the NumPy cell:
 
-![](images/jupyter-exec-echo-true.png){.border .column-body-outset-right}
+![](images/jupyter-exec-echo-true.png){.border }
 
 Save the notebook and note that the code is now included for the NumPy cell:
 
-![](images/jupyter-exec-echo-true-preview.png){.border .column-body-outset-right}
+![](images/jupyter-exec-echo-true-preview.png){.border }
 
 There are lots of other options available for cell output. See the [Jupyter Cell Options](https://quarto.org/docs/reference/cells/cells-jupyter.html) documentation for additional details.
 
@@ -60,19 +60,19 @@ There are lots of other options available for cell output. See the [Jupyter Cell
 
 Rather than hiding code entirely, you might want to fold it and allow readers to show it at their discretion . You can do this via the `code-fold` option. Remove the `echo` option we previously added and add the `code-fold` HTML format option:
 
-![](images/jupyter-code-fold.png){.border .column-body-outset-right}
+![](images/jupyter-code-fold.png){.border }
 
 Save the notebook. Now a "Code" widget is available above the output of each cell:
 
-![](images/jupyter-code-fold-preview.png){.border .column-body-outset-right}
+![](images/jupyter-code-fold-preview.png){.border }
 
 You can also provide global control over code folding. Try adding `code-tools: true` to the HTML format options:
 
-![](images/jupyter-code-tools.png){.border .column-body-outset-right}
+![](images/jupyter-code-tools.png){.border }
 
 Save the notebook---a code menu appears at the top right of the document that provides global control over showing and hiding code.
 
-![](images/jupyter-code-tools-preview.png){.border .column-body-outset-right}
+![](images/jupyter-code-tools-preview.png){.border }
 
 ### Figures
 
@@ -80,11 +80,11 @@ Let's improve the appearance of our Matplotlib output. It could certainly stand 
 
 Go ahead and modify the Matplotlib cell to include `label` and `fig-cap` options as well as a call to `fig.set_size_inches()` to set a larger figure size with a wider aspect ratio:
 
-![](images/jupyter-figure-options.png){.border .column-body-outset-right}
+![](images/jupyter-figure-options.png){.border }
 
 Execute the cell to see the updated plot. Then, save the notebook so that the Quarto preview is updated:
 
-![](images/jupyter-figure-options-preview.png){.border .column-body-outset-right}
+![](images/jupyter-figure-options-preview.png){.border }
 
 ### Multiple Figures
 
@@ -120,6 +120,6 @@ gapminder_plot(2007)
 
 Run the modfied cell then save the notebook. The preview will update as follows:
 
-![](images/jupyter-plotly-preview.png){.border .column-body-outset-right}
+![](images/jupyter-plotly-preview.png){.border }
 
 There are a few new options used in this example including `fig-subcap`, `layout-ncol`, and `column` See the articles on [Figure Layout](/docs/authoring/figure-layout.qmd) and [Article Layout](/docs/authoring/article-layout.qmd) for additional details on these and other option related to figures and layout.
