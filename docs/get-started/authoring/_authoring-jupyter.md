@@ -1,6 +1,6 @@
 ### Overview
 
-In this tutorial we'll show you how to author Quarto documents in Jupyter Lab. In particular, we'll discuss the various document formats you can produce with the same source code and show you how to add components like table of contents, equations, citations, cross-references, and more.
+In this tutorial we'll show you how to author Quarto documents in Jupyter Lab. In particular, we'll discuss the various document formats you can produce and show you how to add components like table of contents, equations, citations, cross-references, and more.
 
 ### Output Formats
 
@@ -16,7 +16,7 @@ Now, let's add some basic document metadata and a default output format:
 
 ![](images/jupyter-format.png){.border}
 
-We specified `pdf` as the default output format (if we excluded the `format` option entirely then the format will default to `html`).
+We specified `pdf` as the default output format (if we exclude the `format` option then it will default to `html`).
 
 Let's add some options to control our PDF output:
 
@@ -126,7 +126,7 @@ Note that items within the bibliography are cited using the `@citeid` syntax:
  Knuth says always be literate [@knuth1984]
 ```
 
-References will be included at the end of the document, so we included a `## References` heading at the bottom of the notebook.
+References will be included at the end of the document, so we includ a `## References` heading at the bottom of the notebook.
 
 Here is what this document looks like when rendered:
 
@@ -137,9 +137,9 @@ The `@` citation syntax is very flexible and includes support for prefixes, suff
 
 ### Cross References
 
-Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to figures, tables, and equations. Cross-referenceable entities generally requires a label (unique identifier) and caption (description).
+Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to figures, tables, equations, and sections. Cross-reference-able entities generally requires a label (unique identifier) and caption.
 
-Here's a notebook that illustrates cross-referencing various types of entities (all of the cells show their un-executed markdown or Python code so that the syntax is clear):
+Here's a notebook that illustrates cross-referencing various types of entities (the markdown cells are again un-executed so that the syntax is visible):
 
 ![](/docs/get-started/authoring/images/jupyter-crossref.png){.border}
 
@@ -154,7 +154,7 @@ This example includes cross-referenced sections, figures, and equations. Here's 
 |               |               | # Plot {#sec-plot}               |
 |               |               | ```                              |
 +---------------+---------------+----------------------------------+
-| Figure        | `@fig-simple` | Comments in code cell:           |
+| Figure        | `@fig-simple` | YAML options in code cell:       |
 |               |               |                                  |
 |               |               | ``` {.default code-copy="false"} |
 |               |               | #| label: fig-simple             |
@@ -196,15 +196,11 @@ You can learn more about the different types of callouts and options for their a
 
 ### Article Layout
 
-The body of Quarto articles have a default width of approximately 700 pixels. This width is chosen to [optimize readability](https://medium.com/ben-shoemate/optimum-web-readability-max-and-min-width-for-page-text-dee9987a27a0). This generally leaves some available space in the document margins, and there are a variety of tools available to take advantage of this space.
+The body of Quarto articles have a default width of approximately 700 pixels. This width is chosen to [optimize readability](https://medium.com/ben-shoemate/optimum-web-readability-max-and-min-width-for-page-text-dee9987a27a0). This normally leaves some available space in the document margins, and there are a few ways you can take advantage of this space.
 
 In this notebook, we use the `reference-location` option to indicate that we'd like footnotes to be placed in the right margin.
 
-We also use the `column: screen-inset` cell option to indicate we'd like our figure to occupy the full width of the screen (with a small inset). We therefore want a relatively wide figure, so we use `fig.set_size_inches()` to specify this:
-
-``` python
-fig.set_size_inches(20, 8)
-```
+We also use the `column: screen-inset` cell option to indicate we'd like our figure to occupy the full width of the screen (with a small inset).
 
 ![](images/jupyter-layout.png){.border}
 
@@ -212,4 +208,4 @@ Here's what this document looks like when rendered:
 
 ![](images/jupyter-layout-render.png){.border}
 
-You can use layout options to put citations, footnotes, or even figures in the margin. You can also specify a wide variety of column constraints for figures, tables, or other content. See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.
+You can locate citations, footnotes, and asides in the margin. You can also define custom column spans for figures, tables, or other content. See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.

@@ -18,15 +18,7 @@ We'll start out by opening a notebook (`polar-axis.ipynb`) in Jupyter Lab and re
 <i class="bi bi-journal-code"></i> [Download polar-axis.ipynb](_polar-axis.ipynb){download="polar-axis.ipynb"}
 :::
 
-Create a new directory to work within and copy the notebook into the directory:
-
-``` bash
-mkdir -p ~/quarto-tutorial/hello
-cd ~/quarto-tutorial/hello
-cp ~/Downloads/polar-axis.ipynb .
-```
-
-Make sure you are located within the directory where you copied the notebook to, then open Jupyter Lab so we can start working with the notebook:
+Create a new directory to work within and copy the notebook into the directory. Switch to this directory in a terminal then then open Jupyter Lab so we can start working with the notebook:
 
 +------------------+-------------------------------------------------+
 | Platform         | Command                                         |
@@ -48,15 +40,6 @@ Now let's render the notebook to a couple of formats:
 quarto render polar-axis.ipynb --to html
 quarto render polar-axis.ipynb --to docx
 ```
-
-If you want to try rendering to PDF, install `tinytex` (a LaTeX distribution) then use `--to pdf`:
-
-``` bash
-quarto tools install tinytex
-quarto render polar-axis.ipynb --to pdf
-```
-
-Note that if you already have LaTeX installed that will work fine too (no need to install TinyTeX).
 
 ### Authoring
 
@@ -86,12 +69,12 @@ You are likely already familiar with markdown and code cells, but there is a new
 
 ![](images/jupyter-yaml.png){.border .column-body-outset-right}
 
-Try changing the `code-fold` option to `true`:
+Try changing the `code-fold` option to `false`:
 
 ``` yaml
 format: 
   html:
-    code-fold: true
+    code-fold: false
 ```
 
 Then save the notebook. You'll notice that the code is shown above the plot (where previously it was hidden with a "Code" button that could be used to show it).
