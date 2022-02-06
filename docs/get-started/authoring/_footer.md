@@ -1,30 +1,3 @@
----
-title: "Tutorial: Authoring"
-editor: source
-toc: false
-code-copy: hover
----
-
-### Choose your tool {#choose-your-tool .no-anchor}
-
-::: {#choose-your-tool-tabs .panel-tabset}
-## ![](../images/jupyter-logo.png)Jupyter
-
-``` include
-_authoring-jupyter.md
-```
-
-
-## ![](../images/rstudio-logo.png)RStudio
-
-``` include
-_authoring-rstudio.md
-```
-
-## ![](../images/vscode-logo.png)VS Code
-
-## ![](../images/text-editor-logo.png){#text-editor-logo}Editor
-:::
 
 ## Learning More
 
@@ -37,4 +10,5 @@ You've now learned the basics of using Quarto! Once you feel comfortable creatin
 -   [Books](/docs/books/) --- Create books and manuscripts in print (PDF, MS Word) and online (HTML, ePub) formats.
 
 -   [Interactivity](/docs/interactive/) --- Include interactive components to help readers explore the concepts and data you are presenting more deeply.
+
 
