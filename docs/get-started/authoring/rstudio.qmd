@@ -66,6 +66,11 @@ format:
 ---
 ```
 
+An incredibly exciting format option that we won't go into too much detail in this tutorial is `revealjs`.
+Yes, you can make presentations with Quarto as well!
+In fact, Quarto supports supports a variety of formats for creating presentations, including `revealjs` for HTML slides, `pptx` for PowerPoint, and `beamer` for LaTeX/PDF.
+The [Presentations](/docs/presentations/) article gives a thorough walk through of creating slide decks with Quarto.
+
 ### Multiple formats
 
 Some documents you create will have only a single output format, however in many cases it will be desirable to support multiple formats.
@@ -127,72 +132,189 @@ format:
 ---
 ```
 
-The `html` and `pdf` formats each provide an option or two (its not important at this point to understand what those options do, although you can probably guess from their names).
+The `html` and `pdf` formats each provide an option or two.
+For example, for the HTML output we want the user to have control over whether to show or hide the code (`code-fold: true`) and use `katex` for math text.
+For PDF we define some margins.
 The `docx` format is a bit different---it specifies `docx: default`.
 This indicates that we just want to use all of the default options for the format.
 
 ## Rendering Formats
 
 Clicking the <kbd>![](images/rstudio-render-button.png){width="25" height="21"}</kbd> Render button in RStudio will render the document to the first format listed in the YAML.
-If you would like to render to all formats, you can do so with `quarto::quarto_render()`:
+If you would like to render to all formats, you can do so with `quarto::quarto_render()`.
 
 ``` r
 quarto::quarto_render(
-  "housing-prices.qmd", 
+  "authoring.qmd", 
   output_format = c("pdf", "html", "docx")
   )
 ```
 
-Want to give it a try?
-Download the following `.qmd` file, open it in RStudio, and click on <kbd>![](images/rstudio-render-button.png){width="25" height="20"}</kbd> Render to get started.
+As a result, you will see three files appear in your Files pane:`authoring.docx`, `authoring.html`, and `authoring.pdf`.
 
-::: {.callout-note appearance="minimal"}
-<i class="bi bi-journal-code"></i> [Download housing-prices.qmd](_housing-prices.qmd){download="housing-prices.qmd"}
-:::
+![](images/rstudio-files-pane.png){fig-alt="RStudio Files pane, with four document, all titled authoring, but with different suffixes: docx, html, pdf, qmd." width="700"}
 
 Once your document is rendered to HTML, you can publish to [RPubs](https://rpubs.com/) (a free service from RStudio for sharing documents on the web) simply by clicking the <kbd>![](images/rstudio-publish-button.png){width="25" height="23"}</kbd> Publish button on the editor toolbar or preview window.
+Other possible publishing options include RStudio Connect with also just one push of a button as well as GitHub Pages, Netlify, etc.
 The [Publishing HTML](/docs/output-formats/html-publishing.html) article gives a much more detailed overview of your publishing options.
 
-------------------------------------------------------------------------
+## Sections
 
--   In pdf, `documentclass`, `geometry`, `colorlinks`
--   Also can do presentations! Link to presentations on the guide.
+You can use a table of contents and/or section numbering to make it easier for readers to navigate your document.
+Do this by adding the `toc` and/or `number-sections` options to document options.
+Note that these options are typically specified at the root level because they are shared across all formats:
 
-## Table of contents
+![](images/rstudio-sections.png){.border fig-alt="A Quarto document in RStudio with YAML fields including toc: true and number-sections: true and the document outline showing three sections (Introduction, Exploratory data analysis, Modeling) with two subsections under the Exploratory data analysis section (Data visualization and Summary statistics)." width="700"}
 
-https://quarto.org/docs/output-formats/html-basics.html#table-of-contents and https://quarto.org/docs/output-formats/pdf-basics.html#table-of-contents -- show the yaml is pretty much the same
+Here's what this document looks like when rendered to HTML:
 
-## Section numbering
+![](images/rstudio-sections-render.png){.border fig-alt="Rendered version of the previous document showing numbered sections and a table of contents on the right."}
 
-https://quarto.org/docs/output-formats/pdf-basics.html#section-numbering
+There are lots of options available for controlling how the table of contents and section numbering behave.
+See the output format documentation (e.g. [HTML](/docs/output-formats/html-basics.qmd), [PDF](/docs/output-formats/pdf-basics.qmd), [MS Word](/docs/output-formats/ms-word.qmd)) for additional details.
 
 ## Equations
 
 Basically first screenshot from https://quarto.org/docs/visual-editor/technical.html#equations but in qmd
 
+You can add LaTeX equations to Quarto documents in RStudio using the insert anything tool.
+
+![](images/rstudio-insert-equation.png){fig-alt="Insert anything tool in the RStudio visual editor being used to insert a display math." width="700"}
+
+Display equations (in a new line) are delimited with `$$…$$` while inline equations are delimited with `$…$`.
+RStudio displays a rendered version of the tutorial as you type it in the editor.
+See the documentation on [markdown equations](/docs/authoring/markdown-basics.html#equations) for additional details.
+
+![](/docs/get-started/authoring/images/rstudio-equation-render.png){.border}
+
 ## Citations
 
-Screenshot / GIF: Show insert citation from DOI using the visual editor
+The insert anything tool can also be used to insert citations to your document.
 
-Mention it creates bib for you and adds to it
+![](images/rstudio-insert-citation.png){fig-alt="Using the visual editor insert citation tool." width="700"}
 
-Mention can link Zotero etc.
+In the next window you can insert a citation via from a variety of sources including your document bibliography, [Zotero](https://rstudio.github.io/visual-markdown-editing/citations.html#citations-from-zotero) personal or group libraries, [DOI](https://rstudio.github.io/visual-markdown-editing/citations.html#citations-from-dois) (Document Object Identifier) references, and earches of [Crossref](https://www.crossref.org/), [DataCite](https://datacite.org/), or [PubMed](https://pubmed.ncbi.nlm.nih.gov/).
+You can find out more about citations with the visual editor [here](https://rstudio.github.io/visual-markdown-editing/citations.html).
 
-Link to https://quarto.org/docs/authoring/footnotes-and-citations.html#citations
+![](images/rstudio-insert-citaton-menu.png){fig-alt="Insert citation to Knuth, D's Literate Programming article via DOI."}
 
-## Cross references
+If this is the first citation you are adding to your document, RStudio will automatically create a bibliography file for you.
+This file is called `references.bib` by default and RStudio will also add `bibliography: references.bib` to your document's YAML metadata.
 
-Screenshot: Add cross reference with visual editor
+Note that items within the bibliography are cited using the `@citeid` syntax:
 
-Maybe: customization of how it shows up, with equation as example
+``` markdown
+We're going to do this analysis using literate programming [@knuth1984].
+```
 
-Link to https://quarto.org/docs/authoring/cross-references.html
+References will be included at the end of the document, so we include a `## References` heading at the bottom of the notebook.
+You might also add `.unnumbered` class to this section.
 
-## Article layout
+![](images/rstudio-references-section.png){.border width="700"}
 
-https://quarto.org/docs/authoring/article-layout.html
+Here is what this document looks like when rendered (with middle sections removed to highlight the relevant parts.
 
--   tabsets
+![](images/rstudio-references.png){.border fig-alt="Document with a single citation and a references section at the end."}
+
+The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations.
+See the documentation on [Citations and Footnotes](/docs/authoring/footnotes-and-citations.qmd) to learn more.
+
+## Cross References
+
+Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to figures, tables, equations, and sections.
+Cross-reference-able entities generally require a label (unique identifier) and a caption.
+
+For example, to add a label to the equation inserted earlier, click on the three dots to edit its attributes and use the suggested format (starting with `#eq-`) to label the equation.
+
+![](images/rstudio-crossref-equation.png){.border fig-alt="Add label to an equation using the visual editor. The label added is #eq-slr."}
+
+Then, add a cross reference using the insert anything tool in the visual editor.
+
+![](images/rstudio-crossref-equation-insert.png){.border fig-alt="Use the insert anything tool in the visual editor to insert a cross reference."}
+
+In the Insert Cross Reference menu, navigate to the desired cross reference entity on the left, and select the equation labeled earlier.
+
+![](images/rstudio-crossref-insert-menu.png){.border fig-alt="Use the insert cross reference menu, select Equations on the left side, and select an equation to cross reference."}
+
+Alternatively, start typing the label of the equation to be referenced in the visual editor, and the autofill tool will bring up the cross references to choose from.
+
+![](images/rstudio-crossref-eq-autofill.png){.border fig-alt="Cross reference an equation by starting to type out its label."}
+
+The document below illustrates cross-referencing various types of entities.
+
+![](/docs/get-started/authoring/images/rstudio-crossref-source.png){.border}
+
+This example includes cross-referenced sections, figures, and equations.
+The table below shows how we expressed each of these:
+
++-------------+--------------------+----------------------------------------------------------------------+
+| Entity      | Reference          | Label / Caption                                                      |
++=============+====================+======================================================================+
+| Section     | `@sec-eda`         | ID added to heading:                                                 |
+|             |                    |                                                                      |
+|             |                    | ``` {.default code-copy="false"}                                     |
+|             |                    | # Exploratory data analysis {#sec-eda}                               |
+|             |                    | ```                                                                  |
++-------------+--------------------+----------------------------------------------------------------------+
+| Figure      | `@fig-scatterplot` | YAML options in code cell:                                           |
+|             |                    |                                                                      |
+|             |                    | ``` {.default code-copy="false"}                                     |
+|             |                    | #| label: fig-scatterplot                                            |
+|             |                    | #| fig-cap: "Scatterplot of price vs. area of houses in Duke Forest" |
+|             |                    | ```                                                                  |
++-------------+--------------------+----------------------------------------------------------------------+
+| Equation    | `@eq-slr`          | At end of display equation:                                          |
+|             |                    |                                                                      |
+|             |                    | ``` default                                                          |
+|             |                    | $$ {#eq-slr}                                                         |
+|             |                    | ```                                                                  |
++-------------+--------------------+----------------------------------------------------------------------+
+
+: {tbl-colwidths=\[20,30,50\]}
+
+And finally, here is what this notebook looks like when rendered:
+
+![](images/rstudio-crossref-render.png){.border}
+
+See the article on [Cross References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
+
+## Callouts
+
+Callouts are an excellent way to draw extra attention to certain concepts, or to more clearly indicate that certain content is supplemental or applicable to only some scenarios.
+
+Callouts are markdown divs that have special callout attributes.
+Here's an example of creating a callout within in the visual editor in RStudio.
+Note that you can select one of five types of callout (note, tip, important, caution, or warning), customize their appearance (default, simple, or minimal), and decide whether you want to show the icon.
+
+![](images/rstudio-insert-callout.png){.border width="600"}
+
+Here is what a callout looks like in the visual editor.
+
+![](images/rstudio-callout-note-source.png){.border}
+
+And here is the rendered callout in the output document.
+
+![](images/rstudio-callout-note-rendered.png){.border}
+
+You can learn more about the different types of callouts and options for their appearance in the [Callouts](/docs/authoring/callouts.qmd) documentation.
+
+## Article Layout
+
+The body of Quarto articles have a default width of approximately 700 pixels.
+This width is chosen to [optimize readability](https://medium.com/ben-shoemate/optimum-web-readability-max-and-min-width-for-page-text-dee9987a27a0).
+This normally leaves some available space in the document margins and there are a few ways you can take advantage of this space.
+
+We also use the `column: page-right` cell option to indicate we would like our figure to occupy the full width of the screen, with some inset.
+
+![](images/rstudio-column-page-right-source.png){.border width="700"}
+
+Here is what this document looks like when rendered:
+
+![](images/rstudio-column-page-right-render.png){.border}
+
+You can locate citations, footnotes, and asides in the margin.
+You can also define custom column spans for figures, tables, or other content.
+See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.
 
 ``` include
 _footer.md

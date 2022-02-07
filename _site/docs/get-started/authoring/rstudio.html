@@ -255,12 +255,12 @@
 <li><a href="#multiple-formats" class="nav-link" data-scroll-target="#multiple-formats">Multiple formats</a></li>
 </ul></li>
 <li><a href="#rendering-formats" class="nav-link" data-scroll-target="#rendering-formats">Rendering Formats</a></li>
-<li><a href="#table-of-contents" class="nav-link" data-scroll-target="#table-of-contents">Table of contents</a></li>
-<li><a href="#section-numbering" class="nav-link" data-scroll-target="#section-numbering">Section numbering</a></li>
+<li><a href="#sections" class="nav-link" data-scroll-target="#sections">Sections</a></li>
 <li><a href="#equations" class="nav-link" data-scroll-target="#equations">Equations</a></li>
 <li><a href="#citations" class="nav-link" data-scroll-target="#citations">Citations</a></li>
-<li><a href="#cross-references" class="nav-link" data-scroll-target="#cross-references">Cross references</a></li>
-<li><a href="#article-layout" class="nav-link" data-scroll-target="#article-layout">Article layout</a></li>
+<li><a href="#cross-references" class="nav-link" data-scroll-target="#cross-references">Cross References</a></li>
+<li><a href="#callouts" class="nav-link" data-scroll-target="#callouts">Callouts</a></li>
+<li><a href="#article-layout" class="nav-link" data-scroll-target="#article-layout">Article Layout</a></li>
 <li><a href="#learning-more" class="nav-link" data-scroll-target="#learning-more">Learning More</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/get-started/authoring/rstudio.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -360,6 +360,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">toc</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">number-sections</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>An incredibly exciting format option that we won’t go into too much detail in this tutorial is <code>revealjs</code>. Yes, you can make presentations with Quarto as well! In fact, Quarto supports supports a variety of formats for creating presentations, including <code>revealjs</code> for HTML slides, <code>pptx</code> for PowerPoint, and <code>beamer</code> for LaTeX/PDF. The <a href="../../../docs/presentations/">Presentations</a> article gives a thorough walk through of creating slide decks with Quarto.</p>
 </section>
 <section id="multiple-formats" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-formats">Multiple formats</h3>
@@ -403,65 +404,123 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> left=30mm</span></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">docx</span><span class="kw">:</span><span class="at"> default</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The <code>html</code> and <code>pdf</code> formats each provide an option or two (its not important at this point to understand what those options do, although you can probably guess from their names). The <code>docx</code> format is a bit different—it specifies <code>docx: default</code>. This indicates that we just want to use all of the default options for the format.</p>
+<p>The <code>html</code> and <code>pdf</code> formats each provide an option or two. For example, for the HTML output we want the user to have control over whether to show or hide the code (<code>code-fold: true</code>) and use <code>katex</code> for math text. For PDF we define some margins. The <code>docx</code> format is a bit different—it specifies <code>docx: default</code>. This indicates that we just want to use all of the default options for the format.</p>
 </section>
 </section>
 <section id="rendering-formats" class="level2">
 <h2 class="anchored" data-anchor-id="rendering-formats">Rendering Formats</h2>
-<p>Clicking the <kbd><img src="images/rstudio-render-button.png" width="25" height="21"></kbd> Render button in RStudio will render the document to the first format listed in the YAML. If you would like to render to all formats, you can do so with <code>quarto::quarto_render()</code>:</p>
+<p>Clicking the <kbd><img src="images/rstudio-render-button.png" width="25" height="21"></kbd> Render button in RStudio will render the document to the first format listed in the YAML. If you would like to render to all formats, you can do so with <code>quarto::quarto_render()</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>quarto<span class="sc">::</span><span class="fu">quarto_render</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"housing-prices.qmd"</span>, </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"authoring.qmd"</span>, </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_format =</span> <span class="fu">c</span>(<span class="st">"pdf"</span>, <span class="st">"html"</span>, <span class="st">"docx"</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Want to give it a try? Download the following <code>.qmd</code> file, open it in RStudio, and click on <kbd><img src="images/rstudio-render-button.png" width="25" height="20"></kbd> Render to get started.</p>
-<div class="callout-note callout callout-style-simple no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<p><i class="bi bi-journal-code"></i> <a href="_housing-prices.qmd" download="housing-prices.qmd">Download housing-prices.qmd</a></p>
-</div>
-</div>
-</div>
-<p>Once your document is rendered to HTML, you can publish to <a href="https://rpubs.com/">RPubs</a> (a free service from RStudio for sharing documents on the web) simply by clicking the <kbd><img src="images/rstudio-publish-button.png" width="25" height="23"></kbd> Publish button on the editor toolbar or preview window. The <a href="../../../docs/output-formats/html-publishing.html">Publishing HTML</a> article gives a much more detailed overview of your publishing options.</p>
-<hr>
-<ul>
-<li>In pdf, <code>documentclass</code>, <code>geometry</code>, <code>colorlinks</code></li>
-<li>Also can do presentations! Link to presentations on the guide.</li>
-</ul>
+<p>As a result, you will see three files appear in your Files pane:<code>authoring.docx</code>, <code>authoring.html</code>, and <code>authoring.pdf</code>.</p>
+<p><img src="images/rstudio-files-pane.png" class="img-fluid" alt="RStudio Files pane, with four document, all titled authoring, but with different suffixes: docx, html, pdf, qmd." width="700"></p>
+<p>Once your document is rendered to HTML, you can publish to <a href="https://rpubs.com/">RPubs</a> (a free service from RStudio for sharing documents on the web) simply by clicking the <kbd><img src="images/rstudio-publish-button.png" width="25" height="23"></kbd> Publish button on the editor toolbar or preview window. Other possible publishing options include RStudio Connect with also just one push of a button as well as GitHub Pages, Netlify, etc. The <a href="../../../docs/output-formats/html-publishing.html">Publishing HTML</a> article gives a much more detailed overview of your publishing options.</p>
 </section>
-<section id="table-of-contents" class="level2">
-<h2 class="anchored" data-anchor-id="table-of-contents">Table of contents</h2>
-<p>https://quarto.org/docs/output-formats/html-basics.html#table-of-contents and https://quarto.org/docs/output-formats/pdf-basics.html#table-of-contents – show the yaml is pretty much the same</p>
-</section>
-<section id="section-numbering" class="level2">
-<h2 class="anchored" data-anchor-id="section-numbering">Section numbering</h2>
-<p>https://quarto.org/docs/output-formats/pdf-basics.html#section-numbering</p>
+<section id="sections" class="level2">
+<h2 class="anchored" data-anchor-id="sections">Sections</h2>
+<p>You can use a table of contents and/or section numbering to make it easier for readers to navigate your document. Do this by adding the <code>toc</code> and/or <code>number-sections</code> options to document options. Note that these options are typically specified at the root level because they are shared across all formats:</p>
+<p><img src="images/rstudio-sections.png" class="border img-fluid" alt="A Quarto document in RStudio with YAML fields including toc: true and number-sections: true and the document outline showing three sections (Introduction, Exploratory data analysis, Modeling) with two subsections under the Exploratory data analysis section (Data visualization and Summary statistics)." width="700"></p>
+<p>Here’s what this document looks like when rendered to HTML:</p>
+<p><img src="images/rstudio-sections-render.png" class="border img-fluid" alt="Rendered version of the previous document showing numbered sections and a table of contents on the right."></p>
+<p>There are lots of options available for controlling how the table of contents and section numbering behave. See the output format documentation (e.g.&nbsp;<a href="../../../docs/output-formats/html-basics.html">HTML</a>, <a href="../../../docs/output-formats/pdf-basics.html">PDF</a>, <a href="../../../docs/output-formats/ms-word.html">MS Word</a>) for additional details.</p>
 </section>
 <section id="equations" class="level2">
 <h2 class="anchored" data-anchor-id="equations">Equations</h2>
 <p>Basically first screenshot from https://quarto.org/docs/visual-editor/technical.html#equations but in qmd</p>
+<p>You can add LaTeX equations to Quarto documents in RStudio using the insert anything tool.</p>
+<p><img src="images/rstudio-insert-equation.png" class="img-fluid" alt="Insert anything tool in the RStudio visual editor being used to insert a display math." width="700"></p>
+<p>Display equations (in a new line) are delimited with <code>$$…$$</code> while inline equations are delimited with <code>$…$</code>. RStudio displays a rendered version of the tutorial as you type it in the editor. See the documentation on <a href="../../../docs/authoring/markdown-basics.html#equations">markdown equations</a> for additional details.</p>
+<p><img src="../../../docs/get-started/authoring/images/rstudio-equation-render.png" class="border img-fluid"></p>
 </section>
 <section id="citations" class="level2">
 <h2 class="anchored" data-anchor-id="citations">Citations</h2>
-<p>Screenshot / GIF: Show insert citation from DOI using the visual editor</p>
-<p>Mention it creates bib for you and adds to it</p>
-<p>Mention can link Zotero etc.</p>
-<p>Link to https://quarto.org/docs/authoring/footnotes-and-citations.html#citations</p>
+<p>The insert anything tool can also be used to insert citations to your document.</p>
+<p><img src="images/rstudio-insert-citation.png" class="img-fluid" alt="Using the visual editor insert citation tool." width="700"></p>
+<p>In the next window you can insert a citation via from a variety of sources including your document bibliography, <a href="https://rstudio.github.io/visual-markdown-editing/citations.html#citations-from-zotero">Zotero</a> personal or group libraries, <a href="https://rstudio.github.io/visual-markdown-editing/citations.html#citations-from-dois">DOI</a> (Document Object Identifier) references, and earches of <a href="https://www.crossref.org/">Crossref</a>, <a href="https://datacite.org/">DataCite</a>, or <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>. You can find out more about citations with the visual editor <a href="https://rstudio.github.io/visual-markdown-editing/citations.html">here</a>.</p>
+<p><img src="images/rstudio-insert-citaton-menu.png" class="img-fluid" alt="Insert citation to Knuth, D's Literate Programming article via DOI."></p>
+<p>If this is the first citation you are adding to your document, RStudio will automatically create a bibliography file for you. This file is called <code>references.bib</code> by default and RStudio will also add <code>bibliography: references.bib</code> to your document’s YAML metadata.</p>
+<p>Note that items within the bibliography are cited using the <code>@citeid</code> syntax:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>We're going to do this analysis using literate programming <span class="co">[</span><span class="ot">@knuth1984</span><span class="co">]</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>References will be included at the end of the document, so we include a <code>## References</code> heading at the bottom of the notebook. You might also add <code>.unnumbered</code> class to this section.</p>
+<p><img src="images/rstudio-references-section.png" class="border img-fluid" width="700"></p>
+<p>Here is what this document looks like when rendered (with middle sections removed to highlight the relevant parts.</p>
+<p><img src="images/rstudio-references.png" class="border img-fluid" alt="Document with a single citation and a references section at the end."></p>
+<p>The <code>@</code> citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations. See the documentation on <a href="../../../docs/authoring/footnotes-and-citations.html">Citations and Footnotes</a> to learn more.</p>
 </section>
 <section id="cross-references" class="level2">
-<h2 class="anchored" data-anchor-id="cross-references">Cross references</h2>
-<p>Screenshot: Add cross reference with visual editor</p>
-<p>Maybe: customization of how it shows up, with equation as example</p>
-<p>Link to https://quarto.org/docs/authoring/cross-references.html</p>
+<h2 class="anchored" data-anchor-id="cross-references">Cross References</h2>
+<p>Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to figures, tables, equations, and sections. Cross-reference-able entities generally require a label (unique identifier) and a caption.</p>
+<p>For example, to add a label to the equation inserted earlier, click on the three dots to edit its attributes and use the suggested format (starting with <code>#eq-</code>) to label the equation.</p>
+<p><img src="images/rstudio-crossref-equation.png" class="border img-fluid" alt="Add label to an equation using the visual editor. The label added is #eq-slr."></p>
+<p>Then, add a cross reference using the insert anything tool in the visual editor.</p>
+<p><img src="images/rstudio-crossref-equation-insert.png" class="border img-fluid" alt="Use the insert anything tool in the visual editor to insert a cross reference."></p>
+<p>In the Insert Cross Reference menu, navigate to the desired cross reference entity on the left, and select the equation labeled earlier.</p>
+<p><img src="images/rstudio-crossref-insert-menu.png" class="border img-fluid" alt="Use the insert cross reference menu, select Equations on the left side, and select an equation to cross reference."></p>
+<p>Alternatively, start typing the label of the equation to be referenced in the visual editor, and the autofill tool will bring up the cross references to choose from.</p>
+<p><img src="images/rstudio-crossref-eq-autofill.png" class="border img-fluid" alt="Cross reference an equation by starting to type out its label."></p>
+<p>The document below illustrates cross-referencing various types of entities.</p>
+<p><img src="../../../docs/get-started/authoring/images/rstudio-crossref-source.png" class="border img-fluid"></p>
+<p>This example includes cross-referenced sections, figures, and equations. The table below shows how we expressed each of these:</p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 30%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Entity</th>
+<th>Reference</th>
+<th>Label / Caption</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Section</td>
+<td><code>@sec-eda</code></td>
+<td><p>ID added to heading:</p>
+<div class="sourceCode" id="cb10" data-code-copy="false"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a># Exploratory data analysis {#sec-eda}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="even">
+<td>Figure</td>
+<td><code>@fig-scatterplot</code></td>
+<td><p>YAML options in code cell:</p>
+<div class="sourceCode" id="cb11" data-code-copy="false"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>#| label: fig-scatterplot</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>#| fig-cap: "Scatterplot of price vs. area of houses in Duke Forest"</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+<tr class="odd">
+<td>Equation</td>
+<td><code>@eq-slr</code></td>
+<td><p>At end of display equation:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>$$ {#eq-slr}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></td>
+</tr>
+</tbody>
+</table>
+<p>And finally, here is what this notebook looks like when rendered:</p>
+<p><img src="images/rstudio-crossref-render.png" class="border img-fluid"></p>
+<p>See the article on <a href="../../../docs/authoring/cross-references.html">Cross References</a> to learn more, including how to customize caption and reference text (e.g.&nbsp;use “Fig.” rather than “Figure”).</p>
+</section>
+<section id="callouts" class="level2">
+<h2 class="anchored" data-anchor-id="callouts">Callouts</h2>
+<p>Callouts are an excellent way to draw extra attention to certain concepts, or to more clearly indicate that certain content is supplemental or applicable to only some scenarios.</p>
+<p>Callouts are markdown divs that have special callout attributes. Here’s an example of creating a callout within in the visual editor in RStudio. Note that you can select one of five types of callout (note, tip, important, caution, or warning), customize their appearance (default, simple, or minimal), and decide whether you want to show the icon.</p>
+<p><img src="images/rstudio-insert-callout.png" class="border img-fluid" width="600"></p>
+<p>Here is what a callout looks like in the visual editor.</p>
+<p><img src="images/rstudio-callout-note-source.png" class="border img-fluid"></p>
+<p>And here is the rendered callout in the output document.</p>
+<p><img src="images/rstudio-callout-note-rendered.png" class="border img-fluid"></p>
+<p>You can learn more about the different types of callouts and options for their appearance in the <a href="../../../docs/authoring/callouts.html">Callouts</a> documentation.</p>
 </section>
 <section id="article-layout" class="level2">
-<h2 class="anchored" data-anchor-id="article-layout">Article layout</h2>
-<p>https://quarto.org/docs/authoring/article-layout.html</p>
-<ul>
-<li>tabsets</li>
-</ul>
+<h2 class="anchored" data-anchor-id="article-layout">Article Layout</h2>
+<p>The body of Quarto articles have a default width of approximately 700 pixels. This width is chosen to <a href="https://medium.com/ben-shoemate/optimum-web-readability-max-and-min-width-for-page-text-dee9987a27a0">optimize readability</a>. This normally leaves some available space in the document margins and there are a few ways you can take advantage of this space.</p>
+<p>We also use the <code>column: page-right</code> cell option to indicate we would like our figure to occupy the full width of the screen, with some inset.</p>
+<p><img src="images/rstudio-column-page-right-source.png" class="border img-fluid" width="700"></p>
+<p>Here is what this document looks like when rendered:</p>
+<p><img src="images/rstudio-column-page-right-render.png" class="border img-fluid"></p>
+<p>You can locate citations, footnotes, and asides in the margin. You can also define custom column spans for figures, tables, or other content. See the documentation on <a href="../../../docs/authoring/article-layout.html">Article Layout</a> for additional details.</p>
 </section>
 <section id="learning-more" class="level2">
 <h2 class="anchored" data-anchor-id="learning-more">Learning More</h2>
