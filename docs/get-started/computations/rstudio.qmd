@@ -18,45 +18,269 @@ This allows you to create fully reproducible documents and reports---the code re
 In this tutorial we'll show you how to author fully reproducible computational documents with Quarto in RStudio.
 
 If you would like to follow along step-by-step in your own environment, download the Quarto document (`.qmd`) below, open it in RStudio, and click on <kbd>![](images/rstudio-render-button.png){width="25" height="20"}</kbd> Render.
+We recommend also checking the box for Render on Save for a live preview of your changes.
 
 ::: {.callout-note appearance="minimal"}
 <i class="bi bi-journal-code"></i> [Download computations.qmd](_computations.qmd){download="computations.qmd"}
 :::
 
-## Controlling output
+Note that you will need to open this document in the preview release of RStudio 2022.02.0 "Prairie Trillium", which you can download [here](https://www.rstudio.com/products/rstudio/download/preview/).
 
--   echo, warning, include, error
--   fenced-echo go here? If you ever had to teach... https://quarto.org/docs/computations/running-code.html#fenced-echo
+## Cell Output
 
-## Code blocks
+By default, the code and its output are displayed within the rendered document.
 
--   code-fold
--   code-link!!
--   code-line-numbers (also used for highlighting)
+![](images/rstudio-computations-preview.png){.border .column-page-right}
+
+However, for some documents, you may want to hide all of the code and just show the output.
+To do so, specify `echo: false` within the `execute` option in the YAML:
+
+``` yaml
+---
+title: "Quarto Computations"
+execute:
+  echo: false
+---
+```
+
+Save the document after making this change.
+The rendered document will update to the following:
+
+![](images/rstudio-exec-echo-false.png){.border}
+
+You might want to selectively enable code `echo` for some cells.
+To do this add the `echo: true` cell option.
+Try this with the chunk labelled `scatterplot`.
+
+``` r
+#| label: scatterplot
+#| echo: true
+
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_minimal()
+```
+
+Save the document again and note that the code is now included for the `scatterplot` chunk:
+
+![](images/rstudio-exec-echo-true-preview.png){.border .column-page-right}
+
+The `echo` option can be set to `true`, `false`, `fenced`.
+The last one might be of special interest for writing documentation and teaching materials as it allows you to include the fenced code delimiter in your code output to emphasize that executable code requires that delimiter.
+You can read more about this option in the [Fenced Echo](https://quarto.org/docs/computations/running-code.html#fenced-echo) documentation.
+
+There a large number of other options available for cell output, for example `message` for show/hide warnings (which can be especially helpful for package loading messages), `include` as a catch all for preventing any output (code or results) from being included in output, and `error` to prevent errors in code execution from halting the rendering of the document (and print the error in the rendered document).
+
+See the [Knitr Cell Options](https://quarto.org/docs/reference/cells/cells-knitr.html) documentation for additional details.
+
+## Code Folding
+
+Rather than hiding code entirely, you might want to fold it and allow readers to view it at their discretion.
+You can do this via the `code-fold` option.
+Remove the `echo` option we previously added and add the `code-fold` HTML format option:
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+---
+```
+
+Save the document again and note that new Code widgets are now included for each code chunk.
+
+![](images/rstudio-code-fold-preview.png){.border}
+
+You can also provide global control over code folding.
+Try adding `code-tools: true` to the HTML format options:
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+---
+```
+
+Save the document and you'll see that a code menu appears at the top right of the rendered document that provides global control over showing and hiding all code.
+
+![](images/rstudio-code-tools-preview.png){.border}
+
+## Code Linking
+
+The `code-link` option enables hyper-linking of functions within code blocks to their online documentation.
+Try adding `code-link: true` to the HTML format options:
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-link: true
+---
+```
+
+Save the document and observe that the functions are now clickable hyperlinks:
+
+![](images/rstudio-code-link-preview.png){.border .column-page-right}
+
+Note that code linking is currently implemented only for the knitr engine via the [downlit](https://downlit.r-lib.org/) package.
 
 ## Figures
 
--   fig-width and fig-height
--   fig-cap (can you do referencing from here??)
--   fig-alt (link to writing good alt text resource)
+We can improve the appearance and accessibility of our plot.
+We can change its aspect ratio by setting `fig-width` and `fig-height`, provide a `fig-cap`, modify its `label` for cross referencing, and add [alternative text](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81) with `fig-alt`.
 
-## Tables
+We'll add the following chunk options:
 
-Maybe a gt example would look nice and can show caption?
+``` r
+#| label: fig-scatterplot
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-alt: "Scatterplot of city vs. highway mileage for cars, where points are colored by the number of cylinders. The plot displays a positive, linear, and strong relationship between city and highway mileage, and mileage increases as the number cylinders decreases."
+#| fig-width: 6
+#| fig-height: 3.5
+```
 
-## Inline code
+Save the document to see the updated plot.
+Note that we have also added some narrative with a [cross reference](https://quarto.org/docs/authoring/cross-references.html#computations) to this figure.
 
-https://quarto.org/docs/computations/running-code.html#knitr
+![](images/rstudio-figure-options.png){.border .column-page-right fig-alt="On the right: source code for the document showing that new figure options have been added to the code chunk that produces the figure. On the right: Rendered output."}
+
+## Multiple Figures
+
+Let's add another plot to our chunk: another scatterplot where the points are colored by engine displacement, using a different color scale.
+Our goal is to display these plots side-by-side (i.e., in two columns), with a descriptive subcaption for each plot.
+Since this will produce a wider visualization we'll also use the `column` option to lay it out across the entire page rather than being constrained to the body text column.
+
+There are quite a few changes to this chunk.
+To follow along, copy and paste the options outlined below into your Quarto document:
+
+``` r
+#| label: fig-mpg
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+#| layout-ncol: 2
+#| column: page
+
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_minimal()
+
+ggplot(mpg, aes(x = hwy, y = cty, color = displ)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c(option = "E") +
+  theme_minimal()
+```
+
+![](images/rstudio-multi-figure-preview.png){.border}
+
+Let's discuss some of the new options used here.
+You've seen `fig-cap` before but we've now added a `fig-subcap` option:
+
+``` r
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+```
+
+For code cells with multiple outputs adding the `fig-subcap` option enables us to treat them as subfigures.
+
+We also added an option to control how multiple figures are laid out---in this case we specified side-by-side in two columns:
+
+``` r
+#| layout-ncol: 2
+```
+
+If you have 3, 4, or more figures in a panel there are many options available for customizing their layout.
+See the article [Figure Layout](https://tutorial.quarto.org/docs/authoring/figure-layout.html) for details.
+
+Finally, we added an option to control the span of the page that our figures occupy:
+
+``` r
+#| column: page
+```
+
+This allows our figure display to span out beyond the normal body text column.
+See the documentation on [Article Layout](https://tutorial.quarto.org/docs/authoring/article-layout.html) to learn about all of the available layout options.
+
+## Inline Code
+
+To include executable expressions within markdown, enclose the expression in `` `r ` ``.
+For example, we can use inline code to state the number of observations in our data.
+Try adding the following markdown text to your Quarto document.
+
+``` markdown
+There are _r nrow(mpg)_ observations in our data. 
+```
+
+Save your document and inspect the rendered output.
+The expression inside the backticks has been executed and the sentence includes the actual number of observations.
+
+::: border
+There are 234 observations in our data.
+:::
+
+If the expression you want to inline is more complex, involving many functions or a pipeline, we recommend including it in a code chunk (with `echo: false`) and assigning the result to an object.
+Then, you can call that object in your inline code.
+
+For example, say you want to state the average city and highway mileage in your data.
+First, compute these values in a code chunk.
+
+``` r
+#| echo: false
+
+mean_cty <- round(mean(mpg$cty), 2)
+mean_hwy <- round(mean(mpg$hwy), 2)
+```
+
+Then, add the following markdown text to your Quarto document.
+
+``` markdown
+The average city mileage of the cars in our data is _r mean_cty_ and the average highway mileage is _r mean_hwy_.
+```
+
+Save your document and inspect the rendered output.
+
+::: border
+The average city mileage of the cars in our data is 16.86 and the average highway mileage is 23.44.
+:::
 
 ## Caching
 
--   under `execute` in YAML
--   or chunk by chunk
--   link to https://yihui.org/knitr/demo/cache/ for more info
+If your document includes code chunks that take too long to compute, you might want to cache the results of those chunks.
+You can use the `cache` option either at the document level using the YAML execute option.
 
-## Global options?
+``` yaml
+execute:
+  cache: true
+```
 
--   maybe mention here?
+However caching all code chunks in a document may not be preferable.
+You can also indicate which chunks should be cached directly with using a chunk option.
+
+``` r
+#| cache: true
+```
+
+Try adding this chunk option to one of the code chunks in your document that produces a plot and save.
+When the document is rendered, you'll see that a new folder has been created in your working directory with the same name as your document and the suffix `_cache`.
+This folder contains the cached results.
+You can find out more about caching in Quarto documents in the [Cache](https://quarto.org/docs/projects/code-execution.html#cache) documentation.
+
+If you followed along step-by-step with this tutorial, you should now have a Quarto document that implements everything we covered.
+Otherwise, you can download a completed version of `computations.qmd` below.
+
+::: {.callout-note appearance="minimal"}
+<i class="bi bi-journal-code"></i> [Download computations-complete.qmd](_computations-complete.qmd){download="computations-complete.qmd"}
+:::
 
 ``` include
 _footer.md
