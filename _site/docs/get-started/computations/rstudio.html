@@ -438,19 +438,24 @@ document.addEventListener("DOMContentLoaded", function() {
 <section id="inline-code" class="level2">
 <h2 class="anchored" data-anchor-id="inline-code">Inline Code</h2>
 <p>To include executable expressions within markdown, enclose the expression in <code>`r `</code>. For example, we can use inline code to state the number of observations in our data. Try adding the following markdown text to your Quarto document.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>There are _r nrow(mpg)_ observations in our data. </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode">
+<pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown">
+There are `r nrow(mpg)` observations in our data. 
+</code>
+<button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+</div>
 <p>Save your document and inspect the rendered output. The expression inside the backticks has been executed and the sentence includes the actual number of observations.</p>
 <div class="border">
 <p>There are 234 observations in our data.</p>
 </div>
 <p>If the expression you want to inline is more complex, involving many functions or a pipeline, we recommend including it in a code chunk (with <code>echo: false</code>) and assigning the result to an object. Then, you can call that object in your inline code.</p>
 <p>For example, say you want to state the average city and highway mileage in your data. First, compute these values in a code chunk.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>mean_cty <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(mpg<span class="sc">$</span>cty), <span class="dv">2</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>mean_hwy <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(mpg<span class="sc">$</span>hwy), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>mean_cty <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(mpg<span class="sc">$</span>cty), <span class="dv">2</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>mean_hwy <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mean</span>(mpg<span class="sc">$</span>hwy), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Then, add the following markdown text to your Quarto document.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>The average city mileage of the cars in our data is _r mean_cty_ and the average highway mileage is _r mean_hwy_.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>The average city mileage of the cars in our data is _r mean_cty_ and the average highway mileage is _r mean_hwy_.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Save your document and inspect the rendered output.</p>
 <div class="border">
 <p>The average city mileage of the cars in our data is 16.86 and the average highway mileage is 23.44.</p>
@@ -459,10 +464,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <section id="caching" class="level2">
 <h2 class="anchored" data-anchor-id="caching">Caching</h2>
 <p>If your document includes code chunks that take too long to compute, you might want to cache the results of those chunks. You can use the <code>cache</code> option either at the document level using the YAML execute option.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">cache</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>However caching all code chunks in a document may not be preferable. You can also indicate which chunks should be cached directly with using a chunk option.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| cache: true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Try adding this chunk option to one of the code chunks in your document that produces a plot and save. When the document is rendered, you’ll see that a new folder has been created in your working directory with the same name as your document and the suffix <code>_cache</code>. This folder contains the cached results. You can find out more about caching in Quarto documents in the <a href="https://quarto.org/docs/projects/code-execution.html#cache">Cache</a> documentation.</p>
 <p>If you followed along step-by-step with this tutorial, you should now have a Quarto document that implements everything we covered. Otherwise, you can download a completed version of <code>computations.qmd</code> below.</p>
 <div class="callout-note callout callout-style-simple no-icon">
