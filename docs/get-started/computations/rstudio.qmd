@@ -18,6 +18,7 @@ This allows you to create fully reproducible documents and reports---the code re
 In this tutorial we'll show you how to author fully reproducible computational documents with Quarto in RStudio.
 
 If you would like to follow along step-by-step in your own environment, download the Quarto document (`.qmd`) below, open it in RStudio, and click on <kbd>![](images/rstudio-render-button.png){width="25" height="20"}</kbd> Render.
+We recommend also checking the box for Render on Save for a live preview of your changes.
 
 ::: {.callout-note appearance="minimal"}
 <i class="bi bi-journal-code"></i> [Download computations.qmd](_computations.qmd){download="computations.qmd"}
@@ -25,16 +26,104 @@ If you would like to follow along step-by-step in your own environment, download
 
 Note that you will need to open this document in the preview release of RStudio 2022.02.0 "Prairie Trillium", which you can download [here](https://www.rstudio.com/products/rstudio/download/preview/).
 
-## Controlling output
+## Cell output
 
--   echo, warning, include, error
--   fenced-echo go here? If you ever had to teach... https://quarto.org/docs/computations/running-code.html#fenced-echo
+By default, the code and its output are displayed within the rendered document.
 
-## Code blocks
+![](images/rstudio-computations-preview.png){.border .column-page-right}
 
--   code-fold
--   code-link!!
--   code-line-numbers (also used for highlighting)
+However, for some documents, you may want to hide all of the code and just show the output.
+To do so, specify `echo: false` within the `execute` option in the YAML:
+
+``` yaml
+---
+title: "Quarto Computations"
+execute:
+  echo: false
+---
+```
+
+Save the document after making this change.
+The rendered document will update to the following:
+
+![](images/rstudio-exec-echo-false.png){.border}
+
+You might want to selectively enable code `echo` for some cells.
+To do this add the `echo: true` cell option.
+Try this with the chunk labelled `scatterplot`.
+
+![](images/rstudio-exec-echo-true.png){.border width="600"}
+
+Save the document again and note that the code is now included for the `scatterplot` chunk:
+
+![](images/rstudio-exec-echo-true-preview.png){.border}
+
+The `echo` option can be set to `true`, `false`, `fenced`.
+The last one might be of special interest for writing documentation and teaching materials as it allows you to include the fenced code delimiter in your code output to emphasize that executable code requires that delimiter.
+You can read more about this option in the [Fenced Echo](https://quarto.org/docs/computations/running-code.html#fenced-echo) documentation.
+
+There a large number of other options available for cell output, for example `message` for show/hide warnings (which can be especially helpful for package loading messages), `include` as a catch all for preventing any output (code or results) from being included in output, and `error` to prevent errors in code execution from halting the rendering of the document (and print the error in the rendered document).
+
+See the [Knitr Cell Options](https://quarto.org/docs/reference/cells/cells-knitr.html) documentation for additional details.
+
+## Code folding
+
+Rather than hiding code entirely, you might want to fold it and allow readers to view it at their discretion.
+You can do this via the `code-fold` option.
+Remove the `echo` option we previously added and add the `code-fold` HTML format option:
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+---
+```
+
+Save the document again and note that new Code widgets are now included for each code chunk.
+
+![](images/rstudio-code-fold-preview.png){.border}
+
+You can also provide global control over code folding.
+Try adding `code-tools: true` to the HTML format options:
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+---
+```
+
+Save the document and you'll see that a code menu appears at the top right of the rendered document that provides global control over showing and hiding all code.
+
+![](images/rstudio-code-tools-preview.png){.border}
+
+## Code linking
+
+The `code-link` option enables hyper-linking of functions within code blocks to their online documentation.
+Try adding `code-link: true` to the HTML format options:
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-link: true
+---
+```
+
+Save the document and observe that the functions are now clickable hyperlinks:
+
+![](images/rstudio-code-link-preview.png){.border .column-page-right}
+
+Note that code linking is currently implemented only for the knitr engine via the [downlit](https://downlit.r-lib.org/) package.
+
+[\
+](https://quarto.org/docs/output-formats/html-basics.html)
 
 ## Figures
 
@@ -60,6 +149,4 @@ https://quarto.org/docs/computations/running-code.html#knitr
 
 -   maybe mention here?
 
-``` include
-_footer.md
-```
+\_footer.md \`\`\`
