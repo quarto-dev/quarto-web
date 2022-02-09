@@ -64,7 +64,7 @@ ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
 
 Save the document again and note that the code is now included for the `scatterplot` chunk:
 
-![](images/rstudio-exec-echo-true-preview.png){.border}
+![](images/rstudio-exec-echo-true-preview.png){.border .column-page-right}
 
 The `echo` option can be set to `true`, `false`, `fenced`.
 The last one might be of special interest for writing documentation and teaching materials as it allows you to include the fenced code delimiter in your code output to emphasize that executable code requires that delimiter.
@@ -149,6 +149,67 @@ Save the document to see the updated plot.
 Note that we have also added some narrative with a [cross reference](https://quarto.org/docs/authoring/cross-references.html#computations) to this figure.
 
 ![](images/rstudio-figure-options.png){.border .column-page-right fig-alt="On the right: source code for the document showing that new figure options have been added to the code chunk that produces the figure. On the right: Rendered output."}
+
+## Multiple Figures
+
+Let's add another plot to our chunk: another scatterplot where the points are colored by engine displacement, using a different color scale.
+Our goal is to display these plots side-by-side (i.e., in two columns), with a descriptive subcaption for each plot.
+Since this will produce a wider visualization we'll also use the `column` option to lay it out across the entire page rather than being constrained to the body text column.
+
+There are quite a few changes to this chunk.
+To follow along, copy and paste the options outlined below into your Quarto document:
+
+``` r
+#| label: fig-mpg
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+#| layout-ncol: 2
+#| column: page
+
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_minimal()
+
+ggplot(mpg, aes(x = hwy, y = cty, color = displ)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c(option = "E") +
+  theme_minimal()
+```
+
+![](images/rstudio-multi-figure-preview.png){.border}
+
+Let's discuss some of the new options used here.
+You've seen `fig-cap` before but we've now added a `fig-subcap` option:
+
+``` r
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+```
+
+For code cells with multiple outputs adding the `fig-subcap` option enables us to treat them as subfigures.
+
+We also added an option to control how multiple figures are laid out---in this case we specified side-by-side in two columns:
+
+``` r
+#| layout-ncol: 2
+```
+
+If you have 3, 4, or more figures in a panel there are many options available for customizing their layout.
+See the article [Figure Layout](https://tutorial.quarto.org/docs/authoring/figure-layout.html) for details.
+
+Finally, we added an option to control the span of the page that our figures occupy:
+
+``` r
+#| column: page
+```
+
+This allows our figure display to span out beyond the normal body text column.
+See the documentation on [Article Layout](https://tutorial.quarto.org/docs/authoring/article-layout.html) to learn about all of the available layout options.
 
 ``` include
 _footer.md
