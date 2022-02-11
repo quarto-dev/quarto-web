@@ -46,6 +46,38 @@ The commands you can use for installation and opening Jupyter Lab are given in t
 |           |     py -m jupyter lab hello.ipynb                    |
 +-----------+------------------------------------------------------+
 
+Here is our notebook in Jupyter Lab.
+
+```` {.markdown .visually-hidden}
+---
+title: "Quarto Basics"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
+```{{python}}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
 ![](images/jupyter-basics.png){.border fig-alt="A Jupyter notebook titled Quarto Basics containing some text, a code cell, and the result of the code cell, which is a line plot on a polar axis."}
 
 Next, create a new Terminal within Jupyter Lab to use for Quarto commands.
@@ -101,6 +133,16 @@ There are few different types of cells in our notebook, let's work a bit with ea
 
 You are likely already familiar with markdown and code cells, but there is a new type of cell ("Raw") that is used for document-level YAML options.
 
+``` {.yaml .visually-hidden}
+---
+title: "Quarto Basics"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+```
+
 ![](images/jupyter-yaml.png){.border fig-alt="YAML of the notebook with the fields title, format, and jupyter. Title is set to Quarto Basics with title: \"Quarto Basics\". Format is defined as html in the next line, and within the html format, code-fold is set to true. Jupyter is set to python3 with jupyter: python3."}
 
 Try changing the `code-fold` option to `false`.
@@ -120,6 +162,12 @@ Markdown cells contain raw markdown that will be passed through to Quarto during
 You can use any valid Quarto [markdown syntax](/docs/authoring/markdown-basics.qmd) in these cells.
 Here we specify a header and a cross-reference to the figure created in the code cell below.
 
+``` {.markdown .visually-hidden}
+## Polar Axis
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+```
+
 ![](images/jupyter-markdown.png){.border fig-alt="A Markdown cell with the title Polar Axis as a second level header and text that reads 'For a demonstration of a line plot on a polar axis, see @fig-polar.'"}
 
 Try changing the header and saving the notebook---the preview will update with the new header text.
@@ -127,6 +175,26 @@ Try changing the header and saving the notebook---the preview will update with t
 ## Code Cells
 
 You are likely already familiar with code cells, like the one shown below.
+
+```` {.markdown .visually-hidden}
+```{{python}}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
 
 ![](images/jupyter-cell.png){.border fig-alt="A code cell with cell options for label and fig-cap and the code required to create the line plot on a polar axis."}
 
