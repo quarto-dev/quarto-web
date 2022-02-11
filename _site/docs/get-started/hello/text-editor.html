@@ -250,7 +250,7 @@
 <h2 id="toc-title">On this page</h2>
 <ul>
 <li><a href="#overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-<li><a href="#syntax-highlighting" class="nav-link" data-scroll-target="#syntax-highlighting">Syntax Highlighting</a></li>
+<li><a href="#editor-modes" class="nav-link" data-scroll-target="#editor-modes">Editor Modes</a></li>
 <li><a href="#rendering" class="nav-link" data-scroll-target="#rendering">Rendering</a></li>
 <li><a href="#authoring" class="nav-link" data-scroll-target="#authoring">Authoring</a></li>
 <li><a href="#yaml-options" class="nav-link" data-scroll-target="#yaml-options">YAML Options</a></li>
@@ -314,11 +314,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>In this tutorial we’ll show you how to use your favorite text editor with Quarto. You’ll edit plain text <code>.qmd</code> files and preview the rendered document in a web browser as you work.</p>
 <p>Below is an overview of how this will look.</p>
 <p class="page-columns page-full"><img src="images/text-editor-quarto-preview.png" class="border column-body-outset-right img-fluid" alt="On the left: A VS Code notebook titled Quarto Basics containing some text, a code cell, and the result of the code cell, which is a line plot on a polar axis. On the right: Rendered version of the same notebook."></p>
-<p>The notebook on the left is <em>rendered</em> into the HTML version you see on the right. This is the basic model for Quarto publishing—take a source document (in this case a notebook) and render it to a variety of output formats, including HTML, PDF, MS Word, etc.</p>
+<p>The notebook on the left is <em>rendered</em> into the HTML version you see on the right. This is the basic model for Quarto publishing—take a source document (in this case a notebook) and render it to a variety of <a href="https://quarto.org/docs/output-formats/all-formats.html">output formats</a>, including HTML, PDF, MS Word, etc.</p>
 <p>The tutorials will make use of the <code>matplotlib</code> and <code>plotly_express</code> Python packages—the commands you can use to install them are given in the table below.</p>
 <table class="table">
 <colgroup>
-<col style="width: 22%">
+<col style="width: 19%">
 <col style="width: 76%">
 </colgroup>
 <thead>
@@ -339,11 +339,15 @@ document.addEventListener("DOMContentLoaded", function() {
 </tbody>
 </table>
 </section>
-<section id="syntax-highlighting" class="level2">
-<h2 class="anchored" data-anchor-id="syntax-highlighting">Syntax Highlighting</h2>
-<p>You can get reasonable syntax highlighting for Quarto source files in any editor by mapping the <code>.qmd</code> file extension to the “markdown” file type. This will handle markdown well, but executable code blocks may not be highlighted in their native language. This is because Quarto uses a special syntax for executable code.</p>
-<p>There are Quarto syntax highlighting modes available for several editors that provide additional support for Pandoc markdown (e.g.&nbsp;citations) and handle executable code blocks correctly. You may want to install and configure one of these before proceeding with the tutorial.</p>
+<section id="editor-modes" class="level2">
+<h2 class="anchored" data-anchor-id="editor-modes">Editor Modes</h2>
+<p>You can get reasonable syntax highlighting for Quarto source files in any editor by mapping the <code>.qmd</code> file extension to the “markdown” file type. This will handle markdown well, but executable code blocks may not be highlighted in their native language. This is because Quarto uses a special syntax for executable code (e.g.&nbsp;<code>```{python}</code> rather than <code>```python</code>).</p>
+<p>There are Quarto syntax highlighting modes available for several editors that provide additional support for Pandoc markdown and handle executable code blocks correctly. You may want to install and configure one of these before proceeding with the tutorial.</p>
 <table class="table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 70%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Editor</th>
@@ -362,6 +366,10 @@ document.addEventListener("DOMContentLoaded", function() {
 <tr class="odd">
 <td>Sublime Text</td>
 <td><a href="https://github.com/quarto-dev/quarto-sublime" class="uri">https://github.com/quarto-dev/quarto-sublime</a></td>
+</tr>
+<tr class="even">
+<td>VS Code</td>
+<td><a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto" class="uri">https://marketplace.visualstudio.com/items?itemName=quarto.quarto</a></td>
 </tr>
 </tbody>
 </table>
@@ -403,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>When you render a <code>.qmd</code> file with Quarto, the executable code blocks are processed by Jupyter, and the resulting combination of code, markdown, and output is converted to plain markdown. Then, this markdown is processed by <a href="http://pandoc.org/">Pandoc</a>, which creates the finished format.</p>
 <div class="quarto-figure quarto-figure-left">
 <figure class="figure">
-<p><img src="images/qmd-how-it-works.png" class="img-fluid figure-img"></p>
+<p><img src="images/qmd-how-it-works.png" class="img-fluid figure-img" alt=""></p>
 </figure>
 </div>
 </section>
@@ -415,9 +423,13 @@ document.addEventListener("DOMContentLoaded", function() {
 <p><img src="images/quarto-preview.png" class="border img-fluid" alt="Rendered version of the earlier notebook in a web browser." width="500"></p>
 <p>You might want to position your editor and the browser preview side-by-side so you can see changes as you work.</p>
 <p class="page-columns page-full"><img src="images/text-editor-quarto-preview.png" class="border column-body-outset-right img-fluid" alt="Side-by-side preview of notebook on the left and live preview in the browser on the right."></p>
-<p>To see the live preview in action, change the the line of code that defines <code>theta</code> as follows.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">4</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then, save the file. You’ll see that the document is re-rendered, and the browser preview is updated. This is the basic workflow for authoring with Quarto.</p>
+<p>To see live preview in action:</p>
+<ol type="1">
+<li><p>Change the the line of code that defines <code>theta</code> as follows:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">4</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Save the file. The document is re-rendered, and the browser preview is updated.</p></li>
+</ol>
+<p>This is the basic workflow for authoring with Quarto.</p>
 <p>There are few different types of content in <code>hello.qmd</code>, let’s work a bit with each type.</p>
 </section>
 <section id="yaml-options" class="level2">
@@ -466,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You are likely familiar with the Matplotlib code given here. However, there are some less familiar components at the top of the code cell: <code>label</code> and <code>fig-cap</code> options. Cell options are written in YAML using a specially prefixed comment (<code>#|</code>).</p>
 <p>In this example, the cell options are used to make the figure cross-reference-able. Try changing the <code>fig-cap</code> and/or the code, running the cell, and then saving the file to see the updated preview.</p>
-<p>There are a wide variety of cell options that you can apply to tailor your output. We’ll delve into these options in the next tutorial.</p>
+<p>There are a wide variety of <a href="../../../docs/reference/cells/cells-jupyter.html">cell options</a> that you can apply to tailor your output. We’ll delve into these options in the next tutorial.</p>
 </section>
 <section id="next-up" class="level2">
 <h2 class="anchored" data-anchor-id="next-up">Next Up</h2>

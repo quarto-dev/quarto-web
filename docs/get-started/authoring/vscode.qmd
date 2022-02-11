@@ -18,7 +18,7 @@ In particular, we'll discuss the various document formats you can produce and sh
 
 ## Output Formats
 
-Quarto supports rendering notebooks to dozens of different output formats.
+Quarto supports rendering notebooks to dozens of different [output formats](/docs/output-formats/all-formats.qmd).
 By default, the `html` format is used, but you can specify an alternate format (or formats) within document options.
 
 ### Format Options
@@ -31,11 +31,32 @@ To create a Raw cell, add a cell at the top of the notebook and set its type to 
 
 Now, let's add some basic document metadata and a default output format.
 
+``` {.yaml .visually-hidden}
+---
+title: "Quarto Document"
+author: "Norah Jones"
+format: pdf
+jupyter: python3
+---
+```
+
 ![](images/vscode-format.png){.border}
 
 We specified `pdf` as the default output format (if we exclude the `format` option then it will default to `html`).
 
 Let's add some options to control our PDF output.
+
+``` {.yaml .visually-hidden}
+---
+title: "Quarto Document"
+author: "Norah Jones"
+format: 
+  pdf: 
+    toc: true
+    number-sections: true
+jupyter: python3
+---
+```
 
 ![](images/vscode-format-options.png){.boder}
 
@@ -43,6 +64,26 @@ Let's add some options to control our PDF output.
 
 Some documents you create will have only a single output format, however in many cases it will be desirable to support multiple formats.
 Let's add the `html` and `docx` formats to our document.
+
+``` {.yaml .visually-hidden}
+---
+title: "Quarto Document"
+author: "Norah Jones"
+toc: true
+number-sections: true
+highlight-style: pygments
+format: 
+  html: 
+    code-fold: true
+    html-math-method: katex
+  pdf: 
+    geometry: 
+      - top=30mm
+      - left=20mm
+  docx: default
+jupyter: python3
+---
+```
 
 ![](images/vscode-formats.png){.border}
 
@@ -129,6 +170,35 @@ You can use a table of contents and/or section numbering to make it easier for r
 Do this by adding the `toc` and/or `number-sections` options to document options.
 Note that these options are typically specified at the root level because they are shared across all formats.
 
+``` {.yaml .visually-hidden}
+---
+title: Quarto Basics
+author: Norah Jones
+date: 'May 22, 2021'
+toc: true
+number-sections: true
+jupyter: python3
+---
+
+## Colors
+
+- Red
+- Green 
+- Blue
+
+## Shapes
+
+- Square
+- Circle
+- Triangle
+
+## Textures
+
+- Smooth
+- Bumpy
+- Fuzzy
+```
+
 ![](images/vscode-sections.png){.border}
 
 Here's what this document looks like when rendered to HTML.
@@ -141,6 +211,12 @@ See the output format documentation (e.g. [HTML](/docs/output-formats/html-basic
 ## Equations
 
 You can add LaTeX equations to markdown cells within VS Code.
+
+``` {.markdown .visually-hidden}
+Einstein's theory of special relatively that expresses the equivalence of mass and energy:
+
+$E = mc^{2}$
+```
 
 ![](/docs/get-started/authoring/images/vscode-equation.png){.border}
 
@@ -160,6 +236,25 @@ Then, link the bibliography to your document using the `bibliography` YAML metad
 
 Here's a notebook that includes a bibliography and single citation.
 Note that markdown cells are un-executed so you can see all of the syntax.
+
+```` {.markdown .visually-hidden}
+---
+title: Quarto Basics
+format: html
+bibliography: references.bib
+jupyter: python3
+---
+
+## Overview
+
+Knuth says always be literate [@knuth1984].
+
+```{{python}}
+1 + 1
+```
+
+## References
+````
 
 ![](/docs/get-started/authoring/images/vscode-citations.png){.border}
 
@@ -187,33 +282,63 @@ Cross-reference-able entities generally require a label (unique identifier) and 
 The notebook below illustrates cross-referencing various types of entities.
 Once again, the markdown cells are again un-executed so that the syntax is visible.
 
+```` {.markdown .visually-hidden}
+---
+title: Quarto Crossrefs
+format: html
+jupyter: python3
+---
+
+## Overview
+
+See @fig-simple in @sec-plot for a demonstration of a simple plot. 
+
+See @eq-stddev to better understand standard deviation.
+
+## Plot {#sec-plot}
+
+```{{python}}
+#| label: fig-simple
+#| fig-cap: Simple Plot
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+
+## Equation {#sec-equation}
+
+$$
+s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
+$$ {#eq-stddev}
+````
+
 ![](/docs/get-started/authoring/images/vscode-crossref.png){.border}
 
 This example includes cross-referenced sections, figures, and equations.
 The table below shows how we expressed each of these.
 
-+--------------+---------------+----------------------------------+
-| Entity       | Reference     | Label / Caption                  |
-+==============+===============+==================================+
-| Section      | `@sec-plot`   | ID added to heading:             |
-|              |               |                                  |
-|              |               | ``` {.default code-copy="false"} |
-|              |               | # Plot {#sec-plot}               |
-|              |               | ```                              |
-+--------------+---------------+----------------------------------+
-| Figure       | `@fig-simple` | YAML options in code cell:       |
-|              |               |                                  |
-|              |               | ``` {.default code-copy="false"} |
-|              |               | #| label: fig-simple             |
-|              |               | #| fig-cap: Simple Plot          |
-|              |               | ```                              |
-+--------------+---------------+----------------------------------+
-| Equation     | `@eq-stddev`  | At end of display equation:      |
-|              |               |                                  |
-|              |               | ``` default                      |
-|              |               | $$ {#eq-stddev}                  |
-|              |               | ```                              |
-+--------------+---------------+----------------------------------+
++----------+---------------+----------------------------------+
+| Entity   | Reference     | Label / Caption                  |
++==========+===============+==================================+
+| Section  | `@sec-plot`   | ID added to heading:             |
+|          |               |                                  |
+|          |               | ``` {.default code-copy="false"} |
+|          |               | # Plot {#sec-plot}               |
+|          |               | ```                              |
++----------+---------------+----------------------------------+
+| Figure   | `@fig-simple` | YAML options in code cell:       |
+|          |               |                                  |
+|          |               | ``` {.default code-copy="false"} |
+|          |               | #| label: fig-simple             |
+|          |               | #| fig-cap: Simple Plot          |
+|          |               | ```                              |
++----------+---------------+----------------------------------+
+| Equation | `@eq-stddev`  | At end of display equation:      |
+|          |               |                                  |
+|          |               | ``` default                      |
+|          |               | $$ {#eq-stddev}                  |
+|          |               | ```                              |
++----------+---------------+----------------------------------+
 
 : {tbl-colwidths=\[20,30,50\]}
 
@@ -229,6 +354,13 @@ Callouts are an excellent way to draw extra attention to certain concepts, or to
 
 Callouts are markdown divs that have special callout attributes.
 Here's an example of creating a callout within a markdown cell.
+
+``` {.markdown .visually-hidden}
+::: {.callout-note}
+Note that there are five types of callouts, including:
+`note`, `tip`, `warning`, `caution`, and `important`.
+:::
+```
 
 ![](/docs/get-started/authoring/images/vscode-callout.png){.border}
 
@@ -254,6 +386,42 @@ This normally leaves some available space in the document margins and there are 
 In this notebook, we use the `reference-location` option to indicate that we would like footnotes to be placed in the right margin.
 
 We also use the `column: screen-inset` cell option to indicate we would like our figure to occupy the full width of the screen, with a small inset.
+
+```` {.markdown .visually-hidden}
+---
+title: Quarto Layout
+format: html
+reference-location: margin
+jupyter: python3
+---
+
+## Placing Colorbars
+
+Colorbars indicate the quantitative extent of image data.
+Placing in a figure is non-trivial because room needs to
+be made for them. The simplest case is just attaching a 
+colorbar to each axes:^[See the [Matplotlib Gallery](https://matplotlib.org/stable/gallery/subplots_axes_and_figures/colorbar_placement.html) to explore colorbars further].
+
+```{{python}}
+#| code-fold: true
+#| column: screen-inset
+import matplotlib.pyplot as plt
+import numpy as np
+
+fig, axs = plt.subplots(2, 2)
+fig.set_size_inches(20, 8)
+cmaps = ['RdBu_r', 'viridis']
+for col in range(2):
+    for row in range(2):
+        ax = axs[row, col]
+        pcm = ax.pcolormesh(
+          np.random.random((20, 20)) * (col + 1),
+          cmap=cmaps[col]
+        )
+        fig.colorbar(pcm, ax=ax)
+plt.show()
+```
+````
 
 ![](images/vscode-layout.png){.border}
 
