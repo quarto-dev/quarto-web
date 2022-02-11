@@ -240,42 +240,42 @@
   {
     "objectID": "docs/projects/code-execution.html#overview",
     "href": "docs/projects/code-execution.html#overview",
-    "title": "Code Execution",
+    "title": "Managing Execution",
     "section": "Overview",
     "text": "Overview\nRendering a list of input files has the potential to be quite time consuming depending on the computations required. There are a number of techniques you can use to minimize the time required to rebuild a site that has expensive computations."
   },
   {
     "objectID": "docs/projects/code-execution.html#incremental-render",
     "href": "docs/projects/code-execution.html#incremental-render",
-    "title": "Code Execution",
+    "title": "Managing Execution",
     "section": "Incremental Render",
     "text": "Incremental Render\nWhen working on a project you are typically iterating on a single document at a time. You can render a single file (or single directory or list of files) incrementally by specifying it on the command-line:\nquarto render introduction.qmd\nquarto render subdir/\nEven though you are rendering only part of the project, any associated project-handling code is still executed. So for exmaple in a book project the entire book is still produced (using previously rendered versions of the other chapters)."
   },
   {
     "objectID": "docs/projects/code-execution.html#freeze",
     "href": "docs/projects/code-execution.html#freeze",
-    "title": "Code Execution",
+    "title": "Managing Execution",
     "section": "Freeze",
     "text": "Freeze\nYou can use the freeze option to denote that computational documents should never be re-rendered during a global project render, or alternatively only be re-rendered when their source file changes:\nexecute:\n  freeze: true  # never re-render during project render\nexecute:\n  freeze: auto  # re-render only when source changes\nNote that freeze controls whether execution occurs during global project renders. If you do an incremental render of either a single document or a project sub-directory then code is always executed. For example:\n# render single document (always executes code)\nquarto render document.qmd\n\n# render project subdirectory (always executes code)\nquarto render articles\n\nUsing Freeze\nFreeze is generally used when you have either a large number of collaborators or many computational documents created over a longer period of time. In both cases it can be challenging to fully re-execute every document when you render the site. This could be because some documents have esoteric or environment-specific requirements (e.g. require access/authentication to a data source) or due to general fragility of dependencies over time. Using freeze ensures that you can always reproducibly render your site.\nThe computational results of documents executed with freeze are stored in the _freeze directory, and re-used when needed to fulfill document renders. You should check the contents of _freeze into version control so that others rendering the project don’t need to reproduce your computational environment to render it in their environment.\nNote that you’ll still want to take care to fully re-render your project when things outside of source code change (e.g. input data). You can remove previously frozen output by deleting the _freeze folder at the root of yourproject.\n\n\nVirtual Environments\nYou can also combine freeze with the use of virtual environments to divide your project into sub-directories that each have their own set of dependencies. This allows multiple collaborators to use a set of localized dependencies for the documents they are responsible for, but at the same time still be able to render the entire project without requiring all of its dependencies.\nTo learn how to create and use a virtual environment, see the full documentation on Virtual Environments\nHere’s an example workflow of using virtual environments with freeze:\n\nInclude freeze: true in the project execution options:\nexecute:\n  freeze: true\nCreate a sub-directory of documents (e.g. research), and initialize and use a virtual environment within it:\nresearch/\n  document1.qmd\n  document2.qmd\n  env/\n  requirements.txt\nWhen working wihtin this sub-directory, activate the virtual environment before rendering its documents. For example:\ncd research\nsource venv/bin/activate\nquarto render               # render all files in subdir\nquarto render document.qmd  # render a single-file\n\nThis sub-directory render won’t use the cached freeze results but instead will re-run all of the computations using the directory-specific virtual environment. You can of course also include sub-directories within this directory and their documents will also be rendered using the parent virtual environment."
   },
   {
     "objectID": "docs/projects/code-execution.html#cache",
     "href": "docs/projects/code-execution.html#cache",
-    "title": "Code Execution",
+    "title": "Managing Execution",
     "section": "Cache",
     "text": "Cache\nYou can use the cache option to cache the results of computations (using the knitr cache for R documents, and Jupyter Cache for Jupyter documents):\nexecute:\n  cache: true\nNote that cache invalidation is triggered by changes in chunk source code (or other cache attributes you’ve defined). You may however need to manually refresh the cache if you know that some other input (or even time) has changed sufficiently to warrant an update. To do this, render either individual files or an entire project using the --cache-refresh option:\nquarto render mydoc.qmd --cache-refresh # single doc\nquarto render --cache-refresh           # entire project"
   },
   {
     "objectID": "docs/projects/code-execution.html#notebooks",
     "href": "docs/projects/code-execution.html#notebooks",
-    "title": "Code Execution",
+    "title": "Managing Execution",
     "section": "Notebooks",
     "text": "Notebooks\nNote that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render notebook.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Notebook\"\nexecute: true\njupyter: python3\n---"
   },
   {
     "objectID": "docs/projects/code-execution.html#working-dir",
     "href": "docs/projects/code-execution.html#working-dir",
-    "title": "Code Execution",
+    "title": "Managing Execution",
     "section": "Working Dir",
     "text": "Working Dir\nBy default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the execute-dir: project option to your config:\nproject:\n  execute-dir: project\nNote that from within your code you can always determine the location of the currently executing Quarto project using the QUARTO_PROJECT_DIR environment variable."
   },
@@ -352,63 +352,63 @@
   {
     "objectID": "docs/books/book-output.html#format-options",
     "href": "docs/books/book-output.html#format-options",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "Format Options",
     "text": "Format Options\nIf you want to specify rendering options (including format-specific options), you do it within the _quarto.yml project file rather than within the individual markdown documents. This is because when rendering a book all of the chapters are combined together into a single document (with a single set of format options).\nHere’s an example configuration:\nhighlight-style: pygments\n\nformat:\n  html:\n    theme: cosmo\n    code-copy: true\n  pdf: default\n    \nbibliography: references.bib\ncsl: citestyle.csl\nNote that in the above configuration the highlight-style option applies to all formats whereas the html options apply to only HTML output. The bibliography related options naturally also apply to all formats."
   },
   {
     "objectID": "docs/books/book-output.html#reader-tools",
     "href": "docs/books/book-output.html#reader-tools",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "Reader Tools",
     "text": "Reader Tools\n\nSidebar Tools\nBooks automatically include a navigational sidebar that can optionally include tools for searching book contents, sharing links to the book, etc. Here is an example _quarto.yml file that enables these options:\nbook:\n  title: \"Hands-On Programming with R\"\n  author: \"Garrett Grolemund\"\n  search: true\n  repo-url: https://github.com/jjallaire/hopr/\n  repo-actions: [edit]\n  downloads: [pdf, epub]\n  sharing: [twitter, facebook]\n  \ncomments:\n  hypothesis: true\nNote the various tools that now appear:\n\n\nThe search box enables full text search of the entire book\nThe buttons immediately below the book title in the sidebar provide a link to the GitHub repo for the book, downloads for PDF and ePub versions of the book, and links for sharing the book on Twitter and Facebook.\nImmediately below the table of contents on the right there is an “Edit this page” link that takes the reader to the edit interface on GitHub for the current chapter. Note that in this example we specify repo-actions: [edit]. You can optionally also add issue and source actions (e.g. repo-actions: [edit, issue, source]).\nThe Hypothesis commenting bar appears on the far right of the page. Note that commenting is a feature available for all Quarto HTML output so appears in its own YAML key.\n\n\nSidebar Options\nNote that books utilize the standard sidebar component from Quarto Websites. This means that you can use any of the available sidebar options within your book configuration. For example, here we specify a docked sidebar with a light background:\nbook:\n  title: \"Hands-On Programming with R\"\n  author: \"Garrett Grolemund\"\n  sidebar:\n    style: docked\n    background: light"
   },
   {
     "objectID": "docs/books/book-output.html#cover-images",
     "href": "docs/books/book-output.html#cover-images",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "Cover Images",
     "text": "Cover Images\nYou can provide a cover image for EPUB and/or HTML formats using the cover-image option. For example:\nbook:\n  cover-image: cover.png\nYou can also do this on a per-format basis (if for example you want to provide a higher resolution image for EPUB and a lower resolution image for HTML to reduce download time). For example:\nformat:\n   html: \n     cover-image: cover.png\n   epub:\n     cover-image: cover-highres.png"
   },
   {
     "objectID": "docs/books/book-output.html#output-path",
     "href": "docs/books/book-output.html#output-path",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "Output Path",
     "text": "Output Path\nBy default, book output is written to the _book directory of your project. You can change this via the output-dir project option. For example:\nproject:\n  type: book\n  output-dir: docs\nSingle file outputs like PDF, EPUB, etc. are also written to the output-dir. Their file name is derived from the book title. You can change this via the output-file option:\nbook:\n  title: \"My Book\"\n  output-file: \"my-book\"\nNote that the output-file should not have a file extension (that will be provided automatically as appropriate for each format)."
   },
   {
     "objectID": "docs/books/book-output.html#latex-output",
     "href": "docs/books/book-output.html#latex-output",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "LaTeX Output",
     "text": "LaTeX Output\nIn some cases you’ll want to do customization of the LaTeX output before creating the final printed manuscript (e.g. to affect how text flows between pages or within and around figures). The best way to approach this is to develop your book all the way to completion, then render with the keep-tex option:\nformat:\n  pdf:\n    keep-tex: true\nThe complete LaTeX source code of your book will be output into the main book source directory (e.g. to “my-book.tex”). This LaTeX can be compiled without Quarto, so is suitable for submitting to an external publisher.\nAt this point you should probably make a copy or git branch of the book directory to perform your final LaTeX modifications within (since the modifications you make to LaTeX will not be preserved in your markdown source, and will therefore be overwritten the next time you render)."
   },
   {
     "objectID": "docs/books/book-output.html#html-styles",
     "href": "docs/books/book-output.html#html-styles",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "HTML Styles",
     "text": "HTML Styles\nHTML output can be customized either by adding (or enhancing) a custom theme, or by providing an ordinary CSS file. Use the theme option to specify a theme:\nformat:\n  html:\n    theme: cosmo\nTo further customize a theme add a custom theme file:\nformat:\n  html:\n    theme: [cosmo, theme.scss]\nYou can learn more about creating theme files in the documentation on HTML Themes.\nYou can also just use plain CSS. For example:\nformat:\n  html:\n    css: styles.css"
   },
   {
     "objectID": "docs/books/book-output.html#epub-styles",
     "href": "docs/books/book-output.html#epub-styles",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "EPUB Styles",
     "text": "EPUB Styles\nYou can also use CSS to customize EPUB output:\nformat:\n  epub:\n    css: epub-styles.css\n    epub-cover-image: epub-cover.png\nNote that we also specify a cover image. To learn more about other EPUB options, see the Pandoc documentation on EPUBs."
   },
   {
     "objectID": "docs/books/book-output.html#pdf-styles",
     "href": "docs/books/book-output.html#pdf-styles",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "PDF Styles",
     "text": "PDF Styles\nYou can include additional LaTeX directives in the preamble of your book using the include-in-header option. You can also add documentclass and other options (see the Pandoc documentation on LaTeX options for additional details). For example:\nformat:\n  pdf: \n    documentclass: scrbook\n    include-in-header: preamble.tex\n    fontfamily: libertinus\nQuarto uses the KOMA Script scrreprt document class by default for PDF books. KOMA-Script classes are drop-in replacements for the standard classes with an emphasis on typography and versatility.\nYou can switch to KOMA scrbook as demonstrated above, or to the standard LaTeX book and report classes. You can find a summary of the differences between book and report here: https://tex.stackexchange.com/questions/36988"
   },
   {
     "objectID": "docs/books/book-output.html#ms-word-styles",
     "href": "docs/books/book-output.html#ms-word-styles",
-    "title": "Book Output",
+    "title": "Customizing Book Output",
     "section": "MS Word Styles",
     "text": "MS Word Styles\nYou can customize MS Word output by creating a new reference doc, and then applying it to your book as follows:\nformat:\n  docx:\n    reference-doc: custom-reference.docx\nTo create a new reference doc based on the Pandoc default, execute the following command:\nquarto pandoc -o custom-reference.docx --print-default-data-file reference.docx\nThen, open custom-reference.docx in MS Word and modify styles as you wish:\n\n\n\nYou can open the Styles pane from the HOME tab in the MS Word toolbar.\n\n\nWhen you move the cursor to a specific element in the document, an item in the styles list will be highlighted. If you want to modify the style of any type of element, you can click the drop-down menu on the highlighted item, and you will see a dialog box like this:\n\nAfter you finish modifying the styles, you can save the document and use it as the template for future Word documents."
   },
