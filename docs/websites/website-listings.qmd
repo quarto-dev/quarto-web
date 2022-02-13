@@ -1,0 +1,402 @@
+---
+title: "Website Listings"
+description: "Automatically generate the content of web pages using lists of documents or metadata."
+---
+
+Pages in websites built with Quarto can automatically generate the contents of the page from a list of documents or metadata. You can enable this by setting the listing option in the document front matter. This will instruct Quarto to generate additional content (the 'listings') when the page is rendered. For example, the following YAML in the front matter of a document:
+
+``` yaml
+---
+title: "Listing Example"
+listing: default
+---
+```
+
+will result in the document containing a table of all of the project inputs (with the exception of this document) when rendered. It might look something like this:
+
+![Example Listing - Table](images/listing-example.png)
+
+Listings are useful for creating things blogs, lists of lab reports, or even completely custom lists of items. The following will explain how listings allow you control of what items will appears in the listing, how those items will be ordered, and what metadata from those items will be displayed.
+
+## Listing Contents
+
+You can control what contents are included in the listing by using the `contents` key, which allows you to provide a set of paths or path globs of project inputs that should be included. For each of the inputs that matches the `contents` of a listing, an item will be included using the metadata in the front matter of the document.
+
+For example to include all the inputs in the `posts` directory, you would write:
+
+``` yaml
+---
+title: "Listing Example"
+listing:
+  contents: posts
+---
+```
+
+If you provide a path to a directory, it will be treated as `<directory>/**` - the directory will be searched recursively for project inputs.
+
+In addition to specifying lists of files or globs, contents can contain lists of metadata as well. For more about this, see \[Custom Listings\].
+
+## Listing Types
+
+There are three built in types of listings that you can choose from, each of which provides a slightly different rendering of the same content. To choose the type, use the `type` field for a listing:
+
+``` yaml
+---
+listing:
+  contents: posts
+  type: default
+---
+```
+
+The type field accepts the following values:
+
++----------------------+-----------------------------------------------+
+| Type                 | Description                                   |
++======================+===============================================+
+| `default`            | A blog style list of items.                   |
++----------------------+-----------------------------------------------+
+| `table`              | A table of listings.                          |
++----------------------+-----------------------------------------------+
+| `grid`               | A grid of listing cards.                      |
++----------------------+-----------------------------------------------+
+
+#### Default
+
+By default, listings will appear in full width rows that display the item's metadata (author and date), title and description, and finally image. The default style listing is a great way to feature the content of documents, for example for a blog.
+
+![A default type listing.](images/listing-default.png){.border alt="A default style listing."}
+
+#### Grid
+
+Grid style listings display a grid of cards with a card for each entry in the listing.
+
+![A grid type listing.](images/listing-grid.png){.border alt="A grid style listing."}
+
+#### Table
+
+The table listing style provides a table with a row for each entry in the listing.
+
+![A table type listing.](images/listing-table.png){.border alt="A table type listing."}
+
+## Sorting Items
+
+By default, listings will be ordered by their title (in alphabetical order). If you'd like, you can control the order that items are displayed using the `sort` key, such as:
+
+``` yaml
+listing:
+  contents: posts
+  sort: "date"
+```
+
+Each key in the sort option can include a field name and optionally either `asc` or `desc` to control whether to sort in ascending or descending order. When only a field is specified, sorting by that field will be in ascending order.
+
+The sort key can also contain one or more fields to sort by. For example:
+
+``` yaml
+listings:
+  contents: posts
+  sort:
+    - "date"
+    - "title desc"
+```
+
+which will sort the documents in the post directory first by their data in ascending order, then by their title in descending order.
+
+## Display Fields
+
+When reading the contents of a listing, Quarto uses the metadata read from the front matter of the document or the contents of the document itself to populate the following fields for each item:
+
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Field Name           | Description                                                                                                                                                                                                                                                                               |
++======================+===========================================================================================================================================================================================================================================================================================+
+| `title`              | The title of the item, read from the `title` field of the front matter (or the first H1 of the document).                                                                                                                                                                                 |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `subtitle`           | The subtitle of the item, read from the `subtitle` field of the front matter.                                                                                                                                                                                                             |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `author`             | The author of the item, read from the `author` field of the front matter.                                                                                                                                                                                                                 |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `description`        | The description of the item, read from the `description` or `abstract` field of the front matter or from the first paragraph of the document.                                                                                                                                             |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `date`               | The date of the item, read from the `date` field of the front matter.                                                                                                                                                                                                                     |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `image`              | The image for this team, read from the `image` field of the front matter, or automatically discovered by taking the first of an image of class `preview-image`, an image with a file name starting with `feature`, `cover`, or `thumbnail`, or the first image to appear in the document. |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `reading-time`       | An estimate of the reading time for this item, computed by counting the words in the item and assuming a reading speed of 200 words per minute.                                                                                                                                           |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `categories`         | Categories for the item, read from the `categories` field of the front matter.                                                                                                                                                                                                            |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `filename`           | The name of the input file.                                                                                                                                                                                                                                                               |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `file-modified`      | The last modified date of this input file.                                                                                                                                                                                                                                                |
++----------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Depending upon the type of listing that you are using, different fields are supported and enabled by default.
+
+### Default Fields
+
++----------------------+----------------+---------------+---------------+
+| Field                | Type - Default | Type - Table  | Type - Grid   |
++======================+:==============:+:=============:+:=============:+
+| `title`              | x              | x             | x             |
++----------------------+----------------+---------------+---------------+
+| `subtitle`           | x              |               |               |
++----------------------+----------------+---------------+---------------+
+| `author`             | x              | x             | x             |
++----------------------+----------------+---------------+---------------+
+| `description`        | x              |               | x             |
++----------------------+----------------+---------------+---------------+
+| `date`               | x              | x             | x             |
++----------------------+----------------+---------------+---------------+
+| `image`              | x              |               | x             |
++----------------------+----------------+---------------+---------------+
+
+### Customizing Field Display
+
+Though specific columns are displayed by default, each of the types will allow you to display any of the above columns by using the `fields` options. For example, to display more fields in a table (as columns), you write:
+
+``` yaml
+listing:
+  type: table
+  contents: posts
+  fields: [image, date, title, author, reading-time]
+```
+
+which produces:
+
+![Table with custom list of fields](images/list-fields-list.png)
+
+Each type of listing will handle the fields in different ways.
+
+Tables
+
+:   For table type listings, the list of fields will be displayed as columns in the order that the fields appear in the list.
+
+Default
+
+:   For default type listings, the various fields will be placed logically, with the image in the right column, the title, subtitle, and description in the center column, and any other fields in the left column.
+
+    ![](images/default-fields.png){.border .column-page-right}
+
+Grid
+
+:   For grid listings, the `image`, `title`, `subtitle`, `reading-time`, `categories`, `description`, `author`, and `date` fields will be arranged on the body of the card. The `filename` and `file-modified` fields will appear in the card footer. Any other fields will appear in a table at the bottom of the card body.
+
+    ![](images/grid-fields.png){.border}
+
+## Listing UI Tools
+
+Listings support interactive tools to allow the viewer of the listing to sort, filter, or page through listings.
+
+### Sorting
+
+Users can use the select box to choose how to sort the items in the listing (or in the case of tables, by clicking on the column headings). By default, the sorting control will allow the user to sort by `title`, `date`, or `author`. You can stop this UI from being displayed to the user with the option:
+
+``` yml
+listing:
+  sort-ui: false
+```
+
+You can control which fields are included in the sort list by providing a list of field names in the `sort-ui` key:
+
+``` yaml
+listing:
+  sort-ui: [title, date]
+```
+
+### Filtering
+
+Listings include a filter box positioned on the top right of the listing content. The filter box allows readers to perform a 'typeahead' search of the listing contents. You can disable the filtering control using the option:
+
+``` yaml
+listing:
+  filter-ui: false
+```
+
+By default, if the filtering control is enabling, all fields that are being displayed in the listing will be searchable. If you'd like to limit searching / filtering to specific fields, you can do so by providing a field list in the `filter-ui` key:
+
+``` yaml
+listing:
+  filter-ui: [title, date]
+```
+
+### Pagination
+
+Listings also natively support pagination of the items. The default number of items displayed on a page depends up the listing type:
+
+| Listing Type | Items Per Page |
+|--------------|:--------------:|
+| `default`    |       25       |
+| `table`      |       30       |
+| `grid`       |       18       |
+
+You can control the number of items displayed per page using the option `page-size`:
+
+``` yaml
+listing:
+  page-size: 36
+```
+
+## Positioning Listings
+
+By default, listings will simply be appended to the main content region of the page. If you'd like to control where a listing appears, set an `id` for that listing and use that `id` on a corresponding div in the page. For example, updating the page used in the previous example to this:
+
+``` yaml
+---
+title: "Listing Example"
+listing:
+  id: sample-listings
+  contents: posts
+  sort: "date desc"
+  type: table
+---
+
+You can review the following documents for additional information:
+
+::: {#sample-listings}
+:::
+
+Learn more about Quarto [here](https://www.quarto.com).
+```
+
+Results in a listing page like:
+
+![A listing page that uses the Id to target the listing.](images/listing-example-id.png)
+
+### Multiple Listings
+
+You can place any number of listings on a single page. The following would populate two listings on a single page:
+
+``` yaml
+---
+title: Team Documents
+listings: 
+  - id: lab-reports
+    content: "lab-reports/*.qmd"
+    type: table
+  - id: meeting-notes
+    content: "meeting-notes/*.qmd"
+    type:table
+---
+
+## Lab Reports
+
+:::{#lab-reports}
+:::
+
+## Meeting Notes
+
+:::{#meeting-notes}
+:::
+```
+
+## Customizing Listings
+
+It is possible to customize the appearance of listings using the following options for each type of listing display.
+
+### Default
+
+| Option         | Description                                                                                                                                         |
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `image-align`  | Whether to place the image on the right or left side of the post content. Defaults to `right`.                                                      |
+| `image-height` | The height of the image being displayed. The width is automatically select and the image will fill the rectangle without scaling (cropped to fill). |
+
+### Grids
+
+| Option             | Description                                                                                                                                         |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `image-height`     | The height of the image being displayed. The width is automatically select and the image will fill the rectangle without scaling (cropped to fill). |
+| `grid-columns`     | The number of columns in the grid display. Defaults to 3.                                                                                           |
+| `grid-item-border` | Whether to display a border around the item card. Defaults to `true`.                                                                               |
+| `grid-item-align`  | Aligns the content within the card (`left`, `right`, or `center`). Defaults to `left`.                                                              |
+
+### Tables
+
+| Options         | Description                                                                                                                                         |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `image-height`  | The height of the image being displayed. The width is automatically select and the image will fill the rectangle without scaling (cropped to fill). |
+| `table-striped` | Display the table rows with alternating background colors (`true` or `false`). Defaults to `false`                                                  |
+| `table-hover`   | Highlight rows of the table when the user hovers the mouse over them (`true` or `false`). Defaults to `false`.                                      |
+| `field-links`   | A list of fields that should link to the document in the table (defaults to `title`).                                                               |
+
+### Advanced Options
+
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Option                   | Description                                                                                                                                                      |
++==========================+==================================================================================================================================================================+
+| `field-display-names`    | A mapping that provides display name for specific fields. For example, to display the title column as 'Report' in a table listing you would write:               |
+|                          |                                                                                                                                                                  |
+|                          | ``` yaml                                                                                                                                                         |
+|                          | listing:                                                                                                                                                         |
+|                          |   field-display-names:                                                                                                                                           |
+|                          |     title: "Report"                                                                                                                                              |
+|                          | ```                                                                                                                                                              |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `max-description-length` | The maximum length of the description displayed in the listing (in characters). Defaults to 175.                                                                 |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `date-format`            | The date format to use when displaying dates (e.g. `d-M-yyy`). Learn more about supported date formatting values [here](https://deno.land/std@0.125.0/datetime): |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+In addition to the above listing wide options, each listing type has a variety of options to customize its appearance.
+
+## Categories
+
+In addition to displaying the listing contents, listings can also automatically add a list of categories to the page that they appear on. To enable categories you can set the `categories` option like:
+
+``` yaml
+listing:
+  categories: true
+```
+
+which results in categories appearing in the right sidebar:
+
+![](images/listing-categories.png){.border .column-page-right}
+
+When users click a category, the page will be updated to show only the listing items that match the selected category.
+
+#### Category Appearance
+
+You can choose between a few different display styles for categories:
+
++--------------------+------------------------------------------------------------------------------------------------------------------------------------+
+| Option             | Description                                                                                                                        |
++====================+====================================================================================================================================+
+| `numbered`         | Displays a list of categories in alphabetical order with the number of items in that category displayed next to the category name. |
++--------------------+------------------------------------------------------------------------------------------------------------------------------------+
+| `unnumbered`       | Display a list of categories in alphabetical order.                                                                                |
++--------------------+------------------------------------------------------------------------------------------------------------------------------------+
+| `cloud`            | Displays a 'word cloud' of categories.                                                                                             |
++--------------------+------------------------------------------------------------------------------------------------------------------------------------+
+
+When multiple listings appear on the page, categories will be enabled based upon the option set in the first listing. If categories are enabled for the first listing, all listings on the page will contribute their item categories to the list of categories and all will be filtered when the user clicks a category.
+
+## Feeds
+
+You can also have an RSS feed generated based upon the contents of a listing. This is great to allow your content to be syndicated or to be accessible via RSS Readers. Include a feed for your listing by including the `feed` option:
+
+``` yaml
+listing:
+  content: posts
+  feed: true
+```
+
+When a feed is enabled for a listing on a page, an RSS file will automatically be generated using the name of the the file. For example, `index.qmd` will produce a feed at `index.xml`. A link to the feed will be included in the `head` of the page as well.
+
+::: callout-note
+Generating feeds requires that the `site-url` be set for the site in your `_quarto.yml` file. For example:
+
+``` yaml
+site:
+  site-url: "https://www.quarto.org"
+```
+:::
+
+You can further customize your feed using the following options:
+
+| Option        | Description                                                                                                                                                                                               |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `items`       | The number of items to include in your feed. Defaults to 20.                                                                                                                                              |
+| `type`        | `full` or `partial`. `full`, the default, includes the full contents of each document in the feed. `partial` includes only the first paragraph contents in the feed.                                      |
+| `title`       | The title for this feed. Defaults to the site title provided in your `_quarto.yml` file.                                                                                                                  |
+| `image`       | The image for this feed. If not specified, the image for the page the listing appears on will be used, otherwise an image will be used if specified for the site in your `_quarto.yml` file.              |
+| `description` | The description of this feed. If not specified, the description for the page the listing appears on will be used, other the description of the site will be used if specified in your `_quarto.yml` file. |
+| `language`    | The language of the feed. Omitted if not specified. See See <https://www.rssboard.org/rss-language-codes> for a list of valid language codes.                                                             |
