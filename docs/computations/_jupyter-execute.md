@@ -9,7 +9,8 @@ You can also specify this behavior within the notebook's YAML front matter:
 ``` yaml
 ---
 title: "My Notebook"
-execute: true
+execute: 
+  enabled: true
 jupyter: python3
 ---
 ```

@@ -25,59 +25,57 @@ Code blocks that use braces around the language name (e.g. ```` ```{python} ````
 ::: panel-tabset
 ## Code
 
-    ---
-    title: "Jupyter Document"
-    format: 
-      html:
-        code-background: true
-    jupyter: python3
-    ---
+````{.markdown}
+---
+title: "Jupyter Document"
+format: html
+jupyter: python3
+---
 
-    ```{{python}}
-    import matplotlib.pyplot as plt
-    plt.plot([1,2,3,4])
-    plt.show()
-    ```
+```{{python}}
+import matplotlib.pyplot as plt
+plt.plot([1,2,3,4])
+plt.show()
+```
 
-    ```{{python}}
-    import pandas as pd
-    d = {'one' : [1., 2., 3., 4.],
-         'two' : [4., 3., 2., 1.]}
-    df = pd.DataFrame(d)
-    df
-    ```
+```{{python}}
+import pandas as pd
+d = {'one' : [1., 2., 3., 4.],
+     'two' : [4., 3., 2., 1.]}
+df = pd.DataFrame(d)
+df
+```
+````
 
 ## Output
 
 ![](/docs/computations/images/jupyter-document.png){.border fig-alt="The resulting document rendered from the source code in the `Code` tab using the Jupyter engine. At the top of the page is the title `Jupyter Document` in large text. There is a block of code with a gray background underneath the title. Underneath this block is a line plot of y = x. There is another code block with a gray background under this and a table underneath that."}
 :::
 
-Note that we added the `code-background: true` option to provide a background color for the code chunks (see the documentation on [Code Block](/docs/output-formats/html-code.qmd) options for additional details on customizing code block output).
-
 ### R (Knitr)
 
 ::: panel-tabset
 ## Code
 
-    ---
-    title: "Knitr Document"
-    format: 
-      html:
-        code-background: true
-    execute:
-      warning: false
-    ---
+````{.markdown}
+---
+title: "Knitr Document"
+format: html
+execute:
+  warning: false
+---
 
-    ```{{r}}
-    library(ggplot2)
-    ggplot(airquality, aes(Temp, Ozone)) + 
-            geom_point() + 
-            geom_smooth(method = "loess", se = FALSE)
-    ```
+```{{r}}
+library(ggplot2)
+ggplot(airquality, aes(Temp, Ozone)) + 
+        geom_point() + 
+        geom_smooth(method = "loess", se = FALSE)
+```
 
-    ```{{r}}
-    summary(airquality)
-    ```
+```{{r}}
+summary(airquality)
+```
+````
 
 ## Output
 
@@ -146,36 +144,6 @@ quarto render jupyter-document.ipynb
 _jupyter-execute.md
 ```
 
-## Inline Code
-
-Both Jupyter and Knitr support executing inline code within markdown (e.g. to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines.
-
-### Jupyter
-
-To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
-
-``` {{python}}
-#| echo: false
-radius = 10
-from IPython.display import display, Markdown
-display(Markdown("""
-## Circle
-
-The radius of the circle is {radius}.
-""".format(radius = radius)))
-```
-
-Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
-
-### Knitr
-
-To include executable expressions within markdown for Knitr, enclose the expression in `` `r ` ``. For example, if we have a variable `radius` we can use it within markdown as follows:
-
-``` markdown
-## Circle
-
-The radius of the circle is `r radius`.
-```
 
 
 ## Engine Binding
@@ -238,80 +206,3 @@ jupyter:
     name: python3
 ```
 
-## Fenced Echo
-
-If you are writing a tutorial or documentation on using Quarto code blocks, you'll likely want to include the fenced code delimiter (e.g. ```` ```{python} ````) in your code output to emphasize that executable code requires that delimiter. You can do this using the `echo: fenced` option. For example, the following code block:
-
-``` {{python}}
-#| echo: fenced
-1 + 1
-```
-
-Will be rendered as:
-
-```{python}
-#| echo: fenced
-1 + 1
-```
-
-This is especially useful when you want to demonstrate the use of cell options. For example, here we demonstrate the use of the `output` and `code-overflow` options:
-
-``` {{python}}
-#| echo: fenced
-#| output: false
-#| code-overflow: wrap
-1 + 1
-```
-
-This code block appears in the rendered document as:
-
-```{python}
-#| echo: fenced
-#| output: false
-#| code-overflow: wrap
-1 + 1
-```
-
-Note that all YAML options will be included in the fenced code output *except for* `echo: fenced` (as that might be confusing to readers).
-
-This behavior can also be specified at the document level if you want all of your executable code blocks to include the fenced delimiter and YAML options:
-
-``` yaml
----
-title: "My Document"
-format: html
-execute:
-  echo: fenced
----
-```
-
-#### Unexecuted Blocks
-
-Often you'll want to include a fenced code block purely as documentation (not executable). You can do this by using two curly braces around the language (e.g. `python`, `r`, etc.) rather than one. For example:
-
-``` {{{python}}}
-1 + 1
-```
-
-Will be output into the document as:
-
-``` {{python}}
-1 + 1
-```
-
-If you want to show an example with multiple code blocks and other markdown, just enclose the entire example in 4 backticks (e.g. ````` ```` `````) and use the two curly brace syntax for code blocks within. For example:
-
-    ````
-    ---
-    title: "My document"
-    ---
-
-    Some markdown content.
-
-    ```{{{python}}}
-    1 + 1
-    ```
-
-    Some additional markdown content.
-
-    ````

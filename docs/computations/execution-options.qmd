@@ -123,6 +123,39 @@ ax.grid(True)
 plt.show()
 ```
 
+## Inline Code
+
+Both Jupyter and Knitr support executing inline code within markdown (e.g. to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines.
+
+### Jupyter
+
+To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
+
+``` {{python}}
+#| echo: false
+radius = 10
+from IPython.display import display, Markdown
+display(Markdown("""
+## Circle
+
+The radius of the circle is {radius}.
+""".format(radius = radius)))
+```
+
+Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
+
+### Knitr
+
+To include executable expressions within markdown for Knitr, enclose the expression in `` `r ` ``. For example, if we have a variable `radius` we can use it within markdown as follows:
+
+``` markdown
+## Circle
+
+The radius of the circle is `r radius`.
+```
+
+
+
 ## Raw Output
 
 The `output: asis` option enables you to generate raw markdown output. When `output: asis` is specified none of Quarto's standard enclosing divs will be included. For example, here we specify `output: asis` in order to generate a pair of headings:
@@ -201,30 +234,82 @@ jupyter: python3
 ---
 ```
 
-## Engine Options
 
-### Disabling Execution
+## Fenced Echo
 
-In some cases, you may want to prevent execution entirely. This is especially useful if you author using a standard notebook editor (e.g. JupyterLab) and plan on executing chunks only within the notebook UI. Specify `execute: false` to skip execution when rendering (you'll naturally still get the output that was generated within the notebook editor):
+If you are writing a tutorial or documentation on using Quarto code blocks, you'll likely want to include the fenced code delimiter (e.g. ```` ```{python} ````) in your code output to emphasize that executable code requires that delimiter. You can do this using the `echo: fenced` option. For example, the following code block:
 
-``` yaml
-execute: false
+``` {{python}}
+#| echo: fenced
+1 + 1
 ```
 
-If you are temporarily disabling execution and don't want to overwrite other `execute` options, you can alternatively just add `enabled: false` to the `execute` options:
+Will be rendered as:
+
+```{python}
+#| echo: fenced
+1 + 1
+```
+
+This is especially useful when you want to demonstrate the use of cell options. For example, here we demonstrate the use of the `output` and `code-overflow` options:
+
+``` {{python}}
+#| echo: fenced
+#| output: false
+#| code-overflow: wrap
+1 + 1
+```
+
+This code block appears in the rendered document as:
+
+```{python}
+#| echo: fenced
+#| output: false
+#| code-overflow: wrap
+1 + 1
+```
+
+Note that all YAML options will be included in the fenced code output *except for* `echo: fenced` (as that might be confusing to readers).
+
+This behavior can also be specified at the document level if you want all of your executable code blocks to include the fenced delimiter and YAML options:
 
 ``` yaml
+---
+title: "My Document"
+format: html
 execute:
-  enabled: false
-  echo: true
-  warning: false
+  echo: fenced
+---
 ```
 
-You might want to have different execution policies for Jupyter Notebooks (`.ipynb`) and text-based computational markdown (`.qmd`). You can do this using the `ipynb` option:
+#### Unexecuted Blocks
 
-``` yaml
-execute:
-  ipynb: false
+Often you'll want to include a fenced code block purely as documentation (not executable). You can do this by using two curly braces around the language (e.g. `python`, `r`, etc.) rather than one. For example:
+
+``` {{{python}}}
+1 + 1
 ```
 
-You might use this option if you are implementing of policy of having all notebook execution occur within Jupyter / JupyterLab, while having Quarto still handle converting the notebook to HTML, PDF, etc.
+Will be output into the document as:
+
+``` {{python}}
+1 + 1
+```
+
+If you want to show an example with multiple code blocks and other markdown, just enclose the entire example in 4 backticks (e.g. ````` ```` `````) and use the two curly brace syntax for code blocks within. For example:
+
+    ````
+    ---
+    title: "My document"
+    ---
+
+    Some markdown content.
+
+    ```{{{python}}}
+    1 + 1
+    ```
+
+    Some additional markdown content.
+
+    ````
+
