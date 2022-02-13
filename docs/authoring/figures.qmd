@@ -1,9 +1,10 @@
 ---
-title: "Figure Layout"
-description: "Quarto has a variety of capabilities for creating and laying out individual tables and figures as well as panels of tables and figures."
+title: "Figures"
+description: "Quarto has a variety of capabilities for creating and laying out figures and panels of multiple figures."
 format: html
 aliases: 
   - figures-and-layout.html
+  - figure-layout.html
 ---
 
 Quarto includes a number of features aimed at making it easier to work with figures and subfigures, as well as for laying out panels that contain multiple figures, tables, or other content.
@@ -19,7 +20,7 @@ In Pandoc markdown, a figure is created whenever a captioned image appears by-it
 This results in the following treatment for various output types:
 
 | HTML                                                                              | PDF                                                                  | Word                                                                  |
-|-----------------------------------------------------------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------|
+|---------------------------|-----------------------|-----------------------|
 | ![](images/html-figure.png){fig-alt="A line drawing of an elephant." width="340"} | ![](images/pdf-figure.png){fig-alt="A line drawing of an elephant."} | ![](images/word-figure.png){fig-alt="A line drawing of an elephant."} |
 
 Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using [Cross References](cross-references.html)).
@@ -242,67 +243,13 @@ Will be written to LaTeX as:
 
 As shown above, `width` and `height` percentages are automatically converted to `\linewidth` scaled. Alternatively you can specify custom LaTeX for the `width` and `height` arguments of `\resizebox`.
 
-## Table Panels
-
-You can also use a div with layout attributes to display tables side-by-side. For example:
-
-``` markdown
-::: {layout-ncol=2}
-| Col1 | Col2 | Col3 |
-|------|------|------|
-| A    | B    | C    |
-| E    | F    | G    |
-| A    | G    | G    |
-
-: First Table
-
-| Col1 | Col2 | Col3 |
-|------|------|------|
-| A    | B    | C    |
-| E    | F    | G    |
-| A    | G    | G    |
-
-: Second Table
-:::
-```
-
-![](images/table-layout-basic.png){fig-alt="Two tables side by side. The table on the left is titled 'First Table'. This table has 4 rows and 3 columns. The first row contains the column title, which are bolded and are separated from the rest of the table by an upper and lower border. The column titles are, from left to right, 'Col1', 'Col2', and 'Col3'. The values in the first row underneath the lower border of the column rows are 'A', 'B', 'C'. The values of the next row under that are 'E', 'F', 'G'. The final row contains 'A', 'G', 'G'. There is a border underneath the last row. The second table is identical to the first except that its title is 'Second Table.'"}
-
-As with figures, you can also present tables using numbered subcaptions by adding a main caption and `#tbl-` identifiers:
-
-``` markdown
-::: {#tbl-panel layout-ncol=2}
-| Col1 | Col2 | Col3 |
-|------|------|------|
-| A    | B    | C    |
-| E    | F    | G    |
-| A    | G    | G    |
-
-: First Table {#tbl-first}
-
-| Col1 | Col2 | Col3 |
-|------|------|------|
-| A    | B    | C    |
-| E    | F    | G    |
-| A    | G    | G    |
-
-: Second Table {#tbl-second}
-
-Main Caption
-:::
-```
-
-![](images/table-layout-subcaption.png){fig-alt="Two tables side by side. The table on the left is titled '(a) First Table'. This table has 4 rows and 3 columns. The first row contains the column title, which are bolded and are separated from the rest of the table by an upper and lower border. The column titles are, from left to right, 'Col1', 'Col2', and 'Col3'. The values in the first row underneath the lower border of the column rows are 'A', 'B', 'C'. The values of the next row under that are 'E', 'F', 'G'. The final row contains 'A', 'G', 'G'. There is a border underneath the last row. The second table is identical to the first except that its title is ' (b)Second Table.' Centered underneath both tables is the caption 'Table 1: Main Caption.'"}
-
-See the article on [Cross References](cross-references.html) for additional details on table captions, subcaptions, and numbering.
-
 ## Caption Locations
 
-By default, figure captions are positioned below figures, and table captions are positioned above tables. You can modify this behavior using the `fig-cap-location` and `tbl-cap-location` options (you can set a single value for both using the `cap-location` option). For example:
+By default, figure captions are positioned below figures. You can modify this behavior using the `fig-cap-location` option. For example:
 
 ``` yaml
 ---
-tbl-cap-location: bottom
+fig-cap-location: top
 ---
 ```
 
@@ -312,8 +259,8 @@ Valid values for the caption location include:
 
 | Value    | Description                                     |
 |----------|-------------------------------------------------|
-| `top`    | Position the caption above the figure or table. |
-| `bottom` | Position the caption below the figure or table. |
+| `top`    | Position the caption above the figure.          |
+| `bottom` | Position the caption below the figure.          |
 | `margin` | Position the caption in the margin.             |
 
 See the article on [Article Layout](article-layout.qmd#margin-captions) for additional details on placing captions in the margin.
@@ -414,23 +361,11 @@ plot(pressure)
 ![](images/knitr-figure-layout.png){fig-alt="Two scatter plots arranged side-by-side."}
 :::
 
-### Tables
 
-You can also use layout attributes for tables produced by Knitr or Jupyter. For example, this Rmd code chunk creates side-by-side tables:
-
-``` {{r}}
-#| layout-ncol: 2
-
-library(knitr)
-kable(head(cars), caption = "Cars")
-kable(head(pressure), caption = "Pressure")
-```
-
-![](images/knitr-table-layout.png){fig-alt="Two tables arranged side by side. Both tables have two columns and 8 rows. The left-hand table is titled 'Cars'. The column names of this table are 'speed' and 'dist'. From top to bottom, the row values are: 4, 2; 4, 10; 7, 4; 7, 22; 8, 16; 9, 10. The table on the right is titled 'Pressure'. The column names are 'temperature' and 'pressure'. From top to bottom, the row values are: 0, 0.0002; 20, 0.0012; 40, 0.0060; 60, 0.0300; 80, 0.0900; 100, 0.2700."}
 
 ### Custom Layout
 
-The `layout` works the same way for figures or tables produced by knitr or Jupyter. For example, here's an Rmd code chunk that produces 3 plots and defines a custom layout for them:
+The `layout` works the same way for figures produced by Knitr or Jupyter. For example, here's an Rmd code chunk that produces 3 plots and defines a custom layout for them:
 
 ``` {{r}}
 #| layout: [[45,-10, 45], [100]]
@@ -444,7 +379,7 @@ plot(mtcars)
 
 ## Block Layout
 
-While the examples above illustrate laying out figures and tables, it's important to note that layout attributes can be used to layout any sort of block content. For example, here we layout 2 lists side-by-side:
+While the examples above illustrate laying out figures, it's important to note that layout attributes can be used to layout any sort of block content. For example, here we layout 2 lists side-by-side:
 
 ``` markdown
 ::: {layout-ncol=2}
