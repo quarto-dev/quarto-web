@@ -1,0 +1,193 @@
+---
+title: Creating Blogs
+description: "Quarto allows you to set up a blog by authoring a collection of posts and then dedicating a page (usually the website homepage) to a listing of all of your posts."
+---
+
+Quarto Blogs are a type of website project - they are similar to a Quarto Website, and can use all of the same feature and capabilities of websites. But rather than having a manually defined navigation structure to setup the contents of the website, a Quarto Blog uses a listing page to collect the posts that make up the website and automatically populate the page with links to the posts, displaying key metadata (like date published, author, categories, title, etc.) and a thumbnail image. 
+
+## Creating a Blog
+
+::: panel-tabset
+## Using RStudio
+
+In RStudio, you can create a Quarto blog from within the New Project Wizard. Select 'Quarto Blog' from the list of project types:
+
+![](images/blog-create-1.png)
+
+then complete the fields and options to create your blog:
+
+![](images/blog-create-2.png)
+
+## Command Line
+
+To create a blog project using the command line, from the directory in which you'd like the blog directory created, type:
+
+``` bash
+> quarto create-project myblog --type website:blog
+```
+
+which will result in the directory 'myblog' being populated with the basic structure of blog website:
+
+``` bash
+Creating project at /Users/username/development/myblog:
+  - Created _quarto.yml
+  - Created index.qmd
+  - Created posts/welcome/index.qmd
+  - Created posts/post-with-code/index.qmd
+  - Created about.qmd
+  - Created styles.css
+  - Created posts/_metadata.yml
+```
+:::
+
+A new Quarto Project will be created with the following documents and options:
+
+| File                             | Description                                     |
+|:---------------------------------|:------------------------------------------------|
+| `_quarto.yml`                    | Quarto project file.                            |
+| `index.qmd`                      | Blog home page.                                 |
+| `about.qmd`                      | Blog about page.                                |
+| `posts/_metadata.yml`            | Options for documents in the `posts` directory. |
+| `posts/welcome/index.qmd`        | Welcome post.                                   |
+| `posts/post-with-code/index.qmd` | Sample post which includes executable code.     |
+
+In addition to the above, the generated site will also include some placeholder image and CSS files.
+
+Let's take a closer look at the key elements of a project that is generated when you create a Quarto Blog.
+
+## Blog Home Page
+
+![](images/myblog.png){.border}
+
+The blog's homepage is configured as a listing page which will show a list of the documents in the `posts` directory.
+
+``` yaml
+---
+title: "myblog"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+---
+```
+
+When you render a new post, this page will automatically updated, adding the most recent post to the top of the list. To learn more about listing pages, see [Listing Pages](website-listing.qmd)
+
+## Posts
+
+The posts that make up the contents of the blog are kept in the `posts` directory. It includes a shared metadata file (`_metadata.yml`) which sets options for any document or sub-directory in the `posts` directory. For more about shared metadata, see [Shared Metadata](/docs/projects/quarto-projects.qmd#shared-metadata).
+
+The contents of the file are as follows:
+
+``` yaml
+# options specified here will apply to all posts in this folder
+
+# freeze computational output
+# (see https://quarto.org/docs/projects/code-execution.html#freeze)
+freeze: true
+```
+
+The `freeze` option specifies that computational documents included in the posts directory should not be re-executed during the global site render. Instead, previously 'frozen' results of the execution will be used to render the document. This allows code, which has a tendency to be difficult to re-execute without errors especially over longer time periods, to continue to successfully render. If you would like to re-execute the computations in a frozen document, you must explicitly render that individual file.
+
+To read more about the `freeze` option, see [Freeze](/docs/projects/code-execution.qmd#freeze).
+
+## Creating A Post
+
+You create a post on your blog by making a new sub-directory in the `posts` directory and adding an `index.qmd` file to the directory. That `qmd` file is the new blog post and when you render that, the blog home page will automatically update to include the newest post at the top of the listing.
+
+You can add `draft: true` to the front matter of the document if you'd like the post not to be included in the listing, site map, or site search. To begin including it once it is complete, simply remove `draft: true` from the document and render it.
+
+## Categories
+
+The Quarto listing page is configured to enable categories, which display in the right margin of the page:
+
+``` yaml
+---
+title: "myblog"
+listing:
+# (additional metadata excluded for brevity)
+  categories: true
+---
+```
+
+The categories are read from the front matter of documents included in the listing. For example, here is sample post metadata that includes categories:
+
+``` yaml
+---
+title: "Post With Code"
+# (additional metadata e.g. description and date, excluded for brevity)
+categories:
+  - news
+  - code
+  - analysis
+---
+```
+
+To learn more about categories, see [Categories](website-listings.qmd#categories).
+
+## About Page
+
+The page at `about.qmd` is the page about the blog and its author. There are some simple options in the front matter of the document which configure the page an about page and populate its content.
+
+``` markdown
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com
+# (additional links excluded for brevity)
+---
+
+## About this blog
+
+This is the contents of the about page for my blog.
+```
+
+The page will use the `jolla` about template to layout the contents of this page. To read more about customizing the about page, see [About Pages](/docs/websites/website-about.qmd).
+
+## RSS Feed
+
+Blogs typically include an RSS feed which allows their content to be easily syndicated and read using feed readers. You can enable an RSS for this blog with a few simple steps:
+
+1.  In the `quarto.yml` file, add a `site-url` and `description` to the `website`. Without these options being set in the project file, Quarto cannot generated a feed.
+
+    For example:
+
+    ``` yaml
+    website:
+      title: "myblog"
+      site-url: https://www.myblogexample.io
+      description: "A great sample blog"
+    ```
+
+2.  In your blog home page `index.qmd` add the `feed: true` option to the listing. For example:
+
+    ``` yaml
+    ---
+    title: "myblog"
+    listing:
+    # (additional metadata excluded for brevity)
+      feed: true
+    ---
+    ```
+
+After the above configuration, when your site is rendered, an RSS feed will also be generated and included in the the home page's HTML. To learn more, see [Feeds](/docs/websites/website-listings.qmd#feeds).
+
+::: callout-tip
+## Add RSS Link to the Navbar
+
+You can add an RSS link to your navbar by including the following in your `_quarto.yml` project file:
+
+``` yaml
+website:
+  navbar:
+    right:
+      - icon: rss
+        href: index.xml
+```
+:::
