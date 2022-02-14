@@ -43,7 +43,7 @@ Creating project at /Users/username/development/myblog:
 A new Quarto Project will be created with the following documents and options:
 
 | File                             | Description                                     |
-|:---------------------------------|:------------------------------------------------|
+|:-----------------------------|:-----------------------------------------|
 | `_quarto.yml`                    | Quarto project file.                            |
 | `index.qmd`                      | Blog home page.                                 |
 | `about.qmd`                      | Blog about page.                                |
@@ -72,7 +72,7 @@ listing:
 ---
 ```
 
-When you render a new post, this page will automatically updated, adding the most recent post to the top of the list. To learn more about listing pages, see [Listing Pages](website-listing.qmd)
+When you render a new post, this page will automatically updated, adding the most recent post to the top of the list. To learn more about listing pages, see [Listing Pages](website-listings.qmd)
 
 ## Posts
 
@@ -191,3 +191,60 @@ website:
         href: index.xml
 ```
 :::
+
+## Subscriptions
+
+You may want to allow readers of your blog to subscribe to updates via email. You can use a third party email service to manage and send these emails. That third party will be able to provide HTML for a 'subscription widget' which you can place on your blog. A good place to place that is in the margin of your blog.
+
+1.  Use your email service features to generate the HTML for your subscription widget. MailChimp, for example, provides HTML like this for a minimal subscription widget.
+
+    ``` html
+    <span style="font-weight: 600;">Subscribe</span>
+
+    <!-- Begin Mailchimp Signup Form -->
+    <link href="http://cdn-images.mailchimp.com/embedcode/slim-10_7_dtp.css" rel="stylesheet" type="text/css">
+    <style type="text/css">
+        #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif;  width:170px;}
+        /* Add your own Mailchimp form style overrides in your site stylesheet or in this style block.
+           We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+        #mc-embedded-subscribe-form{margin-left:-5px;}
+    </style>
+    <div id="mc_embed_signup">
+    <form action="<site_url>" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+        <div id="mc_embed_signup_scroll">
+
+        <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_f718424fc5df77c22533bdaa6_a3c37fb57b" tabindex="-1" value=""></div>
+            <div class="optionalParent">
+                <div class="clear foot" style="margin-top: 10px;">
+                    <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+                    <p class="brandingLogo"></p>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+
+    <!--End mc_embed_signup-->
+    ```
+
+    ::: callout-warning
+    The above widget HTML will not work in your blog as the subscription HTML needs to contain value specific to your blog. See your email service provider's instructions for generating a subscription widget.
+    :::
+
+2.  Create the file `subscribe.html` in the root of your project.
+
+3.  Paste the HTML for your subscription widget into `subscribe.html` and save the file.
+
+4.  Add `subscribe.html` to the `margin-header` in your `_quarto.yml` file:
+
+    ``` yaml
+    website:
+    # (additional metadata excluded for brevity)
+      margin-header: subscribe.html
+    ```
+
+The result looks like:
+
+![](images/myblog-subscribe.png){.border}
