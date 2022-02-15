@@ -14,26 +14,79 @@ theme: pandoc  # pandoc default html treatment
 theme: none    # no theme css added to document
 ```
 
-Quarto includes 25 themes from the [Bootswatch](https://bootswatch.com/) project (for example, the website uses the [cosmo](https://bootswatch.com/cosmo/) theme). Below we describe how to use SASS to create your own themes.
+Quarto includes 25 themes from the [Bootswatch](https://bootswatch.com/) project (for example, the website uses the [cosmo](https://bootswatch.com/cosmo/) theme). Available themes include:
+
+::: {layout-ncol="2"}
+::: theme-list
+-   [default](https://bootswatch.com/default/)
+-   [cerulean](https://bootswatch.com/cerulean/)
+-   [cosmo](https://bootswatch.com/cosmo/)
+-   [cyborg](https://bootswatch.com/cyborg/)
+-   [darkly](https://bootswatch.com/darkly/)
+-   [flatly](https://bootswatch.com/flatly/)
+-   [journal](https://bootswatch.com/journal/)
+-   [litera](https://bootswatch.com/litera/)
+-   [lumen](https://bootswatch.com/lumen/)
+-   [lux](https://bootswatch.com/lux/)
+-   [materia](https://bootswatch.com/materia/)
+-   [minty](https://bootswatch.com/minty/)
+-   [morph](https://bootswatch.com/morph/)
+-   [pulse](https://bootswatch.com/pulse/)
+-   [quartz](https://bootswatch.com/quartz/)
+-   [sandstone](https://bootswatch.com/sandstone/)
+-   [simplex](https://bootswatch.com/simplex/)
+-   [sketchy](https://bootswatch.com/sketchy/)
+-   [slate](https://bootswatch.com/slate/)
+-   [solar](https://bootswatch.com/solar/)
+-   [spacelab](https://bootswatch.com/spacelab/)
+-   [superhero](https://bootswatch.com/superhero/)
+-   [united](https://bootswatch.com/united/)
+-   [vapor](https://bootswatch.com/vapor/)
+-   [yeti](https://bootswatch.com/yeti/)
+-   [zephyr](https://bootswatch.com/zephyr/)
+:::
+
+::: theme-thumbnails
+:::
+:::
+
+Use of any of these themes via the `theme` option. For example:
+
+``` yaml
+format:
+  html:
+    theme: united
+```
+
+You can also customize these themes or create your own new themes. Learn how to do this below in [Theme Options].
 
 ## Basic Options
 
-Pandoc supports a set of basic metadata options for customizing document appearance without directly using CSS. These options are available for both the `pandoc` theme as well as for all Bootstrap themes.
-
 If you are using a Bootstrap theme or the Pandoc theme, there are a set of options you can provide in document metadata to customize its appearance. These include:
 
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option                                                       | Description                                                                                                                                                    |
-|--------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
++==============================================================+================================================================================================================================================================+
 | `max-width`                                                  | The maximum width occupied by page content. Defaults to 1400px for bootstrap themes and 36em for the pandoc theme.                                             |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `mainfont`                                                   | Sets the [`font-family`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) property for the document.                                              |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `fontsize`                                                   | Sets the base CSS [`font-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-size) for the document.                                                  |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `fontcolor`                                                  | Sets the default text [`color`](https://developer.mozilla.org/en-US/docs/Web/CSS/color) for the document.                                                      |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `linkcolor`                                                  | Sets the default text [`color`](https://developer.mozilla.org/en-US/docs/Web/CSS/color) for hyperlinks.                                                        |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `monofont`                                                   | Sets the [`font-family`](https://developer.mozilla.org/en-US/docs/Web/CSS/font-family) property for `<code>` elements.                                         |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `monobackgroundcolor`                                        | Sets the [`background-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) property for `<code>` elements.                               |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `linestretch`                                                | Sets the CSS [`line-height`](https://developer.mozilla.org/en-US/docs/Web/CSS/line-height) property (affects distance between lines of text, defaults to 1.5). |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `backgroundcolor`                                            | Sets the [`background-color`](https://developer.mozilla.org/en-US/docs/Web/CSS/background-color) for the document.                                             |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `margin-left`, `margin-right`, `margin-top`, `margin-bottom` | Sets the CSS [`margin`](https://developer.mozilla.org/en-US/docs/Web/CSS/margin) properties for the document body.                                             |
++--------------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 For example. here we set the font-size a bit larger and specify that we want a bit more space between lines of text:
 
@@ -153,13 +206,19 @@ The following Saas Variables can be specified within SCSS files (note that these
 
 ### Colors
 
++---------------+------------------------------------------------------------------------------------+
 | Variable      | Notes                                                                              |
-|---------------|------------------------------------------------------------------------------------|
++===============+====================================================================================+
 | `$body-bg`    | The page background color.                                                         |
++---------------+------------------------------------------------------------------------------------+
 | `$body-color` | The page text color.                                                               |
++---------------+------------------------------------------------------------------------------------+
 | `$link-color` | The link color.                                                                    |
++---------------+------------------------------------------------------------------------------------+
 | `$input-bg`   | The background color for HTML inputs.                                              |
++---------------+------------------------------------------------------------------------------------+
 | `$popover-bg` | The background color for popovers (for example, when a citation preview is shown). |
++---------------+------------------------------------------------------------------------------------+
 
 ### Fonts
 
@@ -187,41 +246,63 @@ The following Saas Variables can be specified within SCSS files (note that these
 
 ### Code Blocks
 
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Variable                        | Notes                                                                                                                                                            |
-|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
++=================================+==================================================================================================================================================================+
 | `$code-block-border-left`       | By default, Quarto does not display a left border on code blocks. Set this variable to a truthy value or a CSS color to enable the left border.                  |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$code-block-border-left-style` | The style of the left border displayed on code blocks. Defaults to `solid`.                                                                                      |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$code-block-border-left-size`  | The thickness of the left border displayed on code blocks. Defaults to `3px`;                                                                                    |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$code-block-padding-left`      | The amount of padding applied between the code and the border. Defaults to `0.6em`.                                                                              |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$code-block-bg`                | By default, Quarto sets a background on code blocks by adding transparency to the theme's `progress-bg` color. Set this variable to truthy value or a CSS color. |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$code-block-bg-padding`        | The padding applied to the code block. Defaults to `0.4em`.                                                                                                      |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$code-block-bg-alpha`          | The amount to alter the transparency fo the `progress-bg` color. This is not used if an explicit background color is set. Defaults to `-0.35`.                   |
++---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Inline Code
 
++---------------+-------------------------------------------------------------------------------------------------+
 | Variable      | Notes                                                                                           |
-|---------------|-------------------------------------------------------------------------------------------------|
++===============+=================================================================================================+
 | `$code-bg`    | The background color of inline code. Defaults to a mix between the `body-bg` and `body-color`.  |
++---------------+-------------------------------------------------------------------------------------------------+
 | `$code-color` | The text color of inline code. Defaults to a generated contrasting color against the `code-bg`. |
++---------------+-------------------------------------------------------------------------------------------------+
 
 ### Layout
 
++------------------------+---------------------------------------------------------------------------------------------------+
 | Variable               | Notes                                                                                             |
-|------------------------|---------------------------------------------------------------------------------------------------|
++========================+===================================================================================================+
 | `$content-padding-top` | Padding that should appear before the main content area (including the sidebar, content, and TOC. |
++------------------------+---------------------------------------------------------------------------------------------------+
 
 ### Navigation
 
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Variable      | Notes                                                                                                                                                                       |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
++===============+=============================================================================================================================================================================+
 | `$navbar-bg`  | The background color of the navbar. Defaults to the theme's `$primary` color.                                                                                               |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$navbar-fg`  | The color of foreground elements (text and navigation) on the navbar. If not specified, a contrasting color is automatically computed.                                      |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$navbar-hl`  | The highlight color for links in the navbar. If not specified, the `$link-color` is used or a contrasting color is automatically computed.                                  |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$sidebar-bg` | The background color for a sidebar. Defaults to `$light` except when a navbar is present or when the style is `floating`. In that case it defaults to the `$body-bg` color. |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$sidebar-fg` | The color of foreground elements (text and navigation) on the sidebar. If not specified, a contrasting color is automatically computed.                                     |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$sidebar-hl` | The highlight color for links in the sidebar. If not specified, the `$link-color` is used.                                                                                  |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$footer-bg`  | The background color for a sidebar. Defaults to the `$body-bg` color.                                                                                                       |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$footer-fg`  | The color of foreground elements (text and navigation) on the footer. If not specified, a contrasting color is automatically computed.                                      |
++---------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ### Callouts
 
