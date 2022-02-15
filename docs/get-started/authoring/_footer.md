@@ -6,7 +6,7 @@ You've now learned the basics of using Quarto! Once you feel comfortable creatin
 
 -   [Websites](/docs/websites/) --- Publish collections of documents as a website. Websites support multiple forms of navigation and full-text search.
 
--   [Blogs](/docs/website/website-blog.qmd) --- Create a blog with an about page, flexible post listings, categories, RSS feeds, and over twenty themes.
+-   [Blogs](/docs/websites/website-blog.qmd) --- Create a blog with an about page, flexible post listings, categories, RSS feeds, and over twenty themes.
 
 -   [Books](/docs/books/) --- Create books and manuscripts in print (PDF, MS Word) and online (HTML, ePub) formats.
 
