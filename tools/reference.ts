@@ -18,9 +18,9 @@ const readSchema = (file: string) => {
 
 // format aliases and function to resolve a format list
 // deno-lint-ignore no-explicit-any
-const formatAliases = (readSchema("format-aliases.yml") as any)["aliases"] as Record<string,string[]>;
+const formatAliases = (readSchema("format-aliases.yml") as any)["aliases"] as Record<string, string[]>;
 const allFormats = formatAliases["pandoc-all"];
-const resolveFormats = (formats: string[]) : string[] => {
+const resolveFormats = (formats: string[]): string[] => {
   return distinct(formats
     .reduce((formats, format) => {
       if (format.startsWith("$")) {
@@ -75,25 +75,25 @@ interface OptionGroup {
 }
 
 function asDescriptionString(description?: string | { short: string, long?: string }) {
-  return typeof(description) === "string" 
-  ? description 
-  : description?.long || description?.short || "";
+  return typeof (description) === "string"
+    ? description
+    : description?.long || description?.short || "";
 }
 
 // helper to read a group schema
-const readGroupOptions = (context: string, name: string) : Array<Option> => {
+const readGroupOptions = (context: string, name: string): Array<Option> => {
   const groupOptions = readSchema(`${context}-${name}.yml`) as Array<OptionSchema>;
   if (groupOptions) {
-    return  groupOptions
-    .filter(optionsSchema => !optionsSchema.hidden && (name !== "execute" || optionsSchema.tags?.["execute-only"]))
-    .map(optionSchema => ({
-      name: optionSchema.name,
-      description: asDescriptionString(optionSchema.description),
-      formats: formatsFromOptionSchema(optionSchema),
-      contexts: optionSchema.tags?.contexts,
-      engine: optionSchema.tags?.engine,
-    }))
-    .filter(group =>  group.name !== "hidden");
+    return groupOptions
+      .filter(optionsSchema => !optionsSchema.hidden && (name !== "execute" || optionsSchema.tags?.["execute-only"]))
+      .map(optionSchema => ({
+        name: optionSchema.name,
+        description: asDescriptionString(optionSchema.description),
+        formats: formatsFromOptionSchema(optionSchema),
+        contexts: optionSchema.tags?.contexts,
+        engine: optionSchema.tags?.engine,
+      }))
+      .filter(group => group.name !== "hidden");
   } else {
     return [];
   }
@@ -101,7 +101,7 @@ const readGroupOptions = (context: string, name: string) : Array<Option> => {
 
 
 // read baseline config
-const groups = readSchema("groups.yml") as { [key: string]: { [key: string] : { title: string, description?: string }} };
+const groups = readSchema("groups.yml") as { [key: string]: { [key: string]: { title: string, description?: string } } };
 
 // cell options
 const cellGroups = groups["cell"];
@@ -141,9 +141,8 @@ const documentOptions = Object.keys(documentGroups)
     // options are a combination of document group options and cell
     // options that are also available at the document level
     readGroupOptions("document", group).forEach(option => options.push(option));
-
     return {
-      name: group, 
+      name: group,
       title,
       description,
       options
@@ -157,7 +156,7 @@ const optionsForFormat = (format: string) => {
         ...group,
         options: group.options
           .filter(option => option.formats?.includes(format))
-          .map(option => ( { name: option.name, description: option.description }))
+          .map(option => ({ name: option.name, description: option.description }))
       }
     })
     .filter(group => group.name !== "hidden" && group.options.length > 0)
@@ -179,8 +178,8 @@ for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
 
 // cell pages
 const cellPages = {
-  cells: ["attributes", "codeoutput", "textoutput", "figure", "table","layout", "pagelayout", "cache", "include"],
-} as Record<string,string[]>;
+  cells: ["attributes", "codeoutput", "textoutput", "figure", "table", "layout", "pagelayout", "cache", "include"],
+} as Record<string, string[]>;
 
 function writeCellGroups(engine: string, groups: string[], path: string) {
 
@@ -190,7 +189,7 @@ function writeCellGroups(engine: string, groups: string[], path: string) {
 
   writeGroups.forEach(writeGroup => {
     writeGroup.options = writeGroup.options.filter(option => {
-      return !option.engine || (asArray(option.engine).includes(engine)); 
+      return !option.engine || (asArray(option.engine).includes(engine));
     });
   });
 
@@ -212,29 +211,29 @@ writeCellPages("ojs");
 
 
 // project tables
-const definitions = readSchema("definitions.yml") as Array<{ 
+const definitions = readSchema("definitions.yml") as Array<{
   id: string,
-  object?: { properties: Record<string,unknown> },
-  oneOf?: { schemas: Record<string,unknown>}
+  object?: { properties: Record<string, unknown> },
+  oneOf?: { schemas: Record<string, unknown> }
 }>;
 
-const project = readSchema("project.yml") as Array<{ name: string}>;
+const project = readSchema("project.yml") as Array<{ name: string }>;
 
 // read a project object
-function readProjectProperties(props: { [name: string]: Record<string,unknown> }, descriptions?: Record<string, string>) {
+function readProjectProperties(props: { [name: string]: Record<string, unknown> }, descriptions?: Record<string, string>) {
   return Object.keys(props)
     .filter(key => props[key].hidden !== true)
     .map(key => ({
       name: key,
-      description: descriptions?.[key] ||  asDescriptionString(findVal(props[key], "description"))
-    })) 
+      description: descriptions?.[key] || asDescriptionString(findVal(props[key], "description"))
+    }))
 }
 
 function readProjectObject(name: string) {
   // deno-lint-ignore no-explicit-any
   const obj = project.find(value => value.name == name) as any;
   const props = obj["schema"]["object"]["properties"];
-  return readProjectProperties(props); 
+  return readProjectProperties(props);
 }
 
 function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
@@ -262,15 +261,15 @@ function readSidebarObject(descriptions?: Record<string, string>) {
 // deno-lint-ignore no-explicit-any
 function findVal(object: any, key: string) {
   let value;
-  Object.keys(object).some(function(k) {
-      if (k === key) {
-          value = object[k];
-          return true;
-      }
-      if (object[k] && typeof object[k] === 'object') {
-          value = findVal(object[k], key);
-          return value !== undefined;
-      }
+  Object.keys(object).some(function (k) {
+    if (k === key) {
+      value = object[k];
+      return true;
+    }
+    if (object[k] && typeof object[k] === 'object') {
+      value = findVal(object[k], key);
+      return value !== undefined;
+    }
   });
   return value;
 }
@@ -370,3 +369,11 @@ writeProjectTable("hypothesis-focus-user", hypothesisFocusUserOptions);
 
 const hypothesisIFrameconfig = readProjectProperties(findVal(hypothesisSchema, "requestConfigFromFrame")!["object"]["properties"]);
 writeProjectTable("hypothesis-iframe", hypothesisIFrameconfig);
+
+const listingOptions = readDefinitionsId("website-listing", {
+  "feed": "Create an RSS feed for this page using the items in this listing (see [Feed](#feed)). "
+});
+writeProjectTable("listing", listingOptions);
+
+const feedOptions = readDefinitionsObject("feed");
+writeProjectTable("feed", feedOptions);
