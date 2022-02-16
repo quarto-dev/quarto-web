@@ -305,12 +305,12 @@ const bookOptions = readProjectObject("book").concat(
 writeProjectTable("book", bookOptions);
 
 const navitemOptions = readNavigationItem({
-  "menu": "Submenu of [navigation items](#navbar-items)"
+  "menu": "Submenu of [navigation items](#nav-items)"
 });
 writeProjectTable("navitem", navitemOptions);
 
 const sidebarToolOptions = readDefinitionsId("tool-item", {
-  "menu": "Submenu of [navigation items](#navbar-items)"
+  "menu": "Submenu of [navigation items](#nav-items)"
 });
 writeProjectTable("sidebartool", sidebarToolOptions);
 
@@ -377,3 +377,8 @@ writeProjectTable("listing", listingOptions);
 
 const feedOptions = readDefinitionsObject("feed");
 writeProjectTable("feed", feedOptions);
+
+const aboutOptions = readDefinitionsId("website-about", {
+  "links": "Links (as [navigation items](#nav-items)) to display on the about page."
+});
+writeProjectTable("about", aboutOptions);

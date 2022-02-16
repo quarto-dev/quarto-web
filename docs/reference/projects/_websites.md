@@ -199,7 +199,14 @@ listing: default
 
 ### Feed
 
- Enable an RSS feed for your listing by including the `feed` option.
+Enable an RSS feed for your listing by including the `feed` option.
 
 ::: {#table-feed}
+:::
+
+## About
+
+Layout a simple about page for an individual or organization. For more, see the [About Pages](/docs/websites/website-about.qmd) documentation.
+
+::: {#table-about}
 :::
