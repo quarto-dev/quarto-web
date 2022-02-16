@@ -87,7 +87,7 @@ Action buttons that appear on the sidebar. For example:
 
 Search options are specified under the `search` key of `{{< meta project-type >}}`. For example:
 
-```yaml
+``` yaml
 {{< meta project-type >}}:
   search:
     location: navbar
@@ -102,7 +102,7 @@ Search options are specified under the `search` key of `{{< meta project-type >}
 
 You can use an [Algolia](../../websites/website-search.qmd#using-algolia) index as the back end of {{< meta project-type >}} search. Specify Algolia options using the `algolia` sub-key of `search`, for example:
 
-```yaml
+``` yaml
 ---
 {{< meta project-type >}}:
   search:
@@ -112,7 +112,6 @@ You can use an [Algolia](../../websites/website-search.qmd#using-algolia) index 
       search-only-api-key: <my-search-only-api-key>
 ---
 ```
-
 
 ::: {#table-algolia}
 :::
@@ -126,7 +125,7 @@ The `index-fields` option provides sub-fields within the Algolia index to target
 
 Social metadata is provided as a subkey of `{{< meta project-type >}}` options. You can specify `true` to generate social metadata using a set of default option, or specify one or more Twitter or Open Graph specific options as enumerated below. For example:
 
-```yaml
+``` yaml
 ---
 {{< meta project-type >}}:
   open-graph: true
@@ -153,7 +152,7 @@ You can add commenting to your {{< meta project-type >}} using either [Hypothesi
 
 Enable and configure Hypothesis commenting via `comments` key. For example:
 
-```yaml
+``` yaml
 ---
 website:
   comments: 
@@ -172,7 +171,7 @@ For additional documentation on the Hypothesis options enumerated above, see the
 
 Enable and configure Utterances commenting via the `comments` key. For example:
 
-```yaml
+``` yaml
 ---
 website:
   comments: 
@@ -184,4 +183,30 @@ website:
 ::: {#table-utterances}
 :::
 
+## Listings
 
+[Listings](/docs/websites/website-listings.qmd) enable you to automatically generate the contents of a page (or region of a page) from a list of Quarto documents or other custom data. You can enable listings on a page using the `listing` option in the document front matter, for example:
+
+``` yaml
+---
+title: "Listing Example"
+listing: default
+---
+```
+
+::: {#table-listing}
+:::
+
+### Feed
+
+Enable an RSS feed for your listing by including the `feed` option.
+
+::: {#table-feed}
+:::
+
+## About
+
+Layout a simple about page for an individual or organization. For more, see the [About Pages](/docs/websites/website-about.qmd) documentation.
+
+::: {#table-about}
+:::
