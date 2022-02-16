@@ -2,15 +2,15 @@
 
 To put material in side by side columns, you can use a native div container with class `.columns`, containing two or more div containers with class `.column` and a `width` attribute:
 
-``` markdown
+```{.markdown example-link="/docs/presentations/revealjs/examples/columns.qmd"}
 :::: {.columns}
 
 ::: {.column width="40%"}
-contents...
+Left column
 :::
 
 ::: {.column width="60%"}
-contents...
+Right column
 :::
 
 ::::

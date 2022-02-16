@@ -30,25 +30,26 @@ If you have a slide that has more content than can be displayed on a single fram
 
 1.  Use the `.smaller` class to use a smaller typeface so that more text fits on the slide. For example:
 
-    ``` markdown
+    ```{.markdown example-link="examples/smaller-title-slide.qmd"}
     ## Slide Title {.smaller}
     ```
 
 2.  Use the `.scrollable` class to make off-slide content available by scrolling. For example:
 
-    ``` markdown
+    ```{.markdown example-link="examples/scrollable-title-slide.qmd"}
     ## Slide Title {.scrollable}
     ```
 
 Both of these options can also be applied globally to all slides as follows:
 
-``` yaml
+```{.yaml example-link="examples/scrollable-and-smaller-front-matter.qmd"}
 ---
 title: "Presentation"
 format:
   revealjs:
     smaller: true
     scrollable: true
+---
 ```
 
 ``` include
@@ -73,7 +74,7 @@ See the article on [Reveal Themes](themes.qmd) for additional details on customi
 
 You can include footer text and a logo at the bottom of each slide using the `footer` and `logo` options. For example:
 
-``` yaml
+```{.yaml example-link="examples/footer-and-logo.qmd"}
 ---
 title: "Presentation"
 format:
@@ -85,7 +86,7 @@ format:
 
 You can also include a custom footer per-slide by adding a footer div at the bottom of the the slide:
 
-``` markdown
+```{.markdown example-link="examples/per-slide-footer.qmd"}
 ## Slide Title
 
 Slide content
@@ -103,7 +104,7 @@ Most of the core capabilities of Quarto [HTML Code Blocks](../../output-formats/
 
 You may want to highlight specific lines of code output (or even highlight distinct lines over a progression of steps). You can do this using the `code-line-numbers` attribute of code blocks. For example:
 
-```` java
+````{.java example-link="examples/line-highlighting-1.qmd"}
 ```{.python code-line-numbers="6-8"}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -122,7 +123,7 @@ plt.show()
 
 Note that you can also highlight disparate ranges of lines by separating them with a comma. For example:
 
-```` java
+````{.java example-link="examples/line-highlighting-2.qmd"}
 ```{.python code-line-numbers="7,9"}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -141,7 +142,7 @@ plt.show()
 
 Finally, you can highlight different line ranges progressively by separating them with `|`. For example, here we start by showing all lines, then progress to highlighting line 6, and finally to highlighting line 9:
 
-```` java
+````{.java example-link="examples/line-highlighting-3.qmd"}
 ```{.python code-line-numbers="|6|9"}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -158,12 +159,22 @@ plt.show()
 
 You can use this same option within an executable code cell by using the `code-line-numbers` cell options:
 
+<!--- FIXME example-link="" doesn't work here... --->
+
 ``` {{python}}
 #| echo: true
 #| code-line-numbers: "|6|9"
 
 import numpy as np
 import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
 ```
 
 ## Executable Code
@@ -176,7 +187,7 @@ You will frequently need to customize the size of figures created for slides so 
 
 Nevertheless, you will frequently need to change these defaults for a given figure. The details on how to do this vary by graphics library. Here's an example of explicitly sizing an [Altair](https://altair-viz.github.io/) plot:
 
-``` python
+```{.python example-link="examples/executable-code-figure-size.qmd"}
 alt.Chart(cars).mark_point().encode(
     x='Horsepower',
     y='Miles_per_Gallon',
@@ -212,16 +223,16 @@ See the documentation on [Running Code](../../computations/running-code.qmd) for
 
 You can add tabbed content to slides using the standard Quarto syntax for [tabsets](../../output-formats/html-basics.qmd#tabsets). For example:
 
-``` markdown
+```{.markdown example-link="examples/tabset.qmd"}
 ::: {.panel-tabset}
 
 ### Tab A
 
-Tab content...
+Content for `Tab A`
 
 ### Tab B
 
-Tab content...
+Content for `Tab B`
 
 :::
 ```
@@ -234,7 +245,7 @@ Slides are contained within a limited portion of the screen by default to allow 
 
 All CSS color formats are supported, including hex values, keywords, `rgba()` or `hsl()`. For example:
 
-``` markdown
+```{.markdown example-link="examples/background-color.qmd"}
 ## Slide Title {background-color="aquamarine"}
 ```
 
@@ -258,8 +269,8 @@ By default, background images are resized to cover the full page. Available opti
 
 For example:
 
-``` markdown
-## Slide Title {background-color="black" background-image="dark-image.png" background-size="100px" background-repeat="repeat"}
+```{.markdown example-link="examples/image-background.qmd"}
+## Slide Title {background-color="black" background-image="https://placekitten.com/100/100" background-size="100px" background-repeat="repeat"}
 
 This slide's background image will be sized to 100px and repeated.
 ```
