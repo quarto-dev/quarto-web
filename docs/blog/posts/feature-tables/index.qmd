@@ -1,0 +1,93 @@
+---
+title: Customizing Table Output
+categories:
+  - Features
+  - Authoring
+  - Tables
+author: JJ Allaire
+date: 2/15/2022
+image: table.png
+---
+
+Quarto includes a number of features aimed at making it easy to to author and customize markdown table output, including:
+
+-   Specifying column alignment and widths.
+-   Providing captions, subcaptions, and cross-references.
+-   Generating tables dynamically from executable code cells.
+
+This post provides an overview of these capabilities in Quarto. For more detail about all the features Quarto for authoring tables, see [Tables](/docs/authoring/tables.qmd).
+
+## Markdown Tables
+
+The most commonly used markdown table is known as a pipe table. Pipe tables support specifying per column alignment as well as captions. For example:
+
+``` markdown
+| Default | Left | Right | Center |
+|---------|:-----|------:|:------:|
+| 12      | 12   |    12 |   12   |
+| 123     | 123  |   123 |  123   |
+| 1       | 1    |     1 |   1    |
+
+: Demonstration of pipe table sytnax
+```
+
+Here is the table rendered to HTML:
+
+| Default | Left | Right | Center |
+|---------|:-----|------:|:------:|
+| 12      | 12   |    12 |   12   |
+| 123     | 123  |   123 |  123   |
+| 1       | 1    |     1 |   1    |
+
+: Demonstration of pipe table syntax
+
+#### Caption Location
+
+By default, table captions are positioned above tables. You can modify this behavior using the `tbl-cap-location` option. For example:
+
+``` yaml
+---
+tbl-cap-location: top
+---
+```
+
+## Explicit Column Widths
+
+Beyond standard pipe table syntax for expressing column width, you can also explicitly specify columns widths using the `tbl-colwidths` attribute or document-level option. For an individual markdown table, add the attribute after the caption. For example:
+
+
+``` markdown
+| fruit  | price  |
+|--------|--------:
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {tbl-colwidths="[75,25]"}
+```
+
+Note that this option is specified at the top level so that it can be shared by both PDF and HTML formats. If you are only targeting a single format you can place it alongside other `format` specific options.
+
+Valid values for the caption location include:
+
+| Value    | Description                           |
+|----------|---------------------------------------|
+| `top`    | Position the caption above the table. |
+| `bottom` | Position the caption below the table. |
+| `margin` | Position the caption in the margin.   |
+
+
+## Computations
+
+All of the options described above work for tables produced by executable code cells. For example, here we apply the `tbl-cap`, `tbl-colwidths` and `tbl-caption-location` options to a code cell:
+
+``` {{r}}
+#| tbl-cap: "Cars"
+#| tbl-colwidths: [60,40]
+#| tbl-cap-location: margin
+
+library(knitr)
+kable(head(cars))
+```
+
+In addition to the above, which focused on some of the features of Quarto when writing pipe tables in markdown, you can also author tables using grid syntax. You review the [documentation](/docs/authoring/tables.qmd). for more detail.
