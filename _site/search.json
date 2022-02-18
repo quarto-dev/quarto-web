@@ -504,6 +504,83 @@
     "text": "Hyperlinks\nIf you are creating an HTML-only book (or a PDF / MS Word book that you don’t expect will be printed) then you can feel free to use normal hyperlinks rather than section cross-references.\nTo create a hyperlink within a book, provide the source file as the link target. You can also add hash identifiers (#) to the source file if you want to link to a particular section in the document. For example:\n[about](about.qmd)\n[about](about.qmd#section)\nUsing the source file as the link target ensures that links will be resolved correctly both for HTML output and for formats that produce a single file (e.g. PDF or MS Word).\nNote that if you are targeting printed output for your book you should use explicit cross references to other chapters and sections rather than simple links as shown above. This is because In printed output links aren’t navigable so you need to provide readers with numbered references (e.g. “sec. 5.3”) rather than hyperlinks."
   },
   {
+    "objectID": "docs/blog/posts/2022-02-13-feature-callouts/index.html#callout-basics",
+    "href": "docs/blog/posts/2022-02-13-feature-callouts/index.html#callout-basics",
+    "title": "Using Callouts",
+    "section": "Callout Basics",
+    "text": "Callout Basics\nThere are five different types of callouts available.\n\nnote\ntip\nimportant\ncaution\nwarning\n\nThe color and icon will be different depending upon the type that you select."
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-13-feature-callouts/index.html#syntax",
+    "href": "docs/blog/posts/2022-02-13-feature-callouts/index.html#syntax",
+    "title": "Using Callouts",
+    "section": "Syntax",
+    "text": "Syntax\nCreate callouts in markdown using the following syntax (note that the first markdown heading used within the callout is used as the callout heading):\n:::{.callout-note}\nNote that there are five types of callouts, including:\n`note`, `tip`, `warning`, `caution`, and `important`.\n:::\n\n:::{.callout-tip}\n## Tip With Caption\n\nThis is an example of a callout with a caption.\n:::\nSee our documentation on Callouts, to learn more, including more about how to customize the appearance and behavior of callouts."
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-15-feature-tables/index.html#markdown-tables",
+    "href": "docs/blog/posts/2022-02-15-feature-tables/index.html#markdown-tables",
+    "title": "Customizing Table Output",
+    "section": "Markdown Tables",
+    "text": "Markdown Tables\nThe most commonly used markdown table is known as a pipe table. Pipe tables support specifying per column alignment as well as captions. For example:\n| Default | Left | Right | Center |\n|---------|:-----|------:|:------:|\n| 12      | 12   |    12 |   12   |\n| 123     | 123  |   123 |  123   |\n| 1       | 1    |     1 |   1    |\n\n: Demonstration of pipe table sytnax\nHere is the table rendered to HTML:\n\nDemonstration of pipe table syntax\n\n\nDefault\nLeft\nRight\nCenter\n\n\n\n\n12\n12\n12\n12\n\n\n123\n123\n123\n123\n\n\n1\n1\n1\n1\n\n\n\n\nCaption Location\nBy default, table captions are positioned above tables. You can modify this behavior using the tbl-cap-location option. For example:\n---\ntbl-cap-location: top\n---"
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-15-feature-tables/index.html#explicit-column-widths",
+    "href": "docs/blog/posts/2022-02-15-feature-tables/index.html#explicit-column-widths",
+    "title": "Customizing Table Output",
+    "section": "Explicit Column Widths",
+    "text": "Explicit Column Widths\nBeyond standard pipe table syntax for expressing column width, you can also explicitly specify columns widths using the tbl-colwidths attribute or document-level option. For an individual markdown table, add the attribute after the caption. For example:\n| fruit  | price  |\n|--------|--------:\n| apple  | 2.05   |\n| pear   | 1.37   |\n| orange | 3.09   |\n\n: Fruit prices {tbl-colwidths=\"[75,25]\"}\nNote that this option is specified at the top level so that it can be shared by both PDF and HTML formats. If you are only targeting a single format you can place it alongside other format specific options.\nValid values for the caption location include:\n\n\n\nValue\nDescription\n\n\n\n\ntop\nPosition the caption above the table.\n\n\nbottom\nPosition the caption below the table.\n\n\nmargin\nPosition the caption in the margin."
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-15-feature-tables/index.html#computations",
+    "href": "docs/blog/posts/2022-02-15-feature-tables/index.html#computations",
+    "title": "Customizing Table Output",
+    "section": "Computations",
+    "text": "Computations\nAll of the options described above work for tables produced by executable code cells. For example, here we apply the tbl-cap, tbl-colwidths and tbl-caption-location options to a code cell:\n```{r}\n#| tbl-cap: \"Cars\"\n#| tbl-colwidths: [60,40]\n#| tbl-cap-location: margin\n\nlibrary(knitr)\nkable(head(cars))\n```\nIn addition to the above, which focused on some of the features of Quarto when writing pipe tables in markdown, you can also author tables using grid syntax. You review the documentation. for more detail."
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-figures",
+    "href": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-figures",
+    "title": "Positioning Content in the Margin",
+    "section": "Margin Figures",
+    "text": "Margin Figures\nFigures that you create using code cells can be placed in the margin by using the column: margin code cell option. If the code produces more than one figure, each of the figures will be placed in the margin.\n\n```{r}\n#| label: fig-mtcars\n#| fig-cap: \"MPG vs horsepower, colored by transmission.\"\n#| column: margin\n\nlibrary(ggplot2)\nmtcars2 <- mtcars\nmtcars2$am <- factor(\n  mtcars$am, labels = c('automatic', 'manual')\n)\nggplot(mtcars2, aes(hp, mpg, color = am)) +\n  geom_point() +  geom_smooth(formula = y ~ x, method = \"loess\") +\n  theme(legend.position = 'bottom')\n```\n\n\n\n\n\nFigure 1: MPG vs horsepower, colored by transmission."
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-tables",
+    "href": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-tables",
+    "title": "Positioning Content in the Margin",
+    "section": "Margin Tables",
+    "text": "Margin Tables\nYou an also place tables in the margin of your document by specifying column: margin.\n\n```{r}\n#| column: margin\n\nknitr::kable(\n  mtcars[1:3, 1:3]\n)\n```\n\n\n\n\n\n\nmpg\ncyl\ndisp\n\n\n\n\nMazda RX4\n21.0\n6\n160\n\n\nMazda RX4 Wag\n21.0\n6\n160\n\n\nDatsun 710\n22.8\n4\n108"
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-17-advanced-layout/index.html#other-content",
+    "href": "docs/blog/posts/2022-02-17-advanced-layout/index.html#other-content",
+    "title": "Positioning Content in the Margin",
+    "section": "Other Content",
+    "text": "Other Content\nYou can also place content in the margin by targeting the margin column using a div with the .column-margin class. For example:\n::: {.column-margin}\nWe know from *the first fundamental theorem of calculus* that for $x$ in $[a, b]$:\n\n$$\\frac{d}{dx}\\left( \\int_{a}^{x} f(u)\\,du\\right)=f(x).$$\n:::\n\n\nWe know from the first fundamental theorem of calculus that for \\(x\\) in \\([a, b]\\):\n\\[\\frac{d}{dx}\\left( \\int_{a}^{x} f(u)\\,du\\right)=f(x).\\]"
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-references",
+    "href": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-references",
+    "title": "Positioning Content in the Margin",
+    "section": "Margin References",
+    "text": "Margin References\nFootnotes and the bibliography typically appear at the end of the document, but you can choose to have them placed in the margin by setting the following option[^1] in the document front matter:\n---\nreference-location: margin\ncitation-location: margin\n---\nWith these options set, footnotes and citations will (respectively) be automatically be placed in the margin of the document rather than the bottom of the page. As an example, when I cite Xie, Allaire, and Grolemund (2018), the citation bibliography entry itself will now appear in the margin.\n\nXie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. R Markdown: The Definitive Guide. Boca Raton, Florida: Chapman; Hall/CRC. https://bookdown.org/yihui/rmarkdown.\n\nAsides\nAsides allow you to place content aside from the content it is placed in. Asides look like footnotes, but do not include the footnote mark (the superscript number). This is a span that has the class aside which places it in the margin without a footnote number.\n[This is a span that has the class aside which places it in the margin without a footnote number.]{.aside}"
+  },
+  {
+    "objectID": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-captions",
+    "href": "docs/blog/posts/2022-02-17-advanced-layout/index.html#margin-captions",
+    "title": "Positioning Content in the Margin",
+    "section": "Margin Captions",
+    "text": "Margin Captions\nFor figures and tables, you may leave the content in the body of the document while placing the caption in the margin of the document. Using cap-location: margin in a code cell or document front matter to control this. For example:\n\n```{r}\n#| label: fig-cap-margin\n#| fig-cap: \"MPG vs horsepower, colored by transmission.\"\n#| cap-location: margin\n\nlibrary(ggplot2)\nmtcars2 <- mtcars\nmtcars2$am <- factor(\n  mtcars$am, labels = c('automatic', 'manual')\n)\nggplot(mtcars2, aes(hp, mpg, color = am)) +\n  geom_point() +  geom_smooth(formula = y ~ x, method = \"loess\") +\n  theme(legend.position = 'bottom')\n```\n\n\n\n\nFigure 2: MPG vs horsepower, colored by transmission."
+  },
+  {
+    "objectID": "docs/blog/index.html",
+    "href": "docs/blog/index.html",
+    "title": "Quarto Blog",
+    "section": "",
+    "text": "Positioning Content in the Margin\n\n\n\n\nFeatures\n\n\nLayout\n\n\n\n\nQuarto supports a variety of page layout options that enable you to author content that:\n\n\n\n\n\n\n2/17/2022\n\n\nCharles Teague\n\n\n\n\n\n\n  \n\n\n\n\nCustomizing Table Output\n\n\n\n\nFeatures\n\n\nAuthoring\n\n\nTables\n\n\n\n\nQuarto includes a number of features aimed at making it easy to to author and customize markdown table output, including:\n\n\n\n\n\n\n2/15/2022\n\n\nJJ Allaire\n\n\n\n\n\n\n  \n\n\n\n\nUsing Callouts\n\n\n\n\nFeatures\n\n\nAuthoring\n\n\n\n\nCallouts are an excellent way to draw extra attention to certain concepts, or to more clearly indicate that certain content is supplemental or applicable to only some scenarios.\n\n\n\n\n\n\n2/13/2022\n\n\nCharles Teague\n\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "docs/computations/execution-options.html#output-options",
     "href": "docs/computations/execution-options.html#output-options",
     "title": "Execution Options",
@@ -2839,7 +2916,7 @@
     "href": "docs/output-formats/html-themes-more.html#bootstrap-bootswatch-layering",
     "title": "More About Quarto Themes",
     "section": "Bootstrap / Bootswatch Layering",
-    "text": "Bootstrap / Bootswatch Layering\nWhen using the Quarto HTML format, we allow the user to specify theme information in the document front matter (or project YAML). The theme information consists of a list of one more of\n\nA valid built in Bootswatch theme name\nA theme file (valid as described above).\n\nFor example the following would use the cosmo Bootswatch theme and provide customization using the custom.scss file:\ntheme:\n  - cosmo\n  - custom.scss\nWhen compiling the CSS for a Quarto website or HTML page, we merge any user provided theme file(s) or Bootswatch themes with the Bootstrap Scss in the following layers:\nFunctions\n    Bootstrap\n    Theme(s)       /*-- scss:functions --*/\n\nVariables\n    Themes(s)      /*-- scss:defaults --*/\n    Bootstrap\n    \nMixins                 \n    Bootstrap\n    Theme(s)       /* -- scss:mixins --*/\n\nRules\n    Bootstrap\n    Theme(s)       /*-- scss:rules --*/\nWe order the themes according to the order that they are specified in the YAML, maintaining the order for declarations and rules and reversing the order for variables (allowing the files specified later in the list to provide defaults variable values to the files specified earlier in the list). Layering of the example themes above would be as follows:\nFunctions\n    Bootstrap\n    cosmo           /*-- scss:functions --*/\n    custom.scss     /*-- scss:functions --*/\n\nVariables\n    custom.scss     /*-- scss:defaults --*/\n    cosmo           /*-- scss:defaults --*/\n    Bootstrap\n\nMixins\n    Bootstrap\n    cosmo            /* -- scss:mixins --*/\n    custom.scss      /* -- scss:mixins --*/\n\nRules\n    Bootstrap\n    cosmo           /*-- scss:rules --*/\n    custom.scss     /*-- scss:rules --*/"
+    "text": "Bootstrap / Bootswatch Layering\nWhen using the Quarto HTML format, we allow the user to specify theme information in the document front matter (or project YAML). The theme information consists of a list of one more of\n\nA valid built in Bootswatch theme name\nA theme file (valid as described above).\n\nFor example the following would use the cosmo Bootswatch theme and provide customization using the custom.scss file:\ntheme:\n  - cosmo\n  - custom.scss\nWhen compiling the CSS for a Quarto website or HTML page, we merge any user provided theme file(s) or Bootswatch themes with the Bootstrap Scss in the following layers:\nUses\n    Bootstrap\n    Theme(s)       /*-- scss:uses --*/\n    \nFunctions\n    Bootstrap\n    Theme(s)       /*-- scss:functions --*/\n\nVariables\n    Themes(s)      /*-- scss:defaults --*/\n    Bootstrap\n    \nMixins                 \n    Bootstrap\n    Theme(s)       /* -- scss:mixins --*/\n\nRules\n    Bootstrap\n    Theme(s)       /*-- scss:rules --*/\nWe order the themes according to the order that they are specified in the YAML, maintaining the order for declarations and rules and reversing the order for variables (allowing the files specified later in the list to provide defaults variable values to the files specified earlier in the list). Layering of the example themes above would be as follows:\nUses\n    Bootstrap\n    cosmo           /*-- scss:uses --*/\n    custom.scss     /*-- scss:uses --*/\n\nFunctions\n    Bootstrap\n    cosmo           /*-- scss:functions --*/\n    custom.scss     /*-- scss:functions --*/\n\nVariables\n    custom.scss     /*-- scss:defaults --*/\n    cosmo           /*-- scss:defaults --*/\n    Bootstrap\n\nMixins\n    Bootstrap\n    cosmo            /* -- scss:mixins --*/\n    custom.scss      /* -- scss:mixins --*/\n\nRules\n    Bootstrap\n    cosmo           /*-- scss:rules --*/\n    custom.scss     /*-- scss:rules --*/"
   },
   {
     "objectID": "docs/output-formats/hugo.html#overview",
