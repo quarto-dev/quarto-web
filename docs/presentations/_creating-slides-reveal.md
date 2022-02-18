@@ -2,7 +2,7 @@
 
 In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (`##`):
 
-```{.markdown code-example="/docs/presentations/revealjs/examples/creating-slides-1.qmd"}
+```{.markdown code-preview="/docs/presentations/revealjs/examples/creating-slides-1.qmd"}
 ---
 title: "Habits"
 author: "John Doe"
@@ -23,7 +23,7 @@ format: {{< meta slide-format >}}
 You can also divide slide shows into sections with title slides using a level 1 header (`#`). For example:
 
 
-```{.markdown code-example="/docs/presentations/revealjs/examples/creating-slides-2.qmd"}
+```{.markdown code-preview="/docs/presentations/revealjs/examples/creating-slides-2.qmd"}
 ---
 title: "Habits"
 author: "John Doe"
@@ -57,7 +57,7 @@ format: {{< meta slide-format >}}
 
 Finally, you can also delineate slides using horizontal rules (for example, if you have a slide without a title):
 
-```{.markdown code-example="/docs/presentations/revealjs/examples/creating-slides-3.qmd"}
+```{.markdown code-preview="/docs/presentations/revealjs/examples/creating-slides-3.qmd"}
 ---
 title: "Habits"
 author: "John Doe"
