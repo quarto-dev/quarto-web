@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Quarto</title>
+<link>https://quarto.org/docs/blog/index.html</link>
+<atom:link href="https://quarto.org/docs/blog/index.xml" rel="self" type="application/rss+xml"/>
+<description>Recent Posts on Quarto's Blog</description>
+<image>
+<url>https://quarto.org/quarto.png</url>
+<title>Quarto</title>
+<link>https://quarto.org/docs/blog/index.html</link>
+<height>35</height>
+<width>144</width>
+</image>
+<generator>quarto-99.9.9</generator>
+<lastBuildDate>Thu, 17 Feb 2022 07:00:00 GMT</lastBuildDate>
+<item>
+  <title>Positioning Content in the Margin</title>
+  <dc:creator>Charles Teague</dc:creator>
+  <link>https://quarto.org/docs/blog/posts/2022-02-17-advanced-layout/index.html</link>
+  <description><![CDATA[ 
+
+
+<p>Quarto supports a variety of page layout options that enable you to author content that:</p>
+<ul>
+<li>Fills the main content region</li>
+<li>Overflows the content region</li>
+<li>Spans the entire page</li>
+<li>Occupies the document margin</li>
+</ul>
+<p>This post will demonstrate a few of the capabilities for positioning content in the margin of the page. You can read more about the complete capabilities in the the <a href="../../../../docs/authoring/article-layout.html">Article Layout Guide</a>.<br>
+</p>
+<section id="margin-figures" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="margin-figures">Margin Figures</h2>
+<p>Figures that you create using code cells can be placed in the margin by using the <code>column: margin</code> code cell option. If the code produces more than one figure, each of the figures will be placed in the margin.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode markdown cell-code code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><span class="in" style="color: #5E5E5E;">```{r}</span></span>
+<span id="cb1-2"><span class="co" style="color: #5E5E5E;">#| label: fig-mtcars</span></span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;">#| fig-cap: "MPG vs horsepower, colored by transmission."</span></span>
+<span id="cb1-4"><span class="co" style="color: #5E5E5E;">#| column: margin</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(ggplot2)</span>
+<span id="cb1-7">mtcars2 <span class="ot" style="color: #007BA5;">&lt;-</span> mtcars</span>
+<span id="cb1-8">mtcars2<span class="sc" style="color: #5E5E5E;">$</span>am <span class="ot" style="color: #007BA5;">&lt;-</span> <span class="fu" style="color: #4758AB;">factor</span>(</span>
+<span id="cb1-9">  mtcars<span class="sc" style="color: #5E5E5E;">$</span>am, <span class="at" style="color: null;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">'automatic'</span>, <span class="st" style="color: #20794D;">'manual'</span>)</span>
+<span id="cb1-10">)</span>
+<span id="cb1-11"><span class="fu" style="color: #4758AB;">ggplot</span>(mtcars2, <span class="fu" style="color: #4758AB;">aes</span>(hp, mpg, <span class="at" style="color: null;">color =</span> am)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb1-12">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span>  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: null;">formula =</span> y <span class="sc" style="color: #5E5E5E;">~</span> x, <span class="at" style="color: null;">method =</span> <span class="st" style="color: #20794D;">"loess"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb1-13">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: null;">legend.position =</span> <span class="st" style="color: #20794D;">'bottom'</span>)</span>
+<span id="cb1-14"><span class="in" style="color: #5E5E5E;">```</span></span></code></pre></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div id="fig-mtcars" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="https://quarto.org/docs/blog/posts/2022-02-17-advanced-layout/index_files/figure-html/fig-mtcars-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div></div></div>
+</section>
+<section id="margin-tables" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="margin-tables">Margin Tables</h2>
+<p>You an also place tables in the margin of your document by specifying <code>column: margin</code>.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode markdown cell-code code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><span class="in" style="color: #5E5E5E;">```{r}</span></span>
+<span id="cb2-2"><span class="co" style="color: #5E5E5E;">#| column: margin</span></span>
+<span id="cb2-3"></span>
+<span id="cb2-4">knitr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">kable</span>(</span>
+<span id="cb2-5">  mtcars[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">3</span>, <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">3</span>]</span>
+<span id="cb2-6">)</span>
+<span id="cb2-7"><span class="in" style="color: #5E5E5E;">```</span></span></code></pre></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">mpg</th>
+<th style="text-align: right;">cyl</th>
+<th style="text-align: right;">disp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mazda RX4</td>
+<td style="text-align: right;">21.0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">160</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mazda RX4 Wag</td>
+<td style="text-align: right;">21.0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">160</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Datsun 710</td>
+<td style="text-align: right;">22.8</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">108</td>
+</tr>
+</tbody>
+</table>
+</div></div></div>
+</section>
+<section id="other-content" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="other-content">Other Content</h2>
+<p>You can also place content in the margin by targeting the margin column using a div with the .<code>column-margin</code> class. For example:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode md code-with-copy"><code class="sourceCode markdown"><span id="cb3-1">::: {.column-margin}</span>
+<span id="cb3-2">We know from *the first fundamental theorem of calculus* that for $x$ in $<span class="co" style="color: #5E5E5E;">[</span><span class="ot" style="color: #007BA5;">a, b</span><span class="co" style="color: #5E5E5E;">]</span>$:</span>
+<span id="cb3-3"></span>
+<span id="cb3-4">$\frac{d}{dx}\left( \int_{a}^{x} f(u)\,du\right)=f(x).$</span>
+<span id="cb3-5">:::</span></code></pre></div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>We know from <em>the first fundamental theorem of calculus</em> that for <img src="https://latex.codecogs.com/png.latex?x"> in <img src="https://latex.codecogs.com/png.latex?%5Ba,%20b%5D">:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cfrac%7Bd%7D%7Bdx%7D%5Cleft(%20%5Cint_%7Ba%7D%5E%7Bx%7D%20f(u)%5C,du%5Cright)=f(x)."></p>
+</div></div></section>
+<section id="margin-references" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="margin-references">Margin References</h2>
+<p>Footnotes and the bibliography typically appear at the end of the document, but you can choose to have them placed in the margin by setting the following option[^1] in the document front matter:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb4-1"><span class="pp" style="color: #AD0000;">---</span></span>
+<span id="cb4-2"><span class="fu" style="color: #4758AB;">reference-location</span><span class="kw" style="color: #007BA5;">:</span><span class="at" style="color: null;"> margin</span></span>
+<span id="cb4-3"><span class="fu" style="color: #4758AB;">citation-location</span><span class="kw" style="color: #007BA5;">:</span><span class="at" style="color: null;"> margin</span></span>
+<span id="cb4-4"><span class="pp" style="color: #AD0000;">---</span></span></code></pre></div>
+<p>With these options set, footnotes and citations will (respectively) be automatically be placed in the margin of the document rather than the bottom of the page. As an example, when I cite <span class="citation" data-cites="xie2018">Xie, Allaire, and Grolemund (2018)</span>, the citation bibliography entry itself will now appear in the margin.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-xie2018" class="csl-entry">
+Xie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. <em>R Markdown: The Definitive Guide</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://bookdown.org/yihui/rmarkdown">https://bookdown.org/yihui/rmarkdown</a>.
+</div></div><section id="asides" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="asides">Asides</h3>
+<div class="page-columns page-full"><p>Asides allow you to place content aside from the content it is placed in. Asides look like footnotes, but do not include the footnote mark (the superscript number). </p><div class="no-row-height column-margin column-container"><span class="aside">This is a span that has the class <code>aside</code> which places it in the margin without a footnote number.</span></div></div>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><span class="co" style="color: #5E5E5E;">[</span><span class="ot" style="color: #007BA5;">This is a span that has the class aside which places it in the margin without a footnote number.</span><span class="co" style="color: #5E5E5E;">]</span>{.aside}</span></code></pre></div>
+</section>
+</section>
+<section id="margin-captions" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="margin-captions">Margin Captions</h2>
+<p>For figures and tables, you may leave the content in the body of the document while placing the caption in the margin of the document. Using <code>cap-location: margin</code> in a code cell or document front matter to control this. For example:</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode markdown cell-code code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><span class="in" style="color: #5E5E5E;">```{r}</span></span>
+<span id="cb6-2"><span class="co" style="color: #5E5E5E;">#| label: fig-cap-margin</span></span>
+<span id="cb6-3"><span class="co" style="color: #5E5E5E;">#| fig-cap: "MPG vs horsepower, colored by transmission."</span></span>
+<span id="cb6-4"><span class="co" style="color: #5E5E5E;">#| cap-location: margin</span></span>
+<span id="cb6-5"></span>
+<span id="cb6-6"><span class="fu" style="color: #4758AB;">library</span>(ggplot2)</span>
+<span id="cb6-7">mtcars2 <span class="ot" style="color: #007BA5;">&lt;-</span> mtcars</span>
+<span id="cb6-8">mtcars2<span class="sc" style="color: #5E5E5E;">$</span>am <span class="ot" style="color: #007BA5;">&lt;-</span> <span class="fu" style="color: #4758AB;">factor</span>(</span>
+<span id="cb6-9">  mtcars<span class="sc" style="color: #5E5E5E;">$</span>am, <span class="at" style="color: null;">labels =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">'automatic'</span>, <span class="st" style="color: #20794D;">'manual'</span>)</span>
+<span id="cb6-10">)</span>
+<span id="cb6-11"><span class="fu" style="color: #4758AB;">ggplot</span>(mtcars2, <span class="fu" style="color: #4758AB;">aes</span>(hp, mpg, <span class="at" style="color: null;">color =</span> am)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-12">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span>  <span class="fu" style="color: #4758AB;">geom_smooth</span>(<span class="at" style="color: null;">formula =</span> y <span class="sc" style="color: #5E5E5E;">~</span> x, <span class="at" style="color: null;">method =</span> <span class="st" style="color: #20794D;">"loess"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-13">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: null;">legend.position =</span> <span class="st" style="color: #20794D;">'bottom'</span>)</span>
+<span id="cb6-14"><span class="in" style="color: #5E5E5E;">```</span></span></code></pre></div>
+<div class="cell-output-display page-columns page-full">
+<div id="fig-cap-margin" class="quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="figure page-columns page-full">
+<p><img src="https://quarto.org/docs/blog/posts/2022-02-17-advanced-layout/index_files/figure-html/fig-cap-margin-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><p></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+
+</section>
+ ]]></description>
+  <category>Features</category>
+  <category>Layout</category>
+  <guid>https://quarto.org/docs/blog/posts/2022-02-17-advanced-layout/index.html</guid>
+  <pubDate>Thu, 17 Feb 2022 07:00:00 GMT</pubDate>
+  <media:content url="https://quarto.org//docs/blog/posts/2022-02-17-advanced-layout/margin-content.png" medium="image" type="image/png" height="108" width="144"/>
+</item>
+<item>
+  <title>Customizing Table Output</title>
+  <dc:creator>JJ Allaire</dc:creator>
+  <link>https://quarto.org/docs/blog/posts/2022-02-15-feature-tables/index.html</link>
+  <description><![CDATA[ 
+
+
+<p>Quarto includes a number of features aimed at making it easy to to author and customize markdown table output, including:</p>
+<ul>
+<li>Specifying column alignment and widths.</li>
+<li>Providing captions, subcaptions, and cross-references.</li>
+<li>Generating tables dynamically from executable code cells.</li>
+</ul>
+<p>This post provides an overview of these capabilities in Quarto. For more detail about all the features Quarto for authoring tables, see <a href="../../../../docs/authoring/tables.html">Tables</a>.</p>
+<section id="markdown-tables" class="level2">
+<h2 class="anchored" data-anchor-id="markdown-tables">Markdown Tables</h2>
+<p>The most commonly used markdown table is known as a pipe table. Pipe tables support specifying per column alignment as well as captions. For example:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1">| Default | Left | Right | Center |</span>
+<span id="cb1-2">|---------|:-----|------:|:------:|</span>
+<span id="cb1-3">| 12      | 12   |    12 |   12   |</span>
+<span id="cb1-4">| 123     | 123  |   123 |  123   |</span>
+<span id="cb1-5">| 1       | 1    |     1 |   1    |</span>
+<span id="cb1-6"></span>
+<span id="cb1-7">: Demonstration of pipe table sytnax</span></code></pre></div>
+<p>Here is the table rendered to HTML:</p>
+<table class="table">
+<caption>Demonstration of pipe table syntax</caption>
+<thead>
+<tr class="header">
+<th>Default</th>
+<th style="text-align: left;">Left</th>
+<th style="text-align: right;">Right</th>
+<th style="text-align: center;">Center</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>12</td>
+<td style="text-align: left;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr class="even">
+<td>123</td>
+<td style="text-align: left;">123</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: center;">123</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<section id="caption-location" class="level4">
+<h4 class="anchored" data-anchor-id="caption-location">Caption Location</h4>
+<p>By default, table captions are positioned above tables. You can modify this behavior using the <code>tbl-cap-location</code> option. For example:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><span class="pp" style="color: #AD0000;">---</span></span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;">tbl-cap-location</span><span class="kw" style="color: #007BA5;">:</span><span class="at" style="color: null;"> top</span></span>
+<span id="cb2-3"><span class="pp" style="color: #AD0000;">---</span></span></code></pre></div>
+</section>
+</section>
+<section id="explicit-column-widths" class="level2">
+<h2 class="anchored" data-anchor-id="explicit-column-widths">Explicit Column Widths</h2>
+<p>Beyond standard pipe table syntax for expressing column width, you can also explicitly specify columns widths using the <code>tbl-colwidths</code> attribute or document-level option. For an individual markdown table, add the attribute after the caption. For example:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1">| fruit  | price  |</span>
+<span id="cb3-2">|--------|--------:</span>
+<span id="cb3-3">| apple  | 2.05   |</span>
+<span id="cb3-4">| pear   | 1.37   |</span>
+<span id="cb3-5">| orange | 3.09   |</span>
+<span id="cb3-6"></span>
+<span id="cb3-7">: Fruit prices {tbl-colwidths="<span class="co" style="color: #5E5E5E;">[</span><span class="ot" style="color: #007BA5;">75,25</span><span class="co" style="color: #5E5E5E;">]</span>"}</span></code></pre></div>
+<p>Note that this option is specified at the top level so that it can be shared by both PDF and HTML formats. If you are only targeting a single format you can place it alongside other <code>format</code> specific options.</p>
+<p>Valid values for the caption location include:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>top</code></td>
+<td>Position the caption above the table.</td>
+</tr>
+<tr class="even">
+<td><code>bottom</code></td>
+<td>Position the caption below the table.</td>
+</tr>
+<tr class="odd">
+<td><code>margin</code></td>
+<td>Position the caption in the margin.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="computations" class="level2">
+<h2 class="anchored" data-anchor-id="computations">Computations</h2>
+<p>All of the options described above work for tables produced by executable code cells. For example, here we apply the <code>tbl-cap</code>, <code>tbl-colwidths</code> and <code>tbl-caption-location</code> options to a code cell:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><span class="in" style="color: #5E5E5E;">```{r}</span></span>
+<span id="cb4-2"><span class="co" style="color: #5E5E5E;">#| tbl-cap: "Cars"</span></span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;">#| tbl-colwidths: [60,40]</span></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;">#| tbl-cap-location: margin</span></span>
+<span id="cb4-5"></span>
+<span id="cb4-6"><span class="fu" style="color: #4758AB;">library</span>(knitr)</span>
+<span id="cb4-7"><span class="fu" style="color: #4758AB;">kable</span>(<span class="fu" style="color: #4758AB;">head</span>(cars))</span>
+<span id="cb4-8"><span class="in" style="color: #5E5E5E;">```</span></span></code></pre></div>
+<p>In addition to the above, which focused on some of the features of Quarto when writing pipe tables in markdown, you can also author tables using grid syntax. You review the <a href="../../../../docs/authoring/tables.html">documentation</a>. for more detail.</p>
+
+
+</section>
+ ]]></description>
+  <category>Features</category>
+  <category>Authoring</category>
+  <category>Tables</category>
+  <guid>https://quarto.org/docs/blog/posts/2022-02-15-feature-tables/index.html</guid>
+  <pubDate>Tue, 15 Feb 2022 07:00:00 GMT</pubDate>
+  <media:content url="https://quarto.org//docs/blog/posts/2022-02-15-feature-tables/table.png" medium="image" type="image/png" height="82" width="144"/>
+</item>
+<item>
+  <title>Using Callouts</title>
+  <dc:creator>Charles Teague</dc:creator>
+  <link>https://quarto.org/docs/blog/posts/2022-02-13-feature-callouts/index.html</link>
+  <description><![CDATA[ 
+
+
+<p>Callouts are an excellent way to draw extra attention to certain concepts, or to more clearly indicate that certain content is supplemental or applicable to only some scenarios.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://quarto.org/docs/blog/posts/2022-02-13-feature-callouts/callouts.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<section id="callout-basics" class="level2">
+<h2 class="anchored" data-anchor-id="callout-basics">Callout Basics</h2>
+<p>There are five different types of callouts available.</p>
+<ul>
+<li>note</li>
+<li>tip</li>
+<li>important</li>
+<li>caution</li>
+<li>warning</li>
+</ul>
+<p>The color and icon will be different depending upon the type that you select.</p>
+</section>
+<section id="syntax" class="level2">
+<h2 class="anchored" data-anchor-id="syntax">Syntax</h2>
+<p>Create callouts in markdown using the following syntax (note that the first markdown heading used within the callout is used as the callout heading):</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1">:::{.callout-note}</span>
+<span id="cb1-2">Note that there are five types of callouts, including:</span>
+<span id="cb1-3"><span class="in" style="color: #5E5E5E;">`note`</span>, <span class="in" style="color: #5E5E5E;">`tip`</span>, <span class="in" style="color: #5E5E5E;">`warning`</span>, <span class="in" style="color: #5E5E5E;">`caution`</span>, and <span class="in" style="color: #5E5E5E;">`important`</span>.</span>
+<span id="cb1-4">:::</span>
+<span id="cb1-5"></span>
+<span id="cb1-6">:::{.callout-tip}</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;">## Tip With Caption</span></span>
+<span id="cb1-8"></span>
+<span id="cb1-9">This is an example of a callout with a caption.</span>
+<span id="cb1-10">:::</span></code></pre></div>
+<p>See our documentation on <a href="../../../../docs/authoring/callouts.html">Callouts</a>, to learn more, including more about how to customize the appearance and behavior of callouts.</p>
+
+
+</section>
+ ]]></description>
+  <category>Features</category>
+  <category>Authoring</category>
+  <guid>https://quarto.org/docs/blog/posts/2022-02-13-feature-callouts/index.html</guid>
+  <pubDate>Sun, 13 Feb 2022 07:00:00 GMT</pubDate>
+  <media:content url="https://quarto.org//docs/blog/posts/2022-02-13-feature-callouts/callouts.png" medium="image" type="image/png" height="81" width="144"/>
+</item>
+</channel>
+</rss>
