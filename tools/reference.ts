@@ -249,12 +249,12 @@ function readNavigationItem(descriptions?: Record<string, string>) {
 }
 
 function readDefinitionsObject(name: string, descriptions?: Record<string, string>) {
-  const obj = findVal(definitions, name)?.["oneOf"][1]["object"]["properties"]!;
+  const obj = findVal(definitions, name)?.["anyOf"][1]["object"]["properties"]!;
   return readProjectProperties(obj, descriptions);
 }
 
 function readSidebarObject(descriptions?: Record<string, string>) {
-  const obj = findVal(definitions, "sidebar")?.["oneOf"][1]["maybeArrayOf"]["object"]["properties"]!;
+  const obj = findVal(definitions, "sidebar")?.["anyOf"][1]["maybeArrayOf"]["object"]["properties"]!;
   return readProjectProperties(obj, descriptions);
 }
 
@@ -348,7 +348,11 @@ writeProjectTable("algolia-index-fields", algoliaIndexFieldsOptions);
 
 const utterancesOptions = readProjectProperties(findVal(definitions, "utterances")!["object"]["properties"]);
 writeProjectTable("utterances", utterancesOptions);
-const hypothesisSchema = findVal(definitions, "hypothesis")!["oneOf"][1]["object"]["properties"];
+
+const giscussOptions = readProjectProperties(findVal(definitions, "giscus")!["object"]["properties"]);
+writeProjectTable("giscus", giscussOptions);
+
+const hypothesisSchema = findVal(definitions, "hypothesis")!["anyOf"][1]["object"]["properties"];
 const hypothesisOptions = readProjectProperties(hypothesisSchema, {
   "services": "Array of service definitions",
   "branding": "Custom branding/colors to apply to UI",
