@@ -187,6 +187,24 @@
   <li class="nav-item">
     <a class="nav-link" href="../../docs/gallery/index.html">Gallery</a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../docs/blog/index.html">Blog</a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-help" role="button" data-bs-toggle="dropdown" aria-expanded="false">Help</a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-help">    
+        <li>
+    <a class="dropdown-item" href="https://github.com/quarto-dev/quarto-cli/issues"><i class="bi bi-bug" role="img">
+</i> 
+ <span class="dropdown-text">Report an Issue</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://github.com/quarto-dev/quarto-cli/discussions"><i class="bi bi-chat-right-text" role="img">
+</i> 
+ <span class="dropdown-text">Quarto Discussions</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -231,6 +249,7 @@
 <li><p>At least one of these region decorators must be present in order for the theme file to be valid.</p></li>
 <li><p>More than one of each type of region decorator are permitted. If more than one of any type is present, all regions of a given type will be merged into a single block of that type in the order in which they are encountered in the file.</p></li>
 <li><p>When compiling, the sections will be layered according to type, functions first, then variables, then mixins, then rules.</p></li>
+<li><p>The directory that contains your theme file will be added to the load path, allowing <code>@use</code> or <code>@import</code> statements to be resolved using the same directory that contains the theme file.</p></li>
 </ul>
 <p>Here is an example file:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode css code-with-copy"><code class="sourceCode css"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/*-- scss:functions --*/</span></span>
@@ -265,7 +284,11 @@
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> cosmo</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> custom.scss</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>When compiling the CSS for a Quarto website or HTML page, we merge any user provided theme file(s) or Bootswatch themes with the Bootstrap Scss in the following layers:</p>
-<pre><code>Functions
+<pre><code>Uses
+    Bootstrap
+    Theme(s)       /*-- scss:uses --*/
+    
+Functions
     Bootstrap
     Theme(s)       /*-- scss:functions --*/
 
@@ -281,7 +304,12 @@ Rules
     Bootstrap
     Theme(s)       /*-- scss:rules --*/</code></pre>
 <p>We order the themes according to the order that they are specified in the YAML, maintaining the order for declarations and rules and reversing the order for variables (allowing the files specified later in the list to provide defaults variable values to the files specified earlier in the list). Layering of the example themes above would be as follows:</p>
-<pre><code>Functions
+<pre><code>Uses
+    Bootstrap
+    cosmo           /*-- scss:uses --*/
+    custom.scss     /*-- scss:uses --*/
+
+Functions
     Bootstrap
     cosmo           /*-- scss:functions --*/
     custom.scss     /*-- scss:functions --*/

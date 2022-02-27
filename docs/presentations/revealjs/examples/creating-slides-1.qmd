@@ -1,0 +1,15 @@
+---
+title: "Habits"
+author: "John Doe"
+format: revealjs
+---
+
+## Getting up
+
+- Turn off alarm
+- Get out of bed
+
+## Going to sleep
+
+- Get in bed
+- Count sheep

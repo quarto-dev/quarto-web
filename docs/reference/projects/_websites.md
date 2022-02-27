@@ -183,6 +183,22 @@ website:
 ::: {#table-utterances}
 :::
 
+### Giscus
+
+Enable and configure usage of the [Giscus app](https://giscus.app) via the `comments` key. For example:
+
+``` yaml
+---
+website:
+  comments:
+    giscus:
+      repo: quarto-dev/quarto-web
+---
+```
+
+::: {#table-giscus}
+:::
+
 ## Listings
 
 [Listings](/docs/websites/website-listings.qmd) enable you to automatically generate the contents of a page (or region of a page) from a list of Quarto documents or other custom data. You can enable listings on a page using the `listing` option in the document front matter, for example:
