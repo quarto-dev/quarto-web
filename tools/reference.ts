@@ -274,6 +274,19 @@ function findVal(object: any, key: string) {
   return value;
 }
 
+// Metadata pages
+function writeMetadataTable(name: string, options: Array<Option>) {
+  const path = `docs/reference/metadata/${name}.json`;
+  const metadata = [{
+    "name": "citation",
+    "title": "Citation",
+    "options": options
+  }];
+  Deno.writeTextFileSync(path, JSON.stringify(metadata, undefined, 2));
+}
+
+const citationOptions = readDefinitionsId("csl-item");
+writeMetadataTable("citation", citationOptions);
 
 function writeProjectTable(name: string, options: Array<Option>) {
   const path = `docs/reference/projects/${name}.json`;
