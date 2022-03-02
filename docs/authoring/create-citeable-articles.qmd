@@ -1,0 +1,115 @@
+---
+title: Creating Citeable Articles
+---
+
+You can make it easier for others to cite your work by providing additional metadata with the YAML front-matter of your article. Citations can be provided for both articles published to the web or for articles published in journals (with or without a DOI).
+
+## Web Articles
+
+To provide a citation for an article published to the web, include author and date metadata as well as a citation url. For example:
+
+``` yaml
+---
+title: "Summarizing Output for Reproducible Documents"
+description: | 
+  A summary of the best practices for summarizing output of reproducible scientific documents.
+date: 5/4/2018
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+citation:
+  url: https://example.com/summarizing-output
+bibliography: biblio.bib
+---
+```
+
+If you omit the citation url, Quarto will attempt to generate a citation url by using the `site-url` and the current page's location. If you'd like to allow Quarto to generate the citation url, you can omit the citation url and simple enable citation output on the page. For example:
+
+``` yaml
+---
+title: "Summarizing Output for Reproducible Documents"
+description: | 
+  A summary of the best practices for summarizing output of reproducible scientific documents.
+date: 5/4/2018
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+citation: true
+bibliography: biblio.bib
+---
+```
+
+When this metadata is available, a citation appendix is automatically added to the article. The citation appendix will present both a copy-able `bibtex` representation of the document and a formatted representation of the citation (based upon the document's CSL file, if specified). For example:
+
+![](images/appendix-citation.png){fig-alt="Appearance of a citation appendix"}
+
+## Journal Articles
+
+If your article is published within a Journal, you can add the following the additional fields to generate the appropriate citation entry:
+
+``` yaml
+---
+title: "Summarizing Output for Reproducible Documents"
+description: | 
+  A summary of the best practices for summarizing output of reproducible scientific documents.
+date: 5/4/2018
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+citation:
+  type: article-journal
+  container-title: "Journal of Data Science Software"
+  doi: "10.23915/reprodocs.00010"
+  url: https://example.com/summarizing-output
+bibliography: biblio.bib
+---
+```
+
+This is how the citation is presented in the appendix:
+
+![](images/appendix-citation-journal.png){fig-alt="Appearance of a journal citation in document appendix"}
+
+## Other Types of Documents
+
+The BibTeX and formatted attribution displayed in the document will be generated based upon the complete citation information that is present in the `citation` key, which is based upon the [Citation Style Language (CSL) specification for items](https://docs.citationstyles.org/en/stable/specification.html). You can learn more about the available options in the [Citation Metadata Reference](/docs/reference/metadata/citation.qmd).
+
+## Google Scholar
+
+Quarto documents can include metadata compatible with the format indexed by Google Scholar. This makes it easy for indexing engines (Google Scholar or otherwise) to extract not only a citation for your article but also information on other sources which you cited. To enable this use the `google-scholar` option:
+
+``` yaml
+title: "Summarizing Output for Reproducible Documents"
+description: | 
+  A summary of the best practices for summarizing output of reproducible scientific documents.
+date: 5/4/2018
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+citation:
+  type: article-journal
+  container-title: "Journal of Data Science Software"
+  doi: "10.23915/reprodocs.00010"
+  url: https://example.com/summarizing-output
+bibliography: biblio.bib 
+google-scholar: true
+```
+
+For example, here is the Google Scholar metadata automatically included for a document created with the above metadata:
+
+``` html
+<meta name="citation_title" content="Summarizing Output for Reproducible Documents">
+<meta name="citation_author" content="Nora Jones">
+<meta name="citation_online_date" content="2018-05-04">
+<meta name="citation_fulltext_html_url" content="https://example.com/summarizing-output">
+<meta name="citation_publication_date" content="2018-05-04">
+<meta name="citation_journal_title" content="Journal of Data Science Software">
+<meta name="citation_reference" content="citation_title=Donald knuth;,citation_fulltext_html_url=http://dx.doi.org/10.7551/mitpress/5485.003.0041;,citation_publication_date=1989;,citation_journal_title=undefined;">
+```
