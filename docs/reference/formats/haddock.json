@@ -70,11 +70,11 @@
       },
       {
         "name": "echo",
-        "description": "Include cell source code in rendered output. Specify `fenced` to include the cell delimiter \nas part of the output.\n"
+        "description": "Include cell source code in rendered output.\n\n- `true` (default): include source code in output\n- `false`: do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n"
       },
       {
         "name": "output",
-        "description": "Include the results of executing the code in the output (specify `asis` to treat output as raw markdown with no enclosing containers)."
+        "description": "Include the results of executing the code in the output. Possible values:\n\n- `true`: Include results.\n- `false`: Do not include results.\n- `asis`: Treat output as raw markdown with no enclosing containers.\n"
       },
       {
         "name": "warning",
@@ -90,11 +90,11 @@
       },
       {
         "name": "cache",
-        "description": "Cache results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) \nfor R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) \nfor Jupyter documents).\n\nNote that cache invalidation is triggered by changes in chunk source code \n(or other cache attributes you've defined). Use `refresh` to force a refresh\nof the cache even if has not been otherwise invalidated.\n"
+        "description": "Cache results of computations (using the [knitr cache](https://yihui.org/knitr/demo/cache/) \nfor R documents, and [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) \nfor Jupyter documents).\n\nNote that cache invalidation is triggered by changes in chunk source code \n(or other cache attributes you've defined). \n\n- `true`: Cache results\n- `false`: Do not cache results\n- `refresh`: Force a refresh of the cache even if has not been otherwise invalidated.\n"
       },
       {
         "name": "freeze",
-        "description": "Option to denote that computational documents should never be re-rendered during\na global project render (`freeze: true`), or alternatively only be re-rendered\nwhen their source file changes (`freeze: auto`).\n"
+        "description": "Control the re-use of previous computational output when rendering.\n\n- `true`: Never recompute previously generated computational output during a global project render\n- `false` (default): Recompute previously generated computational output\n- `auto`: Re-compute previously generated computational output only in case their source file changes\n"
       }
     ]
   },
@@ -126,7 +126,7 @@
     "options": [
       {
         "name": "tbl-colwidths",
-        "description": "Apply explicit table column widths for markdown grid tables and pipe\ntables that are more than `columns` characters wide (72 by default). \n\nSome formats (e.g. HTML) do an excellent job automatically sizing\ntable columns and so don't benefit much from column width specifications.\nOther formats (e.g. LaTeX) require table column sizes in order to \ncorrectly flow longer cell content (this is a major reason why tables \n> 72 columns wide are assigned explicit widths by Pandoc).\n\nThis can be specified as:\n\n- `auto`: Apply markdown table column widths except when there is a\n  hyperlink in the table (which tends to throw off automatic\n  calculation of column widths based on the markdown text width of cells).\n  (`auto` is the default for HTML output formats)\n\n- `true`: Always apply markdown table widths (`true` is the default\n  for all non-HTML formats)\n\n- `false`: Never apply markdown table widths.\n\n- `[40,30,30]`: Array of explicit width percentages.\n"
+        "description": "Apply explicit table column widths for markdown grid tables and pipe\ntables that are more than `columns` characters wide (72 by default). \n\nSome formats (e.g. HTML) do an excellent job automatically sizing\ntable columns and so don't benefit much from column width specifications.\nOther formats (e.g. LaTeX) require table column sizes in order to \ncorrectly flow longer cell content (this is a major reason why tables \n> 72 columns wide are assigned explicit widths by Pandoc).\n\nThis can be specified as:\n\n- `auto`: Apply markdown table column widths except when there is a\n  hyperlink in the table (which tends to throw off automatic\n  calculation of column widths based on the markdown text width of cells).\n  (`auto` is the default for HTML output formats)\n\n- `true`: Always apply markdown table widths (`true` is the default\n  for all non-HTML formats)\n\n- `false`: Never apply markdown table widths.\n\n- An array of numbers (e.g. `[40, 30, 30]`): Array of explicit width percentages.\n"
       }
     ]
   },
@@ -176,7 +176,7 @@
       },
       {
         "name": "dir",
-        "description": "The base script direction for the document.\n\nFor bidirectional documents, native pandoc `span`s and\n`div`s with the `dir` attribute (value `rtl` or `ltr`) can\nbe used to override the base direction in some output\nformats.  This may not always be necessary if the final\nrenderer (e.g. the browser, when generating HTML) supports\nthe [Unicode Bidirectional Algorithm].\n\nWhen using LaTeX for bidirectional documents, only the\n`xelatex` engine is fully supported (use\n`--pdf-engine=xelatex`).\n"
+        "description": "The base script direction for the document (`rtl` or `ltr`).\n\nFor bidirectional documents, native pandoc `span`s and\n`div`s with the `dir` attribute can\nbe used to override the base direction in some output\nformats.  This may not always be necessary if the final\nrenderer (e.g. the browser, when generating HTML) supports\nthe [Unicode Bidirectional Algorithm].\n\nWhen using LaTeX for bidirectional documents, only the\n`xelatex` engine is fully supported (use\n`--pdf-engine=xelatex`).\n"
       }
     ]
   },
@@ -278,7 +278,7 @@
     "options": [
       {
         "name": "wrap",
-        "description": "Determine how text is wrapped in the output (the source code, not the rendered\nversion). With `auto` (the default), pandoc will attempt to wrap lines to the column\nwidth specified by `columns` (default 72). With `none`, pandoc will not wrap lines at\nall. With `preserve`, pandoc will attempt to preserve the wrapping from the source\ndocument (that is, where there are nonsemantic newlines in the source, there will be\nnonsemantic newlines in the output as well\n"
+        "description": "Determine how text is wrapped in the output (the source code, not the rendered\nversion). \n\n- `auto` (default): Pandoc will attempt to wrap lines to the column width specified by `columns` (default 72). \n- `none`: Pandoc will not wrap lines at all. \n- `preserve`: Pandoc will attempt to preserve the wrapping from the source\n  document. Where there are nonsemantic newlines in the source, there will be\n  nonsemantic newlines in the output as well.\n"
       },
       {
         "name": "columns",
@@ -294,7 +294,7 @@
       },
       {
         "name": "eol",
-        "description": "Manually specify line endings: `crlf` (Windows), `lf`\n(macOS/Linux/UNIX), or `native` (line endings appropriate\nto the OS on which pandoc is being run).  The default is\n`native`.\n"
+        "description": "Manually specify line endings: \n\n- `crlf`: Use Windows line endings\n- `lf`: Use macOS/Linux/UNIX line endings\n- `native` (default): Use line endings appropriate to the OS on which pandoc is being run).\n"
       }
     ]
   }
