@@ -11,6 +11,5 @@ You can also specify this behavior within the notebook's YAML front matter:
 title: "My Notebook"
 execute: 
   enabled: true
-jupyter: python3
 ---
 ```

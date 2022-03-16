@@ -1,33 +1,3 @@
----
-title: "Jupyter Kernels"
----
-
-## Kernel Selection
-
-The Jupyter kernel is used by Quarto determined using the `jupyter` metdata option. For example, to use the [Xeus Python](https://github.com/jupyter-xeus/xeus-python) kernel, do this:
-
-``` yaml
----
-title: "My Document"
-jupyter: xpython
----
-```
-
-Note that you can also provide a full `kernelspec`, for example:
-
-``` yaml
----
-title: "My Document"
-jupyter: 
-  kernelspec:
-    name: "xpython"
-    language: "python"
-    display_name: "Python 3.7 (XPython)"
----
-```
-
-If no Jupyter kernel is specified, then the kernel is determined by finding an available kernel that supports the language of the first executable code block found within the file (e.g. ```` ```{python} ````).
-
 ## Kernel Daemon
 
 To mitigate the start-up time for the Jupyter kernel Quarto keeps a daemon with a running Jupyter kernel alive for each document. This enables subsequent renders to proceed immediately without having to wait for kernel start-up.
