@@ -1,12 +1,16 @@
 ---
 title: "Using Julia"
+jupyter-language: "Julia"
+jupyter-screenshot: "![](images/julia-jupyter.png){.border}"
+vscode-extension: "[Julia Extension](https://www.julia-vscode.org/docs)"
+vscode-screenshot: "![](images/julia-vscode){.border}"
 ---
 
 ## Overview
 
 Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports---the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
 
-Quarto executes Julia code using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel. Below we'll describe how to [install](#installation) IJulia and related requirements, but first we'll review the basics of embedding Julia code blocks in markdown, and how to render markdown documents and notebooks to a variety of formats.
+Quarto executes Julia code using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel. Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
 
 ### Code Blocks
 
@@ -40,7 +44,7 @@ covellipse!([1,0], [1 -0.5; -0.5 3],
 ```
 ````
 
-You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](../authroing/cross-references.qmd). 
+You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](../authoring/cross-references.qmd).
 
 This document would result in the following rendered output:
 
@@ -48,27 +52,10 @@ This document would result in the following rendered output:
 
 You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
 
-### Rendering
-
-Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the example shown above might be rendered to varoius formats with:
-
-``` bash
-quarto render document.qmd # defaults to html
-quarto render document.qmd --to pdf
-quarto render document.qmd --to docx
+```{.include}
+_jupyter-rendering.md
 ```
 
-Quarto can also render any Jupyter notebook (.ipynb):
-
-``` bash
-quarto render document.ipynb
-```
-
-Note that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the `--execute` flag to render:
-
-``` bash
-quarto render notebook.ipynb --execute
-```
 
 ## Installation {#installation}
 
@@ -84,33 +71,12 @@ We'll cover each of these in turn below.
 
 If you already have Python 3 and Jupyter installed in your environment, then proceed to the section below on installing the [IJulia Kernel](#ijulia).
 
-If you don't yet have Python 3 on your system, we recommend you install a version using the standard installer from <https://www.python.org/downloads/>.
-
-If you are in a fresh Python 3 environment, installing the `jupyter` package will provide everything required to execute Jupyter kernels with Quarto:
-
-+-----------------------+----------------------------------------------+
-| Pkg. Manager          | Command                                      |
-+=======================+==============================================+
-| Pip\                  | ``` bash                                     |
-| (Windows)             | py -m pip install jupyter                    |
-|                       | ```                                          |
-+-----------------------+----------------------------------------------+
-| Pip\                  | ``` bash                                     |
-| (Mac/Linux)           | python3 -m pip install jupyter               |
-|                       | ```                                          |
-+-----------------------+----------------------------------------------+
-| Conda                 | ``` bash                                     |
-|                       | conda install jupyter                        |
-|                       | ```                                          |
-+-----------------------+----------------------------------------------+
-
-You can verify that Quarto is configured correctly for Jupyter with:
-
-``` bash
-quarto check jupyter
+```{.include}
+_jupyter-install.md
 ```
 
-### IJulia
+
+### IJulia {#ijulia}
 
 [IJulia](https://julialang.github.io/IJulia.jl/stable) is a Julia-language execution kernel for Jupyter. You can install IJulia from within the Julia REPL as follows:
 
@@ -129,12 +95,12 @@ Quarto maintains a persistent [kernel daemon](#kernel-daemon) for each document 
 
 ``` julia
 using Pkg
-Pkg.add("Revise").
+Pkg.add("Revise")
 ```
 
 To configure Revise to launch automatically within IJulia, create a `.julia/config/startup_ijulia.jl` file with the contents:
 
-```default
+``` default
 try
   @eval using Revise
 catch e
@@ -144,64 +110,11 @@ end
 
 You can learn more about Revise.jl at <https://timholy.github.io/Revise.jl>.
 
-## Authoring Tools
-
-### Preview
-
-You can author Quarto documents that include Julia code using any  text or notebook editor. No matter what editing tool you use, you'll always run `quarto preview` first to setup a live preview of changes in your document. Live preview is available for both HTML and PDF output. For example:
-
-```bash
-# preview as html
-quarto preview document.qmd
-
-# preview as pdf
-quarto preview document.qmd --to pdf
-
-# preview a jupyter notebook
-quarto preview document.ipynb
+``` include
+_jupyter-authoring-tools.md
 ```
 
-### VS Code
-
-The [Quarto Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) for VS Code provides a variety of tools for working with `.qmd` files in VS Code. The extension integrates directly with the [Julia Extension](https://www.julia-vscode.org/docs) to provide the following Julia-specific capabilites:
-
-1) Code completion 
-2) Cell execution
-3) Contextual help
-
-![](images/julia-vscode){.border}
-
-You can install the VS Code extension by searching for 'quarto' in the extensions panel or from the [extension marketplace](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
-
-You can also naturally use the VS Code noteobok editor to create Julia notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code.
-
-### Jupyter Lab
-
-We could convert the simple `julia.qmd` we used as an example above to a Jupyter notebook using the `quarto convert` command. For example:
-
-```bash
-quarto convert julia.qmd
-```
-
-If we open this notebook in Jupyter Lab and execute the cells, here is what we see:
-
-![](images/julia-jupyter.png){.border}
-
-Note that there are three different types of cell here:
-
-1) The YAML document options at the top are in a **Raw** cell.
-2) The heading and explanation are in a **Markdown** cell.
-3) The Julia code and its output are in a **Code** cell.
-
-When working in a Jupyter notebook, you can use `quarto preview` to provide a live preview of your rendered document:
-
-```bash
-quarto preview julia.ipynb
-```
-
-The preview will be updated every time you save the notebook in Jupyter Lab.
-
-```{.include}
+``` include
 _jupyter-cache.md
 ```
 

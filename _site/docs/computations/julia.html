@@ -986,7 +986,7 @@
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports—the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.</p>
-<p>Quarto executes Julia code using the <a href="https://github.com/JuliaLang/IJulia.jl">IJulia</a> Jupyter kernel. Below we’ll describe how to <a href="#installation">install</a> IJulia and related requirements, but first we’ll review the basics of embedding Julia code blocks in markdown, and how to render markdown documents and notebooks to a variety of formats.</p>
+<p>Quarto executes Julia code using the <a href="https://github.com/JuliaLang/IJulia.jl">IJulia</a> Jupyter kernel. Below we’ll describe how to <a href="#installation">install</a> IJulia and related requirements but first we’ll cover the basics of creating and rendering documents with Julia code blocks.</p>
 <section id="code-blocks" class="level3">
 <h3 class="anchored" data-anchor-id="code-blocks">Code Blocks</h3>
 <p>Code blocks that use braces around the language name (e.g.&nbsp;<code>```{julia}</code>) are executable, and will be run by Quarto during render. Here is a simple example:</p>
@@ -1015,7 +1015,7 @@
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>covellipse!([<span class="dv">1</span>,<span class="dv">0</span>], [<span class="dv">1</span> -<span class="fl">0.5</span>; -<span class="fl">0.5</span> <span class="dv">3</span>], </span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            showaxes=true, label=<span class="ot">"</span><span class="st">cov2</span><span class="ot">"</span>)</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="ot">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You’ll note that there are some special comments at the top of the code block. These are cell level options that make the figure <a href="../authroing/cross-references.qmd">cross-referenceable</a>.</p>
+<p>You’ll note that there are some special comments at the top of the code block. These are cell level options that make the figure <a href="../../docs/authoring/cross-references.html">cross-referenceable</a>.</p>
 <p>This document would result in the following rendered output:</p>
 <p><img src="../../images/hello-julia.png" class="border img-fluid"></p>
 <p>You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g.&nbsp;printing the results of statistical summaries).</p>
@@ -1048,8 +1048,8 @@
 <p>If you are in a fresh Python 3 environment, installing the <code>jupyter</code> package will provide everything required to execute Jupyter kernels with Quarto:</p>
 <table class="table">
 <colgroup>
-<col style="width: 33%">
-<col style="width: 65%">
+<col style="width: 27%">
+<col style="width: 56%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1089,7 +1089,7 @@
 <p>In addition to IJulia, you’ll want to install <a href="https://timholy.github.io/Revise.jl">Revise.jl</a> and configure it for use with IJulia. Revise.jl is a library that helps you keep your Julia sessions running longer, reducing the need to restart when you make changes to code.</p>
 <p>Quarto maintains a persistent <a href="#kernel-daemon">kernel daemon</a> for each document to mitigate Jupyter start up time during iterative work. Revise.jl will make this persistent process robust in the face of package updates, git branch checkouts, etc. Install Revise.jl with:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pkg</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">"Revise"</span>).</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">Pkg</span>.<span class="fu">add</span>(<span class="st">"Revise"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To configure Revise to launch automatically within IJulia, create a <code>.julia/config/startup_ijulia.jl</code> file with the contents:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>try</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  @eval using Revise</span>
@@ -1127,8 +1127,8 @@
 </section>
 <section id="jupyter-lab" class="level3">
 <h3 class="anchored" data-anchor-id="jupyter-lab">Jupyter Lab</h3>
-<p>We could convert the simple <code>julia.qmd</code> we used as an example above to a Jupyter notebook using the <code>quarto convert</code> command. For example:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> convert julia.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We could convert the simple <code>document.qmd</code> we used as an example above to a Jupyter notebook using the <code>quarto convert</code> command. For example:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> convert document.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If we open this notebook in Jupyter Lab and execute the cells, here is what we see:</p>
 <p><img src="images/julia-jupyter.png" class="border img-fluid"></p>
 <p>Note that there are three different types of cell here:</p>
@@ -1137,8 +1137,8 @@
 <li>The heading and explanation are in a <strong>Markdown</strong> cell.</li>
 <li>The Julia code and its output are in a <strong>Code</strong> cell.</li>
 </ol>
-<p>When working in a Jupyter notebook, you use <code>quarto preview</code> to provide a live preview of your rendered document:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview julia.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When working in a Jupyter notebook, you can use <code>quarto preview</code> to provide a live preview of your rendered document:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview document.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The preview will be updated every time you save the notebook in Jupyter Lab.</p>
 </section>
 </section>
