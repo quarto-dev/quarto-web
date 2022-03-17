@@ -25,10 +25,9 @@ The [Quarto Extension](https://marketplace.visualstudio.com/items?itemName=quart
 
 {{< meta vscode-screenshot >}}
 
-
 You can install the VS Code extension by searching for 'quarto' in the extensions panel or from the [extension marketplace](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
 
-You can also naturally use the VS Code noteobok editor to create {{< meta jupyter-language >}} notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code.
+You can also use the VS Code notebook editor to create {{< meta jupyter-language >}} notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code.
 
 ### Jupyter Lab
 
