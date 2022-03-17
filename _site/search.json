@@ -651,11 +651,25 @@
     "text": "Installation\nIf you already have Python 3 and Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.\nIf you don’t yet have Python 3 on your system, we recommend you install a version using the standard installer from https://www.python.org/downloads/.\nIf you are in a fresh Python 3 environment, installing the jupyter package will provide everything required to execute Jupyter kernels with Quarto:\n\n\n\n\n\n\n\nPkg. Manager\nCommand\n\n\n\n\nPip\n(Windows)\npy -m pip install jupyter\n\n\nPip\n(Mac/Linux)\npython3 -m pip install jupyter\n\n\nConda\nconda install jupyter\n\n\n\nYou can verify that Quarto is configured correctly for Jupyter with:\nquarto check jupyter"
   },
   {
-    "objectID": "docs/computations/python.html#authoring-tools",
-    "href": "docs/computations/python.html#authoring-tools",
+    "objectID": "docs/computations/python.html#workflow",
+    "href": "docs/computations/python.html#workflow",
     "title": "Using Python",
-    "section": "Authoring Tools",
-    "text": "Authoring Tools\n\nPreview\nYou can author Quarto documents that include Python code using any text or notebook editor. No matter what editing tool you use, you’ll always run quarto preview first to setup a live preview of changes in your document. Live preview is available for both HTML and PDF output. For example:\n# preview as html\nquarto preview document.qmd\n\n# preview as pdf\nquarto preview document.qmd --to pdf\n\n# preview a jupyter notebook\nquarto preview document.ipynb\n\n\nVS Code\nThe Quarto Extension for VS Code provides a variety of tools for working with .qmd files in VS Code. The extension integrates directly with the [Python Extension]https://marketplace.visualstudio.com/items?itemName=ms-python.python) to provide the following Python-specific capabilites:\n\nCode completion\nCell execution\nContextual help\n\n\nYou can install the VS Code extension by searching for ‘quarto’ in the extensions panel or from the extension marketplace.\nYou can also use the VS Code notebook editor to create Python notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code.\n\n\nJupyter Lab\nWe could convert the simple document.qmd we used as an example above to a Jupyter notebook using the quarto convert command. For example:\nquarto convert document.qmd\nIf we open this notebook in Jupyter Lab and execute the cells, here is what we see:\n\nNote that there are three different types of cell here:\n\nThe YAML document options at the top are in a Raw cell.\nThe heading and explanation are in a Markdown cell.\nThe Julia code and its output are in a Code cell.\n\nWhen working in a Jupyter notebook, you can use quarto preview to provide a live preview of your rendered document:\nquarto preview document.ipynb\nThe preview will be updated every time you save the notebook in Jupyter Lab."
+    "section": "Workflow",
+    "text": "Workflow\nYou can author Quarto documents that include Python code using any text or notebook editor. No matter what editing tool you use, you’ll always run quarto preview first to setup a live preview of changes in your document. Live preview is available for both HTML and PDF output. For example:\n# preview as html\nquarto preview document.qmd\n\n# preview as pdf\nquarto preview document.qmd --to pdf\n\n# preview a jupyter notebook\nquarto preview document.ipynb"
+  },
+  {
+    "objectID": "docs/computations/python.html#vs-code",
+    "href": "docs/computations/python.html#vs-code",
+    "title": "Using Python",
+    "section": "VS Code",
+    "text": "VS Code\nThe Quarto Extension for VS Code provides a variety of tools for working with .qmd files in VS Code. The extension integrates directly with the [Python Extension]https://marketplace.visualstudio.com/items?itemName=ms-python.python) to provide the following Python-specific capabilites:\n\nCode completion\nCell execution\nContextual help\n\n\nYou can install the VS Code extension by searching for ‘quarto’ in the extensions panel or from the extension marketplace.\nYou can also use the VS Code notebook editor to create Python notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code."
+  },
+  {
+    "objectID": "docs/computations/python.html#jupyter-lab",
+    "href": "docs/computations/python.html#jupyter-lab",
+    "title": "Using Python",
+    "section": "Jupyter Lab",
+    "text": "Jupyter Lab\nWe could convert the simple document.qmd we used as an example above to a Jupyter notebook using the quarto convert command. For example:\nquarto convert document.qmd\nIf we open this notebook in Jupyter Lab and execute the cells, here is what we see:\n\nNote that there are three different types of cell here:\n\nThe YAML document options at the top are in a Raw cell.\nThe heading and explanation are in a Markdown cell.\nThe Julia code and its output are in a Code cell.\n\nWhen working in a Jupyter notebook, you can use quarto preview to provide a live preview of your rendered document:\nquarto preview document.ipynb\nThe preview will be updated every time you save the notebook in Jupyter Lab."
   },
   {
     "objectID": "docs/computations/python.html#caching",
@@ -798,11 +812,25 @@
     "text": "Installation\nIn order to render documents with embedded Julia code you’ll need to install the following components:\n\nJupyter\nIJulia\nRevise.jl\n\nWe’ll cover each of these in turn below.\n\nJupyter\nIf you already have Python 3 and Jupyter installed in your environment, then proceed to the section below on installing the IJulia Kernel.\nIf you don’t yet have Python 3 on your system, we recommend you install a version using the standard installer from https://www.python.org/downloads/.\nIf you are in a fresh Python 3 environment, installing the jupyter package will provide everything required to execute Jupyter kernels with Quarto:\n\n\n\n\n\n\n\nPkg. Manager\nCommand\n\n\n\n\nPip\n(Windows)\npy -m pip install jupyter\n\n\nPip\n(Mac/Linux)\npython3 -m pip install jupyter\n\n\nConda\nconda install jupyter\n\n\n\nYou can verify that Quarto is configured correctly for Jupyter with:\nquarto check jupyter\n\n\nIJulia\nIJulia is a Julia-language execution kernel for Jupyter. You can install IJulia from within the Julia REPL as follows:\nusing Pkg\nPkg.add(\"IJulia\")\nOnce you’ve installed IJulia Quarto has the basic components required to execute Julia cells.\n\n\nRevise.jl\nIn addition to IJulia, you’ll want to install Revise.jl and configure it for use with IJulia. Revise.jl is a library that helps you keep your Julia sessions running longer, reducing the need to restart when you make changes to code.\nQuarto maintains a persistent kernel daemon for each document to mitigate Jupyter start up time during iterative work. Revise.jl will make this persistent process robust in the face of package updates, git branch checkouts, etc. Install Revise.jl with:\nusing Pkg\nPkg.add(\"Revise\")\nTo configure Revise to launch automatically within IJulia, create a .julia/config/startup_ijulia.jl file with the contents:\ntry\n  @eval using Revise\ncatch e\n  @warn \"Revise init\" exception=(e, catch_backtrace())\nend\nYou can learn more about Revise.jl at https://timholy.github.io/Revise.jl."
   },
   {
-    "objectID": "docs/computations/julia.html#authoring-tools",
-    "href": "docs/computations/julia.html#authoring-tools",
+    "objectID": "docs/computations/julia.html#workflow",
+    "href": "docs/computations/julia.html#workflow",
     "title": "Using Julia",
-    "section": "Authoring Tools",
-    "text": "Authoring Tools\n\nPreview\nYou can author Quarto documents that include Julia code using any text or notebook editor. No matter what editing tool you use, you’ll always run quarto preview first to setup a live preview of changes in your document. Live preview is available for both HTML and PDF output. For example:\n# preview as html\nquarto preview document.qmd\n\n# preview as pdf\nquarto preview document.qmd --to pdf\n\n# preview a jupyter notebook\nquarto preview document.ipynb\n\n\nVS Code\nThe Quarto Extension for VS Code provides a variety of tools for working with .qmd files in VS Code. The extension integrates directly with the Julia Extension to provide the following Julia-specific capabilites:\n\nCode completion\nCell execution\nContextual help\n\n\nYou can install the VS Code extension by searching for ‘quarto’ in the extensions panel or from the extension marketplace.\nYou can also use the VS Code notebook editor to create Julia notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code.\n\n\nJupyter Lab\nWe could convert the simple document.qmd we used as an example above to a Jupyter notebook using the quarto convert command. For example:\nquarto convert document.qmd\nIf we open this notebook in Jupyter Lab and execute the cells, here is what we see:\n\nNote that there are three different types of cell here:\n\nThe YAML document options at the top are in a Raw cell.\nThe heading and explanation are in a Markdown cell.\nThe Julia code and its output are in a Code cell.\n\nWhen working in a Jupyter notebook, you can use quarto preview to provide a live preview of your rendered document:\nquarto preview document.ipynb\nThe preview will be updated every time you save the notebook in Jupyter Lab."
+    "section": "Workflow",
+    "text": "Workflow\nYou can author Quarto documents that include Julia code using any text or notebook editor. No matter what editing tool you use, you’ll always run quarto preview first to setup a live preview of changes in your document. Live preview is available for both HTML and PDF output. For example:\n# preview as html\nquarto preview document.qmd\n\n# preview as pdf\nquarto preview document.qmd --to pdf\n\n# preview a jupyter notebook\nquarto preview document.ipynb"
+  },
+  {
+    "objectID": "docs/computations/julia.html#vs-code",
+    "href": "docs/computations/julia.html#vs-code",
+    "title": "Using Julia",
+    "section": "VS Code",
+    "text": "VS Code\nThe Quarto Extension for VS Code provides a variety of tools for working with .qmd files in VS Code. The extension integrates directly with the Julia Extension to provide the following Julia-specific capabilites:\n\nCode completion\nCell execution\nContextual help\n\n\nYou can install the VS Code extension by searching for ‘quarto’ in the extensions panel or from the extension marketplace.\nYou can also use the VS Code notebook editor to create Julia notebooks that you will render with Quarto. The next section discusses using notebooks with Quarto in the context of Jupyter Lab, but the same concepts apply to VS Code."
+  },
+  {
+    "objectID": "docs/computations/julia.html#jupyter-lab",
+    "href": "docs/computations/julia.html#jupyter-lab",
+    "title": "Using Julia",
+    "section": "Jupyter Lab",
+    "text": "Jupyter Lab\nWe could convert the simple document.qmd we used as an example above to a Jupyter notebook using the quarto convert command. For example:\nquarto convert document.qmd\nIf we open this notebook in Jupyter Lab and execute the cells, here is what we see:\n\nNote that there are three different types of cell here:\n\nThe YAML document options at the top are in a Raw cell.\nThe heading and explanation are in a Markdown cell.\nThe Julia code and its output are in a Code cell.\n\nWhen working in a Jupyter notebook, you can use quarto preview to provide a live preview of your rendered document:\nquarto preview document.ipynb\nThe preview will be updated every time you save the notebook in Jupyter Lab."
   },
   {
     "objectID": "docs/computations/julia.html#caching",
