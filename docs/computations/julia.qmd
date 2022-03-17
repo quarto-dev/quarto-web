@@ -1,0 +1,146 @@
+---
+title: "Using Julia"
+jupyter-language: "Julia"
+jupyter-screenshot: "![](images/julia-jupyter.png){.border}"
+vscode-extension: "[Julia Extension](https://www.julia-vscode.org/docs)"
+vscode-screenshot: "![](images/julia-vscode){.border}"
+---
+
+## Overview
+
+Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports---the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
+
+Quarto executes Julia code using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel. Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
+
+### Code Blocks
+
+Code blocks that use braces around the language name (e.g. ```` ```{julia} ````) are executable, and will be run by Quarto during render. Here is a simple example:
+
+```` markdown
+---
+title: "StatsPlots Demo"
+author: "Norah Jones"
+date: "5/22/2021"
+format:
+  html:
+    code-fold: true
+jupyter: julia-1.7
+---
+
+## Covariance Ellipses
+
+A 2×2 covariance matrix `Σ` can be plotted as an ellipse, which is a contour line of a Gaussian density function with variance `Σ`. See @fig-covariance for an example.
+
+```{{julia}}
+#| label: fig-covariance
+#| fig-cap: "Covariance ellipses"
+
+using StatsPlots
+
+covellipse([0,2], [2 1; 1 4], n_std=2, 
+           aspect_ratio=1, label="cov1")
+covellipse!([1,0], [1 -0.5; -0.5 3], 
+            showaxes=true, label="cov2")
+```
+````
+
+You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](../authoring/cross-references.qmd).
+
+This document would result in the following rendered output:
+
+![](../../images/hello-julia.png){.border}
+
+You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
+
+There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
+
+``` include
+_jupyter-rendering.md
+```
+
+## Installation {#installation}
+
+In order to render documents with embedded Julia code you'll need to install the following components:
+
+1)  Jupyter
+2)  IJulia
+3)  Revise.jl
+
+We'll cover each of these in turn below.
+
+### Jupyter
+
+If you already have Python 3 and Jupyter installed in your environment, then proceed to the section below on installing the [IJulia Kernel](#ijulia).
+
+``` include
+_jupyter-install.md
+```
+
+### IJulia {#ijulia}
+
+[IJulia](https://julialang.github.io/IJulia.jl/stable) is a Julia-language execution kernel for Jupyter. You can install IJulia from within the Julia REPL as follows:
+
+``` julia
+using Pkg
+Pkg.add("IJulia")
+```
+
+Once you've installed IJulia Quarto has the basic components required to execute Julia cells.
+
+### Revise.jl
+
+In addition to IJulia, you'll want to install [Revise.jl](https://timholy.github.io/Revise.jl) and configure it for use with IJulia. Revise.jl is a library that helps you keep your Julia sessions running longer, reducing the need to restart when you make changes to code.
+
+Quarto maintains a persistent [kernel daemon](#kernel-daemon) for each document to mitigate Jupyter start up time during iterative work. Revise.jl will make this persistent process robust in the face of package updates, git branch checkouts, etc. Install Revise.jl with:
+
+``` julia
+using Pkg
+Pkg.add("Revise")
+```
+
+To configure Revise to launch automatically within IJulia, create a `.julia/config/startup_ijulia.jl` file with the contents:
+
+``` default
+try
+  @eval using Revise
+catch e
+  @warn "Revise init" exception=(e, catch_backtrace())
+end
+```
+
+You can learn more about Revise.jl at <https://timholy.github.io/Revise.jl>.
+
+``` include
+_jupyter-authoring-tools.md
+```
+
+``` include
+_jupyter-cache.md
+```
+
+``` include
+_caching-more.md
+```
+
+## Kernel Selection
+
+You'll note in our first example that we specified the use of the `julia-1.7` kernel explicitly in our document options (shortened for brevity):
+
+``` markdown
+---
+title: "StatsPlots Demo"
+jupyter: julia-1.7
+---
+```
+
+If no `jupyter` kernel is explicitly specified, then Quarto will attempt to automatically discover a kernel on the system that supports Julia.
+
+You can discover the available Jupyter kernels on your system using the `quarto check` command:
+
+``` bash
+quarto check jupyter
+```
+
+``` include
+_jupyter-daemon.md
+```

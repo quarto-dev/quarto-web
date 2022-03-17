@@ -19,7 +19,8 @@ editor: source
 
 ### Quarto^[®]{.trademark}^ is an open-source scientific and technical publishing system built on [Pandoc](https://pandoc.org)
 
-- Create dynamic documents with Python, R, and JavaScript via integration with [Jupyter](https://jupyter.org/), [Knitr](https://yihui.org/knitr/), and [Observable](https://github.com/observablehq/)
+- Create dynamic content with [Python](docs/computations/python.qmd), [R](docs/computations/r.qmd), [Julia](docs/computations/julia.qmd), and [Observable](docs/computations/ojs.qmd). 
+- Author documents as plain text markdown or [Jupyter](https://jupyter.org/) notebooks.
 - Publish high-quality articles, reports, presentations, websites, blogs, and books in HTML, PDF, MS Word, ePub, and more.
 - Author with scientific markdown, including equations, citations, crossrefs, figure panels, callouts, advanced layout, and more.
 
@@ -44,22 +45,25 @@ editor: source
 # Hello, Quarto 
 <ul class="nav nav-pills" id="hello-quarto-tab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="jupyter-tab" data-bs-toggle="pill" data-bs-target="#jupyter" type="button" role="tab" aria-controls="jupyter" aria-selected="true">Jupyter</button>
+    <button class="nav-link active" id="python-tab" data-bs-toggle="tab" data-bs-target="#python" type="button" role="tab" aria-controls="python" aria-selected="true">Python</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="knitr-tab" data-bs-toggle="pill" data-bs-target="#knitr" type="button" role="tab" aria-controls="knitr" aria-selected="false">Knitr</button>
+    <button class="nav-link" id="knitr-tab" data-bs-toggle="tab" data-bs-target="#knitr" type="button" role="tab" aria-controls="knitr" aria-selected="false">R</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="observable-tab" data-bs-toggle="pill" data-bs-target="#observable" type="button" role="tab" aria-controls="observable" aria-selected="false">Observable</button>
+    <button class="nav-link" id="julia-tab" data-bs-toggle="tab" data-bs-target="#julia" type="button" role="tab" aria-controls="julia" aria-selected="false">Julia</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="observable-tab" data-bs-toggle="tab" data-bs-target="#observable" type="button" role="tab" aria-controls="observable" aria-selected="false">Observable</button>
   </li>
 </ul>
 :::
 
 <div class="tab-content" id="hello-quarto-tabcontent">
 
-<div class="tab-pane fade  show active" id="jupyter" role="tabpanel" aria-labelledby="jupyter-tab">
+<div class="tab-pane fade  show active" id="python" role="tabpanel" aria-labelledby="python-tab">
 
-Weave together narrative text and code to produce elegantly formatted output. Quarto documents are fully reproducible. Use markdown with executable code cells (shown below) or render existing Jupyter Notebooks using any Jupyter kernel.
+Weave together narrative text and code to produce elegantly formatted output. Quarto documents are fully reproducible. Use markdown with code cells executed via Jupyter (shown below) or render existing Jupyter notebooks.
 
 ::: {.grid}
 ::: {.g-col-lg-6 .g-col-12}
@@ -105,7 +109,7 @@ plt.show()
 
 <div class="tab-pane fade" id="knitr" role="tabpanel" aria-labelledby="knitr-tab">
 
-Quarto is a multi-language, next generation version of R Markdown from RStudio, and includes dozens of new features and capabilities (while at the same being able to render most existing Rmd files without modification).
+Quarto is a multi-language, next generation version of R Markdown from RStudio, with many new new features and capabilities. Like R Markdown, Quarto uses [Knitr](https://yihui.org/knitr/) to execute R code, and is therefore able to render most existing Rmd files without modification.
 
 ::: {.grid}
 ::: {.g-col-lg-6 .g-col-12}
@@ -113,7 +117,7 @@ Quarto is a multi-language, next generation version of R Markdown from RStudio, 
 ---
 title: "ggplot2 demo"
 author: "Norah Jones"
-date: "May 22nd, 2021"
+date: "5/22/2021"
 format: 
   html:
     fig-width: 8
@@ -143,6 +147,50 @@ ggplot(airquality, aes(Temp, Ozone)) +
 ::: {.hello-output .g-col-lg-6 .g-col-12}
 
 ![](images/hello-knitr.png)
+
+:::
+:::
+
+</div>
+
+<div class="tab-pane fade" id="julia" role="tabpanel" aria-labelledby="julia-tab">
+
+Combine markdown and Julia code to create dynamic documents that are fully reproducible. Quarto executes Julia code via the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel, enabling you to author in plain text (as shown below) or render existing Jupyter notebooks.
+
+::: {.grid}
+::: {.g-col-lg-6 .g-col-12}
+````markdown
+---
+title: "StatsPlots Demo"
+author: "Norah Jones"
+date: "5/22/2021"
+format:
+  html:
+    code-fold: true
+jupyter: julia-1.7
+---
+
+## Covariance Ellipses
+
+A 2×2 covariance matrix `Σ` can be plotted as an ellipse, which is a contour line of a Gaussian density function with variance `Σ`. See @fig-covariance for an example.
+
+```{{julia}}
+#| label: fig-covariance
+#| fig-cap: "Covariance ellipses"
+
+using StatsPlots
+
+covellipse([0,2], [2 1; 1 4], n_std=2, 
+           aspect_ratio=1, label="cov1")
+covellipse!([1,0], [1 -0.5; -0.5 3], 
+            showaxes=true, label="cov2")
+```
+````
+:::
+
+::: {.hello-output .g-col-lg-6 .g-col-12}
+
+![](images/hello-julia.png)
 
 :::
 :::
@@ -218,10 +266,10 @@ Plot.plot({
 
 ::: {.feature}
 ### Dynamic Documents
-Execute code with Jupyter, Knitr, and Observable. Create reproducible documents that can be regenerated when underlying assumptions or data change.
+Generate dynamic output using Python, R, Julia, and Observable. Create reproducible documents that can be regenerated when underlying assumptions or data change.
 
 ::: {.learn-more}
-[Learn more »](docs/computations/running-code.qmd)
+[Learn more »](docs/computations/python.qmd)
 :::
 :::
 

@@ -1,0 +1,85 @@
+---
+title: "Using Python"
+jupyter-language: "Python"
+jupyter-screenshot: "![](../get-started/hello/images/jupyter-basics.png){.border}"
+vscode-extension: "[Python Extension]https://marketplace.visualstudio.com/items?itemName=ms-python.python)"
+vscode-screenshot: "![](images/python-vscode){.border}"
+---
+
+## Overview
+
+Quarto supports executable Python code blocks within markdown. This allows you to create fully reproducible documents and reports---the Python code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
+
+If you have Python and the `jupyter` package installed then you have all you need to render documents that contain embedded Python code (if you don't, we'll cover this in the [installation](#installation) section below). Next, we'll cover the basics of creating and rendering documents with Python code blocks.
+
+### Code Blocks
+
+Code blocks that use braces around the language name (e.g. ```` ```{python} ````) are executable, and will be run by Quarto during render. Here is a simple example:
+
+```` markdown
+---
+title: "matplotlib demo"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
+```{{python}}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
+You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](../authoring/cross-references.qmd).
+
+This document would result in the following rendered output:
+
+![](../../images/hello-jupyter.png){.border}
+
+You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
+
+There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
+
+``` include
+_jupyter-rendering.md
+```
+
+## Installation {#installation}
+
+If you already have Python 3 and Jupyter installed in your environment, then you should have everything required to render Jupyter notebooks with Python kernels.
+
+``` include
+_jupyter-install.md
+```
+
+``` include
+_jupyter-authoring-tools.md
+```
+
+``` include
+_jupyter-cache.md
+```
+
+``` include
+_caching-more.md
+```
+
+``` include
+_jupyter-daemon.md
+```
