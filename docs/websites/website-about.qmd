@@ -1,6 +1,5 @@
 ---
 title: About Pages
-description: "Create simple, attractive pages about you or your company."
 ---
 
 ## Overview
@@ -100,7 +99,7 @@ about:
 In addition, you can customize how the image is displayed in the page to better meet your needs by setting the following options.
 
 | option        | description                                                                           | templates                     |
-|------------------|-----------------------------------|--------------------|
+|------------------|----------------------------------|--------------------|
 | `image-width` | A valid CSS width for your image.                                                     | all                           |
 | `image-shape` | The shape of the image on the about page. Choose from:`rectangle`, `round`, `rounded` | `jolla`, `solana`, `trestles` |
 
@@ -120,8 +119,53 @@ about:
 Your about page also may contain a set of links to other resources about you or your organization. Each template will render these links in a slightly different way. Here are the options that you can specify for each link:
 
 | Option       | Description                                                                                                                                                 |
-|----------------|--------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `href`       | Link to file contained with the project or an external URL.                                                                                                 |
 | `text`       | Text to display for navigation item (defaults to the document `title` if not provided).                                                                     |
 | `icon`       | Name of one of the standard [Bootstrap 5 icons](https://icons.getbootstrap.com/) (e.g. "github", "twitter", "share", etc.).                                 |
 | `aria-label` | [Accessible label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_aria-label_attribute) for the navigation item. |
+
+## Partial Page Content
+
+By default, the about page will be generated using the entire contents of the page If you'd like, however, you may also choose to use only a portion of the page's content to populate the about template. In this case, you can specify an `id` for the about page in the document front matter. When rendering the page, Quarto will find any `div` with that `id` and use the contents of that `div` to populate the about template. The `div` that provided the contents will be replaced with the formatted 'about' content. For example, you could write:
+
+``` markdown
+---
+title: "Finley Malloc"
+about:
+  id: hero-heading
+  template: jolla
+  image: profile.jpg
+  links:
+    - icon: twitter
+      text: twitter
+      href: https://twitter.com
+    - icon: github
+      text: Github
+      href: https://github.com
+---
+
+### This content appears above the formatted about page content.
+
+:::{#hero-heading}
+
+Finley Malloc is the Chief Data Scientist at Wengo Analytics. When not innovating on data platforms, Finley enjoys spending  time unicycling and playing with her pet iguana.
+
+## Education
+
+University of California, San Diego | San Diego, CA
+PhD in Mathematics | Sep 2011 - June 2015
+
+Macalester College | St. Paul MA
+B.A in Economics | Sep 2007 - June 2011
+
+## Experience
+
+Wengo Analytics | Head Data Scientist | April 2018 - present
+
+GeoScynce | Chief Analyst | Spet 2012 - April 2018
+
+:::
+
+### This content appears below the formatted about page content.
+```
