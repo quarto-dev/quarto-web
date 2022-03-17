@@ -131,17 +131,26 @@ Both Jupyter and Knitr support executing inline code within markdown (e.g. to al
 
 ### Jupyter
 
-To include executable expressions within markdown in a Jupyter notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
+To include executable expressions within markdown in a Python notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
 
 ``` {{python}}
 #| echo: false
 radius = 10
 from IPython.display import display, Markdown
 display(Markdown("""
-## Circle
-
 The radius of the circle is {radius}.
 """.format(radius = radius)))
+```
+
+You can do the same in a Julia notebook using the [`Markdown`](https://docs.julialang.org/en/v1/stdlib/Markdown/) package:
+
+```{{julia}}
+#| echo: false
+radius = 10
+using Markdown
+Markdown.parse("""
+The radius of the circle is $radius.
+""")
 ```
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
