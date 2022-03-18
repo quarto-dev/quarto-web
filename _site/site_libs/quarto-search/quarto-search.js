@@ -96,7 +96,7 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
     defaultActiveItemId: 0,
     panelContainer: "#quarto-search-results",
     panelPlacement: quartoSearchOptions["panel-placement"],
-    debug: false,
+    debug: true,
     plugins,
     classNames: {
       form: "d-flex",
@@ -698,6 +698,7 @@ function renderItem(
   }
 }
 
+let counter = 0;
 function createDocumentCard(createElement, icon, title, section, text, href) {
   const iconEl = createElement("i", {
     class: `bi bi-${icon} search-result-icon`,
@@ -753,15 +754,16 @@ function createDocumentCard(createElement, icon, title, section, text, href) {
   if (!section) {
     classes.push("document-selectable");
   }
+  classes.push(`quarto-search-invalidate-${counter}`);
 
   const divEl = createElement(
     "div",
     {
       class: classes.join(" "),
-      style: "transform: scale(1);",
     },
     linkEl
   );
+  counter = counter + 1;
   return divEl;
 }
 
