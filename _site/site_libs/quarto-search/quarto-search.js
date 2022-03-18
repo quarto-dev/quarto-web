@@ -663,8 +663,6 @@ function renderItem(
   setContext,
   refresh
 ) {
-  console.log(state);
-  console.log(item);
   switch (item.type) {
     case kItemTypeDoc:
       return createDocumentCard(
@@ -698,7 +696,6 @@ function renderItem(
   }
 }
 
-let counter = 0;
 function createDocumentCard(createElement, icon, title, section, text, href) {
   const iconEl = createElement("i", {
     class: `bi bi-${icon} search-result-icon`,
@@ -754,17 +751,14 @@ function createDocumentCard(createElement, icon, title, section, text, href) {
   if (!section) {
     classes.push("document-selectable");
   }
-  classes.push(`quarto-search-invalidate-${counter}`);
 
-  const divEl = createElement(
+  return createElement(
     "div",
     {
       class: classes.join(" "),
     },
     linkEl
   );
-  counter = counter + 1;
-  return divEl;
 }
 
 function createMoreCard(
