@@ -663,6 +663,8 @@ function renderItem(
   setContext,
   refresh
 ) {
+  console.log(state);
+  console.log(item);
   switch (item.type) {
     case kItemTypeDoc:
       return createDocumentCard(
@@ -752,13 +754,15 @@ function createDocumentCard(createElement, icon, title, section, text, href) {
     classes.push("document-selectable");
   }
 
-  return createElement(
+  const divEl = createElement(
     "div",
     {
       class: classes.join(" "),
+      style: "transform: scale(1);",
     },
     linkEl
   );
+  return divEl;
 }
 
 function createMoreCard(
