@@ -320,3 +320,65 @@ If you want to show an example with multiple code blocks and other markdown, jus
     Some additional markdown content.
 
     ````
+    
+    
+## Engine Binding
+
+Earlier we said that the engine used for computations was determined automatically. You may want to customize this---for example you may want to use the Jupyter [R kernel](https://github.com/IRkernel/IRkernel) rather than Knitr, or you may want to use Knitr with Python code (via [reticulate](https://rstudio.github.io/reticulate/)).
+
+Here are the basic rules for automatic binding:
+
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Extension | Engine Binding                                                                                                                                                                                     |
++===========+====================================================================================================================================================================================================+
+| .qmd      | Use Knitr engine if an `{r}` code block is discovered within the file                                                                                                                              |
+|           |                                                                                                                                                                                                    |
+|           | Use Jupyter engine if an executable code block (e.g. `{python}`) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered. |
+|           |                                                                                                                                                                                                    |
+|           | Use no engine if no executable code blocks are discovered.                                                                                                                                         |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| .ipynb    | Jupyter engine                                                                                                                                                                                     |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| .Rmd      | Knitr engine                                                                                                                                                                                       |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| .md       | No engine                                                                                                                                                                                          |
++-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+You can override the engine used via the `engine` option. For example:
+
+``` markdown
+engine: jupyter
+```
+
+``` markdown
+engine: knitr
+```
+
+You can also specify that no execution engine should be used via `engine: markdown`.
+
+The presence of the `knitr` or `jupyter` option will also override the default engine:
+
+``` markdown
+knitr: true
+```
+
+``` markdown
+jupyter: python3
+```
+
+Variations with additional engine-specific options also work to override the default engine:
+
+``` markdown
+knitr:
+  opts_knit:
+    verbose: true
+```
+
+``` markdown
+jupyter:
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+```
+

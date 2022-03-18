@@ -99,7 +99,7 @@
   <script id="quarto-search-options" type="application/json">{
     "location": "navbar",
     "copy-button": false,
-    "collapse-after": 2,
+    "collapse-after": 3,
     "panel-placement": "end",
     "type": "overlay",
     "limit": 20,
@@ -959,6 +959,7 @@
 <li><a href="#raw-output" class="nav-link" data-scroll-target="#raw-output">Raw Output</a></li>
 <li><a href="#intermediates" class="nav-link" data-scroll-target="#intermediates">Intermediates</a></li>
 <li><a href="#fenced-echo" class="nav-link" data-scroll-target="#fenced-echo">Fenced Echo</a></li>
+<li><a href="#engine-binding" class="nav-link" data-scroll-target="#engine-binding">Engine Binding</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/computations/execution-options.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -1323,9 +1324,62 @@ Tip
 <span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="in">Some additional markdown content.</span></span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="in">````</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
-
 </section>
+</section>
+<section id="engine-binding" class="level2">
+<h2 class="anchored" data-anchor-id="engine-binding">Engine Binding</h2>
+<p>Earlier we said that the engine used for computations was determined automatically. You may want to customize this—for example you may want to use the Jupyter <a href="https://github.com/IRkernel/IRkernel">R kernel</a> rather than Knitr, or you may want to use Knitr with Python code (via <a href="https://rstudio.github.io/reticulate/">reticulate</a>).</p>
+<p>Here are the basic rules for automatic binding:</p>
+<table class="table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 94%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Extension</th>
+<th>Engine Binding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>.qmd</td>
+<td><p>Use Knitr engine if an <code>{r}</code> code block is discovered within the file</p>
+<p>Use Jupyter engine if an executable code block (e.g.&nbsp;<code>{python}</code>) is discovered within the file. The kernel used is determined based on the language of the first executable code block discovered.</p>
+<p>Use no engine if no executable code blocks are discovered.</p></td>
+</tr>
+<tr class="even">
+<td>.ipynb</td>
+<td>Jupyter engine</td>
+</tr>
+<tr class="odd">
+<td>.Rmd</td>
+<td>Knitr engine</td>
+</tr>
+<tr class="even">
+<td>.md</td>
+<td>No engine</td>
+</tr>
+</tbody>
+</table>
+<p>You can override the engine used via the <code>engine</code> option. For example:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> jupyter</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="an">engine:</span><span class="co"> knitr</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also specify that no execution engine should be used via <code>engine: markdown</code>.</p>
+<p>The presence of the <code>knitr</code> or <code>jupyter</code> option will also override the default engine:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span><span class="co"> true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Variations with additional engine-specific options also work to override the default engine:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="an">knitr:</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  opts_knit:</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    verbose: true</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  kernelspec:</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    display_name: Python 3</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    language: python</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    name: python3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
 </section>
 </main> <!-- /main -->
 <script type="text/javascript">
