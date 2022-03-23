@@ -1,11 +1,36 @@
 ---
-title: Quarto Date Formatting
+title: Quarto Dates and Date Formatting
 search: true
+aliases: 
+  - /reference/date-format.html
 ---
+
+## Date Parsing
+
+When you write a date for Quarto document, Quarto will attempt to parse a date string by trying a number of standard forms before ultimately attempting to infer the date format. Quarto will try dates formatted as follows, in the following order:
+
+-   `MM/dd/yyyy`
+-   `MM-dd-yyyy`
+-   `MM/dd/yy`
+-   `MM-dd-yy`
+-   `yyyy-MM-dd`
+-   `dd MM yyyy`
+-   `MM dd, yyyy`
+-   `YYYY-MM-DDTHH:mm:ssZ`
+
+In addition, you may also provide date keywords, which will provide a dynamic date.
+
+| Keyword         | Date                                                             |
+|-----------------|------------------------------------------------------------------|
+| `today`         | The current local date, with the time portion set to 0.          |
+| `now`           | The current local date and time.                                 |
+| `last-modified` | The last modified date and time of the file containing the date. |
+
+## Date Formatting
 
 When specifying a date format in Quarto, there are two ways to represent the format that you'd like.
 
-## Using a Date Style
+### Using a Date Style
 
 You can specify a simple date style which will be used to format the date.
 
@@ -21,13 +46,13 @@ date-format: long
 Valid styles and examples of the formatted output are as follows:
 
 | Style    | Description                                 | Example               |
-|------------------|------------------------------------|-------------------|
+|----------|---------------------------------------------|-----------------------|
 | `full`   | A full date that includes the weekday name  | Monday, March 7, 2005 |
 | `long`   | A long date that includes a wide month name | March 7, 2005         |
 | `medium` | A medium date                               | Mar 7, 2005           |
 | `short`  | A short date with a numeric month           | 3/7/05                |
 
-## Using a Date Format
+### Using a Date Format
 
 You can also specify a date format string that will be used to format the date. For example:
 
@@ -40,7 +65,7 @@ date-format: "MMM D, YYYY"
 The permissible values in this string include:
 
 | **Format String** | **Output**       | **Description**                       |
-|------------------|------------------|-----------------------------------|
+|-------------------|------------------|---------------------------------------|
 | `YY`              | 18               | Two-digit year                        |
 | `YYYY`            | 2018             | Four-digit year                       |
 | `M`               | 1-12             | The month, beginning at 1             |
@@ -72,7 +97,7 @@ To escape characters, wrap them in square brackets (e.g. `[MM]`).
 Example formats and outputs include:
 
 | Format                                 | Output                                |
-|------------------------------------|------------------------------------|
+|----------------------------------------|---------------------------------------|
 | `MMM D, YYYY`                          | Mar 7, 2005                           |
 | `DD/MM/YYYY`                           | 07/03/2005                            |
 | `[YYYYescape] YYYY-MM-DDTHH:mm:ssZ[Z]` | YYYYescape 2005-03-07T00:00:00-05:00Z |
