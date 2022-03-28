@@ -24,3 +24,4 @@ You can verify that Quarto is configured correctly for Jupyter with:
 quarto check jupyter
 ```
 
+Quarto will select a version of Python using the [Python Launcher](https://docs.python.org/3/using/windows.html#python-launcher-for-windows) on Windows or system `PATH` on MacOS and Linux. You can override the version of Python used by Quarto by setting the `QUARTO_PYTHON` environment variable.
