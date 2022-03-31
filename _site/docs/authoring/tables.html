@@ -1059,7 +1059,7 @@
 <p>Above we describe a means of specifying column widths using the relative number of dashes in each column header (e.g.&nbsp;<code>---|-</code> to get a 75% / 25% split for a two-column table).</p>
 <p>You can also explicitly specify columns widths using the <code>tbl-colwidths</code> attribute or document-level option. For an individual markdown table, add the attribute after the caption. For example:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>| fruit  | price  |</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>|--------|--------:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>|--------|--------|</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>| apple  | 2.05   |</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>| pear   | 1.37   |</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>| orange | 3.09   |</span>
@@ -1151,131 +1151,97 @@
 </section>
 <section id="computations" class="level2">
 <h2 class="anchored" data-anchor-id="computations">Computations</h2>
-<p>All of the options described above work for tables produced by executable code cells. For example, here we apply the <code>tbl-cap</code>, <code>tbl-colwidths</code> and <code>tbl-caption-location</code> options to a code cell:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Cars"</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-colwidths: [60,40]</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap-location: margin</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(cars))</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>All of the options described above work for tables produced by executable code cells. For example, here we use the Python <a href="https://pypi.org/project/tabulate/">tabulate</a> package along with the <code>Markdown()</code> function from the IPython <a href="https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html#">display</a> module to print a markdown table:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown cell-code code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tabulate <span class="im">import</span> tabulate</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> [[<span class="st">"Sun"</span>,<span class="dv">696000</span>,<span class="dv">1989100000</span>],</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         [<span class="st">"Earth"</span>,<span class="dv">6371</span>,<span class="fl">5973.6</span>],</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         [<span class="st">"Moon"</span>,<span class="dv">1737</span>,<span class="fl">73.5</span>],</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>         [<span class="st">"Mars"</span>,<span class="dv">3390</span>,<span class="fl">641.85</span>]]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>Markdown(tabulate(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  table, </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  headers<span class="op">=</span>[<span class="st">"Planet"</span>,<span class="st">"R (km)"</span>, <span class="st">"mass (x 10^29 kg)"</span>]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display" data-execution_count="3">
+<table class="table table-sm table-striped">
+<caption>Planets </caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Planet</th>
+<th style="text-align: right;">R (km)</th>
+<th style="text-align: right;">mass (x 10^29 kg)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Sun</td>
+<td style="text-align: right;">696000</td>
+<td style="text-align: right;">1.9891e+09</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Earth</td>
+<td style="text-align: right;">6371</td>
+<td style="text-align: right;">5973.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Moon</td>
+<td style="text-align: right;">1737</td>
+<td style="text-align: right;">73.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mars</td>
+<td style="text-align: right;">3390</td>
+<td style="text-align: right;">641.85</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Here we apply the <code>tbl-cap</code>, <code>tbl-colwidths</code> and <code>tbl-caption-location</code> options to a code cell that uses the knitr <code>kable()</code> function to write a markdown table:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Cars"</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-colwidths: [60,40]</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap-location: margin</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(cars))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If your code cell produces multiple tables, you can also specify subcaptions and layout using cell options:</p>
-<div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode markdown cell-code code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-example</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Example"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-subcap:</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Cars"</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Pressure"</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(cars))</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(pressure))</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell tbl-parent quarto-layout-panel">
-<div class="panel-caption table-caption">
-<p>Table 1: Example</p>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div id="tbl-example-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-example" style="flex-basis: 50.0%;justify-content: center;">
-<table class="table table-sm table-striped">
-<caption>(a) Cars</caption>
-<thead>
-<tr class="header">
-<th style="text-align: right;">speed</th>
-<th style="text-align: right;">dist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">10</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">4</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">22</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">16</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">10</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="tbl-example-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-example" style="flex-basis: 50.0%;justify-content: center;">
-<table class="table table-sm table-striped">
-<caption>(b) Pressure</caption>
-<thead>
-<tr class="header">
-<th style="text-align: right;">temperature</th>
-<th style="text-align: right;">pressure</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.0002</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">20</td>
-<td style="text-align: right;">0.0012</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">40</td>
-<td style="text-align: right;">0.0060</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">60</td>
-<td style="text-align: right;">0.0300</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">80</td>
-<td style="text-align: right;">0.0900</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">100</td>
-<td style="text-align: right;">0.2700</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-example</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Example"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-subcap: </span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Cars"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Pressure"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: fenced</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(cars))</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(pressure))</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="grid-tables" class="level2">
 <h2 class="anchored" data-anchor-id="grid-tables">Grid Tables</h2>
 <p>Grid tables are a more advanced type of markdown tables that allow arbitrary block elements (multiple paragraphs, code blocks, lists, etc.). For example:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>| Fruit         | Price         | Advantages         |</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>+===============+===============+====================+</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>| Bananas       | $1.34         | - built-in wrapper |</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>|               |               | - bright color     |</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>| Oranges       | $2.10         | - cures scurvy     |</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>|               |               | - tasty            |</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>: Sample grid table.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>| Fruit         | Price         | Advantages         |</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>+===============+===============+====================+</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>| Bananas       | $1.34         | - built-in wrapper |</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>|               |               | - bright color     |</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>| Oranges       | $2.10         | - cures scurvy     |</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>|               |               | - tasty            |</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>: Sample grid table.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The row of <code>=</code>s separates the header from the table body, and can be omitted for a headerless table. Cells that span multiple columns or rows are not supported.</p>
 <p>This is what the table looks like when rendered to markdown:</p>
-<div id="tbl-example-2" class="anchored">
 <table class="table">
-<caption>Table 2: Sample grid table.</caption>
+<caption>Sample grid table.</caption>
 <colgroup>
 <col style="width: 22%">
 <col style="width: 22%">
@@ -1307,17 +1273,16 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>Alignments can be specified as with pipe tables, by putting colons at the boundaries of the separator line after the header:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>| Right         | Left          | Centered           |</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>+==============:+:==============+:==================:+</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>| Bananas       | $1.34         | built-in wrapper   |</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>For headerless tables, the colons go on the top line instead:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>+--------------:+:--------------+:------------------:+</span>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>| Right         | Left          | Centered           |</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>+==============:+:==============+:==================:+</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>| Bananas       | $1.34         | built-in wrapper   |</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For headerless tables, the colons go on the top line instead:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>+--------------:+:--------------+:------------------:+</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>| Right         | Left          | Centered           |</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>+---------------+---------------+--------------------+</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that grid tables are quite awkward to write with a plain text editor (because unlike pipe tables, the column indicators must align). Here are some tools that can assist with creating grid tables:</p>
 <ul>
 <li><p>Emacs’ <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Text-Based-Tables.html">table-mode</a> (<code>M-x table-insert</code>)</p></li>

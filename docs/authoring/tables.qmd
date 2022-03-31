@@ -128,7 +128,24 @@ See the article on [Article Layout](article-layout.qmd#margin-captions) for addi
 
 ## Computations
 
-All of the options described above work for tables produced by executable code cells. For example, here we apply the `tbl-cap`, `tbl-colwidths` and `tbl-caption-location` options to a code cell:
+All of the options described above work for tables produced by executable code cells. For example, here we use the Python [tabulate](https://pypi.org/project/tabulate/) package along with the `Markdown()` function from the IPython [display](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html#) module to print a markdown table:
+
+```{python}
+#| tbl-cap: "Planets"
+#| echo: fenced
+from IPython.display import Markdown
+from tabulate import tabulate
+table = [["Sun",696000,1989100000],
+         ["Earth",6371,5973.6],
+         ["Moon",1737,73.5],
+         ["Mars",3390,641.85]]
+Markdown(tabulate(
+  table, 
+  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
+))
+```
+
+Here we apply the `tbl-cap`, `tbl-colwidths` and `tbl-caption-location` options to a code cell that uses the knitr `kable()` function to write a markdown table:
 
 ``` {{r}}
 #| tbl-cap: "Cars"
@@ -139,9 +156,10 @@ library(knitr)
 kable(head(cars))
 ```
 
+
 If your code cell produces multiple tables, you can also specify subcaptions and layout using cell options:
 
-```{r}
+```{{r}}
 #| label: tbl-example
 #| tbl-cap: "Example"
 #| tbl-subcap: 
