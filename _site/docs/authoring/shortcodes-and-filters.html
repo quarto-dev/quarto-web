@@ -955,8 +955,8 @@
 </ul></li>
 <li><a href="#filters" id="toc-filters" class="nav-link" data-scroll-target="#filters">Filters</a>
 <ul class="collapse">
-<li><a href="#using-filters" id="toc-using-filters" class="nav-link" data-scroll-target="#using-filters">Using Filters</a></li>
-<li><a href="#writing-filters" id="toc-writing-filters" class="nav-link" data-scroll-target="#writing-filters">Writing Filters</a></li>
+<li><a href="#pandoc-filters" id="toc-pandoc-filters" class="nav-link" data-scroll-target="#pandoc-filters">Pandoc Filters</a></li>
+<li><a href="#jupyter-notebook-filters" id="toc-jupyter-notebook-filters" class="nav-link" data-scroll-target="#jupyter-notebook-filters">Jupyter Notebook Filters</a></li>
 </ul></li>
 <li><a href="#includes" id="toc-includes" class="nav-link" data-scroll-target="#includes">Includes</a></li>
 </ul>
@@ -1022,7 +1022,9 @@
 </section>
 <section id="filters" class="level2">
 <h2 class="anchored" data-anchor-id="filters">Filters</h2>
-<p>If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a <a href="https://pandoc.org/filters.html">Pandoc Filter</a> that bridges the gap.</p>
+<p>If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a <a href="https://pandoc.org/filters.html">Pandoc Filter</a> that bridges the gap. It’s also possible to create filters that preprocess the contents of Jupyter Notebooks (<code>.ipynb</code>) before they are rendered by Quarto and Pandoc. We’ll describe each of these filters in turn below.</p>
+<section id="pandoc-filters" class="level3">
+<h3 class="anchored" data-anchor-id="pandoc-filters">Pandoc Filters</h3>
 <p>Pandoc consists of a set of readers and writers. When converting a document from one format to another, text is parsed by a reader into pandoc’s intermediate representation of the document—an “abstract syntax tree” or AST—which is then converted by the writer into the target format. The pandoc AST format is defined in the module <a href="https://hackage.haskell.org/package/pandoc-types-1.22/docs/Text-Pandoc-Definition.html"><code>Text.Pandoc.Definition</code></a> in the pandoc-types package.</p>
 <p>A “filter” is a program that modifies the AST, between the reader and the writer.</p>
 <pre><code>INPUT --reader--&gt; AST --filter--&gt; AST --writer--&gt; OUTPUT</code></pre>
@@ -1049,8 +1051,8 @@
 </tr>
 </tbody>
 </table>
-<section id="using-filters" class="level3">
-<h3 class="anchored" data-anchor-id="using-filters">Using Filters</h3>
+<section id="using-filters" class="level4">
+<h4 class="anchored" data-anchor-id="using-filters">Using Filters</h4>
 <p>Add one or more filters to document rendering using the <code>filters</code> option. For example:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">   </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1061,8 +1063,8 @@
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> quarto</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="writing-filters" class="level3">
-<h3 class="anchored" data-anchor-id="writing-filters">Writing Filters</h3>
+<section id="writing-filters" class="level4">
+<h4 class="anchored" data-anchor-id="writing-filters">Writing Filters</h4>
 <p>You can write Pandoc filters using Lua (via Pandoc’s built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process.</p>
 <p>We strongly recommend using Lua Filters, which have the following advantages:</p>
 <ul>
@@ -1074,12 +1076,38 @@
 <p>If you want to write a JSON filter, see the documentation on <a href="https://pandoc.org/filters.html">Writing JSON filters</a>.</p>
 </section>
 </section>
+<section id="jupyter-notebook-filters" class="level3">
+<h3 class="anchored" data-anchor-id="jupyter-notebook-filters">Jupyter Notebook Filters</h3>
+<p>Whenever you use Jupyter for embedded computations a Jupyter Notebook (<code>.ipynb</code>) is part of the rendering pipeline. This is naturally the case for rendering <code>.ipynb</code> files directly, however it is also the case for <code>.qmd</code> files that have embedded Julia or Python cells (in which case a temporary <code>.ipynb</code> is constructed). This notebook is ultimately converted into markdown and then rendered by Pandoc to the specified output format(s).</p>
+<p>You may wish to do some pre-processing on the notebook prior to its conversion to markdown. This can be accomplished by specifying one or or more <code>ipynb-filters</code>. These filters are passed the <a href="https://nbformat.readthedocs.io/en/latest/format_description.html">JSON representation</a> of the notebook on <code>stdin</code> and should write a transformed JSON representation to <code>stdout</code>.</p>
+<p>For example, this notebook filter uses the <a href="https://nbformat.readthedocs.io/en/latest/index.html">nbformat</a> package to read a notebook, prepend a comment to the source of each code cell, and then write it back to <code>stdout</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nbformat</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read notebook from stdin</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>nb <span class="op">=</span> nbformat.reads(sys.stdin.read(), as_version <span class="op">=</span> <span class="dv">4</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># prepend a comment to the source of each cell</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> index, cell <span class="kw">in</span> <span class="bu">enumerate</span>(nb.cells):</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> cell.cell_type <span class="op">==</span> <span class="st">'code'</span>:</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>     cell.source <span class="op">=</span> <span class="st">"# comment</span><span class="ch">\n</span><span class="st">"</span> <span class="op">+</span> cell.source</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># write notebook to stdout </span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>nbformat.write(nb, sys.stdout)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can arrange for this filter to be run using the <code>ipynb-filters</code> option (specified at either the document or project level):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ipynb-filters</span><span class="kw">:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> filter.py</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the current working directory for the filter will be set to the location of the input notebook.</p>
+</section>
+</section>
 <section id="includes" class="level2">
 <h2 class="anchored" data-anchor-id="includes">Includes</h2>
 <p>The <a href="https://github.com/pandoc/lua-filters/tree/master/include-files">include-files</a> filter is a convenient way to re-use markdown content within a project. You can make this filter available by <a href="https://raw.githubusercontent.com/pandoc/lua-filters/master/include-files/include-files.lua">downloading</a> it from the site linked to above, copying it into your project directory, then adding it as a filter within <code>_quarto.yml</code> as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> include-files.lua</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> quarto</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filters</span><span class="kw">:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> include-files.lua</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> quarto</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1094,14 +1122,14 @@ Important
 </div>
 </div>
 <p>To include a file named <code>_common.md</code> you would use this markdown:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{.include}</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>_common.md</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{.include}</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>_common.md</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You can also include multiple files:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{.include}</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>_common.md</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>_download.md</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{.include}</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>_common.md</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>_download.md</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>In the examples above the names of included files are prefaced with an underscore. You should always use an underscore prefix with included files so that they are automatically ignored (i.e.&nbsp;not treated as standalone files) by a <code>quarto render</code> of your project.</p>
 
 
