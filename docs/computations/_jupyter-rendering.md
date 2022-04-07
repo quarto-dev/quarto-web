@@ -14,6 +14,8 @@ Quarto can also render any Jupyter notebook (.ipynb):
 quarto render document.ipynb
 ```
 
+Note that the target file (in this case `document.qmd`) should always be the very first command line argument.
+
 Note that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the `--execute` flag to render:
 
 ``` bash
