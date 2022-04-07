@@ -97,7 +97,7 @@ A "filter" is a program that modifies the AST, between the reader and the writer
 Pandoc's built-in citation processing is implemented as a filter, as are many of Quarto's extensions (e.g. cross-references, figure layout, etc.). Some other examples include:
 
 | Filter                                                                                     | Description                                                                                                                          |
-|--------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+|------------------------------|------------------------------------------|
 | [include-files](https://github.com/pandoc/lua-filters/tree/master/include-files)           | Filter to include other files in the document.                                                                                       |
 | [include-code-files](https://github.com/pandoc/lua-filters/tree/master/include-code-files) | Filter to include code from source files.                                                                                            |
 | [pagebreak](https://github.com/pandoc/lua-filters/tree/master/pagebreak)                   | Converts paragraps containing only the LaTeX `\newpage` or `\pagebreak` command into appropriate pagebreak markup for other formats. |
@@ -138,15 +138,15 @@ See the documentation on [Writing Lua Filters](https://pandoc.org/lua-filters.ht
 
 If you want to write a JSON filter, see the documentation on [Writing JSON filters](https://pandoc.org/filters.html).
 
-### Jupyter Notebook Filters
+### Notebook Filters
 
-Whenever you use Jupyter for embedded computations a Jupyter Notebook (`.ipynb`) is part of the rendering pipeline. This is naturally the case for rendering `.ipynb` files directly, however it is also the case for `.qmd` files that have embedded Julia or Python cells (in which case a temporary `.ipynb` is constructed). This notebook is ultimately converted into markdown and then rendered by Pandoc to the specified output format(s).
+Whenever you use Jupyter for embedded computations a notebook (`.ipynb`) is part of the rendering pipeline. This is naturally the case for rendering `.ipynb` files directly, however it is also the case for `.qmd` files that have embedded Julia or Python cells (in which case a temporary `.ipynb` is constructed). This notebook is ultimately converted into markdown and then rendered by Pandoc to the specified output format(s).
 
 You may wish to do some pre-processing on the notebook prior to its conversion to markdown. This can be accomplished by specifying one or or more `ipynb-filters`. These filters are passed the [JSON representation](https://nbformat.readthedocs.io/en/latest/format_description.html) of the notebook on `stdin` and should write a transformed JSON representation to `stdout`.
 
 For example, this notebook filter uses the [nbformat](https://nbformat.readthedocs.io/en/latest/index.html) package to read a notebook, prepend a comment to the source of each code cell, and then write it back to `stdout`:
 
-```python
+``` python
 import sys
 import nbformat
 
@@ -164,7 +164,7 @@ nbformat.write(nb, sys.stdout)
 
 You can arrange for this filter to be run using the `ipynb-filters` option (specified at either the document or project level):
 
-```yaml
+``` yaml
 ---
 ipynb-filters:
   - filter.py
