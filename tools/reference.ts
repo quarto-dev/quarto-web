@@ -229,11 +229,11 @@ function readProjectProperties(props: { [name: string]: Record<string, unknown> 
     }))
 }
 
-function readProjectObject(name: string) {
+function readProjectObject(name: string, descriptions?: Record<string, string>) {
   // deno-lint-ignore no-explicit-any
   const obj = project.find(value => value.name == name) as any;
   const props = obj["schema"]["object"]["properties"];
-  return readProjectProperties(props);
+  return readProjectProperties(props, descriptions);
 }
 
 function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
@@ -293,8 +293,13 @@ function writeProjectTable(name: string, options: Array<Option>) {
   Deno.writeTextFileSync(path, JSON.stringify(options, undefined, 2));
 }
 
-const projectOptions = readProjectObject("project");
+const projectOptions = readProjectObject("project", {
+  "preview": "Options for `quarto preview` (see [Preview](#preview))"
+});
 writeProjectTable("project", projectOptions);
+
+const projectPreviewOptions = readDefinitionsId("project-preview");
+writeProjectTable("preview", projectPreviewOptions);
 
 const socialMetadataOptions = readDefinitionsId("social-metadata");
 const twitterOptions = socialMetadataOptions.concat(readDefinitionsObject("twitter-card"));

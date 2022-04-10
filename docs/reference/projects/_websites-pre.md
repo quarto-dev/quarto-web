@@ -1,6 +1,6 @@
 ## Project
 
-```{.include}
+``` include
 _options.md
 ```
 
@@ -8,7 +8,7 @@ _options.md
 
 Options that affect {{< meta project-type >}} output. {{< meta project-type-upper >}} options are specified under the `{{< meta project-type >}}` key. For example:
 
-```yaml
+``` yaml
 ---
 {{< meta project-type >}}:
   title: "My {{< meta project-type-upper >}}"
@@ -16,4 +16,3 @@ Options that affect {{< meta project-type >}} output. {{< meta project-type-uppe
   page-navigation: true
 ---
 ```
-
