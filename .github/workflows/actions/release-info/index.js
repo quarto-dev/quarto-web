@@ -51,7 +51,7 @@ async function run() {
     const suffixParts = parts[2].split(".");
     console.log(" -" + suffixParts);
     const suffix = suffixParts[0];
-    const extension = suffixParts.slice[1].join('.');
+    const extension = suffixParts.slice(1).join('.');
     redirects.push({
       url: asset.browser_download_url,
       name: {
