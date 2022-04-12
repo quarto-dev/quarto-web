@@ -43,11 +43,13 @@ async function run() {
     const buffer = await assetFile.buffer();
     const checksum = hasha(buffer, { algorithm });
 
+    console.log(asset.name);
     const parts = asset.name.split("-");
     const prefix = parts[0];
     const version = parts[1];
     
     const suffixParts = parts[2].split(".");
+    console.log(" -" + suffixParts);
     const suffix = suffixParts[0];
     const extension = suffixParts.slice[1].join('.');
     redirects.push({
