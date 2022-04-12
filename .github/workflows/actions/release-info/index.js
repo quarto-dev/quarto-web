@@ -76,11 +76,12 @@ async function run() {
                                            .replace("$$sufffix$$", redirect.name.suffix)
                                            .replace("$$extension$$", redirect.name.extension);
        const redirLine = `${redir} ${redirect.url}`;
+       redirOutput.push(redirLine);
      }
     
     const redirOut = redirOutput.join("\n");
     console.log(`Writing redirects file to ${redirectPath}`);
-    console.log(`${redirOut}]\n\n`);
+    console.log(`${redirOut}\n\n`);
     fs.writeFileSync(redirectPath, redirOut);
   }
 
