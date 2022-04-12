@@ -49,7 +49,7 @@ async function run() {
     
     const suffixParts = parts[2].split(".");
     const suffix = suffixParts[0];
-    const extension = suffixParts[1];
+    const extension = suffixParts.slice[1].join('.');
     redirects.push({
       url: asset.browser_download_url,
       name: {
@@ -71,10 +71,10 @@ async function run() {
   if (redirectPath && redirectTemplate) {
      let redirOutput = [];
      for (const redirect of redirects) {
-       const redir = redirectTemplate.replace("$$prefix$$", redirect.name.prefix)
-                                           .replace("$$version$$", redirect.name.version)
-                                           .replace("$$sufffix$$", redirect.name.suffix)
-                                           .replace("$$extension$$", redirect.name.extension);
+       const redir = redirectTemplate.replace("$$prefix$$", redirect.name.prefix || "")
+                                           .replace("$$version$$", redirect.name.version || "")
+                                           .replace("$$suffix$$", redirect.name.suffix || "")
+                                           .replace("$$extension$$", redirect.name.extension || "");
        const redirLine = `${redir} ${redirect.url}`;
        redirOutput.push(redirLine);
      }
