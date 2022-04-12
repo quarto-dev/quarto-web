@@ -16,6 +16,10 @@ async function run() {
   // GH Api
   const myToken = core.getInput("github-token");
   const octokit = github.getOctokit(myToken);
+  
+  // Redirect info
+  const redirectPath = core.getInput("redirect-path");
+  const redirectTemplate = core.getInput("redirect-template");
 
   const latestRelease = await octokit.rest.repos.getLatestRelease({
     owner,
@@ -32,18 +36,52 @@ async function run() {
 
   // Release assets
   releaseInfo.assets = [];
+  const redirects = [];
   for (asset of releaseRaw.assets) {
     const algorithm = "sha256";
     const assetFile = await fetch(asset.browser_download_url);
     const buffer = await assetFile.buffer();
     const checksum = hasha(buffer, { algorithm });
 
+    const parts = asset.name.split("-");
+    const prefix = parts[0];
+    const version = parts[1];
+    
+    const suffixParts = parts[2].split(".");
+    const suffix = suffixParts[0];
+    const extension = suffixParts[1];
+    redirects.push({
+      url: asset.browser_download_url,
+      name: {
+         prefix,
+         version,
+         suffix,
+         extension
+      }
+    });
+   
     releaseInfo.assets.push({
       name: asset.name,
       download_url: asset.browser_download_url,
       checksum,
       size: asset.size,
     });
+  }
+  
+  if (redirectPath && redirectTemplate) {
+     let redirOutput = [];
+     for (const redirect of redirects) {
+       const redir = redirectTemplate.replace("$$prefix$$", redirect.name.prefix)
+                                           .replace("$$version$$", redirect.name.version)
+                                           .replace("$$sufffix$$", redirect.name.suffix)
+                                           .replace("$$extension$$", redirect.name.extension);
+       const redirLine = `${redir} ${redirect.url}`;
+     }
+    
+    const redirOut = redirOutput.join("\n");
+    console.log(`Writing redirects file to ${redirectPath}`);
+    console.log(`${redirOut}]\n\n`);
+    fs.writeFileSync(redirectPath, redirOut);
   }
 
   const strJson = JSON.stringify(releaseInfo, undefined, 2);
