@@ -18,8 +18,8 @@ async function run() {
   const octokit = github.getOctokit(myToken);
   
   // Redirect info
-  const redirectPath = core.getInput("redirect-path");
-  const redirectTemplate = core.getInput("redirect-template");
+  const redirectPath = core.getInput("redirects-path");
+  const redirectTemplate = core.getInput("redirects-template");
 
   const latestRelease = await octokit.rest.repos.getLatestRelease({
     owner,
