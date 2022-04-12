@@ -48,7 +48,7 @@ async function run() {
     const prefix = parts[0];
     const version = parts[1];
     
-    const suffixParts = parts[2].split(".");
+    const suffixParts = parts.slice(2).join("-").split(".");
     console.log(" -" + suffixParts);
     const suffix = suffixParts[0];
     const extension = suffixParts.slice(1).join('.');
