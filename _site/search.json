@@ -32,21 +32,21 @@
     "href": "docs/tools/vscode.html",
     "title": "VS Code",
     "section": "",
-    "text": "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). The Quarto VS Code Extension includes many tools that enhance working these documents, including:\n\nSyntax highlighting for markdown and embedded languages\nCompletion for embedded languages (e.g. Python, R, Julia, LaTeX, etc.)\nCommands and key-bindings for running cells and selected line(s)\n\nThe Quarto extension integrates directly with the Jupyter, R, and Julia extensions. For example, here the Quarto extension runs a Python cell and shows contextual help for Python functions:\n\nAlternatively, if you are editing an .ipynb rather than a .qmd, you can use the VS Code Jupyter Notebook UI as your editor. Here is the “Hello, Quarto” example from the homepage inside VS Code:\n\nIf you look at the source code you’ll note that YAML options were provided both at the top of the document and within the code cell. We’ll describe working with YAML options in more detail below."
+    "text": "Quarto can render Jupyter notebooks represented as plain text (.qmd) or as a normal notebook file (.ipynb). The Quarto VS Code Extension includes many tools that enhance working these documents, including:\n\nIntegrated render and preview for Quarto documents.\nSyntax highlighting for markdown and embedded languages\nCompletion and diagnostics for YAML options\nCompletion for embedded languages (e.g. Python, R, Julia, etc.)\nCommands and key-bindings for running cells and selected lines.\n\nThe Quarto extension integrates directly with the Jupyter, R, and Julia extensions. For example, here the Quarto extension runs a Python cell and shows contextual help for Python functions:\n\nAlternatively, if you are editing an .ipynb rather than a .qmd, you can use the VS Code Jupyter Notebook UI as your editor. Here is the “Hello, Quarto” example from the homepage inside the VS Code notebook editor:\n\nIf you look at the source code you’ll note that YAML options were provided both at the top of the document and within the code cell. We’ll describe working with YAML options in more detail below."
   },
   {
     "objectID": "docs/tools/vscode.html#workflow",
     "href": "docs/tools/vscode.html#workflow",
     "title": "VS Code",
     "section": "Workflow",
-    "text": "Workflow\nThe ideal workflow for authoring Quarto notebooks in VS Code is to run the quarto preview command from within a terminal:\nquarto preview notebook.ipynb\nThe document will be rendered and a web browser with a “live preview” opened. Position this browser so that you can see it as you edit and save your .ipynb or .qmd file:\n\nEvery time you save within VS Code the preview will be automatically updated. You can use quarto preview for both HTML and PDF output.\nIn the screenshot above you’ll note that we ran quarto preview inside a VS Code terminal window—this is generally recommended so that you can see progress and error messages when renders occur.\nPreview uses the default format specified within the document—to use an alternate format pass the --to option to quarto preview. For example:\nquarto preview notebook.ipynb --to pdf\n\n\n\n\n\n\nNote that if you are authoring a book or website you can also use quarto preview on the project directory, which will create a live preview for the entire project.\n\n\n\n\nRender without Preview\nYou can render a notebook (or group of notebooks) without previewing them using the quarto render command:\nquarto render notebook.ipynb\nUse the --to argument to render to a specific format:\nquarto render notebook.ipynb --to docx"
+    "text": "Workflow\nThe Quarto VS Code extension includes commands and keyboard shortcuts for rendering Quarto documents (both standalone and within websites or booksp). After rendering, quarto preview is used behind the scenes to provide a preview pane within VS Code alongside your document:\n\nThe ideal workflow for authoring Quarto notebooks in VS Code is to run the quarto preview command from within a terminal:\nquarto preview notebook.ipynb\nThe document will be rendered and a web browser with a “live preview” opened. Position this browser so that you can see it as you edit and save your .ipynb or .qmd file:\n\nEvery time you save within VS Code the preview will be automatically updated. You can use quarto preview for both HTML and PDF output.\nIn the screenshot above you’ll note that we ran quarto preview inside a VS Code terminal window—this is generally recommended so that you can see progress and error messages when renders occur.\nPreview uses the default format specified within the document—to use an alternate format pass the --to option to quarto preview. For example:\nquarto preview notebook.ipynb --to pdf\n\n\n\n\n\n\nNote that if you are authoring a book or website you can also use quarto preview on the project directory, which will create a live preview for the entire project.\n\n\n\n\nRender without Preview\nYou can render a notebook (or group of notebooks) without previewing them using the quarto render command:\nquarto render notebook.ipynb\nUse the --to argument to render to a specific format:\nquarto render notebook.ipynb --to docx"
   },
   {
     "objectID": "docs/tools/vscode.html#notebook-editor",
     "href": "docs/tools/vscode.html#notebook-editor",
     "title": "VS Code",
     "section": "Notebook Editor",
-    "text": "Notebook Editor\nHere we’ll review the basics of editing .ipynb notebooks for use with Quarto. If you prefer a plain-text (.qmd) workflow see the Plain Text Editor section below.\n\nYAML Front Matter\nThe first cell of your notebook should be a Raw cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to Raw using the cell type menu at the bottom right of the cell:\n\nIn this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on Authoring and Output Formats for additional details.\n\n\nMarkdown Cells\nHere’s the underlying code for the markdown cell:\n\nNote that a Quarto cross-reference (@fig-polar) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells.\n\n\nOutput Options\nQuarto uses leading comments with a special prefix (#|) to denote cell options. Here we specify the label and fig-cap options so that the plot generated from the cell can be cross-referenced.\n\nNote that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.\nThere are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on Output Outputs for additional details.\n\n\nCell Execution\nNote that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render notebook.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Notebook\"\nexecute: \n  enabled: true\n---\nThere are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in Execution Options."
+    "text": "Notebook Editor\nIn addition to editing Quarto document as plain-text .qmd files, you can also use the VS Code Notebook Editor to author .ipynb notebooks that are rendered with Quarto. Next we’ll review the basics of editing .ipynb notebooks for use with Quarto.\n\nYAML Front Matter\nThe first cell of your notebook should be a Raw cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to Raw using the cell type menu at the bottom right of the cell:\n\nIn this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on Authoring and Output Formats for additional details.\n\n\nMarkdown Cells\nHere’s the underlying code for the markdown cell:\n\nNote that a Quarto cross-reference (@fig-polar) is included in the markdown. Any valid Pandoc markdown syntax can be included in markdown cells.\n\n\nOutput Options\nQuarto uses leading comments with a special prefix (#|) to denote cell options. Here we specify the label and fig-cap options so that the plot generated from the cell can be cross-referenced.\n\nNote that options must appear at the very beginning of the cell. As with document front-matter, option names/values use YAML syntax.\nThere are many output options available, including options to optionally hide code, warnings, and/or output. See the documentation on Output Outputs for additional details.\n\n\nCell Execution\nNote that when rendering an .ipynb Quarto will not execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the --execute flag to render:\nquarto render notebook.ipynb --execute\nYou can also specify this behavior within the notebook’s YAML front matter:\n---\ntitle: \"My Notebook\"\nexecute: \n  enabled: true\n---\nThere are many other execution options available (e.g. to control caching, optimizing kernel start-up time, etc.). Learn more about these options in Execution Options.\n\n\nConverting Notebooks\nYou can convert between .ipynb and .qmd representations of a notebook using the quarto convert command. For example:\nquarto convert basics-jupyter.ipynb\nquarto convert basics-jupyter.qmd\nSee quarto convert help for additional details on converting notebooks."
   },
   {
     "objectID": "docs/tools/vscode.html#plain-text-editor",
@@ -3624,5 +3624,75 @@
     "title": "Open Source License",
     "section": "",
     "text": "The Quarto source code is available at https://github.com/quarto-dev/\nQuarto is a registered trademark of RStudio. Please see our trademark policy for guidelines on usage of the Quarto trademark.\nQuarto also makes use of several other open-source projects, the distribution of which is subject to their respective licenses. Major components and their licenses include:\n\n\n\nProject\nLicense\n\n\n\n\nPandoc\nGNU GPL v2\n\n\nBootstrap 5.0\nMIT\n\n\nBootswatch 5.0\nMIT\n\n\nDeno\nMIT\n\n\nesbuild\nMIT\n\n\nDart Saas\nMIT\n\n\nObservable Runtime\nISC"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#render-and-preview",
+    "href": "docs/tools/vscode.html#render-and-preview",
+    "title": "VS Code",
+    "section": "Render and Preview",
+    "text": "Render and Preview\nThe Quarto VS Code extension includes commands and keyboard shortcuts for rendering Quarto documents (both standalone and within websites or books). After rendering, quarto preview is used behind the scenes to provide a preview pane within VS Code alongside your document:\n\nTo render and preview, execute the Quarto: Render command. You can alternatively use the Ctrl+Shift+K keyboard shortcut, or the Render button at the top right of the editor:\n\nNote that on the Mac you should use Cmd rather than Ctrl as the prefix for all Quarto keyboard shortcuts.\nAdditionally, there are commands available to render specific formats. Here is a complete list of the supported render commands:\n\nQuarto: Render\nQuarto: Render HTML\nQuarto: Render PDF\nQuarto: Render Word\n\nThe Quarto: Render command renders the default format of the currently active document. The other commands render specific formats (regardless of the document’s default format). The Ctrl+Shift+K keyboard shortcut will re-execute the most recently executed render command.\n\n\n\n\n\n\nEmbedded preview is currently supported for HTML and PDF based formats (including revealjs and beamer slideshows), however for Word and other formats you need to use the appropriate external program to preview the output.\n\n\n\n\nExternal Preview\nIf you prefer to use an external browser for preview (or have no preview triggered at all by rendering document) you can use the Preview Type option to specify an alternate behavior:"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#code-cells",
+    "href": "docs/tools/vscode.html#code-cells",
+    "title": "VS Code",
+    "section": "Code Cells",
+    "text": "Code Cells\nThere are a variety of tools that make it easier to edit and execute code cells. Editing tools include syntax highlighting, code folding, code completion, and signature tips:\n\nFor Python, R, and Julia cells, commands are available to execute the current cell, previous cells, or the currently selected line(s). Cell output is shown side by side in the Jupyter interactive console:\n\nExecute the current cell with Ctrl+Shift+Enter, the current line(s) with Ctrl+Enter, or previous cells with Ctrl+Alt+P (note that on the Mac you should use Cmd rather than Ctrl as the prefix for all Quarto keyboard shortcuts).\nEnhanced features for embedded languages (e.g. completion, code execution) can be enabled by installing the most recent version(s) of these extensions:\n\nPython Extension\nR Extension\nJulia Extension\n\nNote that you can quickly insert a new code cell using the Ctrl+Shift+I keyboard shortcut."
+  },
+  {
+    "objectID": "docs/tools/vscode.html#yaml-intelligence",
+    "href": "docs/tools/vscode.html#yaml-intelligence",
+    "title": "VS Code",
+    "section": "YAML Intelligence",
+    "text": "YAML Intelligence\nYAML code completion is available for project files, YAML front matter, and executable cell options:\n\nIf you have incorrect YAML it will also be highlighted when documents are saved:\n\nNote that YAML intelligence features require version 0.9.44 or later of the Quarto CLI."
+  },
+  {
+    "objectID": "docs/tools/vscode.html#code-snippets",
+    "href": "docs/tools/vscode.html#code-snippets",
+    "title": "VS Code",
+    "section": "Code Snippets",
+    "text": "Code Snippets\nCode snippets are templates that make it easier to enter repeating code patterns (e.g. code blocks, callouts, divs, etc.). Execute the Insert Snippet command within a Quarto document to insert a markdown snippet:"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#document-navigation",
+    "href": "docs/tools/vscode.html#document-navigation",
+    "title": "VS Code",
+    "section": "Document Navigation",
+    "text": "Document Navigation\nIf you have a large document use the outline view for quick navigation between sections:\n\nYou can also use the Go to Symbol in Editor command (Ctrl+Shift+O) keyboard shortcut for type-ahead navigation of the current document’s outline.\nUse the Go to File command (Ctrl+P) to navigate to other files and the Go to Symbol in Workspace command (Ctrl+T) for type-ahead navigation to all headings in the workspace:"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#help-assit",
+    "href": "docs/tools/vscode.html#help-assit",
+    "title": "VS Code",
+    "section": "Help Assit",
+    "text": "Help Assit"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#math-preview",
+    "href": "docs/tools/vscode.html#math-preview",
+    "title": "VS Code",
+    "section": "Math Preview",
+    "text": "Math Preview"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#help-assist",
+    "href": "docs/tools/vscode.html#help-assist",
+    "title": "VS Code",
+    "section": "Help Assist",
+    "text": "Help Assist"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#contextual-help",
+    "href": "docs/tools/vscode.html#contextual-help",
+    "title": "VS Code",
+    "section": "Contextual Help",
+    "text": "Contextual Help"
+  },
+  {
+    "objectID": "docs/tools/vscode.html#contextual-assistance",
+    "href": "docs/tools/vscode.html#contextual-assistance",
+    "title": "VS Code",
+    "section": "Contextual Assistance",
+    "text": "Contextual Assistance\nYou’ll notice a Quarto panel located at the bottom of VS Code alongside the existing Terminal and Output panels. This panel shows contextual assistance depending on the current cursor location:\n\nHelp/documentation is shown when editing code\nA realtime preview of equations is shown when editing LaTeX math\nThumbnail previews are shown when your cursor is located on a markdown image.\n\nFor example, below help on the matplotlib plot() function is shown automatically when the cursor is located on the function:\n\nHere a preview of the currently edited LaTeX quation is shown in the same pane:"
   }
 ]

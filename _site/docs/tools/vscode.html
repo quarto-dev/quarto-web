@@ -154,14 +154,14 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 
 <link rel="stylesheet" href="../../styles.css">
 <meta property="og:title" content="Quarto - VS Code">
-<meta property="og:image" content="https://quarto.org/docs/tools/images/vscode-preview.png">
+<meta property="og:image" content="https://quarto.org/docs/computations/images/python-vscode.png">
 <meta property="og:site-name" content="Quarto">
-<meta property="og:image:height" content="2190">
-<meta property="og:image:width" content="3148">
+<meta property="og:image:height" content="703">
+<meta property="og:image:width" content="908">
 <meta name="twitter:title" content="Quarto - VS Code">
-<meta name="twitter:image" content="https://quarto.org/docs/tools/images/vscode-preview.png">
-<meta name="twitter:image-height" content="2190">
-<meta name="twitter:image-width" content="3148">
+<meta name="twitter:image" content="https://quarto.org/docs/computations/images/python-vscode.png">
+<meta name="twitter:image-height" content="703">
+<meta name="twitter:image-width" content="908">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -959,15 +959,20 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
    
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a></li>
+  <li><a href="#render-and-preview" id="toc-render-and-preview" class="nav-link" data-scroll-target="#render-and-preview">Render and Preview</a></li>
+  <li><a href="#code-cells" id="toc-code-cells" class="nav-link" data-scroll-target="#code-cells">Code Cells</a></li>
+  <li><a href="#contextual-assistance" id="toc-contextual-assistance" class="nav-link" data-scroll-target="#contextual-assistance">Contextual Assistance</a></li>
+  <li><a href="#yaml-intelligence" id="toc-yaml-intelligence" class="nav-link" data-scroll-target="#yaml-intelligence">YAML Intelligence</a></li>
+  <li><a href="#code-snippets" id="toc-code-snippets" class="nav-link" data-scroll-target="#code-snippets">Code Snippets</a></li>
+  <li><a href="#document-navigation" id="toc-document-navigation" class="nav-link" data-scroll-target="#document-navigation">Document Navigation</a></li>
   <li><a href="#notebook-editor" id="toc-notebook-editor" class="nav-link" data-scroll-target="#notebook-editor">Notebook Editor</a>
   <ul class="collapse">
   <li><a href="#yaml-front-matter" id="toc-yaml-front-matter" class="nav-link" data-scroll-target="#yaml-front-matter">YAML Front Matter</a></li>
   <li><a href="#markdown-cells" id="toc-markdown-cells" class="nav-link" data-scroll-target="#markdown-cells">Markdown Cells</a></li>
   <li><a href="#output-options" id="toc-output-options" class="nav-link" data-scroll-target="#output-options">Output Options</a></li>
   <li><a href="#cell-execution" id="toc-cell-execution" class="nav-link" data-scroll-target="#cell-execution">Cell Execution</a></li>
+  <li><a href="#converting-notebooks" id="toc-converting-notebooks" class="nav-link" data-scroll-target="#converting-notebooks">Converting Notebooks</a></li>
   </ul></li>
-  <li><a href="#plain-text-editor" id="toc-plain-text-editor" class="nav-link" data-scroll-target="#plain-text-editor">Plain Text Editor</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/tools/vscode.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -996,47 +1001,101 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>Quarto can render Jupyter notebooks represented as plain text (<code>.qmd</code>) or as a normal notebook file (<code>.ipynb</code>). The <a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto">Quarto VS Code Extension</a> includes many tools that enhance working these documents, including:</p>
 <ul>
+<li>Integrated render and preview for Quarto documents.</li>
 <li>Syntax highlighting for markdown and embedded languages</li>
-<li>Completion for embedded languages (e.g.&nbsp;Python, R, Julia, LaTeX, etc.)</li>
-<li>Commands and key-bindings for running cells and selected line(s)</li>
+<li>Completion and diagnostics for YAML options</li>
+<li>Completion for embedded languages (e.g.&nbsp;Python, R, Julia, etc.)</li>
+<li>Commands and key-bindings for running cells and selected lines.</li>
 </ul>
 <p>The Quarto extension integrates directly with the Jupyter, R, and Julia extensions. For example, here the Quarto extension runs a Python cell and shows contextual help for Python functions:</p>
-<p><img src="../../docs/computations/images/python-vscode.png" class="border img-fluid"></p>
-<p>Alternatively, if you are editing an <code>.ipynb</code> rather than a <code>.qmd</code>, you can use the <a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks">VS Code Jupyter Notebook UI</a> as your editor. Here is the “Hello, Quarto” example from the homepage inside VS Code:</p>
+<p><img src="../../docs/computations/images/python-vscode.png" class="border preview-image img-fluid"></p>
+<p>Alternatively, if you are editing an <code>.ipynb</code> rather than a <code>.qmd</code>, you can use the <a href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks">VS Code Jupyter Notebook UI</a> as your editor. Here is the “Hello, Quarto” example from the homepage inside the VS Code notebook editor:</p>
 <p><img src="images/vscode.png" class="border img-fluid" alt="An ipynb file open in VSCode. The contents of this page are the same as the first part of the Getting Started: Welcome section of this website."></p>
 <p>If you look at the source code you’ll note that YAML options were provided both at the top of the document and within the code cell. We’ll describe working with YAML options in more detail below.</p>
 </section>
-<section id="workflow" class="level2">
-<h2 class="anchored" data-anchor-id="workflow">Workflow</h2>
-<p>The ideal workflow for authoring Quarto notebooks in VS Code is to run the <code>quarto preview</code> command from within a terminal:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview notebook.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The document will be rendered and a web browser with a “live preview” opened. Position this browser so that you can see it as you edit and save your <code>.ipynb</code> or <code>.qmd</code> file:</p>
-<p><img src="images/vscode-preview.png" class="img-fluid" alt="Two windows arranged side by side. The window on the left is an ipynb file opened in VSCode. The contents of this document are the same as the first part of the Getting Started: Welcome section of this website. The contents of this document are rendered by Quarto in the window on the right."></p>
-<p>Every time you save within VS Code the preview will be automatically updated. You can use <code>quarto preview</code> for both HTML and PDF output.</p>
-<p>In the screenshot above you’ll note that we ran <code>quarto preview</code> inside a VS Code terminal window—this is generally recommended so that you can see progress and error messages when renders occur.</p>
-<p>Preview uses the default format specified within the document—to use an alternate format pass the <code>--to</code> option to <code>quarto preview</code>. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> preview notebook.ipynb <span class="at">--to</span> pdf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="render-and-preview" class="level2">
+<h2 class="anchored" data-anchor-id="render-and-preview">Render and Preview</h2>
+<p>The Quarto VS Code extension includes commands and keyboard shortcuts for rendering Quarto documents (both standalone and within websites or books). After rendering, <code>quarto preview</code> is used behind the scenes to provide a preview pane within VS Code alongside your document:</p>
+<p><img src="images/vscode-render.png" class="img-fluid" alt="Two windows arranged side by side. The window on the left is an ipynb file opened in VSCode. The contents of this document are the same as the first part of the Getting Started: Welcome section of this website. The contents of this document are rendered by Quarto in the window on the right."></p>
+<p>To render and preview, execute the <strong>Quarto: Render</strong> command. You can alternatively use the <kbd>Ctrl+Shift+K</kbd> keyboard shortcut, or the Render button at the top right of the editor:</p>
+<p><img src="images/vscode-render-button.png" class="border img-fluid" alt="The top of the Visual Studio code editor. The right side of the editor tab area includes a Render button."></p>
+<p>Note that on the Mac you should use <code>Cmd</code> rather than <code>Ctrl</code> as the prefix for all Quarto keyboard shortcuts.</p>
+<p>Additionally, there are commands available to render specific formats. Here is a complete list of the supported render commands:</p>
+<ul>
+<li>Quarto: Render</li>
+<li>Quarto: Render HTML</li>
+<li>Quarto: Render PDF</li>
+<li>Quarto: Render Word</li>
+</ul>
+<p>The <strong>Quarto: Render</strong> command renders the default format of the currently active document. The other commands render specific formats (regardless of the document’s default format). The <kbd>Ctrl+Shift+K</kbd> keyboard shortcut will re-execute the most recently executed render command.</p>
 <div class="callout-note callout callout-style-simple">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-body-container">
-<p>Note that if you are authoring a book or website you can also use <a href="../../docs/websites/index.html#workflow"><code>quarto preview</code></a> on the project directory, which will create a live preview for the entire project.</p>
+<p>Embedded preview is currently supported for HTML and PDF based formats (including <code>revealjs</code> and <code>beamer</code> slideshows), however for Word and other formats you need to use the appropriate external program to preview the output.</p>
 </div>
 </div>
 </div>
-<section id="render-without-preview" class="level4">
-<h4 class="anchored" data-anchor-id="render-without-preview">Render without Preview</h4>
-<p>You can render a notebook (or group of notebooks) without previewing them using the <code>quarto render</code> command:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render notebook.ipynb</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Use the <code>--to</code> argument to render to a specific format:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render notebook.ipynb <span class="at">--to</span> docx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="external-preview" class="level4">
+<h4 class="anchored" data-anchor-id="external-preview">External Preview</h4>
+<p>If you prefer to use an external browser for preview (or have no preview triggered at all by rendering document) you can use the Preview Type option to specify an alternate behavior:</p>
+<p><img src="images/vscode-preview-settings.png" class="border img-fluid"></p>
 </section>
+</section>
+<section id="code-cells" class="level2">
+<h2 class="anchored" data-anchor-id="code-cells">Code Cells</h2>
+<p>There are a variety of tools that make it easier to edit and execute code cells. Editing tools include syntax highlighting, code folding, code completion, and signature tips:</p>
+<p><img src="images/vscode-code-cell.png" class="img-fluid"></p>
+<p>For Python, R, and Julia cells, commands are available to execute the current cell, previous cells, or the currently selected line(s). Cell output is shown side by side in the Jupyter interactive console:</p>
+<p><img src="images/vscode-execute-cell.png" class="img-fluid"></p>
+<p>Execute the current cell with <code>Ctrl+Shift+Enter</code>, the current line(s) with <code>Ctrl+Enter</code>, or previous cells with <code>Ctrl+Alt+P</code> (note that on the Mac you should use <code>Cmd</code> rather than <code>Ctrl</code> as the prefix for all Quarto keyboard shortcuts).</p>
+<p>Enhanced features for embedded languages (e.g.&nbsp;completion, code execution) can be enabled by installing the most recent version(s) of these extensions:</p>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">Python Extension</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r">R Extension</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=julialang.language-julia">Julia Extension</a></li>
+</ul>
+<p>Note that you can quickly insert a new code cell using the <code>Ctrl+Shift+I</code> keyboard shortcut.</p>
+</section>
+<section id="contextual-assistance" class="level2">
+<h2 class="anchored" data-anchor-id="contextual-assistance">Contextual Assistance</h2>
+<p>You’ll notice a Quarto panel located at the bottom of VS Code alongside the existing Terminal and Output panels. This panel shows contextual assistance depending on the current cursor location:</p>
+<ol type="1">
+<li>Help/documentation is shown when editing code</li>
+<li>A realtime preview of equations is shown when editing LaTeX math</li>
+<li>Thumbnail previews are shown when your cursor is located on a markdown image.</li>
+</ol>
+<p>For example, below help on the matplotlib <code>plot()</code> function is shown automatically when the cursor is located on the function:</p>
+<p><img src="../../docs/computations/images/python-vscode.png" class="border img-fluid"></p>
+<p>Here a preview of the currently edited LaTeX quation is shown in the same pane:</p>
+<p><img src="images/vscode-equation.png" class="img-fluid"></p>
+</section>
+<section id="yaml-intelligence" class="level2">
+<h2 class="anchored" data-anchor-id="yaml-intelligence">YAML Intelligence</h2>
+<p>YAML code completion is available for project files, YAML front matter, and executable cell options:</p>
+<p><img src="images/vscode-yaml-completion.png" class="img-fluid"></p>
+<p>If you have incorrect YAML it will also be highlighted when documents are saved:</p>
+<p><img src="images/vscode-yaml-diagnostics.png" class="img-fluid"></p>
+<p>Note that YAML intelligence features require version 0.9.44 or later of the <a href="https://github.com/quarto-dev/quarto-cli/releases/latest">Quarto CLI</a>.</p>
+</section>
+<section id="code-snippets" class="level2">
+<h2 class="anchored" data-anchor-id="code-snippets">Code Snippets</h2>
+<p>Code snippets are templates that make it easier to enter repeating code patterns (e.g.&nbsp;code blocks, callouts, divs, etc.). Execute the <strong>Insert Snippet</strong> command within a Quarto document to insert a markdown snippet:</p>
+<p><img src="images/vscode-snippets.png" class="img-fluid"></p>
+</section>
+<section id="document-navigation" class="level2">
+<h2 class="anchored" data-anchor-id="document-navigation">Document Navigation</h2>
+<p>If you have a large document use the outline view for quick navigation between sections:</p>
+<p><img src="images/vscode-outline.png" class="img-fluid"></p>
+<p>You can also use the <code>Go to Symbol in Editor</code> command (<code>Ctrl+Shift+O</code>) keyboard shortcut for type-ahead navigation of the current document’s outline.</p>
+<p>Use the <code>Go to File</code> command (<code>Ctrl+P</code>) to navigate to other files and the <code>Go to Symbol in Workspace</code> command (<code>Ctrl+T</code>) for type-ahead navigation to all headings in the workspace:</p>
+<p><img src="images/vscode-workspace-symbols.png" class="img-fluid"></p>
 </section>
 <section id="notebook-editor" class="level2">
 <h2 class="anchored" data-anchor-id="notebook-editor">Notebook Editor</h2>
-<p>Here we’ll review the basics of editing <code>.ipynb</code> notebooks for use with Quarto. If you prefer a plain-text (<code>.qmd</code>) workflow see the <a href="#plain-text-editor">Plain Text Editor</a> section below.</p>
+<p>In addition to editing Quarto document as plain-text <code>.qmd</code> files, you can also use the VS Code Notebook Editor to author <code>.ipynb</code> notebooks that are rendered with Quarto. Next we’ll review the basics of editing <code>.ipynb</code> notebooks for use with Quarto.</p>
 <section id="yaml-front-matter" class="level3">
 <h3 class="anchored" data-anchor-id="yaml-front-matter">YAML Front Matter</h3>
 <p>The first cell of your notebook should be a <strong>Raw</strong> cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a call to <strong>Raw</strong> using the cell type menu at the bottom right of the cell:</p>
@@ -1059,58 +1118,20 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <section id="cell-execution" class="level3">
 <h3 class="anchored" data-anchor-id="cell-execution">Cell Execution</h3>
 <p>Note that when rendering an <code>.ipynb</code> Quarto <strong>will not</strong> execute the cells within the notebook by default (the presumption being that you already executed them while editing the notebook). If you want to execute the cells you can pass the <code>--execute</code> flag to render:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render notebook.ipynb <span class="at">--execute</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render notebook.ipynb <span class="at">--execute</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>You can also specify this behavior within the notebook’s YAML front matter:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Notebook"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span><span class="at"> </span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"My Notebook"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">execute</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">enabled</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>There are many other execution options available (e.g.&nbsp;to control caching, optimizing kernel start-up time, etc.). Learn more about these options in <a href="../../docs/computations/execution-options.html">Execution Options</a>.</p>
 </section>
-</section>
-<section id="plain-text-editor" class="level2">
-<h2 class="anchored" data-anchor-id="plain-text-editor">Plain Text Editor</h2>
-<p>It’s also possible to edit Jupyter notebooks in a plain-text markdown format. You might prefer this if there is more narrative than code in your notebook or if you want to use a file format that is more version control friendly.</p>
-<p>Here is the plain text markdown version of the notebook used in the previous examples:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Matplotlib Demo"</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Norah Smith"</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "5/22/2021"</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Polar Axis</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>For a demonstration of a line plot on a polar axis, see @fig-polar.</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-polar</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "A line plot on a polar axis"</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(subplot_kw<span class="op">=</span>{<span class="st">'projection'</span>: <span class="st">'polar'</span>})</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that we’ve added the <code>jupyter: python3</code> option to the YAML front matter to indicate which Jupyter kernel to render with. You would render this document with:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render basics-jupyter.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Markdown files with embedded code chunks should use the file extension <code>.qmd</code>.</p>
-<p>The <a href="https://marketplace.visualstudio.com/items?itemName=quarto.quarto">Quarto VS Code Extension</a> includes extensive support for editing plain text <code>.qmd</code> files, including the ability to execute code line by line or a cell at a time.</p>
-<section id="converting-notebooks" class="level4">
-<h4 class="anchored" data-anchor-id="converting-notebooks">Converting Notebooks</h4>
+<section id="converting-notebooks" class="level3">
+<h3 class="anchored" data-anchor-id="converting-notebooks">Converting Notebooks</h3>
 <p>You can convert between .ipynb and .qmd representations of a notebook using the <code>quarto convert</code> command. For example:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> convert basics-jupyter.ipynb</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> convert basics-jupyter.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> convert basics-jupyter.ipynb</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> convert basics-jupyter.qmd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>See <code>quarto convert help</code> for additional details on converting notebooks.</p>
 
 
