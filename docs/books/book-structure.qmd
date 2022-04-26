@@ -75,6 +75,34 @@ You should include a `div` with the id `#refs` at the location in your book wher
 
 Note that you can change the chapter title to whatever your like, remove `.unnumbered` to have it be numbered like other chapters, and add other content before or after the bibliography as necessary.
 
+## Creating an Index
+
+For PDF output, you can create an index using the LaTeX [makeidx](https://ctan.org/pkg/makeidx?lang=en) package along with the `\index` command.
+
+To add an index to the PDF output for a book, add these `header-includes` and `include-after` entries to your `pdf` format configuration in `_quarto.yml`:
+
+```yaml
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+    header-includes: |
+      \usepackage{makeidx}
+      \makeindex
+    include-after: |
+      \printindex
+```
+
+Then, add `\index{entry}` commands wherever you want an index entry. For example:
+
+```latex
+Markdown\index{Markdown} allows you to write using
+an easy-to-read, easy-to-write plain text format.
+```
+
+Note that `\index` commands are automatically ignored for non-PDF output.
+
 ## Parts & Appendices
 
 You can divide your book into parts using `part` within the book `chapters`. For example:
