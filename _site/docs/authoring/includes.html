@@ -968,8 +968,8 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
    
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#content-includes" id="toc-content-includes" class="nav-link" data-scroll-target="#content-includes">Content Includes</a></li>
-  <li><a href="#computational-includes" id="toc-computational-includes" class="nav-link" data-scroll-target="#computational-includes">Computational Includes</a></li>
+  <li><a href="#content" id="toc-content" class="nav-link" data-scroll-target="#content">Content</a></li>
+  <li><a href="#computations" id="toc-computations" class="nav-link" data-scroll-target="#computations">Computations</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/authoring/includes.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -996,13 +996,12 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>The <code>&lt;include/&gt;</code> directive is a is a convenient way to re-use content across documents. Includes work for plain markdown content as well as for <code>.qmd</code> files with executable code cells (note however that the cells must all use the same engine – i.e.&nbsp;knitr or jupyter, but not both).</p>
-<p>To include a file, add the <code>&lt;include/&gt;</code> tag at the location in your document where you want it included:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;include</span> <span class="er">file</span><span class="ot">=</span><span class="st">"_content.qmd"</span><span class="kw">/&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that the include tag is closed with <code>/&gt;</code> (to indicate that it has no content). Be sure to remember this when using includes!</p>
+<p>Includes are a convenient way to re-use content across documents. Includes work for plain markdown content as well as for <code>.qmd</code> files with executable code cells (note however that the cells must all use the same engine – i.e.&nbsp;knitr or jupyter, but not both).</p>
+<p>To include a file, add the <code>{{&lt; include &gt;}}</code> shortcode at the location in your document where you want it included:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="content-includes" class="level2">
-<h2 class="anchored" data-anchor-id="content-includes">Content Includes</h2>
+<section id="content" class="level2">
+<h2 class="anchored" data-anchor-id="content">Content</h2>
 <p>A concrete example would be if you have several articles about a topic that share a common introduction. Here we have an article titled “Revealjs Presentations” that wants to include some basic information on presentations not specific to Revealjs (we do that by including <code>_basics.qmd</code>):</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Revealjs Presentations"</span></span>
@@ -1010,29 +1009,37 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Revealjs Presentations are a great way to present</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>your ideas to others!</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Revealjs Presentations are a great way to</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>present your ideas to others!</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;include</span> <span class="er">file</span><span class="ot">=</span><span class="st">"_basics.qmd"</span><span class="kw">/&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>{{&lt; include _basics.qmd &gt;}}</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Revealjs Options</span></span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>More content here...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that we use an underscore (<code>_</code>) prefix for the included file. You should always use an underscore prefix with included files so that they are automatically ignored (i.e.&nbsp;not treated as standalone files) by a <code>quarto render</code> of a project).</p>
 </section>
-<section id="computational-includes" class="level2">
-<h2 class="anchored" data-anchor-id="computational-includes">Computational Includes</h2>
+<section id="computations" class="level2">
+<h2 class="anchored" data-anchor-id="computations">Computations</h2>
 <p>You can also include files with computational cells. For example, here we include a <code>.qmd</code> that does some data preprocessing that we want shared across multiple documents:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "My Document"</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;include</span> <span class="er">file</span><span class="ot">=</span><span class="st">"_data.qmd"</span><span class="kw">/&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>{{&lt; include _data.qmd &gt;}}</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>Use the data...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>A couple of important things to remember when using computational includes:</p>
 <ol type="1">
-<li>All computations still share a single engine (e.g.&nbsp;knitr or jupyter)</li>
-<li>Computational includes work only in <code>.qmd</code> files (they don’t work in <code>.ipynb</code> notebook files)</li>
+<li><p>All computations still share a single engine (e.g.&nbsp;knitr or jupyter)</p></li>
+<li><p>Computational includes work only in <code>.qmd</code> files (they don’t work in <code>.ipynb</code> notebook files)</p></li>
 </ol>
+<style type="text/css">
+code span.in {
+  font-style:  normal;
+}
+</style>
 
 
 </section>
