@@ -3673,5 +3673,103 @@
     "title": "Open Source License",
     "section": "",
     "text": "The Quarto source code is available at https://github.com/quarto-dev/\nQuarto is a registered trademark of RStudio. Please see our trademark policy for guidelines on usage of the Quarto trademark.\nQuarto also makes use of several other open-source projects, the distribution of which is subject to their respective licenses. Major components and their licenses include:\n\n\n\nProject\nLicense\n\n\n\n\nPandoc\nGNU GPL v2\n\n\nBootstrap 5.0\nMIT\n\n\nBootswatch 5.0\nMIT\n\n\nDeno\nMIT\n\n\nesbuild\nMIT\n\n\nDart Sass\nMIT\n\n\nObservable Runtime\nISC"
+  },
+  {
+    "objectID": "docs/authoring/filters.html",
+    "href": "docs/authoring/filters.html",
+    "title": "Filters",
+    "section": "",
+    "text": "If the base features of Pandoc and Quarto don’t do exactly what you need, you can very likely create a Pandoc Filter that bridges the gap. It’s also possible to create filters that preprocess the contents of Jupyter Notebooks (.ipynb) before they are rendered by Quarto and Pandoc. We’ll describe each of these filters in turn below."
+  },
+  {
+    "objectID": "docs/authoring/filters.html#pandoc-filters",
+    "href": "docs/authoring/filters.html#pandoc-filters",
+    "title": "Filters",
+    "section": "Pandoc Filters",
+    "text": "Pandoc Filters\nPandoc consists of a set of readers and writers. When converting a document from one format to another, text is parsed by a reader into pandoc’s intermediate representation of the document—an “abstract syntax tree” or AST—which is then converted by the writer into the target format. The pandoc AST format is defined in the module Text.Pandoc.Definition in the pandoc-types package.\nA “filter” is a program that modifies the AST, between the reader and the writer.\nINPUT --reader--> AST --filter--> AST --writer--> OUTPUT\nPandoc’s built-in citation processing is implemented as a filter, as are many of Quarto’s extensions (e.g. cross-references, figure layout, etc.). Some other examples include:\n\n\n\n\n\n\n\nFilter\nDescription\n\n\n\n\nspellcheck\nChecks the spelling of words in the body of the document (omitting metadata).\n\n\npandoc-quotes\nReplaces non-typographic quotation marks with typographic ones for languages other than American English\n\n\n\n\nUsing Filters\nAdd one or more filters to document rendering using the filters option. For example:\nfilters:\n   - spellcheck.lua\nBy default, user filters are run after Quarto’s built-in filters. For some filters you’ll want to modify this behavior For example, here we arrange to run pandoc-quotes.lua before Quarto’s filters and spellcheck.lua after:\nfilters:\n  - pandoc-quotes.lua\n  - quarto\n  - spellcheck.lua\n\n\nWriting Filters\nYou can write Pandoc filters using Lua (via Pandoc’s built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process.\nWe strongly recommend using Lua Filters, which have the following advantages:\n\nNo external dependencies\nHigh performance (no serialization or process execution overhead)\nAccess to Pandoc’s library of Lua helper functions.\n\nSee the documentation on Writing Lua Filters for additional details.\nIf you want to write a JSON filter, see the documentation on Writing JSON filters."
+  },
+  {
+    "objectID": "docs/authoring/filters.html#notebook-filters",
+    "href": "docs/authoring/filters.html#notebook-filters",
+    "title": "Filters",
+    "section": "Notebook Filters",
+    "text": "Notebook Filters\nWhenever you use Jupyter for embedded computations a notebook (.ipynb) is part of the rendering pipeline. This is naturally the case for rendering .ipynb files directly, however it is also the case for .qmd files that have embedded Julia or Python cells (in which case a temporary .ipynb is constructed). This notebook is ultimately converted into markdown and then rendered by Pandoc to the specified output format(s).\nYou may wish to do some pre-processing on the notebook prior to its conversion to markdown. This can be accomplished by specifying one or or more ipynb-filters. These filters are passed the JSON representation of the notebook on stdin and should write a transformed JSON representation to stdout.\nFor example, this notebook filter uses the nbformat package to read a notebook, prepend a comment to the source of each code cell, and then write it back to stdout:\nimport sys\nimport nbformat\n\n# read notebook from stdin\nnb = nbformat.reads(sys.stdin.read(), as_version = 4)\n\n# prepend a comment to the source of each cell\nfor index, cell in enumerate(nb.cells):\n  if cell.cell_type == 'code':\n     cell.source = \"# comment\\n\" + cell.source\n  \n# write notebook to stdout \nnbformat.write(nb, sys.stdout)\nYou can arrange for this filter to be run using the ipynb-filters option (specified at either the document or project level):\n---\nipynb-filters:\n  - filter.py\n---\nNote that the current working directory for the filter will be set to the location of the input notebook."
+  },
+  {
+    "objectID": "docs/authoring/shortcodes.html",
+    "href": "docs/authoring/shortcodes.html",
+    "title": "Shortcodes",
+    "section": "",
+    "text": "Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to Hugo shortcodes and WordPress shortcodes.\nQuarto currently supports just two shortcodes: meta and var. Additional shortcodes (e.g. for inserting videos, tweets, gists, etc.) will be developed soon."
+  },
+  {
+    "objectID": "docs/authoring/shortcodes.html#meta",
+    "href": "docs/authoring/shortcodes.html#meta",
+    "title": "Shortcodes",
+    "section": "meta",
+    "text": "meta\nThe meta shortcode allows you to insert content from Pandoc metadata (e.g. YAML at the top of the document and/or in _quarto.yml).\nFor example, the following shortcode inserts the value of the title field from YAML metadata:\n{{< meta title >}}\nYou can dereference sub-keys using the dot (.) delimiter. For example:\n{{< meta author.affiliation >}}"
+  },
+  {
+    "objectID": "docs/authoring/shortcodes.html#var",
+    "href": "docs/authoring/shortcodes.html#var",
+    "title": "Shortcodes",
+    "section": "var",
+    "text": "var\nThe var shortcode enables you to insert content from a project-level _variables.yml file. Create this file alongside your _quarto.yml project file, and then include references to those variables within any document in your project.\nVariables can be either simple values or can include arbitrary markdown content. To define variables, create a _variables.yml file in the root directory of your project. For example:\nversion: 1.2\n\nemail:\n  info: info@example.com\n  support: support@example.com\n\nengine:\n  jupyter: \"[Jupyter](https://jupyter.org)\"\n  knitr: \"[Knitr](<https://yihui.name/knitr>)\"\nNote that the engine variable values include markdown for hyperlinks.\nTo include the value of a variable, use the {{< var >}} shortcode, for example:\nVersion {{< var version >}} is a minor upgrade.\n\nPlease contact us at {{< var email.info >}}.\n\nQuarto includes {{< var engine.jupyter >}} and \n{{< var engine.knitr >}} computation engines."
+  },
+  {
+    "objectID": "docs/authoring/shortcodes.html#env",
+    "href": "docs/authoring/shortcodes.html#env",
+    "title": "Shortcodes",
+    "section": "env",
+    "text": "env\nThe env shortcode enables you to read values from environment variables. For example:\nVersion {{ env PRODUCT_VERSION }} is a minor upgrade."
+  },
+  {
+    "objectID": "docs/authoring/shortcodes.html#escaping",
+    "href": "docs/authoring/shortcodes.html#escaping",
+    "title": "Shortcodes",
+    "section": "Escaping",
+    "text": "Escaping\nIf you are writing documentation about using shortcodes (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:\n\nEscape the shortcode reference like this:\n{{</* var version */>}}\nAdd a shortcodes=false attribute to any code block you want to prevent processing of shortcodes within:\n{{< var version >}}\n```"
+  },
+  {
+    "objectID": "docs/authoring/includes.html",
+    "href": "docs/authoring/includes.html",
+    "title": "Includes",
+    "section": "",
+    "text": "The <include/> directive is a is a convenient way to re-use content across documents. Includes work for plain markdown content as well as for .qmd files with executable code cells (note however that the cells must all use the same engine – i.e. knitr or jupyter, but not both).\nTo include a file, add the <include/> tag at the location in your document where you want it included:\n<include file=\"_content.qmd\"/>\nNote that the include tag is closed with /> (to indicate that it has no content). Be sure to remember this when using includes!"
+  },
+  {
+    "objectID": "docs/authoring/includes.html#example",
+    "href": "docs/authoring/includes.html#example",
+    "title": "Includes",
+    "section": "Example",
+    "text": "Example\nA concrete example would be if you have several articles about a topic that share a common introduction. Here we have an article titled “Revealjs Presentations” that wants to include some basic information on presentations not specific to Revealjs:\n---\ntitle: \"Revealjs Presentations\"\n---\n\n## Overview\n\nRevealjs Presentations are a great way to present\nyour ideas to others!\n\n<include file=\"_basics.qmd\"/>\n\n## Revealjs Options\n\nMore content here...\nIn the examples above the names of included files are prefaced with an underscore. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standalone files) by a quarto render of your project."
+  },
+  {
+    "objectID": "docs/authoring/includes.html#content",
+    "href": "docs/authoring/includes.html#content",
+    "title": "Includes",
+    "section": "Content",
+    "text": "Content\nA concrete example would be if you have several articles about a topic that share a common introduction. Here we have an article titled “Revealjs Presentations” that wants to include some basic information on presentations not specific to Revealjs (we do that by including the _basics.qmd):\n---\ntitle: \"Revealjs Presentations\"\n---\n\n## Overview\n\nRevealjs Presentations are a great way to present\nyour ideas to others!\n\n<include file=\"_basics.qmd\"/>\n\n## Revealjs Options\n\nMore content here...\nNote that we use an underscore (_) prefix for the included file. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standaloen files) by a quarto render of a project).\nIn the examples above the names of included files are prefaced with an underscore. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standalone files) by a quarto render of your project."
+  },
+  {
+    "objectID": "docs/authoring/includes.html#content-includes",
+    "href": "docs/authoring/includes.html#content-includes",
+    "title": "Includes",
+    "section": "Content Includes",
+    "text": "Content Includes\nA concrete example would be if you have several articles about a topic that share a common introduction. Here we have an article titled “Revealjs Presentations” that wants to include some basic information on presentations not specific to Revealjs (we do that by including _basics.qmd):\n---\ntitle: \"Revealjs Presentations\"\n---\n\n## Overview\n\nRevealjs Presentations are a great way to present\nyour ideas to others!\n\n<include file=\"_basics.qmd\"/>\n\n## Revealjs Options\n\nMore content here...\nNote that we use an underscore (_) prefix for the included file. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standalone files) by a quarto render of a project)."
+  },
+  {
+    "objectID": "docs/authoring/includes.html#computation-includes",
+    "href": "docs/authoring/includes.html#computation-includes",
+    "title": "Includes",
+    "section": "Computation Includes",
+    "text": "Computation Includes"
+  },
+  {
+    "objectID": "docs/authoring/includes.html#computational-includes",
+    "href": "docs/authoring/includes.html#computational-includes",
+    "title": "Includes",
+    "section": "Computational Includes",
+    "text": "Computational Includes\nYou can also include files with computational cells. For example, here we include a .qmd that does some data preprocessing that we want shared across multiple documents:\n---\ntitle: \"My Document\"\n---\n\n<include file=\"_data.qmd\"/>\nA couple of important things to remember when using computational includes:\n\nAll computations still share a single engine (e.g. knitr or jupyter)\nComputational includes work only in .qmd files (they don’t work in .ipynb notebook files)"
   }
 ]
