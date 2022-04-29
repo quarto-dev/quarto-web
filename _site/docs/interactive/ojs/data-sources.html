@@ -1091,14 +1091,23 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 </div>
 <p>Note that we could have done the same thing using Python (the <code>ojs_define</code> function is available in any document that uses R or Python).</p>
 <p>Now we plot the data using <a href="https://github.com/observablehq/plot">Observable Plot</a>:</p>
-<pre class="{ojs}"><code>yearlyChart = Plot.plot({
-  marks: [
-    Plot.line(transpose(co2data), 
-      {x: "year", y: "max"}, 
-      { stroke: "black" }
-    )
-  ]}
-)</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" data-startfrom="80" data-source-offset="9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java" style="counter-reset: source-line 79;"><span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>yearlyChart <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span><span class="op">({</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  marks<span class="op">:</span> <span class="op">[</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">line</span><span class="op">(</span><span class="fu">transpose</span><span class="op">(</span>co2data<span class="op">),</span> </span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span>x<span class="op">:</span> <span class="st">"year"</span><span class="op">,</span> y<span class="op">:</span> <span class="st">"max"</span><span class="op">},</span> </span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>      <span class="op">{</span> stroke<span class="op">:</span> <span class="st">"black"</span> <span class="op">}</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>  <span class="op">]}</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
 <p>See the <a href="../../../docs/interactive/ojs/examples/noaa-co2.html">NOAA C02</a> example for the full source code.</p>
 <section id="transpose" class="level3">
 <h3 class="anchored" data-anchor-id="transpose">Transpose</h3>
@@ -1121,40 +1130,40 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <h2 class="anchored" data-anchor-id="web-apis">Web APIs</h2>
 <p>You can use the <a href="https://github.com/d3/d3-fetch/blob/v3.0.1/README.md#json"><code>d3.json()</code></a> function to read JSON data from web services and data sources. Here we query the GitHub API for data on contributions to the Python pandas package:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6" data-startfrom="80" data-source-offset="9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java" style="counter-reset: source-line 79;"><span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="fu">require</span><span class="op">(</span><span class="er">'</span>d3<span class="er">'</span><span class="op">)</span></span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>contributors <span class="op">=</span> await d3<span class="op">.</span><span class="fu">json</span><span class="op">(</span></span>
-<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://api.github.com/repos/pandas-dev/pandas/stats/contributors"</span></span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> contributors<span class="op">.</span><span class="fu">map</span><span class="op">(</span>contributor <span class="op">=&gt;</span> <span class="op">{</span></span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> author <span class="op">=</span> contributor<span class="op">.</span><span class="fu">author</span><span class="op">;</span></span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">{</span></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> author<span class="op">.</span><span class="fu">login</span><span class="op">,</span></span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>    title<span class="op">:</span> author<span class="op">.</span><span class="fu">login</span><span class="op">,</span></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>    group<span class="op">:</span> author<span class="op">.</span><span class="fu">type</span><span class="op">,</span></span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    value<span class="op">:</span> contributor<span class="op">.</span><span class="fu">total</span></span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
-<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6" data-startfrom="122" data-source-offset="9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java" style="counter-reset: source-line 121;"><span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a>d3 <span class="op">=</span> <span class="fu">require</span><span class="op">(</span><span class="er">'</span>d3<span class="er">'</span><span class="op">)</span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a>contributors <span class="op">=</span> await d3<span class="op">.</span><span class="fu">json</span><span class="op">(</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://api.github.com/repos/pandas-dev/pandas/stats/contributors"</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> contributors<span class="op">.</span><span class="fu">map</span><span class="op">(</span>contributor <span class="op">=&gt;</span> <span class="op">{</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a>  <span class="dt">const</span> author <span class="op">=</span> contributor<span class="op">.</span><span class="fu">author</span><span class="op">;</span></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">{</span></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a>    name<span class="op">:</span> author<span class="op">.</span><span class="fu">login</span><span class="op">,</span></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a>    title<span class="op">:</span> author<span class="op">.</span><span class="fu">login</span><span class="op">,</span></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a>    group<span class="op">:</span> author<span class="op">.</span><span class="fu">type</span><span class="op">,</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a>    value<span class="op">:</span> contributor<span class="op">.</span><span class="fu">total</span></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
-<div id="ojs-cell-2-1" data-nodetype="declaration">
+<div id="ojs-cell-3-1" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
-<div id="ojs-cell-2-2" data-nodetype="declaration">
+<div id="ojs-cell-3-2" data-nodetype="declaration">
 
 </div>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
-<div id="ojs-cell-2-3" data-nodetype="declaration">
+<div id="ojs-cell-3-3" data-nodetype="declaration">
 
 </div>
 </div>
@@ -1162,11 +1171,11 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 </div>
 <p>View the data sorted by number of commits:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7" data-startfrom="122" data-source-offset="9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java" style="counter-reset: source-line 121;"><span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
-<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span><span class="op">(</span>commits<span class="op">,</span> <span class="op">{</span> sort<span class="op">:</span> <span class="st">"value"</span><span class="op">,</span> reverse<span class="op">:</span> <span class="kw">true</span> <span class="op">})</span></span>
-<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7" data-startfrom="142" data-source-offset="9"><pre class="sourceCode java code-with-copy"><code class="sourceCode java" style="counter-reset: source-line 141;"><span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>```<span class="op">{</span>ojs<span class="op">}</span></span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>Inputs<span class="op">.</span><span class="fu">table</span><span class="op">(</span>commits<span class="op">,</span> <span class="op">{</span> sort<span class="op">:</span> <span class="st">"value"</span><span class="op">,</span> reverse<span class="op">:</span> <span class="kw">true</span> <span class="op">})</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<div id="ojs-cell-3" data-nodetype="expression">
+<div id="ojs-cell-4" data-nodetype="expression">
 
 </div>
 </div>
@@ -1190,7 +1199,7 @@ if (!kPlatformMac) {
 
 </script>
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = {\n  const co2data = await FileAttachment(\"co2_mm.csv\")\n    .csv({ typed: true } );\n  return co2data.map(d => { \n    d[\"decimal date\"] = Number(d[\"decimal date\"]);\n    d.average = Number(d.average); \n    return d; \n  });\n}\nPlot.plot({\n  marks: [\n    Plot.line(data, \n      { x: \"decimal date\", y: \"average\"}, \n      { stroke: \"black\" }\n    )\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"d3 = require('d3')\n\ncontributors = await d3.json(\n  \"https://api.github.com/repos/pandas-dev/pandas/stats/contributors\"\n)\n\ncommits = contributors.map(contributor => {\n  const author = contributor.author;\n  return {\n    name: author.login,\n    title: author.login,\n    group: author.type,\n    value: contributor.total\n  }\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"Inputs.table(commits, { sort: \"value\", reverse: true })\n"}]}
+{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"data = {\n  const co2data = await FileAttachment(\"co2_mm.csv\")\n    .csv({ typed: true } );\n  return co2data.map(d => { \n    d[\"decimal date\"] = Number(d[\"decimal date\"]);\n    d.average = Number(d.average); \n    return d; \n  });\n}\nPlot.plot({\n  marks: [\n    Plot.line(data, \n      { x: \"decimal date\", y: \"average\"}, \n      { stroke: \"black\" }\n    )\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"yearlyChart = Plot.plot({\n  marks: [\n    Plot.line(transpose(co2data), \n      {x: \"year\", y: \"max\"}, \n      { stroke: \"black\" }\n    )\n  ]}\n)\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"d3 = require('d3')\n\ncontributors = await d3.json(\n  \"https://api.github.com/repos/pandas-dev/pandas/stats/contributors\"\n)\n\ncommits = contributors.map(contributor => {\n  const author = contributor.author;\n  return {\n    name: author.login,\n    title: author.login,\n    group: author.type,\n    value: contributor.total\n  }\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"Inputs.table(commits, { sort: \"value\", reverse: true })\n"}]}
 </script>
 <script type="module">
 window._ojs.paths.runtimeToDoc = "../../docs/interactive/ojs";
