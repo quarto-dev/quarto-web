@@ -159,7 +159,7 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <meta name="twitter:card" content="summary">
 </head>
 
-<body class="floating nav-fixed">
+<body class="nav-sidebar floating nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -968,10 +968,22 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
    
   <ul>
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
-  <li><a href="#meta" id="toc-meta" class="nav-link" data-scroll-target="#meta">meta</a></li>
+  <li><a href="#built-in-shortcodes" id="toc-built-in-shortcodes" class="nav-link" data-scroll-target="#built-in-shortcodes">Built-In Shortcodes</a>
+  <ul class="collapse">
   <li><a href="#var" id="toc-var" class="nav-link" data-scroll-target="#var">var</a></li>
+  <li><a href="#meta" id="toc-meta" class="nav-link" data-scroll-target="#meta">meta</a></li>
   <li><a href="#env" id="toc-env" class="nav-link" data-scroll-target="#env">env</a></li>
-  <li><a href="#escaping" id="toc-escaping" class="nav-link" data-scroll-target="#escaping">Escaping</a></li>
+  <li><a href="#pagebreak" id="toc-pagebreak" class="nav-link" data-scroll-target="#pagebreak">pagebreak</a></li>
+  <li><a href="#include" id="toc-include" class="nav-link" data-scroll-target="#include">include</a></li>
+  </ul></li>
+  <li><a href="#escaping-shortcodes" id="toc-escaping-shortcodes" class="nav-link" data-scroll-target="#escaping-shortcodes">Escaping Shortcodes</a></li>
+  <li><a href="#custom-shortcodes" id="toc-custom-shortcodes" class="nav-link" data-scroll-target="#custom-shortcodes">Custom Shortcodes</a>
+  <ul class="collapse">
+  <li><a href="#example-simple" id="toc-example-simple" class="nav-link" data-scroll-target="#example-simple">Example: Simple</a></li>
+  <li><a href="#example-raw-output" id="toc-example-raw-output" class="nav-link" data-scroll-target="#example-raw-output">Example: Raw Output</a></li>
+  <li><a href="#example-named-arguments" id="toc-example-named-arguments" class="nav-link" data-scroll-target="#example-named-arguments">Example: Named Arguments</a></li>
+  <li><a href="#example-metadata-options" id="toc-example-metadata-options" class="nav-link" data-scroll-target="#example-metadata-options">Example: Metadata Options</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/quarto-dev/quarto-web/edit/main/docs/authoring/shortcodes.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/quarto-dev/quarto-web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -999,56 +1011,266 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <p>Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to <a href="https://gohugo.io/content-management/shortcodes/">Hugo shortcodes</a> and <a href="https://codex.wordpress.org/Shortcode">WordPress shortcodes</a>.</p>
-<p>Quarto currently supports just two shortcodes: <code>meta</code> and <code>var</code>. Additional shortcodes (e.g.&nbsp;for inserting videos, tweets, gists, etc.) will be developed soon.</p>
-</section>
-<section id="meta" class="level2">
-<h2 class="anchored" data-anchor-id="meta">meta</h2>
-<p>The <code>meta</code> shortcode allows you to insert content from Pandoc metadata (e.g.&nbsp;YAML at the top of the document and/or in <code>_quarto.yml</code>).</p>
-<p>For example, the following shortcode inserts the value of the <code>title</code> field from YAML metadata:</p>
+<p>For example, the following shortcode prints the <code>title</code> from document metadata:</p>
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>{{&lt; meta title &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You can dereference sub-keys using the dot (<code>.)</code> delimiter. For example:</p>
-<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>{{&lt; meta author.affiliation &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Quarto supports several shortcodes natively:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Shortcode</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#var">var</a></td>
+<td>Print value from <code>_variables.yml</code> file</td>
+</tr>
+<tr class="even">
+<td><a href="#meta">meta</a></td>
+<td>Print value from document metadata</td>
+</tr>
+<tr class="odd">
+<td><a href="#env">env</a></td>
+<td>Print system environment variable</td>
+</tr>
+<tr class="even">
+<td><a href="#pagebreak">pagebreak</a></td>
+<td>Insert a native page-break</td>
+</tr>
+<tr class="odd">
+<td><a href="../../docs/authoring/includes.html">include</a></td>
+<td>Include contents of another qmd</td>
+</tr>
+</tbody>
+</table>
+<p>You can also <a href="#custom-shortcodes">create your own</a> shortcodes (more details on that below).</p>
 </section>
-<section id="var" class="level2">
-<h2 class="anchored" data-anchor-id="var">var</h2>
+<section id="built-in-shortcodes" class="level2">
+<h2 class="anchored" data-anchor-id="built-in-shortcodes">Built-In Shortcodes</h2>
+<section id="var" class="level3">
+<h3 class="anchored" data-anchor-id="var">var</h3>
 <p>The <code>var</code> shortcode enables you to insert content from a project-level <code>_variables.yml</code> file. Create this file alongside your <code>_quarto.yml</code> project file, and then include references to those variables within any document in your project.</p>
 <p>Variables can be either simple values or can include arbitrary markdown content. To define variables, create a <code>_variables.yml</code> file in the root directory of your project. For example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.2</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">email</span><span class="kw">:</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">info</span><span class="kw">:</span><span class="at"> info@example.com</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">support</span><span class="kw">:</span><span class="at"> support@example.com</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">engine</span><span class="kw">:</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Jupyter](https://jupyter.org)"</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">knitr</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Knitr](&lt;https://yihui.name/knitr&gt;)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="fl">1.2</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">email</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">info</span><span class="kw">:</span><span class="at"> info@example.com</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">support</span><span class="kw">:</span><span class="at"> support@example.com</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">engine</span><span class="kw">:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">jupyter</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Jupyter](https://jupyter.org)"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">knitr</span><span class="kw">:</span><span class="at"> </span><span class="st">"[Knitr](&lt;https://yihui.name/knitr&gt;)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Note that the <code>engine</code> variable values include markdown for hyperlinks.</p>
 <p>To include the value of a variable, use the <code>{{&lt; var &gt;}}</code> shortcode, for example:</p>
-<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Version {{&lt; var version &gt;}} is a minor upgrade.</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Please contact us at {{&lt; var email.info &gt;}}.</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>Quarto includes {{&lt; var engine.jupyter &gt;}} and </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>{{&lt; var engine.knitr &gt;}} computation engines.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Version {{&lt; var version &gt;}} is a minor upgrade.</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Please contact us at {{&lt; var email.info &gt;}}.</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>Quarto includes {{&lt; var engine.jupyter &gt;}} and </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>{{&lt; var engine.knitr &gt;}} computation engines.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="env" class="level2">
-<h2 class="anchored" data-anchor-id="env">env</h2>
+<section id="meta" class="level3">
+<h3 class="anchored" data-anchor-id="meta">meta</h3>
+<p>The <code>meta</code> shortcode allows you to insert content from Pandoc metadata (e.g.&nbsp;YAML at the top of the document and/or in <code>_quarto.yml</code>).</p>
+<p>For example, the following shortcode inserts the value of the <code>title</code> field from YAML metadata:</p>
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>{{&lt; meta title &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can dereference sub-keys using the dot (<code>.)</code> delimiter. For example:</p>
+<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>{{&lt; meta author.affiliation &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="env" class="level3">
+<h3 class="anchored" data-anchor-id="env">env</h3>
 <p>The <code>env</code> shortcode enables you to read values from environment variables. For example:</p>
-<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Version {{ env PRODUCT_VERSION }} is a minor upgrade.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Version {{&lt; env PRODUCT_VERSION &gt;}} is a minor upgrade.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="escaping" class="level2">
-<h2 class="anchored" data-anchor-id="escaping">Escaping</h2>
+<section id="pagebreak" class="level3">
+<h3 class="anchored" data-anchor-id="pagebreak">pagebreak</h3>
+<p>The <code>pagebreak</code> shortcode enables you to insert a native pagebreak into a document (.e.g in LaTeX this would be a <code>\newpage</code>, in MS Word a docx-native pagebreak, in HTML a <code>page-break-after: always</code> CSS directive, etc.):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>page 1</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>{{&lt; pagebreak &gt;}}</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>page 2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Native pagebreaks are supported for HTML, LaTeX, Context, MS Word, Open Document, and ePub (for other formats a form-feed character <code>\f</code> is inserted).</p>
+</section>
+<section id="include" class="level3">
+<h3 class="anchored" data-anchor-id="include">include</h3>
+<p>The <code>include</code> shortcode is a convenient way to re-use content across documents. For example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>{{&lt; include _content.qmd &gt;}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>See the article on <a href="../../docs/authoring/includes.html">Includes</a> for additional details.</p>
+</section>
+</section>
+<section id="escaping-shortcodes" class="level2">
+<h2 class="anchored" data-anchor-id="escaping-shortcodes">Escaping Shortcodes</h2>
 <p>If you are writing documentation about using shortcodes (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:</p>
 <ol type="1">
-<li><p>Escape the shortcode reference like this:</p>
-<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>{{&lt;/* var version */&gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p>Escape the shortcode reference with extra braces like this:</p>
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>{{{&lt; var version &gt;}}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 <li><p>Add a <code>shortcodes=false</code> attribute to any code block you want to prevent processing of shortcodes within:</p>
-<div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>{{&lt; var version &gt;}}</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>```{shortcodes=false}</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>{{&lt; var version &gt;}}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>```</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
 </ol>
+</section>
+<section id="custom-shortcodes" class="level2">
+<h2 class="anchored" data-anchor-id="custom-shortcodes">Custom Shortcodes</h2>
+<p>You can create your own shortcodes using Lua (the same language used for <a href="../../docs/authoring/filters.html">filters</a>). To get started with developing shortcodes:</p>
+<ol type="1">
+<li>Be sure you have a <a href="https://github.com/quarto-dev/quarto-cli/releases/latest">very recent</a> version of Quarto CLI (custom shortcodes requires v0.9.341 or greater).</li>
+<li>Read the documentation on <a href="https://pandoc.org/lua-filters.html">Pandoc Lua Filters</a>, which describes the Lua extension API for Pandoc.</li>
+</ol>
+<p>Below we’ll provide a few examples of custom shortcodes and their implementation.</p>
+<section id="example-simple" class="level3">
+<h3 class="anchored" data-anchor-id="example-simple">Example: Simple</h3>
+<p>Custom shortcodes are implemented as Lua functions that take one or more arguments and return a Pandoc AST node (or list of nodes).</p>
+<p>Here’s the implementation of the <code>env</code> shortcode that is built in to Quarto:</p>
+<p><strong>env.lua</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> env<span class="op">(</span>args<span class="op">)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> var <span class="op">=</span> pandoc<span class="op">.</span>utils<span class="op">.</span>stringify<span class="op">(</span>args<span class="op">[</span><span class="dv">1</span><span class="op">])</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> value <span class="op">=</span> <span class="fu">os.getenv</span><span class="op">(</span>var<span class="op">)</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> value <span class="op">~=</span> <span class="kw">nil</span> <span class="cf">then</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Str<span class="op">(</span>value<span class="op">)</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Null<span class="op">()</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that arguments to shortcodes are provided in <code>args</code> (a 1-based array), and that each argument is list of Pandoc inlines (i.e.&nbsp;markdown AST parsed from the text).</p>
+<p>We use the <code>pandoc.utils.stringify()</code> function to convert the inlines to an ordinary string, and then the <code>os.getenv()</code> function to get its value.</p>
+<p>If this function was included in a source file named <code>env.lua</code>, you could register it for use with:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shortcodes</span><span class="kw">:</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> env.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then use it with:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>{{&lt; env HOME &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="example-raw-output" class="level3">
+<h3 class="anchored" data-anchor-id="example-raw-output">Example: Raw Output</h3>
+<p>Shortcodes can tailor their output to the format being rendered to. This is often useful when you want to conditionally generate rich HTML output but still have the same document render properly to PDF or MS Word.</p>
+<p>The <code>pagebreak</code> shortcode generates “native” pagebreaks in a variety of formats. Here’s the implementation of <code>pagebreak</code>:</p>
+<p><strong>pagebreak.lua</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> pagebreak<span class="op">()</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> raw <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    epub <span class="op">=</span> <span class="st">'&lt;p style="page-break-after: always;"&gt; &lt;/p&gt;'</span><span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    html <span class="op">=</span> <span class="st">'&lt;div style="page-break-after: always;"&gt;&lt;/div&gt;'</span><span class="op">,</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    latex <span class="op">=</span> <span class="st">'</span><span class="sc">\\</span><span class="st">newpage{}'</span><span class="op">,</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    ooxml <span class="op">=</span> <span class="st">'&lt;w:p&gt;&lt;w:r&gt;&lt;w:br w:type="page"/&gt;&lt;/w:r&gt;&lt;/w:p&gt;'</span><span class="op">,</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    odt <span class="op">=</span> <span class="st">'&lt;text:p text:style-name="Pagebreak"/&gt;'</span><span class="op">,</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    context <span class="op">=</span> <span class="st">'</span><span class="sc">\\</span><span class="st">page'</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="cn">FORMAT</span> <span class="op">==</span> <span class="st">'docx'</span> <span class="cf">then</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>RawBlock<span class="op">(</span><span class="st">'openxml'</span><span class="op">,</span> raw<span class="op">.</span>ooxml<span class="op">)</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">elseif</span> <span class="cn">FORMAT</span><span class="op">:</span><span class="fu">match</span> <span class="st">'latex'</span> <span class="cf">then</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>RawBlock<span class="op">(</span><span class="st">'tex'</span><span class="op">,</span> raw<span class="op">.</span>latex<span class="op">)</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">elseif</span> <span class="cn">FORMAT</span><span class="op">:</span><span class="fu">match</span> <span class="st">'odt'</span> <span class="cf">then</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>RawBlock<span class="op">(</span><span class="st">'opendocument'</span><span class="op">,</span> raw<span class="op">.</span>odt<span class="op">)</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">elseif</span> <span class="cn">FORMAT</span><span class="op">:</span><span class="fu">match</span> <span class="st">'html.*'</span> <span class="cf">then</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>RawBlock<span class="op">(</span><span class="st">'html'</span><span class="op">,</span> raw<span class="op">.</span>html<span class="op">)</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">elseif</span> <span class="cn">FORMAT</span><span class="op">:</span><span class="fu">match</span> <span class="st">'epub'</span> <span class="cf">then</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>RawBlock<span class="op">(</span><span class="st">'html'</span><span class="op">,</span> raw<span class="op">.</span>epub<span class="op">)</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">elseif</span> <span class="cn">FORMAT</span><span class="op">:</span><span class="fu">match</span> <span class="st">'context'</span> <span class="cf">then</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>RawBlock<span class="op">(</span><span class="st">'context'</span><span class="op">,</span> raw<span class="op">.</span>context<span class="op">)</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- fall back to insert a form feed character</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Para<span class="op">{</span>pandoc<span class="op">.</span>Str <span class="st">'</span><span class="sc">\f</span><span class="st">'</span><span class="op">}</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We use the <code>pandoc.RawBlock()</code> function to output the appropriate raw content for the target <code>FORMAT</code>. Note that raw blocks are passed straight through to the output file and are not processed as markdown.</p>
+<p>If this function was implemented within <code>pagebreak.lua</code>, you could register it for use with:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shortcodes</span><span class="kw">:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> pagebreak.lua</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then use it with:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>{{&lt; pagebreak &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="example-named-arguments" class="level3">
+<h3 class="anchored" data-anchor-id="example-named-arguments">Example: Named Arguments</h3>
+<p>The examples above used either a single argument (<code>env</code>) or no arguments at all (<code>pagebreak</code>). Here we demonstrate named argument handling by implementing a <code>git-rev</code> shortcode that prints the current git revision, providing a <code>short</code> option to determine when the short or long SHA1 is displayed:</p>
+<p><strong>git.lua</strong></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- run git and read its output</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> git<span class="op">(</span>command<span class="op">)</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> p <span class="op">=</span> <span class="fu">io.popen</span><span class="op">(</span><span class="st">"git "</span> <span class="op">..</span> command<span class="op">)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> output <span class="op">=</span> p<span class="op">:</span><span class="fu">read</span><span class="op">(</span><span class="st">'*all'</span><span class="op">)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  p<span class="op">:</span><span class="fu">close</span><span class="op">()</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> output</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- return a table containing shortcode definitions</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">-- defining shortcodes this way allows us to create helper </span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">-- functions that are not themselves considered shortcodes </span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> <span class="op">{</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="op">[</span><span class="st">"git-rev"</span><span class="op">]</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span>args<span class="op">,</span> kwargs<span class="op">)</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- command line args</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> cmdArgs <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> short <span class="op">=</span> pandoc<span class="op">.</span>utils<span class="op">.</span>stringify<span class="op">(</span>kwargs<span class="op">[</span><span class="st">"short"</span><span class="op">])</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> short <span class="op">==</span> <span class="st">"true"</span> <span class="cf">then</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>      cmdArgs <span class="op">=</span> cmdArgs <span class="op">..</span> <span class="st">"--short "</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- run the command</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> cmd <span class="op">=</span> <span class="st">"rev-parse "</span> <span class="op">..</span> cmdArgs <span class="op">..</span> <span class="st">"HEAD"</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> rev <span class="op">=</span> git<span class="op">(</span>cmd<span class="op">)</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- return as string</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Str<span class="op">(</span>rev<span class="op">)</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We’d use this shortcode as follows:</p>
+<div class="sourceCode" id="cb18" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev &gt;}}</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev short=true &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are some new things demonstrated here :</p>
+<ol type="1">
+<li><p>Rather than defining our shortcode functions globally, we return a table with the shortcode definitions. This allows us to define helper functions that are not themselves registered as shortcodes. It also enables us to define a shortcode with a dash (<code>-</code>) in its name.</p></li>
+<li><p>There is a new argument to our shortcode handler: <code>kwargs</code>. This holds any named arguments to the shortcode. Values in <code>kwargs</code> will always be a list of Pandoc inlines (allowing you to accept markdown as an argument). Since <code>short</code> is a simple boolean value we need to call <code>pandoc.utils.stringify()</code> to treat it as a string and then compare it to <code>"true"</code>.</p></li>
+</ol>
+</section>
+<section id="example-metadata-options" class="level3">
+<h3 class="anchored" data-anchor-id="example-metadata-options">Example: Metadata Options</h3>
+<p>In some cases you may want to provide options that affect how you shortcode behaves. There is a third argument to shortcode handlers (<code>meta</code>) that provides access to document and/or project level metadata.</p>
+<p>Let’s implement a different version of the <code>git-rev</code> shortcode that emits the revision as a link to GitHub rather than plain text. To do this we make use of <code>github.owner</code> and <code>github.repo</code> metadata values:</p>
+<p><strong>git.lua</strong></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> git<span class="op">(</span>command<span class="op">)</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> p <span class="op">=</span> <span class="fu">io.popen</span><span class="op">(</span><span class="st">"git "</span> <span class="op">..</span> command<span class="op">)</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">local</span> output <span class="op">=</span> p<span class="op">:</span><span class="fu">read</span><span class="op">(</span><span class="st">'*all'</span><span class="op">)</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  p<span class="op">:</span><span class="fu">close</span><span class="op">()</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> output</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> <span class="op">{</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">[</span><span class="st">"git-rev"</span><span class="op">]</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span>args<span class="op">,</span> kwargs<span class="op">,</span> meta<span class="op">)</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- run the command</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> rev <span class="op">=</span> git<span class="op">(</span><span class="st">"rev-parse HEAD"</span><span class="op">)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- target repo</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> owner <span class="op">=</span> pandoc<span class="op">.</span>utils<span class="op">.</span>stringify<span class="op">(</span>meta<span class="op">[</span><span class="st">"github.owner"</span><span class="op">])</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> repo <span class="op">=</span> pandoc<span class="op">.</span>utils<span class="op">.</span>stringify<span class="op">(</span>meta<span class="op">[</span><span class="st">"github.repo"</span><span class="op">])</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> url <span class="op">=</span> <span class="st">"https://github.com/"</span> </span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                <span class="op">..</span> owner <span class="op">..</span> <span class="st">"/"</span> <span class="op">..</span> repo <span class="op">..</span> <span class="st">"/"</span> <span class="op">..</span> rev </span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- return as link</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Link<span class="op">(</span>pandoc<span class="op">.</span>Str<span class="op">(</span>rev<span class="op">),</span> url<span class="op">)</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As with <code>kwargs</code>, <code>meta</code> values are always provided as a list of Pandoc inlines so often need to be converted to string using <code>pandoc.utils.stringify()</code>.</p>
+<p>To use this shortcode in a document we register it, provide the GitHub info as document options, then include the shortcode where we want the link to be:</p>
+<div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "My Document"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">shortcodes:</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - git.lua</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">github:</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">  owner: quarto-dev</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">  repo: quarto-cli</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The shortcode registration and GitHub metadata could just as well been provided in a project <code>_quarto.yml</code> file or a directory scoped <code>_metadata.yml</code> file.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
