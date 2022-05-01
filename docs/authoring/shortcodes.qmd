@@ -153,7 +153,7 @@ function env(args)
 end
 ```
 
-Note that arguments to shortcodes are provided in `args` (a 1-based array), and that each argument is list of Pandoc inlines (i.e. markdown AST parsed from the text).
+Note that arguments to shortcodes are provided in `args` (a 1-based array), and that each argument is a list of Pandoc inlines (i.e. markdown AST parsed from the text).
 
 We use the `pandoc.utils.stringify()` function to convert the inlines to an ordinary string, and then the `os.getenv()` function to get its value.
 
@@ -227,7 +227,7 @@ Then use it with:
 
 ### Example: Named Arguments
 
-The examples above used either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine when the short or long SHA1 is displayed:
+The examples above use either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine whether a short or long SHA1 is displayed:
 
 **git.lua**
 
@@ -262,18 +262,24 @@ return {
 }
 ```
 
-We'd use this shortcode as follows:
-
-``` {.markdown shortcodes="false"}
-{{< git-rev >}}
-{{< git-rev short=true >}}
-```
-
 There are some new things demonstrated here :
 
 1.  Rather than defining our shortcode functions globally, we return a table with the shortcode definitions. This allows us to define helper functions that are not themselves registered as shortcodes. It also enables us to define a shortcode with a dash (`-`) in its name.
 
-2.  There is a new argument to our shortcode handler: `kwargs`. This holds any named arguments to the shortcode. Values in `kwargs` will always be a list of Pandoc inlines (allowing you to accept markdown as an argument). Since `short` is a simple boolean value we need to call `pandoc.utils.stringify()` to treat it as a string and then compare it to `"true"`.
+2.  There is a new argument to our shortcode handler: `kwargs`. This holds any named arguments to the shortcode. As with `args`, values in `kwargs` will always be a list of Pandoc inlines (allowing you to accept markdown as an argument). Since `short` is a simple boolean value we need to call `pandoc.utils.stringify()` to treat it as a string and then compare it to `"true"`.
+
+We'd register and use this shortcode as follows:
+
+``` {.markdown shortcodes="false"}
+---
+title: "My Document"
+shortcodes:
+  - git.lua
+---
+
+{{< git-rev >}}
+{{< git-rev short=true >}}
+```
 
 ### Example: Metadata Options
 
@@ -309,7 +315,7 @@ return {
 }
 ```
 
-As with `kwargs`, `meta` values are always provided as a list of Pandoc inlines so often need to be converted to string using `pandoc.utils.stringify()`.
+As with `args` and `kwargs`, `meta` values are always provided as a list of Pandoc inlines so often need to be converted to string using `pandoc.utils.stringify()`.
 
 To use this shortcode in a document we register it, provide the GitHub info as document options, then include the shortcode where we want the link to be:
 
@@ -326,4 +332,4 @@ github:
 {{< git-rev >}}
 ```
 
-The shortcode registration and GitHub metadata could just as well been provided in a project `_quarto.yml` file or a directory scoped `_metadata.yml` file.
+The shortcode registration and GitHub metadata could just as well been provided in a project-level `_quarto.yml` file or a directory-level `_metadata.yml` file.

@@ -1137,7 +1137,7 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Null<span class="op">()</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">end</span></span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note that arguments to shortcodes are provided in <code>args</code> (a 1-based array), and that each argument is list of Pandoc inlines (i.e.&nbsp;markdown AST parsed from the text).</p>
+<p>Note that arguments to shortcodes are provided in <code>args</code> (a 1-based array), and that each argument is a list of Pandoc inlines (i.e.&nbsp;markdown AST parsed from the text).</p>
 <p>We use the <code>pandoc.utils.stringify()</code> function to convert the inlines to an ordinary string, and then the <code>os.getenv()</code> function to get its value.</p>
 <p>If this function was included in a source file named <code>env.lua</code>, you could register it for use with:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shortcodes</span><span class="kw">:</span></span>
@@ -1188,7 +1188,7 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 </section>
 <section id="example-named-arguments" class="level3">
 <h3 class="anchored" data-anchor-id="example-named-arguments">Example: Named Arguments</h3>
-<p>The examples above used either a single argument (<code>env</code>) or no arguments at all (<code>pagebreak</code>). Here we demonstrate named argument handling by implementing a <code>git-rev</code> shortcode that prints the current git revision, providing a <code>short</code> option to determine when the short or long SHA1 is displayed:</p>
+<p>The examples above use either a single argument (<code>env</code>) or no arguments at all (<code>pagebreak</code>). Here we demonstrate named argument handling by implementing a <code>git-rev</code> shortcode that prints the current git revision, providing a <code>short</code> option to determine whether a short or long SHA1 is displayed:</p>
 <p><strong>git.lua</strong></p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode lua code-with-copy"><code class="sourceCode lua"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- run git and read its output</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> git<span class="op">(</span>command<span class="op">)</span></span>
@@ -1218,14 +1218,20 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Str<span class="op">(</span>rev<span class="op">)</span></span>
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We’d use this shortcode as follows:</p>
-<div class="sourceCode" id="cb18" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev &gt;}}</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev short=true &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>There are some new things demonstrated here :</p>
 <ol type="1">
 <li><p>Rather than defining our shortcode functions globally, we return a table with the shortcode definitions. This allows us to define helper functions that are not themselves registered as shortcodes. It also enables us to define a shortcode with a dash (<code>-</code>) in its name.</p></li>
-<li><p>There is a new argument to our shortcode handler: <code>kwargs</code>. This holds any named arguments to the shortcode. Values in <code>kwargs</code> will always be a list of Pandoc inlines (allowing you to accept markdown as an argument). Since <code>short</code> is a simple boolean value we need to call <code>pandoc.utils.stringify()</code> to treat it as a string and then compare it to <code>"true"</code>.</p></li>
+<li><p>There is a new argument to our shortcode handler: <code>kwargs</code>. This holds any named arguments to the shortcode. As with <code>args</code>, values in <code>kwargs</code> will always be a list of Pandoc inlines (allowing you to accept markdown as an argument). Since <code>short</code> is a simple boolean value we need to call <code>pandoc.utils.stringify()</code> to treat it as a string and then compare it to <code>"true"</code>.</p></li>
 </ol>
+<p>We’d register and use this shortcode as follows:</p>
+<div class="sourceCode" id="cb18" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "My Document"</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="an">shortcodes:</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - git.lua</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev &gt;}}</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev short=true &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="example-metadata-options" class="level3">
 <h3 class="anchored" data-anchor-id="example-metadata-options">Example: Metadata Options</h3>
@@ -1255,7 +1261,7 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pandoc<span class="op">.</span>Link<span class="op">(</span>pandoc<span class="op">.</span>Str<span class="op">(</span>rev<span class="op">),</span> url<span class="op">)</span></span>
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span></span>
 <span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>As with <code>kwargs</code>, <code>meta</code> values are always provided as a list of Pandoc inlines so often need to be converted to string using <code>pandoc.utils.stringify()</code>.</p>
+<p>As with <code>args</code> and <code>kwargs</code>, <code>meta</code> values are always provided as a list of Pandoc inlines so often need to be converted to string using <code>pandoc.utils.stringify()</code>.</p>
 <p>To use this shortcode in a document we register it, provide the GitHub info as document options, then include the shortcode where we want the link to be:</p>
 <div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "My Document"</span></span>
@@ -1267,7 +1273,7 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
 <span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>{{&lt; git-rev &gt;}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>The shortcode registration and GitHub metadata could just as well been provided in a project <code>_quarto.yml</code> file or a directory scoped <code>_metadata.yml</code> file.</p>
+<p>The shortcode registration and GitHub metadata could just as well been provided in a project-level <code>_quarto.yml</code> file or a directory-level <code>_metadata.yml</code> file.</p>
 
 
 </section>
