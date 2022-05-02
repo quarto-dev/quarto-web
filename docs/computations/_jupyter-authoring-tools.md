@@ -13,6 +13,10 @@ quarto preview document.qmd --to pdf
 quarto preview document.ipynb
 ```
 
+```{.include}
+_jupyter-execute.md
+```
+
 ## VS Code
 
 The [Quarto Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) for VS Code provides a variety of tools for working with `.qmd` files in VS Code. The extension integrates directly with the {{< meta vscode-extension >}} to provide the following {{< meta jupyter-language >}}-specific capabilites:
