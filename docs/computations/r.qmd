@@ -68,7 +68,6 @@ When a Quarto document is rendered, R code blocks are automatically executed. Yo
 
     Note that the target file (in this case `document.qmd`) should always be the very first command line argument.
 
-
 3)  From the R console using the **quarto** R package:
 
     ``` r
@@ -117,11 +116,11 @@ quarto preview document.qmd
 
 The document will be re-rendered and the preview updated whenever you make changes to it in VS Code.
 
-## Emacs 
+## Emacs
 
 The [quarto-mode](https://melpa.org/#/quarto-mode) MELPA package is an Emacs mode for editing Quarto documents. Install `quarto-mode` as follows:
 
-```default
+``` default
 M-x refresh-package-contents
 M-x install-package
   quarto-mode
@@ -130,7 +129,6 @@ M-x install-package
 If you have [ESS](https://ess.r-project.org/), `quarto-mode` will make use of it for executing R code.
 
 Use `M-x quarto-preview` to start a `quarto preview` server that watches quarto content for changes and automatically refreshes it. If the current buffer has an associated file that exists in a quarto project, the command will preview the entire project. Otherwise, it will preview the specific file.
-
 
 ## Chunk Options {#chunk-options}
 
@@ -173,6 +171,25 @@ One source of the difference in syntax is that Quarto is more closely aligned wi
 See the listing of all [supported formats](../output-formats/all-formats.qmd) along with their user guides and reference pages for more details.
 
 See the articles on creating [Websites](../websites/), [Books](../books/), and [Blogs](../websites/website-blog.qmd) for additional details on more advanced output formats.
+
+## Knitr Options
+
+In R Markdown documents a `setup` chunk is often used to establish document-wide Knitr options. You can still do this in Quarto, but you can also specify Knitr options in YAML. For example:
+
+``` yaml
+---
+title: "My Document"
+format: html
+knitr:
+  opts_chunk: 
+    collapse: true
+    comment: "#>"
+---
+```
+
+You can additionally specify global Knitr options using `opts_knit`.
+
+Here we establish default Knitr options for a single document. You can also add shared `knitr` options to a project-wide `_quarto.yml` file or a project-directory based `_metadata.yml` file.
 
 ## Caching
 
