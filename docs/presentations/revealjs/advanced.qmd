@@ -503,7 +503,7 @@ To use a plugin, just include a reference to its directory in the list of `plugi
 title: "Presentation"
 format:
   revealjs:
-    plugins:
+    revealjs-plugins:
       - myplugin
 ---
 ```
@@ -514,6 +514,38 @@ Note that many of the most popular Reveal plugins are already included with the 
 -   [RevealMenu](https://github.com/denehyg/reveal.js-menu)
 -   [RevealChalkboard](https://github.com/rajgoel/reveal.js-plugins/tree/master/chalkboard)
 -   [PdfExport](https://github.com/McShelby/reveal-pdfexport)
+
+### Example
+
+Let's show an example with the [fullscreen](https://rajgoel.github.io/reveal.js-demos/fullscreen-demo.html). Here are the steps to bundle this plugin to use within your Quarto HTML presentation:
+
+1. Create a folder with the name you want for the plugin, here we'll call it `fullscreen`.
+2. Download the plugin files into the created folder. Here the plugin only have a JS file called `plugin.js` that you can find [on the repo _rajgoel/reveal.js-plugins_](https://raw.githubusercontent.com/rajgoel/reveal.js-plugins/master/fullscreen/plugin.js). You can keep the name or rename it, e.g `fullscreen.js`.
+3. In that folder add a `plugin.yml` file, as in [Quarto Reveal examples](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/plugins). 
+    * `name` is a mandatory field which should be the name of the JS function the JS plugin is defining. Open the JS script you downloaded to look for it.
+    * Other fields are for the resources to be used. In our example, only a JS script so we'll use `script`
+
+    Our `plugin.yml` would be:
+
+    ```yaml
+    name: RevealFullscreen
+    script: [fullscreen.js]
+    ```
+4. Now add the plugin reference into your document YAML header, using the path of the folder your created:
+
+   ```yaml
+   format: 
+    revealjs:
+      revealjs-plugins:
+        - fullscreen
+    ```
+5. The custom plugin will be loaded in your presentation and you can use it. The plugin _fullscreen_ documentation shows an example of adding a Map fullscreen in a slide by adding an attribute on the section, and using stretch on the content. This would translate to having this slide in the `.qmd` file:
+
+    ```markdown
+    ## {fullscreen=true}
+
+    <iframe class="stretch" data-src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d61206.89156051744!2d-151.77366863890407!3d-16.50433878928727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sde!4v1467468929561"></iframe>
+    ```
 
 ## Learning More
 
