@@ -93,7 +93,7 @@ const readGroupOptions = (context: string, name: string): Array<Option> => {
         contexts: optionSchema.tags?.contexts,
         engine: optionSchema.tags?.engine,
       }))
-      .filter(group => group.name !== "hidden");
+      .filter(group => group.name !== "hidden" && group.name !== "editor");
   } else {
     return [];
   }
@@ -159,7 +159,7 @@ const optionsForFormat = (format: string) => {
           .map(option => ({ name: option.name, description: option.description }))
       }
     })
-    .filter(group => group.name !== "hidden" && group.options.length > 0)
+    .filter(group => group.name !== "hidden" && group.name !== "editor" && group.options.length > 0)
 }
 
 const writeDocumentOptions = (format: string, path: string) => {
