@@ -14,126 +14,22 @@ For example, the following shortcode prints the `title` from document metadata:
 
 Quarto supports several shortcodes natively:
 
-| Shortcode               | Description                            |
-|-------------------------|----------------------------------------|
-| [var](#var)             | Print value from `_variables.yml` file |
-| [meta](#meta)           | Print value from document metadata     |
-| [env](#env)             | Print system environment variable      |
-| [pagebreak](#pagebreak) | Insert a native page-break             |
-| [include](includes.qmd) | Include contents of another qmd        |
+| Shortcode                                    | Description                            |
+|----------------------------------------------|----------------------------------------|
+| [var](variables.qmd#var)                     | Print value from `_variables.yml` file |
+| [meta](variables.qmd#meta)                   | Print value from document metadata     |
+| [env](variables.qmd#url)                     | Print system environment variable      |
+| [pagebreak](markdown-basics.qmd#page-breaks) | Insert a native page-break             |
+| [include](includes.qmd)                      | Include contents of another qmd        |
 
-You can also [create your own](#custom-shortcodes) shortcodes (more details on that below).
+This article describes how to [create your own](#custom-shortcodes) shortcodes.
 
-## Built-In Shortcodes
-
-### var {#var}
-
-The `var` shortcode enables you to insert content from a project-level `_variables.yml` file. Create this file alongside your `_quarto.yml` project file, and then include references to those variables within any document in your project.
-
-Variables can be either simple values or can include arbitrary markdown content. To define variables, create a `_variables.yml` file in the root directory of your project. For example:
-
-``` yaml
-version: 1.2
-
-email:
-  info: info@example.com
-  support: support@example.com
-
-engine:
-  jupyter: "[Jupyter](https://jupyter.org)"
-  knitr: "[Knitr](<https://yihui.name/knitr>)"
-```
-
-Note that the `engine` variable values include markdown for hyperlinks.
-
-To include the value of a variable, use the `{{</* var */>}}` shortcode, for example:
-
-``` {.markdown shortcodes="false"}
-Version {{< var version >}} is a minor upgrade.
-
-Please contact us at {{< var email.info >}}.
-
-Quarto includes {{< var engine.jupyter >}} and 
-{{< var engine.knitr >}} computation engines.
-```
-
-### meta {#meta}
-
-The `meta` shortcode allows you to insert content from Pandoc metadata (e.g. YAML at the top of the document and/or in `_quarto.yml`).
-
-For example, the following shortcode inserts the value of the `title` field from YAML metadata:
-
-``` {.markdown shortcodes="false"}
-{{< meta title >}}
-```
-
-You can dereference sub-keys using the dot (`.)` delimiter. For example:
-
-``` {.markdown shortcodes="false"}
-{{< meta author.affiliation >}}
-```
-
-### env {#env}
-
-The `env` shortcode enables you to read values from environment variables. For example:
-
-``` {.markdown shortcodes="false"}
-Version {{< env PRODUCT_VERSION >}} is a minor upgrade.
-```
-
-### pagebreak {#pagebreak}
-
-The `pagebreak` shortcode enables you to insert a native pagebreak into a document (.e.g in LaTeX this would be a `\newpage`, in MS Word a docx-native pagebreak, in HTML a `page-break-after: always` CSS directive, etc.):
-
-``` markdown
-page 1
-
-{{{< pagebreak >}}}
-
-page 2
-```
-
-Native pagebreaks are supported for HTML, LaTeX, Context, MS Word, Open Document, and ePub (for other formats a form-feed character `\f` is inserted).
-
-### include
-
-The `include` shortcode is a convenient way to re-use content across documents. For example:
-
-``` markdown
-{{{< include _content.qmd >}}}
-```
-
-See the article on [Includes](includes.qmd) for additional details.
-
-## Escaping Shortcodes
-
-If you are writing documentation about using shortcodes (for example, this article!) you might need to prevent them from being processed. You can do this in two ways:
-
-1.  Escape the shortcode reference with extra braces like this:
-
-    ``` {.default shortcodes="false"}
-    {{{< var version >}}}
-    ```
-
-2.  Add a `shortcodes=false` attribute to any code block you want to prevent processing of shortcodes within:
-
-    ```` {.default shortcodes="false"}
-    ```{{shortcodes=false}}
-
-    {{< var version >}}
-    ```
-    ````
-
-## Custom Shortcodes {#custom-shortcodes}
+## Shortcode Basics {#custom-shortcodes}
 
 You can create your own shortcodes using Lua (the same language used for [filters](filters.qmd)). To get started with developing shortcodes:
 
 1.  Be sure you have a [very recent](https://github.com/quarto-dev/quarto-cli/releases/latest) version of Quarto CLI (custom shortcodes requires v0.9.341 or greater).
 2.  Read the documentation on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html), which describes the Lua extension API for Pandoc.
-
-Below we'll provide a few examples of custom shortcodes and their implementation.
-
-### Example: Simple
 
 Custom shortcodes are implemented as Lua functions that take one or more arguments and return a Pandoc AST node (or list of nodes).
 
@@ -170,7 +66,9 @@ Then use it with:
 {{{< env HOME >}}}
 ```
 
-### Example: Raw Output
+Below we'll provide a few a few more examples of custom shortcodes and their implementation.
+
+## Example: Raw Output
 
 Shortcodes can tailor their output to the format being rendered to. This is often useful when you want to conditionally generate rich HTML output but still have the same document render properly to PDF or MS Word.
 
@@ -225,7 +123,7 @@ Then use it with:
 {{{< pagebreak >}}}
 ```
 
-### Example: Named Arguments
+## Example: Named Arguments
 
 The examples above use either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine whether a short or long SHA1 is displayed:
 
@@ -281,7 +179,7 @@ shortcodes:
 {{< git-rev short=true >}}
 ```
 
-### Example: Metadata Options
+## Example: Metadata Options
 
 In some cases you may want to provide options that affect how you shortcode behaves. There is a third argument to shortcode handlers (`meta`) that provides access to document and/or project level metadata.
 
@@ -333,3 +231,5 @@ github:
 ```
 
 The shortcode registration and GitHub metadata could just as well been provided in a project-level `_quarto.yml` file or a directory-level `_metadata.yml` file.
+
+{{< include _shortcode-escaping.qmd >}}
