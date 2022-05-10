@@ -2,26 +2,58 @@
 title: "Diagrams"
 ---
 
-- Learning more about M & DOT
-- default echo behavior
-
-
-
 ## Overview
 
-Quarto has native support for embedding [Mermaid](https://mermaid-js.github.io/mermaid/#/) and [Graphviz](https://graphviz.org/) diagrams. 
+Quarto has native support for embedding [Mermaid](https://mermaid-js.github.io/mermaid/#/) and [Graphviz](https://graphviz.org/) diagrams. This enables you to create flowcharts, sequence diagrams, state diagrams, gnatt charts, and more using a plain text syntax inspired by markdown.
+
+For example, here we embed a flowchart created using Mermaid:
 
 ```{mermaid}
-%%| echo: true
+%%| echo: fenced
 flowchart LR
-  A[Hard edge] -->|Link text| B(Round edge)
+  A[Hard edge] --> B(Round edge)
   B --> C{Decision}
-  C -->|One| D[Result one]
-  C -->|Two| E[Result two]
+  C --> D[Result one]
+  C --> E[Result two]
 ```
 
+As illustrated above, diagrams are embedded using `{mermaid}` and `{dot}` executable cells. 
+
+Diagram rendering makes use use of the Chrome web browser to create an SVG version for web output and a high-quality PNG for print output. Quarto can automatically use an existing version of Chrome on your system for rendering, or alternatively if you don't have Chrome can use a lighter-weight library version of it (see [Chrome](#chrome) below for details).
+
+
+## Mermaid
+
+Mermaid is a Javascript based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams. 
+
+Above we demonstrated a flowchart created with Mermaid, here is a sequence diagram (also embedded using a `{mermaid}` executable cell):
+
+```{mermaid}
+%%| echo: fenced
+sequenceDiagram
+  participant Alice
+  participant Bob
+  Alice->>John: Hello John, how are you?
+  loop Healthcheck
+    John->>John: Fight against hypochondria
+  end
+  Note right of John: Rational thoughts <br/>prevail!
+  John-->>Alice: Great!
+  John->>Bob: How about you?
+  Bob-->>John: Jolly good!
+```
+
+
+To learn more about using Mermaid, see the [Mermaid website](https://mermaid-js.github.io/mermaid/) or the [Mermaid book](https://www.amazon.com/Official-Guide-Mermaid-js-beautiful-flowcharts-dp-1801078025/dp/1801078025) (which is written by the creator of Mermaid).
+
+## Graphviz
+
+The Graphviz layout programs take descriptions of graphs in a simple text language, and make diagrams in useful formats. Graphviz has many useful features for concrete diagrams, such as options for colors, fonts, tabular node layouts, line styles, hyperlinks, and custom shapes.
+
+For example, here is a simple undirected graph created using graphviz:
+
 ```{dot}
-//| echo: true
+//| echo: fenced
 graph G {
   layout=neato
   run -- intr;
@@ -38,4 +70,63 @@ graph G {
   new -- runmem;
   sleep -- runmem;
 }
+```
+
+Here is a graph with nested clusters:
+
+```{dot}
+//| echo: fenced
+digraph D {
+  subgraph cluster_p {
+    label = "Parent";
+    subgraph cluster_c1 {
+      label = "Child one";
+      a;
+      subgraph cluster_gc_1 {
+        label = "Grand-Child one";
+         b;
+      }
+      subgraph cluster_gc_2 {
+        label = "Grand-Child two";
+          c;
+          d;
+      }
+    }
+    subgraph cluster_c2 {
+      label = "Child two";
+      e;
+    }
+  }
+} 
+```
+
+To learn more about Graphviz, see the [Graphviz website](https://graphviz.org/), this list of simple [Graphiz examples](https://renenyffenegger.ch/notes/tools/Graphviz/examples/index), or the [Graphviz gallery](https://graphviz.org/gallery/).
+
+
+## Code Echo
+
+Note that unlike other executable cell handlers (e.g. `{python}`), cells with diagrams don't include their code in the rendered document by default. You can include code by adding an `echo: false` cell option. Note that this works differently for `{mermaid}` and `{dot}` because they have distinct syntaxes for single-line comments.
+
+To include code for `{mermaid}`, add `%%| echo: true` to the top of the cell. For example:
+
+```{{mermaid}}
+%%| echo: true
+
+```
+
+To include code for `{dot}`, add `//| echo: true` to the top of the cell. For example:
+
+```{{dot}}
+//| echo: true
+
+```
+
+## Chrome
+
+Diagram rendering makes use use of the Chrome web browser to create an SVG version for web output and a high-quality PNG for print output. 
+
+Quarto can automatically use an existing version of Chrome on your system for rendering. Alternatively, if you don't have Chrome, you can install a minimal version of it for use by Quarto with the following command:
+
+```bash
+quarto tools install chromium
 ```

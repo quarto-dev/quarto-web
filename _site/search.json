@@ -1638,6 +1638,41 @@
     "text": "PDF/LaTeX Layout\nWhile most of the layout capabilities described are supported for both HTML and PDF output, some are available only for HTML output. You can use the full set of columns for HTML. Then, when you render PDF or LaTeX output, content will automatically be placed in the most appropriate related column (typically this will mean using the main column and right margin). Here is how columns are mapped:\n\nAny column that uses the right margin (e.g. page, screen, screen-right, etc. will be rendered as page-right in LaTeX.\nAny column that uses the left margin will be rendered as normal body content.\n\n\nPage Geometry\nWhen you render a PDF using content in the margin or content that spans the page, Quarto automatically will adjust the page geometry for the default Quarto LaTeX document classes (KOMA scrartcl, scrreport, or scrbook) to create a slightly narrower body content region and a slightly wider margin region. This adjustment will incorporate known paper sizes to create a reasonable page geometry for most content.\nYou can control the page geometry directly yourself by setting geometry options in your document’s front matter. For example:\n---\ngeometry:\n  - left=.75in\n  - textwidth=4.5in\n  - marginparsep=.25in\n  - marginparwidth=2.25in\n---\nYou can use these options to control the page geometry for the built in document classes or to customize the geometry of other document classes that you may be using.\n\n\n\n\n\n\nIf you’d like to view the page geometry in your rendered PDF, you can pass showframe to the geometry option as in the below example.\n---\ngeometry:\n  - showframe\n---\n\n\n\n\n\nCode Blocks\nWhen rendering a PDF that uses the margins for content, Quarto automatically adjusts the appearance of code blocks. Rather than having a solid background color, a left border treatment is used.\nThis enables non-breaking code to overflow into the margin without cosmetic issues created by the code block background (which does not overflow into the margin region).\nYou can disable this treatment by setting the following code-block-border-left: false in your document front matter."
   },
   {
+    "objectID": "docs/authoring/diagrams.html",
+    "href": "docs/authoring/diagrams.html",
+    "title": "Diagrams",
+    "section": "",
+    "text": "Quarto has native support for embedding Mermaid and Graphviz diagrams. This enables you to create flowcharts, sequence diagrams, state diagrams, gnatt charts, and more using a plain text syntax inspired by markdown.\nFor example, here we embed a flowchart created using Mermaid:\n\n```{mermaid}\nflowchart LR\n  A[Hard edge] --> B(Round edge)\n  B --> C{Decision}\n  C --> D[Result one]\n  C --> E[Result two]\n```\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHard edge\n\n\n\nRound edge\n\n\n\nDecision\n\n\n\nResult one\n\n\n\nResult two\n\n\n\n\n\nAs illustrated above, diagrams are embedded using {mermaid} and {dot} executable cells.\nDiagram rendering makes use use of the Chrome web browser to create an SVG version for web output and a high-quality PNG for print output. Quarto can automatically use an existing version of Chrome on your system for rendering, or alternatively if you don’t have Chrome can use a lighter-weight library version of it (see Chrome below for details)."
+  },
+  {
+    "objectID": "docs/authoring/diagrams.html#mermaid",
+    "href": "docs/authoring/diagrams.html#mermaid",
+    "title": "Diagrams",
+    "section": "Mermaid",
+    "text": "Mermaid\nMermaid is a Javascript based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams.\nAbove we demonstrated a flowchart created with Mermaid, here is a sequence diagram (also embedded using a {mermaid} executable cell):\n\n```{mermaid}\nsequenceDiagram\n  participant Alice\n  participant Bob\n  Alice->>John: Hello John, how are you?\n  loop Healthcheck\n    John->>John: Fight against hypochondria\n  end\n  Note right of John: Rational thoughts <br/>prevail!\n  John-->>Alice: Great!\n  John->>Bob: How about you?\n  Bob-->>John: Jolly good!\n```\n\n\n\nAliceBobJohnHello John, how are you?Fight against hypochondrialoop[Healthcheck]Rational thoughts prevail!Great!How about you?Jolly good!AliceBobJohn\n\n\n\nTo learn more about using Mermaid, see the Mermaid website or the Mermaid book (which is written by the creator of Mermaid)."
+  },
+  {
+    "objectID": "docs/authoring/diagrams.html#graphviz",
+    "href": "docs/authoring/diagrams.html#graphviz",
+    "title": "Diagrams",
+    "section": "Graphviz",
+    "text": "Graphviz\nThe Graphviz layout programs take descriptions of graphs in a simple text language, and make diagrams in useful formats. Graphviz has many useful features for concrete diagrams, such as options for colors, fonts, tabular node layouts, line styles, hyperlinks, and custom shapes.\nFor example, here is a simple undirected graph created using graphviz:\n\n```{dot}\ngraph G {\n  layout=neato\n  run -- intr;\n  intr -- runbl;\n  runbl -- run;\n  run -- kernel;\n  kernel -- zombie;\n  kernel -- sleep;\n  kernel -- runmem;\n  sleep -- swap;\n  swap -- runswap;\n  runswap -- new;\n  runswap -- runmem;\n  new -- runmem;\n  sleep -- runmem;\n}\n```\n\n\n\n\n\n\n\nG\n\n\n\nrun\n\nrun\n\n\n\nintr\n\nintr\n\n\n\nrun--intr\n\n\n\n\nkernel\n\nkernel\n\n\n\nrun--kernel\n\n\n\n\nrunbl\n\nrunbl\n\n\n\nintr--runbl\n\n\n\n\nrunbl--run\n\n\n\n\nzombie\n\nzombie\n\n\n\nkernel--zombie\n\n\n\n\nsleep\n\nsleep\n\n\n\nkernel--sleep\n\n\n\n\nrunmem\n\nrunmem\n\n\n\nkernel--runmem\n\n\n\n\nsleep--runmem\n\n\n\n\nswap\n\nswap\n\n\n\nsleep--swap\n\n\n\n\nrunswap\n\nrunswap\n\n\n\nswap--runswap\n\n\n\n\nrunswap--runmem\n\n\n\n\nnew\n\nnew\n\n\n\nrunswap--new\n\n\n\n\nnew--runmem\n\n\n\n\n\n\nHere is a graph with nested clusters:\n\n```{dot}\ndigraph D {\n  subgraph cluster_p {\n    label = \"Parent\";\n    subgraph cluster_c1 {\n      label = \"Child one\";\n      a;\n      subgraph cluster_gc_1 {\n        label = \"Grand-Child one\";\n         b;\n      }\n      subgraph cluster_gc_2 {\n        label = \"Grand-Child two\";\n          c;\n          d;\n      }\n    }\n    subgraph cluster_c2 {\n      label = \"Child two\";\n      e;\n    }\n  }\n} \n```\n\n\n\n\n\n\n\nD\n\n\ncluster_p\n\nParent\n\n\ncluster_c1\n\nChild one\n\n\ncluster_gc_1\n\nGrand-Child one\n\n\ncluster_gc_2\n\nGrand-Child two\n\n\ncluster_c2\n\nChild two\n\n\n\na\n\na\n\n\n\nb\n\nb\n\n\n\nc\n\nc\n\n\n\nd\n\nd\n\n\n\ne\n\ne\n\n\n\n\n\nTo learn more about Graphviz, see the Graphviz website, this list of simple Graphiz examples, or the Graphviz gallery."
+  },
+  {
+    "objectID": "docs/authoring/diagrams.html#code-echo",
+    "href": "docs/authoring/diagrams.html#code-echo",
+    "title": "Diagrams",
+    "section": "Code Echo",
+    "text": "Code Echo\nNote that unlike other executable cell handlers (e.g. {python}), cells with diagrams don’t include their code in the rendered document by default. You can include code by adding an echo: false cell option. Note that this works differently for {mermaid} and {dot} because they have distinct syntaxes for single-line comments.\nTo include code for {mermaid}, add %%| echo: true to the top of the cell. For example:\n```{mermaid}\n%%| echo: true\n\n```\nTo include code for {dot}, add //| echo: true to the top of the cell. For example:\n```{dot}\n//| echo: true\n\n```"
+  },
+  {
+    "objectID": "docs/authoring/diagrams.html#chrome",
+    "href": "docs/authoring/diagrams.html#chrome",
+    "title": "Diagrams",
+    "section": "Chrome",
+    "text": "Chrome\nDiagram rendering makes use use of the Chrome web browser to create an SVG version for web output and a high-quality PNG for print output.\nQuarto can automatically use an existing version of Chrome on your system for rendering. Alternatively, if you don’t have Chrome, you can install a minimal version of it for use by Quarto with the following command:\nquarto tools install chromium"
+  },
+  {
     "objectID": "docs/authoring/figures.html",
     "href": "docs/authoring/figures.html",
     "title": "Figures",
@@ -1733,7 +1768,7 @@
     "href": "docs/authoring/cross-references.html#equations",
     "title": "Cross References",
     "section": "Equations",
-    "text": "Equations\nProvide an #eq- label immediately after an equation to make it referenceable. For example:\nBlack-Scholes (@eq-black-scholes) is a mathematical model that seeks to explain the behavior of financial derivatives, most commonly options:\n\n$$\n\\frac{\\partial \\mathrm C}{ \\partial \\mathrm t } + \\frac{1}{2}\\sigma^{2} \\mathrm S^{2}\n\\frac{\\partial^{2} \\mathrm C}{\\partial \\mathrm C^2}\n  + \\mathrm r \\mathrm S \\frac{\\partial \\mathrm C}{\\partial \\mathrm S}\\ =\n  \\mathrm r \\mathrm C \n$$ {#eq-black-scholes}\n\nBlack-Scholes (Equation 1) is a mathematical model that seeks to explain the behavior of financial derivatives, most commonly options:\n\\[\n\\frac{\\partial \\mathrm C}{ \\partial \\mathrm t } + \\frac{1}{2}\\sigma^{2} \\mathrm S^{2}\n\\frac{\\partial^{2} \\mathrm C}{\\partial \\mathrm C^2}\n  + \\mathrm r \\mathrm S \\frac{\\partial \\mathrm C}{\\partial \\mathrm S}\\ =\n  \\mathrm r \\mathrm C\n\\qquad(1)\\]\nNote that the equation number is included (via \\qquad) in the right margin of the equation."
+    "text": "Equations\nProvide an #eq- label immediately after an equation to make it referenceable. For example:\nBlack-Scholes (@eq-black-scholes) is a mathematical model that seeks to explain the behavior of financial derivatives, most commonly options:\n\n$$\n\\frac{\\partial \\mathrm C}{ \\partial \\mathrm t } + \\frac{1}{2}\\sigma^{2} \\mathrm S^{2}\n\\frac{\\partial^{2} \\mathrm C}{\\partial \\mathrm C^2}\n  + \\mathrm r \\mathrm S \\frac{\\partial \\mathrm C}{\\partial \\mathrm S}\\ =\n  \\mathrm r \\mathrm C \n$$ {#eq-black-scholes}\n\nBlack-Scholes (Equation 1) is a mathematical model that seeks to explain the behavior of financial derivatives, most commonly options:\n\\[\n\\frac{\\partial \\mathrm C}{ \\partial \\mathrm t } + \\frac{1}{2}\\sigma^{2} \\mathrm S^{2}\n\\frac{\\partial^{2} \\mathrm C}{\\partial \\mathrm C^2}\n  + \\mathrm r \\mathrm S \\frac{\\partial \\mathrm C}{\\partial \\mathrm S}\\ =\n  \\mathrm r \\mathrm C\n\\tag{1}\\]\nNote that the equation number is included (via \\qquad) in the right margin of the equation."
   },
   {
     "objectID": "docs/authoring/cross-references.html#sections",
@@ -2077,6 +2112,13 @@
     "title": "Markdown Basics",
     "section": "Equations",
     "text": "Equations\nUse $ delimiters for inline math and $$ delimiters for display math. For example:\n\n\n\n\n\n\n\nMarkdown Syntax\nOutput\n\n\n\n\ninline math: $E = mc^{2}$\ninline math: \\(E=mc^{2}\\)\n\n\ndisplay math:\n\n$$E = mc^{2}$$\ndisplay math:\n\\[E = mc^{2}\\]\n\n\n\nIf you want to define custom TeX macros, include them within $$ delimiters enclosed in a .hidden block. For example:\n::: {.hidden}\n$$\n \\def\\RR{{\\bf R}}\n \\def\\bold#1{{\\bf #1}}\n$$\n\n\n:::\nFor HTML math processed using MathJax (the default) you can use the \\def, \\newcommand, \\renewcommand, \\newenvironment, \\renewenvironment, and \\let commands to create your own macros and environments."
+  },
+  {
+    "objectID": "docs/authoring/markdown-basics.html#diagrams",
+    "href": "docs/authoring/markdown-basics.html#diagrams",
+    "title": "Markdown Basics",
+    "section": "Diagrams",
+    "text": "Diagrams\nQuarto has native support for embedding Mermaid and Graphviz diagrams. This enables you to create flowcharts, sequence diagrams, state diagrams, gnatt charts, and more using a plain text syntax inspired by markdown.\nFor example, here we embed a flowchart created using Mermaid:\n\n```{mermaid}\nflowchart LR\n  A[Hard edge] --> B(Round edge)\n  B --> C{Decision}\n  C --> D[Result one]\n  C --> E[Result two]\n```\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHard edge\n\n\n\nRound edge\n\n\n\nDecision\n\n\n\nResult one\n\n\n\nResult two\n\n\n\n\n\nLearn more in the article on Diagrams."
   },
   {
     "objectID": "docs/authoring/markdown-basics.html#page-breaks",
@@ -3827,12 +3869,5 @@
     "title": "Open Source License",
     "section": "",
     "text": "The Quarto source code is available at https://github.com/quarto-dev/\nQuarto is a registered trademark of RStudio. Please see our trademark policy for guidelines on usage of the Quarto trademark.\nQuarto also makes use of several other open-source projects, the distribution of which is subject to their respective licenses. Major components and their licenses include:\n\n\n\nProject\nLicense\n\n\n\n\nPandoc\nGNU GPL v2\n\n\nBootstrap 5.0\nMIT\n\n\nBootswatch 5.0\nMIT\n\n\nDeno\nMIT\n\n\nesbuild\nMIT\n\n\nDart Sass\nMIT\n\n\nObservable Runtime\nISC"
-  },
-  {
-    "objectID": "docs/authoring/diagrams.html",
-    "href": "docs/authoring/diagrams.html",
-    "title": "Diagrams",
-    "section": "",
-    "text": "Quarto has native support for embedding Mermaid and Graphviz diagrams.\n\nflowchart LR\n  A[Hard edge] -->|Link text| B(Round edge)\n  B --> C{Decision}\n  C -->|One| D[Result one]\n  C -->|Two| E[Result two]\n\n\n\n\n\nLink text\n\n\n\n\n\n\n\nOne\n\n\n\nTwo\n\n\n\nHard edge\n\n\n\nRound edge\n\n\n\nDecision\n\n\n\nResult one\n\n\n\nResult two\n\n\n\n\n\n\ngraph G {\n  layout=neato\n  run -- intr;\n  intr -- runbl;\n  runbl -- run;\n  run -- kernel;\n  kernel -- zombie;\n  kernel -- sleep;\n  kernel -- runmem;\n  sleep -- swap;\n  swap -- runswap;\n  runswap -- new;\n  runswap -- runmem;\n  new -- runmem;\n  sleep -- runmem;\n}\n\n\n\n\n\n\n\nG\n\n\n\nrun\n\nrun\n\n\n\nintr\n\nintr\n\n\n\nrun--intr\n\n\n\n\nkernel\n\nkernel\n\n\n\nrun--kernel\n\n\n\n\nrunbl\n\nrunbl\n\n\n\nintr--runbl\n\n\n\n\nrunbl--run\n\n\n\n\nzombie\n\nzombie\n\n\n\nkernel--zombie\n\n\n\n\nsleep\n\nsleep\n\n\n\nkernel--sleep\n\n\n\n\nrunmem\n\nrunmem\n\n\n\nkernel--runmem\n\n\n\n\nsleep--runmem\n\n\n\n\nswap\n\nswap\n\n\n\nsleep--swap\n\n\n\n\nrunswap\n\nrunswap\n\n\n\nswap--runswap\n\n\n\n\nrunswap--runmem\n\n\n\n\nnew\n\nnew\n\n\n\nrunswap--new\n\n\n\n\nnew--runmem"
   }
 ]
