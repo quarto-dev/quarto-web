@@ -77,33 +77,8 @@ graph G {
 }
 ```
 
-Here is a graph with nested clusters:
 
-```{dot}
-//| echo: fenced
-digraph D {
-  subgraph cluster_p {
-    label = "Parent";
-    subgraph cluster_c1 {
-      label = "Child one";
-      a;
-      subgraph cluster_gc_1 {
-        label = "Grand-Child one";
-         b;
-      }
-      subgraph cluster_gc_2 {
-        label = "Grand-Child two";
-          c;
-          d;
-      }
-    }
-    subgraph cluster_c2 {
-      label = "Child two";
-      e;
-    }
-  }
-} 
-```
+Note that the cell options syntax is slightly different for `{mermaid}` and `{dot}` (`%%|` and `//|`, respectively) because they have distinct character sequences for single-line comments.
 
 To learn more about Graphviz, see the [Graphviz website](https://graphviz.org/), this list of simple [Graphiz Examples](https://renenyffenegger.ch/notes/tools/Graphviz/examples/index), or the [Graphviz Gallery](https://graphviz.org/gallery/).
 
@@ -125,19 +100,74 @@ There are a variety of tools available to improve your productivity authoring di
     Note that you should be sure to have installed the [very latest](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) version of the Quarto VS Code extension to try this out.
 
 
-## File Include
+## Figures
 
-You might find it more convenient to edit your diagram in a standalone file and then reference it from within your `.qmd` document. You can do this by adding the `file` option to a Mermaid or Graphviz cell.  For example:
-
-```{{mermaid}}
-%%| file: diagram.mmd
-```
+Diagrams can be treated as figures the same way that images and plot output are. For example, if we added the following figure options to the diagram above:
 
 ```{{dot}}
-//| file: diagram.dot
+//| label: fig-simple
+//| fig-cap: This is a simple graphviz graph.
+
 ```
 
-Note that the cell options syntax is slightly different for `{mermaid}` and `{dot}` because they have distinct character sequences for single-line comments.
+We'd get this output:
+
+```{dot}
+//| label: fig-simple
+//| fig-cap: This is a simple graphviz graph
+graph G {
+  layout=neato
+  run -- intr;
+  intr -- runbl;
+  runbl -- run;
+  run -- kernel;
+  kernel -- zombie;
+  kernel -- sleep;
+  kernel -- runmem;
+  sleep -- swap;
+  swap -- runswap;
+  runswap -- new;
+  runswap -- runmem;
+  new -- runmem;
+  sleep -- runmem;
+}
+```
+
+## File Include
+
+You might find it more convenient to edit your diagram in a standalone file and then reference it from within your `.qmd` document. You can do this by adding the `file` option to a Mermaid or Graphviz cell.  
+
+For example, here we include a very complex diagram whose definition would be too unwieldy to provide inline: 
+
+```{{dot}}
+//| label: fig-linux-kernel
+//| fig-cap: "A diagram of the Linux kernel."
+//| file: linux-kernel-diagram.dot
+```
+
+```{dot}
+//| label: fig-linux-kernel
+//| fig-cap: "A diagram of the Linux kernel."
+//| file: images/linux-kernel-diagram.dot
+```
+
+Note that the `label` and `fig-cap` attributes still work as expected with `file` includes.
+
+## Sizing
+
+By default, diagrams are rendered at their natural size (i.e. they are not stretched to fit the default figure size for the current document). Within HTML output formats, diagrams are also made responsive, so that their width doesn't overflow the current page column. This is similar to the treatment given to images and dynamic JavaScript widgets.
+
+You can disable responsive sizing by specifying the `fig-reponsive: false` option. You can also specify explicit sizes via `fig-width` and `fig-height`. For example, here we want to make a mermaid diagram a bit bigger because it contains only a few elements:
+
+```{mermaid}
+%%| echo: fenced
+%%| fig-width: 6.5
+flowchart LR
+  A[Hard edge] --> B(Round edge)
+  B --> C{Decision}
+```
+
+
 
 ## Code Echo
 
