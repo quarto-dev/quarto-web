@@ -319,7 +319,7 @@
     "href": "docs/projects/quarto-projects.html#render-targets",
     "title": "Project Basics",
     "section": "Render Targets",
-    "text": "Render Targets\nBy default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the project directory will be rendered, save for ones with a file or directory prefix of . (hidden files) or _ (typically used for non top-level files, e.g. ones included in other files).\nIf you don’t want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a project: render: [files] entry to your project metadata. For example:\nproject:\n  render:\n    - section1.md\n    - section2.md\nNote that you can use wildcards when defining the render list. For example:\nproject:\n  render:\n    - section*.md\n\n\n\n\n\n\nNote\n\n\n\nIf the name of your output file needs to start with . or _ (for instance _index.md for Hugo users), you must name the Quarto input file without the prefix (for instance index.qmd) and add an explicit output-file parameter in the YAML such as\n---\noutput-file: _index.md\n---"
+    "text": "Render Targets\nBy default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the project directory will be rendered, save for ones with a file or directory prefix of . (hidden files) or _ (typically used for non top-level files, e.g. ones included in other files).\nIf you don’t want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a project: render: [files] entry to your project metadata. For example:\nproject:\n  render:\n    - section1.md\n    - section2.md\nNote that you can use wildcards when defining the render list. For example:\nproject:\n  render:\n    - section*.md\nYou can also use the prefix ! to ignore some paths in the render list. Note that in that case you need to start by specifying everything you do want to render. For example:\nproject:\n  render:\n    - \"*.qmd\"\n    - \"!ignored.qmd\"\n    - \"!ignored-dir/\"\n\n\n\n\n\n\nNote\n\n\n\nIf the name of your output file needs to start with . or _ (for instance _index.md for Hugo users), you must name the Quarto input file without the prefix (for instance index.qmd) and add an explicit output-file parameter in the YAML such as\n---\noutput-file: _index.md\n---"
   },
   {
     "objectID": "docs/projects/quarto-projects.html#project-scripts",
@@ -1673,11 +1673,25 @@
     "text": "Authoring\nThere are a variety of tools available to improve your productivity authoring diagrams:\n\nThe Mermaid Live Editor is an online tool for editing and previewing Mermaid diagrams in real time.\nGraphviz Online provides a similar tool for editing Graphviz diagrams.\nRStudio includes support for editing and previewing .mmd and .dot files (with help from the DiagrammeR package).\nThe Quarto VS Code Extension supports live preview of diagrams embedded in .qmd files and in .mmd and .dot files:\n\nNote that you should be sure to have installed the very latest version of the Quarto VS Code extension to try this out."
   },
   {
+    "objectID": "docs/authoring/diagrams.html#figures",
+    "href": "docs/authoring/diagrams.html#figures",
+    "title": "Diagrams",
+    "section": "Figures",
+    "text": "Figures\nDiagrams can be treated as figures the same way that images and plot output are. For example, if we added the following figure options to the diagram above:\n```{dot}\n//| label: fig-simple\n//| fig-cap: This is a simple graphviz graph.\n\n```\nWe’d get this output:\n\n\n\n\n\n\n\n\nG\n\n  \n\nrun\n\n run   \n\nintr\n\n intr   \n\nrun–intr\n\n   \n\nkernel\n\n kernel   \n\nrun–kernel\n\n   \n\nrunbl\n\n runbl   \n\nintr–runbl\n\n   \n\nrunbl–run\n\n   \n\nzombie\n\n zombie   \n\nkernel–zombie\n\n   \n\nsleep\n\n sleep   \n\nkernel–sleep\n\n   \n\nrunmem\n\n runmem   \n\nkernel–runmem\n\n   \n\nsleep–runmem\n\n   \n\nswap\n\n swap   \n\nsleep–swap\n\n   \n\nrunswap\n\n runswap   \n\nswap–runswap\n\n   \n\nrunswap–runmem\n\n   \n\nnew\n\n new   \n\nrunswap–new\n\n   \n\nnew–runmem\n\n  \n\n\nFigure 1: This is a simple graphviz graph"
+  },
+  {
     "objectID": "docs/authoring/diagrams.html#file-include",
     "href": "docs/authoring/diagrams.html#file-include",
     "title": "Diagrams",
     "section": "File Include",
     "text": "File Include\nYou might find it more convenient to edit your diagram in a standalone file and then reference it from within your .qmd document. You can do this by adding the file option to a Mermaid or Graphviz cell.\nFor example, here we include a very complex diagram whose definition would be too unwieldy to provide inline:\n```{dot}\n//| label: fig-linux-kernel\n//| fig-cap: \"A diagram of the Linux kernel.\"\n//| file: linux-kernel-diagram.dot\n```\n\n\n\n\n\n\n\n\nLinux_kernel_diagram\n\n   \n\nSCI\n\n  System calls      \n\nsystem\n\n  system     \n\nsystem->system_\n\n    \n\nprocessing\n\n  processing      \n\nsysfs\n\n proc & sysfs file systems   \n\nSCI->sysfs\n\n   \n\nDM\n\n Device Model   \n\nsysfs->DM\n\n   \n\nlog_sys\n\n system run, modules, generic HW access    \n\nDM->log_sys\n\n   \n\nbus_drv\n\n bus drivers   \n\nlog_sys->bus_drv\n\n   \n\nbuses\n\n buses: PCI, USB …   \n\nbus_drv->buses\n\n    \n\nsock\n\n Sockets    \n\nnetworking\n\n  networking     \n\nnetworking->networking_\n\n    \n\nprot_fam\n\n protocol families   \n\nsock->prot_fam\n\n   \n\nlog_prot\n\n protocols: TCP, UDP, IP   \n\nprot_fam->log_prot\n\n   \n\nnetif\n\n network interfaces and drivers   \n\nlog_prot->netif\n\n   \n\nnet_hw\n\n network: Ethernet, WiFi …   \n\nnetif->net_hw\n\n   \n\nNFS\n\n NFS   \n\nNFS->log_prot\n\n    \n\nproc\n\n Processes    \n\nprocessing->processing_\n\n    \n\nmemory\n\n  memory      \n\nTasks\n\n Tasks   \n\nproc->Tasks\n\n   \n\nsync\n\n synchronization   \n\nTasks->sync\n\n   \n\nsched\n\n Scheduler   \n\nsync->sched\n\n   \n\nIRQ\n\n interrupts core, CPU arch   \n\nsched->IRQ\n\n   \n\nCPU\n\n CPU   \n\nIRQ->CPU\n\n   \n\nbottom\n\n © 2007-2022 Costa Shulyupin http://www.MakeLinux.net/kernel/diagram      \n\nMA\n\n memory access   \n\nVM\n\n Virtual memory   \n\nMA->VM\n\n   \n\nmmap\n\n memory mapping   \n\nVM->mmap\n\n   \n\nlog_mem\n\n logical memory   \n\nmmap->log_mem\n\n   \n\nSW\n\n Swap   \n\nmmap->SW\n\n   \n\nPA\n\n Page Allocator   \n\nlog_mem->PA\n\n   \n\nRAM\n\n MMU, RAM   \n\nPA->RAM\n\n   \n\nblock\n\n Block devices and drivers   \n\nSW->block\n\n   \n\nSD\n\n storage devices: SCSI, NVMe …   \n\nblock->SD\n\n   \n\nPC\n\n page cache   \n\nPC->PA\n\n    \n\nmemory->memory_\n\n    \n\nstorage\n\n  storage        \n\nFS\n\n files and directories     \n\nstorage->storage_\n\n    \n\nVFS\n\n Virtual File System   \n\nFS->VFS\n\n   \n\nVFS->NFS\n\n   \n\nVFS->mmap\n\n   \n\nVFS->PC\n\n   \n\nlogFS\n\n logical filesystems: ext3, xfs …   \n\nVFS->logFS\n\n   \n\nlogFS->block\n\n    \n\nchar\n\n char devices    \n\nHI\n\n  human interface      \n\nHI->HI_\n\n    \n\ninput\n\n input subsystem   \n\nchar->input\n\n   \n\nF7\n\n HI class drivers   \n\ninput->F7\n\n   \n\nHID\n\n  HI peripherals drivers     \n\nF7->HID\n\n   \n\ndisplay\n\n keyboard, mouse, display, audio   \n\nHID->display\n\n     \n\nfunctions\n\n  functions     \n\nfunctions->functions_\n\n    \n\nlayers\n\n  layers       \n\nusr\n\n user space interfaces   \n\nusr->usr_\n\n    \n\nvirt\n\n  virtual subsystems     \n\nusr->virt\n\n    \n\nvirt->D0\n\n    \n\nbridges\n\n  bridges     \n\nvirt->bridges\n\n    \n\nbridges->E0\n\n    \n\nlogical\n\n logical   \n\nbridges->logical\n\n    \n\nlogical->F0\n\n    \n\nHWI\n\n hardware interfaces   \n\nlogical->HWI\n\n    \n\nHWI->G0\n\n    \n\nHW\n\n electronics, hardware   \n\nHWI->HW\n\n    \n\nHW->H0\n\n    \n\nlayers->usr\n\n    \n\nLKD\n\nLinux kernel diagram   \n\n\nFigure 2: A diagram of the Linux kernel.\n\n\n\n\nNote that the label and fig-cap attributes still work as expected with file includes."
+  },
+  {
+    "objectID": "docs/authoring/diagrams.html#sizing",
+    "href": "docs/authoring/diagrams.html#sizing",
+    "title": "Diagrams",
+    "section": "Sizing",
+    "text": "Sizing\nBy default, diagrams are rendered at their natural size (i.e. they are not stretched to fit the default figure size for the current document). Within HTML output formats, diagrams are also made responsive, so that their width doesn’t overflow the current page column. This is similar to the treatment given to images and dynamic JavaScript widgets.\nYou can disable responsive sizing by specifying the fig-reponsive: false option. You can also specify explicit sizes via fig-width and fig-height. For example, here we want to make a mermaid diagram a bit bigger because it contains only a few elements:\n\n```{mermaid}\n%%| fig-width: 6.5\nflowchart LR\n  A[Hard edge] --> B(Round edge)\n  B --> C{Decision}\n```\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHard edge\n\n\n\nRound edge\n\n\n\nDecision"
   },
   {
     "objectID": "docs/authoring/diagrams.html#code-echo",
@@ -3890,33 +3904,5 @@
     "title": "Open Source License",
     "section": "",
     "text": "The Quarto source code is available at https://github.com/quarto-dev/\nQuarto is a registered trademark of RStudio. Please see our trademark policy for guidelines on usage of the Quarto trademark.\nQuarto also makes use of several other open-source projects, the distribution of which is subject to their respective licenses. Major components and their licenses include:\n\n\n\nProject\nLicense\n\n\n\n\nPandoc\nGNU GPL v2\n\n\nBootstrap 5.0\nMIT\n\n\nBootswatch 5.0\nMIT\n\n\nDeno\nMIT\n\n\nesbuild\nMIT\n\n\nDart Sass\nMIT\n\n\nObservable Runtime\nISC"
-  },
-  {
-    "objectID": "docs/authoring/diagrams.html#size-and-alignment",
-    "href": "docs/authoring/diagrams.html#size-and-alignment",
-    "title": "Diagrams",
-    "section": "Size and Alignment",
-    "text": "Size and Alignment"
-  },
-  {
-    "objectID": "docs/authoring/diagrams.html#size-alignment",
-    "href": "docs/authoring/diagrams.html#size-alignment",
-    "title": "Diagrams",
-    "section": "Size & Alignment",
-    "text": "Size & Alignment"
-  },
-  {
-    "objectID": "docs/authoring/diagrams.html#figures",
-    "href": "docs/authoring/diagrams.html#figures",
-    "title": "Diagrams",
-    "section": "Figures",
-    "text": "Figures\nDiagrams can be treated as figures the same way that images and plot output are. For example, if we added the following figure options to the diagram above:\n```{dot}\n//| label: fig-simple\n//| fig-cap: This is a simple graphviz graph.\n\n```\nWe’d get this output:\n\n\n\n\n\n\n\n\nG\n\n  \n\nrun\n\n run   \n\nintr\n\n intr   \n\nrun–intr\n\n   \n\nkernel\n\n kernel   \n\nrun–kernel\n\n   \n\nrunbl\n\n runbl   \n\nintr–runbl\n\n   \n\nrunbl–run\n\n   \n\nzombie\n\n zombie   \n\nkernel–zombie\n\n   \n\nsleep\n\n sleep   \n\nkernel–sleep\n\n   \n\nrunmem\n\n runmem   \n\nkernel–runmem\n\n   \n\nsleep–runmem\n\n   \n\nswap\n\n swap   \n\nsleep–swap\n\n   \n\nrunswap\n\n runswap   \n\nswap–runswap\n\n   \n\nrunswap–runmem\n\n   \n\nnew\n\n new   \n\nrunswap–new\n\n   \n\nnew–runmem\n\n  \n\n\nFigure 1: This is a simple graphviz graph"
-  },
-  {
-    "objectID": "docs/authoring/diagrams.html#sizing",
-    "href": "docs/authoring/diagrams.html#sizing",
-    "title": "Diagrams",
-    "section": "Sizing",
-    "text": "Sizing\nBy default, diagrams are rendered at their natural size (i.e. they are not stretched to fit the default figure size for the current document). Within HTML output formats, diagrams are also made responsive, so that their width doesn’t overflow the current page column. This is similar to the treatment given to images and dynamic JavaScript widgets.\nYou can disable responsive sizing by specifying the fig-reponsive: false option. You can also specify explicit sizes via fig-width and fig-height. For example, here we want to make a mermaid diagram a bit bigger because it contains only a few elements:\n\n```{mermaid}\n%%| fig-width: 6.5\nflowchart LR\n  A[Hard edge] --> B(Round edge)\n  B --> C{Decision}\n```\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHard edge\n\n\n\nRound edge\n\n\n\nDecision"
   }
 ]
