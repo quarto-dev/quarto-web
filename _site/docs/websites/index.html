@@ -1000,6 +1000,7 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
   <li><a href="#rstudio" id="toc-rstudio" class="nav-link" data-scroll-target="#rstudio">RStudio</a></li>
   </ul></li>
   <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a></li>
+  <li><a href="#render-targets" id="toc-render-targets" class="nav-link" data-scroll-target="#render-targets">Render Targets</a></li>
   <li><a href="#linking" id="toc-linking" class="nav-link" data-scroll-target="#linking">Linking</a></li>
   <li><a href="#learning-more" id="toc-learning-more" class="nav-link" data-scroll-target="#learning-more">Learning More</a></li>
   </ul>
@@ -1090,15 +1091,50 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Note that development server updates do not cause an update to the final site output. Consequently, you should always <code>quarto render</code> your site before deploying it, even if you have already previewed the changes with the development server.</p>
+<p>As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g.&nbsp;<code>_quarto.yml</code> or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully <code>quarto render</code> your site before deploying it, even if you have already previewed changes to some pages with the preview server.</p>
+</div>
+</div>
+</section>
+<section id="render-targets" class="level2">
+<h2 class="anchored" data-anchor-id="render-targets">Render Targets</h2>
+<p>By default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the project directory will be rendered, save for ones with a file or directory prefix of <code>.</code> (hidden files) or <code>_</code> (typically used for non top-level files, e.g.&nbsp;ones included in other files).</p>
+<p>If you don’t want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a <code>project: render: [files]</code> entry to your project metadata. For example:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section1.qmd</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section2.qmd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that you can use wildcards when defining the <code>render</code> list. For example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> section*.qmd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also use the prefix <code>!</code> to ignore some paths in the <code>render</code> list. Note that in that case you need to start by specifying everything you <em>do</em> want to render. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">render</span><span class="kw">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">"*.qmd"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">"!ignored.qmd"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="st">"!ignored-dir/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the name of your output file needs to start with <code>.</code> or <code>_</code> (for instance <code>_index.md</code> for Hugo users), you must name the Quarto input file without the prefix (for instance <code>index.qmd</code>) and add an explicit <code>output-file</code> parameter in the YAML such as</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">output-file</span><span class="kw">:</span><span class="at"> _index.md</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section>
 <section id="linking" class="level2">
 <h2 class="anchored" data-anchor-id="linking">Linking</h2>
 <p>When creating links between pages in your site, you can provide the source file as the link target (rather than the <code>.html</code> file). You can also add hash identifiers (<code>#)</code> to the source file if you want to link to a particular section in the document. For example:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">about</span><span class="co">](about.qmd)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">about</span><span class="co">](about.qmd#section)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">about</span><span class="co">](about.qmd)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">about</span><span class="co">](about.qmd#section)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>One benefit of using this style of link as opposed to targeting <code>.html</code> files directly is that if you at some point convert your site to a <a href="../../docs/books/index.html">book</a> the file-based links will automatically resolve to section links for formats that produce a single file (e.g.&nbsp;PDF or MS Word).</p>
 </section>
 <section id="learning-more" class="level2">
