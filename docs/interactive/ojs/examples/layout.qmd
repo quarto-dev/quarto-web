@@ -7,6 +7,10 @@ format:
     page-layout: full
 ---
 
+You can control the layout of OJS content in a number of ways.
+
+## `page-layout: full`
+
 This example uses `page-layout: full` to have its contents occupy the entire width of the page:
 
 ``` yaml
@@ -34,7 +38,7 @@ viewof islands = Inputs.checkbox(
 )
 ```
 
-::: panel-tabset
+::: {#penguins-tabset .panel-tabset .ojs-track-layout}
 ## Plot
 
 ```{ojs}
@@ -69,9 +73,24 @@ Read and filter the data based on the user's inputs:
 ```{ojs}
 //| echo: true
 data = FileAttachment("palmer-penguins.csv").csv({typed: true})
-
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length &&
          islands.includes(penguin.island);
 })
+```
+
+## `width` and `layoutWidth`: fine-grained layout tracking
+
+Like ObservableHQ, `ojs` cells support the reactive `width` which tracks the `clientWidth` of the main HTML element. 
+
+```{ojs}
+//| echo: true
+width
+```
+
+In addition, if you need the widths of specific parts of the layout, use the CSS class `ojs-track-layout` in a div. Quarto's OJS runtime all such divs in `layoutWidth`. In this example,  the tabset above has id `penguins-tabset`, and you can see its `clientWidth` reactively below. If this webpage is sufficiently wide, the sidebar will take up some of the space and the width of the resulting tabset will be smaller:
+
+```{ojs}
+//| echo: true
+layoutWidth
 ```
