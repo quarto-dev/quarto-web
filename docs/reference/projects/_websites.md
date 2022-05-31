@@ -30,6 +30,8 @@ Nav items appear in the `left` or `right` key of `navbar` definitions. For examp
 ::: {#table-navitem}
 :::
 
+Note that the `icon` option is available for items in the Navbar, however items in the Sidebar do not support the `icon` option.
+
 ## Sidebar
 
 Options that define the side navigation area for a {{< meta project-type >}}. For example:
