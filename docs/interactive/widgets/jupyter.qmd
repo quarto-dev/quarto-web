@@ -9,7 +9,7 @@ toc: false
 
 If you are using the Jupyter engine with Quarto this is a great way to incorporate interactivity without learning JavaScript.
 
-## Usage
+## Leaflet Example
 
 Including Jupyter Widgets within a Quarto document is as easy as including a plot. For example, here is how we embed a [Leaflet](https://ipyleaflet.readthedocs.io/en/latest/) map:
 
@@ -26,7 +26,11 @@ m.add_layer(Marker(location=(52.204793, 360.121558)))
 m
 ```
 
-Here's an example of using [Plotly](https://plotly.com/python/):
+To learn about available Jupyter Widgets visit <https://jupyter.org/widgets>.
+
+## Plotly
+
+Plotly is an interactive graphics library that can also be used with the Jupyter engine. Here's an example of using [Plotly](https://plotly.com/python/):
 
 ```{python}
 import plotly.express as px
@@ -39,4 +43,13 @@ fig = px.scatter(df, x="sepal_width", y="sepal_length",
 fig.show()
 ```
 
-To learn about available Jupyter Widgets visit <https://jupyter.org/widgets>.
+::: {.callout-note}
+If you are using Plotly within the VS Code Notebook Editor you will need to add a line of code to ensure that your plots can be seen both within VS Code and when rendered to HTML by Quarto. You can do this by configuring the Plotly [default renderer](https://plotly.com/python/renderers/#setting-the-default-renderer) as follows:
+
+```{{python}}
+import plotly.io as pio
+pio.renderers.default = "plotly_mimetype+notebook_connected"
+```
+
+This workaround is required because when running within VS Code, Plotly chooses a default rendering that can't be easily exported to HTML (for more background, see this [GitHub Issue](https://github.com/microsoft/vscode-jupyter/issues/6999) and related discussion). Note that this workaround is only required for the VS Code Notebook Editor (it is not required if you are using Jupyter Lab or if you are editing a plain-text `.qmd` file).
+:::
