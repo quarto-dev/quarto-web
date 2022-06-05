@@ -19,17 +19,15 @@ flowchart LR
 
 As illustrated above, diagrams are embedded using `{mermaid}` and `{dot}` executable cells (`dot` is underlying language of Graphviz)
 
-Diagrams are a recent addition to Quarto---you should make sure to update to the [very latest](/docs/get-started/) version of Quarto (v0.9.397 or higher) before trying out the features described below.
+Diagrams are a recent addition to Quarto---you should make sure to update to the [very latest](/docs/get-started/) version of Quarto (v0.9.518 or higher) before trying out the features described below.
 
-::: {.callout-note}
-Diagram rendering makes use use of the Chrome or Edge web browser to create an SVG version for web output and a high-quality PNG for print output. Quarto can automatically use an existing version of Chrome or Edge on your system, or alternatively if you don't have either installed, can use a lighter-weight library version of Chrome (see [Chrome Install](#chrome-install) below for details).
+::: callout-note
+For print output formats like `pdf` or `docx`, diagram rendering makes use use of the Chrome or Edge web browser to create a high-quality PNG. Quarto can automatically use an existing version of Chrome or Edge on your system, or alternatively if you don't have either installed, can use a lighter-weight library version of Chrome (see [Chrome Install](#chrome-install) below for details).
 :::
-
-
 
 ## Mermaid
 
-Mermaid is a Javascript based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams. 
+Mermaid is a Javascript based diagramming and charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams.
 
 Above we demonstrated a flowchart created with Mermaid, here is a sequence diagram (also embedded using a `{mermaid}` executable cell):
 
@@ -48,9 +46,9 @@ sequenceDiagram
   Bob-->>John: Jolly good!
 ```
 
+Note that Mermaid output varies depending on the target format (e.g. HTML vs. print-based). See the section below on [Mermaid Formats](#mermaid-formats) for additional details.
 
 To learn more about using Mermaid, see the [Mermaid website](https://mermaid-js.github.io/mermaid/) or the [Mermaid book](https://www.amazon.com/Official-Guide-Mermaid-js-beautiful-flowcharts-dp-1801078025/dp/1801078025) (which is written by the creator of Mermaid).
-
 
 ## Graphviz
 
@@ -78,37 +76,33 @@ graph G {
 }
 ```
 
-
 Note that the cell options syntax is slightly different for `{mermaid}` and `{dot}` (`%%|` and `//|`, respectively) because they have distinct character sequences for single-line comments.
 
 To learn more about Graphviz, see the [Graphviz website](https://graphviz.org/), this list of simple [Graphiz Examples](https://renenyffenegger.ch/notes/tools/Graphviz/examples/index), or the [Graphviz Gallery](https://graphviz.org/gallery/).
-
 
 ## Authoring
 
 There are a variety of tools available to improve your productivity authoring diagrams:
 
-1) The [Mermaid Live Editor](https://mermaid.live/) is an online tool for editing and previewing Mermaid diagrams in real time.
+1)  The [Mermaid Live Editor](https://mermaid.live/) is an online tool for editing and previewing Mermaid diagrams in real time.
 
-2) [Graphviz Online](https://dreampuf.github.io/GraphvizOnline/) provides a similar tool for editing Graphviz diagrams.
+2)  [Graphviz Online](https://dreampuf.github.io/GraphvizOnline/) provides a similar tool for editing Graphviz diagrams.
 
-3) [RStudio](https://www.rstudio.com/products/rstudio/download/) includes support for editing and previewing `.mmd` and `.dot` files (with help from the [DiagrammeR](https://rich-iannone.github.io/DiagrammeR/) package).
+3)  [RStudio](https://www.rstudio.com/products/rstudio/download/) includes support for editing and previewing `.mmd` and `.dot` files (with help from the [DiagrammeR](https://rich-iannone.github.io/DiagrammeR/) package).
 
-4) The Quarto [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) supports live preview of diagrams embedded in `.qmd` files and in `.mmd` and `.dot` files:
+4)  The Quarto [VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) supports live preview of diagrams embedded in `.qmd` files and in `.mmd` and `.dot` files:
 
     ![](images/vscode-graphviz.gif){.border fig-alt="A Quarto document being edited in Visual Studio Code, with a live preview of the currenly edited diagram shown in a pane to the right"}
 
     Note that you should be sure to have installed the [very latest](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) version of the Quarto VS Code extension to try this out.
 
-
 ## Figures
 
 Diagrams can be treated as figures the same way that images and plot output are. For example, if we added the following figure options to the diagram above:
 
-```{{dot}}
+``` {{dot}}
 //| label: fig-simple
 //| fig-cap: This is a simple graphviz graph.
-
 ```
 
 We'd get this output:
@@ -136,11 +130,11 @@ graph G {
 
 ## File Include
 
-You might find it more convenient to edit your diagram in a standalone file and then reference it from within your `.qmd` document. You can do this by adding the `file` option to a Mermaid or Graphviz cell.  
+You might find it more convenient to edit your diagram in a standalone file and then reference it from within your `.qmd` document. You can do this by adding the `file` option to a Mermaid or Graphviz cell.
 
-For example, here we include a very complex diagram whose definition would be too unwieldy to provide inline: 
+For example, here we include a very complex diagram whose definition would be too unwieldy to provide inline:
 
-```{{dot}}
+``` {{dot}}
 //| label: fig-linux-kernel
 //| fig-cap: "A diagram of the Linux kernel."
 //| file: linux-kernel-diagram.dot
@@ -168,13 +162,25 @@ flowchart LR
   B --> C{Decision}
 ```
 
-## GFM Output
+## Mermaid Formats {#mermaid-formats}
 
-When using `format: gfm` (GitHub Flavored Markdown), Mermaid diagrams will be emitted as plain `mermaid` code blocks. This is because both [GitHub](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/) and [GitLab](https://docs.gitlab.com/ee/user/markdown.html#mermaid) natively support rendering Mermaid diagrams from code.
+When you include a Mermaid diagram in a document, the diagram format used is chosen automatically based on the output format:
 
-If you are targeting a different service with `format: gfm` or prefer PNG or SVG output, you can use the `mermaid-format` option to override the default behavior. For example:
+| Format                              | Output                      |
+|-------------------------------------|-----------------------------|
+| HTML (`html`, `revealjs`, etc.)     | Mermaid native (JavaScript) |
+| GitHub Flavored Markdown (`gfm`)    | Mermaid code block          |
+| Other Formats (`pdf`, `docx`, etc.) | PNG image                   |
 
-```yaml
+The Mermaid native format is used by default whenever the underlying output format supports JavaScript.
+
+When using `format: gfm`, diagrams will be emitted as plain `mermaid` code blocks. This is because both [GitHub](https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/) and [GitLab](https://docs.gitlab.com/ee/user/markdown.html#mermaid) natively support rendering Mermaid diagrams from code.
+
+For formats that don't do special handling of Mermaid or lack a JavaScript run-time (e.g. formats like `pdf`, `docx`, `epub`, etc.) a PNG image is created using [Chrome](#chrome-install).
+
+You can change the default behavior using the `mermaid-format` option. For example:
+
+``` yaml
 ---
 format:
   gfm:
@@ -182,38 +188,34 @@ format:
 ---
 ```
 
+Valid values for `mermaid-format` include `js`, `png`, and `svg`,
+
 ## Code Echo
 
 Note that unlike other executable cell handlers (e.g. `{python}`), cells with diagrams don't display their code in the rendered document by default. You can display code by adding an `echo: false` option in a comment at the tof the cell.
 
 To include code for `{mermaid}`, add `%%| echo: true` to the top of the cell. For example:
 
-```{{mermaid}}
+``` {{mermaid}}
 %%| echo: true
-
 ```
 
 To include code for `{dot}`, add `//| echo: true` to the top of the cell. For example:
 
-```{{dot}}
+``` {{dot}}
 //| echo: true
-
 ```
 
+## Chrome Install {#chrome-install}
 
-## Chrome Install
-
-Diagram rendering makes use use of the Chrome or Edge web browser to create an SVG version for web output and a high-quality PNG for print output.
+For print output formats like `pdf` or `docx`, diagram rendering makes use use of the Chrome or Edge web browser to create a high-quality PNG.
 
 Quarto can automatically use an existing version of Chrome or Edge on your system for rendering. Alternatively, if you don't have either, you can install a minimal version of Chrome for use by Quarto with the following command:
 
-```bash
+``` bash
 quarto tools install chromium
 ```
 
-::: {.callout-note}
-
-Quarto installs headless Chromium via Puppeteer.
-The bundled Chromium that Puppeteer installs may not work on Docker containers; please check [the Puppeteer documentation](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker).
-
+::: callout-note
+Quarto installs headless Chromium via Puppeteer. The bundled Chromium that Puppeteer installs may not work on Docker containers; please check [the Puppeteer documentation](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker).
 :::
