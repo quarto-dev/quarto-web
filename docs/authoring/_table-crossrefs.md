@@ -18,6 +18,8 @@ Which looks like this when rendered to HTML:
 
 ![](images/crossref-table.png){fig-alt="A table with 3 columns and four rows. The text 'Table 1: My Caption' is above the header column. The text 'See tbl. 1' is aligned to the left underneath the last column." width="500"}
 
+For tables produced by executable code cells, the same syntax can be used, with the `#tbl-` label in braces included at the end of the table caption specified using the `tbl-cap` cell option (see, e.g. @tbl-planets produced by the Python code in the [computations section](#computations)).
+
 ### Subtables
 
 You may want to create a composition of several sub-tables. To do this, create a div with a main identifier, then apply sub-identifiers (and optional caption text) to the contained tables. For example:
