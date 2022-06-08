@@ -20,5 +20,3 @@ format:
      df-print: paged
 ---
 ```
-
-By default, the `kable` method will be used for printing data frames. If you want no special handling done, choose the `default` method. 
