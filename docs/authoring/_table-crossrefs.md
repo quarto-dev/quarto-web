@@ -18,7 +18,7 @@ Which looks like this when rendered to HTML:
 
 ![](images/crossref-table.png){fig-alt="A table with 3 columns and four rows. The text 'Table 1: My Caption' is above the header column. The text 'See tbl. 1' is aligned to the left underneath the last column." width="500"}
 
-For tables produced by executable code cells, the `tbl-` prefixed label goes in the `label` cell option (see, e.g. @tbl-planets produced by the Python code in the [computations section](#computations)).
+For tables produced by executable code cells, the `tbl-` prefixed label goes in the `label` cell option.
 
 ### Subtables
 
