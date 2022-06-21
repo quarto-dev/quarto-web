@@ -53,7 +53,7 @@ left:
 Here are all of the options available for top navigation:
 
 | Option           | Description                                                                                                                                                                                                                 |
-|-------------|-----------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `title`          | Navbar title (uses the `site: title` if none is specified). Use `title: false` to surpress the display of the title on the navbar.                                                                                          |
 | `logo`           | Logo image to be displayed left of the title.                                                                                                                                                                               |
 | `background`     | Background color ("primary", "secondary", "success", "danger", "warning", "info", "light", "dark", or hex color)                                                                                                            |
@@ -67,7 +67,7 @@ Here are all of the options available for top navigation:
 Here are the options available for individual navigation items:
 
 | Option       | Description                                                                                                                                                 |
-|-------------|-----------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `href`       | Link to file contained with the project or external URL.                                                                                                    |
 | `text`       | Text to display for navigation item (defaults to the document `title` if not provided).                                                                     |
 | `icon`       | Name of one of the standard [Bootstrap 5 icons](https://icons.getbootstrap.com/) (e.g. "github", "twitter", "share", etc.).                                 |
@@ -113,7 +113,7 @@ There are two styles of side navigation available: "docked" which shows the navi
 Here are all of the options available for side navigation:
 
 | Option           | Description                                                                                                                                                                                                                                                        |
-|------------|------------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `id`             | Optional identifier (used only for hybrid navigation, described below).                                                                                                                                                                                            |
 | `title`          | Sidebar title (uses the project title if none is specified).                                                                                                                                                                                                       |
 | `subtitle`       | Optional subtitle                                                                                                                                                                                                                                                  |
@@ -158,17 +158,75 @@ website:
 
 ## Hybrid Navigation
 
-If you have a website with dozens or even hundreds of pages you will likely want to use top and side navigation together (where the top navigation links to various sections, each with their own side navigation).
+If you have a website with dozens or even hundreds of pages, you will likely want to use top and side navigation together, where the top navigation links to various sections, each with their own side navigation.
 
-To do this, provide a list of `sidebar` entries and give them each an `id`, which you then use to reference them from the `navbar`. For example, if you are using the [Diátaxis Framework](https://diataxis.fr/) for documentation, you might have separate sections for tutorials, how-to guides, explanations, and reference documents:
+To do this, provide a groups of `sidebar` entries and link each group of `sidebar` entries with a `navbar` entry by matching their `title`s and listing the page linked from the `navbar` as the first content in the `sidebar` group. For example, if you are using the [Diátaxis Framework](https://diataxis.fr/) for documentation, you might have separate sections for tutorials, how-to guides, explanations, and reference documents, your page might look like the following.
 
-![](images/nav-bar-hybrid.png){fig-alt="A navigation bar titled 'ProjectX' on the left. To the right of the title are the menu items 'Home', 'Tutorials', 'How-To', 'Fundamentals', and 'Reference'. 'Home' is in a lighter color than the other menu options. There is a search bar on the far right side of the navigation bar."}
+![](images/nav-bar-hybrid.png){fig-alt="A navigation bar titled 'ProjectX' on the left. To the right of the title are the menu items 'Home', 'Tutorials', 'How-To', 'Fundamentals', and 'Reference'. There is a search bar on the far right side of the navigation bar."}
 
-Your site configuration might look something like this:
+With hybrid navigation, if then you click on, say, Tutorials, you might land in a page like the following.
+
+![](images/nav-bar-hybrid-sidebar.png){fig-alt="A navigation bar titled 'ProjectX' on the left. To the right of the title are the menu items 'Home', 'Tutorials', 'How-To', 'Fundamentals', and 'Reference'. There is a search bar on the far right side of the navigation bar. The contents of the 'Tutorials' page is shown, with the sidebar showing the items 'Tutorials', 'Tutorial 1', and 'Tutorial 2'."}
+
+To achieve this layout, your site configuration needs to look something like this:
 
 ``` yaml
 website:
+  title: ProjectX
   navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Tutorials"
+        file: tutorials.qmd
+      - text: "How-To"
+        file: howto.qmd
+      - text: "Fundamentals"
+        file: fundamentals.qmd
+      - text: "Reference"
+        file: reference.qmd
+
+  sidebar:
+    - title: "Tutorials"
+      style: "docked"
+      background: light
+      contents:
+        - tutorials.qmd
+        - tutorial-1.qmd
+        - tutorial-2.qmd
+
+    - title: "How-To"
+      contents:
+        - howto.qmd
+        # navigation items
+
+    - title: "Fundamentals"
+      contents:
+        - fundamentals.qmd
+        # navigation items
+
+    - title: "Reference"
+      contents:
+        - reference.qmd
+        # navigation items
+    
+```
+
+Note that the first sidebar definition contains a few options (e.g. `style` and `background`). These options are automatically inherited by the other sidebars.
+
+An alternative approach is to make the `sidebar` entries available from a drop down menu from the `navbar` items they're grouped with. To do this, provide a list of `sidebar` entries and give them each an `id`, which you then use to reference them from the `navbar`.
+
+![](images/nav-bar-hybrid-dropdown.png){fig-alt="A navigation bar titled 'ProjectX' on the left. To the right of the title are the menu items 'Home', 'Tutorials', 'How-To', 'Fundamentals', and 'Reference'. 'Home' is in a lighter color than the other menu options. The other menu options have a triangle pointing down next to each one, indicating the existence of a drop-down menu. There is a search bar on the far right side of the navigation bar."}
+
+To achieve this, your site configuration needs to look something like this:
+
+``` yaml
+website:
+  title: ProjectX
+  navbar:
+    background: primary
     search: true
     left:
       - text: "Home"
@@ -203,8 +261,6 @@ website:
         # navigation items
     
 ```
-
-Note that the first sidebar definition contains a few options (e.g. `style` and `background`). These options are automatically inherited by the other sidebars.
 
 ``` include
 _page-navigation.md
@@ -296,7 +352,7 @@ The links will be displayed immediately below the page table of contents:
 There are a couple of additional options that enable you to customize the behavior of repository links:
 
 | Option        | Description                                                                      |
-|---------------|----------------------------------------------------------------------------------|
+|---------------|--------------------------------------------------------|
 | `repo-subdir` | Subdirectory of repository containing source files (defaults to root directory). |
 | `repo-branch` | Repository branch containing the source files (defaults to `main`)               |
 
