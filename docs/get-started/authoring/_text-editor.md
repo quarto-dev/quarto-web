@@ -230,7 +230,7 @@ References will be included at the end of the document, so we include a `## Refe
 
 Here is what this document looks like when rendered.
 
-![](/docs/get-started/authoring/images/citations-render.png){.border width="600"}
+![](/docs/get-started/authoring/images/citations-render.png){.border width="600" fig-alt="Rendered document with references section at the bottom the content of which reads 'Knuth, Donald E. 1984. Literate Programming. The Computer Journal 27 (2): 97-111.'"}
 
 \
 The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations.
@@ -303,7 +303,7 @@ The table below shows how we expressed each of these.
 
 And finally, here is what this document looks like when rendered.
 
-![](/docs/get-started/authoring/images/crossref-render.png){.border width="600"}
+![](/docs/get-started/authoring/images/crossref-render.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
 
 See the article on [Cross References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
 
@@ -377,7 +377,7 @@ plt.show()
 
 Here is what this document looks like when rendered.
 
-![](images/layout-render.png){.border}
+![](images/layout-render.png){.border fig-alt="Document with Quarto Layout title at the top followed by Placing Colorbars header with text below it. Next to the text is a footnote in the page margin. Below the text is a toggleable code widget to hide/reveal the code followed by four plots displayed in two rows and two columns."}
 
 You can locate citations, footnotes, and [asides](https://quarto.org/docs/authoring/article-layout.html#asides) in the margin.
 You can also define custom column spans for figures, tables, or other content.
