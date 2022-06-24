@@ -8,7 +8,7 @@ You can download RStudio v2022.02 from <https://rstudio.com/products/rstudio/dow
 ## Enabling Quarto Features
 
 ::: {layout="[5,5]"}
-![](/docs/tools/images/rstudio-enable-quarto.png)
+![](/docs/tools/images/rstudio-enable-quarto.png){fig-alt="A section of the RStudio Options dialog with the R Markdown section selected in the sidebar. The Quarto tab is selected at the top. The body has 'Quarto' in bold, followed by 'Quarto is the next generation of R Markdown. This version of RStudio includes a preview of Quarto which you can enable below.' Below that, there is a radio button to Enable Quarto preview."}
 
 If you have already installed the Quarto CLI then RStudio will detect this and enable Quarto features automatically. Alternatively, there is a version of Quarto built-in to RStudio that you can activate from R Markdown Preferences.
 :::
