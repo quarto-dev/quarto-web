@@ -16,10 +16,10 @@ Here are the publishing destinations supported by Quarto along with a brief desc
 
 | Destination                                                  | Description                                                                                                                                                                                     |
 |-------------------|-----------------------------------------------------|
-| [Quarto Pub](https://quarto.pub/)                            | Publishing service for Quarto documents, websites, and books. Use Quarto Pub when you want a free, easy to use service for publicly available content.                                          |
-| [GitHub Pages](https://pages.github.com/)                    | Publish content based on source code managed within a GitHub repository. Use GitHub Pages when the source code for your document or site is hosted on GitHub.                                   |
-| [RStudio Connect](https://www.rstudio.com/products/connect/) | Publishing platform for secure sharing of data products within an organization. Use RStudio Connect when you want to publish content within an organization rather than on the public internet. |
-| [Netlify](https://www.netlify.com/)                          | Professional web publishing platform. Use Netlify when you want support for custom domains, authentication, previewing branches, and other more advanced capabilities.                          |
+| [Quarto Pub](quarto-pub)                            | Publishing service for Quarto documents, websites, and books. Use Quarto Pub when you want a free, easy to use service for publicly available content.                                          |
+| [GitHub Pages](github-pages.qmd)                    | Publish content based on source code managed within a GitHub repository. Use GitHub Pages when the source code for your document or site is hosted on GitHub.                                   |
+| [RStudio Connect](rstudio-connect.qmd) | Publishing platform for secure sharing of data products within an organization. Use RStudio Connect when you want to publish content within an organization rather than on the public internet. |
+| [Netlify](netlify.qmd)                          | Professional web publishing platform. Use Netlify when you want support for custom domains, authentication, previewing branches, and other more advanced capabilities.                          |
 | [Other Services](other.qmd)                                  | Content rendered with Quarto uses standard formats (HTML, PDFs, MS Word, etc.) that can be published anywhere. Use this if one of the methods above don't meet your requirements.               |
 
 : {tbl-colwidths="\[30,70\]"}
@@ -28,8 +28,52 @@ For each destination you have the option of rendering and publishing locally usi
 
 ## Publish Command
 
--   First
--   Second
+### Publishing Content
+
+The `quarto publish` command enables you to easily publish websites and documents to a variety of services. Using the publish command is as simple as navigating to the directory where the site or document you want to publish is located, and invoking the command with a supported service. Here are all the supported services and the command you would use to target them:
+
+``` bash
+quarto publish quarto-pub
+quarto publish netlify 
+quarto publish gh-pages
+quarto publish connect
+```
+
+If are publishing a document rather than a website or book, include the document's path a well. For example:
+
+``` bash
+quarto publish netlify document.qmd
+quarto publish connect document.qmd
+```
+
+The publish command will prompt you for authentication as required by the publishing provider you are targeting. If you are using a service that could be hosted on a variety of servers (e.g. RStudio Connect) then you'll also be prompted to specify the server you want to publish to.
+
+Once you are comfortable using `quarto publish` to publish content, you may want to consult the [Advanced Publishing] articles to learn more about additional features and options available for your chosen service.
+
+### Updating Content
+
+A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
+
+```yaml
+- source: project
+  netlify:
+    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
+      url: "https://tubular-unicorn-97bb3c.netlify.app"
+```
+
+Account information is not stored in this file, so it is suitable for checking in to version control and being shared by multiple publishers. Note that GitHub Pages publishes are not stored in the `_publish.yml` file (they are tracked by virtue of the creation of a `gh-pages` branch).
+
+To update previously published content, you can just type `quarto publish` without the service name (the previous publish saved in `_publish.yml` will be used). For example:
+
+```bash
+quarto publish
+quarto publish document.qmd
+```
+
+You'll be prompted to confirm that you want to update the target defined in `_publish.yml` (pass `--no-prompt` to skip the confirmation). You can have multiple publishing destinations recorded in `_publish.yml` (in this case you'll be prompted to choose one).
+
+See `quarto publish help` for additional information on options that affect publishing and updating content.
+
 
 ## Advanced Publishing
 
@@ -41,7 +85,7 @@ The `quarto publish` command described above is often all you need to publish co
 
 -   [GitHub Pages](github-pages.qmd) goes into additional depth on using GitHub as a web hosting platform (including how to host a personal website at https://myusername.github.io).
 
--   [RStudio Connect](rstudio-connect.qmd) details the various publishing options available when using Connect, including the ability to render and publish documents and sites on a scheduled basis.
+-   [RStudio Connect](rstudio-connect.qmd) details the various publishing options available when using RStudio Connect, including the ability to render and publish documents and sites on a scheduled basis.
 
 -   [Netlify](netlify.qmd) explores rendering content on Netlify (using the Quarto Netlify Build Plugin) as well as using some of Netlify's more advanced features like branch previews and custom domains and sub-domains.
 

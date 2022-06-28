@@ -2,62 +2,282 @@
 title: "Continuous Integration"
 ---
 
-## CI Publishing (Local Execution)
+## Overview
 
-Documentation and manuscripts
+Continuous Integration (CI) refers to the practice of automatically publishing content from code checked in to a version control system. While publishing using CI is a bit more involved to configure, it has several benefits, including:
 
--   Don't check your rendered assets into source control
-    -   Size
+-   Content is automatically published whenever source code changes (you don't need to remember to explicitly render).
 
-    -   Merge conflicts
--   Automatic publishing (don't have to remember to publish, merging a PR republishes)
+-   Rendering on another system ensures that your code is reproducible (but note that this can be double-edged sword if rendering has special requirements---see the discussion below on [Rendering Strategies]).
 
-GH Actions
+-   Not checking rendered output into version control makes diffs smaller and reduces merge conflicts.
 
-Netlify Plugin
+This article covers how to publish Quarto content using both GitHub Actions (a popular free CI service run by GitHub) as well as with ordinary shell commands (which can be made to work with many other CI server including entirely custom ones).
 
-## CI Publishing (Remote Execution)
+If you are new to CI and are already using GitHub for source control, we strongly recommend that you start with simple [Publishing to GitHub Pages].
 
-Hardest
+If you are more experienced with CI, read on for a more comprehensive guide to all of the possibilities.
 
-Reproducibility
+## Rendering Strategies
 
-Dynamic (time, data sources, or environment can change --- publication stays up to date)
+Before you start using a CI server you'll need to think about where you want executable code (e.g. R, Python, or Julia code) to run and where you want `quarto render` to run. You might reflexively assume that you'll always want to run everything on the CI server, however doing so introduces a number of complexities:
 
-### GitHub Actions
+1.  You need to make sure that the appropriate version of Quarto is available in the CI environment.
 
-### Netlify
+2.  You need to reconstitute all of the dependencies (required R, Python, or Julia packages) in the CI environment.
 
-### RStudio Connect
+3.  If your code needed any special permissions (e.g. database or network access) those permissions need also be present on the CI server.
 
--   RSC runs the code (direct push of code or GitHub commit hook)
+4.  Your project may contain documents that can no longer be easily executed (e.g. blog posts from several years ago that use older versions of packages).
 
-## GitHub Pages
+In light of the above, you can think about rendering as a continuum that extends from running everything (including `quarto render)` locally all the way up to running everything remotely on CI:
 
-**Direct Publish**
+-   **Local Execution and Rendering** --- Run everything in your local environment and then check output (e.g. the `_site` directory) into version control. In this scenario the CI server is merely making sure that the checked in content is copied/deployed to the right place every time you commit. You might choose this approach to place minimal requirements on software that needs to be present on the CI server.
+
+-   **Local Execution with CI Rendering** --- Execute R, Python, or Julia code locally and use Quarto's ability to [freeze computational output](../projects/code-execution.qmd#freeze) to save the results of computations into the `_freeze` directory. Render the site on the CI server (which will use the computations stored in `_freeze`). Use this approach when its difficult to arrange fully re-executing code on the CI server.
+
+-   **CI Execution and Rendering** --- Execute all code and perform rendering on the CI server. While this is the gold standard of automation and reproducibility, it will require you to capture your R, Python, or Julia dependencies (e.g. in an `renv.lock` file or `requirements.txt` file) and arrange for them to be installed on the CI server. You will also need to make sure that permissions (e.g. database access) required by our code are available on the CI server.
+
+Below we'll describe how to implement each of these strategies using the [GitHub Actions] CI service as well as using ordinary [Shell Commands] (which you should be able to adapt to any CI environment).
+
+## GitHub Actions
+
+[GitHub Actions](https://docs.github.com/en/actions){data-heading="GitHub Actions"} is a Continuous Integration service from GitHub, and an excellent choice of CI service if your source code is already managed it a GitHub repository. Quarto makes available a set of [standard](https://github.com/quarto-dev/quarto-actions) GitHub Actions that make it easy to install Quarto and then render and publish content.
+
+This section covers using GitHub Actions all the way from the most basic scenario of publishing rendered content to GitHub Pages all the way up to executing all of your R, Python, and Julia code on GitHub's servers.
+
+### Publishing to GitHub Pages
+
+[GitHub Pages](https://pages.github.com/) is a website hosting service for sites whose code is hosted in a GitHub repository. It's very easy to configure a GitHub Action to publish a Quarto website or book to GitHub Pages:
+
+1.  First, you need to make sure that R, Python, and Julia code is only executed locally and not on GitHub. To do this, configure your project to use Quarto's [freeze](../projects/code-execution.html#freeze) feature by adding this to your `_quarto.yml`:
+
+    **\_quarto.yml**
+
+    ``` yaml
+    execute:
+      freeze: auto
+    ```
+
+    Now, fully re-render your site:
+
+    ``` bash
+    quarto render
+    ```
+
+    If you have R, Python, or Julia code in your project you'll notice that a `_freeze` directory has been created at the top level of your project. This stores the results of computations and should be checked in to version control. Whenever you change a `.qmd` file that has executable code in it it will automatically be re-run and the updated computations stored in `_freeze`.
+
+    Note that below we'll cover how to execute R, Python, and Julia code on GitHub but for now we'll keep things simpler by using freeze.
+
+2.  Next, add the `_site` or `_book` directory to your `.gitignore` file (if it isn't there already). For example:
+
+    **.gitignore**
+
+    ``` bash
+    /.quarto/
+    /_site/
+    ```
+
+    If you've already checked these files into source control you may need to remove them explicitly:
+
+    ``` bash
+    git rm -r _site
+    ```
+
+3.  Then, add a GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
+
+    **.github/workflows/publish.yml**
+
+    ``` yaml
+    on:
+      push:
+        branches: main
+      
+    name: Quarto Publish
+
+    jobs:
+      build-deploy:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out repository
+            uses: actions/checkout@v2 
+            
+          - name: Set up Quarto
+            uses: quarto-dev/quarto-actions/setup@v2
+
+          - name: Render and Publish to GitHub Pages
+            uses: quarto-dev/quarto-actions/publish@v2
+            with:
+              target: gh-pages
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ```
+
+4.  Finally, check all of the newly created files into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
+
+### Publishing to Other Targets
+
+### Executing Code on CI
+
+-   Rendering on CI (setup python and r, requirements.txt, renv.lock)
+
+### Other Options
+
+quarto version
+
+path
+
+render
+
+## Shell Commands
+
+This section covers using the `quarto publish` command on a server where no user interaction is possible. This involves the following steps:
+
+1.  Rendering your content.
+2.  Specifying where to publish (which service/server, publishing target id, etc.).
+3.  Providing the appropriate publishing credentials.
+
+For example, here is a shell script that publishes to Netlify based on the information in a `_publish.yml` file in the root of the project:
 
 ``` bash
-quarto publish gh-pages
+# credentials from https://app.netlify.com/user/applications
+export NETLIFY_AUTH_TOKEN="45fd6ae56c"
+
+# publish to the netlify site id provided within _publish.yml
+quarto publish netlify
 ```
 
-**Render on CI**
+Here are the contents of `_publish.yml`:
 
--   Execute
--   No execute (freeze)
+``` yaml
+- source: project
+  netlify:
+    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
+      url: "https://tubular-unicorn-97bb3c.netlify.app"
+```
 
-## RStudio Connect
-
-**Direct Publish**
+Here is another variation that provides the publish target on the command line:
 
 ``` bash
-quarto publish gh-pages
+quarto publish netlify --id 5f3abafe-68f9-4c1d-835b-9d668b892001
 ```
 
-**Render on CI**
+Below we'll cover the various components of a publishing script as well as provide a few additional complete examples.
 
--   Execute
--   No execute (freeze)
+### Rendering for Publish
 
-**Render on Connect**
+By default when you execute the publish command, your site or document will be automatically re-rendered:
 
-**Publish to Git**
+``` bash
+quarto publish
+```
+
+This is generally recommended, as it ensures that you are publishing based on the very latest version of your source code.
+
+If you'd like to render separately (or not render at all) you can specify the `--no-render` option:
+
+``` bash
+quarto publish --no-render
+```
+
+By default, the call to `quarto publish`will execute all R, Python, or Julia code contained in your project. This means that you need to ensure that the requisite version of these tools (and any required packages) are installed on the CI server. How to do this is outside the scope of this article---to learn more about saving and restoring dependencies, see the article on [Virtual Environments](../projects/virtual-environments.qmd).
+
+If you want to execute code locally then only do markdown rendering on CI, you can use Quarto's [freeze](../projects/code-execution.html#freeze) feature. For example, if you add this to your `_quarto.yml` file:
+
+``` yaml
+execute:
+  freeze: true
+```
+
+Then when you render locally computations will run and their results saved in a `_freeze` folder at the root of your project. Then, when you run `quarto publish` or `quarto render` on the CI server these computations do not need to be re-run (only markdown rendering will occur on the server).
+
+### Publishing Destination
+
+There are two ways to specify publishing destinations for the `quarto publish` command:
+
+1.  Via the contents of a `_publish.yml` file created from a previous publish.
+2.  Using command line parameters (e.g. `--id` and `--server`).
+
+When you execute the `quarto publish` command, a record of your publishing destination is written to a `_publish.yml` file alongside your source code. For example:
+
+``` yaml
+- source: project
+  netlify:
+    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
+      url: "https://tubular-unicorn-97bb3c.netlify.app"
+```
+
+You can check the `_publish.yml` file into source control so it is available when you publish from the CI server. If you execute the `quarto publish` command with no arguments and the above `_publish.yml` is in the project directory, then the publish will target Netlify with the indicated `id`:
+
+``` bash
+quarto publish netlify
+```
+
+You can also specify a publishing destination via explicit command line arguments. For example:
+
+``` bash
+quarto publish netlify --id 5f3abafe-68f9-4c1d-835b-9d668b892001
+```
+
+If you have multiple publishing targets saved within `_publish.yml` then the `--id` option can be used to select from among them.
+
+### Publishing Credentials
+
+You can specify publishing credentials either using environment variables or via command line parameters. The following environment variables are recognized for various services:
+
+| Service         | Variables                              |
+|-----------------|----------------------------------------|
+| Quarto Pub      | `QUARTO_PUB_AUTH_TOKEN`                |
+| Netlify         | `NETLIFY_AUTH_TOKEN`                   |
+| RStudio Connect | `CONNECT_SERVER` and `CONNECT_API_KEY` |
+
+Set these environment variables within your script before calling `quarto publish`. For example:
+
+``` bash
+export NETLIFY_AUTH_TOKEN="45fd6ae56c"
+quarto publish netlify 
+```
+
+Note that you can also specify the publishing target `--id` as a command line argument. For example:
+
+``` bash
+export CONNECT_SERVER=https://connect.example.com/
+export CONNECT_API_KEY=7C0947A852D8
+quarto publish connect --id DDA36416-F950-4647-815C-01A24233E294
+```
+
+### Complete Examples
+
+Here are a few complete examples that demonstrate various ways to write publishing shell scripts:
+
+``` bash
+# publish (w/o rendering) to quarto pub based on _publish.yml
+export QUARTO_PUB_AUTH_TOKEN="45fd6ae56c"
+quarto publish quarto-pub --no-render
+```
+
+``` bash
+# render and publish to netlify based on _publish.yml
+export NETLIFY_AUTH_TOKEN="45fd6ae56c"
+quarto publish netlify
+```
+
+``` bash
+# publish (w/o rendering) to netlify with explicit id
+export NETLIFY_AUTH_TOKEN="45fd6ae56c"
+quarto publish netlify --id DDA36416-F950-4647-815C-01A24233E294 --no-render
+```
+
+``` bash
+# publish (w/o rendering) to connect based on _publish.yml
+export CONNECT_SERVER=https://connect.example.com/
+export CONNECT_API_KEY=7C0947A852D8
+quarto publish connect --no-render
+```
+
+``` bash
+# render and publish to connect with explicit id
+export CONNECT_SERVER=https://connect.example.com/
+export CONNECT_API_KEY=7C0947A852D8
+quarto publish connect --id DDA36416-F950-4647-815C-01A24233E294
+```
