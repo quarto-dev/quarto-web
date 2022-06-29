@@ -1,0 +1,85 @@
+# Publishing Basics
+
+## Quick Start
+
+How to use Quarto Pub
+
+## Publishing Services
+
+-   List publishing services
+
+# GitHub Pages
+
+-   quarto publish
+
+-   gh action publish
+
+-   shell publish
+
+-   gh action run code publish
+
+# Netlify
+
+etc
+
+# Other Services
+
+## Publishing Services
+
+-   Dropbox
+-   Firebase
+-   CNET Roun
+
+## CI Services
+
+Shell commands
+
+
+
+## Publish Command
+
+### Publishing Content
+
+The `quarto publish` command enables you to easily publish websites and documents to a variety of services. Using the publish command is as simple as navigating to the directory where the site or document you want to publish is located, and invoking the command with a supported service. Here are all the supported services and the command you would use to target them:
+
+``` bash
+quarto publish quarto-pub
+quarto publish netlify 
+quarto publish gh-pages
+quarto publish connect
+```
+
+If are publishing a document rather than a website or book, include the document's path a well. For example:
+
+``` bash
+quarto publish netlify document.qmd
+quarto publish connect document.qmd
+```
+
+The publish command will prompt you for authentication as required by the publishing provider you are targeting. If you are using a service that could be hosted on a variety of servers (e.g. RStudio Connect) then you'll also be prompted to specify the server you want to publish to.
+
+Once you are comfortable using `quarto publish` to publish content, you may want to consult the [Advanced Publishing] articles to learn more about additional features and options available for your chosen service.
+
+### Updating Content
+
+A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
+
+``` yaml
+- source: project
+  netlify:
+    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
+      url: "https://tubular-unicorn-97bb3c.netlify.app"
+```
+
+Account information is not stored in this file, so it is suitable for checking in to version control and being shared by multiple publishers. Note that GitHub Pages publishes are not stored in the `_publish.yml` file (they are tracked by virtue of the creation of a `gh-pages` branch).
+
+To update previously published content, you can just type `quarto publish` without the service name (the previous publish saved in `_publish.yml` will be used). For example:
+
+``` bash
+quarto publish
+quarto publish document.qmd
+```
+
+You'll be prompted to confirm that you want to update the target defined in `_publish.yml` (pass `--no-prompt` to skip the confirmation). You can have multiple publishing destinations recorded in `_publish.yml` (in this case you'll be prompted to choose one).
+
+See `quarto publish help` for additional information on options that affect publishing and updating content.

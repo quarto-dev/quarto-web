@@ -1,5 +1,5 @@
 ---
-title: "Continuous Integration"
+title: "Publishing with Continuous Integration (CI)"
 ---
 
 ## Overview
@@ -8,17 +8,13 @@ Continuous Integration (CI) refers to the practice of automatically publishing c
 
 -   Content is automatically published whenever source code changes (you don't need to remember to explicitly render).
 
--   Rendering on another system ensures that your code is reproducible (but note that this can be double-edged sword if rendering has special requirements---see the discussion below on [Rendering Strategies]).
+-   Rendering on another system ensures that your code is reproducible (but note that this can be double-edged sword if rendering has special requirements---see the discussion below on [Rendering for CI]).
 
 -   Not checking rendered output into version control makes diffs smaller and reduces merge conflicts.
 
-This article covers how to publish Quarto content using both GitHub Actions (a popular free CI service run by GitHub) as well as with ordinary shell commands (which can be made to work with many other CI server including entirely custom ones).
+This article covers how to implement CI for Quarto using GitHub Actions (a service run by GitHub), ordinary shell commands (which can be made to work with any CI service), and with RStudio Connect.
 
-If you are new to CI and are already using GitHub for source control, we strongly recommend that you start with simple [Publishing to GitHub Pages].
-
-If you are more experienced with CI, read on for a more comprehensive guide to all of the possibilities.
-
-## Rendering Strategies
+## Rendering for CI
 
 Before you start using a CI server you'll need to think about where you want executable code (e.g. R, Python, or Julia code) to run and where you want `quarto render` to run. You might reflexively assume that you'll always want to run everything on the CI server, however doing so introduces a number of complexities:
 
@@ -38,98 +34,25 @@ In light of the above, you can think about rendering as a continuum that extends
 
 -   **CI Execution and Rendering** --- Execute all code and perform rendering on the CI server. While this is the gold standard of automation and reproducibility, it will require you to capture your R, Python, or Julia dependencies (e.g. in an `renv.lock` file or `requirements.txt` file) and arrange for them to be installed on the CI server. You will also need to make sure that permissions (e.g. database access) required by our code are available on the CI server.
 
-Below we'll describe how to implement each of these strategies using the [GitHub Actions] CI service as well as using ordinary [Shell Commands] (which you should be able to adapt to any CI environment).
+Below we'll describe how to implement each of these strategies using [GitHub Actions], ordinary [Shell Commands] (which you should be able to adapt to any CI environment), or [RStudio Connect](rstudio-connect.qmd).
 
 ## GitHub Actions
 
-[GitHub Actions](https://docs.github.com/en/actions){data-heading="GitHub Actions"} is a Continuous Integration service from GitHub, and an excellent choice of CI service if your source code is already managed it a GitHub repository. Quarto makes available a set of [standard](https://github.com/quarto-dev/quarto-actions) GitHub Actions that make it easy to install Quarto and then render and publish content.
+[GitHub Actions](https://docs.github.com/en/actions){data-heading="GitHub Actions"} is a Continuous Integration service from GitHub, and an excellent choice if your source code is already managed it a GitHub repository. Quarto makes available a set of [standard](https://github.com/quarto-dev/quarto-actions) GitHub Actions that make it easy to install Quarto and then render and publish content.
 
-This section covers using GitHub Actions all the way from the most basic scenario of publishing rendered content to GitHub Pages all the way up to executing all of your R, Python, and Julia code on GitHub's servers.
+Learn about using GitHub Actions with various publishing services here:
 
-### Publishing to GitHub Pages
+-   [Quarto Pub](quarto-pub#github-action)
+-   [GitHub Pages](github-pages.qmd#github-action)
+-   [Netlify](netlify.qmd#github-action)
 
-[GitHub Pages](https://pages.github.com/) is a website hosting service for sites whose code is hosted in a GitHub repository. It's very easy to configure a GitHub Action to publish a Quarto website or book to GitHub Pages:
+If you want to use the standard Quarto actions as part of another workflow see the [GitHub Actions for Quarto](https://github.com/quarto-dev/quarto-actions) repository.
 
-1.  First, you need to make sure that R, Python, and Julia code is only executed locally and not on GitHub. To do this, configure your project to use Quarto's [freeze](../projects/code-execution.html#freeze) feature by adding this to your `_quarto.yml`:
+## RStudio Connect
 
-    **\_quarto.yml**
+If you are publishing a source code version of your content to RStudio Connect it's possible to configure Connect to retrieve the code from a Git repository and then render and execute on the Connect Server.
 
-    ``` yaml
-    execute:
-      freeze: auto
-    ```
-
-    Now, fully re-render your site:
-
-    ``` bash
-    quarto render
-    ```
-
-    If you have R, Python, or Julia code in your project you'll notice that a `_freeze` directory has been created at the top level of your project. This stores the results of computations and should be checked in to version control. Whenever you change a `.qmd` file that has executable code in it it will automatically be re-run and the updated computations stored in `_freeze`.
-
-    Note that below we'll cover how to execute R, Python, and Julia code on GitHub but for now we'll keep things simpler by using freeze.
-
-2.  Next, add the `_site` or `_book` directory to your `.gitignore` file (if it isn't there already). For example:
-
-    **.gitignore**
-
-    ``` bash
-    /.quarto/
-    /_site/
-    ```
-
-    If you've already checked these files into source control you may need to remove them explicitly:
-
-    ``` bash
-    git rm -r _site
-    ```
-
-3.  Then, add a GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
-
-    **.github/workflows/publish.yml**
-
-    ``` yaml
-    on:
-      push:
-        branches: main
-      
-    name: Quarto Publish
-
-    jobs:
-      build-deploy:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Check out repository
-            uses: actions/checkout@v2 
-            
-          - name: Set up Quarto
-            uses: quarto-dev/quarto-actions/setup@v2
-
-          - name: Render and Publish to GitHub Pages
-            uses: quarto-dev/quarto-actions/publish@v2
-            with:
-              target: gh-pages
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    ```
-
-4.  Finally, check all of the newly created files into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
-
-### Publishing to Other Targets
-
-Netlify, etc.
-
-### Executing Code on CI
-
--   Rendering on CI (setup python and r, requirements.txt, renv.lock)
-
-### Other Options
-
-quarto version
-
-path
-
-render
+To learn more about this, see the documentation on [Git Backed Content](https://docs.rstudio.com/connect/user/git-backed/) for RStudio Connect.
 
 ## Shell Commands
 
