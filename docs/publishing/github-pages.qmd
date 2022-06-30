@@ -13,20 +13,29 @@ There are two ways to publish Quarto websites and documents to GitHub Pages:
 
 2.  Use a [GitHub Action] to automatically render and publish content whenever you push a source code change to your repository.
 
+We'll cover each of these methods below, but first let's take care of some pre-requisites.
+
 ## Getting Started
 
-There are two types of sites:
+To get started, you need to have a Git repository on your local machine that is synced to GitHub. For a given repository, the URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame`)
 
--   User site (sweet URL, blog)
--   Repository site
+You can optionally configure a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) for a GitHub Pages site, but before exploring that ground you should get your site up and running with the default domain.
 
-For a repository site, just do the local/remote hookup.
+### User Site
 
-For a user site, you need to name is specially and do one bit of config.
+In addition to creating sites tied to various repositories, you can also create a user site that is served from your root user domain (e.g. `https://username.github.io`). This is an ideal place to publish a blog or personal home page. To create a user site:
+
+1.  Create a Git repo with the name `username.github.io` (where "username" is your GitHub username) and sync it to your local machine.
+
+2.  Set the **Source** branch for your user site to `gh-pages`. For example:
+
+    ![](images/gh-pages-user-site.png){.border}
+
+Note that this step of explicitly setting the **Source** branch is only required for user sites (repository sites automatically use the `gh-pages` branch).
 
 ### Ignoring Output
 
-Next, add the `_site` or `_book` directory to your `.gitignore` file (if it isn't there already). For example:
+It's important to note that you don't need to check your `_site` or `_book` directory into version control (if you have done this in the past you know it makes for very messy diffs!). Before proceeding you should add the output directory for your project to `.gitignore`. For example:
 
 **.gitignore**
 
@@ -41,78 +50,196 @@ If you've already checked these files into source control you may need to remove
 git rm -r _site
 ```
 
-We recommend that you ignore your \_site directory. If you used to use `doc`s
+## Publish Command
 
-## Quarto Publish
+The `quarto publish` command is an easy way to publish locally rendered documents and websites. From the directory where your project / git repository is located, execute the `quarto publish` command for GitHub Pages:
 
 ``` bash
 quarto publish gh-pages
 ```
 
+The publish command will confirm that you want to publish, render your content, copy the output to a special `gh-pages` branch, push that branch to GitHub, and then open a browser to view your site once it is deployed. You can customize this behavior by providing the following command line options:
+
+{{< include _cli-options.md >}}
+
+To publish a document rather than a website or book, provide the path to the document (note that you can publish only one document from a given GitHub repository):
+
+``` bash
+quarto publish gh-pages document.qmd
+```
+
 ## GitHub Action
 
-### Basic Publishing {data-link="Basic Publishing"}
+Using the `quarto publish gh-pages` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site. You might want to do this if you want publishing to be automatically triggered from commits, or to execute code and/or render your content on a CI server.
 
-Here we describe the basic steps required to use GitHub Actions to publish content. Follow these steps for all publishing destinations, then customize as appropriate for your specific destination.
+There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion of [Rendering for CI](ci.qmd#rendering-for-ci).
 
-1.  First, you need to make sure that R, Python, and Julia code is only executed locally and not on GitHub. To do this, configure your project to use Quarto's [freeze](../projects/code-execution.html#freeze) feature by adding this to your `_quarto.yml`:
+### Freezing Computations
 
-    **\_quarto.yml**
+To make sure that R, Python, and Julia code is only executed locally and not on GitHub, configure your project to use Quarto's [freeze](../projects/code-execution.html#freeze) feature by adding this to your `_quarto.yml`:
 
-    ``` yaml
-    execute:
-      freeze: auto
-    ```
-
-    Now, fully re-render your site:
-
-    ``` bash
-    quarto render
-    ```
-
-    If you have R, Python, or Julia code in your project you'll notice that a `_freeze` directory has been created at the top level of your project. This stores the results of computations and should be checked in to version control. Whenever you change a `.qmd` file that has executable code in it it will automatically be re-run and the updated computations stored in `_freeze`.
-
-    Note that below we'll cover [Executing Code on CI] but for now we'll keep things simpler by using freeze.
-
-2.  Then, add a GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
-
-    **.github/workflows/publish.yml**
-
-    ``` yaml
-    on:
-      push:
-        branches: main
-      
-    name: Quarto Publish
-
-    jobs:
-      build-deploy:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Check out repository
-            uses: actions/checkout@v2 
-            
-          - name: Set up Quarto
-            uses: quarto-dev/quarto-actions/setup@v2
-
-          - name: Render and Publish to GitHub Pages
-            uses: quarto-dev/quarto-actions/publish@v2
-            # TODO: provide config for publishing destination 
-    ```
-
-Note that the very last action will be where we add our publishing target and required authentication. GitHub Pages is the most straightforward option, so we'll cover that next.
-
-### GitHub Pages
-
-[GitHub Pages](https://pages.github.com/) is a website hosting service for sites whose code is hosted in a GitHub repository. To publish to GitHub Pages, edit the final step of the action to read as follows:
+**\_quarto.yml**
 
 ``` yaml
-- name: Render and Publish to GitHub Pages
+execute:
+  freeze: auto
+```
+
+Now, fully re-render your site:
+
+``` bash
+quarto render
+```
+
+If you have executable code in your project you'll notice that a `_freeze` directory has been created at the top level of your project. This stores the results of computations and should be checked in to version control. Whenever you change a `.qmd` file with executable code, it will automatically be re-run during your next render and the updated computations stored in `_freeze`.
+
+Note that below we'll cover [Executing Code] within a GitHub Action but for now we'll keep things simpler by using freeze.
+
+### Publish Action
+
+Add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and Publish to GitHub Pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+Once you\'ve done this, check all of the newly created files (including the `_freeze` directory) into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
+
+### Executing Code 
+
+If you prefer, you can also configure a GitHub Action to execute R, Python, or Julia code as part of rendering. While this might reflexively seem like the best approach, consider the following requirements imposed when you execute code within a CI service like GitHub Actions:
+
+{{< include _ci-execute-requirements.md >}}
+
+#### Prerequisites
+
+The best way to ensure that your code can be executed within a GitHub Action is to use a virtual environment like [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) or [renv](https://rstudio.github.io/renv/articles/renv.html) with your project (below we'll provide example actions for each). If you aren't familiar with using these tools check out the article on using [Virtual Environments](../projects/virtual-environments.qmd) with Quarto to learn more.
+
+Once you've decided to execute code within your GitHub Action you can remove the `freeze: auto` described above from your `_quarto.yml` configuration. Note that if you want to use `freeze` selectively for some documents or directories that is still possible (for a directory, create a `_metadata.yml` file in the directory and specify your freeze configuration there---this is what Quarto does by default for the `posts` folder of blog projects).
+
+#### Example: Jupyter with venv
+
+Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to GitHub Pages:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install Python and Dependencies
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install jupyter
+      - run: pip install -r requirements.txt
+      
+      - name: Render and Publish to GitHub Pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### Example: Knitr with renv
+
+Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to GitHub Pages:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.2.0'
+      
+      - name: Install R Dependencies 
+        uses: r-lib/actions/setup-renv@v2
+        with:
+          cache-version: 1
+      
+      - name: Render and Publish to GitHub Pages
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Additional Options
+
+It's possible to have a Quarto project in a large GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `render` or `publish` action. For example:
+
+``` yaml
+- name: Publish to GitHub Pages (and render)
   uses: quarto-dev/quarto-actions/publish@v2
   with:
     target: gh-pages
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    path: subdirectory-to-use
 ```
 
-Once you've done this, check all of the newly created files into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
+By default, `quarto publish` will re-render your project before publishing it. However, if you store the rendered output in version control, you don't need the GitHub action to re-render the project. In that case, add the option `render: false` to the `publish` action:
+
+``` yaml
+- name: Publish to GitHub Pages (and render)
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: gh-pages
+    render: false
+```
+
+See the full definition of the Quarto [publish action](https://github.com/quarto-dev/quarto-actions/blob/main/publish/action.yml) to learn about other more advanced options.
