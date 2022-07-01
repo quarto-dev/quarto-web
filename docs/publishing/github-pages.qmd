@@ -5,19 +5,19 @@ editor: visual
 
 ## Overview
 
-[GitHub Pages](https://pages.github.com/) is a web publishing service that enables you to publish content based on source code managed within a GitHub repository.
+[GitHub Pages](https://pages.github.com/) is a website hosting service that enables you to publish content based on source code managed within a GitHub repository.
 
 There are two ways to publish Quarto websites and documents to GitHub Pages:
 
 1.  Use the `quarto publish` command to publish content rendered on your local machine.
 
-2.  Use a [GitHub Action] to automatically render and publish content whenever you push a source code change to your repository.
+2.  Use a [GitHub Action] to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever you push a source code change to your repository.
 
 We'll cover each of these methods below, but first let's take care of some pre-requisites.
 
 ## Getting Started
 
-To get started, you need to have a Git repository on your local machine that is synced to GitHub. For a given repository, the URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame`)
+To get started, you need to have a Git repository on your local machine that is synced to GitHub. For a given repository, the URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame`).
 
 You can optionally configure a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) for a GitHub Pages site, but before exploring that ground you should get your site up and running with the default domain.
 
@@ -35,7 +35,7 @@ Note that this step of explicitly setting the **Source** branch is only required
 
 ### Ignoring Output
 
-It's important to note that you don't need to check your `_site` or `_book` directory into version control (if you have done this in the past you know it makes for very messy diffs!). Before proceeding you should add the output directory for your project to `.gitignore`. For example:
+It's important to note that you don't need to check your `_site` or `_book` directory into version control (if you have done this in the past you know it makes for very messy diffs!). Before proceeding you should add the output directory of your project to `.gitignore`. For example:
 
 **.gitignore**
 
@@ -70,9 +70,9 @@ quarto publish gh-pages document.qmd
 
 ## GitHub Action
 
-Using the `quarto publish gh-pages` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site. You might want to do this if you want publishing to be automatically triggered from commits, or to execute code and/or render your content on a CI server.
+Using the `quarto publish gh-pages` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site. You might want to do this if you want publishing to be automatically triggered from commits, or to execute code and/or render your content on a continuous integration (CI) server.
 
-There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion of [Rendering for CI](ci.qmd#rendering-for-ci).
+There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion on [Rendering for CI](ci.qmd#rendering-for-ci).
 
 ### Freezing Computations
 
@@ -91,9 +91,9 @@ Now, fully re-render your site:
 quarto render
 ```
 
-If you have executable code in your project you'll notice that a `_freeze` directory has been created at the top level of your project. This stores the results of computations and should be checked in to version control. Whenever you change a `.qmd` file with executable code, it will automatically be re-run during your next render and the updated computations stored in `_freeze`.
+If you have executable code in your project you'll notice that a `_freeze` directory has been created at the top level of your project. This directory  stores the results of computations and should be checked in to version control. Whenever you change a `.qmd` file with executable code, it will automatically be re-run during your next render and the updated computations will be stored in `_freeze`.
 
-Note that below we'll cover [Executing Code] within a GitHub Action but for now we'll keep things simpler by using freeze.
+Note that an alternative approach is to execute the code via a GitHub Action on GitHub. For now we'll keep things simpler by executing code locally and storing the computations by using freeze. Then, further below, we'll cover [Executing Code] within a GitHub Action as well.
 
 ### Publish Action
 
