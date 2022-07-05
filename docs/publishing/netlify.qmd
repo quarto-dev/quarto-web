@@ -1,5 +1,138 @@
 ---
 title: "Netlify"
+provider: netlify
+provider-token: NETLIFY_AUTH_TOKEN
 ---
 
+## Overview
+
+[Netlify](https://www.netlify.com/) is a professional web publishing platform with support for many advanced features including custom domains, authentication, previewing branches, and instant rollbacks. Netlify also features a free plan that is ideal for personal projects, hobby sites, or experiments.
+
+There are several ways to publish Quarto websites and documents to Netlify:
+
+1.  Use the `quarto publish` command to publish content rendered on your local machine.
+
+2.  If you are using GitHub, GitLab, Bitbucket, or Azure DevOps, you can point Netlify at your site's source code and have it deployed whenever your code changes.
+
+3.  If you are using GitHub, you can use a [GitHub Action] to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever your code changes.
+
+4.  If you are using another Continuous Integration (CI) service, you can script the `quarto publish` command to run non-interactively to render and publish content to Netlify.
+
+We'll cover each of these methods below, starting with the most straightforward (a single command) and then proceeding to more sophisticated scenarios.
+
+## Publish Command
+
+The `quarto publish` command is an easy way to publish locally rendered documents and websites. From the directory where your project or document is located, execute the `quarto publish` command for Netlify:
+
+``` bash
+quarto publish netlify
+```
+
+If you haven't published to Netlify before, the publish command will prompt you to authenticate. After confirming that you want to publish, your content will be rendered and deployed to Netlify, and then a browser opened to view your site's control panel. You can customize this behavior by providing the following command line options:
+
+{{< include _cli-options.md >}}
+
+To publish a document rather than a website or book, provide the path to the document (note that you can publish only one document from a given GitHub repository):
+
+``` bash
+quarto publish netlify document.qmd
+```
+
+### Domain Name
+
+You'll noticed that the domain name for your published site will by default use a random identifier (e.g. `mystifying-jepsen-fa4396.netlify.app`). You can pick a more descriptive sub-domain (still using `netlify.app` as the main domain) or if you own another domain, assign that one to the site. These options are available (respectively) from the **Site settings** and **Domain settings** panels:
+
+![](images/netlify-control-panel.png)
+
+Within **Site settings**, click the **Change site name** button to speicfy a different sub-domain:
+
+![](images/netlify-site-settings.png)
+
+If you own another domain that you want to use for your site, follow the directions in **Domain settings**.
+
+## Publish from Git Provider
+
+Netlify has the ability to automatically deploy sites when change are committed to Git repositories hosted on GitHub, GitLab, Bitbucket, and Azure DevOps. The most straightforward approach to this is to check your rendered site (e.g. `_site` or `_book` directory) into version control and have Netlify deploy that. We'll cover that scenario first and then explore using a Netlify build plugin to render the site on Netlify servers.
+
+### Importing a Project
+
+For either approach, the first step is to go to the main Netlify page for your team, choose **Add new site** and then **Import an existing project**:
+
+![](images/netlify-import-project.png)
+
+You'll be prompted to authenticate with your version control provider, select a repository, and then finally specify the configuration for building the site.
+
+### Publishing Configuration
+
+In this scenario we are publishing content you have rendered locally and checked in to the `_site` or `_book` directory. So our configuration will have no **Build command** and will specify e.g. `_site` for the **Publish directory**:
+
+![](images/netlify-build-settings.png){.border}
+
+### Rendering on Netlify
+
+If you prefer not to check your rendered site into version control, you can also use the Quarto [Netlify Build Plugin](https://github.com/quarto-dev/netlify-plugin-quarto) to render on a Netlify server (note that Netlify servers can only render markdown but cannot execute R, Python, or Juila code).
+
+#### Freezing Computations
+
+{{< include _freeze-basics.md >}}
+
+#### Ignoring Output
+
+{{< include _ignoring-output.md >}}
+
+#### Plugin Configuration
+
+To use the Quarto Netlify Build Plugin, add the following two files to your project:
+
+**netlify.toml**
+
+```toml
+[[plugins]]
+package = "@quarto/netlify-plugin-quarto"
+```
+
+**package.json**
+
+```json
+{
+    "dependencies": {
+        "@quarto/netlify-plugin-quarto": "^0.0.5"
+    }
+}
+```
+
+Now, check in your modified project (including `_freeze`, `netlify.toml`, and `package.json`). Assuming that you configured the project correctly in the previous step (i.e. **Publish directory** set to the `_site` or `_book` directory) then Netlify will begin rendering and publishing your site each time you push a new commit.
+
 ## GitHub Action
+
+{{< include _github-action-basics.md >}}
+
+### Netlify Credentials
+
+The final step is to configure your GitHub Action with the credentials required for publishing to Netlify. To to this you need to create a Netlify personal access token and then configure your GitHub action to be able to read it:
+
+1.  If you don't already have an access token, go to Netlify's [applications page](https://app.netlify.com/user/applications), and click on **New Access Token** to create a new personal access token. Give this token a memorable name, and note the resulting string (or keep this window open in a tab).
+
+Add the Netlify personal access token to your repository's **Secrets** (accessible within repository **Settings**):
+
+![](images/netlify-gh-action-secret.png){.border}
+
+### Ignoring Output
+
+{{< include _ignoring-output.md >}}
+
+### Commit to Publish
+
+Once you've specified your publishing action and Netlify credentials, and pushed your updated repository (including the `_freeze` directory) to GitHub, your action will run with this and subsequent commits, automatically rendering and publishing to Netlify.
+
+{{< include _github-action-executing-code.md >}}
+
+{{< include _github-action-options.md >}}
+
+## Continuous Integration 
+
+You can publish Quarto websites and documents to Netlify using any CI service by scripting the `quarto publish` command.
+
+{{< include _netlify-ci-example.md >}}
+
+See the article on [Publishing with CI](ci.qmd) for additional details on the various approaches to rendering and publishing with Continuous Integration.
