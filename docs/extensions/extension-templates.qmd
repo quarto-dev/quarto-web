@@ -1,0 +1,42 @@
+---
+title: Extension Templates
+draft: true
+---
+
+For format extensions in particular, it is often very useful to have a sample document that can demonstrate the functionality of the format extension and serve as a starting point for a user who is authoring a document targeting that format. You can support this by adding a template to the repository that hosts your Quarto extension. Users can then choose whether they'd like to simply install your extension (for example, into an existing project) or install the extension and use a template to start a new project.
+
+## Using a Template
+
+When you'd like to install an an extension and use its template, you can do so with the following command:
+
+`quarto use template <extension>`
+
+For example, to install the format extension for author PLOS journal articles, you can use the command:
+
+`quarto use template quarto-journals/plos`
+
+When the `quarto use template` command is executed, the extension hosted at `quarto-journals/plos` will be installed, but in addition, other files in the repo will be placed in the directory, providing the user a scaffolding to get started.
+
+If the command is run in an empty directory, you will be prompted whether you'd like to use the existing directory or whether you'd like to create a new directory. If the command is run in a directory which contains other files or directories, you will be prompted for the name of a directory to create.
+
+## Template.qmd
+
+Usually, an extension template will provide a `template.qmd` file in the root of the repository. This is the primary `qmd` file that demonstrates the functionality of the extension or serves as the starting point for the user. When the extension template is copied into the target directory, the `template.qmd` will automatically be renamed to match the name that the user provided for the directory.
+
+## Choosing Which Files Exclude
+
+By default, Quarto will exclude common Github repository files when copying an extension template. This includes any file name or directory starting with a `.` (e.g. `.gitignore`), `README.md`, `LICENSE`, and other such files. If you'd like, you can place `.quartoignore` file in the root of your repository with each line of the file being a glob describing file(s) to ignore (using syntax like a `.gitignore` file).
+
+Unless excluded, any files or folders within the repository that aren't automatically ignored or listed in the `.quartoignore` file be copied into the target directory when using an extension template.
+
+## Creating a Template
+
+To create a template, you can add any number of files to the root of your repository and they will be treated as template files when your extension is used in a directory. We recommend that you:
+
+-   Provide a `template.qmd` file that will serve as the main document
+
+-   Include other files that are used by your `template.qmd`, for example a bibliography file that is used, a CSL file that is used, or images, stylesheets or other files.
+
+-   Provide a `_project.qmd` file if appropriate
+
+Your extension repository extension is structured in such a a way that you can test your extension and the template by simply rendering the `template.qmd` file right in the root of your repository. The `template.qmd` will be able to load your extension just as it would when installed, so testing and iterating should be as simple as working within your extension directory until you're satisfied (without the need to repeatedly install or update the extension in order to test it).
