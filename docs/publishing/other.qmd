@@ -4,90 +4,21 @@ title: "Other Services"
 
 ## Overview
 
-There are a wide variety of ways to publish Quarto websites. Website content is by default written to the `_site` sub-directory (you can customize this using the `output-dir` option). Publishing is simply a matter of copying the output directory to a web server or web hosting service.
+There are a wide variety of ways to publish Quarto websites. Other articles cover publishing to [Quarto Pub](quarto-pub.qmd), [GitHub Pages](github-pages.qmd), [Netlify](netlify.qmd), and [RStudio Connect](rstudio-connect.qmd). Below we'll describe some general guidelines as well as offer some specific advice for [Firebase](#google-firebase), [Site44], and [Amazon S3]. We'll mostly defer to the documentation provided by the various services, but will note any Quarto website specific configuration required.
 
-Below we describe several convenient options for Quarto website deployment including [GitHub Pages], [Netlify], [RStudio Connect], [Firebase](#google-firebase), [Site44], and [Amazon S3]. We'll mostly defer to the documentation provided by the various services, but will note any Quarto website specific configuration required.
+The most important thing to understand is that website content is by default written to the `_site` sub-directory and book content to the `_book` directory (you can customize either using the `output-dir` option). Publishing is simply a matter of copying the output directory to a web server or web hosting service.
 
-## Rendering for Publish
+### Rendering for Publish
 
-The most important thing you should be sure to do before publishing is a final render of your project:
+Prior to publishing you should always to a final render of your project:
 
 ``` bash
 quarto render
 ```
 
-If you are publishing a [book](../books/book-basics.qmd) you'll want to add the `--to all` argument to ensure that all output formats (e.g. PDF, EPUB) have up to date content:
+This is particularly important to remember because changes you make to shared site configuration (e.g. `_quarto.yml`) aren't reflected across your entire site until your render the entire project. To ensure that your output is up to date before publishing you should always do a full `quarto render`.
 
-``` bash
-quarto render --to all
-```
-
-This is particularly important to remember because incremental changes you make when using the development server aren't rendered into the output directory. To ensure that your output is up to date before publishing you should always do a full `quarto render`.
-
-## GitHub Pages {data-link="GitHub Pages"}
-
-[GitHub Pages](https://pages.github.com/) is a service that lets you publish a website from any GitHub repository. There are a few configuration steps required to host a Quarto website using GitHub Pages:
-
-1.  Create a file named `.nojekyll` in your repository (this is required to disable some processing of HTML files that GitHub does by default). You can do this with the following:
-
-    ``` bash
-    touch .nojekyll
-    ```
-
-    If you are using Windows Powershell, you can do this with:
-
-        ni  .nojekyll
-
-2.  Set the `output-dir` within your `_quarto.yml` project file to "docs":
-
-    ``` yaml
-    project:
-      type: website
-      output-dir: docs
-    ```
-
-3.  Configure your gh-pages to serve content from the "docs" directory:
-
-    ![](images/gh-pages-config.png){.border width="95%" fig-alt="A screenshot of the Github Pages section of a Github repository's settings. The folder option is selected in the 'Source' section and the `/docs' folder is checkmarked."}
-
-See the [GitHub Pages](https://pages.github.com/) documentation for additional details on creating and deploying websites with GitHub.
-
-## Netlify {data-link="Netlify"}
-
-[Netlify](https://www.netlify.com/) is a popular website hosting service that allows for both direct upload of website files or integrated publishing from Git repositories (GitHub, GitLab, or Bitbucket) via commit-hooks.
-
-If you are using Netlify Git integration, be sure to set the publish directory to the output directory of your website (`_site` by default but modifiable via the `output-dir` metadata value). For example:
-
-![](images/netlify-publish-dir.png){.screenshot width="95%" fig-alt="The `Basic build settings` section of a Netlify page. The 'Publish directory' is highlighted and the value is set to '_site'."}
-
-## RStudio Connect {data-link="RStudio Connect"}
-
-[RStudio Connect](https://www.rstudio.com/products/connect/) is a server product from RStudio for secure sharing of websites, applications, reports, and plots.
-
-Unlike the other website publishing options described here, [RStudio Connect](https://www.rstudio.com/products/connect/) is a server that you run inside an organization, so is suitable for publishing content that you only want visible within your organization's network as opposed to visible to the entire internet.
-
-You can deploy a Quarto website to RStudio Connect from the command line using the `quarto_publish_site()` function from the R quarto package. For example:
-
-``` r
-library(quarto)
-quarto_publish_site(server = "https://rsc.example.com")
-```
-
-Note that once you've published the site for the first time you can omit the `server` argument:
-
-``` r
-quarto_publish_site()
-```
-
-You can also publish to RStudio Connect directly from within RStudio. To do this, just click the Publish button <kbd>![](images/publish-button.png){width="21"}</kbd> on the editor toolbar or preview window:
-
-![](images/rstudio-publish.png){.border-bottom fig-alt="A screnshot of the 'Publish to RStudio Connect' menu in RStudio. There are two options: 'Publish website with source code' and 'Publish finished website only', which is highlighted."}
-
-For the time being **Publish finished website only** is the only option supported for publishing Quarto websites to RStudio Connect. Support for publishing websites with source code (so they can be rendered on the server) will be added to an upcoming release of RStudio Connect.
-
-You should be running the [latest release](https://rstudio.com/products/rstudio/download/) of RStudio (v2022.02) if you want to publish Quarto websites. The preview release has many other Quarto related enhancements so is highly recommended even if you aren't using the publishing features.
-
-## Google Firebase {#google-firebase}
+## Firebase {#google-firebase}
 
 Google Firebase has a [web hosting service](https://firebase.google.com/docs/hosting/quickstart) that enables easy deployment of websites using a set of command line tools.
 
@@ -109,6 +40,8 @@ The recommended workflow for deploying Quarto websites to Site44 is to develop y
 
 If you are a user of Amazon Web Services you can serve your website directly from Amazon S3. Note however that this option is a bit more technically involved than GitHub Pages, Netlify, or Site44. See the article on [Hosting a Static Website on Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html) for additional details.
 
-## Other services
+## Other hosts
 
 Any web server or web host can be used to deploy a Quarto website. Here's a recent [CNET roundup](https://www.cnet.com/web-hosting/) of other web hosts you could consider. You can also deploy a Quarto website on any internal (intranet) web server.
+
+You can also render and publish Quarto websites using a Continuous Integration (CI) service. See the articles on [Publishing with CI](ci.qmd) for additional details.
