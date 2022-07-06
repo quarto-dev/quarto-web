@@ -91,9 +91,9 @@ package = "@quarto/netlify-plugin-quarto"
 
 ``` json
 {
-    "dependencies": {
-        "@quarto/netlify-plugin-quarto": "^0.0.5"
-    }
+  "dependencies": {
+    "@quarto/netlify-plugin-quarto": "^0.0.5"
+  }
 }
 ```
 
@@ -103,15 +103,43 @@ Now, commit and push your modified project (including `_freeze`, `netlify.toml`,
 
 {{< include _github-action-basics.md >}}
 
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: {{< meta provider >}}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+```
+
 ### Netlify Credentials
 
 The final step is to configure your GitHub Action with the credentials required for publishing to Netlify. To to this you need to create a Netlify personal access token and then configure your GitHub action to be able to read it:
 
-1.  If you don't already have an access token, go to Netlify's [applications page](https://app.netlify.com/user/applications), and click on **New Access Token** to create a new personal access token. Give this token a memorable name, and note the resulting string (or keep this window open in a tab).
+1.  If you don't already have an access token, go to the Netlify [applications page](https://app.netlify.com/user/applications), and click on **New Access Token** to create a new personal access token. Give this token a memorable name, and copy the token to the clipboard.
 
-Add the Netlify personal access token to your repository's **Secrets** (accessible within repository **Settings**):
+2.  Add the Netlify personal access token to your repository's action **Secrets** (accessible within repository **Settings**). You will see a **New repository secret** button at the top right:
 
-![](images/netlify-gh-action-secret.png){.border}
+    ![](images/gh-new-repository-secret.png){.border}
+
+    Click the button and add the personal access token from step 1 as a secret named `NETLIFY_AUTH_TOKEN`:
+
+    ![](images/netlify-gh-action-secret.png){.border}
 
 ### Ignoring Output
 
@@ -123,7 +151,29 @@ Once you've specified your publishing action and Netlify credentials, and pushed
 
 {{< include _github-action-executing-code.md >}}
 
-{{< include _github-action-options.md >}}
+### Additional Options
+
+It's possible to have a Quarto project in a large GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `render` or `publish` action. For example:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: {{< meta provider >}}
+    path: subdirectory-to-use
+    NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+```
+
+By default, `quarto publish` will re-render your project before publishing it. However, if you store the rendered output in version control, you don't need the GitHub action to re-render the project. In that case, add the option `render: false` to the `publish` action:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: {{< meta provider >}}
+    render: false
+    NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+```
 
 ## Continuous Integration
 

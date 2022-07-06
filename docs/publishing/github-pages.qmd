@@ -62,11 +62,62 @@ quarto publish gh-pages document.qmd
 
 {{< include _github-action-basics.md >}}
 
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: {{< meta provider >}}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
 Once you've done this, check all of the newly created files (including the `_freeze` directory) into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
 
 
 {{< include _github-action-executing-code.md >}}
 
-{{< include _github-action-options.md >}}
+### Additional Options
+
+It's possible to have a Quarto project in a large GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `render` or `publish` action. For example:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: {{< meta provider >}}
+    path: subdirectory-to-use
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+By default, `quarto publish` will re-render your project before publishing it. However, if you store the rendered output in version control, you don't need the GitHub action to re-render the project. In that case, add the option `render: false` to the `publish` action:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: {{< meta provider >}}
+    render: false
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+See the full definition of the Quarto [publish action](https://github.com/quarto-dev/quarto-actions/blob/main/publish/action.yml) to learn about other more advanced options.
+
 

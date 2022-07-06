@@ -14,27 +14,4 @@ Add a `publish.yml` GitHub Action to your project by creating this YAML file and
 
 **.github/workflows/publish.yml**
 
-``` yaml
-on:
-  push:
-    branches: main
 
-name: Quarto Publish
-
-jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v2 
-
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Render and Publish 
-        uses: quarto-dev/quarto-actions/publish@v2
-        with:
-          target: {{< meta provider >}}
-          env:
-            {{< meta provider-token >}}: ${{ secrets.{{< meta provider-token >}} }}
-```
