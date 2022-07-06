@@ -1,0 +1,160 @@
+---
+title: LUA Reference
+draft: true
+---
+
+When you are authoring filters or shortcodes in LUA, Quarto makes a number of helpful functions available. The following functions are available in any LUA shortcode or filter:
+
+## Detecting Formats
+
+Since your extension could be used when rendering a variety of formats, you need to ensure that you're only making modifications when targeting supported output formats and ensure that you're making the correct changes for that specific format. You can use the below to conditionalize handling based upon the target format.
+
+### quarto.doc
+
+`isFormat(format-name`)
+
+:   Returns a boolean indicating whether the format being rendered is targeting a particular output type. For example:
+
+    `quarto.doc.isFormat('pdf')` will return true if the document being rendered is LaTeX or PDF output. `quarto.doc.isFormat('html')` will return true if the document being rendered is HTML output.
+
+    If you'd like to target only html that supports javascript (for example, excluding epub output), you can use `html:js`.
+
+## Adding Dependencies
+
+Often, your LUA code may need to add dependencies to the document (for example a CSS or JS file, or usage of a LaTeX package). The following functions allow you to add dependencies to the document.
+
+Paths in dependencies should be provided as paths relative to the executing LUA file (shortcode or filter).
+
+Dependencies will be deduplicated before they are added to the document, so it is safe to call these functions multiple times with the same dependency.
+
+### quarto.doc
+
+`addHtmlDependency(HtmlDependency)` 
+
+:   Adds an HTML dependency to the document. An HTML dependency is structured as a table with the following properties:
+
+    ``` lua
+    {
+      -- The name of the dependency. This name will be used to ensure
+      -- that only a single copy of the dependency is added to the document
+      name = string (required),
+      version = string,
+      
+      -- optional meta tags to add to the document
+      meta = {
+        <key> = <value>
+      },
+      
+      -- optional link tags to add to the document
+      links = [
+        {
+          rel = string (required),
+          href = string (required),
+          type = string
+        }
+      ],
+      
+      -- optional scripts to add to the document
+      scripts = [
+        {
+          -- The name and path to the file
+          name = string (required),
+          path = string (required),
+          
+          -- Optional attributes to add to the tag when
+          -- injecting the script
+          attribs = {
+            <key> = <value>
+          } (optional),
+          
+          -- The script may appear in the head, as usual, or after the body
+          -- if required
+          afterBody = boolean (optional)
+        }
+      ],
+      
+      -- optional stylesheets to add to the document
+      stylesheets = [
+          -- The name and path to the file
+          name = string (required),
+          path = string (required),
+          
+          -- Optional attributes to add to the tag when
+          -- injecting the style
+          attribs = {
+            <key> = <value>
+          } (optional),
+        }
+      ],
+      
+      -- optional verbatim text to include in the document head
+      head = string,
+      
+      -- additional files to copy to the input directory
+      resources = [
+          -- The name and path to the file
+          name = string (required),
+          path = string (required),
+      ]
+    }
+    ```
+
+`useLatexPackage(package, options)`
+
+:   Adds a `usepackage` statement to the LaTeX output. The optional `options` string will be placed verbatim into the options of the package, if present.
+
+`addFormatResource(path)`
+
+:   Adds a Format Resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory.
+
+`includeText(location, text)`
+
+:   Includes text verbatim into the document. Valid locations include: `in-header`, `before-body`, `after-body`.
+
+`includeFile(location, file)`
+
+:   Includes the contents of a file (path should be relative to the executing LUA file) verbatim into the document. Valid locations include: `in-header`, `before-body`, `after-body`.
+
+## General Utilitites
+
+### quarto.utils
+
+`dump(any)`
+
+:   Prints any LUA element to the console, expanding tables and other types. This is helpful when debugging.
+
+### quarto.json
+
+`encode(table)`
+
+:   Encodes a LUA table into a JSON string.
+
+`decode(string)`
+
+:   Decodes a JSON string into a LUA table.
+
+### quarto.path
+
+`resolve(path)`
+
+:   Resolves a path that is relative to the current LUA file into a path that is relative to the input. Useful when adding elements with path references.
+
+### quarto.doc
+
+`citeMethod()`
+
+:   Returns a string (`citeproc`, `natbib`, or `biblatex)` indicating the cite method being used to render this document. Typically used for rendering PDF or LaTeX documents.
+
+`pdfEngine()`
+
+:   Returns a string (`pdflatex`, `xelatex`, `lualatex`, or `tectonic`) indicating the PDF engine being used to render the document. Only available when rendering PDF documents.
+
+`isFormat(format-name`)
+
+:   Returns a boolean indicating whether the format being rendered is targeting a particular output type. For example:
+
+    `quarto.doc.isFormat('pdf')` will return true if the document being rendered is LaTeX or PDF output. `quarto.doc.isFormat('html')` will return true if the document being rendered is HTML output.
+
+    If you'd like to target only html that supports javascript (for example, excluding epub output), you can use `html:js`.
+
+## 
