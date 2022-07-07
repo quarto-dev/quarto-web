@@ -39,7 +39,6 @@ Note that this step of explicitly setting the **Source** branch is only required
 
 {{< include _ignoring-output.md >}}
 
-
 ## Publish Command
 
 The `quarto publish` command is an easy way to publish locally rendered documents and websites. From the directory where your project / git repository is located, execute the `quarto publish` command for GitHub Pages:
@@ -89,12 +88,94 @@ jobs:
 
 Once you've done this, check all of the newly created files (including the `_freeze` directory) into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
 
-
 {{< include _github-action-executing-code.md >}}
+
+
+#### Example: Jupyter with venv
+
+Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to GitHub Pages:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install Python and Dependencies
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install jupyter
+      - run: pip install -r requirements.txt
+      
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### Example: Knitr with renv
+
+Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to GitHub Pages:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.2.0'
+      
+      - name: Install R Dependencies 
+        uses: r-lib/actions/setup-renv@v2
+        with:
+          cache-version: 1
+      
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+
 
 ### Additional Options
 
-It's possible to have a Quarto project in a large GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `render` or `publish` action. For example:
+It's possible to have a Quarto project in a larger GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `publish` action. For example:
 
 ``` yaml
 - name: Render and Publish
@@ -119,5 +200,3 @@ By default, `quarto publish` will re-render your project before publishing it. H
 ```
 
 See the full definition of the Quarto [publish action](https://github.com/quarto-dev/quarto-actions/blob/main/publish/action.yml) to learn about other more advanced options.
-
-
