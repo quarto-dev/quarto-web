@@ -43,11 +43,11 @@ $ quarto publish connect
  ? API Key: › 
 ```
 
-After authenticating, your content will be rendered and published, and then a browser opened to view its admin page on Connect. 
+After authenticating, your content will be rendered and published, and then a browser opened to view its admin page on Connect.
 
 A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
 
-```yaml
+``` yaml
 - source: project
   connect:
     - id: "3bb5f59f-524a-45a5-9508-77e29a1e8bf0"
@@ -181,7 +181,7 @@ See the documentation on [Git Backed Content](https://docs.rstudio.com/connect/u
 
 ## Continuous Integration
 
-You can also deploy Quarto content to from a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions). In most cases this will entail scripting the `quarto publish` command, however in the case of GitHub Actions you can take advantage of the standard Quarto [publish action](https://github.com/quarto-dev/quarto-actions/tree/main/publish).
+You can also deploy Quarto content using a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions). In most cases this will entail scripting the `quarto publish` command, however in the case of GitHub Actions you can take advantage of the standard Quarto [publish action](https://github.com/quarto-dev/quarto-actions/tree/main/publish).
 
 When publishing to Connect from a CI service you'll need to consider whether you want to execute your Python or R code directly on the CI server or whether you want to take advantage of previously [frozen](.../projects/code-execution.html#freeze) execution results. We'll explore this possibility first then proceed to the specifics of how to publish from CI.
 
@@ -195,14 +195,14 @@ If you'd rather have CI publishing execute all Python and R code contained in yo
 
 ### Publish Command
 
-You can publish Quarto content to Connect using any CI service by scripting the `quarto publish` command. To do this, you'll need to make sure that your Connect server address and credentials are available as environment variables on your CI server
+You can publish Quarto content to Connect using any CI service by scripting the `quarto publish` command. To do this, you'll need to make sure that your Connect server address and credentials are available as environment variables on the CI server
 
 | Variable          | Description                                                                |
-|-----------------|-------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `CONNECT_SERVER`  | Address of RStudio Connect server (e.g. `https://connect.example.com`).    |
 | `CONNECT_API_KEY` | RStudio Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) |
 
-You will furthermore need to specify the ID of the target content to update. This is likely available in the `_publish.yml` file that is saved into your project directory during initial publish. For example:
+You will furthermore need to specify the ID of the target content to update. This will most frequently be drawn from the `_publish.yml` file that is saved into your project directory during publisihng. For example:
 
 **\_publish.yml**
 
@@ -221,7 +221,7 @@ export CONNECT_API_KEY=7C0947A852D8
 quarto publish connect
 ```
 
-Alternatively if you don't have a `_publish.yml`, you can specify the ID on the command line as follows:
+Alternatively if you don't have a `_publish.yml` file, you can specify the ID on the command line as follows:
 
 ``` bash
 quarto publish connect --id 4f2ffc46-24b0-4cc7-a854-c5eb671e0dd7
@@ -233,7 +233,7 @@ If your CI service is [GitHub Actions](https://docs.github.com/en/actions) then 
 
 #### Server Credentials
 
-Before creating your action, you need to ensure that your repository has the credentials required for publishing to Connect. To do this you need to do the following:
+Before creating the publish action, you need to ensure that your repository has the credentials required for publishing to Connect. You can do this as follows:
 
 1.  If you don't already have one, create an RStudio Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) from the requisite Connect server and then copy it to the clipboard.
 
@@ -280,7 +280,7 @@ Once you've pushed your updated repository (including the publish action and `_f
 
 #### Executing Code
 
-If you prefer, you can also configure a GitHub Action to execute R, Python, or Julia code as part of rendering. While this might reflexively seem like the best approach, consider the following requirements imposed when you execute code within a CI service like GitHub Actions:
+If you prefer, you can also configure GitHub Actions to execute Python or R code as part of rendering. While this might reflexively seem like the best approach, consider the following requirements imposed when you execute code within a CI service like GitHub Actions:
 
 {{< include _ci-execute-requirements.md >}}
 
