@@ -7,8 +7,6 @@ An important goal for Quarto is to make it possible to use the same source docum
 
 Much of the Pandoc standard front matter works well as is, but currently the expression of authors (and affiliations) is limited in Pandoc. In the [rticles package](https://pkgs.rstudio.com/rticles/), many templates have specific and custom ways to express author and affiliation metadata, each designed to be aligned with the specific template and its output. In Quarto, we automatically parse the author data, normalize it, and make it available to template authors in a number of standard forms.
 
-This is implemented as a (relatively) [standalone LUA filter in Quarto](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/filters/authors).
-
 ## Reading Author Data
 
 Quarto will look in the author field or in the authors field for data that can be parsed into a normalized representation of authors. This can be as simple as a name of list of names:
@@ -59,7 +57,7 @@ The by-affiliations metadata contains a denormalized version of affiliation data
 The complete, normalized, author schema (omitting affiliations for the time being) is as following:
 
 ``` yaml
-authors:
+author:
     - id: string
       number: number
       name:
@@ -72,7 +70,7 @@ authors:
       email: string
       fax: string
       orcid: string
-      notes: string
+      note: string
       acknowledgements: string
       attributes:
         corresponding: boolean
@@ -86,24 +84,24 @@ authors:
 Most often, users will write a single string for name, like:
 
 ``` yaml
-authors: Norah Jones
+author: Norah Jones
 ```
 
 or perhaps like:
 
 ``` yaml
-authors:
+author:
   - name: Norah Jones
 ```
 
 Which will be parsed into:
 
 ``` yaml
-authors:
+author:
   - name:
-    given: Norah
-    family: Jones
-    literal: Norah Jones
+      given: Norah
+      family: Jones
+      literal: Norah Jones
 ```
 
 Quarto will parse names using BibTex (a la [openjournals/inara](https://github.com/openjournals/inara/blob/main/data/filters/normalize-author-names.lua)), supporting Bibtex's parsing based upon comma count, capitalization, and so on. When the name is unparseable by Bibtex, Quarto will attempt to parse names into given and family using spaces (everything after the last space is considered a family name), but to disambiguate, you may provide the complete name including separate given and family and particle keys:
@@ -115,9 +113,54 @@ name:
   dropping-particle: von
 ```
 
-### Other Metadata
+### Attributes
 
-The normalized authors schema at the top level is a closed schema. Unrecognized keys that are passed in the root of authors will be normalized under the metadata key. Keys that are normalized into `metadata` should be considered potentially template specific and may not be present or depended upon when implementing a template.
+Recognized atribute keys that appear at the top level (for example, `corresponding`) will automatically be normalized under attributes. For example:
+
+``` yaml
+author:
+  name: Norah Jones
+  corresponding: true
+```
+
+would be normalized into:
+
+``` yaml
+author:
+  - name:
+      given: Norah
+      family: Jones
+      literal: Norah Jones
+    attributes:
+      corresponding: true
+```
+
+### Arbitrary Metadata
+
+The normalized authors schema at the top level is a closed schema. Unrecognized keys that are passed in the root of authors will be normalized under the `metadata` key. For example:
+
+``` yaml
+author:
+  name: Norah Jones
+  corresponding: true
+  custom-info: "custom value"
+```
+
+would be normalized into:
+
+``` yaml
+author:
+  - name:
+      given: Norah
+      family: Jones
+      literal: Norah Jones
+    attributes:
+      corresponding: true
+    metadata:
+      custom-info: "custom value"
+```
+
+Keys that are normalized into `metadata` should be considered potentially template specific and may not be present or depended upon when implementing a template.
 
 ## Affiliations Schema and Parsing
 
