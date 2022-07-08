@@ -1,5 +1,181 @@
 ---
 title: "Quarto Pub"
+provider: quarto-pub
+provider-name: Quarto Pub
+provider-publish-url: "https://njones.quarto.pub/blog"
 ---
 
+## Overview
+
+[Quarto Pub](https://quartopub.com/) is a free publishing service for content created with Quarto. Quarto Pub is ideal for blogs, course or project websites, books, presentations, and personal hobby sites.
+
+There are two ways to publish content to Quarto Pub:
+
+1.  Use the `quarto publish` command to publish content rendered on your local machine (this is the recommend approach when you are getting started).
+
+2.  If you are using GitHub, you can use a [GitHub Action] to automatically render your project and publish the resulting content whenever your code changes.
+
+We'll cover both of these techniques below. Before getting started, ensure that you have signed up for a free Quarto Pub account at <https://quartopub.com/sign-up>.
+
+::: callout-note
+Quarto Pub is a free service for smaller scale websites (sites can be no larger than 100 MB and have a *soft* limit of 5 GB of bandwidth per month). If you want to host larger sites on a custom domain you should consider a service like [Netlify](netlify.qmd).
+:::
+
+{{< include _publish-command.md >}}
+
+
 ## GitHub Action
+
+{{< include _github-action-basics.md >}}
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: {{< meta provider >}}
+          QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
+```
+
+### Quarto Pub Credentials
+
+The final step is to configure your GitHub Action with the credentials required for publishing. To do this you need to create a Quarto Pub personal access token and then configure your GitHub action to be able to read it:
+
+1.  If you don't already have a personal access token, go to the Quarto Pub [account profile page](https://quartopub.com/profile), and click on **New  Token** to create a token. Give this token a memorable name, and copy the token to the clipboard.
+
+2.  Add the Quarto Pub access token to your repository's action **Secrets** (accessible within repository **Settings**). You will see a **New repository secret** button at the top right:
+
+    ![](images/gh-new-repository-secret.png){.border}
+
+    Click the button and add the personal access token from step 1 as a secret named `QUARTO_PUB_AUTH_TOKEN`:
+
+    ![](images/gh-action-quarto-pub-secret.png){.border}
+
+### Ignoring Output
+
+{{< include _ignoring-output.md >}}
+
+### Commit to Publish
+
+Once you've specified your publishing action and {{< meta provider-name >}} credentials, and pushed your updated repository (including the `_freeze` directory) to GitHub, your action will run with this and subsequent commits, automatically rendering and publishing to {{< meta provider-name >}}.
+
+{{< include _github-action-executing-code.md >}}
+
+#### Example: Jupyter with venv
+
+Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to {{< meta provider-name >}}:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install Python and Dependencies
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install jupyter
+      - run: pip install -r requirements.txt
+      
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: {{< meta provider >}}
+          QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
+```
+
+#### Example: Knitr with renv
+
+Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to {{< meta provider-name >}}:
+
+**.github/workflows/publish.yml**
+
+``` yaml
+on:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.2.0'
+      
+      - name: Install R Dependencies 
+        uses: r-lib/actions/setup-renv@v2
+        with:
+          cache-version: 1
+      
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: {{< meta provider >}}
+          QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
+```
+
+### Additional Options
+
+It's possible to have a Quarto project in a larger GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `publish` action. For example:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: {{< meta provider >}}
+    path: subdirectory-to-use
+    QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
+```
+
+By default, `quarto publish` will re-render your project before publishing it. However, if you store the rendered output in version control, you don't need the GitHub action to re-render the project. In that case, add the option `render: false` to the `publish` action:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: {{< meta provider >}}
+    render: false
+    QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
+```
+
+

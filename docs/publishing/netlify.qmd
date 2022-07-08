@@ -1,7 +1,9 @@
 ---
 title: "Netlify"
 provider: netlify
+provider-name: Netlify
 provider-token: NETLIFY_AUTH_TOKEN
+provider-publish-url: "https://tubular-unicorn-97bb3c.netlify.app"
 ---
 
 ## Overview
@@ -20,36 +22,7 @@ There are several ways to publish Quarto content to Netlify:
 
 We'll cover each of these methods below, starting with the most straightforward and then proceeding to more sophisticated scenarios.
 
-## Publish Command
-
-The `quarto publish` command is the easiest way to publish locally rendered content. From the directory where your project is located, execute the `quarto publish` command for Netlify:
-
-``` bash
-quarto publish netlify
-```
-
-If you haven't published to Netlify before, the publish command will prompt you to authenticate. After confirming that you want to publish, your content will be rendered and deployed, and then a browser opened to view your site's control panel. 
-
-A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
-
-```yaml
-- source: project
-  netlify:
-    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
-      url: "https://tubular-unicorn-97bb3c.netlify.app"
-```      
-      
-Account information is not stored in this file, so it is suitable for checking in to version control and being shared by multiple publishers.
-
-You can customize the behavior of `quarto publish` by providing the following command line options:
-
-{{< include _cli-options.md >}}
-
-To publish a document rather than a website or book, provide the path to the document:
-
-``` bash
-quarto publish netlify document.qmd
-```
+{{< include _publish-command.md >}}
 
 ### Domain Name
 
@@ -170,7 +143,6 @@ Once you've specified your publishing action and Netlify credentials, and pushed
 
 {{< include _github-action-executing-code.md >}}
 
-
 #### Example: Jupyter with venv
 
 Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to Netlify:
@@ -248,7 +220,6 @@ jobs:
           target: gh-pages
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 ```
-
 
 ### Additional Options
 
