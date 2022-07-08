@@ -2,6 +2,19 @@ Using the `quarto publish {{< meta provider >}}` command to publish locally rend
 
 There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion on [Rendering for CI](ci.qmd#rendering-for-ci).
 
+### Publish Record
+
+Prior to attempting to publish with a GitHub Action, you should have completed at least one publish using the [Publish Command] (described immediately above). This publish will create a `_publish.yml` file that records the publishing destination to be used by the GitHub Action. For example:
+
+``` yaml
+- source: project
+  {{< meta provider >}}:
+    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
+      url: "{{< meta provider-publish-url >}}"
+```
+
+Do not proceed to the next step(s) until you have a `_publish.yml` that indicates your publishing destination.
+
 ### Freezing Computations
 
 {{< include _freeze-basics.md >}}
