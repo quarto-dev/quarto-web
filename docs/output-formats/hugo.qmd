@@ -108,13 +108,19 @@ Then, use `quarto preview` for the particular `.qmd` file you are working on:
 quarto preview index.qmd
 ```
 
-Changes to the `index.qmd` file will result in an updated `index.md`, which `hugo serve` will in turn pick up and use to referesh the current preview.
+Changes to the `index.qmd` file will result in an updated `index.md`, which `hugo serve` will in turn pick up and use to refresh the current preview.
 
 ## Shortcodes
 
-Note that Hugo shortcodes and Quarto shortcodes share the same basic syntax (e.g. `{{{< var foo >}}}`). This is normally not a problem as shortcodes not recognized by Quarto are passed through unmodified to Hugo.
+Note that Hugo [shortcodes](https://gohugo.io/content-management/shortcodes/) and Quarto [shortcodes](../authoring/shortcodes.qmd) share the same basic syntax (e.g. `{{{< var foo >}}}`). This is normally not a problem as shortcodes not recognized by Quarto are passed through unmodified to Hugo.
 
-However, in some cases the use of Hugo shortcode throws off the Pandoc markdown processing, and its necessary to "protect" the Hugo shortcode from processing by Pandoc. To do this, include the markdown containing the Hugo shortcode in a markdown raw block. For example:
+However, in some cases the use of a Hugo shortcode throws off Pandoc markdown processing, and its necessary to "protect" the Hugo shortcode from processing by Pandoc. This can typically be handled by escaping the shortcode with an extra brace. For example:
+
+``` default
+{{{{< ref "foo/index.md" >}}}}
+```
+
+It's possible that this won't be enough if the presence of the shortcode changes how Pandoc processes the surrounding markdown (e.g. this is currently known to occur for links). In this case you need to use a markdown raw block around the entire construct. For example:
 
 ```` default
 ```{=markdown}
