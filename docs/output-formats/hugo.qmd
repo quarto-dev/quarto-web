@@ -98,18 +98,41 @@ Note that the `index.md` file is *only* updated when you explicitly render with 
 
 To setup a live preview workflow for a given page or post, start by running the `hugo serve` command for your hugo site:
 
-```bash
+``` bash
 hugo serve
 ```
 
 Then, use `quarto preview` for the particular `.qmd` file you are working on:
 
-```bash
+``` bash
 quarto preview index.qmd
 ```
 
-Changes to the `index.qmd` file will result in an updated `index.md`, which `hugo serve` will in turn pick up and use to referesh the current preview.
+Changes to the `index.qmd` file will result in an updated `index.md`, which `hugo serve` will in turn pick up and use to refresh the current preview.
 
+## Shortcodes
+
+Note that Hugo [shortcodes](https://gohugo.io/content-management/shortcodes/) and Quarto [shortcodes](../authoring/shortcodes.qmd) share the same basic syntax (e.g. `{{{< var foo >}}}`). This is normally not a problem as shortcodes not recognized by Quarto are passed through unmodified to Hugo.
+
+However, in some cases the use of a Hugo shortcode throws off Pandoc markdown processing, and its necessary to "protect" the Hugo shortcode from processing by Pandoc. This can typically be handled by escaping the shortcode with an extra brace. For example:
+
+``` default
+{{{{< ref "foo/index.md" >}}}}
+```
+
+It's possible that this won't be enough if the presence of the shortcode changes how Pandoc processes the surrounding markdown (e.g. this is currently known to occur for links). In this case you need to use a markdown raw block around the entire construct. For example:
+
+```` default
+```{=markdown}
+[click here]({{< ref "foo/index.md" >}})
+```
+````
+
+Or for inline content, use a markdown raw inline:
+
+``` default
+For more info, `[click here]({{< ref "foo/index.md" >}})`{=markdown}
+```
 
 ``` include
 _webtex.md

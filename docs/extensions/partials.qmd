@@ -1,0 +1,140 @@
+---
+title: Templates and Partials
+draft: true
+---
+
+Inspired by the [rticles package](https://pkgs.rstudio.com/rticles/) Quarto provides a mechanism for users to extend the format system to provide highly customized and targeted output. A core capability that is required for this is the ability to use existing LaTeX templates, document classes, and styles provided by journals. Quarto's templating system, built on Pandoc templates, is designed to make it straightforward to use these existing assets while preserving the functionality provided by Pandoc and Quarto. In addition, we seek to add the same capability to HTML output, allowing providers to augment their LaTeX templates with HTML versions of the template to provide web native output.
+
+## Templates
+
+Quarto templates are used to control the output of formats when a document is rendered using the underlying capabilities and syntax of [Pandoc templates](https://pandoc.org/MANUAL.html#templates). The template contains variables to position document content and metadata mixed with format specific directives to control what output is generated. You can provide a custom template to be used when rendering like this:
+
+``` yaml
+format:
+  html:
+    template: mytemplate.html
+```
+
+## Template Partials
+
+For LaTeX / PDF and HTML output, Quarto provides built in templates that are composed of a set of 'partial' template files. Beyond being able to replace the template as described above, you may also replace the partial files individually when rendering, allowing you to customize just a portion of the template without needing to replace the whole thing. You provide template partials like this:
+
+``` yaml
+format:
+  html:
+    template-partials:
+      - /<path>/title-block.html
+```
+
+The above front matter will replace the title block partial used in the HTML template with a custom partial that you provide, giving you complete control of the HTML that is generated when the document is rendered.
+
+To replace the partials that are used by Quarto, you must provide a partial file with the name of the partial you'd like to replace. In the above example, we will replace our partial title-block.html with your implementation.
+
+### Using Partials
+
+In addition to replacing partials, you may also choose to use our partials when composing your own template. This allows you to create a template that takes advantage of the capabilities and options provided by Quarto and Pandoc without copying and maintaining the entire template code. For example, you can use the pandoc-base partial to include pandoc configuration for text highlighting, tables, graphics, tight lists, citations, and header includes:
+
+``` tex
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{%
+  \oldsubparagraph{#1}\mbox{}}
+\fi
+$pandoc.tex()$
+$if(lang)$
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+$endif$
+```
+
+This modular approach means that is easier to implement templates that:
+
+-   include required elements of Pandoc templates
+
+-   support general pandoc features and options
+
+-   provide only the minimal LaTeX or html rather than being required to provide all of it
+
+## HTML Template and Partials
+
+View the Quarto html template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/pandoc). Note that html.template is a copy of the complete pandoc template that the Quarto template and partials is based upon.
+
+Quarto's HTML template is broken down into the following components:
+
+template.html
+
+:   The core HTML template which includes the basic document skeleton plus the following partials.
+
+metadata.html
+
+:   Populates basic document metadata into the HTML document head. More advanced metadata elements are not currently implemented within this template (e.g. social media, academic metadata) but are implemented as post processors.
+
+title-block.html
+
+:   Provides the title block for the document. 
+
+toc.html
+
+:   Provide the table of contents target for the document
+
+## LaTeX Template and Partials
+
+View the Quarto LaTeX template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/pdf/pandoc). Note that latex.template is a copy of the complete pandoc template that the Quarto template and partials is based upon.
+
+template.tex
+
+:   The core LaTeX template which includes the basic document skeleton plus the following partials.
+
+doc-class.tex
+
+:   Contains the document class declaration and options. By default we provide the identical document class that Pandoc provides, implementing many features. If you override this (which will be common), you will need to either implement support for the document class options or be aware that those options (e.g. font-size, paper-size, classoption, etc...) will not be supported in your output.
+
+title.tex
+
+:   Provides configuration of document metadata for writing the title block. Note that in addition to these templates and partials, Quarto will also make normalized authors and affiliations data available to the template, making is easy to write custom title blocks against a standard schema.
+
+before-body.tex
+
+:   Implements the frontmatter, title page, and abstract.
+
+after-body.tex
+
+:   Provides a placeholder to attach content at the end of the body.
+
+toc.tex
+
+:   Creates the table of contents, list of figures, and list of tables.
+
+before-bib.tex
+
+:   Placed after the content of the document, but before the bibliography. By default contains nothing. (Placed here as a couple of templates seemed to have commands here, but I think we may be able to remove).
+
+biblio.tex
+
+:   Creates the bibliography.
+
+pandoc.tex
+
+:   This includes configuration for text highlighting, tables, graphics, tight lists, citations, and header includes. In general, this partial must always be included within your custom template. In some circumstances, you may know that certain capabilities will not be needed, so you this partial is further composed of the following partials, which could be used if sensible:
+
+::: {style="margin-left: 2em;"}
+
+tightlist.tex
+
+:   Provides the tight list command.
+
+tables.tex
+
+:   Provides configuration for the output of tables, table captioning, and footnotes within tables.
+
+graphics.tex
+
+:   Provides image scaling and placement configuration.
+
+citations.tex
+
+:   When using CSL references, provides configuration and commands for outputing the bibliography.
+:::
