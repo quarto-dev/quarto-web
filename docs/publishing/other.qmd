@@ -1,0 +1,47 @@
+---
+title: "Other Services"
+---
+
+## Overview
+
+There are a wide variety of ways to publish Quarto websites. Other articles cover publishing to [GitHub Pages](github-pages.qmd), [Netlify](netlify.qmd), and [RStudio Connect](rstudio-connect.qmd). Below we'll describe some general guidelines as well as offer some specific advice for [Firebase](#google-firebase), [Site44], and [Amazon S3]. We'll mostly defer to the documentation provided by the various services, but will note any Quarto website specific configuration required.
+
+The most important thing to understand is that website content is by default written to the `_site` sub-directory and book content to the `_book` directory (you can customize either using the `output-dir` option). Publishing is simply a matter of copying the output directory to a web server or web hosting service.
+
+### Rendering for Publish
+
+Prior to publishing you should always to a final render of your project:
+
+``` bash
+quarto render
+```
+
+This is particularly important to remember because changes you make to shared site configuration (e.g. `_quarto.yml`) aren't reflected across your entire site until your render the entire project. To ensure that your output is up to date before publishing you should always do a full `quarto render`.
+
+## Firebase {#google-firebase}
+
+Google Firebase has a [web hosting service](https://firebase.google.com/docs/hosting/quickstart) that enables easy deployment of websites using a set of command line tools.
+
+Firebase websites by default deploy content from the `public` directory of the Firebase project directory. This means that you should set the `output-dir` to `"public"` within `_quarto.yml`:
+
+``` yaml
+project:
+  type: website
+  output-dir: public
+```
+
+## Site44 {data-link="Site44"}
+
+[Site44](https://www.site44.com/) is a service that allows you to publish websites from within Dropbox folders. Site44 creates a `Dropbox/Apps/site44` directory, and any folders within that directory are published as websites.
+
+The recommended workflow for deploying Quarto websites to Site44 is to develop your website in a separate project directory, and then, when it's ready for final publishing, copy the contents of the `_site` directory to the folder for your website.
+
+## Amazon S3 {data-link="Amazon S3"}
+
+If you are a user of Amazon Web Services you can serve your website directly from Amazon S3. Note however that this option is a bit more technically involved than GitHub Pages, Netlify, or Site44. See the article on [Hosting a Static Website on Amazon S3](https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html) for additional details.
+
+## Other Hosts
+
+Any web server or web host can be used to deploy a Quarto website. Here's a recent [CNET roundup](https://www.cnet.com/web-hosting/) of other web hosts you could consider. You can also deploy a Quarto website on any internal (intranet) web server.
+
+You can also render and publish Quarto websites using a Continuous Integration (CI) service. See the articles on [Publishing with CI](ci.qmd) for additional details.
