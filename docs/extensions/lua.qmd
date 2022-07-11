@@ -43,9 +43,10 @@ end
 
 Extensions will often need to detect the current format to create custom content depending on the target output medium. The `quarto.doc.isFormat()` function
 
-| Function                    | Description                                  |
+| Function                    | Description                                                                                                                                                                                                 |
 |----------------------------|--------------------------------------------|
-| `quarto.doc.isFormat(name)` | Detect if the current format matches `name`. |
+| `quarto.doc.isFormat(name)` | Detect if the current format matches `name`.                                                                                                                                                                |
+| `quarto.doc.hasBootstrap()` | Query whether [Bootstrap CSS](https://getbootstrap.com/) is available within the current document (it is by default for standard `html` documents but this may have been overridden by e.g. `theme: none`). |
 
 The `name` parameter can match an exact Pandoc format name (e.g. `docx`, `latex`, etc. or can match based on an alias that groups commonly targeted formats together. The following values format aliases are handled specially by `quarto.doc.isFormat()`:
 
@@ -87,19 +88,31 @@ Note that the included content should use the *raw target format* (e.g. HTML or 
 | `quarto.doc.includeText(location, text)` | Include text at the specified location (`in-header`, `before-body`, or `after-body`)                                                                                  |
 | `quarto.doc.includeFile(location, file)` | Include file at the specified location (`in-header`, `before-body`, or `after-body`). The path to the file should *relative* to the Lua script calling this function. |
 
+For example the following code includes an HTML file after the body in the rendered document:
+
+``` lua
+quarto.doc.includeFile("after-body", "comments.html")
+```
+
 ## Dependencies
 
 Extensions will sometimes want to add external dependencies (for example, a JavaScript library and related CSS, or the usage of a LaTeX package). This can be accomplished with the following functions:
 
 | Function                               | Description                                                                                                                                                                                                                                               |
 |------------------------------------|------------------------------------|
-| `quarto.doc.addHtmlDependency(dep)`    | Add an HTML dependency (additional resources and content) to a document. See docs on the [dependency object](#dependency-object) below for additional details.                                                                                            |
+| `quarto.doc.addHtmlDependency(dep)`    | Add an HTML dependency (additional resources and content) to a document. See docs on the [HTML Dependencies](#html-dependencies) below for additional details.                                                                                            |
 | `quarto.doc.useLatexPackage(pkg, opt)` | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
 | `quarto.doc.addFormatResource(path)`   | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
 
-HTML Dependencies can bundle together JavaScript, CSS, and even arbitrary content to inject into the `<head>` of the document. These dependencies have a name and a version, which is used to ensure that the same dependency isn't bundled into the document more than once.
+For example, here we add a LaTeX package dependency:
 
-#### Dependency Object
+``` lua
+quarto.doc.useLatexPackage("gamebook")
+```
+
+#### HTML Dependencies
+
+HTML Dependencies can bundle together JavaScript, CSS, and even arbitrary content to inject into the `<head>` of the document. These dependencies have a name and a version, which is used to ensure that the same dependency isn't bundled into the document more than once.
 
 The `dep` object passed to `quarto.doc.addHtmlDependency()` has the following fields:
 
@@ -114,6 +127,17 @@ The `dep` object passed to `quarto.doc.addHtmlDependency()` has the following fi
 | `meta`        | Table of optional `key = value` meta tags to insert into the document `<head>`                                                                                                            |
 | `head`        | Arbitrary string to include in document `<head>`                                                                                                                                          |
 
+For example, here we add a dependency to a JavaScript library:
+
+``` lua
+quarto.doc.addHtmlDependency({
+  name = "glightbox",
+  version = "3.2.0",
+  scripts = {"glightbox.min.js"},
+  stylesheets = {"glightbox.min.css"}
+})
+```
+
 #### Script Object
 
 The easiest way to specify `scripts` is with simple paths. However, in some cases you may need to add attributes to the `<script>` tag or specify that the script should go after the body. In those cases pass a script object:
@@ -124,6 +148,19 @@ The easiest way to specify `scripts` is with simple paths. However, in some case
 | `attribs`   | Table with `key = value` attributes to add to the `<script>` tag  |
 | `afterBody` | Specify that the `<script>` tag should be inserted after the body |
 
+For example, here update the previous example to add an `integrity` attribute to the script:
+
+``` lua
+quarto.doc.addHtmlDependency({
+  name = "glightbox",
+  version = "3.2.0",
+  scripts = {
+    { path = "glightbox.min.js ", attribs = {integrity = "R9GqQ8K/uxy9rx"} }
+  },
+  stylesheets = {"glightbox.min.css"}
+})
+```
+
 #### Stylesheet Object
 
 The easiest way to specify `stylesheets` is with simple paths. However, in some cases you may need to add attributes to the `<link>` tag generated for the stylesheet. In those cases pass a stylesheet object:
@@ -133,6 +170,27 @@ The easiest way to specify `stylesheets` is with simple paths. However, in some 
 | `path`    | Path to the stylesheet (relative to the calling Lua script)    |
 | `attribs` | Table with `key = value` attributes to add to the `<link>` tag |
 
+For example, here we update the previous example to add an `integrity` attribute to the stylesheet:
+
+``` lua
+quarto.doc.addHtmlDependency({
+  name = "glightbox",
+  version = "3.2.0",
+  scripts = {
+    { 
+      path = "glightbox.min.js ", 
+      attribs = {integrity = "R9GqQ8K/uxy9rx"} 
+    }
+  },
+  stylesheets = {
+    { 
+      path = "glightbox.min.css ", 
+      attribs = {integrity = "GYl1kPzQho1wx"} 
+    }
+  }
+})
+```
+
 ## JSON Encoding
 
 Quarto includes a copy of [json.lua](https://github.com/rxi/json.lua). a lightweight JSOn library for Lua. You can access the JSON functions as follows:
@@ -141,3 +199,10 @@ Quarto includes a copy of [json.lua](https://github.com/rxi/json.lua). a lightwe
 |-----------------------------|----------------------------------------|
 | `quarto.json.encode(input)` | Encode a Lua table into a JSON string. |
 | `quarto.json.decode(str)`   | Parse a JSON string into a Lua table.  |
+
+For example, here we encode and then decode a table:
+
+``` lua
+local json = quarto.json.encode({foo = "bar"})
+local obj = quarto.json.decode(json)
+```
