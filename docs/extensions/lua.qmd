@@ -1,234 +1,143 @@
 ---
-title: LUA Reference
+title: Developing with Lua
 draft: true
 include-in-header: 
   text: |
     <style>h4 { margin-top: 2em; }</style>
 ---
 
-When you are authoring filters or shortcodes in LUA, Quarto makes a number of helpful functions available. The following functions are available in any LUA shortcode or filter.
+## Overview
 
-## Module quarto.doc
+The programming language used to create [filters](filters.qmd) and [shortcodes](shortcodes.lua) is Lua, a lightweight, high-level scripting language designed primarily for embedded use in applications. [Lua](https://www.lua.org/) is the extension language for Pandoc (which includes an embedded Lua interpreter). This means that Quarto extensions have no additional runtime dependencies or requirements.
 
-Since your extension could be used when rendering a variety of formats, you need to ensure that you're only making modifications when targeting supported output formats and ensure that you're making the correct changes for that specific format. You can use the below to conditionalize handling based upon the target format.
+This article will start by providing an orientation to learning Lua for those new to the language. Then, we'll provide a reference to the built in Lua functions provide by Quarto to assist in developing extensions.
 
-### Detecting Formats 
+## Learning Lua
 
-#### `isFormat(format-name)`
+Lua is a scripting language similar to Python, R, Julia, and JavaScript. If you are familiar with one or more of those languages you won't have trouble picking up Lua.
 
-Checks whether the format being rendered targets a particular output type. For example quarto.doc.isFormat('pdf') will return true if the document being rendered is LaTeX or PDF output. quarto.doc.isFormat('html') will return true if the document being rendered is HTML output.
+The best way to begin with Lua is to read the documentation on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html). This has the benefit of demonstrating the use of Lua in concrete scenarios related to document publishing. Another excellent resources is the [Learn Lua in 15 Minutes](https://tylerneylon.com/a/learn-lua/) article which provides annotated examples of how to do things in Lua you might already be familiar with in other languages.
 
-Parameters:
+Once you've brushed up on the basics, a good next step is to examine the source code of the extensions published in the [Quarto Extensions](https://github.com/quarto-ext) GitHub organization (these are extensions maintained by the Quarto core team). Once you are able to read and understand that code you are ready to start developing your own extensions!
 
-:   `format-name (string)`\
-    The name of an output format (e.g. 'pdf'). If you'd like to target only html that supports javascript (for example, excluding epub output), you can use `html:js`.
+When creating an extension, there are many built-in variables and functions provided directly by Pandoc --- you can learn about these in the article on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html). The remainder of this article describes some additional Lua functions provided by Quarto which you may also need when developing extensions.
 
-Returns:
+## Utilities
 
-:   Boolean indicating whether the format being rendered is targeting a particular output type.
+Various utility functions are provided, the most of important of which is the `quarto.utils.dump()` function which is indispensable for debugging.
 
-### Adding Dependencies
+| Function                         | Description                                                                                                                                                                                    |
+|----------------------|--------------------------------------------------|
+| `quarto.utils.dump(obj)`         | Dump a text representation of the passed object to stdout.                                                                                                                                     |
+| `quarto.utils.resolvePath(path)` | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
 
-Often, your LUA code may need to add dependencies to the document (for example a CSS or JS file, or usage of a LaTeX package). The following functions allow you to add dependencies to the document.
-
-#### `addHtmlDependency(htmldependency)`
-
-Adds an HTML dependency to the document.
-
-Parameters:
-
-:   `htmldependency (HtmlDependency)`
-
-    An HTML dependency which specifies additional resources and content to include in the rendered HTML. Paths in html dependencies should be provided as paths relative to the executing LUA file (shortcode or filter). Dependencies will be deduplicated (using the name) before they are added to the document, so it is safe to call these functions multiple times with the same dependency.
-
-:   An HTML dependency is structured as a table with the following properties:
+For example, you can dump an element passed to a filter function as follows:
 
 ``` lua
-{
-  -- The name of the dependency. This name will be used to ensure
-  -- that only a single copy of the dependency is added to the document
-  name = string (required),
-  version = string,
-
-  -- optional meta tags to add to the document
-  meta = {
-    <key> = <value>
-  },
-
-  -- optional link tags to add to the document
-  links = [
-    {
-      rel = string (required),
-      href = string (required),
-      type = string
-    }
-  ],
-
-  -- optional scripts to add to the document
-  scripts = [
-    {
-      -- The name and path to the file
-      name = string (required),
-      path = string (required),
-
-      -- Optional attributes to add to the tag when
-      -- injecting the script
-      attribs = {
-        <key> = <value>
-      } (optional),
-
-      -- The script may appear in the head, as usual, or after the body
-      -- if required
-      afterBody = boolean (optional)
-    }
-  ],
-
-  -- optional stylesheets to add to the document
-  stylesheets = [
-      -- The name and path to the file
-      name = string (required),
-      path = string (required),
-
-      -- Optional attributes to add to the tag when
-      -- injecting the style
-      attribs = {
-        <key> = <value>
-      } (optional),
-    }
-  ],
-
-  -- optional verbatim text to include in the document head
-  head = string,
-
-  -- additional files to copy to the input directory
-  resources = [
-      -- The name and path to the file
-      name = string (required),
-      path = string (required),
-  ]
-}
+function Div(el)
+  quarto.utils.dump(el)
+end
 ```
 
-#### `useLatexPackage(package, options)`
+## Format Detection
 
-Adds a `usepackage` statement to the LaTeX output.
+Extensions will often need to detect the current format to create custom content depending on the target output medium. The `quarto.doc.isFormat()` function
 
-Parameters:
+| Function                    | Description                                  |
+|----------------------------|--------------------------------------------|
+| `quarto.doc.isFormat(name)` | Detect if the current format matches `name`. |
 
-:   `package (string)`
+The `name` parameter can match an exact Pandoc format name (e.g. `docx`, `latex`, etc. or can match based on an alias that groups commonly targeted formats together. The following values format aliases are handled specially by `quarto.doc.isFormat()`:
 
-    The name of a LaTeX package.
+{{< include ../authoring/_format-aliases.md >}}
 
-:   `options (string)`
+For example, here we check for PDF and HTML output:
 
-    Options string that will be passed when using the LaTeX package.
-    
-#### `addFormatResource(path)`
+``` lua
+if quarto.doc.isFormat("pdf") then
+  -- pdf specific output
+elseif quarto.doc.isFormat("html") then
+  -- html specific output
+else
+  -- output for other formats
+end
+```
 
-Adds a Format Resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory.
+For LaTeX output, you may need to additionally detect which citation utility and pdf engine are being used for the current render. You can use these functions to do that detection:
 
-Parameters:
+| Function                  | Description                                                                                                                      |
+|----------------|--------------------------------------------------------|
+| `quarto.doc.citeMethod()` | Returns a string (`citeproc`, `natbib`, or `biblatex)` indicating the cite method in use.                                        |
+| `quarto.doc.pdfEngine()`  | Returns a string (`pdflatex`, `xelatex`, `lualatex`, or `tectonic`) indicating the PDF engine being used to render the document. |
 
-:   `path (string)`
+## Includes
 
-    A path to a file (relative to the current LUA file).
-    
-#### `includeText(location, text)`
+Sometimes extensions need to inject content into the target document. There are three locations that content can be included (pass one of these locations as the first argument of the include functions):
 
-Includes text verbatim into the document. 
+| Location      | Description                                                         |
+|---------------|---------------------------------------------------------------------|
+| `in-header`   | In the header of the document (HTML `<head>` tag or LaTeX preamble) |
+| `before-body` | Before the document body                                            |
+| `after-body`  | After the document body                                             |
 
-Parameters:
+Note that the included content should use the *raw target format* (e.g. HTML or LaTeX) rather than markdown. You can use these functions to include text or the contents of a file:
 
-:   `location (string)`
+| Function                                 | Description                                                                                                                                                           |
+|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `quarto.doc.includeText(location, text)` | Include text at the specified location (`in-header`, `before-body`, or `after-body`)                                                                                  |
+| `quarto.doc.includeFile(location, file)` | Include file at the specified location (`in-header`, `before-body`, or `after-body`). The path to the file should *relative* to the Lua script calling this function. |
 
-    Where in the document the text should be included. Valid locations include: `in-header`, `before-body`, `after-body`.
-    
-:   `text (string)`
+## Dependencies
 
-     The text that should be included in the document.
+Extensions will sometimes want to add external dependencies (for example, a JavaScript library and related CSS, or the usage of a LaTeX package). This can be accomplished with the following functions:
 
+| Function                               | Description                                                                                                                                                                                                                                               |
+|------------------------------------|------------------------------------|
+| `quarto.doc.addHtmlDependency(dep)`    | Add an HTML dependency (additional resources and content) to a document. See docs on the [dependency object](#dependency-object) below for additional details.                                                                                            |
+| `quarto.doc.useLatexPackage(pkg, opt)` | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
+| `quarto.doc.addFormatResource(path)`   | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
 
-#### `includeFile(location, file)`
+HTML Dependencies can bundle together JavaScript, CSS, and even arbitrary content to inject into the `<head>` of the document. These dependencies have a name and a version, which is used to ensure that the same dependency isn't bundled into the document more than once.
 
-Includes the contents of a file verbatim into the document.
+#### Dependency Object
 
-Parameters:
+The `dep` object passed to `quarto.doc.addHtmlDependency()` has the following fields:
 
-:   `location (string)`
+| Field         | Description                                                                                                                                                                               |
+|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `name`        | Unique name. Required.                                                                                                                                                                    |
+| `version`     | Version number (as a string). Required.                                                                                                                                                   |
+| `scripts`     | List of scripts to include (paths should be relative to the Lua file calling the function). Scripts can be either a simple path or a [script object](#script-object).                     |
+| `stylesheets` | List of CSS style-sheets to include (paths should be relative to the Lua file calling the function). Stylesheets can either be a simple path or a [stylesheet object](#stylesheet-object) |
+| `links`       | List of link tags to add to the document. Each tag should be a table with `rel` and `ref` (required) and optionally `type`                                                                |
+| `resources`   | Additional files to copy to the input directory (each resource is an object with `name` (target file name in input directory) and `path` (source file name relative to Lua script).       |
+| `meta`        | Table of optional `key = value` meta tags to insert into the document `<head>`                                                                                                            |
+| `head`        | Arbitrary string to include in document `<head>`                                                                                                                                          |
 
-    Where in the document the text should be included. Valid locations include: `in-header`, `before-body`, `after-body`.
-    
-:   `file (string)`
+#### Script Object
 
-     A LUA file relative file path
+The easiest way to specify `scripts` is with simple paths. However, in some cases you may need to add attributes to the `<script>` tag or specify that the script should go after the body. In those cases pass a script object:
 
+| Field       | Description                                                       |
+|-------------|-------------------------------------------------------------------|
+| `path`      | Path to the script (relative to the calling Lua script)           |
+| `attribs`   | Table with `key = value` attributes to add to the `<script>` tag  |
+| `afterBody` | Specify that the `<script>` tag should be inserted after the body |
 
-### Rendering
+#### Stylesheet Object
 
+The easiest way to specify `stylesheets` is with simple paths. However, in some cases you may need to add attributes to the `<link>` tag generated for the stylesheet. In those cases pass a stylesheet object:
 
-`citeMethod()`
+| Field     | Description                                                    |
+|-----------|----------------------------------------------------------------|
+| `path`    | Path to the stylesheet (relative to the calling Lua script)    |
+| `attribs` | Table with `key = value` attributes to add to the `<link>` tag |
 
-:   Returns a string (`citeproc`, `natbib`, or `biblatex)` indicating the cite method being used to render this document. Typically used for rendering PDF or LaTeX documents.
+## JSON Encoding
 
-`pdfEngine()`
+Quarto includes a copy of [json.lua](https://github.com/rxi/json.lua). a lightweight JSOn library for Lua. You can access the JSON functions as follows:
 
-:   Returns a string (`pdflatex`, `xelatex`, `lualatex`, or `tectonic`) indicating the PDF engine being used to render the document. Only available when rendering PDF documents.
-
-
-## Module quarto.utils
-
-### `dump(any)`
-
-Prints any LUA element to the console, expanding tables and other types. This is helpful when debugging.
-
-Parameters:
-
-:   `any (any type)`
-    A LUA value of any type.
-
-
-## Module quarto.json
-
-#### `encode(input)`
-
-Encodes a LUA table into a JSON string.
-
-Parameters:
-
-:   `input (table)`
-    A LUA table that should be encoded as a JSON string.
-    
-Returns:
-
-:   A JSON encoded string
-
-
-#### `decode(string)`
-
-Decodes a JSON string into a LUA table.
-
-Parameters:
-
-:   `input (string)`
-    A JSON encoded string
-    
-Returns:
-
-:   A LUA table decoded from a JSON string.
-
-## Module quarto.path
-
-#### `resolve(path)`
-
-Resolves a path that is relative to the current LUA file into a path that is relative to the input. Useful when adding elements with path references.
-
-Parameters:
-
-:   `path (string)`
-    A path to a file that will be referenced in the AST or other output.
-
-Returns:
-
-:   A path string that has been converted to be relative to the input document.
-
-
+| Function                    | Description                            |
+|-----------------------------|----------------------------------------|
+| `quarto.json.encode(input)` | Encode a Lua table into a JSON string. |
+| `quarto.json.decode(str)`   | Parse a JSON string into a Lua table.  |
