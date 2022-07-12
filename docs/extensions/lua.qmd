@@ -23,7 +23,7 @@ When creating an extension, there are many built-in variables and functions prov
 Various utility functions are provided, the most of important of which is the `quarto.utils.dump()` function (indispensable for debugging).
 
 | Function                         | Description                                                                                                                                                                                    |
-|----------------------|--------------------------------------------------|
+|----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `quarto.utils.dump(obj)`         | Dump a text representation of the passed object to stdout.                                                                                                                                     |
 | `quarto.utils.resolvePath(path)` | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
 
@@ -40,7 +40,7 @@ end
 Extensions will often need to detect the current format to create custom content depending on the target output medium. The `quarto.doc.isFormat()` function
 
 | Function                    | Description                                                                                                                                                                                                 |
-|----------------------------|--------------------------------------------|
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `quarto.doc.isFormat(name)` | Detect if the current format matches `name`.                                                                                                                                                                |
 | `quarto.doc.hasBootstrap()` | Query whether [Bootstrap CSS](https://getbootstrap.com/) is available within the current document (it is by default for standard `html` documents but this may have been overridden by e.g. `theme: none`). |
 
@@ -63,7 +63,7 @@ end
 For LaTeX output, you may need to additionally detect which citation utility and pdf engine are being used for the current render. You can use these functions to do that detection:
 
 | Function                  | Description                                                                                                                      |
-|----------------|--------------------------------------------------------|
+|---------------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `quarto.doc.citeMethod()` | Returns a string (`citeproc`, `natbib`, or `biblatex)` indicating the cite method in use.                                        |
 | `quarto.doc.pdfEngine()`  | Returns a string (`pdflatex`, `xelatex`, `lualatex`, or `tectonic`) indicating the PDF engine being used to render the document. |
 
@@ -95,7 +95,7 @@ quarto.doc.includeFile("after-body", "comments.html")
 Extensions will sometimes want to add external dependencies (for example, a JavaScript library and related CSS, or the usage of a LaTeX package). This can be accomplished with the following functions:
 
 | Function                               | Description                                                                                                                                                                                                                                               |
-|------------------------------------|------------------------------------|
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `quarto.doc.addHtmlDependency(dep)`    | Add an HTML dependency (additional resources and content) to a document. See docs on the [HTML Dependencies](#html-dependencies) below for additional details.                                                                                            |
 | `quarto.doc.useLatexPackage(pkg, opt)` | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
 | `quarto.doc.addFormatResource(path)`   | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
@@ -106,7 +106,7 @@ For example, here we add a LaTeX package dependency:
 quarto.doc.useLatexPackage("gamebook")
 ```
 
-#### HTML Dependencies
+#### HTML Dependencies {#html-dependencies}
 
 HTML Dependencies can bundle together JavaScript, CSS, and even arbitrary content to inject into the `<head>` of the document. These dependencies have a name and a version, which is used to ensure that the same dependency isn't bundled into the document more than once.
 
@@ -134,7 +134,7 @@ quarto.doc.addHtmlDependency({
 })
 ```
 
-#### Script Object
+#### Script Object {#script-object}
 
 The easiest way to specify `scripts` is with simple paths. However, in some cases you may need to add attributes to the `<script>` tag or specify that the script should go after the body. In those cases pass a script object:
 
@@ -157,7 +157,7 @@ quarto.doc.addHtmlDependency({
 })
 ```
 
-#### Stylesheet Object
+#### Stylesheet Object {#stylesheet-object}
 
 The easiest way to specify `stylesheets` is with simple paths. However, in some cases you may need to add attributes to the `<link>` tag generated for the stylesheet. In those cases pass a stylesheet object:
 
