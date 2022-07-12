@@ -1,5 +1,5 @@
 ---
-title: "Filters"
+title: "Creating Filters"
 aliases: 
   - /docs/authoring/shortcodes-and-filters.qmd
   - /docs/authoring/filters.qmd
@@ -7,9 +7,7 @@ aliases:
 
 ## Overview
 
-If the base features of Pandoc and Quarto don't do exactly what you need, you can very likely create a [Pandoc Filter](https://pandoc.org/filters.html) that bridges the gap. It's also possible to create filters that preprocess the contents of Jupyter Notebooks (`.ipynb`) before they are rendered by Quarto and Pandoc. We'll describe each of these filters in turn below.
-
-## Pandoc Filters
+If the base features of Pandoc and Quarto don't do exactly what you need, you can very likely create a [Pandoc Filter](https://pandoc.org/filters.html) that bridges the gap.
 
 Pandoc consists of a set of readers and writers. When converting a document from one format to another, text is parsed by a reader into pandoc's intermediate representation of the document---an "abstract syntax tree" or AST---which is then converted by the writer into the target format. The pandoc AST format is defined in the module [`Text.Pandoc.Definition`](https://hackage.haskell.org/package/pandoc-types-1.22/docs/Text-Pandoc-Definition.html) in the pandoc-types package.
 
@@ -17,80 +15,116 @@ A "filter" is a program that modifies the AST, between the reader and the writer
 
     INPUT --reader--> AST --filter--> AST --writer--> OUTPUT
 
-Pandoc's built-in citation processing is implemented as a filter, as are many of Quarto's extensions (e.g. cross-references, figure layout, etc.). Some other examples include:
+Pandoc's built-in citation processing is implemented as a filter, as are many of Quarto's internal extensions (e.g. cross-references, figure layout, etc.).
 
-| Filter                                                                               | Description                                                                                              |
-|--------------------------------------|----------------------------------|
-| [spellcheck](https://github.com/pandoc/lua-filters/tree/master/spellcheck)           | Checks the spelling of words in the body of the document (omitting metadata).                            |
-| [pandoc-quotes](https://github.com/pandoc/lua-filters/tree/master/pandoc-quotes.lua) | Replaces non-typographic quotation marks with typographic ones for languages other than American English |
-
-: {tbl-colwidths="\[35,65\]"}
-
-### Using Filters
-
-Add one or more filters to document rendering using the `filters` option. For example:
-
-``` yaml
-filters:
-   - spellcheck.lua
-```
-
-By default, user filters are run after Quarto's built-in filters. For some filters you'll want to modify this behavior For example, here we arrange to run `pandoc-quotes.lua` before Quarto's filters and `spellcheck.lua` after:
-
-``` yaml
-filters:
-  - pandoc-quotes.lua
-  - quarto
-  - spellcheck.lua
-```
-
-### Writing Filters
-
-You can write Pandoc filters using Lua (via Pandoc's built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process.
-
-We strongly recommend using Lua Filters, which have the following advantages:
+You can write Pandoc filters using Lua (via Pandoc's built-in Lua interpreter) or using any other language using a JSON representation of the Pandoc AST piped to/from an external process. We strongly recommend using Lua Filters, which have the following advantages:
 
 -   No external dependencies
-
 -   High performance (no serialization or process execution overhead)
+-   Access to the [Pandoc](https://pandoc.org/lua-filters.html#pandoc-module) and [Quarto](lua.qmd) libraries of Lua helper functions.
 
--   Access to Pandoc's library of [Lua helper functions](https://pandoc.org/lua-filters.html#pandoc-module).
-
-See the documentation on [Writing Lua Filters](https://pandoc.org/lua-filters.html) for additional details.
+See the Pandoc documentation on [Writing Lua Filters](https://pandoc.org/lua-filters.html) for additional details. If you aren't familiar with Lua you may want to checked out the article on [Developing with Lua](lua.qmd) for pointers on getting started.
 
 If you want to write a JSON filter, see the documentation on [Writing JSON filters](https://pandoc.org/filters.html).
 
-## Notebook Filters
+## Activating Filters
 
-Whenever you use Jupyter for embedded computations a notebook (`.ipynb`) is part of the rendering pipeline. This is naturally the case for rendering `.ipynb` files directly, however it is also the case for `.qmd` files that have embedded Julia or Python cells (in which case a temporary `.ipynb` is constructed). This notebook is ultimately converted into markdown and then rendered by Pandoc to the specified output format(s).
-
-You may wish to do some pre-processing on the notebook prior to its conversion to markdown. This can be accomplished by specifying one or or more `ipynb-filters`. These filters are passed the [JSON representation](https://nbformat.readthedocs.io/en/latest/format_description.html) of the notebook on `stdin` and should write a transformed JSON representation to `stdout`.
-
-For example, this notebook filter uses the [nbformat](https://nbformat.readthedocs.io/en/latest/index.html) package to read a notebook, prepend a comment to the source of each code cell, and then write it back to `stdout`:
-
-``` python
-import sys
-import nbformat
-
-# read notebook from stdin
-nb = nbformat.reads(sys.stdin.read(), as_version = 4)
-
-# prepend a comment to the source of each cell
-for index, cell in enumerate(nb.cells):
-  if cell.cell_type == 'code':
-     cell.source = "# comment\n" + cell.source
-  
-# write notebook to stdout 
-nbformat.write(nb, sys.stdout)
-```
-
-You can arrange for this filter to be run using the `ipynb-filters` option (specified at either the document or project level):
+If you've developed a filter and want to use it within a document you need to add it to the list of `filters` for the document. For example, here we arrange for the [spellcheck](https://github.com/pandoc/lua-filters/tree/master/spellcheck) filter to run:
 
 ``` yaml
 ---
-ipynb-filters:
-  - filter.py
+filters:
+  - spellcheck.lua
 ---
 ```
 
-Note that the current working directory for the filter will be set to the location of the input notebook.
+By default, user filters are run after Quarto's built-in filters. For some filters you'll want to modify this behavior. For example, here we arrange to run `spellcheck` before Quarto's filters and `lightbox` after:
+
+``` yaml
+filters:
+  - spellcheck.lua
+  - quarto
+  - lightbox
+```
+
+You'll notice that one of the extensions (`spellcheck.lua`) has a file extension and the other (`lightbox`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to distribute filters as extensions.
+
+## Filter Extensions
+
+If you have developed a filter that you'd like to distribute to others you can bundle the filter as a [Quarto Extension](index.qmd). Bundling a filter as an an extension makes it much easier for others to install, update, and use your filter.
+
+Here is what the source code repository of an an extension named `output-folding` might look like:
+
+``` default
+README.md
+LICENSE
+example.qmd
+_extensions/
+  output-folding/
+    _extension.yml
+    output-folding.lua
+```
+
+Note that the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during installation). Even so, it's good practice to include a `README.md` and `LICENSE` file, and the `example.qmd` will be useful for developing your extension.
+
+Here's what the contents of the files in `_extensions/output-folding/` might look like:
+
+``` {.yaml filename="_extensions/output-folding/_extension.yml"}
+title: Output Folding
+author: Cooltools
+version: 1.0.0
+contributes:
+  filters:
+    - output-folding.lua
+```
+
+``` {.lua filename="_extensions/output-folding/output-folding.lua"}
+function Div(el)
+  -- code required to implement output folding
+end
+```
+
+Finally, the `example.qmd` file would typically have code that exercises the extension. For example:
+
+```` {.markdown filename="example.qmd"}
+---
+title: "Output Folding Example"
+filters:
+  - output-folding
+---
+
+```{{python}}
+#| output-fold: true
+
+1 + 1
+```
+````
+
+To develop your extension, just make changes to `output-folding.lua` and render `example.qmd` to test them out.
+
+### Distribution
+
+if your extension source code it located within a GitHub repository, then it can be installed by referencing the GitHub organization and repository name. For example:
+
+``` bash
+# install the current HEAD of the extension
+quarto install extension cooltools/output-folding
+
+# install a tagged release of the extension
+quarto install extension cooltools/output-folding@v1
+```
+
+Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
+
+### Examples
+
+You might also find it instructive to examine the source code of these filter extensions authored by the Quarto team:
+
+| **Extension name**                                                   | **Description**                                                                    |
+|-----------------------|------------------------------|
+| [code-filename](https://github.com/quarto-ext/code-filename)         | Add a filename header to code blocks                                               |
+| [grouped-tabsets](https://github.com/quarto-ext/grouped-tabsets)     | Add grouped tabsets, which remember the active tab across multiple HTML documents. |
+| [latex-environment](https://github.com/quarto-ext/latex-environment) | Quarto extension to output custom LaTeX environments.                              |
+| [lightbox](https://github.com/quarto-ext/lightbox)                   | Create lightbox treatments for images in your HTML documents.                      |
+
+: {tbl-colwidths="\[35,65\]"}
