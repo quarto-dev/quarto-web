@@ -2,36 +2,77 @@
 title: "Distributing Extensions"
 ---
 
-You can install an extension using the `quarto install extension` command. For example, the command:
+## Overview
 
-`quarto install extension quarto-ext/fontawesome`
+Quarto extensions are directories that contain an `_extensions` sub-directory with one or more extensions. The files above the `_extensions` directory are not installed, so typically contain README and LICENSE files, examples, test cases, etc.
 
-will install the `fontawesome` extension from the `quarto-ext` organization.
+There are two distinct ways to distribute extensions to end users:
 
-### Installing From Github
+1.  Publish your extension in a public GitHub repository.
 
-The most common way to get extensions is to install them from the Github repository that hosts them. To install an extension from Github, just use the command
+2.  Bundle your extension into a `.zip` or `.tar.gz` archive.
 
-`quarto install extension <gh-organization>/<gh-repo>`
+Each method has benefits and drawbacks that will be explored below.
 
-For example, the repository at <https://github.com/quarto-ext/latex-environment> provides a simple way to emit LaTeX environments when making PDFs. To install this extension, you would use the command
+## GitHub Distribution
 
-`quarto install extension quarto-ext/latex-environment`
+Distributing extensions on GitHub has a number of benefits, including compact syntax (e.g. `quarto install extension org-name/extension`), the use of organizations as a "namespace" for managing name conflicts, and the ability to install specific releases or tags.
 
-### Installing From a URL
+For example, the extensions in the [`quarto-ext`](https://github.com/quarto-ext/) GitHub organization can be installed with these commands:
 
-Quarto extensions can also be installed directly from a URL. For example, the command:
+``` bash
+quarto install extension quarto-ext/lightbox
+quarto install extension quarto-ext/fontawesome
+```
 
-`quarto install extension https://www.quarto-sample.com/extension.zip`
+By default, extensions are installed from the `HEAD` of the `main` branch of the repository. If you create releases and/or tags in your repository they can also be specified with an `@` after the repository name. For example:
 
-Would install the extension at the url you provided. This isn't typically necessary, but might be useful if the extension is not being hosted on Github.
+``` bash
+quarto install extension quarto-ext/lightbox@v1
+```
 
-### Installation Location
+Extensions installed from GitHub have another special property: the GitHub organization can be used as a namespace qualifier to disambiguate extensions that have the same name. For example, if you have two different `lightbox` extensions installed, you explicitly specify the `quarto-ext` one as follows:
 
-By default, extensions are installed for the directory in which you run the `install extension` command. This will make the extensions available to any documents that are directly within that folder (but not subfolders)
+``` yaml
+---
+filters:
+  - quarto-ext/lightbox
+---
+```
 
-If you run the `install extension` command directly from within a project directory, the extensions will be installed in the project root and will be available to any document within that project directory. If you run the `install extension` command from a project subfolder, you will be asked whether to install extensions for the whole project or just for this folder. If you install an extensions for a subfolder, documents within that folder will only use extensions available in the subfolder and will not use project extensions.
+## Archive Distribution
 
-Extension that are installed will be placed in an `_extensions` directory. That directory and its contents should be checked into source control if you are using source control.
+Distributing extensions as a `.zip` or `.tar.gz` archive has the benefit of not requiring public distribution. These extensions can also be installed directly from non-GitHub version control services using the archive URLs normally provided for repositories.
 
-Quarto extensions are always copied into the project or directory that you install them into (and not kept in a global location). This is done so that your project or document will always have access to the specific extensions that you used to render them, making the output more consistently reproducible.
+Note that unlike GitHub hosted extensions, extensions installed from archives do not have an organizational namespace (they all share a single namespace).
+
+### Git Repositories
+
+To install an extension from a GitLab repository you could do this:
+
+``` bash
+quarto install extension https://gitlab.com/cooltools/shorty/-/archive/main/shorty-main.zip
+```
+
+You'll note that the above URL references the `main` branch. You can similarly install from any other branch, tag, or release. For example, to install the `v1.0` tag:
+
+``` bash
+quarto install extension https://gitlab.com/cooltools/shorty/-/archive/v1.0/shorty-main.zip
+```
+
+If you are using BitBucket, Azure DevOps, or another Git hosting provider, consult the appropriate service documentation to learn how to form archive URLs for repositories.
+
+### Archive Files
+
+The above examples demonstrate installing from a Git repository, you can also install from an archive published to an ordinary web host. For example:
+
+``` bash
+quarto install extension https://cooltools.org/quarto/shorty.zip
+```
+
+Or alternatively from a local archive file or even ordinary uncompressed directory:
+
+``` bash
+quarto install extension ~/Downloads/shorty.zip
+quarto install extension /share/quarto/extensions/shorty
+```
