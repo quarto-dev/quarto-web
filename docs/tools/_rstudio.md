@@ -1,8 +1,8 @@
-The [latest release](https://rstudio.com/products/rstudio/download/) of RStudio (v2022.02) includes support for editing and preview of Quarto documents.
+The [latest release](https://rstudio.com/products/rstudio/download/) of RStudio (v2022.07) includes support for editing and preview of Quarto documents.
 
 If you are using Quarto within RStudio it is **strongly** recommended that you use this version (the documentation below assumes you are using this build).
 
-You can download RStudio v2022.02 from <https://rstudio.com/products/rstudio/download/>.
+You can download RStudio v2022.07 from <https://rstudio.com/products/rstudio/download/>.
 
 ::: callout-note
 ## Enabling Quarto Features
