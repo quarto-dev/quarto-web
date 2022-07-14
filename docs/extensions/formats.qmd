@@ -37,6 +37,8 @@ Custom formats can also be used with the `--to` argument to `quarto render`. For
 quarto render document.qmd --to apsa-html
 ```
 
+Next, we'll walk through the creation of a custom format that extends the `revealjs` presentation format. If you are specifically interested in using or creating custom formats for journals and manuscripts, you may want to proceed instead to the documentation on [Journal Articles](../journals/index.qmd).
+
 ## Format Components
 
 Custom formats are a type of [Quarto Extension](index.qmd) and creating a format works much like creating a [filter](filter.qmd) or [shortcode](shortcode.qmd) extension. We'll walk through a custom format that extends the built-in `revealjs` format as an example. We'll call our format `lexcorp`. Here is what the source code repository of the format extension might look like:
@@ -46,7 +48,7 @@ README.md
 LICENSE
 template.qmd
 _extensions/
-  lexcorp/
+  lexcorp-pres/
     _extension.yml
     theme.scss
     logo.png
@@ -56,7 +58,7 @@ _extensions/
 As with other types of extensions, the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during format installation). Even so, it's good practice to include a `README.md` and `LICENSE` file. The `template.qmd` file serves a couple of purposes:
 
 1.  It can be rendered as you develop your format to ensure that things work as expected.
-2.  It can serve as the basis for a [format template](#format-templates) (which can help users gets started using your format more easily).
+2.  It can serve as the basis for a format template (which can help users gets started using your format more easily).
 
 Here is what the contents of `_extension.yml` might look like:
 
@@ -78,40 +80,66 @@ contributes:
        
 ```
 
-This format mostly provides organization-level content and theming. As mentioned above, formats can also include filters which allow for adding custom markdown constructions and rendering behavior.
+This format mostly provides organization-level content and theming. As mentioned above, formats can also include filters which allow for adding custom markdown constructs and rendering behavior.
 
 Here is what the contents of `template.qmd` might look like:
 
-ally have code that exercises the extension. For example:
-
-```` {.markdown filename="example.qmd"}
+``` markdown
 ---
-title: "Output Folding Example"
-filters:
-  - output-folding
+title: "Presentation"
+author: "Your Name"
+date: today
+format: lexcorp-pres-revealjs
 ---
 
-```{{python}}
-#| output-fold: true
-
-1 + 1
+# Overview
 ```
-````
 
-To develop your extension, just make changes to `output-folding.lua` and render `example.qmd` to test them out.
+Extension repositories and structured in such a way that you can test your extension and the template by simply rendering the `template.qmd` file right in the root of your repository. The `template.qmd` will be able to load your extension just as it would when installed, so testing and iterating should be as simple as working within your extension directory until you're satisfied (without the need to repeatedly install or update the extension in order to test it).
 
-## Format Templates
+## Distributing Formats
 
-### Distribution
+You can distribute format extensions in one of two ways:
 
-if your extension source code it located within a GitHub repository, then it can be installed by referencing the GitHub organization and repository name. For example:
+1.  As a template that includes both the format in the `_extension` directory and the `template.qmd` (which is automatically renamed to match the name of the enclosing directory).
+2.  As a plain format with no template scaffolding (this is useful for adding the format to an existing document or project).
+
+If you have a GitHub repository containing the files enumerated above in the `lexcorp-pres` example, users could install your extension and associated template as follows (where `lexcorp` is the GitHub organization hosting the repo):
 
 ``` bash
-# install the current HEAD of the extension
-quarto install extension cooltools/output-folding
+quarto use template lexcorp/lexcorp-pres
+```
 
-# install a tagged release of the extension
-quarto install extension cooltools/output-folding@v1
+This is often the preferred way to get started with a format as it provides the user with a working document right out of the box. It's also possible to just install the format if you working with an existing project:
+
+``` bash
+quarto install extension lexcorp/lexcorp-pres
 ```
 
 Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
+
+## Format Templates
+
+Above we described including a `template.qmd` alongside your extension and then installing the template and format together with:
+
+``` bash
+quarto use template <gh-organization>/<extension>
+```
+
+The `template.qmd` should demonstrate the functionality of the format and serve as a sound starting point for the user. When the extension template is copied into the target directory, the `template.qmd` will automatically be renamed to match the name that the user provided for the directory.
+
+You can also include other files alongside `template.qmd` and they will be copied as well. Note that by default, Quarto will exclude common Github repository files when copying an extension template. This includes any file name or directory starting with a `.` (e.g. `.gitignore`), `README.md`, `LICENSE`, etc.. If you'd like, you can place a `.quartoignore` file in the root of your repository with each line of the file being a glob describing file(s) to ignore (using syntax like a `.gitignore` file).
+
+## Extension Embedding
+
+In some cases format extensions will want to make use of other extensions. This is permitted, but installing extensions for use within a custom format must be done with a special syntax to ensure they are embedded correctly.
+
+For example, here we want to make the [fancy-text](https://github.com/quarto-ext/fancy-text) extension (which provides special formatting for the words {{< latex >}} and {{< bibtex >}}) available for users of the [jss](https://github.com/quarto-journals/jss) custom format:
+
+``` bash
+quarto install extension quarto-ext/fancy-text --embed quarto-journals/jss
+```
+
+This will install the `quarto-ext/fancy-text` extension into the `quarto-journals/jss` extension in the `_extensions` folder. By embedding an extension you make it available without creating the potential for conflict with other versions of the extension that might be in use in the current project.
+
+
