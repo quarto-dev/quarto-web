@@ -1,115 +1,100 @@
 ---
-title: Quarto Extensions (Beta)
-draft: true
+title: Using Extensions
 ---
 
-::: callout-important
-## REMOVE WHEN FINAL
+## Overview
 
-##### Extensions
+Quarto Extensions are a powerful way to modify or extend the behavior of Quarto, and can be created and distributed by anyone. There are two types of extensions available:
 
--   Overview (this article)
--   [Creating an Extension](create-extensions.qmd)
--   [Extension Templates](extension-templates.qmd)
--   [LUA Functions](lua.qmd)
+-   [Shortcodes](shortcodes.qmd) are special markdown directives that generate various types of content. For example, you could create shortcodes to embed tweets or videos in a document.
 
-##### Scholarly Writing
+-   [Filters](filters.qmd) are a flexible and powerful tool for introducing new global behaviors and/or new markdown rendering behaviors. For example, you could create filters to implement output folding, an image carousel, or just about anything you can imagine!
 
--   [Authors and Affiliations](authors.qmd)
--   [Templates and Partials](partials.qmd)
+Extensions are a recently released Quarto feature so you should be sure to install the [very latest version](https://quarto.org/docs/get-started/) of Quarto (at least v1.0.15) before proceeding.
+
+Here are some examples of extensions developed and maintained by the core Quarto team:
+
+| **Extension**                                                        | **Description**                                                                                 |
+|------------------------------|------------------------------------------|
+| [lightbox](https://github.com/quarto-ext/lightbox/)                  | Create lightbox treatments for images in your HTML documents.                                   |
+| [code-filename](https://github.com/quarto-ext/code-filename)         | Add a filename header to code blocks.                                                           |
+| [fancy-text](https://github.com/quarto-ext/fancy-text)               | Output nicely formatted versions of fancy strings such as LaTeX and BibTeX in multiple formats. |
+| [fontawesome](https://github.com/quarto-ext/fontawesome)             | Use Font Awesome icons in HTML and PDF documents.                                               |
+| [grouped-tabsets](https://github.com/quarto-ext/grouped-tabsets)     | Add grouped tabsets, which remember the active tab across multiple HTML documents.              |
+| [latex-environment](https://github.com/quarto-ext/latex-environment) | Quarto extension to output custom LaTeX environments.                                           |
+
+: {tbl-colwidths="\[30,70\]"}
+
+This articles covers the basics of installing and using extensions. The articles on [Creating Shortcodes](shortcodes.qmd) and [Creating Filters](filters.qmd) cover how to create your own extensions.
+
+::: callout-caution
+### Extension Trust
+
+It's important to note that Quarto extensions may execute code when documents are rendered. If you do not trust the authors of an extension, we recommend that you do not install or use the extension.
 :::
+
+## Installation
+
+If you want to use an extension within a document or project you need to install it. Rather than installing into a global library, Quarto extensions are installed locally, directly alongside the document or project they are used within. For example, if you have a project in a directory named `myblog`, you could install some extensions for use with that the project as follows:
+
+``` bash
+cd myblog
+quarto install extension quarto-ext/fontawesome
+quarto install extension quarto-ext/grouped-tabsets
+```
+
+This will result in an `_extensions` folder being created at the root of your project, and the `fontawesome` and `grouped-tabsets` extensions being installed within it.
+
+Note that a project isn't strictly required for using extensions---if you install into a directory that isn't a project then any document located directly alongside the `_extensions` folder can use the extensions.
 
 ::: callout-note
-Quarto extensions are currently in Beta in the current releases of Quarto. We expect that they work well, but because they are still evolving it is possible that breaking changes could be made.
+### Extensions and Version Control
+
+If you are using version control you should check the `_extensions` directory in to your repo along with your other code. Installed extensions are treated as source code for your project to ensure very long term reproducibility---your project doesn't need to rely on the availability of an external package manager (or the maintenance of older extension versions) to successfully render now and far into the future.
 :::
 
-Quarto includes an extension system which allows users to add new functionality and capabilities to Quarto without changing the core of Quarto itself. The Quarto command line tool itself is a very configurable system, with support for Metadata configuration, templating, shortcodes, filters, and more. Each of these is a powerful way to modify or extend the behavior of Quarto. Quarto extensions allow you to bundle a set of these customizations and make it easy to install and use the functionality.
+### Repositories
 
-## Types of Extensions
+These extensions in the example above were prefixed with `quarto-ext` because they were distributed from the [quarto-ext](https://github.com/quarto-ext/) GitHub organization. Extensions can be similarly distributed from **any** GitHub organization. So for example the following might also be valid extension installation commands:
 
-|           |                                                                                                                                                                                                                      |
-|----------------|--------------------------------------------------------|
-| Shortcode | Shortcode extensions provide one or more shortcodes that can be used when the extension is installed.                                                                                                                |
-| Filter    | Filter extensions provide one or more filters that can be used when the extension can be used.                                                                                                                       |
-| Format    | Format extensions provide additional formats that can be used when rendering documents. Format extensions can include not only metadata, but also filters, shortcodes, or supporting files referenced by the format. |
+``` bash
+quarto install extension cooltools/lightbox
+quarto install extension bigstateu/fancytweet
+```
 
-## Installing Extensions
+While its convenient to distribute extensions using GitHub, you can also dstribute them as an ordinary gzip archive which can be installed from a URL or a local file. See the article on [Distributing Extensions](distributing.qmd) for additional details.
 
-::: callout-warning
-Quarto extensions may execute code when documents are rendered. If you do not trust the authors of an extension, we recommend that you do not install or use the extension.
-:::
+### Managing Extensions
 
-You can install an extension using the `quarto install extension` command. For example, the command:
+The are several commands available for listing, updating, and removing extensions:
+
+``` bash
+quarto list extensions
+quarto update extension quarto-ext/fontawesome
+quarto remove extension quarto-ext/fontawesome
+```
+
+Note that when updating an extension you'll be prompted to confirm the update based on the version you have and the version you are attempting to update to.
+
+If you run the `quarto remove extension` command with no `extension-id`, you will be presented with a list of extensions that are installed and you may select which extensions to remove.
+
+## Using Shortcodes
+
+Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to [Hugo shortcodes](https://gohugo.io/content-management/shortcodes/) and [WordPress shortcodes](https://codex.wordpress.org/Shortcode).
+
+For example, the following shortcode prints the `title` from document metadata:
+
+``` {.markdown shortcodes="false"}
+{{< meta title >}}
+```
+
+The `meta` shortcode is built-in to Quarto. Extensions can provide additional shortcodes. For example, the [`quarto-ext/fontawesome`](https://github.com/quarto-ext/fontawesome) extension provides the `fa` shortcode which enables you to use icons from [Font Awesome Free](https://fontawesome.com/search?m=free) within HTML and PDF documents.
+
+You can use the `fa` shortcode by first installing it:
 
 `quarto install extension quarto-ext/fontawesome`
 
-will install the `fontawesome` extension from the `quarto-ext` organization.
-
-### Installing From Github
-
-The most common way to get extensions is to install them from the Github repository that hosts them. To install an extension from Github, just use the command
-
-`quarto install extension <gh-organization>/<gh-repo>`
-
-For example, the repository at <https://github.com/quarto-ext/latex-environment> provides a simple way to emit LaTeX environments when making PDFs. To install this extension, you would use the command
-
-`quarto install extension quarto-ext/latex-environment`
-
-### Installing From a URL
-
-Quarto extensions can also be installed directly from a URL. For example, the command:
-
-`quarto install extension https://www.quarto-sample.com/extension.zip`
-
-Would install the extension at the url you provided. This isn't typically necessary, but might be useful if the extension is not being hosted on Github.
-
-### Installation Location
-
-By default, extensions are installed for the directory in which you run the `install extension` command. This will make the extensions available to any documents that are directly within that folder (but not subfolders)
-
-If you run the `install extension` command directly from within a project directory, the extensions will be installed in the project root and will be available to any document within that project directory. If you run the `install extension` command from a project subfolder, you will be asked whether to install extensions for the whole project or just for this folder. If you install an extensions for a subfolder, documents within that folder will only use extensions available in the subfolder and will not use project extensions.
-
-Extension that are installed will be placed in an `_extensions` directory. That directory and its contents should be checked into source control if you are using source control.
-
-::: callout-note
-Quarto extensions are always copied into the project or directory that you install them into (and not kept in a global location). This is done so that your project or document will always have access to the specific extensions that you used to render them, making the output more consistently reproducible.
-:::
-
-## Updating Extensions
-
-Use the command `quarto update extension` to update an extension. For example:
-
-`quarto update extension quarto-ext/fontawesome`
-
-Will update the `fontawesome` extension to the latest version.
-
-## Removing Extensions
-
-Use the command `quarto remove extension` to remove an extension from a project or directory. For example, you can remove `fontwawesome` support using the following:
-
-`quarto remove extension quarto-ext/fontawesome`
-
-If you run the command with no `extension-id`, you will be presented with a list of extensions that are installed and you may select which extensions to remove.
-
-## Extension Identifiers
-
-Extension identifiers are string that can be used to identify an extension. They are compoesed of an organization name and an extension name in the form:
-
-`<organiziation-name>/<extension-name>`
-
-When referencing an extension, you can use only the name of the extension (e.g. `fontawesome`) or if necessary to disambiguate the extension from others, you may also use the full name of the extension `quarto-ext/fontawesome.`
-
-## Using Extensions
-
-### Shortcode Extensions
-
-Shortcodes provided by extensions are automatically loaded and made available when rendering documents.
-
-To use a shortcode extension, first install the extension using `quarto install extension`. Once installed, simply use any shortcodes provided by the extension. For example, to use the `fontawesome` extension, install the extension using:
-
-`quarto install extension quarto-ext/fontawesome`
-
-Then render a document such as:
+Then using it within a document as follows:
 
 ``` markdown
 ---
@@ -118,18 +103,20 @@ title: My Awesome Document
 
 ## Section
 
-This is a document using Font Awesome {{{< fa smile >}}}.
+This document uses Font Awesome {{{< fa smile >}}}.
 ```
 
-### Filter Extensions
+## Using Filters
 
-Filters provided by extensions need to be included in the list of filters used to render a document.
+Filters provided by extensions need to be explicitly included in the list of `filters` used to render a document.
 
-To use a filter extension, first install the extension using `quarto install extension`. Once installed, simply reference the extension name in the list of filters in your document or project. For example, to use the `latex-environments` extension, install the extension using:
+To use a filter extension, first install the extension using `quarto install extension`:
 
-`quarto install extension quarto-ext/latex-environments`
+``` bash
+quarto install extension quarto-ext/latex-environments
+```
 
-Then render a document such as:
+Then, add the extension name to the list of `filters` for your document or project:
 
 ``` markdown
 ---
@@ -138,8 +125,6 @@ format:
   pdf: default
 filters:
   - latex-environments
-  # also could use
-  # quarto-ext/latex-environments
 environments: [program]
 ---
 
@@ -150,59 +135,23 @@ format as a simple div with the class `program`)
 :::
 ```
 
-### Format Extensions
-
-Formats provided by extensions can be used as a format key in document or project metadata or as a target of the `--to` argument when rendering (or both). Since format extensions *extend* the existing formats provided by Quarto, they are targeted using both the extension name and the output format name (separated by a '-'):
-
-`quarto render mydocument.qmd —to <extension-name>-pdf`
-
-or
+Note that if you have installed two filters with the same name you can further qualify them using the organization name, for example:
 
 ``` yaml
----
-title: My Document
-format: 
-  <extension-name>-pdf:
-    cite-method: natbib
----
+filters:
+  - quarto-ext/latex-environments
 ```
 
-To use a filter extension, first install the extension using `quarto install extension`. Once installed, use the format as a render target. For example, to use the format for rendering the `Journal of Statistical Software`, install the extension using:
+## Learning More
 
-`quarto install extension quarto-journals/jss`
+Here are some possible steps for learning more about Quarto extensions:
 
-then render a document such as:
+-   The [Quarto Extensions](https://github.com/quarto-ext/) GitHub organization provides a set of extensions developed by the core Quarto team. Many of these extensions implement frequently requested features, and all of them provide sound examples of how to implement extensions.
 
-``` markdown
----
-title: My JSS Document
-format:
-  pdf: default
-  jss-pdf:
-    keep-tex: true  
-  # also valid
-  # quarto-ext/jss-pdf
-author:
-  - Norah Jones
----
+-   [Creating Shortcodes](shortcodes.qmd) describes how to implement your own shortcode extensions.
 
-## Welcome to My Document!
-```
+-   [Creating Filters](filters.qmd) describes how to implement your own filter extensions.
 
-Format extensions can target multiple output formats, which can be targeted independently. For example:
+-   [Developing with Lua](lua.qmd) helps you get started with Lua (the language used to create extensions) and provides documentation for Quarto Lua functions useful for extensions.
 
-``` markdown
----
-title: My JSS Document
-format:
-  pdf: default
-  jss-pdf:
-    keep-tex: true  
-  jss-html:
-    highlight-style: solarized
-author:
-  - Norah Jones
----
-
-## Welcome to My Document!
-```
+-   [Distributing Extensions](distributing.qmd) goes into more depth on how to package and distribute extensions, both on GitHub and using plain gzip archives.

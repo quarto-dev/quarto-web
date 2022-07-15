@@ -1,5 +1,9 @@
 ---
-title: "Shortcodes"
+title: "Creating Shortcodes"
+aliases: 
+  - /docs/authoring/shortcodes.qmd
+filters:
+  - code-filename
 ---
 
 ## Overview
@@ -14,22 +18,95 @@ For example, the following shortcode prints the `title` from document metadata:
 
 Quarto supports several shortcodes natively:
 
-| Shortcode                                    | Description                            |
-|----------------------------------------------|----------------------------------------|
-| [var](variables.qmd#var)                     | Print value from `_variables.yml` file |
-| [meta](variables.qmd#meta)                   | Print value from document metadata     |
-| [env](variables.qmd#url)                     | Print system environment variable      |
-| [pagebreak](markdown-basics.qmd#page-breaks) | Insert a native page-break             |
-| [include](includes.qmd)                      | Include contents of another qmd        |
+| Shortcode                                                 | Description                            |
+|-------------------------------------------|-----------------------------|
+| [var](../authoring/variables.qmd#var)                     | Print value from `_variables.yml` file |
+| [meta](../authoring/variables.qmd#meta)                   | Print value from document metadata     |
+| [env](../authoring/variables.qmd#url)                     | Print system environment variable      |
+| [pagebreak](../authoring/markdown-basics.qmd#page-breaks) | Insert a native page-break             |
+| [include](../authoring/includes.qmd)                      | Include contents of another qmd        |
 
-This article describes how to [create your own](#custom-shortcodes) shortcodes.
+This article describes how to create your own shortcodes.
+
+## Shortcode Extensions
+
+Before diving into writing custom shortcodes, we'll talk first about how to distribute your shortcode as a [Quarto Extension](index.qmd). While it is possible to use a shortcode by just listing the Lua file in the `shortcodes` document option, bundling a shortcode as an an extension makes it much easier for others to install and use your shortcode.
+
+Here is what the source code repository of an an extension named `shorty` might look like:
+
+``` default
+README.md
+LICENSE
+example.qmd
+_extensions/
+  shorty/
+    _extension.yml
+    shorty.lua
+```
+
+Note that the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during installation). Even so, it's good practice to include a `README.md` and `LICENSE` file, and the `example.qmd` will be useful for developing your extension.
+
+Here's what the contents of the files in `_extensions/shorty/` might look like:
+
+``` {.yaml filename="_extensions/shorty/_extension.yml"}
+title: Shorty
+author: Cooltools
+version: 1.0.0
+contributes:
+  shortcodes:
+    - shorty.lua
+```
+
+``` {.lua filename="_extensions/shorty/shorty.lua"}
+function shorty(args)
+  return pandoc.Str("shorty!")
+end
+```
+
+Finally, the `example.qmd` file would typically have code that exercises the extension. For example:
+
+``` {.markdown filename="example.qmd"}
+---
+title: "Shorty Example"
+---
+
+{{< shorty >}}
+```
+
+To develop your extension, just make changes to `shorty.lua` and render `example.qmd` to test them out.
+
+### Distribution
+
+if your extension source code it located within a GitHub repository, then it can be installed by referencing the GitHub organization and repository name. For example:
+
+``` bash
+# install the current HEAD of the extension
+quarto install extension cooltools/shorty
+
+# install a tagged release of the extension
+quarto install extension cooltools/shorty@v1
+```
+
+Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
+
+### Examples
+
+You might also find it instructive to examine the source code of these shortcode extensions authored by the Quarto team:
+
+| **Extension**                                            | **Description**                                                                                 |
+|---------------------------|---------------------------------------------|
+| [fancy-text](https://github.com/quarto-ext/fancy-text)   | Output nicely formatted versions of fancy strings such as LaTeX and BibTeX in multiple formats. |
+| [fontawesome](https://github.com/quarto-ext/fontawesome) | Use Font Awesome icons in HTML and PDF documents.                                               |
+
+: {tbl-colwidths="\[30,70\]"}
 
 ## Shortcode Basics {#custom-shortcodes}
 
 You can create your own shortcodes using Lua (the same language used for [filters](filters.qmd)). To get started with developing shortcodes:
 
-1.  Be sure you have a [very recent](https://github.com/quarto-dev/quarto-cli/releases/latest) version of Quarto CLI (custom shortcodes requires v0.9.341 or greater).
-2.  Read the documentation on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html), which describes the Lua extension API for Pandoc.
+1.  Be sure you have a [very recent](https://github.com/quarto-dev/quarto-cli/releases/latest) version of Quarto CLI (shortcode extensions require v1.0.15 or greater).
+2.  If necessary, brush up on [Developing with Lua](lua.qmd) (Lua is the language used to create shortcodes).
+3.  Read the documentation on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html), which describes the Lua extension API for Pandoc.
 
 Custom shortcodes are implemented as Lua functions that take one or more arguments and return a Pandoc AST node (or list of nodes).
 
@@ -53,20 +130,20 @@ Note that arguments to shortcodes are provided in `args` (a 1-based array), and 
 
 We use the `pandoc.utils.stringify()` function to convert the inlines to an ordinary string, and then the `os.getenv()` function to get its value.
 
-If this function was included in a source file named `env.lua`, you could register it for use with:
+You would use this shortcode as follows:
+
+``` markdown
+{{{< env HOME >}}}
+```
+
+If this shortcode was distributed as an extension (i.e. installed into `_extensions/env/` for the current project) then it is available for use without any further declaration. If it's a plain Lua file not enclosed in an extension then you'll need to explicitly list it in `shortcodes`:
 
 ``` yaml
 shortcodes:
   - env.lua
 ```
 
-Then use it with:
-
-``` markdown
-{{{< env HOME >}}}
-```
-
-Below we'll provide a few a few more examples of custom shortcodes and their implementation.
+Below we'll provide a few a few more examples of custom shortcodes and their implementation. In these examples we'll assume that the shortcode has been distributed as an extension so won't use the explicit `shortcodes:` import shown above.
 
 ## Example: Raw Output
 
@@ -88,17 +165,17 @@ function pagebreak()
     context = '\\page'
   }
 
-  if FORMAT == 'docx' then
+  if quarto.doc.isFormat('docx') then
     return pandoc.RawBlock('openxml', raw.ooxml)
-  elseif FORMAT:match 'latex' then
+  elseif quarto.doc.isFormat('pdf')  then
     return pandoc.RawBlock('tex', raw.latex)
-  elseif FORMAT:match 'odt' then
+  elseif quarto.doc.isFormat('odt')  then
     return pandoc.RawBlock('opendocument', raw.odt)
-  elseif FORMAT:match 'html.*' then
-    return pandoc.RawBlock('html', raw.html)
-  elseif FORMAT:match 'epub' then
+  elseif quarto.doc.isFormat('epub') then
     return pandoc.RawBlock('html', raw.epub)
-  elseif FORMAT:match 'context' then
+  elseif quarto.doc.isFormat('html') then
+    return pandoc.RawBlock('html', raw.html)
+  elseif quarto.doc.isFormat('context') then
     return pandoc.RawBlock('context', raw.context)
   else
     -- fall back to insert a form feed character
@@ -108,16 +185,9 @@ function pagebreak()
 end
 ```
 
-We use the `pandoc.RawBlock()` function to output the appropriate raw content for the target `FORMAT`. Note that raw blocks are passed straight through to the output file and are not processed as markdown.
+We use the `pandoc.RawBlock()` function to output the appropriate raw content for the target format. Note that raw blocks are passed straight through to the output file and are not processed as markdown.
 
-If this function was implemented within `pagebreak.lua`, you could register it for use with:
-
-``` yaml
-shortcodes:
-  - pagebreak.lua
-```
-
-Then use it with:
+You'd use this shortcode as follows:
 
 ``` markdown
 {{{< pagebreak >}}}
@@ -166,13 +236,11 @@ There are some new things demonstrated here :
 
 2.  There is a new argument to our shortcode handler: `kwargs`. This holds any named arguments to the shortcode. As with `args`, values in `kwargs` will always be a list of Pandoc inlines (allowing you to accept markdown as an argument). Since `short` is a simple boolean value we need to call `pandoc.utils.stringify()` to treat it as a string and then compare it to `"true"`.
 
-We'd register and use this shortcode as follows:
+We'd use this shortcode as follows:
 
 ``` {.markdown shortcodes="false"}
 ---
 title: "My Document"
-shortcodes:
-  - git.lua
 ---
 
 {{< git-rev >}}
@@ -215,13 +283,11 @@ return {
 
 As with `args` and `kwargs`, `meta` values are always provided as a list of Pandoc inlines so often need to be converted to string using `pandoc.utils.stringify()`.
 
-To use this shortcode in a document we register it, provide the GitHub info as document options, then include the shortcode where we want the link to be:
+To use this shortcode in a document we provide the GitHub info as document options, then include the shortcode where we want the link to be:
 
 ``` {.markdown shortcodes="false"}
 ---
 title: "My Document"
-shortcodes:
-  - git.lua
 github:
   owner: quarto-dev
   repo: quarto-cli

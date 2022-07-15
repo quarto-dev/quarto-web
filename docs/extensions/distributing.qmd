@@ -1,0 +1,138 @@
+---
+title: "Distributing Extensions"
+---
+
+## Overview
+
+Quarto extensions are directories that contain an `_extensions` sub-directory with one or more extensions. The files above the `_extensions` directory are not installed, so typically contain README and LICENSE files, examples, test cases, etc.
+
+There are two distinct ways to distribute extensions to end users:
+
+1.  Publish your extension in a public GitHub repository.
+
+2.  Bundle your extension into a `.zip` or `.tar.gz` archive.
+
+Each method has benefits and drawbacks that will be explored below. First we'll cover the basic file structure and contents of an extension.
+
+## Extension Contents
+
+Quarto Extensions are directories that contain an `_extensions` folder that contains one or more extension contributions. While the most common case is the distribution of a single extension, it is possible to create a single extension directory that includes multiple shortcodes, multiple filters, or a combination of both.
+
+Here is the contents of an extension named `my-filter`:
+
+``` default
+README.md
+LICENSE
+example.qmd
+_extensions/
+  my-filter/
+    _extension.yml
+    my-filter.lua
+```
+
+Note that the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during installation). Even so, it's good practice to include a `README.md` and `LICENSE` file, and the `example.qmd` will be useful for developing your extension.
+
+### \_extension.yml
+
+Each extension is defined by its `_extension.yml` file which contains the metadata about the extension as well as the what items it contributes when used. For example, here is the `_extension.yml` for a filter extension:
+
+``` yaml
+title: My Filter
+author: Cooltools
+version: 1.0.0
+contributes:
+  filters:
+    - my-filter.lua
+```
+
+Here are all of the fields that can be specified in the `_extension.yml` file:
+
+`title`
+
+:   The extension's name
+
+`author`
+
+:   The author of the extension
+
+`version`
+
+:   A semantic version number this release. When installing, updating, or releasing an extension, this version number will be used to present a summary of actions to the user.
+
+`contributes`
+
+:   The items that this extension will contribute to the render. There are two allowed subkeys:
+
+::: {style="margin-left: 1em;"}
+
+`shortcodes`
+
+:   A list of shortcode files that should be loaded when this extension is installed.
+
+`filters`
+
+:   A list of filters that should be loaded when this extension is included in the list of filters used to render a document or project. The order of the filters in this list will be preserved.
+:::
+
+## GitHub Distribution
+
+Distributing extensions on GitHub has a number of benefits, including compact syntax (e.g. `quarto install extension org-name/extension`), the use of organizations as a "namespace" for managing name conflicts, and the ability to install specific releases or tags.
+
+For example, the extensions in the [`quarto-ext`](https://github.com/quarto-ext/) GitHub organization can be installed with these commands:
+
+``` bash
+quarto install extension quarto-ext/lightbox
+quarto install extension quarto-ext/fontawesome
+```
+
+By default, extensions are installed from the `HEAD` of the `main` branch of the repository. If you create releases and/or tags in your repository they can also be specified with an `@` after the repository name. For example:
+
+``` bash
+quarto install extension quarto-ext/lightbox@v1
+```
+
+Extensions installed from GitHub have another special property: the GitHub organization can be used as a namespace qualifier to disambiguate extensions that have the same name. For example, if you have two different `lightbox` extensions installed, you explicitly specify the `quarto-ext` one as follows:
+
+``` yaml
+---
+filters:
+  - quarto-ext/lightbox
+---
+```
+
+## Archive Distribution
+
+Distributing extensions as a `.zip` or `.tar.gz` archive has the benefit of not requiring public distribution. These extensions can also be installed directly from non-GitHub version control services using the archive URLs normally provided for repositories.
+
+Note that unlike GitHub hosted extensions, extensions installed from archives do not have an organizational namespace (they all share a single namespace).
+
+### Git Repositories
+
+To install an extension from a GitLab repository you could do this:
+
+``` bash
+quarto install extension https://gitlab.com/cooltools/shorty/-/archive/main/shorty-main.zip
+```
+
+You'll note that the above URL references the `main` branch. You can similarly install from any other branch, tag, or release. For example, to install the `v1.0` tag:
+
+``` bash
+quarto install extension https://gitlab.com/cooltools/shorty/-/archive/v1.0/shorty-main.zip
+```
+
+If you are using BitBucket, Azure DevOps, or another Git hosting provider, consult the appropriate service documentation to learn how to form archive URLs for repositories.
+
+### Archive Files
+
+The above examples demonstrate installing from a Git repository, you can also install from an archive published to an ordinary web host. For example:
+
+``` bash
+quarto install extension https://cooltools.org/quarto/shorty.zip
+```
+
+Or alternatively from a local archive file or even ordinary uncompressed directory:
+
+``` bash
+quarto install extension ~/Downloads/shorty.zip
+quarto install extension /share/quarto/extensions/shorty
+```
