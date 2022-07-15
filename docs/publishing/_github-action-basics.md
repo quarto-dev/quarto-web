@@ -4,7 +4,7 @@ There are a few different ways to approach rendering and publishing content. Bel
 
 ### Publish Record
 
-Prior to attempting to publish with a GitHub Action, you should have completed at least one publish using the [Publish Command] (described immediately above). This publish will create a `_publish.yml` file that records the publishing destination to be used by the GitHub Action. For example:
+Prior to attempting to publish with a GitHub Action, you should have completed at least one publish using the [Publish Command](#publish-command) (described immediately above). This publish will create a `_publish.yml` file that records the publishing destination to be used by the GitHub Action. For example:
 
 ``` yaml
 - source: project
@@ -19,12 +19,10 @@ Do not proceed to the next step(s) until you have a `_publish.yml` that indicate
 
 {{< include _freeze-basics.md >}}
 
-Note that an alternative approach is to execute the code as part of the GitHub Action. For now we'll keep things simpler by executing code locally and storing the computations by using freeze. Then, further below, we'll cover [Executing Code] within a GitHub Action.
+Note that an alternative approach is to execute the code as part of the GitHub Action. For now we'll keep things simpler by executing code locally and storing the computations by using freeze. Then, further below, we'll cover \[Executing Code\] within a GitHub Action.
 
 ### Publish Action
 
 Add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
 
 **.github/workflows/publish.yml**
-
-

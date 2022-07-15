@@ -6,7 +6,7 @@ The `quarto publish` command is the easiest way to publish locally rendered cont
 quarto publish {{< meta provider >}}
 ```
 
-If you haven't published to {{< meta provider-name >}} before, the publish command will prompt you to authenticate. After confirming that you want to publish, your content will be rendered and deployed, and then a browser opened to view your site's control panel.
+If you haven't published to {{< meta provider-name >}} before, the publish command will prompt you to authenticate. After confirming that you want to publish, your content will be rendered and deployed, and then a browser opened to view your site.
 
 A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
 
