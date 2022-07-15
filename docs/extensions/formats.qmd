@@ -4,7 +4,7 @@ title: "Creating Formats"
 
 ## Overview
 
-Quarto format extensions enable you to add new formats to the built-in formats (e.g. `html`, `pdf`, `docx`) already available. Custom formats can provide default document options, style-sheets, header, footer, or logo elements, and even bundle other extensions like [filters](filters.qmd) and [shortcodes](shortcodes.qmd). They are a great way to provide a common baseline for authoring documents or presentations within an organization, for a particular type of project or analysis, or for a specific publication.
+Quarto format extensions enable you to add new formats to the built-in formats (e.g. `html`, `pdf`, `docx`) already available. Custom formats can provide default document options, style-heets, header, footer, or logo elements, and even bundle other extensions like [filters](filters.qmd) and [shortcodes](shortcodes.qmd). They are a great way to provide a common baseline for authoring documents or presentations within an organization, for a particular type of project or analysis, or for a specific publication.
 
 You can specify a custom format beneath the `format` key just like a built-in format. For example:
 
@@ -17,7 +17,7 @@ format:
 ---
 ```
 
-Custom formats all derive from one of the base formats, and include that base format as a suffix. Format can also provide multiple variations that derive from distinct base formats. For example:
+Custom formats all derive from one of the base formats, and include that base format as a suffix. Formats can also provide multiple variations that derive from distinct base formats. For example:
 
 ``` yaml
 ----
@@ -29,7 +29,7 @@ format:
 ---
 ```
 
-Note that we moved the `toc` option to the top level since its shared between both of the formats.
+Note that we moved the `toc` option to the top level since it is shared between both of the formats.
 
 Custom formats can also be used with the `--to` argument to `quarto render`. For example:
 
@@ -41,38 +41,40 @@ Next, we'll walk through the creation of a custom format that extends the `revea
 
 ## Format Components
 
-Custom formats are a type of [Quarto Extension](index.qmd) and creating a format works much like creating a [filter](filter.qmd) or [shortcode](shortcode.qmd) extension. We'll walk through a custom format that extends the built-in `revealjs` format as an example. We'll call our format `lexcorp-pres-revealjs`. Here is what the source code repository of the format extension might look like:
+Custom formats are a type of [Quarto Extension](index.qmd) and creating a format works much like creating a [filter](filters.qmd) or [shortcode](shortcodes.qmd) extension. We'll walk through a custom format that extends the built-in `revealjs` format as an example. We'll call our format `lexconf`. Here is what the source code repository of the format extension might look like:
 
 ``` default
 README.md
 LICENSE
 template.qmd
 _extensions/
-  lexcorp-pres/
+  lexconf/
     _extension.yml
     theme.scss
     logo.png
     title.png
 ```
 
+Note that the format suffix (`revealjs`) is excluded from the directory name (this is to account for the possibility of multiple formats e.g. `lexconf-revealjs`, `lexconf-pptx`, etc.)
+
 As with other types of extensions, the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during format installation). Even so, it's good practice to include a `README.md` and `LICENSE` file. The `template.qmd` file serves a couple of purposes:
 
 1.  It can be rendered as you develop your format to ensure that things work as expected.
-2.  It can serve as the basis for a format template (which can help users gets started using your format more easily).
+2.  It can serve as the basis for a format template (which helps users gets started with using your format).
 
 Here is what the contents of `_extension.yml` might look like:
 
 ``` yaml
-title: Lexcorp Presentation
-author: Lexcorp
+title: LexConf 2022 Presentation
+author: LexCorp
 version: 1.0.0
 contributes:
   formats:
     revealjs:
-       theme: [default, custom.scss]
+       theme: [default, theme.scss]
        logo: logo.png
        footer: | 
-         Copyright 2022 (c) Lexcorp, Inc.
+         Copyright 2022 (c) LexCorp, Inc.
        title-slide-attributes:
           data-background-image: title.png
           data-background-size: contain
@@ -87,33 +89,35 @@ Here is what the contents of `template.qmd` might look like:
 ``` markdown
 ---
 title: "Presentation"
+subtitle: "LexConf 2022"
 author: "Your Name"
 date: today
-format: lexcorp-pres-revealjs
+format: lexconf-revealjs
 ---
 
 # Overview
 ```
 
-Extension repositories and structured in such a way that you can test your extension and the template by simply rendering the `template.qmd` file right in the root of your repository. The `template.qmd` will be able to load your extension just as it would when installed, so testing and iterating should be as simple as working within your extension directory until you're satisfied (without the need to repeatedly install or update the extension in order to test it).
+Extension repositories are structured in such a way that you can test your extension and the template by simply rendering the `template.qmd` file right in the root of your repository. The `template.qmd` will be able to load your extension just as it would when installed, so testing and iterating should be as simple as working within your extension directory until you're satisfied (without the need to repeatedly install or update the extension in order to test it).
 
 ## Distributing Formats
 
 You can distribute format extensions in one of two ways:
 
-1.  As a template that includes both the format in the `_extension` directory and the `template.qmd` (which is automatically renamed to match the name of the enclosing directory).
+1.  As a template that includes both the format in the `_extensions` directory and the `template.qmd` (which is automatically renamed to match the name of the enclosing directory).
+
 2.  As a plain format with no template scaffolding (this is useful for adding the format to an existing document or project).
 
-If you have a GitHub repository containing the files enumerated above in the `lexcorp-pres` example, users could install your extension and associated template as follows (where `lexcorp` is the GitHub organization hosting the repo):
+If you have a GitHub repository containing the files enumerated above in the `lexconf` example, users could install your extension and associated template as follows (where `lexcorp` is the GitHub organization hosting the repo):
 
 ``` bash
-quarto use template lexcorp/lexcorp-pres
+quarto use template lexcorp/lexconf
 ```
 
-This is often the preferred way to get started with a format as it provides the user with a working document right out of the box. It's also possible to just install the format if you working with an existing project:
+This is often the preferred way to get started with a format as it provides the user with a working document right out of the box. It's also possible to install _only_ the format if you working with an existing project:
 
 ``` bash
-quarto install extension lexcorp/lexcorp-pres
+quarto install extension lexcorp/lexconf
 ```
 
 Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
@@ -132,7 +136,7 @@ You can also include other files alongside `template.qmd` and they will be copie
 
 ## Extension Embedding
 
-In some cases format extensions will want to make use of other extensions. This is permitted, but installing extensions for use within a custom format must be done with a special syntax to ensure they are embedded correctly.
+In some cases format extensions will want to make use of other extensions. This is permitted, but installing extensions for use within a custom format must be done with a special command line flag to ensure they are embedded correctly.
 
 For example, here we want to make the [fancy-text](https://github.com/quarto-ext/fancy-text) extension (which provides special formatting for the words {{< latex >}} and {{< bibtex >}}) available for users of the [jss](https://github.com/quarto-journals/jss) custom format:
 
@@ -140,6 +144,6 @@ For example, here we want to make the [fancy-text](https://github.com/quarto-ext
 quarto install extension quarto-ext/fancy-text --embed quarto-journals/jss
 ```
 
-This will install the `quarto-ext/fancy-text` extension into the `quarto-journals/jss` extension in the `_extensions` folder. By embedding an extension you make it available without creating the potential for conflict with other versions of the extension that might be in use in the current project.
+This will install the `quarto-ext/fancy-text` extension into the `quarto-journals/jss` extension in the `_extensions` folder. By embedding an extension you make it available without creating the potential for conflict with other versions of the extension that uses might already have installed.
 
 
