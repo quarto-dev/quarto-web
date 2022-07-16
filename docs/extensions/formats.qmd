@@ -1,5 +1,7 @@
 ---
 title: "Creating Formats"
+example-org: lexcorp
+example-format: lexconf
 ---
 
 ## Overview
@@ -100,48 +102,4 @@ format: lexconf-revealjs
 
 Extension repositories are structured in such a way that you can test your extension and the template by simply rendering the `template.qmd` file right in the root of your repository. The `template.qmd` will be able to load your extension just as it would when installed, so testing and iterating should be as simple as working within your extension directory until you're satisfied (without the need to repeatedly install or update the extension in order to test it).
 
-## Distributing Formats
-
-You can distribute format extensions in one of two ways:
-
-1.  As a template that includes both the format in the `_extensions` directory and the `template.qmd` (which is automatically renamed to match the name of the enclosing directory).
-
-2.  As a plain format with no template scaffolding (this is useful for adding the format to an existing document or project).
-
-If you have a GitHub repository containing the files enumerated above in the `lexconf` example, users could install your extension and associated template as follows (where `lexcorp` is the GitHub organization hosting the repo):
-
-``` bash
-quarto use template lexcorp/lexconf
-```
-
-This is often the preferred way to get started with a format as it provides the user with a working document right out of the box. It's also possible to install *only* the format if you working with an existing project:
-
-``` bash
-quarto install extension lexcorp/lexconf
-```
-
-Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
-
-## Format Templates
-
-Above we described including a `template.qmd` alongside your extension and then installing the template and format together with:
-
-``` bash
-quarto use template <gh-organization>/<extension>
-```
-
-The `template.qmd` should demonstrate the functionality of the format and serve as a sound starting point for the user. When the extension template is copied into the target directory, the `template.qmd` will automatically be renamed to match the name that the user provided for the directory.
-
-You can also include other files alongside `template.qmd` and they will be copied as well. Note that by default, Quarto will exclude common Github repository files when copying an extension template. This includes any file name or directory starting with a `.` (e.g. `.gitignore`), `README.md`, `LICENSE`, etc.. If you'd like, you can place a `.quartoignore` file in the root of your repository with each line of the file being a glob describing file(s) to ignore (using syntax like a `.gitignore` file).
-
-## Extension Embedding
-
-In some cases format extensions will want to make use of other extensions. This is permitted, but installing extensions for use within a custom format must be done with a special command line flag to ensure they are embedded correctly.
-
-For example, here we want to make the [fancy-text](https://github.com/quarto-ext/fancy-text) extension (which provides special formatting for the words {{< latex >}} and {{< bibtex >}}) available for users of the [jss](https://github.com/quarto-journals/jss) custom format:
-
-``` bash
-quarto install extension quarto-ext/fancy-text --embed quarto-journals/jss
-```
-
-This will install the `quarto-ext/fancy-text` extension into the `quarto-journals/jss` extension in the `_extensions` folder. By embedding an extension you make it available without creating the potential for conflict with other versions of the extension that uses might already have installed.
+{{< include _formats-common.qmd >}}
