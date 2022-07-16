@@ -1,12 +1,183 @@
 ---
 title: "Journal Formats"
 example-org: quarto-journals
-example-format: jss
+example-format: acm
 ---
 
 ## Overview
 
+This article provide a guide to creating your own custom Journal formats. As a supplement to this guide we also recommend the following learning resources:
+
+-   The source code for the Journal article formats available from the [quarto-journals](https://github.com/quarto-journals/) GitHub organization.
+
+-   The [GitHub template repository](https://github.com/quarto-journals/article-format-template) for creating new Journal formats. The code in the template repository is heavily annotated so creating a new repository using this template and experimenting with it is an excellent way to learn.
+
+Journal custom formats can be used just like normal Quarto formats (e.g. `pdf` and `html`):
+
+You can specify a custom format beneath the `format` key just like a built-in format. For example:
+
+``` yaml
+----
+title: "My Document"
+format:
+   acm-pdf: 
+     toc: true
+---
+```
+
+Custom formats all derive from one of the base formats, and include that base format as a suffix. Formats can also provide multiple variations that derive from distinct base formats. For example:
+
+``` yaml
+----
+title: "My Document"
+toc: true
+format:
+   acm-pdf: default
+   acm-html: default
+---
+```
+
+Note that we moved the `toc` option to the top level since it is shared between both of the formats.
+
+Custom formats can also be used with the `--to` argument to `quarto render`. For example:
+
+``` bash
+quarto render document.qmd --to acm-pdf
+```
+
+Below we'll walk through a complete example of a custom Journal format for the ACM. Before proceeding to the example we recommend you review these articles which cover some foundations that will be made use of in the example:
+
+- [Article Templates](templates.qmd) 
+
+- [Authors & Affiliations](authors.qmd) 
+
+
+## Example: ACM Format
+
+To demonstrate the basics, we'll walk through some of the code for the [ACM Format](https://github.com/quarto-journals/) available from [quarto-journals](https://github.com/quarto-journals/).
+
+
+### Format Components
+
+Here is what the source code repository for the ACM extension looks like:
+
+``` default
+.gitignore
+.quartoignore
+LICENSE
+README.md
+bibliography.bib
+template.qmd
+_extensions/
+  acm/
+    _extension.yml
+    acm_proc_article-sp.cls
+    sensys-abstract.cls
+    include-in-header.tex
+    acm-sig-proceedings.csl
+    partials/
+      doc-class.tex
+      title.tex
+      before-bib.tex
+```
+
+For the time being we'll ignore all of the files above the `_extensions` directory (those files aren't strictly part of the extension but rather provide documentation and a starter template---we'll describe their usage below).
+
+-   The `_extensions` directory contains one or more extension---in this case it contains the `acm` format extension.
+
+-   The `_extension.yml` file declares the format extension and provides default metadata and options for articles created for the format (we'll do a deep dive into its contents below).
+
+-   The `acm_proc_article-sp.cls` and `sensys-abstract.cls` files are LaTeX class files used by the ACM.
+
+-   The `include-in-header.tex` file provides some standard content included in the preamble of ACM articles.
+
+-   The `acm-sig-proceedings.csl` is a Citation Style Language (CSL) file that enables rendering of citations and bibliographies according to the standards of the ACM.
+
+-   The `partials` directory contains some `.tex` files that override various parts of the standard Pandoc LaTeX template (see [Article Templates](templates.qmd) to learn more about partials).
+
+Here's what the contents of `_extension.yml` look like:
+
+``` yaml
+title: ACM Journal Format
+author: Charles Teague
+version: 0.1.0
+contributes:
+  format:
+    common:
+      csl: acm-sig-proceedings.csl
+      number-sections: true
+    pdf:
+      shift-heading-level-by: -1
+      template-partials:
+        - partials/before-bib.tex
+        - partials/doc-class.tex
+        - partials/title.tex
+      include-in-header:
+        - include-in-header.tex
+```
+
+As you can see, many of the files located in the `_extensions/acm` folder are referenced here. Also note that while there are several options declared for the `pdf` format, there are also some options declared in `common`---these options will be applied to `pdf` and will also be applied to other format variants (e.g. HTML) when they are developed.
+
+### Format Template
+
+Now let's return to the files outside of the `_extensions` directory. The `LICENSE` and `README.md` files provide documentation that is good form to include in all extensions. The `.gitignore` files masks selected files out of version control. The remainder of the files provide a format template that make it easier for users to get started with your format.
+
+For any custom format that includes a `template.qmd`, users can get started with the format with a command like this:
+
+```bash
+quarto use template quarto-journals/acm
+```
+
+The files included within the ACM template are:
+
+-   `template.qmd` is a starter template for using the format. Here's what the YAML document options for the template look like:
+
+    ``` yaml
+    ---
+    title: Short Paper
+    author:
+      - name: Alice Anonymous
+        email: alice@example.com
+        affiliation: Some Institute of Technology
+      - name: Bob Security
+        email: bob@example.com
+        affiliation: Another University
+    abstract: |
+      This is the abstract.
+      It consists of two paragraphs.
+    format:
+      acm-pdf: 
+        keep-tex: true  
+    bibliography: bibliography.bib
+    ---
+    ```
+
+-   `bibliography.bib` is a sample bibliography referenced by `template.qmd`
+
+Note that the schema for author information used here is relatively straightforward. See the article on  [Authors & Affiliations](authors.qmd) to learn about more sophisticated schemas for author information.
+
+You can also include other files alongside `template.qmd` and they will be copied as well. Note that by default, Quarto will exclude common Github repository files when copying an extension template. This includes any file name or directory starting with a `.` (e.g. `.gitignore`), `README.md`, `LICENSE`, etc.. If you'd like, you can place a `.quartoignore` file in the root of your repository with each line of the file being a glob describing file(s) to ignore (using syntax like a `.gitignore` file).
 
 
 
 {{< include ../extensions/_formats-common.qmd >}}
+
+
+## Learning More
+
+Here are some additional learning resources you may find valuable:
+
+-   The source code for the Journal article formats available from the [quarto-journals](https://github.com/quarto-journals/) GitHub organization.
+
+-   The [GitHub template repository](https://github.com/quarto-journals/article-format-template) for creating new Journal formats. The code in the template repository is heavily annotated so creating a new repository using this template and experimenting with it is an excellent way to learn.
+
+- In depth treatment of creating [Article Templates](templates.qmd) for Journals (including how to use partials to compose templates)
+
+- Review of the schema and options for expressing and rendering [Authors & Affiliations](authors.qmd).
+
+
+
+
+
+
+

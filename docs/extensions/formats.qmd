@@ -14,7 +14,7 @@ You can specify a custom format beneath the `format` key just like a built-in fo
 ----
 title: "My Document"
 format:
-   apsa-pdf:
+   acm-pdf: 
      toc: true
 ---
 ```
@@ -26,8 +26,8 @@ Custom formats all derive from one of the base formats, and include that base fo
 title: "My Document"
 toc: true
 format:
-   apsa-pdf: default
-   apsa-html: default
+   acm-pdf: default
+   acm-html: default
 ---
 ```
 
@@ -36,7 +36,7 @@ Note that we moved the `toc` option to the top level since it is shared between 
 Custom formats can also be used with the `--to` argument to `quarto render`. For example:
 
 ``` bash
-quarto render document.qmd --to apsa-html
+quarto render document.qmd --to acm-html
 ```
 
 Next, we'll walk through the creation of a custom format that extends the `revealjs` presentation format. If you are specifically interested in using or creating custom formats for journals and manuscripts, you may want to proceed instead to the documentation on [Journal Articles](../journals/index.qmd).
@@ -101,5 +101,18 @@ format: lexconf-revealjs
 ```
 
 Extension repositories are structured in such a way that you can test your extension and the template by simply rendering the `template.qmd` file right in the root of your repository. The `template.qmd` will be able to load your extension just as it would when installed, so testing and iterating should be as simple as working within your extension directory until you're satisfied (without the need to repeatedly install or update the extension in order to test it).
+
+## Format Templates
+
+Above we described including a `template.qmd` alongside your extension and then installing the template and format together with:
+
+``` bash
+quarto use template <gh-organization>/<extension>
+```
+
+The `template.qmd` should demonstrate the functionality of the format and serve as a sound starting point for the user. When the extension template is copied into the target directory, the `template.qmd` will automatically be renamed to match the name that the user provided for the directory.
+
+You can also include other files alongside `template.qmd` and they will be copied as well. Note that by default, Quarto will exclude common Github repository files when copying an extension template. This includes any file name or directory starting with a `.` (e.g. `.gitignore`), `README.md`, `LICENSE`, etc.. If you'd like, you can place a `.quartoignore` file in the root of your repository with each line of the file being a glob describing file(s) to ignore (using syntax like a `.gitignore` file).
+
 
 {{< include _formats-common.qmd >}}
