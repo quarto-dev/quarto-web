@@ -24,6 +24,7 @@ Nav items appear in the `left` or `right` key of `navbar` definitions. For examp
     right:
       - icon: github
         href: https://github.com/
+        aria-label: GitHub
 ---
 ```
 
