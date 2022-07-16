@@ -1,0 +1,122 @@
+---
+title: "Project Scripts"
+---
+
+## Overview
+
+Many more complex projects have additional processing that needs to take place periodically (e.g. data import and preparation) or even before/after each render. Project scripts are a way to incorporate this processing into your workflow.
+
+## Periodic Scripts
+
+You can use the `quarto run` command to run a TypeScript, R, Python, or Lua script. For example:
+
+``` bash
+quarto run import.py
+```
+
+Available script interpreters for `quarto run` include:
+
+| Language   | Interpreter                                                                              |
+|----------------|-------------------------------------------------------|
+| TypeScript | [Deno](https://deno.land/) (embedded in Quarto)                                          |
+| Python     | Python from `PATH` (or [launcher](https://www.python.org/dev/peps/pep-0397/) on Windows) |
+| R          | Rscript from `PATH`                                                                      |
+| Lua        | [Lua 5.3](https://www.lua.org/manual/5.3/) (embedded in Pandoc)                          |
+
+Using TypeScript or Lua enables you to create scripts with no additional installation requirements. On the other hand, if your project is already using Python or R then scripts in those languages might be more convenient.
+
+If you are using TypeScript, please be sure to consult the section below on [Deno Scripts](#deno-scripts) for additonal details on the Deno standard library and importing external scripts.
+
+## Pre and Post Render
+
+You can arrange for one or more scripts to execute before and/or after each render using the `pre-render` and `post-render` project options. For example:
+
+``` yaml
+project:
+  type: website
+  pre-render: prepare.py
+  post-render: 
+    - compress.ts
+    - fix-links.py
+```
+
+Note that `pre-render` and `post-render` also support arbitrary shell commands. So you could for example use `make` to do data preparation this way:
+
+``` yaml
+project:
+  type: website
+  pre-render: make prepare
+```
+
+Pre and post render scripts are run with the main project directory.
+
+The following environment variables are passed to pre and post-render scripts (note that all paths are *relative* to the main project directory):
+
+| Variable                      | Description                                                                                                                                                                |
+|-----------------|-------------------------------------------------------|
+| `QUARTO_PROJECT_RENDER_ALL`   | Set to "1" if this is a render of all files in the project (as opposed to an incremental render or a render for preview). This unset if Quarto is not rendering all files. |
+| `QUARTO_PROJECT_OUTPUT_DIR`   | Output directory                                                                                                                                                           |
+| `QUARTO_PROJECT_INPUT_FILES`  | Newline separated list of all input files being rendered (passed only to `pre-render`)                                                                                     |
+| `QUARTO_PROJECT_OUTPUT_FILES` | Newline separated list of all output files rendered (passed only to `post-render`).                                                                                        |
+
+If you have a `pre-render` step that is expensive, you may want only run it when the entire project is being rendered. Here's how you would do this in the various supported script languages:
+
+::: panel-tabset
+## TypeScript
+
+``` js
+if (!Deno.env.get("QUARTO_PROJECT_RENDER_ALL")) {
+  Deno.exit();
+}
+```
+
+## Python
+
+``` python
+import os
+if not os.getenv("QUARTO_PROJECT_RENDER_ALL"):
+  exit()
+```
+
+## R
+
+``` r
+if (!nzchar(Sys.getenv("QUARTO_PROJECT_RENDER_ALL"))) {
+  quit()
+}
+```
+
+## Lua
+
+``` lua
+if not os.getenv("QUARTO_PROJECT_RENDER_ALL") then
+  os.exit();
+end
+```
+:::
+
+## Deno Scripts {#deno-scripts}
+
+If you want to create project scripts with TypeScript, `quarto run` enables you to use the [Deno](https://deno.land/) TypeScript interpreter bundled with Quarto. This interpreter also includes the complete Deno [standard library](https://deno.land/manual/standard_library). For example, to use the Deno YAML parser you would do this:
+
+``` typescript
+import { parse } from "https://deno.land/std/encoding/yaml.ts";
+
+const config = parse(Deno.readTextFileSync("_quarto.yml"));
+```
+
+The reference to the Deno `encoding` library above uses a URL: it's important to note that in spite of this the library is *not downloaded from a remote server* (in fact, importing from remote servers is disabled entirely in the Quarto Deno interpreter). Rather, the Deno standard library is shipped with Quarto, making standard library URLs available in an offline cache.
+
+You may come across example code that embeds versions directly in Deno library imports. For example:
+
+``` typescript
+import { format } from "https://deno.land/std@0.119.0/datetime/mod.ts";
+```
+
+These version-bound imports **will not work** with Quarto (as its local standard library cache is populated with unversioned URLs). The correct form of the above import is thus:
+
+``` typescript
+import { format } from "https://deno.land/std/datetime/mod.ts";
+```
+
+You may also see examples of Deno code that imports 3rd party libraries directly from URLs. As noted above, this functionality is not available in Quarto Deno scripts. Rather, you should download any external libraries you wish to use, include them with your project source code, and import them using relative file paths.
