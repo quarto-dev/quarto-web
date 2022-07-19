@@ -18,7 +18,7 @@ There are several ways to publish Quarto content to RStudio Connect:
 
 4.  Use a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions), to render and publish to Connect.
 
-Each of these options is covered in detail below. If you are just getting started, we strongly recommend using the first approach (`quarto publish`). Then, as your needs evolve you can consider other more sophisticated options.
+Each of these options is covered in detail below. If you are just getting started, we strongly recommend using the first approach (`quarto publish`). Then, as your needs evolve, you can consider other more sophisticated options.
 
 ## Publish Command
 
@@ -43,7 +43,7 @@ $ quarto publish connect
  ? API Key: › 
 ```
 
-After authenticating, your content will be rendered and published, and then a browser opened to view its admin page on Connect.
+After authenticating, your content will be rendered and published, and then a browser will open to view its admin page on Connect.
 
 A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
 
@@ -68,9 +68,9 @@ quarto publish connect document.qmd
 
 ## Publishing with Code
 
-In the preceding example we rendered content locally and then published it to Connect. In some cases however you may want to publish your source code to Connect and then have it rendered on the server (for example to create a scheduled report that is updated with new data automatically).
+In the preceding example, we rendered content locally and then published it to Connect. In some cases, however, you may want to publish your source code to Connect and then have it rendered on the server (for example, to create a scheduled report that is updated with new data automatically).
 
-The tools for publishing code differ depending on whether you using the Knitr (R) or Jupyter (Python) engine so we'll cover them separately below. Note that Quarto must be installed on the Connect server before you attempt to publish with code (this is typically done by an administrator, see the [Quarto Installation](https://docs.rstudio.com/resources/install-quarto/) documentation for additional details).
+The tools for publishing code differ depending on whether you are using the Knitr (R) or Jupyter (Python) engine, so we'll cover them separately below. Note that Quarto must be installed on the Connect server before you attempt to publish with code (this is typically done by an administrator, see the [Quarto Installation](https://docs.rstudio.com/resources/install-quarto/) documentation for additional details).
 
 ### Knitr (R)
 
@@ -131,7 +131,7 @@ If you are using the classic Jupyter Notebook you can install the [rsconnect-jup
 
 1.  First, follow the directions in the rsconnect-jupyter [User Guide](https://docs.rstudio.com/rsconnect-jupyter/) to install the plugin.
 
-2.  Then, click the publish button <kbd>![](images/publish-button.png){width="23" height="20"}</kbd> from a notebook you wish to publish. You'll be prompted to configure a Connect server then be presented with a publishing dialog:
+2.  Then, click the publish button <kbd>![](images/publish-button.png){width="23" height="20"}</kbd>from a notebook you wish to publish. You'll be prompted to configure a Connect server and then be presented with a publishing dialog:
 
     ![](images/rsconnect-jupyter-usage.png){.border}
 
@@ -175,15 +175,15 @@ On the **Content** page, there is a button near the top labeled **Publish**. Cli
 
 ![](images/import-from-git.png)
 
-You'll be prompted to provide your repository URL, branch to publish from, and target directory to publish from (e.g. the one containing your `manifest.json`).
+You'll be prompted to provide your repository URL, branch to publish from, and target directory to publish from (e.g., the one containing your `manifest.json`).
 
 See the documentation on [Git Backed Content](https://docs.rstudio.com/connect/user/git-backed/) for complete details on connecting Git repositories to Connect.
 
 ## Continuous Integration
 
-You can also deploy Quarto content using a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions). In most cases this will entail scripting the `quarto publish` command, however in the case of GitHub Actions you can take advantage of the standard Quarto [publish action](https://github.com/quarto-dev/quarto-actions/tree/main/publish).
+You can also deploy Quarto content using a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions). In most cases, this will entail scripting the `quarto publish` command, however in the case of GitHub Actions, you can take advantage of the standard Quarto [publish action](https://github.com/quarto-dev/quarto-actions/tree/main/publish).
 
-When publishing to Connect from a CI service you'll need to consider whether you want to execute your Python or R code directly on the CI server or whether you want to take advantage of previously [frozen](.../projects/code-execution.html#freeze) execution results. We'll explore this possibility first then proceed to the specifics of how to publish from CI.
+When publishing to Connect from a CI service you'll need to consider whether you want to execute your Python or R code directly on the CI server or whether you want to take advantage of previously [frozen](.../projects/code-execution.html#freeze) execution results. We'll explore this possibility first and then proceed to the specifics of how to publish from CI.
 
 ### Freezing Computations
 
@@ -195,14 +195,14 @@ If you'd rather have CI publishing execute all Python and R code contained in yo
 
 ### Publish Command
 
-You can publish Quarto content to Connect using any CI service by scripting the `quarto publish` command. To do this, you'll need to make sure that your Connect server address and credentials are available as environment variables on the CI server
+You can publish Quarto content to Connect using any CI service by scripting the `quarto publish` command. To do this, you'll need to make sure that your Connect server address and credentials are available as environment variables on the CI server.
 
 | Variable          | Description                                                                |
 |------------------|------------------------------------------------------|
-| `CONNECT_SERVER`  | Address of RStudio Connect server (e.g. `https://connect.example.com`).    |
+| `CONNECT_SERVER`  | Address of RStudio Connect server (e.g., `https://connect.example.com`).    |
 | `CONNECT_API_KEY` | RStudio Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) |
 
-You will furthermore need to specify the ID of the target content to update. This will most frequently be drawn from the `_publish.yml` file that is saved into your project directory during publisihng. For example:
+You will furthermore need to specify the ID of the target content to update. This will most frequently be drawn from the `_publish.yml` file that is saved into your project directory during publishing. For example:
 
 **\_publish.yml**
 
@@ -221,7 +221,7 @@ export CONNECT_API_KEY=7C0947A852D8
 quarto publish connect
 ```
 
-Alternatively if you don't have a `_publish.yml` file, you can specify the ID on the command line as follows:
+Alternatively, if you don't have a `_publish.yml` file, you can specify the ID on the command line as follows:
 
 ``` bash
 quarto publish connect --id 4f2ffc46-24b0-4cc7-a854-c5eb671e0dd7
