@@ -78,12 +78,14 @@ async function run() {
     var pagenumber = 1;
     var prerelease = nil;
     while(true) {
+      console.log("page " + pagenumber + " of prereleases");
       var releases = await octokit.rest.repos.listReleases({
         owner,
         repo,
         per_page: 25,
         page: pagenumber
       });  
+      console.log(releases);
       var prereleases = releases.filter((release) => { return release.prerelease; });
       if (prereleases.count > 0) {
         prerelease = prereleases[0];
