@@ -3,6 +3,7 @@ const github = require("@actions/github");
 const fetch = require("node-fetch");
 const hasha = require("hasha");
 const fs = require("fs");
+const path = require("path");
 
 async function run() {
   // Repo information
