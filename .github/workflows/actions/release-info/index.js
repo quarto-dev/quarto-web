@@ -10,8 +10,10 @@ async function run() {
   const repo = core.getInput("repo");
 
   // Path info
-  const pathToWrite = core.getInput("out-path");
+  const pathToWrite = path.join(core.getInput("out-path"), "_download.json");
+  const prePathToWrite = path.join(core.getInput("out-path"), "_prerelease.json");
   const template = core.getInput("out-template");
+  
 
   // GH Api
   const myToken = core.getInput("github-token");
@@ -20,6 +22,7 @@ async function run() {
   // Redirect info
   const redirectPath = core.getInput("redirects-path");
   const redirectTemplate = core.getInput("redirects-template");
+  const preRedirectTemplate = core.getInput("pre-directors-template")
 
   // Function to process a release into a set of 
   // download urls / info and a list of redirects
@@ -101,6 +104,31 @@ async function run() {
     }
     return matchedRelease;    
   }
+
+  const generateRedirects = (redirects, redirTemplate) => {
+    let redirOutput = [];
+    for (const redirect of redirects) {
+      const redir = redirTemplate.replace("$$prefix$$", redirect.name.prefix || "")
+                                          .replace("$$version$$", redirect.name.version || "")
+                                          .replace("$$suffix$$", redirect.name.suffix || "")
+                                          .replace("$$extension$$", redirect.name.extension || "");
+      const redirLine = `${redir} ${redirect.url}`;
+      redirOutput.push(redirLine);
+    }
+    return redirOutput;
+  }
+
+  const writeReleaseFile = (path, releaseInfo, template) => {
+    // Write the download json file
+    const strJson = JSON.stringify(releaseInfo, undefined, 2);
+    const output = template
+      ? template.replace("$$DOWNLOAD_JSON$$", strJson)
+      : strJson;
+    console.log(`Writing to ${path}`);
+    console.log(`${output}]\n\n`);
+    fs.writeFileSync(path, output);
+
+  }
   
   // Process the latest release
   const latestRelease = await octokit.rest.repos.getLatestRelease({
@@ -115,22 +143,19 @@ async function run() {
   console.log("Starting prelease");
   const prerelease = await getPrerelease();
   const prereleaseProcessed = await processRelease(prerelease);
-  
+  const prereleaseInfo = prereleaseProcessed.releaseInfo;
+
   // Note the prerelease data as a test
   console.log(prereleaseProcessed);
   
-  
   // Write the redirects
   if (redirectPath && redirectTemplate) {
-     let redirOutput = [];
-     for (const redirect of redirects) {
-       const redir = redirectTemplate.replace("$$prefix$$", redirect.name.prefix || "")
-                                           .replace("$$version$$", redirect.name.version || "")
-                                           .replace("$$suffix$$", redirect.name.suffix || "")
-                                           .replace("$$extension$$", redirect.name.extension || "");
-       const redirLine = `${redir} ${redirect.url}`;
-       redirOutput.push(redirLine);
-     }
+    const redirOutput = [];
+    // Stable / latest release
+    redirOutput.push(generateRedirects(redirects, redirectTemplate));
+
+    // Unstable / latest prerelease
+    redirOutput.push(generateRedirects(prereleaseProcessed.redirects, preRedirectTemplate));
     
     const redirOut = redirOutput.join("\n");
     console.log(`Writing redirects file to ${redirectPath}`);
@@ -139,13 +164,10 @@ async function run() {
   }
 
   // Write the download json file
-  const strJson = JSON.stringify(releaseInfo, undefined, 2);
-  const output = template
-    ? template.replace("$$DOWNLOAD_JSON$$", strJson)
-    : strJson;
-  console.log(`Writing to ${pathToWrite}`);
-  console.log(`${output}]\n\n`);
-  fs.writeFileSync(pathToWrite, output);
+  writeReleaseFile(pathToWrite, releaseInfo, template);
+
+  // Write the prerelease file
+  writeReleaseFile(prePathToWrite, prereleaseInfo, template);
 }
 
 try {
