@@ -86,7 +86,7 @@ async function run() {
         page: pagenumber
       });  
 
-      for (const release of prereleases) {
+      for (const release of releases) {
         if (release.prerelease) {
           prerelease = release;
           break;
