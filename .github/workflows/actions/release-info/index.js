@@ -87,6 +87,7 @@ async function run() {
       });  
 
       for (const release of releases.data) {
+        console.log(release);
         if (release.prerelease) {
           prerelease = release;
           break;
