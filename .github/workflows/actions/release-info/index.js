@@ -85,13 +85,19 @@ async function run() {
         per_page: 25,
         page: pagenumber
       });  
-      console.log(releases);
-      var prereleases = releases.filter((release) => { return release.prerelease; });
-      if (prereleases.count > 0) {
-        prerelease = prereleases[0];
-        break;
+
+      for (const release of prereleases) {
+        if (release.prerelease) {
+          prerelease = release;
+          break;
+        }
       }
-      pagenumber = pagenumber + 1;
+
+      if (prerelease) {
+        break;
+      } else {
+        pagenumber = pagenumber + 1;
+      }
     }
     return prerelease;    
   }
