@@ -76,7 +76,7 @@ async function run() {
   const getPrerelease = async () => {
     // List the releases
     var pagenumber = 1;
-    var prerelease = nil;
+    var prerelease = undefined;
     while(true) {
       console.log("page " + pagenumber + " of prereleases");
       var releases = await octokit.rest.repos.listReleases({
