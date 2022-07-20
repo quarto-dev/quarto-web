@@ -86,8 +86,7 @@ async function run() {
         page: pagenumber
       });  
 
-      console.log(releases);
-      for (const release of releases) {
+      for (const release of release.data) {
         if (release.prerelease) {
           prerelease = release;
           break;
@@ -157,4 +156,3 @@ try {
 } catch (error) {
   core.setFailed(error.message);
 }
-
