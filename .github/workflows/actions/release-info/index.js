@@ -23,7 +23,7 @@ async function run() {
 
   // Function to process a release into a set of 
   // download urls / info and a list of redirects
-  const processRelease = (releaseRaw) => {
+  const processRelease = async (releaseRaw) => {
     const releaseInfo = {};
 
     // Release metadata
@@ -99,13 +99,13 @@ async function run() {
     owner,
     repo,
   });
-  const releaseProcessed = processRelease(latestRelease.data);
+  const releaseProcessed = await processRelease(latestRelease.data);
   const redirects = releaseProcessed.redirects;
   const releaseInfo = releaseProcessed.releaseInfo;
   
   // Process the latest pre-release
   const prerelease = await getPrerelease();
-  const prereleaseProcessed = processRelease(prerelease.data);
+  const prereleaseProcessed = await processRelease(prerelease.data);
   
   // Note the prerelease data as a test
   console.log(prereleaseProcessed);
