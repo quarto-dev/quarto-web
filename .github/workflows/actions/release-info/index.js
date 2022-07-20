@@ -114,7 +114,7 @@ async function run() {
   // Process the latest pre-release
   console.log("Starting prelease");
   const prerelease = await getPrerelease();
-  const prereleaseProcessed = await processRelease(prerelease.data);
+  const prereleaseProcessed = await processRelease(prerelease);
   
   // Note the prerelease data as a test
   console.log(prereleaseProcessed);
