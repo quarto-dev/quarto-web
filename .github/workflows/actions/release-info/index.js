@@ -76,7 +76,7 @@ async function run() {
   const getPrerelease = async () => {
     // List the releases
     var pagenumber = 1;
-    var prerelease = undefined;
+    var matchedRelease = undefined;
     while(true) {
       console.log("page " + pagenumber + " of prereleases");
       var releases = await octokit.rest.repos.listReleases({
@@ -87,20 +87,19 @@ async function run() {
       });  
 
       for (const release of releases.data) {
-        console.log(release);
         if (release.prerelease) {
-          prerelease = release;
+          matchedRelease = release;
           break;
         }
       }
 
-      if (prerelease) {
+      if (matchedRelease) {
         break;
       } else {
         pagenumber = pagenumber + 1;
       }
     }
-    return prerelease;    
+    return matchedRelease;    
   }
   
   // Process the latest release
