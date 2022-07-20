@@ -86,6 +86,7 @@ async function run() {
         page: pagenumber
       });  
 
+      console.log(releases);
       for (const release of releases) {
         if (release.prerelease) {
           prerelease = release;
