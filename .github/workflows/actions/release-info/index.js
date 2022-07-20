@@ -23,7 +23,7 @@ async function run() {
   // Redirect info
   const redirectPath = core.getInput("redirects-path");
   const redirectTemplate = core.getInput("redirects-template");
-  const preRedirectTemplate = core.getInput("pre-directors-template")
+  const preRedirectTemplate = core.getInput("pre-redirects-template")
 
   // Function to process a release into a set of 
   // download urls / info and a list of redirects
