@@ -153,10 +153,10 @@ async function run() {
   if (redirectPath && redirectTemplate) {
     const redirOutput = [];
     // Stable / latest release
-    redirOutput.push(generateRedirects(redirects, redirectTemplate));
+    redirOutput.push(...generateRedirects(redirects, redirectTemplate));
 
     // Unstable / latest prerelease
-    redirOutput.push(generateRedirects(prereleaseProcessed.redirects, preRedirectTemplate));
+    redirOutput.push(...generateRedirects(prereleaseProcessed.redirects, preRedirectTemplate));
     
     const redirOut = redirOutput.join("\n");
     console.log(`Writing redirects file to ${redirectPath}`);
