@@ -21,55 +21,97 @@ async function run() {
   const redirectPath = core.getInput("redirects-path");
   const redirectTemplate = core.getInput("redirects-template");
 
+  // Function to process a release into a set of 
+  // download urls / info and a list of redirects
+  const processRelease = (releaseRaw) => {
+    const releaseInfo = {};
+
+    // Release metadata
+    releaseInfo.version = releaseRaw.tag_name.slice(1);
+    releaseInfo.name = releaseRaw.name;
+
+    // Release assets
+    releaseInfo.assets = [];
+    const redirects = [];
+    for (asset of releaseRaw.assets) {
+      const algorithm = "sha256";
+      const assetFile = await fetch(asset.browser_download_url);
+      const buffer = await assetFile.buffer();
+      const checksum = hasha(buffer, { algorithm });
+
+      console.log(asset.name);
+      const parts = asset.name.split("-");
+      const prefix = parts[0];
+      const version = parts[1];
+
+      const suffixParts = parts.slice(2).join("-").split(".");
+      console.log(" -" + suffixParts);
+      const suffix = suffixParts[0];
+      const extension = suffixParts.slice(1).join('.');
+      redirects.push({
+        url: asset.browser_download_url,
+        name: {
+           prefix,
+           version,
+           suffix,
+           extension
+        }
+      });
+
+      releaseInfo.assets.push({
+        name: asset.name,
+        download_url: asset.browser_download_url,
+        checksum,
+        size: asset.size,
+      });
+    }    
+    
+    return {
+      redirects,
+      releaseInfo
+    }
+  }
+  
+  // Function to get latest prerelease
+  const getPrerelease = async () => {
+    // List the releases
+    var pagenumber = 1;
+    var prerelease = nil;
+    while(true) {
+      var releases = await octokit.rest.repos.listReleases({
+        owner,
+        repo,
+        per_page: 25,
+        page: pagenumber
+      });  
+      var prereleases = releases.filter((release) => { return release.prerelease; });
+      if (prereleases.count > 0) {
+        prerelease = prereleases[0];
+        break;
+      }
+      pagenumber = pagenumber + 1;
+    }
+    return prerelease;    
+  }
+  
+  // Process the latest release
   const latestRelease = await octokit.rest.repos.getLatestRelease({
     owner,
     repo,
   });
-
-  const releaseRaw = latestRelease.data;
-
-  const releaseInfo = {};
-
-  // Release metadata
-  releaseInfo.version = releaseRaw.tag_name.slice(1);
-  releaseInfo.name = releaseRaw.name;
-
-  // Release assets
-  releaseInfo.assets = [];
-  const redirects = [];
-  for (asset of releaseRaw.assets) {
-    const algorithm = "sha256";
-    const assetFile = await fetch(asset.browser_download_url);
-    const buffer = await assetFile.buffer();
-    const checksum = hasha(buffer, { algorithm });
-
-    console.log(asset.name);
-    const parts = asset.name.split("-");
-    const prefix = parts[0];
-    const version = parts[1];
-    
-    const suffixParts = parts.slice(2).join("-").split(".");
-    console.log(" -" + suffixParts);
-    const suffix = suffixParts[0];
-    const extension = suffixParts.slice(1).join('.');
-    redirects.push({
-      url: asset.browser_download_url,
-      name: {
-         prefix,
-         version,
-         suffix,
-         extension
-      }
-    });
-   
-    releaseInfo.assets.push({
-      name: asset.name,
-      download_url: asset.browser_download_url,
-      checksum,
-      size: asset.size,
-    });
-  }
+  const releaseProcessed = processRelease(latestRelease.data);
+  const redirects = releaseProcessed.redirects;
+  const releaseInfo = releaseProcessed.releaseInfo;
   
+  // Process the latest pre-release
+  const prerelease = await getPrerelease();
+  const prereleaseProcessed = processRelease(prerelease.data);
+  
+  // Note the prerelease data as a test
+  console.log(prereleaseProcessed);
+  
+  
+  // Write the redirects
   if (redirectPath && redirectTemplate) {
      let redirOutput = [];
      for (const redirect of redirects) {
@@ -87,6 +129,7 @@ async function run() {
     fs.writeFileSync(redirectPath, redirOut);
   }
 
+  // Write the download json file
   const strJson = JSON.stringify(releaseInfo, undefined, 2);
   const output = template
     ? template.replace("$$DOWNLOAD_JSON$$", strJson)
