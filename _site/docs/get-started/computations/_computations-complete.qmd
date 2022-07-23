@@ -1,0 +1,48 @@
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+---
+
+```{r}
+#| label: load-packages
+#| echo: false
+
+library(ggplot2)
+```
+
+There are `r nrow(mpg)` observations in our data.
+
+```{r}
+#| echo: false
+
+mean_cty <- round(mean(mpg$cty), 2)
+mean_hwy <- round(mean(mpg$hwy), 2)
+```
+
+The average city mileage of the cars in our data is `r mean_cty` and the average highway mileage is `r mean_hwy`.
+
+The plots in Figure @fig-mpg show the relationship between city and highway mileage for 38 popular models of cars.
+In Figure @fig-mpg-1 the points are colored by the number of cylinders while in Figure @fig-mpg-2 the points are colored by engine displacement.
+
+```{r}
+#| label: fig-mpg
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+#| layout-ncol: 2
+#| column: page
+#| cache: true
+
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_minimal()
+
+ggplot(mpg, aes(x = hwy, y = cty, color = displ)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c(option = "E") +
+  theme_minimal()
+```
