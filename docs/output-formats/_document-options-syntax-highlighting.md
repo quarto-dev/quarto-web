@@ -18,7 +18,7 @@ For example:
 highlight-style: github
 ```
 
-Highlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color's darkness. You may may always opt to specify the full name (e.g. `atom-one-dark`) to bypass this automatic behavior.
+Highlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color's darkness. You may always opt to specify the full name (e.g. `atom-one-dark`) to bypass this automatic behavior.
 
 By default, code is highlighted using the `arrow` theme, which is optimized for accessibility. Here are examples of the `arrow` light and dark themes:
 
