@@ -1,0 +1,121 @@
+---
+title: "Housing Prices"
+author: "Mine Çetinkaya-Rundel"
+toc: true
+number-sections: true
+highlight-style: pygments
+format:
+  html: 
+    code-fold: true
+    html-math-method: katex
+  pdf:
+    geometry: 
+      - top=30mm
+      - left=30mm
+  docx: default
+bibliography: references.bib
+---
+
+## Introduction
+
+In this analysis, we build a model predicting sale prices of houses based on data on houses that were sold in the Duke Forest neighborhood of Durham, NC around November 2020.
+Let's start by loading the packages we'll use for the analysis.
+
+```{r}
+#| label: load-pkgs
+#| code-summary: "Packages"
+#| message: false
+
+library(openintro)  # for data
+library(tidyverse)  # for data wrangling and visualization
+library(knitr)      # for tables
+library(broom)      # for model summary
+```
+
+We present the results of exploratory data analysis in @sec-eda and the regression model in @sec-model.
+
+We're going to do this analysis using literate programming [@knuth1984].
+
+## Exploratory data analysis {#sec-eda}
+
+The data contains `r nrow(duke_forest)` houses.
+As part of the exploratory analysis let's visualize and summarize the relationship between areas and prices of these houses.
+
+### Data visualization
+
+@fig-histogram shows two histograms displaying the distributions of `price` and `area` individually.
+
+```{r}
+#| label: fig-histogram
+#| fig-cap: "Histograms of individual variables"
+#| fig-subcap:
+#|   - "Histogram of `price`s"
+#|   - "Histogram of `area`s" 
+#| layout-ncol: 2
+#| column: page-right
+
+ggplot(duke_forest, aes(x = price)) +
+  geom_histogram(binwidth = 50000) +
+  labs(title = "Histogram of prices")
+
+ggplot(duke_forest, aes(x = area)) +
+  geom_histogram(binwidth = 250) +
+  labs(title = "Histogram of areas")
+```
+
+@fig-scatterplot displays the relationship between these two variables in a scatterplot.
+
+```{r}
+#| label: fig-scatterplot
+#| fig-cap: "Scatterplot of price vs. area of houses in Duke Forest"
+
+ggplot(duke_forest, aes(x = area, y = price)) +
+  geom_point() +
+  labs(title = "Price and area of houses in Duke Forest")
+```
+
+### Summary statistics
+
+@tbl-stats displays basic summary statistics for these two variables.
+
+```{r}
+#| label: tbl-stats
+#| tbl-cap: "Summary statistics for price and area of houses in Duke Forest"
+
+duke_forest %>%
+  summarise(
+    `Median price` = median(price),
+    `IQR price` = IQR(price),
+    `Median area` = median(area),
+    `IQR area` = IQR(area),
+    `Correlation, r` = cor(price, area)
+    ) %>%
+  kable(digits = c(0, 0, 0, 0, 2))
+```
+
+## Modeling {#sec-model}
+
+We can fit a simple linear regression model of the form shown in @eq-slr.
+
+$$
+price = \hat{\beta}_0 + \hat{\beta}_1 \times area + \epsilon
+$$ {#eq-slr}
+
+@tbl-lm shows the regression output for this model.
+
+```{r}
+#| label: tbl-lm
+#| tbl-cap: "Linear regression model for predicting price from area"
+
+price_fit <- lm(price ~ area, data = duke_forest)
+  
+price_fit %>%
+  tidy() %>%
+  kable(digits = c(0, 0, 2, 2, 2))
+```
+
+::: callout-note
+This is a pretty incomplete analysis, but hopefully the document provides a good overview of some of the authoring features of Quarto!
+:::
+
+## References {.unnumbered}
