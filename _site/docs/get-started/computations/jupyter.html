@@ -283,7 +283,6 @@ gtag('config', 'G-FV9Z7SDZ0M', { 'anonymize_ip': true});
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
   <li><a href="#cell-output" id="toc-cell-output" class="nav-link" data-scroll-target="#cell-output">Cell Output</a></li>
   <li><a href="#code-folding" id="toc-code-folding" class="nav-link" data-scroll-target="#code-folding">Code Folding</a></li>
-  <li><a href="#figures" id="toc-figures" class="nav-link" data-scroll-target="#figures">Figures</a></li>
   <li><a href="#multiple-figures" id="toc-multiple-figures" class="nav-link" data-scroll-target="#multiple-figures">Multiple Figures</a></li>
   <li><a href="#next-up" id="toc-next-up" class="nav-link" data-scroll-target="#next-up">Next Up</a></li>
   </ul>
@@ -369,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <p>Once you’ve done that, switch to this directory in a Terminal, install notebook dependencies (if necessary), and open Jupyter Lab to get started working with the notebook. The commands you can use for installation and opening Jupyter Lab are given in the table below.</p>
 <table class="table">
 <colgroup>
-<col style="width: 16%">
+<col style="width: 19%">
 <col style="width: 76%">
 </colgroup>
 <thead>
@@ -499,14 +498,21 @@ py -m jupyter lab  computations.ipynb</code></pre></td>
 <p><img src="images/jupyter-code-tools.png" class="border img-fluid" alt="Metadata section of Jupyter notebook with 'code-tools: true' added to the HTML format options."></p>
 <p>Save the notebook and you’ll see that a code menu appears at the top right of the document that provides global control over showing and hiding code.</p>
 <p><img src="images/code-tools-preview.png" class="border img-fluid" alt="Output of notebook with 'code-tools: true' which includes a Code dropdown button next to the document header with two options: Show All Code, and Hide All Code."></p>
-</section>
-<section id="figures" class="level2">
-<h2 class="anchored" data-anchor-id="figures">Figures</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown visually-hidden code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-limits</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Errorbar limit selector"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>fig.set_size_inches(<span class="dv">12</span>, <span class="dv">7</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Let’s improve the appearance of our Matplotlib output. It could certainly stand to be wider, and it would be nice to provide a caption and a label for cross-referencing.</p>
 <p>Go ahead and modify the Matplotlib cell to include <code>label</code> and <code>fig-cap</code> options as well as a call to <code>fig.set_size_inches()</code> to set a larger figure size with a wider aspect ratio.</p>
-<p>`<code>{.markdown .visually-hidden</code>{{python}} #| label: fig-limits #| fig-cap: “Errorbar limit selector”</p>
+<p>`<code>(.markdown .visually-hidden}</code>{{python}} #| label: fig-limits #| fig-cap: “Errorbar limit selector”</p>
 <p>import matplotlib.pyplot as plt</p>
 <p>fig = plt.figure() fig.set_size_inches(12, 7)</p>
+<pre><code></code></pre>
 <p><img src="images/jupyter-figure-options.png" class="border img-fluid" alt="Code cell with label and fig-cap options added, as well as a call to set the figure size explicitly."></p>
 <p>Execute the cell to see the updated plot. Then, save the notebook so that the Quarto preview is updated.</p>
 <p><img src="images/figure-options-preview.png" class="border img-fluid" alt="Output of Matplotlib section of notebook which includes a caption under the figure that reads 'Figure 1: Errorbar limit selection.'"></p>
@@ -515,41 +521,41 @@ py -m jupyter lab  computations.ipynb</code></pre></td>
 <h2 class="anchored" data-anchor-id="multiple-figures">Multiple Figures</h2>
 <p>The Plotly cell visualizes GDP and life expectancy data from a single year (2007). Let’s plot another year next to it for comparison and add a caption and subcaptions. Since this will produce a wider visualization we’ll also use the <code>column</code> option to lay it out across the entire page rather than being constrained to the body text column.</p>
 <p>There are quite a few changes to this cell. Copy and paste the code below into the notebook if you want to try them locally.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-gapminder</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Life Expectancy and GDP</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap:</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 1957"</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 2007"</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.io <span class="im">as</span> pio</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>gapminder <span class="op">=</span> px.data.gapminder()</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gapminder_plot(year):</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    gapminderYear <span class="op">=</span> gapminder.query(<span class="st">"year == "</span> <span class="op">+</span> </span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                                    <span class="bu">str</span>(year))</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    fig <span class="op">=</span> px.scatter(gapminderYear, </span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                     x<span class="op">=</span><span class="st">"gdpPercap"</span>, y<span class="op">=</span><span class="st">"lifeExp"</span>,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                     size<span class="op">=</span><span class="st">"pop"</span>, size_max<span class="op">=</span><span class="dv">60</span>,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>                     hover_name<span class="op">=</span><span class="st">"country"</span>)</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    fig.show()</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>gapminder_plot(<span class="dv">1957</span>)</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>gapminder_plot(<span class="dv">2007</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-gapminder</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Life Expectancy and GDP</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap:</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 1957"</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 2007"</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.io <span class="im">as</span> pio</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>gapminder <span class="op">=</span> px.data.gapminder()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gapminder_plot(year):</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    gapminderYear <span class="op">=</span> gapminder.query(<span class="st">"year == "</span> <span class="op">+</span> </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>                                    <span class="bu">str</span>(year))</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    fig <span class="op">=</span> px.scatter(gapminderYear, </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                     x<span class="op">=</span><span class="st">"gdpPercap"</span>, y<span class="op">=</span><span class="st">"lifeExp"</span>,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                     size<span class="op">=</span><span class="st">"pop"</span>, size_max<span class="op">=</span><span class="dv">60</span>,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                     hover_name<span class="op">=</span><span class="st">"country"</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    fig.show()</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>gapminder_plot(<span class="dv">1957</span>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>gapminder_plot(<span class="dv">2007</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Run the modified cell then save the notebook. The preview will update as follows:</p>
 <p><img src="images/plotly-preview.png" class="border img-fluid" alt="Output of Plotly section which shows two charts side-by-side. The first has a caption below that reads '(a) Gapminder: 1957', the second's caption reads '(b) Gapminder 2007'. Below both figures, there's a caption that reads 'Figure 1: Life Expectancy and GDP (Data from World Bank via gapminder.org).'"></p>
 <p>Let’s discuss some of the new options used here. You’ve seen <code>fig-cap</code> before but we’ve now added a <code>fig-subcap</code> option.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Life Expectancy and GDP </span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap:</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 1957"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 2007"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: Life Expectancy and GDP </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-subcap:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 1957"</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#|   - "Gapminder: 2007"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>For code cells with multiple outputs adding the <code>fig-subcap</code> option enables us to treat them as subfigures.</p>
 <p>We also added an option to control how multiple figures are laid out—in this case we specified side-by-side in two columns.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>If you have 3, 4, or more figures in a panel there are many options available for customizing their layout. See the article on <a href="../../../docs/authoring/figures.html">Figures</a> for details.</p>
 <p>Finally, we added an option to control the span of the page that our figures occupy.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| column: page</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This allows our figure display to span out beyond the normal body text column. See the documentation on <a href="../../../docs/authoring/article-layout.html">Article Layout</a> to learn about all of the available layout options.</p>
 </section>
 <section id="next-up" class="level2">
