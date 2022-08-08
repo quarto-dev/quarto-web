@@ -115,3 +115,128 @@ For example, here is the Google Scholar metadata automatically included for a do
 5485.003.0041;,citation_publication_date=1989;,citation_journal_title
 =undefined;">
 ```
+
+## Citation Fields
+
+::: callout-note
+## Pre-release
+
+The following is currently only available in pre-release builds of Quarto.
+:::
+
+Quarto's apporach to emitting scholarly metadata is to take the standard CSL fields and make them into the corresponding Google Scholar / Zotero / Highwire metadata tags as appropriate. The following fields, when included in the `citation` metadata will generate scholarly meta tags in the rendered HTML document as described.
+
+::: column-page-right
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| Document Yaml           | Metadata Tag                       | Notes                                                                              |
++=========================+====================================+====================================================================================+
+| `title`                 | `citation_title`                   | Document `title` will be used if not provided.                                     |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `author`                | `citation_author`                  | One or more authors. Document `author` will be used if not provided.               |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `editor`                | `citation_editor`                  | One or more editors.                                                               |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `abstract`              | `citation_abstract`                | Document `abstract` will be used if not provided.                                  |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `keywords`              | `citation_keywords`                | Document `keywords` will be used if not provided.                                  |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `issued`                | `citation_publication_date`        | Document `date` will be used if not provided.                                      |
+|                         |                                    |                                                                                    |
+|                         | `citation_cover_date`              |                                                                                    |
+|                         |                                    |                                                                                    |
+|                         | `citation_year`                    |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `available-date`        | `citation_online_date`             | Document `date` will be used if not provided.                                      |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `url`                   | `citation_fulltext_html_url`       | `url` will be synthesized for current document if a `site-url` has been specified. |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `pdf-url`               | `citation_pdf_url`                 |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `lang`                  | `citation_language`                | Document `lang` will be used if not provided.                                      |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `doi`                   | `citation_doi`                     | Document `doi` will be used if not provided.                                       |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `isbn`                  | `citation_isbn`                    |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `issn`                  | `citation_issn`                    |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `eissn`                 | `citation_eissn`                   |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `pmid`                  | `citation_pmid`                    |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `issue`                 | `citation_issue`                   |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `volume`                | `citation_volume`                  |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `page-first`            | `citation_firstpage`               |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `page-last`             | `citation_lastpage`                |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `abstract_url`          | `citation_abstract_html_url`       |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `container-title`       | `citation_journal_title`           | For specific types, other meta tags will be produced:                              |
+|                         |                                    |                                                                                    |
+|                         |                                    | -   type:paper-conference\                                                         |
+|                         |                                    |     `citation_conference_title`                                                    |
+|                         |                                    |                                                                                    |
+|                         |                                    | -   type:book\                                                                     |
+|                         |                                    |     `citation_book_title`                                                          |
+|                         |                                    |                                                                                    |
+|                         |                                    | -   type:chapter\                                                                  |
+|                         |                                    |     `citation_inbook_title`                                                        |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `number`                | `citation_technical_report_number` | `citation_technical_report_number` will be created if the `type` is `report`.      |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `publisher`             | `citation_publisher`               | For specific types, other meta tags will be produced:                              |
+|                         |                                    |                                                                                    |
+|                         |                                    | -   type:paper-conference\                                                         |
+|                         |                                    |     `citation_conference`                                                          |
+|                         |                                    |                                                                                    |
+|                         |                                    | -   type:thesis\                                                                   |
+|                         |                                    |     `citation_dissertation_institution`                                            |
+|                         |                                    |                                                                                    |
+|                         |                                    | -   type:report\                                                                   |
+|                         |                                    |     `citation_technical_report_institution`                                        |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `container-title-short` | `citation_journal_abbrev`          |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+| `collection-title`      | `citation_series_title`            |                                                                                    |
++-------------------------+------------------------------------+------------------------------------------------------------------------------------+
+:::
+
+For example, citation data for a published conference paper defined as such in the document front matter:
+
+``` yaml
+title: A Published Conference Paper
+author:
+  - name: Norah Jones
+    affiliation: School of Hard Knocks
+    orcid: 0000-0001-8715-9476
+citation:
+  type: paper-conference
+  container-title: "Proceedings of the annual conference of the Society for Research"
+  publisher: "Society for Research"
+  issued: 2020/09/23
+  volume: 2
+  doi: "10.23915/reprodocs.00010"
+  url: https://example.com/summarizing-output
+  page-first: 46
+  page-last: 53
+google-scholar: true  
+```
+
+provides HTML metadata like:
+
+``` html
+<meta name="citation_title" content="A Published Conference Paper">
+<meta name="citation_author" content="Norah Jones">
+<meta name="citation_publication_date" content="2020-09-23">
+<meta name="citation_cover_date" content="2020-09-23">
+<meta name="citation_year" content="2020">
+<meta name="citation_fulltext_html_url" content="https://example.com/summarizing-output">
+<meta name="citation_doi" content="10.23915/reprodocs.00010">
+<meta name="citation_volume" content="2">
+<meta name="citation_language" content="en">
+<meta name="citation_conference_title" content="Proceedings of the annual conference of the Society for Research">
+<meta name="citation_conference" content="Society for Research">
+```
