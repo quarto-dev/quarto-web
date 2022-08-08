@@ -8,7 +8,11 @@ quarto publish {{< meta provider >}}
 
 If you haven't published to {{< meta provider-name >}} before, the publish command will prompt you to authenticate. After confirming that you want to publish, your content will be rendered and deployed, and then a browser opened to view your site.
 
-A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
+### \_publish.yml
+
+The `_publish.yml` file is used to to specify the publishing destination. This file is automatically created (or updated) whenever you execute the `quarto publish` command, and is located within the project or document directory.
+
+The service, id, and URL of the published content is specified in `_publish.yml`. For example:
 
 ``` yaml
 - source: project
@@ -17,7 +21,11 @@ A record of your previous publishes will be stored in a `_publish.yml` file with
       url: "{{< meta provider-publish-url >}}"
 ```
 
-Account information is not stored in this file, so it is suitable for checking in to version control and being shared by multiple publishers.
+If you have an existing {{< meta provider-name >}} site that you want to publish to, you should manually create a `_publish.yml` file that looks like the example above, but with the appropriate `id` and `url` values for your site.
+
+Account information is not stored in `_publish.yml`, so it is suitable for checking in to version control and being shared by multiple publishers.
+
+### Options
 
 You can customize the behavior of `quarto publish` by providing the following command line options:
 
