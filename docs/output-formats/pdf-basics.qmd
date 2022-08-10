@@ -123,7 +123,7 @@ In some cases raw LaTeX will require additional LaTeX packages. The [LaTeX Inclu
 If you want to include additional content in your document from another file, you can use the `include-in` options:
 
 | Option                | Description                                                                                                              |
-|-----------------------|--------------------------------------------------------------------------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `include-in-header`   | Include contents of *file*, verbatim, into the LaTeX preamble.                                                           |
 | `include-before-body` | Include contents of *file*, verbatim, at the beginning of the document body (e.g. after the `\begin{document}` command). |
 | `include-after-body`  | Include contents of *file*, verbatim, at the end of the document body (before the the `\end{document}`).                 |
@@ -181,3 +181,31 @@ If you want Quarto to produce a LaTeX file (.tex) rather than a PDF (for example
     ```
 
     This technique will produce a PDF file for preview, but will also create a .tex file alongside it that you can do subsequent processing on.
+
+## Unicode Characters
+
+By default, Quarto uses the `xelatex` engine to produce PDFs from LaTeX. `xelatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
+
+``` bash
+fc-list :lang=<lang>
+```
+
+For example, to see a list of fonts that support Japanese characters, use:
+
+``` bash
+fc-list :lang=ja
+```
+
+Select a font name from the list and use that as the document's main font, like:
+
+``` markdown
+---
+title: Unicode test
+format: pdf
+mainfont: "Hiragino Sans GB"
+---
+
+## Test Document
+
+青黑體簡體中文,ヒラギノ角
+```
