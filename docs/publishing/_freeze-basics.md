@@ -1,8 +1,7 @@
 To make sure that R, Python, and Julia code is only executed locally, configure your project to use Quarto's [freeze](../projects/code-execution.html#freeze) feature by adding this to your `_quarto.yml`:
 
-**\_quarto.yml**
 
-``` yaml
+```{.yaml filename="_quarto.yml"}
 execute:
   freeze: auto
 ```

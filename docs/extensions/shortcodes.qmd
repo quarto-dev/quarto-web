@@ -2,8 +2,6 @@
 title: "Creating Shortcodes"
 aliases: 
   - /docs/authoring/shortcodes.qmd
-filters:
-  - code-filename
 ---
 
 ## Overview
@@ -112,9 +110,7 @@ Custom shortcodes are implemented as Lua functions that take one or more argumen
 
 Here's the implementation of the `env` shortcode that is built in to Quarto:
 
-**env.lua**
-
-``` lua
+``` {.lua filename="env.lua"}
 function env(args)
   local var = pandoc.utils.stringify(args[1])
   local value = os.getenv(var)
@@ -151,9 +147,7 @@ Shortcodes can tailor their output to the format being rendered to. This is ofte
 
 The `pagebreak` shortcode generates "native" pagebreaks in a variety of formats. Here's the implementation of `pagebreak`:
 
-**pagebreak.lua**
-
-``` lua
+```{.lua filename="pagebreak.lua"}
 function pagebreak()
  
   local raw = {
@@ -197,9 +191,8 @@ You'd use this shortcode as follows:
 
 The examples above use either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine whether a short or long SHA1 is displayed:
 
-**git.lua**
 
-``` lua
+```{.lua filename="git.lua"}
 -- run git and read its output
 function git(command)
   local p = io.popen("git " .. command)
@@ -253,9 +246,7 @@ In some cases you may want to provide options that affect how you shortcode beha
 
 Let's implement a different version of the `git-rev` shortcode that emits the revision as a link to GitHub rather than plain text. To do this we make use of `github.owner` and `github.repo` metadata values:
 
-**git.lua**
-
-``` lua
+```{.lua filename="git.lua"}
 function git(command)
   local p = io.popen("git " .. command)
   local output = p:read('*all')

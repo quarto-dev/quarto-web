@@ -24,5 +24,3 @@ Note that an alternative approach is to execute the code as part of the GitHub A
 ### Publish Action
 
 Add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
-
-**.github/workflows/publish.yml**
