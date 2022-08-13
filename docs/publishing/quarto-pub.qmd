@@ -9,7 +9,7 @@ provider-publish-url: "https://njones.quarto.pub/blog"
 
 [Quarto Pub](https://quartopub.com) is a free publishing service for content created with Quarto. Quarto Pub is ideal for blogs, course or project websites, books, presentations, and personal hobby sites.
 
-It's important to note that all documents and sites published to Quarto Pub are **publicly visible**. You should only publish content you wish to share publicly. Note also that sites can be no larger than 100 MB and have a *soft* limit of 10 GB of bandwidth per month.
+It's important to note that all documents and sites published to Quarto Pub are **publicly visible**. You should only publish content you wish to share publicly.
 
 There are two ways to publish content to Quarto Pub (both are covered in more detail below):
 
@@ -20,12 +20,22 @@ There are two ways to publish content to Quarto Pub (both are covered in more de
 Before attempting your first publish, be sure that you have created a free [Quarto Pub](https://quartopub.com) account.
 
 ::: callout-note
-Above we noted that Quarto Pub sites are publicly visible and have some limits on size and bandwidth usage. If you want to authenticate users, host larger sites, or use a custom domain, consider using a professional web publishing service like [Netlify](netlify.qmd) instead.
+Quarto Pub sites are publicly visible, can be no larger than 100 MB and have a *soft*limit of 10 GB of bandwidth per month. If you want to authenticate users, host larger sites, or use a custom domain, consider using a professional web publishing service like [Netlify](netlify.qmd) instead.
 :::
 
 {{< include _publish-command.md >}}
 
-## Default Site
+## Managing Sites
+
+If you want to change the "slug" (or URL path) of a published site or remove the site entirely, you can use the site management interface at <https://quartopub.com>, which will display a list of all of your published sites:
+
+![](images/quarto-pub-admin.png){.border}
+
+Click on a site to navigate to an admin page that enables you to change the slug, make the site the default one for your account, or remove the site entirely:
+
+![](images/quarto-pub-admin-site.png){.border}
+
+## User Default Site
 
 In addition to publishing documents and sites to paths within your Quarto Pub sub-domain (e.g. `https://username.quarto.pub/mysite/)` you can also designate one of your sites as the default site that users see when they navigate to your main sub-domain (e.g. `https://username.quarto.pub`). This is an ideal place to publish a blog or personal home page.
 
@@ -33,11 +43,69 @@ To promote one of your sites to the default site, go to your admin page at <http
 
 ![](images/quarto-pub-default-site.png){.border}
 
+## Multiple Accounts
+
+If you are have multiple Quarto Pub accounts it's important to understand the relationship between the use of accounts in the CLI interface (`quarto publish`) and the use of accounts in your browser (for authenticating and managing sites).
+
+When using `quarto publish`, there are a couple of scenarios where a web browser is launched:
+
+1.  When you need to authorize the Quarto CLI to access your account.
+2.  After publishing to open the admin page for your published site.
+
+Before publishing with a Quarto Pub account from the CLI you should always be sure to log in to that account within your default web browser. This ensures that when the CLI launches the browser that it binds to the correct Quarto Pub account.
+
+## Access Tokens
+
+When you publish to Quarto Pub using `quarto publish` an access token is used to grant permission for publishing to your account. If no access token is available for a publish operation then the Quarto CLI will automatically launch a browser to authorize one:
+
+``` markdown
+$ quarto publish quarto-pub
+? Authorize (Y/n) › 
+❯ In order to publish to Quarto Pub you need to
+  authorize your account. Please be sure you are
+  logged into the correct Quarto Pub account in 
+  your default web browser, then press Enter or 
+  'Y' to authorize.
+```
+
+Authorization will launch your default web browser to confirm that you want to allow publishing from Quarto CLI. An access token will be generated and saved locally by the Quarto CLI. You can list and remove saved accounts using the `quarto publish accounts` command:
+
+``` markdown
+$ quarto publish accounts
+ ? Manage Publishing Accounts
+ ❯ ✔ Quarto Pub: jj@rstudio.com
+   ✔ Netlify: jj@rstudio.com
+ ❯ Use the arrow keys and spacebar to specify 
+   accounts you would like to remove. Press 
+   Enter to confirm the list of accounts you
+   wish to remain available.
+```
+
+You can also view (and revoke) access tokens from the admin interface at <https://quartopub.com>:
+
+![](images/quarto-pub-tokens.png){.border}
+
+Within this interface you'll see any token you've created from the Quarto CLI. You may revoke this token if you no longer wish it to be active. Click the **New Token** button to create additional tokens that can be used for publishing non-interactively (e.g. from a CI service):
+
+![](images/quarto-pub-new-token.png){.border}
+
+Once you have am access token you can use it with `quarto publish` by defining the `QUARTO_PUB_AUTH_TOKEN` environment variable. For example:
+
+``` bash
+# token created at https://quartopub.com/profile/
+export QUARTO_PUB_AUTH_TOKEN="qpa_k4yWKEmlu5wkvx173Ls"
+
+# publish to quarto-pub site specified within _publish.yml
+quarto publish quarto-pub
+```
+
+See the article on [Publishing with CI](ci.qmd) for additional details on non-interactive use of `quarto publish`.
+
 ## GitHub Action
 
 {{< include _github-action-basics.md >}}
 
-```{.yaml filename=".github/workflows/publish.yml"}
+``` {.yaml filename=".github/workflows/publish.yml"}
 on:
   workflow_dispatch:
   push:
@@ -66,7 +134,7 @@ jobs:
 
 The final step is to configure your GitHub Action with the credentials required for publishing. To do this you need to create a Quarto Pub personal access token and then configure your GitHub action to be able to read it:
 
-1.  If you don't already have a personal access token, go to the Quarto Pub [account profile page](https://quartopub.com/profile), and click on **New Token** to create a token. Give this token a memorable name, and copy the token to the clipboard.
+1.  If you don't already have an access token, go to the Quarto Pub [account profile page](https://quartopub.com/profile), and click on **New Token** to create a token. Give this token a memorable name, and copy the token to the clipboard.
 
 2.  Add the Quarto Pub access token to your repository's action **Secrets** (accessible within repository **Settings**). You will see a **New repository secret** button at the top right:
 
@@ -90,7 +158,7 @@ Once you've specified your publishing action and {{< meta provider-name >}} cred
 
 Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to {{< meta provider-name >}}:
 
-```{.yaml filename=".github/workflows/publish.yml"}
+``` {.yaml filename=".github/workflows/publish.yml"}
 on:
   workflow_dispatch:
   push:
@@ -127,7 +195,7 @@ jobs:
 
 Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to {{< meta provider-name >}}:
 
-```{.yaml filename=".github/workflows/publish.yml"}
+``` {.yaml filename=".github/workflows/publish.yml"}
 on:
   workflow_dispatch:
   push:

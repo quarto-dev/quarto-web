@@ -13,6 +13,8 @@ Prior to attempting to publish with a GitHub Action, you should have completed a
       url: "{{< meta provider-publish-url >}}"
 ```
 
+You can also manually create a `_publish.yml` file that looks like the example above, but with the appropriate `id` and `url` values for your site.
+
 Do not proceed to the next step(s) until you have a `_publish.yml` that indicates your publishing destination.
 
 ### Freezing Computations
