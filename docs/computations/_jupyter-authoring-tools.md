@@ -47,7 +47,7 @@ Note that there are three different types of cell here:
 
 1)  The YAML document options at the top are in a **Raw** cell.
 2)  The heading and explanation are in a **Markdown** cell.
-3)  The Julia code and its output are in a **Code** cell.
+3)  The {{< meta jupyter-language >}} code and its output are in a **Code** cell.
 
 When working in a Jupyter notebook, you can use `quarto preview` to provide a live preview of your rendered document:
 
