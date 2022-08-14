@@ -45,14 +45,31 @@ Note that we specified the `typed: true` option to the `csv()` function. When th
 
 Here are the methods available for structured data formats:
 
-| Method                                                             | Description               |
-|--------------------------------------------------------------------|---------------------------|
-| [csv](https://github.com/observablehq/stdlib#attachment_csv)       | Comma separated values    |
-| [tsv](https://github.com/observablehq/stdlib#attachment_tsv)       | Tab separated values      |
-| [json](https://github.com/observablehq/stdlib#attachment_json)     | JSON (JavaScript objects) |
-| [sqlite](https://github.com/observablehq/stdlib#attachment_sqlite) | SQLite database client    |
+| Method                                                                                                                       | Description               |
+|--------------------------------------------------|----------------------|
+| [csv](https://github.com/observablehq/stdlib#attachment_csv)                                                                 | Comma separated values    |
+| [tsv](https://github.com/observablehq/stdlib#attachment_tsv)                                                                 | Tab separated values      |
+| [json](https://github.com/observablehq/stdlib#attachment_json)                                                               | JSON (JavaScript objects) |
+| [sqlite](https://github.com/observablehq/stdlib#attachment_sqlite)                                                           | SQLite database client    |
+| [arrow](https://github.com/observablehq/stdlib/blob/8d9f4d18df0b237a5e0870a6f39584048007aca7/src/fileAttachment.mjs#L59-L62) | Arrow (uncompressed)      |
 
 There are also methods to get the raw data as a [blob](https://github.com/observablehq/stdlib#attachment_blob), [text](https://github.com/observablehq/stdlib#attachment_text), [image](https://github.com/observablehq/stdlib#attachment_image), or [stream](https://github.com/observablehq/stdlib#attachment_stream).
+
+Note that if you are using the `arrow()` method the Arrow feather data file should be written uncompressed. For example:
+
+```` markdown
+```{{r}}
+arrow::write_feather(
+  mtcars, 
+  "data.arrow", 
+  compression = "uncompressed"
+)
+```
+
+```{{ojs}}
+data = FileAttachment("data.arrow").arrow()
+```
+````
 
 ## Python and R
 
