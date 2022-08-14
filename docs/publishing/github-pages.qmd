@@ -17,23 +17,23 @@ There are two ways to publish Quarto websites and documents to GitHub Pages:
 
 We'll cover each of these methods below, but first let's take care of some pre-requisites.
 
+::: callout-caution
+## Windows Compatibility
+
+Many users have reported problems with using `quarto publish gh-pages` on Windows systems. We are investigating and hoping to have a fix for this soon, but it the meantime we recommend against using `quarto publish gh-pages` on Windows.
+:::
+
 ## Getting Started
 
-To get started, you need to have a Git repository on your local machine that is synced to GitHub. For a given repository, the URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame`).
+To get started, you need to have a Git repository on your local machine that is synced to GitHub. For a given repository, the URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame/`).
 
 You can optionally configure a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) for a GitHub Pages site, but before exploring that ground you should get your site up and running with the default domain.
 
-### User Site
+### Source Branch
 
-In addition to creating sites tied to various repositories, you can also create a user site that is served from your root user domain (e.g. `https://username.github.io`). This is an ideal place to publish a blog or personal home page. To create a user site:
+Before attempting to publish you should ensure that the **Source** branch for your repository is `gh-pages` and that the site directory is set to the repository root (`/`). You can modify these options in **Settings** : **Pages** for your repository. For example:
 
-1.  Create a Git repo with the name `username.github.io` (where "username" is your GitHub username) and sync it to your local machine.
-
-2.  Set the **Source** branch for your user site to `gh-pages`. For example:
-
-    ![](images/gh-pages-user-site.png){.border}
-
-Note that this step of explicitly setting the **Source** branch is only required for user sites (repository sites automatically use the `gh-pages` branch).
+![](images/gh-pages-user-site.png){.border}
 
 ### Ignoring Output
 
@@ -57,6 +57,14 @@ To publish a document rather than a website or book, provide the path to the doc
 quarto publish gh-pages document.qmd
 ```
 
+## User Site
+
+In addition to creating sites tied to various repositories, you can also create a user site that is served from your root user domain (e.g. `https://username.github.io`). This is an ideal place to publish a blog or personal home page. To create a user site:
+
+1.  Create a Git repo with the name `username.github.io` (where "username" is your GitHub username) and sync it to your local machine.
+
+2.  Set the **Source** branch for your user site to `gh-pages` as described in [Source Branch](#source-branch).
+
 ## GitHub Action
 
 Using the `quarto publish {{< meta provider >}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
@@ -73,7 +81,7 @@ Note that an alternative approach is to execute the code as part of the GitHub A
 
 Add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
 
-```{.yaml filename=".github/workflows/publish.yml"}
+``` {.yaml filename=".github/workflows/publish.yml"}
 on:
   workflow_dispatch:
   push:
@@ -109,7 +117,7 @@ Once you've done this, check all of the newly created files (including the `_fre
 
 Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to GitHub Pages:
 
-```{.yaml filename=".github/workflows/publish.yml"}
+``` {.yaml filename=".github/workflows/publish.yml"}
 on:
   workflow_dispatch:
   push:
@@ -149,7 +157,7 @@ jobs:
 
 Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to GitHub Pages:
 
-```{.yaml filename=".github/workflows/publish.yml"}
+``` {.yaml filename=".github/workflows/publish.yml"}
 on:
   workflow_dispatch:
   push:
