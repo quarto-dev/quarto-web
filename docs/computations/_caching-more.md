@@ -2,7 +2,7 @@
 
 You can use `quarto render` command line options to control caching behavior without changing the document's code. Use options to force the use of caching on all chunks, disable the use of caching on all chunks (even if it's specified in options), or to force a refresh of the cache even if it has not been invalidated:
 
-``` bash
+```{.bash filename="Terminal"}
 # use a cache (even if not enabled in options)
 quarto render example.qmd --cache 
 

@@ -8,7 +8,7 @@ execute:
 
 Now, fully re-render your site:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto render
 ```
 

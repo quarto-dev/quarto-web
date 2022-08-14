@@ -8,6 +8,6 @@ It's important to note that you don't need to check your `_site` or `_book` dire
 
 If you've already checked these files into source control you may need to remove them explicitly:
 
-``` bash
+```{.bash filename="Terminal"}
 git rm -r _site
 ```

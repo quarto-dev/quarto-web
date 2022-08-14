@@ -2,7 +2,7 @@
 
 The `quarto publish` command is the easiest way to publish locally rendered content. From the directory where your project is located, execute the `quarto publish` command for {{< meta provider-name >}}:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto publish {{< meta provider >}}
 ```
 
@@ -33,6 +33,6 @@ You can customize the behavior of `quarto publish` by providing the following co
 
 To publish a document rather than a website or book, provide the path to the document:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto publish {{< meta provider >}} document.qmd
 ```

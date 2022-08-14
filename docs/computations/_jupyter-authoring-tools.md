@@ -2,7 +2,7 @@
 
 You can author Quarto documents that include {{< meta jupyter-language >}} code using any text or notebook editor. No matter what editing tool you use, you'll always run `quarto preview` first to setup a live preview of changes in your document. Live preview is available for both HTML and PDF output. For example:
 
-``` bash
+```{.bash filename="Terminal"}
 # preview as html
 quarto preview document.qmd
 
@@ -35,7 +35,7 @@ You can also use the VS Code notebook editor to create {{< meta jupyter-language
 
 We could convert the simple `document.qmd` we used as an example above to a Jupyter notebook using the `quarto convert` command. For example:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto convert document.qmd
 ```
 
@@ -51,7 +51,7 @@ Note that there are three different types of cell here:
 
 When working in a Jupyter notebook, you can use `quarto preview` to provide a live preview of your rendered document:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto preview document.ipynb
 ```
 

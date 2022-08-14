@@ -20,7 +20,7 @@ If you are in a fresh Python 3 environment, installing the `jupyter` package wil
 
 You can verify that Quarto is configured correctly for Jupyter with:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto check jupyter
 ```
 

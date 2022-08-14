@@ -103,7 +103,7 @@ This means just use all of the default options for the format.
 The formats specified within document options define what is rendered by default.
 If we render the document with all the options given above using the following.
 
-``` bash
+```{.bash filename="Terminal"}
 quarto render authoring.qmd
 ```
 
@@ -115,7 +115,7 @@ Then the following files would be created.
 
 We can select one or more formats using the `--to` option.
 
-``` bash
+```{.bash filename="Terminal"}
 quarto render authoring.qmd --to docx
 quarto render authoring.qmd --to docx,pdf
 ```
@@ -124,7 +124,7 @@ Note that the target file (in this case `authoring.qmd`) should always be the ve
 
 If needed we can also render formats that aren't specified within document options.
 
-``` bash
+```{.bash filename="Terminal"}
 quarto render authoring.qmd --to odt
 ```
 

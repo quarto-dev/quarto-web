@@ -29,7 +29,7 @@ execute:
 
 You can also control use of the Jupyter daemon using the following command line options:
 
-``` bash
+```{.bash filename="Terminal"}
 # use a daemon w/ default timeout (300 sec)
 quarto render document.qmd --execute-daemon
 
@@ -42,7 +42,7 @@ quarto render document.qmd --no-execute-daemon
 
 You can also force an existing daemon to restart using the `--execute-daemon-restart` command line flag:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto render document.qmd --execute-daemon-restart 
 ```
 
@@ -50,6 +50,6 @@ This might be useful if you suspect that the re-use of notebook sessions is caus
 
 Finally, you can print extended debugging information about daemon usage (startup, shutdown, connections, etc.) using the `--execute-debug` flag:
 
-``` bash
+```{.bash filename="Terminal"}
 quarto render document.qmd --execute-debug
 ```

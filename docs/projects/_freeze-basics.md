@@ -12,7 +12,7 @@ execute:
 
 Note that `freeze` controls whether execution occurs during global project renders. If you do an incremental render of either a single document or a project sub-directory then code is always executed. For example:
 
-``` bash
+```{.bash filename="Terminal"}
 # render single document (always executes code)
 quarto render document.qmd
 
