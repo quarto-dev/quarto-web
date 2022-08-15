@@ -57,6 +57,23 @@ You can produce a wide variety of output types from executable code blocks, incl
 
 There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
 
+### Multiple Outputs
+
+By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
+
+```{{julia}}
+#| label: fig-plots
+#| fig-cap: Multiple Plots
+#| fig-subcap:
+#|   - "Plot 1"
+#|   - "Plot 2"
+#| layout-ncol: 2
+
+using Plots
+display(plot(sin, x -> sin(2x), 0, 2))
+display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
+```
+
 ``` include
 _jupyter-rendering.md
 ```
@@ -140,7 +157,7 @@ If no `jupyter` kernel is explicitly specified, then Quarto will attempt to auto
 
 You can discover the available Jupyter kernels on your system using the `quarto check` command:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 quarto check jupyter
 ```
 
