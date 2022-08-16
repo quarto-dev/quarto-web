@@ -41,15 +41,16 @@ contributes:
 
 ## Format Resources
 
-You can easily include other files and resources within a format extension by placing those files within the extension directory and using relative paths to reference them. These relative paths will be properly handled.
+You can usually include other files and resources within a format extension by placing those files within the extension directory and using relative paths to reference them in your `_extension.yml` metadata file. These relative paths will be properly handled as your extension's metadata is merged with the rendered document metadata.
 
-If there are resources that you need to have copied to the input directory as a part of rendering the document (for example, a `bst` file for LaTeX bibliographies or a logo or other file referenced from a LaTeX template), you can provide `format-resources`, which is a list of file paths. Each of these files will be copied into the directory containing the input that is being rendered when the document is rendered. For example:
+If there are resources that you need to have copied to the input directory as a part of rendering the document (for example, a `bst` file for LaTeX bibliographies or a logo or other file referenced from a LaTeX template), you can provide `format-resources`, which is a list of file paths[^_formats-common-1]. Each of these files will be copied into the directory containing the input that is being rendered when the document is rendered. For example:
 
 ```yaml
 contributes:
   format:
-    format-resources:
-       - plos2015.bst
+    pdf:
+      format-resources:
+        - plos2015.bst
 ```
 
 ## Extension Embedding
@@ -64,3 +65,4 @@ quarto install extension quarto-ext/fancy-text --embed quarto-journals/jss
 
 This will install the `quarto-ext/fancy-text` extension into the `quarto-journals/jss` extension in the `_extensions` folder. By embedding an extension you make it available without creating the potential for conflict with other versions of the extension that uses might already have installed.
 
+[^_formats-common-1]: This is most common in the the case of PDF based formats which have a secondary step of converting the LaTeX produced by Pandoc into a PDF. If there are files that are referenced indirectly by the LaTeX, they will need to be discoverable and should typically be copied into the same directory that contains the LaTeX input.
