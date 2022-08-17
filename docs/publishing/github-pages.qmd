@@ -9,27 +9,66 @@ provider-token: GITHUB_TOKEN
 
 [GitHub Pages](https://pages.github.com/) is a website hosting service that enables you to publish content based on source code managed within a GitHub repository.
 
-There are two ways to publish Quarto websites and documents to GitHub Pages:
+There are three ways to publish Quarto websites and documents to GitHub Pages:
 
-1.  Use the `quarto publish` command to publish content rendered on your local machine.
+1.  Render sites on your local machine to the `docs` directory, check the rendered site into GitHub, and then configure your GitHub repo to publish from the `docs` directory.
 
-2.  Use a [GitHub Action] to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever you push a source code change to your repository.
+2.  Use the `quarto publish` command to publish content rendered on your local machine.
 
-We'll cover each of these methods below, but first let's take care of some pre-requisites.
+3.  Use a [GitHub Action] to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever you push a source code change to your repository.
+
+We'll cover each of these methods below, but first an important pre-requisite: you need to have a Git repository on your local machine that is synced to GitHub. The URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame/`).
+
+You can optionally configure a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) for a GitHub Pages site, but before exploring that ground you should get your site up and running with the default domain.
+
+## Render to `docs` 
+
+The simplest way to publish using GitHub Pages is to render to the `docs` directory and then check that directory into your repository. If you prefer not to check rendered output into version control see the discussion of using [Publish Command](#publish-command) below.
+
+To get started, change your project configuration to use `docs` as the `output-dir`. For example:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: website
+  output-dir: docs
+```
+
+Then, add a `.nojekyll` file to the root of your repository that tells GitHub Pages not to do additional processing of your published site using Jekyll (the GitHub default site generation tool):
+
++-----------+---------------------------------+
+| Mac/Linux | ``` {.bash filename="Terminal"} |
+|           | touch .nojekyll                 |
+|           | ```                             |
++-----------+---------------------------------+
+| Windows   | ``` {.bash filename="Terminal"} |
+|           | copy NUL .nojekyll              |
+|           | ```                             |
++-----------+---------------------------------+
+
+Now, render your site and push it to GitHub:
+
+``` {.bash filename="Terminal"}
+quarto render
+git push
+```
+
+Finally, configure your GitHub repository to publish from the `docs` directory of your `main` branch:
+
+![](images/gh-pages-docs-dir.png){.border}
+
+Once you've made this configuration change GitHub will trigger a deployment of your website. Your site will also be updated whenever you commit and push to `main`.
+
+## Publish Command
+
+The `quarto publish` command is an easy way to publish locally rendered documents and websites. Before attempting to use `quarto publish` (either locally or from a GitHub Action) you should be sure to configure the [Source Branch](#source-branch) and [Ignore Output](#ignoring-output) as described below.
 
 ::: callout-caution
 ## Windows Compatibility
 
-Many users have reported problems with using `quarto publish gh-pages` on Windows systems. We are investigating and hoping to have a fix for this soon, but it the meantime we recommend against using `quarto publish gh-pages` on Windows.
+Many users have reported problems with using `quarto publish gh-pages` on Windows systems. We are investigating and hoping to have a fix for this soon, but it the meantime we recommend against using `quarto publish gh-pages` on Windows (rather, try using the [Render to `docs`](#render-to-docs) workflow described above).
 :::
 
-## Getting Started
-
-To get started, you need to have a Git repository on your local machine that is synced to GitHub. For a given repository, the URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame/`).
-
-You can optionally configure a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) for a GitHub Pages site, but before exploring that ground you should get your site up and running with the default domain.
-
-### Source Branch
+### Source Branch {#source-branch}
 
 Before attempting to publish you should ensure that the **Source** branch for your repository is `gh-pages` and that the site directory is set to the repository root (`/`). You can modify these options in **Settings** : **Pages** for your repository. For example:
 
@@ -39,11 +78,11 @@ Before attempting to publish you should ensure that the **Source** branch for yo
 
 {{< include _ignoring-output.md >}}
 
-## Publish Command
+### Publishing
 
-The `quarto publish` command is an easy way to publish locally rendered documents and websites. From the directory where your project / git repository is located, execute the `quarto publish` command for GitHub Pages:
+Once you have configured the source branch and updated your `.gitignore`, navigate to the directory where your project / git repository is located and execute the `quarto publish` command for GitHub Pages:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 quarto publish gh-pages
 ```
 
@@ -53,31 +92,23 @@ The publish command will confirm that you want to publish, render your content, 
 
 To publish a document rather than a website or book, provide the path to the document (note that you can publish only one document from a given GitHub repository):
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 quarto publish gh-pages document.qmd
 ```
 
-## User Site
-
-In addition to creating sites tied to various repositories, you can also create a user site that is served from your root user domain (e.g. `https://username.github.io`). This is an ideal place to publish a blog or personal home page. To create a user site:
-
-1.  Create a Git repo with the name `username.github.io` (where "username" is your GitHub username) and sync it to your local machine.
-
-2.  Set the **Source** branch for your user site to `gh-pages` as described in [Source Branch](#source-branch).
-
-## GitHub Action
+### GitHub Action
 
 Using the `quarto publish {{< meta provider >}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
 
 There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion on [Rendering for CI](ci.qmd#rendering-for-ci).
 
-### Freezing Computations
+#### Freezing Computations
 
 {{< include _freeze-basics.md >}}
 
 Note that an alternative approach is to execute the code as part of the GitHub Action. For now we'll keep things simpler by executing code locally and storing the computations by using freeze. Then, further below, we'll cover [Executing Code](#executing-code) within a GitHub Action.
 
-### Publish Action
+#### Publish Action
 
 Add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
 
@@ -195,7 +226,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Additional Options
+#### Additional Options
 
 It's possible to have a Quarto project in a larger GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `publish` action. For example:
 
@@ -222,3 +253,11 @@ By default, `quarto publish` will re-render your project before publishing it. H
 ```
 
 See the full definition of the Quarto [publish action](https://github.com/quarto-dev/quarto-actions/blob/main/publish/action.yml) to learn about other more advanced options.
+
+## User Site
+
+In addition to creating sites tied to various repositories, you can also create a user site that is served from your root user domain (e.g. `https://username.github.io`). This is an ideal place to publish a blog or personal home page. To create a user site:
+
+1.  Create a Git repo with the name `username.github.io` (where "username" is your GitHub username) and sync it to your local machine.
+
+2.  Set the **Source** branch for your user site to `gh-pages` as described in [Source Branch](#source-branch).
