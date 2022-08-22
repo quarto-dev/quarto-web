@@ -9,3 +9,7 @@
 
 ::: {#download-pre-table .download-table}
 :::
+
+
+::: {#download-pre-news .download-news}
+:::

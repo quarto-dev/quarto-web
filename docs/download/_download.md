@@ -9,3 +9,8 @@
 
 ::: {#download-table .download-table}
 :::
+
+## Changes
+
+::: {#download-news .download-news}
+:::

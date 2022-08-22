@@ -1,3 +1,8 @@
+<script
+  type="application/javascript"
+  src="https://unpkg.com/commonmark@0.29.3/dist/commonmark.min.js"
+></script>
+
 <script type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function () {
     const downloadDatas = [];
@@ -31,6 +36,9 @@
             dlData.version,
             dlData.assets
           );
+
+          populateNews(downloadData.prefix, dlData.description);
+
           window.tippy("a.checksum[data-tippy-content]", {
             interactive: true,
             placement: "top-end",
@@ -61,11 +69,26 @@
     return mappings;
   }
 
+  function populateNews(idPrefix, markdown) {
+    if (markdown) {
+      markdown = markdown.replace(/^#{1,6} (.*)$/gm, "##### $1");
+      var reader = new commonmark.Parser();
+      var writer = new commonmark.HtmlRenderer();
+      var parsed = reader.parse(markdown);
+      var newsHtml = writer.render(parsed);
+      const newsDiv = window.document.getElementById(`${idPrefix}-news`);
+      if (newsDiv) {
+        newsDiv.innerHTML = newsHtml;
+      }
+    }
+  }
+
   function populateDownloadButton(idPrefix, version, assets) {
     const osData = guessOS();
     const osAsset = assets.find((asset) =>
       asset.name.endsWith(osData.install_extension)
     );
+
     const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
     mainDownloadLink.href = osAsset.download_url;
     mainDownloadLink.innerText = "";
