@@ -42,6 +42,10 @@ async function run() {
       const assetFile = await fetch(asset.browser_download_url);
       const buffer = await assetFile.buffer();
       const checksum = hasha(buffer, { algorithm });
+      
+      if (asset.name === 'changelog.md') {
+        releaseInfo.description = buffer;
+      }
 
       console.log(asset.name);
       const parts = asset.name.split("-");
