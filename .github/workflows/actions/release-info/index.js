@@ -44,7 +44,9 @@ async function run() {
       const checksum = hasha(buffer, { algorithm });
       
       if (asset.name === 'changelog.md') {
-        releaseInfo.description = buffer;
+        var decoder = new TextDecoder("utf-8");
+        
+        releaseInfo.description = decoder.decode(buffer);
       }
 
       console.log(asset.name);
