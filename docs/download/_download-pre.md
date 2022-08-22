@@ -10,6 +10,10 @@
 ::: {#download-pre-table .download-table}
 :::
 
+:::: {.download-pre-section}
+### Changes
 
 ::: {#download-pre-news .download-news}
 :::
+
+::::
