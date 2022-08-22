@@ -1,44 +1,72 @@
 <script type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function () {
-    let dataPath = "/docs/download/_download.json";
-    if (window["quarto-prerelease-datapath"]) {
-      dataPath = window["quarto-prerelease-datapath"];
+    const downloadDatas = [];
+    if (window["quarto-download-release"]) {
+      downloadDatas.push({
+        prefix: "download",
+        dataPath: "/docs/download/_download.json",
+      });
+    }
+    if (window["quarto-download-prerelease"]) {
+      downloadDatas.push({
+        prefix: "download-pre",
+        dataPath: "/docs/download/_prerelease.json",
+      });
     }
 
-    fetch(dataPath)
-      .then((response) => {
-        return response.json();
-      })
-      .then((dlData) => {
-        populateDownloadButton(dlData.version, dlData.assets);
-        populateDownloadTable(dlData.version, dlData.assets);
-        window.tippy("a.checksum[data-tippy-content]", {
-          interactive: true,
-          placement: "top-end",
-          maxWidth: "none",
+    for (const downloadData of downloadDatas) {
+      const dataPath = downloadData.dataPath;
+      fetch(dataPath)
+        .then((response) => {
+          return response.json();
+        })
+        .then((dlData) => {
+          populateDownloadButton(
+            downloadData.prefix,
+            dlData.version,
+            dlData.assets
+          );
+          populateDownloadTable(
+            downloadData.prefix,
+            dlData.version,
+            dlData.assets
+          );
+          window.tippy("a.checksum[data-tippy-content]", {
+            interactive: true,
+            placement: "top-end",
+            maxWidth: "none",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    }
   });
 
   // Only assets named in this list will be displayed in the list of downloads
   // (Using the label value)
   function downloadMappings(version) {
-    return {
+    const mappings = {
       [`quarto-${version}-win.msi`]: "Windows",
       [`quarto-${version}-macos.pkg`]: "Mac OS",
       [`quarto-${version}-linux-amd64.deb`]: "Linux",
     };
+
+    if (window["quarto-download-archives"]) {
+      mappings[`quarto-${version}-win.zip`] = "Windows Zip";
+      mappings[`quarto-${version}-macos.tar.gz`] = "Mac Tarball";
+      mappings[`quarto-${version}-linux-amd64.tar.gz`] = "Linux Tarball";
+    }
+
+    return mappings;
   }
 
-  function populateDownloadButton(version, assets) {
+  function populateDownloadButton(idPrefix, version, assets) {
     const osData = guessOS();
     const osAsset = assets.find((asset) =>
       asset.name.endsWith(osData.install_extension)
     );
-    const mainDownloadLink = window.document.getElementById("download-url");
+    const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
     mainDownloadLink.href = osAsset.download_url;
     mainDownloadLink.innerText = "";
 
@@ -69,20 +97,21 @@
     mainDownloadLink.append(containerEl);
   }
 
-  function populateDownloadTable(version, assets) {
-    const downloadTableContainer =
-      window.document.getElementById("download-table");
+  function populateDownloadTable(idPrefix, version, assets) {
+    const downloadTableContainer = window.document.getElementById(
+      `${idPrefix}-table`
+    );
 
     const table = createTable();
     createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
-
-    const mappings = downloadMappings(version);
 
     const tbody = table.createTBody();
     assets.forEach((asset) => {
       createDownloadRow(tbody, version, asset);
     });
-    createMoreRow(version, tbody);
+    if (!window["quarto-download-archives"]) {
+      createMoreRow(version, tbody);
+    }
 
     downloadTableContainer.append(table);
     window.tippy(".checksum[data-tippy-content]", {
