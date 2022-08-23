@@ -33,6 +33,8 @@ async function run() {
     // Release metadata
     releaseInfo.version = releaseRaw.tag_name.slice(1);
     releaseInfo.name = releaseRaw.name;
+    releaseInfo.created = releaseRaw.created_at;
+    releaseInfo.updated = releaseRaw.updated_at;
 
     // Release assets
     releaseInfo.assets = [];
