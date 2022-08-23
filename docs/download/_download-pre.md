@@ -10,7 +10,7 @@
 ::: {#download-pre-table .download-table}
 :::
 
-:::: {.download-pre-section}
+:::: {#download-pre-section-news}
 
 ### []{.download-pre-version} (Release Candidate)
 
