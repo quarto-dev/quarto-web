@@ -21,7 +21,7 @@ image: /images/hero_right.png
 
 ::: {.panel-tabset}
 
-## Current Version - []{.download-pre-version}
+## Current: []{.download-pre-version}
 
 {{< include _download-pre.md >}}
 

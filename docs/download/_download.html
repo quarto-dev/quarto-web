@@ -40,7 +40,11 @@
             dlData.assets
           );
 
-          populateVersion(downloadData.prefix, dlData.version);
+          populateVersion(
+            downloadData.prefix,
+            dlData.version,
+            downloadData.releaseDesc
+          );
           populateDate(
             downloadData.prefix,
             new Date(dlData.created).toLocaleString("en-US", {
@@ -89,12 +93,13 @@
     return mappings;
   }
 
-  function populateVersion(idPrefix, version) {
+  function populateVersion(idPrefix, version, releaseDesc) {
     const versionNodes = window.document.querySelectorAll(
       `.${idPrefix}-version`
     );
+    const versionStr = releaseDesc ? `${version} ${releaseDesc}` : version;
     for (const node of versionNodes) {
-      node.innerHTML = version;
+      node.innerHTML = versionStr;
     }
   }
 
