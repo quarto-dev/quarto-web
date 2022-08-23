@@ -21,11 +21,11 @@ image: /images/hero_right.png
 
 ::: {.panel-tabset}
 
-## Release Candidate ([]{.download-pre-version})
+## Current Version - []{.download-pre-version}
 
 {{< include _download-pre.md >}}
 
-## Stable Release ([]{.download-version})
+## []{.download-version}
 
 {{< include _download.md >}}
 

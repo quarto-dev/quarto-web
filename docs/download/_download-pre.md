@@ -12,10 +12,9 @@
 
 :::: {#download-pre-section-news}
 
-### []{.download-pre-version} (Release Candidate)
+### Release Notes
 
 []{.download-pre-date}  
-Changelog  
 
 ::: {#download-pre-news .download-news}
 :::
