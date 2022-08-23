@@ -35,6 +35,7 @@ async function run() {
     releaseInfo.name = releaseRaw.name;
     releaseInfo.created = releaseRaw.created_at;
     releaseInfo.updated = releaseRaw.updated_at;
+    releaseInfo.published = releaseRaw.published_at;
 
     // Release assets
     releaseInfo.assets = [];
