@@ -1,6 +1,6 @@
 ---
 title: "Download Quarto"
-subtitle: "Install a release or pre-release build of Quarto."
+subtitle: "Install a release or prerelease build of Quarto."
 format:
   html:
     include-in-header: 
