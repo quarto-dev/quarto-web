@@ -11,7 +11,11 @@
 :::
 
 :::: {.download-pre-section}
-### Changes
+
+### []{.download-pre-version} (Release Candidate)
+
+[]{.download-pre-date}  
+Changelog  
 
 ::: {#download-pre-news .download-news}
 :::

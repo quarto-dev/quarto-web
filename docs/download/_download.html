@@ -37,7 +37,15 @@
             dlData.assets
           );
 
+          populateVersion(downloadData.prefix, dlData.version);
           populateNews(downloadData.prefix, dlData.description);
+
+          populateDate(
+            downloadData.prefix,
+            new Date(dlData.created).toLocaleString("en-US", {
+              dateStyle: "medium",
+            })
+          );
 
           window.tippy("a.checksum[data-tippy-content]", {
             interactive: true,
@@ -69,9 +77,25 @@
     return mappings;
   }
 
+  function populateVersion(idPrefix, version) {
+    const versionNodes = window.document.querySelectorAll(
+      `.${idPrefix}-version`
+    );
+    for (const node of versionNodes) {
+      node.innerHTML = version;
+    }
+  }
+
+  function populateDate(idPrefix, date) {
+    const dateNodes = window.document.querySelectorAll(`.${idPrefix}-date`);
+    for (const node of dateNodes) {
+      node.innerHTML = date;
+    }
+  }
+
   function populateNews(idPrefix, markdown) {
     if (markdown) {
-      markdown = markdown.replace(/^#{1,6} (.*)$/gm, "##### $1");
+      markdown = markdown.replace(/^#{1,6} (.*)$/gm, "###### $1");
       var reader = new commonmark.Parser();
       var writer = new commonmark.HtmlRenderer();
       var parsed = reader.parse(markdown);
