@@ -1,6 +1,6 @@
 ---
-title: "Prerelease Builds"
-subtitle: "Install a prerelease build of Quarto."
+title: "Download Quarto"
+subtitle: "Install a release or prerelease build of Quarto."
 format:
   html:
     include-in-header: 
@@ -9,6 +9,7 @@ format:
       text: |
         <script type="text/javascript">
         window['quarto-download-prerelease'] = true;
+        window['quarto-download-release'] = true;
         window['quarto-download-archives'] = true;
         </script>
 page-layout: full
@@ -18,8 +19,14 @@ editor: source
 image: /images/hero_right.png
 ---
 
-:::{.callout-note}
-Prerelease builds are intended for testing purposes, and are not recommended for general use. For stable builds, please visit [Release Builds](release.qmd).
-:::
+::: {.panel-tabset}
+
+## Current: []{.download-pre-version}
 
 {{< include _download-pre.md >}}
+
+## []{.download-version}
+
+{{< include _download.md >}}
+
+:::

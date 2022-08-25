@@ -33,6 +33,9 @@ async function run() {
     // Release metadata
     releaseInfo.version = releaseRaw.tag_name.slice(1);
     releaseInfo.name = releaseRaw.name;
+    releaseInfo.created = releaseRaw.created_at;
+    releaseInfo.updated = releaseRaw.updated_at;
+    releaseInfo.published = releaseRaw.published_at;
 
     // Release assets
     releaseInfo.assets = [];
@@ -42,6 +45,12 @@ async function run() {
       const assetFile = await fetch(asset.browser_download_url);
       const buffer = await assetFile.buffer();
       const checksum = hasha(buffer, { algorithm });
+      
+      if (asset.name === 'changelog.md') {
+        var decoder = new TextDecoder("utf-8");
+        
+        releaseInfo.description = decoder.decode(buffer);
+      }
 
       console.log(asset.name);
       const parts = asset.name.split("-");

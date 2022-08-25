@@ -1,88 +1,185 @@
+<script
+  type="application/javascript"
+  src="https://unpkg.com/commonmark@0.29.3/dist/commonmark.min.js"
+></script>
+
 <script type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function () {
-    let dataPath = "/docs/download/_download.json";
-    if (window["quarto-prerelease-datapath"]) {
-      dataPath = window["quarto-prerelease-datapath"];
+    const downloadDatas = [];
+    if (window["quarto-download-release"]) {
+      downloadDatas.push({
+        prefix: "download",
+        dataPath: "/docs/download/_download.json",
+        releaseDesc: undefined,
+      });
+    }
+    if (window["quarto-download-prerelease"]) {
+      downloadDatas.push({
+        prefix: "download-pre",
+        dataPath: "/docs/download/_prerelease.json",
+        releaseDesc: "RC",
+      });
     }
 
-    fetch(dataPath)
-      .then((response) => {
-        return response.json();
-      })
-      .then((dlData) => {
-        populateDownloadButton(dlData.version, dlData.assets);
-        populateDownloadTable(dlData.version, dlData.assets);
-        window.tippy("a.checksum[data-tippy-content]", {
-          interactive: true,
-          placement: "top-end",
-          maxWidth: "none",
+    for (const downloadData of downloadDatas) {
+      const dataPath = downloadData.dataPath;
+      fetch(dataPath)
+        .then((response) => {
+          return response.json();
+        })
+        .then((dlData) => {
+          populateDownloadButton(
+            downloadData.prefix,
+            downloadData.releaseDesc,
+            dlData.version,
+            dlData.assets
+          );
+          populateDownloadTable(
+            downloadData.prefix,
+            dlData.version,
+            dlData.assets
+          );
+
+          populateVersion(
+            downloadData.prefix,
+            dlData.version,
+            downloadData.releaseDesc
+          );
+          populateDate(
+            downloadData.prefix,
+            new Date(dlData.created).toLocaleString("en-US", {
+              dateStyle: "medium",
+            })
+          );
+
+          if (!window["quarto-download-nonews"]) {
+            populateNews(downloadData.prefix, dlData.description);
+          } else {
+            const newsSection = window.document.getElementById(
+              `${downloadData.prefix}-section-news`
+            );
+            if (newsSection) {
+              newsSection.remove();
+            }
+          }
+
+          window.tippy("a.checksum[data-tippy-content]", {
+            interactive: true,
+            placement: "top-end",
+            maxWidth: "none",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    }
   });
 
   // Only assets named in this list will be displayed in the list of downloads
   // (Using the label value)
   function downloadMappings(version) {
-    return {
+    const mappings = {
       [`quarto-${version}-win.msi`]: "Windows",
       [`quarto-${version}-macos.pkg`]: "Mac OS",
       [`quarto-${version}-linux-amd64.deb`]: "Linux",
     };
+
+    if (window["quarto-download-archives"]) {
+      mappings[`quarto-${version}-win.zip`] = "Windows Zip";
+      mappings[`quarto-${version}-macos.tar.gz`] = "Mac Tarball";
+      mappings[`quarto-${version}-linux-amd64.tar.gz`] = "Linux Tarball";
+    }
+
+    return mappings;
   }
 
-  function populateDownloadButton(version, assets) {
+  function populateVersion(idPrefix, version, releaseDesc) {
+    const versionNodes = window.document.querySelectorAll(
+      `.${idPrefix}-version`
+    );
+    const versionStr = releaseDesc ? `${version} ${releaseDesc}` : version;
+    for (const node of versionNodes) {
+      node.innerHTML = versionStr;
+    }
+  }
+
+  function populateDate(idPrefix, date) {
+    const dateNodes = window.document.querySelectorAll(`.${idPrefix}-date`);
+    for (const node of dateNodes) {
+      node.innerHTML = date;
+    }
+  }
+
+  function populateNews(idPrefix, markdown) {
+    if (markdown) {
+      markdown = markdown.replace(/^#{1,6} (.*)$/gm, "###### $1");
+      var reader = new commonmark.Parser();
+      var writer = new commonmark.HtmlRenderer();
+      var parsed = reader.parse(markdown);
+      var newsHtml = writer.render(parsed);
+      const newsDiv = window.document.getElementById(`${idPrefix}-news`);
+      if (newsDiv) {
+        newsDiv.innerHTML = newsHtml;
+      }
+    }
+  }
+
+  function populateDownloadButton(idPrefix, releaseDesc, version, assets) {
     const osData = guessOS();
     const osAsset = assets.find((asset) =>
       asset.name.endsWith(osData.install_extension)
     );
-    const mainDownloadLink = window.document.getElementById("download-url");
-    mainDownloadLink.href = osAsset.download_url;
-    mainDownloadLink.innerText = "";
 
-    const containerEl = window.document.createElement("div");
-    containerEl.className = "container";
+    const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
+    if (mainDownloadLink) {
+      mainDownloadLink.href = osAsset.download_url;
+      mainDownloadLink.innerText = "";
 
-    const iconEl = window.document.createElement("div");
-    iconEl.innerHTML = osData.icon;
-    iconEl.className = "icon-container";
-    if (osData.icon_margin) {
-      iconEl.style.paddingTop = osData.icon_margin;
+      const containerEl = window.document.createElement("div");
+      containerEl.className = "container";
+
+      const iconEl = window.document.createElement("div");
+      iconEl.innerHTML = osData.icon;
+      iconEl.className = "icon-container";
+      if (osData.icon_margin) {
+        iconEl.style.paddingTop = osData.icon_margin;
+      }
+      containerEl.append(iconEl);
+
+      const textContainerEl = window.document.createElement("div");
+      textContainerEl.className = "text-container";
+
+      const mainTextEl = window.document.createElement("div");
+      mainTextEl.innerHTML = `Download Quarto CLI`;
+      textContainerEl.append(mainTextEl);
+
+      const secondaryTextEl = window.document.createElement("div");
+      secondaryTextEl.className = "secondary";
+      secondaryTextEl.innerText = `${version}${
+        releaseDesc ? " " + releaseDesc : ""
+      } (${osData.name})`;
+      textContainerEl.append(secondaryTextEl);
+
+      containerEl.append(textContainerEl);
+      mainDownloadLink.append(containerEl);
     }
-    containerEl.append(iconEl);
-
-    const textContainerEl = window.document.createElement("div");
-    textContainerEl.className = "text-container";
-
-    const mainTextEl = window.document.createElement("div");
-    mainTextEl.innerHTML = `Download Quarto CLI`;
-    textContainerEl.append(mainTextEl);
-
-    const secondaryTextEl = window.document.createElement("div");
-    secondaryTextEl.className = "secondary";
-    secondaryTextEl.innerText = `${version} (${osData.name})`;
-    textContainerEl.append(secondaryTextEl);
-
-    containerEl.append(textContainerEl);
-    mainDownloadLink.append(containerEl);
   }
 
-  function populateDownloadTable(version, assets) {
-    const downloadTableContainer =
-      window.document.getElementById("download-table");
+  function populateDownloadTable(idPrefix, version, assets) {
+    const downloadTableContainer = window.document.getElementById(
+      `${idPrefix}-table`
+    );
 
     const table = createTable();
     createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
-
-    const mappings = downloadMappings(version);
 
     const tbody = table.createTBody();
     assets.forEach((asset) => {
       createDownloadRow(tbody, version, asset);
     });
-    createMoreRow(version, tbody);
+    if (!window["quarto-download-archives"]) {
+      createMoreRow(version, tbody);
+    }
 
     downloadTableContainer.append(table);
     window.tippy(".checksum[data-tippy-content]", {
@@ -152,8 +249,7 @@
     const cell = moreRow.insertCell(1);
 
     const moreLinkEl = window.document.createElement("a");
-    moreLinkEl.href =
-      "https://github.com/quarto-dev/quarto-cli/releases/tag/v" + version;
+    moreLinkEl.href = "/docs/download";
     moreLinkEl.innerText = "more downloads…";
     cell.appendChild(moreLinkEl);
 
