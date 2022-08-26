@@ -10,5 +10,14 @@
 ::: {#download-table .download-table}
 :::
 
+:::: {#download-section-news}
+
+### Release Notes
+
+[]{.download-date}  
+
 ::: {#download-news .download-news}
 :::
+
+::::
+
