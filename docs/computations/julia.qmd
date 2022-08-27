@@ -61,7 +61,7 @@ There are many options which control the behavior of code execution and output, 
 
 By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
 
-```{{julia}}
+``` {{julia}}
 #| label: fig-plots
 #| fig-cap: Multiple Plots
 #| fig-subcap:
@@ -82,19 +82,10 @@ _jupyter-rendering.md
 
 In order to render documents with embedded Julia code you'll need to install the following components:
 
-1)  Jupyter
-2)  IJulia
-3)  Revise.jl
+1)  IJulia
+2)  Revise.jl
 
 We'll cover each of these in turn below.
-
-### Jupyter
-
-If you already have Python 3 and Jupyter installed in your environment, then proceed to the section below on installing the [IJulia Kernel](#ijulia).
-
-``` include
-_jupyter-install.md
-```
 
 ### IJulia {#ijulia}
 
@@ -103,9 +94,13 @@ _jupyter-install.md
 ``` julia
 using Pkg
 Pkg.add("IJulia")
+using IJulia
+notebook()
 ```
 
-Once you've installed IJulia Quarto has the basic components required to execute Julia cells.
+The first time you run `notebook()`, it will prompt you for whether it should install Jupyter. Hit enter to have it use the [Conda.jl](https://github.com/Luthaf/Conda.jl) package to install a minimal Python+Jupyter distribution (via [Miniconda](http://conda.pydata.org/docs/install/quick.html)) that is private to Julia (not in your `PATH`). On Linux, it defaults to looking for `jupyter` in your `PATH` first, and only asks to installs the Conda Jupyter if that fails.
+
+If you choose not to use Conda.jl to install Python and Jupyter you will need to make sure that you have another installation of it on your system (see the section on [Installing Jupyter](#installing-jupyter) if you need help with this).
 
 ### Revise.jl
 
@@ -164,3 +159,13 @@ quarto check jupyter
 ``` include
 _jupyter-daemon.md
 ```
+
+## Installing Jupyter
+
+You can rely on the minimal version of Python and Jupyter that is installed automatically by **IJulia**, or you can choose to install Python and Jupyter separately. If you need to install another version of Jupyter this section describes how.
+
+``` include
+_jupyter-install.md
+```
+
+### 
