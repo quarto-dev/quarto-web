@@ -1,6 +1,6 @@
 
 
-To create a cross-referenceable table, add a caption to the table then include a `#tbl-` label in braces at the end of the caption. For example:
+For markdown tables, add a caption below the table, then include a `#tbl-` label in braces at the end of the caption. For example:
 
 ``` markdown
 | Col1 | Col2 | Col3 |
@@ -18,7 +18,6 @@ Which looks like this when rendered to HTML:
 
 ![](images/crossref-table.png){fig-alt="A table with 3 columns and four rows. The text 'Table 1: My Caption' is above the header column. The text 'See tbl. 1' is aligned to the left underneath the last column." width="500"}
 
-For tables produced by executable code cells, the `tbl-` prefixed label goes in the `label` cell option.
 
 ### Subtables
 
@@ -53,5 +52,3 @@ Which looks like this when rendered to HTML:
 ![](/docs/authoring/images/crossref-subtable.png){fig-alt="Two tables side-by-side. Both tables have 3 columns and 4 rows. The table on the left is titled '(a) First table'. The table on the right is titled '(b) Second Table'. Centered underneath both tables is the text 'Table 1: Main Caption'. The text 'See tbl. 2 for details, especially tbl. 2 (b)' is aligned to the left underneath that."}
 
 Note that the "Main Caption" for the table is provided as the last block within the containing div.
-
-
