@@ -134,9 +134,65 @@ Here are all of the options available for side navigation:
 
 For more information on controlling the appearance of the side navigation using HTML themes, see [HTML Themes - Navigation](/docs/output-formats/html-themes.qmd#navigation).
 
-### Sidebar Tools {.unlisted}
+### Auto Generation
 
-In addition to traditional navigation, the sidebar can also display a set of tools (e.g. social actions, github view or edit actions, etc.) A tool definition consists of an icon name and an href to follow when clicked. For `icon`, use the icon name of any of the 1,300+ [Bootstrap Icons](https://icons.getbootstrap.com).
+::: {.callout-note}
+## Pre-release feature
+
+The sidebar auto generation feature described below is currently only available in the Quarto v1.2 pre-release: <https://quarto.org/docs/download/prerelease.html>.
+:::
+
+Above we describe how to explicitly populate the `contents` of your sidebar with navigation items. You can also automatically generate sidebar navigation from the filesystem. The most straightforward way to do this is to specify the `auto: true` option as follows:
+
+```yaml
+sidebar:
+  contents:
+    auto: true
+```
+
+Using `auto: true` at the root level will result in all documents in your website being included within the navigation (save for the home page which can be navigated to via the title link). Navigation is constructed using the following rules:
+
+1. Titles will be read from the `title` field of documents.
+2. Subdirectories will create sections. Use an `index.qmd` in the directory to provide its `title`, otherwise the directory name will be used.
+3. Order is alphabetical unless a numeric `order` field is provided in document metadata.
+
+Rather than specifying that all documents should be included, you can also specify a directory name or one or more glob patterns. For example, the following values for `auto` are all valid:
+
+```yaml
+auto: docs
+auto: "*-report.ipynb"
+auto: ["*.qmd", "*-report.ipynb"]
+```
+
+Note that `auto` entries that include a `*` need to have quotes around them so they are correctly parsed as YAML strings.
+
+The `auto` option can also be used anywhere within a manually constructed sidebar `contents`. For example, here we add a section that is automatically generated from a directory:
+
+```yaml
+sidebar:
+  contents:
+    - about.qmd
+    - contributing.qmd
+    - section: Reports
+      contents: 
+         auto: reports
+```
+
+Here we add an `auto` entry in the middle of a list of items:
+
+```yaml
+sidebar:
+  contents:
+    - about.qmd
+    - contributing.qmd
+    - auto: "*-report.qmd"
+```
+
+Note again that we quote the `auto` entry with a `*` in it so that it is correctly parsed.
+
+### Sidebar Tools 
+
+In addition to traditional navigation, the sidebar can also display a set of tools (e.g. social actions, GitHub view or edit actions, etc.) A tool definition consists of an icon name and an href to follow when clicked. For `icon`, use the icon name of any of the 1,300+ [Bootstrap Icons](https://icons.getbootstrap.com).
 
 For example:
 
