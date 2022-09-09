@@ -1,0 +1,232 @@
+---
+title: "Configuration Profiles"
+editor: visual
+---
+
+::: callout-note
+## Pre-Release Feature
+
+The Configuration Profiles feature is currently only available in the Quarto v1.2 Pre-Release: <https://quarto.org/docs/download/prerelease.html>.
+:::
+
+## Overview
+
+Project configuration profiles enable you to adapt both the options and content of your projects for different scenarios. For example:
+
+-   You may want to have distinct execution behavior when running on a production server. For example, you may want to use `freeze` or `cache` when rendering locally but always execute all of the code when running on a CI server.
+-   You may want to create different versions of a book from the same source code (e.g. a basic and advanced version)
+
+For example, this `_quarto.yml` file defines a `production` profile that overrides the default rendering execution behavior (disabling the use of `freeze`):
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: website
+  
+execute: 
+  freeze: true
+  
+profile:
+  production:
+    execute:
+      freeze: false
+```
+
+When the `production` profile is active, the YAML options it defines will be [merged](quarto-projects.qmd#metadata-merging) over the default project options (in this case resulting in the use of the frozen computational results being disabled).
+
+The next section covers how to activate profiles then subsequent sections go into more depth on the various capabilities of profiles.
+
+## Activating Profiles
+
+One or more named profiles can be activated as using either the `QUARTO_PROFILE` environment variable or the `--profile` command line argument.
+
+Here we activate a profile using the `QUARTO_PROFILE` environment variable:
+
+``` {.bash filename="Terminal"}
+export QUARTO_PROFILE=production
+quarto render
+```
+
+Here we activate a profile by passing the `--profile` argument on the Quarto command line:
+
+``` {.bash filename="Terminal"}
+quarto render --profile production
+```
+
+The use of the `--profile` command line argument entirely replaces any defined `QUARTO_PROFILE` within the environment.
+
+Note that more than one profile can be activated at once. For example, here we activate both the `production` and `advanced` profiles:
+
+``` {.bash filename="Terminal"}
+quarto render --profile production,advanced
+```
+
+## Profile Options
+
+Above we demonstrated defining profile-specific project-level options. You do this by including named profiles underneath the `profile` key of `_quarto.yml`. Here is another example that customizes the title and output directory based on profile:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  title: "My Website"
+  type: website
+
+profile:
+  advanced:
+    project:
+       title: "My Website (Advanced)"
+       output-dir: _site-advanced
+```
+
+Note that its also possible to define profile options in their own file. The following is equivalent to the example above:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  title: "My Book"
+  type: website
+
+profile:
+  advanced: _advanced.yml
+```
+
+``` {.yaml filename="_advanced.yml"}
+project:
+  title: "My Website (Advanced)"
+  output-dir: _site-advanced
+```
+
+It's important to note that multiple profiles can be active. So the following enables you to vary options based on both `advanced` and `production` profiles:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  title: "My Website"
+  type: website
+  
+execute:
+  freeze: true
+
+profile:
+  advanced:
+    project:
+       title: "My Website (Advanced)"
+       output-dir: _site-advanced
+  production:
+    execute:
+       freeze: false
+```
+
+The `advanced` and `production` profiles would each be applied if you specify them both:
+
+``` {.bash filename="Terminal"}
+# multiple profiles in environment
+export QUARTO_PROFILE=advanced,production
+
+# multiple profiles on command line
+quarto render --profile advanced,production
+```
+
+### Profile Groups
+
+Often times a set of profile names form a mutually exclusive group, and you want to make sure that at least one of the profiles is always active. For example, here we define distinct chapter lists for `basic` and `advanced` profiles:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: book
+  
+book:
+  title: "My Book"
+  author: "Norah Jones"
+
+profile:
+  basic:
+    book:
+      chapters:
+        - intro.qmd
+        - using.qmd
+        - summary.qmd
+  advanced:
+     book:
+       chapters:
+         - intro.qmd
+         - using.qmd
+         - advanced.qmd
+         - summary.qmd
+         
+profile-group: [basic, advanced]
+```
+
+You'll note that the base options for `book` do not include a chapter list (as we rely on the profiles for distinct lists). This means that to successfully render the project, you always need to have a profile defined---this might be inconvenient especially for local authoring and preview.
+
+By specifying a `profile-group` we indicate that one of the profiles must be defined, and that the first one listed should be used as the default when no others are present:
+
+``` yaml
+profile-group: [basic, advanced]
+```
+
+## Profile Content
+
+You can also specify that content within your project only be included when a certain profile is active. You do this by applying the `when-profile` attribute to a div or span. For example, here we defined a div that is included only for the `advanced` profile:
+
+``` markdown
+::: {when-profile="advanced"}
+This content will only appear in the advanced version.
+:::
+```
+
+You can also exclude content from a given profile using the `unless-profile` attribute. Here we include content only when the profile is not `advanced`:
+
+``` markdown
+::: {unless-profile="advanced"}
+This content will not appear in all versions save for advanced.
+:::
+```
+
+You can also use these attributes with spans. For example:
+
+``` markdown
+[Only in advanced]{when-profile="advanced"}
+```
+
+### Language Content
+
+Pandoc includes a feature that allows for conditional inclusion of content based on the currently defined `lang` for the document. This is based on using the `lang` attribute on divs and spans. For example:
+
+``` markdown
+---
+lang: en
+---
+
+::: {lang=en}
+> This quote is written in English.
+:::
+
+::: {lang=fr}
+> Cette citation est écrite en français.
+:::
+```
+
+When rendered, this document will include only the English block (because `lang` is set to `en` in the document options). You can combine this feature of Pandoc with the configuration profiles by setting the `lang` within your profile. For example:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: website
+
+profile:
+  english:
+    project:
+      title: "My Website"
+    lang: en
+
+  french:
+    project:
+      title: "Mon site internet"
+      output-dir: _site-fr
+    lang: fr
+    
+profile-group: [english, french]
+```
+
+You would render the two versions of the site as follows:
+
+``` {.bash filename="Terminal"}
+quarto render --profile english
+quarto render --profile french
+```
