@@ -37,9 +37,13 @@ quarto create-project myproject
 
 ## Shared Metadata
 
-When you create a project, a `_quarto.yml` config file is created. Here is an example of what the `_quarto.yml` file might look like:
+One of the most important features of Quarto Projects is the ability to share YAML metadata options across multiple documents. Shared metadata can be defined at both the project and directory level.
 
-``` yaml
+### Project Metadata
+
+All Quarto projects include a `_quarto.yml` configuraiton file. Any document rendered within the project directory will automatically inherit the metadata defined at the project level. Here is an example of what the `_quarto.yml` file might look like:
+
+``` {.yaml filename="_quarto.yml"}
 project:
   output-dir: _output
 
@@ -57,11 +61,76 @@ format:
     margin-right: 30mm
 ```
 
-Any document rendered within the project directory will automatically inherit the metadata defined at the project level.
-
 Note that the project file contains both global options that apply to all formats (e.g. `toc` and `bibliography`) as well as format-specific options.
 
-You can include additional metadata linked via `metadata-files` and provide per-directory options by adding a `_metadata.yml` file to any sub-directory of your project. Options provided within these files use the same schema as `_quarto.yml`, and are merged with any options you've already provided in `_quarto.yml`.
+### Directory Metadata
+
+You can also define metadata that should be inherited by only files within a directory. To do this, add a `_metadata.yml` file to the directory where you want to share metadata. For example, the following `_metadata.yml` sets up default Revealjs options for a series of presentations and disables `search` for documents within the directory:
+
+``` {.yaml filename="_metadata.yml"}
+format:
+  revealjs: 
+    menu: false
+    progress: false
+search: false
+```
+
+Options provided within these files use the same schema as `_quarto.yml` and are merged with any options you've already provided in `_quarto.yml`.
+
+### Metadata Merging
+
+Metadata defined within `_quarto.yml`, `_metadata.yml`, and document-level YAML options are merged together. Document level options take priority, followed by directory options and finally project-level options:
+
++------------------------------------------+-----------------------------------------------------------------------------+
+| File                                     | Role                                                                        |
++==========================================+=============================================================================+
+| `_quarto.yml`                            | Project level default options                                               |
++------------------------------------------+-----------------------------------------------------------------------------+
+| `dir/_metadata.yml`                      | Directory level default options (overrides project)                         |
++------------------------------------------+-----------------------------------------------------------------------------+
+| `dir/document.qmd`                       | Document options (overrides directory and project)                          |
++------------------------------------------+-----------------------------------------------------------------------------+
+
+Note that when metadata is combined, objects and arrays are merged rather than simply overwriting each other. For example, here is how project and directory level options that affect output format and bibliographies would be merged:
+
++------------------------------------+------------------------------------------+-------------------------------+
+| ``` {.yaml filename="_quarto.yml"} | ``` {.yaml filename="dir/_metadata.yml"} | ``` {.yaml filename="merged"} |
+| format:                            | format:                                  | format:                       |
+|   html:                            |   html:                                  |   html:                       |
+|     toc: true                      |     code-fold: true                      |     toc: true                 |
+| bibliography:                      | bibliography:                            |     code-fold: true           |
+|   - refs.bib                       |   - proj.bib                             | bibliography:                 |
+|                                    |                                          |   - refs.bib                  |
+|                                    |                                          |   - proj.bib                  |
+|                                    |                                          | ```                           |
+| ```                                | ```                                      |                               |
++------------------------------------+------------------------------------------+-------------------------------+
+
+: {tbl-colwidths="\[33,33,33\]"}
+
+### Metadata Includes
+
+You might find it convenient to break your metadata into multiple files. You can do this using the `metadata-files` option. For example, here we include some website options within a `_quarto.yml`:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: website
+  
+metadata-files:
+  - _website.yml
+```
+
+``` {.yaml filename="_website.yml"}
+website:
+  navbar:
+    background: primary
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+```
+
+Files listed in `metadata-files` are merged with the parent file in the same fashion that project, directory, and document options are merged. This means that included files can both provide new options as well as combine with existing options.
 
 ## Rendering Projects
 
