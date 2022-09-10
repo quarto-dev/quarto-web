@@ -1,22 +1,32 @@
 ---
-title: "Configuration Profiles"
+title: "Project Profiles"
 editor: visual
 ---
 
 ::: callout-note
-## Pre-Release Feature
+#### Pre-Release Feature
 
 This feature is currently only available in the Quarto v1.2 Pre-Release. Before attempting to try it out, please download the very latest version of Quarto v1.2 from here: <https://quarto.org/docs/download/prerelease.html>.
 :::
 
 ## Overview
 
-Project configuration profiles enable you to adapt both the options and content of your projects for different scenarios. For example:
+Project profiles enable you to adapt both the options and content of your projects for different scenarios. For example:
 
 -   You may want to have distinct execution behavior when running on a production server. For example, you may want to use `freeze` or `cache` when rendering locally but always execute all of the code when running on a CI server.
 -   You may want to create different versions of a book from the same source code (e.g. a basic and advanced version)
 
-For example, this `_quarto.yml` file defines a `production` configuration that overrides the default rendering execution behavior (disabling the use of `freeze`):
+When a project profile is activated a number of things occur:
+
+1) Profile specific `config` is merged with the top-level `_quarto.yml`
+
+2) Divs and Spans can use the `when-profile` attribute to target content specifically for that project.
+
+3) The `QUARTO_PROFILE` environment variable includes the profile name so that other code (e.g. Python or R code) can condition its behavior on the active profile.
+
+### Examples
+
+Here's an example of a `_quarto.yml` file defining a `production` profile that overrides the default rendering execution behavior (disabling the use of `freeze`):
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -26,28 +36,36 @@ execute:
   freeze: true
   
 profile:
-  configurations:
+  config:
     production:
       execute:
         freeze: false
 ```
 
-When the `production` configuration is active, the YAML options it defines will be [merged](quarto-projects.qmd#metadata-merging) over the default project options (in this case resulting in the use of the frozen computational results being disabled).
+When the `production` profile is active, its `config` will be [merged](quarto-projects.qmd#metadata-merging) over the default project config (in this case resulting in the use of the frozen computational results being disabled).
 
-The next section covers how to activate configuration profiles, then subsequent sections go into more depth on the various capabilities of profiles.
+Here's an example of using the `when-profile` attribute to include content only when the `advanced` profile is active:
+
+``` markdown
+::: {when-profile="advanced"}
+This content will only appear in the advanced version.
+:::
+```
+
+The next section covers how to activate profiles, then subsequent sections go into more depth on the various capabilities of profiles.
 
 ## Activating Profiles
 
-One or more named configuration profiles can be activated as using either the `QUARTO_PROFILE` environment variable or the `--profile` command line argument.
+One or more named profiles can be activated by using either the `QUARTO_PROFILE` environment variable or the `--profile` command line argument.
 
-Here we activate a configuration profile using the `QUARTO_PROFILE` environment variable:
+Here we activate a profile using the `QUARTO_PROFILE` environment variable:
 
 ``` {.bash filename="Terminal"}
 export QUARTO_PROFILE=production
 quarto render
 ```
 
-Here we activate a configuration profile by passing the `--profile` argument on the Quarto command line:
+Here we activate a profile by passing the `--profile` argument on the Quarto command line:
 
 ``` {.bash filename="Terminal"}
 quarto render --profile production
@@ -55,15 +73,15 @@ quarto render --profile production
 
 The use of the `--profile` command line argument entirely replaces any defined `QUARTO_PROFILE` within the environment.
 
-Note that more than one configuration profile can be activated at once. For example, here we activate both the `production` and `advanced` profiles:
+Note that more than one profile can be activated at once. For example, here we activate both the `production` and `advanced` profiles:
 
 ``` {.bash filename="Terminal"}
 quarto render --profile production,advanced
 ```
 
-## Profile Options
+## Profile Config
 
-Above we demonstrated defining profile-specific project options. You do this by including named `configurations` within the `profile` key of `_quarto.yml`. Here is another example that customizes the title and output directory based on profile:
+Define profile-specific configuration by including `config` entries for profiles in `_quarto.yml`. For example, here we customize the `title` and `output-dir` based on the currently active profile:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -71,14 +89,14 @@ project:
   type: website
 
 profile:
-  configurations:
+  config:
     advanced:
       project:
         title: "My Website (Advanced)"
         output-dir: _site-advanced
 ```
 
-Note that its also possible to define profile options in their own file. The following is equivalent to the example above:
+Note that its also possible to define profile configuration in a separate file. The following is equivalent to the example above:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -86,7 +104,7 @@ project:
   type: website
 
 profile:
-  configurations:
+  config:
     advanced: advanced.yml
 ```
 
@@ -96,7 +114,7 @@ project:
   output-dir: _site-advanced
 ```
 
-It's important to note that multiple profiles can be active. So the following enables you to vary options based on both `advanced` and `production` profiles:
+It's important to note that multiple profiles can be active. So the following enables you to vary configuration based on both `advanced` and `production` profiles:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -107,7 +125,7 @@ execute:
   freeze: true
 
 profile:
-  configurations:
+  config:
     advanced:
       project:
         title: "My Website (Advanced)"
@@ -165,7 +183,7 @@ book:
 
 profile:
   group: [basic, advanced]
-  configurations:
+  config:
     basic:
       book:
         chapters:
@@ -183,7 +201,7 @@ profile:
 
 You'll note that the base options for `book` do not include a chapter list (as we rely on the profiles for distinct lists). This means that to successfully render the project, you always need to have a profile defined---this might be inconvenient especially for local authoring and preview.
 
-By specifying a `profile-group` we indicate that one of the profiles must be defined, and that the first one listed should be used as the default when no others are present:
+By specifying a `group` we indicate that one of the profiles must be defined, and that the first one listed should be used as the default when no others are present:
 
 ``` yaml
 profile:
@@ -195,7 +213,7 @@ Note in this example we specify the group as a list item beneath `group`: this d
 
 ## Default Profile
 
-When authoring a Quarto project that uses configuration profiles you might want to change which profile(s) are rendered by default to try out different variations of the project.
+When authoring a Quarto project that uses profiles you might want to change which profile(s) are rendered by default to try out different variations of the project.
 
 While you could certainly do this by defining environment variables in your shell, this isn't particularly convenient when using the integrated render and preview functionality in VS Code and RStudio.
 
@@ -210,7 +228,7 @@ profile:
 
 ## Language Content
 
-Quarto includes a feature that allows for conditional inclusion of content based on the currently defined `lang` for the document. This is based on using the `lang` attribute on divs and spans. For example:
+Quarto includes a feature that enables conditional inclusion of content based on the currently defined `lang` for the document. This is based on using the `lang` attribute on divs and spans. For example:
 
 ``` markdown
 ---
@@ -226,20 +244,20 @@ lang: en
 :::
 ```
 
-When rendered, this document will include only the English block (because `lang` is set to `en` in the document options). You can combine this feature with configuration profiles by setting the `lang` within your profile. For example:
+When rendered, this document will include only the English block (because `lang` is set to `en` in the document options). You can combine this feature with profiles by setting the `lang` within your profile. For example:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
   type: website
 
 profile:
+  default: english
   group: [english, french]
-  configurations:
+  config:
     english:
       project:
         title: "My Website"
       lang: en
-
     french:
       project:
         title: "Mon site internet"
