@@ -18,15 +18,15 @@ Project profiles enable you to adapt both the options and content of your projec
 
 When a project profile is activated a number of things occur:
 
-1) Profile specific `config` is merged with the top-level `_quarto.yml`
+1)  Profile specific `config` is merged with the top-level `_quarto.yml`
 
-2) Divs and Spans can use the `when-profile` attribute to target content specifically for that project.
+2)  Divs and Spans can use the `when-profile` attribute to target content specifically for that project.
 
-3) The `QUARTO_PROFILE` environment variable includes the profile name so that other code (e.g. Python or R code) can condition its behavior on the active profile.
+3)  The `QUARTO_PROFILE` environment variable includes the profile name so that other code (e.g. Python or R code) can condition its behavior on the active profile.
 
 ### Examples
 
-Here's an example of a `_quarto.yml` file defining a `production` profile that overrides the default rendering execution behavior (disabling the use of `freeze`):
+Here's an example of a `_quarto.yml` file that is extended by a `production` configuration defined in `_quarto.production.yml`. When activated, the `production` profile overrides the default rendering execution behavior (disabling the use of `freeze`):
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -34,15 +34,14 @@ project:
   
 execute: 
   freeze: true
-  
-profile:
-  config:
-    production:
-      execute:
-        freeze: false
 ```
 
-When the `production` profile is active, its `config` will be [merged](quarto-projects.qmd#metadata-merging) over the default project config (in this case resulting in the use of the frozen computational results being disabled).
+``` {.yaml filename="_quarto.production.yml"}
+execute:
+  freeze: false
+```
+
+When the `production` profile is active, its configuration will be [merged](quarto-projects.qmd#metadata-merging) over the default project config (in this case resulting in the use of the frozen computational results being disabled).
 
 Here's an example of using the `when-profile` attribute to include content only when the `advanced` profile is active:
 
@@ -79,36 +78,17 @@ Note that more than one profile can be activated at once. For example, here we a
 quarto render --profile production,advanced
 ```
 
-## Profile Config
+## Profile Configuration
 
-Define profile-specific configuration by including `config` entries for profiles in `_quarto.yml`. For example, here we customize the `title` and `output-dir` based on the currently active profile:
+Define profile-specific configuration by adding an additional project file that includes the name of the profile (for example, `_quarto.advanced.yml` for the `advanced` profile). For example, here we customize the `title` and `output-dir` based on the currently active profile:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
   title: "My Website"
   type: website
-
-profile:
-  config:
-    advanced:
-      project:
-        title: "My Website (Advanced)"
-        output-dir: _site-advanced
 ```
 
-Note that its also possible to define profile configuration in a separate file. The following is equivalent to the example above:
-
-``` {.yaml filename="_quarto.yml"}
-project:
-  title: "My Book"
-  type: website
-
-profile:
-  config:
-    advanced: advanced.yml
-```
-
-``` {.yaml filename="advanced.yml"}
+``` {.yaml filename="_quarto.advanced.yml"}
 project:
   title: "My Website (Advanced)"
   output-dir: _site-advanced
@@ -123,16 +103,17 @@ project:
   
 execute:
   freeze: true
+```
 
-profile:
-  config:
-    advanced:
-      project:
-        title: "My Website (Advanced)"
-        output-dir: _site-advanced
-    production:
-      execute:
-        freeze: false
+``` {.yaml filename="_quarto.advanced.yml"}
+project:
+  title: "My Website (Advanced)"
+  output-dir: _site-advanced
+```
+
+``` {.yaml filename="_quarto.production.yml"}
+execute:
+  freeze: false
 ```
 
 The `advanced` and `production` profiles would each be applied if you specify them both:
@@ -183,20 +164,23 @@ book:
 
 profile:
   group: [basic, advanced]
-  config:
-    basic:
-      book:
-        chapters:
-          - intro.qmd
-          - using.qmd
-          - summary.qmd
-    advanced:
-      book:
-        chapters:
-          - intro.qmd
-          - using.qmd
-          - advanced.qmd
-          - summary.qmd
+```
+
+``` {.yaml filename="_quarto.basic.yml"}
+book:
+  chapters:
+    - intro.qmd
+    - using.qmd
+    - summary.qmd
+```
+
+``` {.yaml filename="_quarto.advanced.yml"}
+book:
+  chapters:
+    - intro.qmd
+    - using.qmd
+    - advanced.qmd
+    - summary.qmd
 ```
 
 You'll note that the base options for `book` do not include a chapter list (as we rely on the profiles for distinct lists). This means that to successfully render the project, you always need to have a profile defined---this might be inconvenient especially for local authoring and preview.
@@ -253,16 +237,19 @@ project:
 profile:
   default: english
   group: [english, french]
-  config:
-    english:
-      project:
-        title: "My Website"
-      lang: en
-    french:
-      project:
-        title: "Mon site internet"
-        output-dir: _site-fr
-      lang: fr
+```
+
+``` {.yaml filename="_quarto.english.yml"}
+project:
+  title: "My Website"
+lang: en
+```
+
+``` {.yaml filename="_quarto.french.yml"}
+project:
+  title: "Mon site internet"
+  output-dir: _site-fr
+lang: fr
 ```
 
 You would render the two versions of the project as follows:
