@@ -26,7 +26,7 @@ When a project profile is activated a number of things occur:
 
 ### Examples
 
-Here's an example of a `_quarto.yml` file that is extended by a `production` configuration defined in `_quarto.production.yml`. When activated, the `production` profile overrides the default rendering execution behavior (disabling the use of `freeze`):
+Here's an example of a `_quarto.yml` file that is extended by a `production` configuration defined in `_quarto-production.yml`. When activated, the `production` profile overrides the default rendering execution behavior (disabling the use of `freeze`):
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -36,7 +36,7 @@ execute:
   freeze: true
 ```
 
-``` {.yaml filename="_quarto.production.yml"}
+``` {.yaml filename="_quarto-production.yml"}
 execute:
   freeze: false
 ```
@@ -80,7 +80,7 @@ quarto render --profile production,advanced
 
 ## Profile Configuration
 
-Define profile-specific configuration by adding an additional project file that includes the name of the profile (for example, `_quarto.advanced.yml` for the `advanced` profile). For example, here we customize the `title` and `output-dir` based on the currently active profile:
+Define profile-specific configuration by adding an additional project file that includes the name of the profile (for example, `_quarto-advanced.yml` for the `advanced` profile). For example, here we customize the `title` and `output-dir` based on the currently active profile:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -88,7 +88,7 @@ project:
   type: website
 ```
 
-``` {.yaml filename="_quarto.advanced.yml"}
+``` {.yaml filename="_quarto-advanced.yml"}
 project:
   title: "My Website (Advanced)"
   output-dir: _site-advanced
@@ -105,13 +105,13 @@ execute:
   freeze: true
 ```
 
-``` {.yaml filename="_quarto.advanced.yml"}
+``` {.yaml filename="_quarto-advanced.yml"}
 project:
   title: "My Website (Advanced)"
   output-dir: _site-advanced
 ```
 
-``` {.yaml filename="_quarto.production.yml"}
+``` {.yaml filename="_quarto-production.yml"}
 execute:
   freeze: false
 ```
@@ -152,7 +152,7 @@ You can also use these attributes with spans. For example:
 
 ## Profile Groups
 
-Often times a set of profile names form a mutually exclusive group, and you want to make sure that at least one of the profiles is always active. For example, here we define distinct chapter lists for `basic` and `advanced` profiles:
+Often times a set of profile names form a mutually exclusive group, and you want to make sure that at least one of the profiles is always active. For example, here we define distinct chapter lists for `basic` and `advanced` profiles, along with a profile `group` entry indicating that they form a group:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -163,10 +163,11 @@ book:
   author: "Norah Jones"
 
 profile:
-  group: [basic, advanced]
+  group: 
+    - [basic, advanced]
 ```
 
-``` {.yaml filename="_quarto.basic.yml"}
+``` {.yaml filename="_quarto-basic.yml"}
 book:
   chapters:
     - intro.qmd
@@ -174,7 +175,7 @@ book:
     - summary.qmd
 ```
 
-``` {.yaml filename="_quarto.advanced.yml"}
+``` {.yaml filename="_quarto-advanced.yml"}
 book:
   chapters:
     - intro.qmd
@@ -185,15 +186,7 @@ book:
 
 You'll note that the base options for `book` do not include a chapter list (as we rely on the profiles for distinct lists). This means that to successfully render the project, you always need to have a profile defined---this might be inconvenient especially for local authoring and preview.
 
-By specifying a `group` we indicate that one of the profiles must be defined, and that the first one listed should be used as the default when no others are present:
-
-``` yaml
-profile:
-  group:
-    - [basic, advanced]
-```
-
-Note in this example we specify the group as a list item beneath `group`: this demonstrates the possibility of defining multiple profile groups within a project.
+By specifying a `group` we indicate that one of the profiles must be defined, and that the first one listed should be used as the default when no others are present.
 
 ## Default Profile
 
@@ -201,13 +194,11 @@ When authoring a Quarto project that uses profiles you might want to change whic
 
 While you could certainly do this by defining environment variables in your shell, this isn't particularly convenient when using the integrated render and preview functionality in VS Code and RStudio.
 
-To define a default profile that is used when an explicit `QUARTO_PROFILE` or `--profile` CLI argument is not present, add a `default` option to the `profile` key as follows:
+To define a default profile that is used when an explicit `QUARTO_PROFILE` or `--profile` CLI argument is not present, add a `default` option to the `profile` key. For example, here we indicate that `development` should be the active profile is not otherwise specified:
 
 ``` {.yaml filename="_quarto.yml"}
 profile:
-  default: advanced
-  group:
-    - [basic, advanced]
+  default: development
 ```
 
 ## Language Content
@@ -235,17 +226,16 @@ project:
   type: website
 
 profile:
-  default: english
   group: [english, french]
 ```
 
-``` {.yaml filename="_quarto.english.yml"}
+``` {.yaml filename="_quarto-english.yml"}
 project:
   title: "My Website"
 lang: en
 ```
 
-``` {.yaml filename="_quarto.french.yml"}
+``` {.yaml filename="_quarto-french.yml"}
 project:
   title: "Mon site internet"
   output-dir: _site-fr
