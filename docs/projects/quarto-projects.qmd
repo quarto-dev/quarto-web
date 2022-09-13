@@ -65,7 +65,6 @@ Note that the project file contains both global options that apply to all format
 
 You can further customize project metadata based on different project profiles (e.g. development vs. production or creating multiple versions of a book or website). See the article on [Project Profiles](profiles.qmd) for additional details.
 
-
 ### Directory Metadata
 
 You can also define metadata that should be inherited by only files within a directory. To do this, add a `_metadata.yml` file to the directory where you want to share metadata. For example, the following `_metadata.yml` sets up default Revealjs options for a series of presentations and disables `search` for documents within the directory:
@@ -84,15 +83,15 @@ Options provided within these files use the same schema as `_quarto.yml` and are
 
 Metadata defined within `_quarto.yml`, `_metadata.yml`, and document-level YAML options are merged together. Document level options take priority, followed by directory options and finally project-level options:
 
-+------------------------------------------+-----------------------------------------------------------------------------+
-| File                                     | Role                                                                        |
-+==========================================+=============================================================================+
-| `_quarto.yml`                            | Project level default options                                               |
-+------------------------------------------+-----------------------------------------------------------------------------+
-| `dir/_metadata.yml`                      | Directory level default options (overrides project)                         |
-+------------------------------------------+-----------------------------------------------------------------------------+
-| `dir/document.qmd`                       | Document options (overrides directory and project)                          |
-+------------------------------------------+-----------------------------------------------------------------------------+
++------------------------+-----------------------------------------------------+
+| File                   | Role                                                |
++========================+=====================================================+
+| `_quarto.yml`          | Project level default options                       |
++------------------------+-----------------------------------------------------+
+| `dir/_metadata.yml`    | Directory level default options (overrides project) |
++------------------------+-----------------------------------------------------+
+| `dir/document.qmd`     | Document options (overrides directory and project)  |
++------------------------+-----------------------------------------------------+
 
 Note that when metadata is combined, objects and arrays are merged rather than simply overwriting each other. For example, here is how project and directory level options that affect output format and bibliographies would be merged:
 
@@ -105,8 +104,7 @@ Note that when metadata is combined, objects and arrays are merged rather than s
 |   - refs.bib                       |   - proj.bib                             | bibliography:                 |
 |                                    |                                          |   - refs.bib                  |
 |                                    |                                          |   - proj.bib                  |
-|                                    |                                          | ```                           |
-| ```                                | ```                                      |                               |
+| ```                                | ```                                      | ```                           |
 +------------------------------------+------------------------------------------+-------------------------------+
 
 : {tbl-colwidths="\[33,33,33\]"}
@@ -134,6 +132,17 @@ website:
 ```
 
 Files listed in `metadata-files` are merged with the parent file in the same fashion that project, directory, and document options are merged. This means that included files can both provide new options as well as combine with existing options.
+
+### Local Config
+
+Sometimes its useful to define local changes to project configuration that are not checked in to version control. You can do this by creating a `_quarto.yml.local` config file. For example, here we specify that we want to use the execution cache when running locally:
+
+```{.yaml filename="_quarto.yml.local"}
+execute:
+  cache: true
+```
+
+Note that Quarto automatically writes an entry to `.gitignore` to ensure that `.local` files are not committed (note that [environment variables](environment.qmd#local-environment) can also be defined in a similar `.local` file).
 
 ## Rendering Projects
 
@@ -182,6 +191,9 @@ These articles provide additional documentation on more advanced features of Qua
 
 -   [Project Profiles](profiles.qmd) describes how you can adapt both the options and content of your projects for different scenarios (e.g. development vs. production or creating multiple versions of a book or website).
 
--   [Virtual Environments](virtual-environments.qmd) explores how to create project-specific package libraries, which helps with faithfully reproducing your environment over time as well as ensuring that upgrading a package in one project doesn't break other projects.
+-   [Environment Variables](environment.qmd) covers how to define environment variables that should set whenever your project is rendered (including how to vary those variables by project profile and/or for use in local development).
 
 -   [Project Scripts](scripts.qmd) describes how to add periodic or pre/post render scripts to projects for special processing of input data and project outputs.
+
+-   [Virtual Environments](virtual-environments.qmd) explores how to create project-specific package libraries, which helps with faithfully reproducing your environment over time as well as ensuring that upgrading a package in one project doesn't break other projects.
+
