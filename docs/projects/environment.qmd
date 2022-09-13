@@ -10,16 +10,16 @@ This feature is currently only available in the Quarto v1.2 Pre-Release. Before 
 
 ## Overview
 
-You may have one more more environment variables that you want to make sure are set whenever you render your project. You might use environment variables in one of these contexts:
+You may have one more more environment variables that you want to make sure are set whenever you render your project. For example, you might be using environment variables to:
 
-1.  To provide the URL of a server to download data from.
-2.  To set the address for a proxy server (e.g. `HTTP_PROXY`).
-3.  To provide credentials for accessing a remote server (note that below we cover best practices for using credentials stored in environment variables).
-4.  To tune the behavior of executable code (e.g. `OMP_NUM_THREADS`, `ARROW_IO_THREADS`, etc.)
-5.  To provide options for language interpreters (e.g. `PYTHONINSPECT` or `TZDIR`).
-6.  To determine which versions of Python and R are used (e.g. `QUARTO_PYTHON`, `QUARTO_R`, `PY_PYTHON`, or `RETICULATE_PYTHON`).
+1.  Provide the URL of a server to download data from.
+2.  Set the address of a proxy server (e.g. `HTTP_PROXY`).
+3.  Provide credentials for accessing a remote server (note that below we cover best practices for using credentials stored in environment variables).
+4.  Tune the behavior of executable code (e.g. `OMP_NUM_THREADS`, `ARROW_IO_THREADS`, etc.)
+5.  Provide options for language interpreters (e.g. `PYTHONINSPECT` or `TZDIR`).
+6.  Determine which versions of Python and R are used (e.g. `QUARTO_PYTHON`, `QUARTO_R`, `PY_PYTHON`, or `RETICULATE_PYTHON`).
 
-Quarto projects can define a set of standard environment variables as well a vary which environment variables are defined based on the [active project profile](profiles.qmd). It's also possible to use environment variables that are defined only on the local system and not checked in to version control.
+Quarto projects can define a set of standard environment variables as well as vary which environment variables are defined based on the [active project profile](profiles.qmd). It's also possible to use environment variables that are defined only on the local system and not checked in to version control.
 
 ## Environment File
 
@@ -32,7 +32,17 @@ OMP_NUM_THREADS=4
 
 These environment variables will be available both within Quarto's execution context as well as in child processes (e.g. Jupyter kernels).
 
+Note that variables defined in environment files *do not take precedence* over definitions that already exist in the external environment. Rather, they provide defaults that will be applied when no external variable of the same name is already defined.
 
+You can include comments in environment files, as well as reference other environment variables. For example:
+
+``` {.ini filename="_environment"}
+# database server
+DATABASE_SERVER=https://db.example.com
+DATABASE_API=${DATABASE_SERVER}/api
+```
+
+When referencing another environment variable, it must either also be defined within the same file or already exist in the external environment. See the complete environment variable [parsing rules](https://github.com/denoland/deno_std/tree/main/dotenv#parsing-rules) for additional details on the syntax of environment files.
 
 ## Profile Environments
 
@@ -80,14 +90,13 @@ It's especially critical that these credentials are not checked in to version co
     AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
     ```
 
-
 One problem this leaves is ensuring that these variables are specified in local configurations. The next section on example environments covers how to do this.
 
 ## Example Environment
 
 If you want to document and require that certain environment variables need to be specified, you can create an `_environment.example` file which can be copied to `_environment.local` as a starting point.
 
-Return to the example of AWS credentials, this `_environment.example` file provides documentation that these credentials will be required to render the project locally:
+Returning to the example of AWS credentials, this `_environment.example` file provides documentation that these credentials will be required to render the project locally:
 
 ``` {.ini filename="_environment.example"}
 AWS_ACCESS_KEY_ID=
@@ -102,5 +111,3 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
 ```
 
 Note that any variable defined in the `_environment.example` is *required* and will result in an error message at startup if it is not defined in either the default or local environment.
-
-
