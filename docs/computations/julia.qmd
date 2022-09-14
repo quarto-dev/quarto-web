@@ -84,6 +84,7 @@ In order to render documents with embedded Julia code you'll need to install the
 
 1)  IJulia
 2)  Revise.jl
+3)  Optionally, Jupyter Cache
 
 We'll cover each of these in turn below.
 
@@ -125,6 +126,19 @@ end
 
 You can learn more about Revise.jl at <https://timholy.github.io/Revise.jl/stable>.
 
+### Jupyter Cache
+
+[Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
+
+If you are using the integrated version of Jupyter installed by `IJulia.notebook()`, then you will need to add `jupyter-cache` to the Python environment managed by IJulia. You can do that as follows:
+
+``` julia
+using Conda
+Conda.add("jupyter-cache")
+```
+
+Alternatively, if you are using Jupyter from within any other version of Python not managed by IJulia, see the instructions below on [Installing Jupyter](#installing-jupyter) for details on installing `jupyter cache`,
+
 ``` include
 _jupyter-authoring-tools.md
 ```
@@ -160,7 +174,7 @@ quarto check jupyter
 _jupyter-daemon.md
 ```
 
-## Installing Jupyter
+## Installing Jupyter {#installing-jupyter}
 
 You can rely on the minimal version of Python and Jupyter that is installed automatically by **IJulia**, or you can choose to install Python and Jupyter separately. If you need to install another version of Jupyter this section describes how.
 
@@ -168,4 +182,26 @@ You can rely on the minimal version of Python and Jupyter that is installed auto
 _jupyter-install.md
 ```
 
-### 
+### Jupyter Cache
+
+[Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
+
+To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
+
++-------------------+--------------------------------------------------+
+| Platform          | Command                                          |
++===================+==================================================+
+| Windows           | ``` bash                                         |
+|                   | py -m pip install jupyter-cache                  |
+|                   | ```                                              |
++-------------------+--------------------------------------------------+
+| Mac/Linux         | ``` bash                                         |
+|                   | python3 -m pip install jupyter-cache             |
+|                   | ```                                              |
++-------------------+--------------------------------------------------+
+| Conda             | ``` bash                                         |
+|                   | conda install jupyter-cache                      |
+|                   | ```                                              |
++-------------------+--------------------------------------------------+
+
+To enable the cache for a document, add the `cache` option. For example:
