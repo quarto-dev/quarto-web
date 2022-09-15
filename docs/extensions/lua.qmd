@@ -4,21 +4,45 @@ title: Developing with Lua
 
 ## Overview
 
-The programming language used to create [filters](filters.qmd) and [shortcodes](shortcodes.qmd) is Lua, a lightweight, high-level scripting language designed primarily for embedded use in applications. [Lua](https://www.lua.org/) is the extension language for Pandoc (which includes an embedded Lua interpreter). This means that Quarto extensions have no additional runtime dependencies or requirements.
+The programming language used to create [filters](filters.qmd) and [shortcodes](shortcodes.qmd) is Lua, a lightweight, high-level scripting language. [Lua](https://www.lua.org/) is the extension language for Pandoc (which includes an embedded Lua interpreter). This means that Quarto extensions have no additional runtime dependencies or requirements.
 
-This article will start by providing an orientation to learning Lua for those new to the language. Then, we'll provide a reference to the built in Lua functions provided by Quarto to assist in developing extensions.
+This article will start by providing an orientation to learning Lua for those new to the language. Then, we'll provide some tips for productive Lua development. Finally, we'll provide a reference to the built in Lua functions provided by Quarto to assist in developing extensions.
 
 ## Learning Lua
 
 Lua is a scripting language similar to Python, R, Julia, and JavaScript. If you are familiar with one or more of those languages you won't have trouble picking up Lua.
 
-The best way to begin with Lua is to read the documentation on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html). This has the benefit of demonstrating the use of Lua in concrete scenarios related to document publishing. Another excellent resources is the [Learn Lua in 15 Minutes](https://tylerneylon.com/a/learn-lua/) article which provides annotated examples of how to do things in Lua you might already be familiar with in other languages.
+Here is a recommended approach for learning Lua for use with Quarto:
 
-Once you've brushed up on the basics, a good next step is to examine the source code of the extensions published in the [Quarto Extensions](https://github.com/quarto-ext) GitHub organization (these are extensions maintained by the Quarto core team). Once you are able to read and understand that code you are ready to start developing your own extensions!
+1. Read [Learn Lua in 15 Minutes](https://tylerneylon.com/a/learn-lua/) for a quick overview of the language and its syntax.
 
-When creating an extension, there are many built-in variables and functions provided directly by Pandoc --- you can learn about these in the article on [Pandoc Lua Filters](https://pandoc.org/lua-filters.html). The remainder of this article describes some additional Lua functions provided by Quarto which you may also need when developing extensions.
+2. Check out the [Filter Examples](https://pandoc.org/lua-filters.html#macro-substitution) from the Pandoc documentation to get an idea of what Pandoc Lua code looks like.
 
-## Utilities
+3. Now that have the basic idea of Lua and filters, get a complete picture by reading the full [Pandoc Lua Filters](https://pandoc.org/lua-filters.html) documentation. You won't understand everything, but its a good orientation to all of the moving parts.
+
+4. Finally, check out the source code of the extensions published in the [Quarto Extensions](https://github.com/quarto-ext) GitHub organization (these are extensions maintained by the Quarto core team). Once you are able to read and understand that code you are ready to start developing your own extensions!
+
+## Development and Debugging
+
+Here are some tips for productive development and debugging of Quarto extensions with Lua:
+
+1. Develop filters and extensiosn using the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html), which includes support for live reload of `quarto preview` whenever a Lua source file changes.
+
+2. Use the `quarto.utils.dump()` function to inspect the Pandoc AST elements that you are producing and consuming. For example:
+
+    ``` lua
+    function Div(el)
+      quarto.utils.dump(el)
+    end
+    ```
+
+3. Use the `print()` function to print debugging output to standard output (you'll see it in the `quarto preview` terminal output).
+
+4. It can sometimes be helpful to change the output format of your document to `native` --- when you do this you'll see the full Pandoc AST rather than a rendering to HTML, PDF, etc. 
+
+Next we'll cover some of the Lua functions that are built-in to Quarto to assist with extension development. Note that these functions are in addition to the modules [provided natively](https://pandoc.org/lua-filters.html#module-text) by Pandoc which provide a lot of other useful functionality.
+
+## Utility Functions
 
 Various utility functions are provided, the most of important of which is the `quarto.utils.dump()` function (indispensable for debugging).
 
