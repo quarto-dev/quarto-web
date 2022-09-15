@@ -26,19 +26,29 @@ Here is a recommended approach for learning Lua for use with Quarto:
 
 Here are some tips for productive development and debugging of Quarto extensions with Lua:
 
-1. Develop filters and extensiosn using the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html), which includes support for live reload of `quarto preview` whenever a Lua source file changes.
+1. Develop filters and extensions using the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html), which includes support for live reload of `quarto preview` whenever a Lua source file changes.
 
-2. Use the `quarto.utils.dump()` function to inspect the Pandoc AST elements that you are producing and consuming. For example:
+2. Use the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library built in to Quarto to write debug output and inspect the Pandoc AST elements that you are producing and consuming. For example:
 
     ``` lua
     function Div(el)
-      quarto.utils.dump(el)
+      -- log a full object
+      logging.output(el)
+
+      -- or just output some text
+      logging.output('debug info')
     end
     ```
 
-3. Use the `print()` function to print debugging output to standard output (you'll see it in the `quarto preview` terminal output).
+    You'll see the output from `logging` in the `quarto preview` terminal output stream . Note that the logging module requires the very latest release of Quarto (1.1.245). If you are using an earlier version you can still use the `quarto.utils.dump()` function for logging as described below.
+    
 
-4. It can sometimes be helpful to change the output format of your document to `native` --- when you do this you'll see the full Pandoc AST rather than a rendering to HTML, PDF, etc. 
+3. It can sometimes be helpful to change the output format of your document to `native` --- when you do this you'll see the full Pandoc AST rather than a rendering to HTML, PDF, etc. For example:
+
+    ```yaml
+    title: "Document"
+    format: native
+    ```
 
 Next we'll cover some of the Lua functions that are built-in to Quarto to assist with extension development. Note that these functions are in addition to the modules [provided natively](https://pandoc.org/lua-filters.html#module-text) by Pandoc which provide a lot of other useful functionality.
 
@@ -56,6 +66,14 @@ For example, you can dump an element passed to a filter function as follows:
 ``` lua
 function Div(el)
   quarto.utils.dump(el)
+end
+```
+
+Note that newer versions of Quarto (v1.1.245 and higher) include the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library, which should be used in preference to the dump function. For example:
+
+``` lua
+function Div(el)
+  logging.output(el)
 end
 ```
 
