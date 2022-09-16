@@ -14,38 +14,37 @@ Lua is a scripting language similar to Python, R, Julia, and JavaScript. If you 
 
 Here is a recommended approach for learning Lua for use with Quarto:
 
-1. Read [Learn Lua in 15 Minutes](https://tylerneylon.com/a/learn-lua/) for a quick overview of the language and its syntax.
+1.  Read [Learn Lua in 15 Minutes](https://tylerneylon.com/a/learn-lua/) for a quick overview of the language and its syntax.
 
-2. Check out the [Filter Examples](https://pandoc.org/lua-filters.html#macro-substitution) from the Pandoc documentation to get an idea of what Pandoc Lua code looks like.
+2.  Check out the [Filter Examples](https://pandoc.org/lua-filters.html#macro-substitution) from the Pandoc documentation to get an idea of what Pandoc Lua code looks like.
 
-3. Now that have the basic idea of Lua and filters, get a complete picture by reading the full [Pandoc Lua Filters](https://pandoc.org/lua-filters.html) documentation. You won't understand everything, but its a good orientation to all of the moving parts.
+3.  Now that have the basic idea of Lua and filters, get a complete picture by reading the full [Pandoc Lua Filters](https://pandoc.org/lua-filters.html) documentation. You won't understand everything, but its a good orientation to all of the moving parts.
 
-4. Finally, check out the source code of the extensions published in the [Quarto Extensions](https://github.com/quarto-ext) GitHub organization (these are extensions maintained by the Quarto core team). Once you are able to read and understand that code you are ready to start developing your own extensions!
+4.  Finally, check out the source code of the extensions published in the [Quarto Extensions](https://github.com/quarto-ext) GitHub organization (these are extensions maintained by the Quarto core team). Once you are able to read and understand that code you are ready to start developing your own extensions!
 
 ## Development and Debugging
 
 Here are some tips for productive development and debugging of Quarto extensions with Lua:
 
-1. Develop filters and extensions using the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html), which includes support for live reload of `quarto preview` whenever a Lua source file changes.
+1.  Develop filters and extensions using the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html), which includes support for live reload of `quarto preview` whenever a Lua source file changes.
 
-2. Use the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library built in to Quarto to write debug output and inspect the Pandoc AST elements that you are producing and consuming. For example:
+2.  Use the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library built in to Quarto to write debug output and inspect the Pandoc AST elements that you are producing and consuming. For example:
 
     ``` lua
     function Div(el)
       -- log a full object
-      logging.output(el)
+      quarto.log.output(el)
 
       -- or just output some text
-      logging.output('debug info')
+      quarto.log.output('debug info')
     end
     ```
 
-    You'll see the output from `logging` in the `quarto preview` terminal output stream . Note that the logging module requires the very latest release of Quarto (1.1.245). If you are using an earlier version you can still use the `quarto.utils.dump()` function for logging as described below.
-    
+    You'll see the output from `quarto.log` in the `quarto preview` terminal output stream . Note that the logging module requires the very latest release of Quarto (1.1.251). If you are using an earlier version you can still use the `quarto.utils.dump()` function for logging as described below.
 
-3. It can sometimes be helpful to change the output format of your document to `native` --- when you do this you'll see the full Pandoc AST rather than a rendering to HTML, PDF, etc. For example:
+3.  It can sometimes be helpful to change the output format of your document to `native` --- when you do this you'll see the full Pandoc AST rather than a rendering to HTML, PDF, etc. For example:
 
-    ```yaml
+    ``` yaml
     title: "Document"
     format: native
     ```
@@ -57,7 +56,7 @@ Next we'll cover some of the Lua functions that are built-in to Quarto to assist
 Various utility functions are provided, the most of important of which is the `quarto.utils.dump()` function (indispensable for debugging).
 
 | Function                         | Description                                                                                                                                                                                    |
-|---------------|---------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | `quarto.utils.dump(obj)`         | Dump a text representation of the passed object to stdout.                                                                                                                                     |
 | `quarto.utils.resolvePath(path)` | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
 
@@ -69,11 +68,11 @@ function Div(el)
 end
 ```
 
-Note that newer versions of Quarto (v1.1.245 and higher) include the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library, which should be used in preference to the dump function. For example:
+Note that newer versions of Quarto (v1.1.251 and higher) include the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library, which should be used in preference to the dump function. For example:
 
 ``` lua
 function Div(el)
-  logging.output(el)
+  quarto.log.output(el)
 end
 ```
 
@@ -82,7 +81,7 @@ end
 Extensions will often need to detect the current format to create custom content depending on the target output medium. The `quarto.doc.isFormat()` function
 
 | Function                    | Description                                                                                                                                                                                                 |
-|--------------|----------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | `quarto.doc.isFormat(name)` | Detect if the current format matches `name`.                                                                                                                                                                |
 | `quarto.doc.hasBootstrap()` | Query whether [Bootstrap CSS](https://getbootstrap.com/) is available within the current document (it is by default for standard `html` documents but this may have been overridden by e.g. `theme: none`). |
 
@@ -105,7 +104,7 @@ end
 For LaTeX output, you may need to additionally detect which citation utility and pdf engine are being used for the current render. You can use these functions to do that detection:
 
 | Function                  | Description                                                                                                                      |
-|----------------|--------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `quarto.doc.citeMethod()` | Returns a string (`citeproc`, `natbib`, or `biblatex)` indicating the cite method in use.                                        |
 | `quarto.doc.pdfEngine()`  | Returns a string (`pdflatex`, `xelatex`, `lualatex`, or `tectonic`) indicating the PDF engine being used to render the document. |
 
@@ -114,7 +113,7 @@ For LaTeX output, you may need to additionally detect which citation utility and
 Sometimes extensions need to inject content into the target document. There are three locations that content can be included (pass one of these locations as the first argument of the include functions):
 
 | Location      | Description                                                         |
-|----------------|--------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `in-header`   | In the header of the document (HTML `<head>` tag or LaTeX preamble) |
 | `before-body` | Before the document body                                            |
 | `after-body`  | After the document body                                             |
@@ -122,7 +121,7 @@ Sometimes extensions need to inject content into the target document. There are 
 Note that the included content should use the *raw target format* (e.g. HTML or LaTeX) rather than markdown. You can use these functions to include text or the contents of a file:
 
 | Function                                 | Description                                                                                                                                                           |
-|-----------------|-------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `quarto.doc.includeText(location, text)` | Include text at the specified location (`in-header`, `before-body`, or `after-body`)                                                                                  |
 | `quarto.doc.includeFile(location, file)` | Include file at the specified location (`in-header`, `before-body`, or `after-body`). The path to the file should *relative* to the Lua script calling this function. |
 
@@ -137,7 +136,7 @@ quarto.doc.includeFile("after-body", "comments.html")
 Extensions will sometimes want to add external dependencies (for example, a JavaScript library and related CSS, or the usage of a LaTeX package). This can be accomplished with the following functions:
 
 | Function                               | Description                                                                                                                                                                                                                                               |
-|---------------|---------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | `quarto.doc.addHtmlDependency(dep)`    | Add an HTML dependency (additional resources and content) to a document. See docs on the [HTML Dependencies](#html-dependencies) below for additional details.                                                                                            |
 | `quarto.doc.useLatexPackage(pkg, opt)` | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
 | `quarto.doc.addFormatResource(path)`   | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
@@ -155,7 +154,7 @@ HTML Dependencies can bundle together JavaScript, CSS, and even arbitrary conten
 The `dep` object passed to `quarto.doc.addHtmlDependency()` has the following fields:
 
 | Field         | Description                                                                                                                                                                               |
-|-------------|-----------------------------------------------------------|
+|----------------|--------------------------------------------------------|
 | `name`        | Unique name. Required.                                                                                                                                                                    |
 | `version`     | Version number (as a string). Required.                                                                                                                                                   |
 | `scripts`     | List of scripts to include (paths should be relative to the Lua file calling the function). Scripts can be either a simple path or a [script object](#script-object).                     |
@@ -181,7 +180,7 @@ quarto.doc.addHtmlDependency({
 The easiest way to specify `scripts` is with simple paths. However, in some cases you may need to add attributes to the `<script>` tag or specify that the script should go after the body. In those cases pass a script object:
 
 | Field       | Description                                                       |
-|----------------|--------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | `path`      | Path to the script (relative to the calling Lua script)           |
 | `attribs`   | Table with `key = value` attributes to add to the `<script>` tag  |
 | `afterBody` | Specify that the `<script>` tag should be inserted after the body |
@@ -204,7 +203,7 @@ quarto.doc.addHtmlDependency({
 The easiest way to specify `stylesheets` is with simple paths. However, in some cases you may need to add attributes to the `<link>` tag generated for the stylesheet. In those cases pass a stylesheet object:
 
 | Field     | Description                                                    |
-|---------------|---------------------------------------------------------|
+|-----------------|-------------------------------------------------------|
 | `path`    | Path to the stylesheet (relative to the calling Lua script)    |
 | `attribs` | Table with `key = value` attributes to add to the `<link>` tag |
 
