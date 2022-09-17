@@ -56,6 +56,10 @@ OMP_NUM_THREADS=16
 
 Note that profile environments are merged with the default `_environment` so you need only define the variables that vary in your profile and can rely on the defaults for others.
 
+::: callout-important
+If you have secrets (e.g. access tokens) that you need to specify using environment variables you shouldn't use profile environments (as they are often checked in to version control). We'll cover the recommended technique for this in [Managing Secrets](#managing-secrets) below.
+:::
+
 ## Local Environment
 
 When working on a project locally you may want to use different values for some environment variables. For example, you might want to add some variables that provide additional diagnostic output for Python execution.
@@ -90,15 +94,15 @@ It's especially critical that these credentials are not checked in to version co
     AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
     ```
 
-One problem this leaves is ensuring that these variables are specified in local configurations. The next section on example environments covers how to do this.
+One problem this leaves is ensuring that these variables are always specified. The next section on required variables covers how to do this.
 
-## Example Environment
+## Required Variables
 
-If you want to document and require that certain environment variables need to be specified, you can create an `_environment.example` file which can be copied to `_environment.local` as a starting point.
+If there are certain environment variables that need to be specified in order to render the project, you can create an `_environment.required` file. This file can be copied to `_environment.local` as a starting point for local authoring, and also serves as documentation for server environments regarding which variables need to be defined.
 
-Returning to the example of AWS credentials, this `_environment.example` file provides documentation that these credentials will be required to render the project locally:
+Returning to the example of AWS credentials, this `_environment.required` file provides documentation that these credentials will be required to render the project:
 
-``` {.ini filename="_environment.example"}
+``` {.ini filename="_environment.required"}
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 ```
@@ -110,4 +114,4 @@ AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI
 ```
 
-Note that any variable defined in the `_environment.example` is *required* and will result in an error message at startup if it is not defined in either the default or local environment.
+Further, any server environment that wants to render this project could validate that the required variables have been specified, and fail to run (with an appropriate error message) if they are not.
