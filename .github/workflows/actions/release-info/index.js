@@ -148,12 +148,20 @@ async function run() {
   const releaseProcessed = await processRelease(latestRelease.data);
   const redirects = releaseProcessed.redirects;
   const releaseInfo = releaseProcessed.releaseInfo;
+  if (releaseInfo.assets === undefined || releaseInfo.assets.length === 0) {
+    throw new Error("Error generating downloads - an empty release was detected.");
+  }
   
+
   // Process the latest pre-release
   console.log("Starting prelease");
   const prerelease = await getPrerelease();
   const prereleaseProcessed = await processRelease(prerelease);
   const prereleaseInfo = prereleaseProcessed.releaseInfo;
+  if (prereleaseInfo.assets === undefined || prereleaseInfo.assets.length === 0) {
+    throw new Error("Error generating downloads - an empty pre-release was detected.");
+  }
+
 
   // Note the prerelease data as a test
   console.log(prereleaseProcessed);
