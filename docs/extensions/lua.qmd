@@ -1,12 +1,14 @@
 ---
-title: Developing with Lua
+title: Lua Development
+resources: 
+  - luarefv51.pdf
 ---
 
 ## Overview
 
 The programming language used to create [filters](filters.qmd) and [shortcodes](shortcodes.qmd) is Lua, a lightweight, high-level scripting language. [Lua](https://www.lua.org/) is the extension language for Pandoc (which includes an embedded Lua interpreter). This means that Quarto extensions have no additional runtime dependencies or requirements.
 
-This article will start by providing an orientation to learning Lua for those new to the language. Then, we'll provide some tips for productive Lua development. Finally, we'll provide a reference to the built in Lua functions provided by Quarto to assist in developing extensions.
+This article will start by providing an orientation to learning Lua for those new to the language. Then, we'll provide some tips for productive Lua development. See the [Lua API Reference](lua-api.qmd) for additional details on the APIs available for developing extensions.
 
 ## Learning Lua
 
@@ -14,243 +16,294 @@ Lua is a scripting language similar to Python, R, Julia, and JavaScript. If you 
 
 Here is a recommended approach for learning Lua for use with Quarto:
 
-1.  Read [Learn Lua in 15 Minutes](https://tylerneylon.com/a/learn-lua/) for a quick overview of the language and its syntax.
+1.  Read [Learn Lua in 15 Minutes](https://learnxinyminutes.com/docs/lua/) for a quick overview of the language and its syntax.
 
 2.  Check out the [Filter Examples](https://pandoc.org/lua-filters.html#macro-substitution) from the Pandoc documentation to get an idea of what Pandoc Lua code looks like.
 
-3.  Now that have the basic idea of Lua and filters, get a complete picture by reading the full [Pandoc Lua Filters](https://pandoc.org/lua-filters.html) documentation. You won't understand everything, but its a good orientation to all of the moving parts.
+3.  Now that have the basic idea of Lua and filters, get a complete picture by skimming the full [Pandoc Lua Filters](https://pandoc.org/lua-filters.html) documentation. You won't understand everything, but its a good orientation to all of the moving parts.
 
 4.  Finally, check out the source code of the extensions published in the [Quarto Extensions](https://github.com/quarto-ext) GitHub organization (these are extensions maintained by the Quarto core team). Once you are able to read and understand that code you are ready to start developing your own extensions!
 
-## Development and Debugging
+Some additional learning resources you might find useful include:
 
-Here are some tips for productive development and debugging of Quarto extensions with Lua:
+1.  [Lua Quick Reference](luarefv51.pdf), a PDF with a compact summary of the language and base library.
 
-1.  Develop filters and extensions using the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html), which includes support for live reload of `quarto preview` whenever a Lua source file changes.
+2.  [Programming in Lua](https://www.amazon.com/exec/obidos/ASIN/8590379868/lua-pilindex-20), a book by Roberto Ierusalimschy, the chief architect of the language.
 
-2.  Use the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library built in to Quarto to write debug output and inspect the Pandoc AST elements that you are producing and consuming. For example:
+3.  [Lua Reference Manual](https://www.lua.org/manual/5.3/), a complete definition of the language and base library.
 
-    ``` lua
-    function Div(el)
-      -- log a full object
-      quarto.log.output(el)
+## Development Tools
 
-      -- or just output some text
-      quarto.log.output('debug info')
-    end
-    ```
+::: callout-note
+## Quarto v1.2 Pre-Release
 
-    You'll see the output from `quarto.log` in the `quarto preview` terminal output stream . Note that the logging module requires the very latest release of Quarto (1.1.251). If you are using an earlier version you can still use the `quarto.utils.dump()` function for logging as described below.
+Version 1.2 of Quarto will include many improvements for extension development so if you are building an extension we strongly recommend that you download the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html) before proceeding.
+:::
 
-3.  It can sometimes be helpful to change the output format of your document to `native` --- when you do this you'll see the full Pandoc AST rather than a rendering to HTML, PDF, etc. For example:
+### Quarto Preview
 
-    ``` yaml
-    title: "Document"
-    format: native
-    ```
+Beginning with v1.2, `quarto preview` is now aware of Lua source files within extensions, and will automatically reload the preview whenever a Lua source file changes.
 
-Next we'll cover some of the Lua functions that are built-in to Quarto to assist with extension development. Note that these functions are in addition to the modules [provided natively](https://pandoc.org/lua-filters.html#module-text) by Pandoc which provide a lot of other useful functionality.
+This makes it very easy to incrementally develop and debug Lua code (especially when combined with the [native](#native-format) format a described below). Live reloading for Lua files will work no matter what source code editor you are using (VS Code, RStudio, Neovim, etc.).
 
-## Utility Functions
+### VS Code
 
-Various utility functions are provided, the most of important of which is the `quarto.utils.dump()` function (indispensable for debugging).
+While you can use any text editor along with `quarto preview` for developing Lua extensions, we strongly recommend that you consider using VS Code, as it provides a number of additional tools including:
 
-| Function                         | Description                                                                                                                                                                                    |
-|-----------------|-------------------------------------------------------|
-| `quarto.utils.dump(obj)`         | Dump a text representation of the passed object to stdout.                                                                                                                                     |
-| `quarto.utils.resolvePath(path)` | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
+1.  Code completion and type checking.
 
-For example, you can dump an element passed to a filter function as follows:
+2.  Diagnostics for various common problems with code.
 
-``` lua
-function Div(el)
-  quarto.utils.dump(el)
-end
-```
+3.  The ability to add types to your own functions.
 
-Note that newer versions of Quarto (v1.1.251 and higher) include the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library, which should be used in preference to the dump function. For example:
+Code completion covers the Lua base library as well as the Pandoc and Quarto Lua APIs, and also provides documentation on hover:
 
-``` lua
-function Div(el)
+![](images/vscode-lua-completions.png){.border width="95%"}
+
+Diagnostics check for many common errors including failing to check for `nil`, undefined global values, shadowing of local variables, unused functions, etc.
+
+![](images/vscode-lua-diagnostics.png){.border width="95%"}
+
+#### Installation
+
+To get started with using VS Code for Lua extension development, install the following software:
+
+1.  Install the latest version (v1.2.144 or greater**)** of the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html)
+
+2.  Install the latest version (v1.44.0 or greater) of the [Quarto VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
+
+3.  For Lua code intelligence, install the [Lua LSP VS Code Extension](https://marketplace.visualstudio.com/items?itemName=sumneko.lua).
+
+Once you've installed these components you should see the features described above appear automatically in your Quarto workspaces that include Lua code.
+
+There are many options available for configuring Lua completion and diagnostics. It's also possible to provide type information for your own functions. See the section on [Lua in VS Code](#lua-in-vs-code) below for details.
+
+## Diagnostic Logging
+
+Use the functions in the `quarto.log` module to add diagnostic logging to your extension. You can use both temporary logging calls to debug a particular problem as well as add logging calls that are always present but only activated when the `--trace` flag is passed to `quarto render` or `quarto preview`.
+
+The `quarto.log` module is based on the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) project from [\@wlupton](https://github.com/wlupton). You'll recognize the functions described below from that module (e.g. `logging.output()`, `logging.warning()`, etc). For documentation on using all of the logging functions see the project [README](https://github.com/wlupton/pandoc-lua-logging) file.
+
+::: callout-note
+#### Version Requirements
+
+Note that the `quarto.log` module requires the very latest release of Quarto (1.1.251) or alternatively the very latest pre-release (v1.2.142). If you are using an earlier version you can still use the `quarto.utils.dump()` function for logging as described [here](lua-api.qmd#utility-functions).
+:::
+
+### quarto.log.output
+
+To log any object (including Pandoc AST elements), you the `quarto.log.output()` function. For example, here we log the `Div` passed to us in our filter callback function as well as some diagnostic text:
+
+``` {.lua filename="filter.lua"}
+function Header(el)
+  quarto.log.output("=== Handling Header ===")
   quarto.log.output(el)
 end
 ```
 
-## Format Detection
+This is log output you'd see in the terminal when the filter is executed:
 
-Extensions will often need to detect the current format to create custom content depending on the target output medium. The `quarto.doc.isFormat()` function
+``` default
+=== Handling Header ===
+Header {
+  attr: Attr {
+    attributes: AttributeList {}
+    classes: List {}
+    identifier: "section-one"
+  }
+  content: Inlines {
+    [1] Str "Section"
+    [2] Space
+    [3] Str "One"
+  }
+  level: 2
+}
+```
 
-| Function                    | Description                                                                                                                                                                                                 |
-|-----------------|-------------------------------------------------------|
-| `quarto.doc.isFormat(name)` | Detect if the current format matches `name`.                                                                                                                                                                |
-| `quarto.doc.hasBootstrap()` | Query whether [Bootstrap CSS](https://getbootstrap.com/) is available within the current document (it is by default for standard `html` documents but this may have been overridden by e.g. `theme: none`). |
+### quarto.log.warning
 
-The `name` parameter can match an exact Pandoc format name (e.g. `docx`, `latex`, etc. or can match based on an alias that groups commonly targeted formats together. The following values format aliases are handled specially by `quarto.doc.isFormat()`:
+Use the `quarto.log.warning()` function to output warnings that can be suppressed with the `--quiet` flag:
 
-{{< include ../authoring/_format-aliases.md >}}
-
-For example, here we check for PDF and HTML output:
-
-``` lua
-if quarto.doc.isFormat("pdf") then
-  -- pdf specific output
-elseif quarto.doc.isFormat("html") then
-  -- html specific output
-else
-  -- output for other formats
+``` {.lua filename="filter.lua"}
+function RawBlock(el)
+  if el.format == "html" then
+    quarto.log.warning("Raw HTML not supported")
+    return pandoc.Null()
+  end
 end
 ```
 
-For LaTeX output, you may need to additionally detect which citation utility and pdf engine are being used for the current render. You can use these functions to do that detection:
+For example, the warning above will not appear for this call to `quarto render`:
 
-| Function                  | Description                                                                                                                      |
-|------------------|------------------------------------------------------|
-| `quarto.doc.citeMethod()` | Returns a string (`citeproc`, `natbib`, or `biblatex)` indicating the cite method in use.                                        |
-| `quarto.doc.pdfEngine()`  | Returns a string (`pdflatex`, `xelatex`, `lualatex`, or `tectonic`) indicating the PDF engine being used to render the document. |
-
-## Includes
-
-Sometimes extensions need to inject content into the target document. There are three locations that content can be included (pass one of these locations as the first argument of the include functions):
-
-| Location      | Description                                                         |
-|------------------|------------------------------------------------------|
-| `in-header`   | In the header of the document (HTML `<head>` tag or LaTeX preamble) |
-| `before-body` | Before the document body                                            |
-| `after-body`  | After the document body                                             |
-
-Note that the included content should use the *raw target format* (e.g. HTML or LaTeX) rather than markdown. You can use these functions to include text or the contents of a file:
-
-| Function                                 | Description                                                                                                                                                           |
-|------------------|------------------------------------------------------|
-| `quarto.doc.includeText(location, text)` | Include text at the specified location (`in-header`, `before-body`, or `after-body`)                                                                                  |
-| `quarto.doc.includeFile(location, file)` | Include file at the specified location (`in-header`, `before-body`, or `after-body`). The path to the file should *relative* to the Lua script calling this function. |
-
-For example the following code includes an HTML file after the body in the rendered document:
-
-``` lua
-quarto.doc.includeFile("after-body", "comments.html")
+``` bash
+quarto render document.qmd --quiet
 ```
 
-## Dependencies
+### quarto.log.debug
 
-Extensions will sometimes want to add external dependencies (for example, a JavaScript library and related CSS, or the usage of a LaTeX package). This can be accomplished with the following functions:
+Use the `quarto.log.debug()` function to write output whenever the `--trace` flag is present:
 
-| Function                               | Description                                                                                                                                                                                                                                               |
-|-----------------|-------------------------------------------------------|
-| `quarto.doc.addHtmlDependency(dep)`    | Add an HTML dependency (additional resources and content) to a document. See docs on the [HTML Dependencies](#html-dependencies) below for additional details.                                                                                            |
-| `quarto.doc.useLatexPackage(pkg, opt)` | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
-| `quarto.doc.addFormatResource(path)`   | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
-
-For example, here we add a LaTeX package dependency:
-
-``` lua
-quarto.doc.useLatexPackage("gamebook")
+``` {.lua filename="filter.lua"}
+function Header(el)
+  quarto.log.debug("Header: " .. el.identifier)
+end
 ```
 
-#### HTML Dependencies {#html-dependencies}
+For example, the debug message will appear for this call to `quarto preview`:
 
-HTML Dependencies can bundle together JavaScript, CSS, and even arbitrary content to inject into the `<head>` of the document. These dependencies have a name and a version, which is used to ensure that the same dependency isn't bundled into the document more than once.
-
-The `dep` object passed to `quarto.doc.addHtmlDependency()` has the following fields:
-
-| Field         | Description                                                                                                                                                                               |
-|----------------|--------------------------------------------------------|
-| `name`        | Unique name. Required.                                                                                                                                                                    |
-| `version`     | Version number (as a string). Required.                                                                                                                                                   |
-| `scripts`     | List of scripts to include (paths should be relative to the Lua file calling the function). Scripts can be either a simple path or a [script object](#script-object).                     |
-| `stylesheets` | List of CSS style-sheets to include (paths should be relative to the Lua file calling the function). Stylesheets can either be a simple path or a [stylesheet object](#stylesheet-object) |
-| `links`       | List of link tags to add to the document. Each tag should be a table with `rel` and `ref` (required) and optionally `type`                                                                |
-| `resources`   | Additional files to copy to the input directory (each resource is an object with `name` (target file name in input directory) and `path` (source file name relative to Lua script).       |
-| `meta`        | Table of optional `key = value` meta tags to insert into the document `<head>`                                                                                                            |
-| `head`        | Arbitrary string to include in document `<head>`                                                                                                                                          |
-
-For example, here we add a dependency to a JavaScript library:
-
-``` lua
-quarto.doc.addHtmlDependency({
-  name = "glightbox",
-  version = "3.2.0",
-  scripts = {"glightbox.min.js"},
-  stylesheets = {"glightbox.min.css"}
-})
+``` bash
+quarto preview document.qmd --trace
 ```
 
-#### Script Object {#script-object}
+You can keep these calls in your filter since they won't produce output unless `--trace` is specified.
 
-The easiest way to specify `scripts` is with simple paths. However, in some cases you may need to add attributes to the `<script>` tag or specify that the script should go after the body. In those cases pass a script object:
+## Native Format {#native-format}
 
-| Field       | Description                                                       |
-|------------------|------------------------------------------------------|
-| `path`      | Path to the script (relative to the calling Lua script)           |
-| `attribs`   | Table with `key = value` attributes to add to the `<script>` tag  |
-| `afterBody` | Specify that the `<script>` tag should be inserted after the body |
+A great tool for understanding the behavior of a Lua filter or shortcode in more depth is to target the `native` format (as opposed to `html`, `pdf`, etc.). The `native` format will show you the raw contents of the Pandoc AST. For example, here's a simple markdown document alongside it's `native` output:
 
-For example, here update the previous example to add an `integrity` attribute to the script:
+::: {layout-ncol="2"}
+<div>
 
-``` lua
-quarto.doc.addHtmlDependency({
-  name = "glightbox",
-  version = "3.2.0",
-  scripts = {
-    { path = "glightbox.min.js ", attribs = {integrity = "R9GqQ8K/uxy9rx"} }
-  },
-  stylesheets = {"glightbox.min.css"}
-})
+``` {.markdown filename="document.qmd"}
+---
+format: native
+---
+
+## Heading
+
+Some text below
+
+
+
+
+
+
+
 ```
 
-#### Stylesheet Object {#stylesheet-object}
+</div>
 
-The easiest way to specify `stylesheets` is with simple paths. However, in some cases you may need to add attributes to the `<link>` tag generated for the stylesheet. In those cases pass a stylesheet object:
+<div>
 
-| Field     | Description                                                    |
-|-----------------|-------------------------------------------------------|
-| `path`    | Path to the stylesheet (relative to the calling Lua script)    |
-| `attribs` | Table with `key = value` attributes to add to the `<link>` tag |
+``` border
+Pandoc
+  Meta
+    { unMeta = fromList [] }
+  [ Header
+      2
+      ( "heading" , [] , [] )
+      [ Str "Heading" ]
+  , Para
+      [ Str "Some"
+      , Space
+      , Str "text"
+      , Space
+      , Str "below"
+      ]
+  ]
+```
 
-For example, here we update the previous example to add an `integrity` attribute to the stylesheet:
+</div>
+:::
 
-``` lua
-quarto.doc.addHtmlDependency({
-  name = "glightbox",
-  version = "3.2.0",
-  scripts = {
-    { 
-      path = "glightbox.min.js ", 
-      attribs = {integrity = "R9GqQ8K/uxy9rx"} 
-    }
-  },
-  stylesheets = {
-    { 
-      path = "glightbox.min.css ", 
-      attribs = {integrity = "GYl1kPzQho1wx"} 
-    }
+Here we add a simple filter to the document that wraps all headers in `pandoc.Emph` (italics). You can see that the `Emph` AST element now wraps the heading text in the `native` output:
+
+::: {layout-ncol="2"}
+<div>
+
+``` {.markdown filename="document.qmd"}
+---
+format: native
+filters: [filter.lua]
+---
+
+## Heading
+
+Some text below
+```
+
+``` {.lua filename="filter.lua"}
+function Header(el)
+  el.content = { 
+    pandoc.Emph(el.content)
   }
-})
+  return el
+end
 ```
 
-## Encoding
+</div>
 
-### JSON
+::: {.font-monospace .border}
+::: {style="font-size: 0.875em; padding: 4px;"}
+| Pandoc
+|   Meta
+|     { unMeta = fromList \[\] }
+|   \[ Header
+|       2
+|       ( "heading" , \[\] , \[\] )
+|       **\[ Emph \[ Str "Heading" \]**
+|       \]
+|   , Para
+|       \[ Str "Some"
+|       , Space
+|       , Str "text"
+|       , Space
+|       , Str "below"
+|       \]
+|   \]
+| 
+| 
+| 
+:::
+:::
+:::
 
-Quarto includes a copy of [json.lua](https://github.com/rxi/json.lua). a lightweight JSON library for Lua. You can access the JSON functions as follows:
+## Lua in VS Code {#lua-in-vs-code}
 
-| Function                    | Description                            |
-|-----------------------------|----------------------------------------|
-| `quarto.json.encode(input)` | Encode a Lua table into a JSON string. |
-| `quarto.json.decode(str)`   | Parse a JSON string into a Lua table.  |
+### Type Hints
 
-For example, here we encode and then decode a table:
+While Quarto provides type information for the Pandoc and Quarto Lua APIs, this doesn't cover functions that you write within your own extensions. You can however add type information using [Annotations](https://github.com/sumneko/lua-language-server/wiki/Annotations). For example, here we indicate that a function takes a `string` and a `pandoc.List()` and returns either a `pandoc.List()` or `nil`:
 
 ``` lua
-local json = quarto.json.encode({foo = "bar"})
-local obj = quarto.json.decode(json)
+---@param text string
+---@param blocks pandoc.List
+---@return pandoc.List|nil
+function check_for_text(text, blocks)
+  -- implementation
+end
 ```
 
-### Base 64
+With these type declarations, any attempt to call the function without the correct types will result in a diagnostic message. Further, if a caller fails to check for `nil` before using the return value a diagnostic will also occur.
 
-Quarto includes a copy of [lbase64](https://github.com/iskolbin/lbase64), a pure Lua implementation of Base64 encoding. You can access the Base 64 encoding functions as follows:
+You can learn more about all of the available type annotations in the [Annotations Reference](https://github.com/sumneko/lua-language-server/wiki/Annotations) for the Lua Language Server.
 
-| Function                       | Description                   |
-|--------------------------------|-------------------------------|
-| `quarto.base64.encode(str)`    | Encode a string into Base 64. |
-| `quarto.base64.decode(b64str)` | Decode a Base 64 string.      |
+### Settings
+
+The [Lua Language Server](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) extension includes a wide variety of options to customize its behavior (e.g. what diagnostics to show, which completions to offer, etc.).
+
+All of the available options are documented in the [Settings Reference](https://github.com/sumneko/lua-language-server/wiki/Settings) for the Lua Language Server.
+
+Quarto provides a default configuration file (`.luarc.json`) within the root of any workspace that includes Quarto Lua extensions. This file is necessary because it provides a reference to the Lua type definitions for Pandoc and Quarto within your currently installed version of Quarto. Without it, the Lua extension wouldn't know anything about Quarto and would report errors for "unknown" Pandoc modules.
+
+If, for example, Quarto is installed at `/opt/quarto/`, the default contents of the configuration file will be:
+
+``` {.json filename=".luarc.json"}
+{
+  "Generator": ["Quarto"],
+  "Lua.runtime.version": "Lua 5.3",
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.workspace.library": ["/opt/quarto/share/lua-types"],
+  "Lua.runtime.plugin": "/opt/quarto/share/lua-plugin/plugin.lua",
+  "Lua.completion.showWord": "Disable",
+  "Lua.completion.keywordSnippet": "Both",
+  "Lua.diagnostics.disable": ["lowercase-global", "trailing-space"]
+}
+```
+
+The `.luarc.json` file will also be automatically added to `.gitignore` since it points to the absolute path of Quarto on the local system.
+
+You can change any of the settings within this file save for the `Lua.workspace.library` and `Lua.runtime.plugin` (these are automatically maintained by the Quarto extension based on where Quarto is installed). See the [Settings Reference](https://github.com/sumneko/lua-language-server/wiki/Settings) for all available settings.
+
+If you prefer to mange this file manually, simply remove the `Generator` key and Quarto will no longer update the `Lua.workspace.library` and `Lua.runtime.plugin` settings automatically.
+
+You can also globally disable the automatic creation of `.luarc.json` using the **Quarto \> Lua: Provide Types** VS Code setting.
