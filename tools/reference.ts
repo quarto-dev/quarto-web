@@ -232,25 +232,61 @@ function readProjectProperties(props: { [name: string]: Record<string, unknown> 
 function readProjectObject(name: string, descriptions?: Record<string, string>) {
   // deno-lint-ignore no-explicit-any
   const obj = project.find(value => value.name == name) as any;
+
+  const results = [];
   const props = obj["schema"]["object"]["properties"];
-  return readProjectProperties(props, descriptions);
+  if (props) {
+    results.push(...readProjectProperties(props, descriptions));
+  }
+
+  const supers = obj["schema"]["object"]["super"];
+  if (supers) {
+    (supers as { resolveRef: string }[]).forEach((sup) => {
+      results.push(...readDefinitionsId(sup.resolveRef));
+    })
+  }
+
+  return results;
 }
 
 function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
   const obj = definitions.find(value => value.id === id) as any;
-  const props = obj["object"]["properties"];
-  return readProjectProperties(props, descriptions);
+
+  const baseObject = (obj["object"] || obj["schema"]["object"]);
+  const props = baseObject["properties"];
+
+  const results = [];
+  results.push(...readProjectProperties(props, descriptions));
+
+  const supers = obj["super"];
+  if (supers) {
+    (supers as { resolveRef: string }[]).forEach((sup) => {
+      results.push(...readDefinitionsId(sup.resolveRef));
+    })
+  }
+  return results;
 }
 
 function readNavigationItem(descriptions?: Record<string, string>) {
   const obj = definitions.find(value => value.id === "navigation-item") as any;
-  const props = obj["anyOf"][1]["object"]["properties"];
-  return readProjectProperties(props, descriptions);
+  const refId = obj["anyOf"][1]["ref"];
+  return readDefinitionsId(refId, descriptions);
 }
 
 function readDefinitionsObject(name: string, descriptions?: Record<string, string>) {
-  const obj = findVal(definitions, name)?.["anyOf"][1]["object"]["properties"]!;
-  return readProjectProperties(obj, descriptions);
+
+  const root = findVal(definitions, name)?.["anyOf"][1];
+  if (root) {
+    const rootRef = root as Record<string, string>;
+    if (rootRef.ref !== undefined) {
+      return readDefinitionsId(rootRef.ref);
+    } else {
+      const obj = root["object"]["properties"]!;
+      return readProjectProperties(obj, descriptions);
+    }
+  } else {
+    throw new Error("Unexpected data structure for " + name);
+  }
 }
 
 function readSidebarObject(descriptions?: Record<string, string>) {
@@ -318,6 +354,7 @@ const websiteOptions = readDefinitionsId("base-website", {
 })
 writeProjectTable("website", websiteOptions);
 
+
 const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
@@ -327,10 +364,13 @@ const navitemOptions = readNavigationItem({
 });
 writeProjectTable("navitem", navitemOptions);
 
+
+/*
 const sidebarToolOptions = readDefinitionsId("tool-item", {
   "menu": "Submenu of [navigation items](#nav-items)"
 });
 writeProjectTable("sidebartool", sidebarToolOptions);
+*/
 
 const navbarOptions = readDefinitionsObject("navbar", {
   "left": "List of items for the left side of the navbar (see [Nav Items](#nav-items))",
