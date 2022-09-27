@@ -3,7 +3,6 @@ title: Docusaurus
 format-name: docusaurus  
 ---
 
-
 ::: callout-note
 ## Quarto v1.2 Pre-Release
 
@@ -50,10 +49,10 @@ Typically you'll want to do a `quarto render` at the site level before you publi
 quarto render && npm run build
 ```
 
-You can also render individual document or notebooks:
+You can also render individual documents or notebooks:
 
 ```{.bash filename="Terminal"}
-quarto render posts/hello-quarto/index.qmd
+quarto render blog/2022-07-26/hello-quarto/index.qmd
 ```
 
 If you have computationally expensive documents you may want to consider using Quarto's [freeze](/docs/projects/code-execution.qmd#freeze) feature to only re-execute code when your document source code changes.
@@ -88,37 +87,59 @@ project:
   output-dir: ../docusaurus-site
 ```
 
-## Callouts
+## Code Blocks
+
+filename
+
+folding
 
 
-## Tabsets
+## Callouts & Tabsets
 
+Like Quarto, Docusaurus includes support for [Callouts](/docs/authoring/callouts.qmd) and [Tabsets](/docs/output-formats/html-basics.qmd#tabsets). When including these components in a document, you should use the Quarto standard markdown syntax, which will be automatically translated to the appropriate Docusaurus constructs.
 
+For example, here is a Quarto callout:
 
+````markdown
+::: {.callout-important}
+Note the Quarto callout syntax is used here.
+:::
+````
 
-## LaTeX Math
+Which renders in Docusaurus as:
 
-By default, Quarto renders LaTeX math within Docusaurus projects using [WebTeX](https://github.com/KTHse/webtex), a service that creates PNG images for publishing on the web given TeX expressions as input.
+![](images/docusaurus-callout.png)
 
-{{< include _webtex-detail.md >}}
+Here is a Quarto tabset:
 
-### KaTeX
+````markdown
+::: {.panel-tabset group="fruits"}
 
-It is possible to configure Docusaurus to use KaTeX for math rendering. See the Docusaurus documentation on [KaTeX configuration](https://docusaurus.io/docs/markdown-features/math-equations) to learn more about this option.
+## Apple
+This is an apple 🍎
 
-Once you've confirmed that KaTeX is rendering equations correctly in your site, you should update your `_quarto.yml` file to specify that `katex` rather than `webtex` should be used:
+## Orange
+This is an orange 🍊
 
-```{.yaml filename="_quarto.yml"}
-format:
-  docusaurus-md:
-    html-math-method: katex
-```
+## Banana
+This is a banana 🍌
 
+:::
+````
 
+Which renders in Docusaurus as:
 
-## Raw HTML
+![](images/docusaurus-tabs.png){.border}
 
-Docusaurus websites don't allow arbitrary HTML content. Rather, JSX is used to emit HTML tags. While these JSX tags look and act like HTML tags most of the time, there are some imoprtant caveats and constraints, most notably that the `class` attribute must be written as `className` and `style` attributes need to be specified as JavaScript objects rather than CSS strings.
+## HTML and MDX
+
+Docusaurus websites use a flavor of markdown ([MDX](https://mdxjs.com/)) that has some major differences from Quarto and Pandoc's native markdown renderer, the biggest of which is that while Quarto allows embedding of HTML, MDX does not. Rather, MDX allows direct embedding of JavaScript code and React JSX components (which look like HTML but have some significant differences in behavior).
+
+Quarto's support for Docusaurus accounts for these differences, and enables you to embed raw HTML as well as use MDX components and JavaScript when appropriate.
+
+### HTML Blocks
+
+Docusaurus websites don't allow arbitrary HTML content. Rather, JSX is used to emit HTML tags. While these JSX tags look and act like HTML tags most of the time, there are some important caveats and constraints, most notably that the `class` attribute must be written as `className`, and `style` attributes need to be specified as JavaScript objects rather than CSS strings.
 
 If you need to include raw HTML that doesn't conform to JSX, you should use a raw ```` ```{=html} ```` code block. For example:
 
@@ -128,17 +149,14 @@ If you need to include raw HTML that doesn't conform to JSX, you should use a ra
 ```
 ````
 
+If you need to embed HTML code (e.g. a badge, video, or tweet) you should definitely use raw HTML blocks as shown above to avoid errors which will occur if JSX encounters tags it can't parse.
+
 Note that HTML produced by computations (e.g. a Pandas data frame displayed in a notebook) often use raw HTML with `class` and/or `style` tags. This computational output is automatically included in a raw ```` ```{=html} ```` code block so that it renders correctly in Docusaurus.
 
-## Markdown Plugins
 
+### MDX Blocks
 
-
-## MDX Blocks
-
-Docusaurus websites use a flavor of markdown ([MDX](https://mdxjs.com/)) that has some major differences from Quarto and Pandoc's native markdown renderer, the biggest of which is that MDX allows direct embedding of JavaScript code and React JSX components.
-
-This is not something you normally need concern yourself with, as when creating `.qmd` files for use in Docusaurus you use standard Quarto and Pandoc markdown, which is then automatically rendered into a form compatible with Docusaurus. If you do want to use MDX constructs directly, enclose them in an ```` ```{=mdx} ```` raw code block. For example:
+You can also use MDX components and JavaScript within Quarto documents that target Docusaurus. To do this, enclose them in an ```` ```{=mdx} ```` raw code block. For example:
 
 ````{.html}
 ```{=mdx}
@@ -165,4 +183,27 @@ Which is rendered as follows:
 ![](images/docusaurus-mdx.png){.border}
 
 Note that ordinary markdown content can also be included in `mdx` blocks alonside JavaScript and React components.
+
+
+
+## LaTeX Math
+
+By default, Quarto renders LaTeX math within Docusaurus projects using [WebTeX](https://github.com/KTHse/webtex), a service that creates PNG images for publishing on the web given TeX expressions as input.
+
+{{< include _webtex-detail.md >}}
+
+### KaTeX
+
+It is possible to configure Docusaurus to use KaTeX for math rendering. See the Docusaurus documentation on [KaTeX configuration](https://docusaurus.io/docs/markdown-features/math-equations) to learn more about this option.
+
+Once you've confirmed that KaTeX is rendering equations correctly in your site, you should update your `_quarto.yml` file to specify that `katex` rather than `webtex` should be used:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  docusaurus-md:
+    html-math-method: katex
+```
+
+
+## Markdown Plugins
 
