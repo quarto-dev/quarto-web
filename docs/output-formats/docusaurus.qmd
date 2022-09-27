@@ -1,0 +1,168 @@
+---
+title: Docusaurus
+format-name: docusaurus  
+---
+
+
+::: callout-note
+## Quarto v1.2 Pre-Release
+
+Support for Docusaurus websites is a feature of Quarto v1.2. If you want to use this feature please download the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html) before proceeding.
+:::
+
+## Overview
+
+What is Doc
+
+Diagram  Quarto => Docusarrus
+
+Why? 
+
+Set expectations: TOC, anchor stuff, page layout, code copy
+
+## Workflow
+
+### Live Preview
+
+The `quarto preview` command will automatically recognize when it is run from a directory that contains a Docusaurus website:
+
+```{.bash filename="Terminal"}
+cd my-docusaurus-website
+quarto preview
+```
+
+This will automatically run `docusaurus start` on your behalf to bring up a local preview server. In addition, it will monitor the filesystem for changes to `.qmd` and `.ipynb` inputs and automatically re-render them when they change. 
+
+Note that this also works for the integrated Render/Preview command within the Quarto [VS Code Extension](/docs/tools/vscode.qmd).
+
+### Rendering
+
+If you are not previewing and want to render all of the Quarto documents (`.qmd`) and notebooks (`.ipynb`) in your site, call `quarto render` from the root directory of the site:
+
+```{.bash filename="Terminal"}
+cd my-docusaurus-website
+quarto render 
+```
+
+Typically you'll want to do a `quarto render` at the site level before you publish your site:
+
+```{.bash filename="Terminal"}
+quarto render && npm run build
+```
+
+You can also render individual document or notebooks:
+
+```{.bash filename="Terminal"}
+quarto render posts/hello-quarto/index.qmd
+```
+
+If you have computationally expensive documents you may want to consider using Quarto's [freeze](/docs/projects/code-execution.qmd#freeze) feature to only re-execute code when your document source code changes.
+
+### Configuration
+
+While Quarto works fine within a Docusaurus site without a `_quarto.yml` project config file, you can add one if you want to customize the default behavior, add a bibliography, etc. For example, here is what a simple customized `_quarto.yml` file might look like:
+
+```{.yaml filename="_quarto.yml"}
+project:
+  type: docusaurus
+      
+format: 
+  docusaurus-md:
+    code-fold: true
+  
+execute: 
+  warning: false
+
+biliography: references.lib
+```
+
+It's important to note that if you do provide an explicit `_quarto.yml` file you need to specify `type: docusaurus`, as project type auto-detection only occurs when there is no project file.
+
+#### External Directory
+
+You might decide that you prefer to keep all of your Quarto documents and/or notebooks in their own directory, separate from the Docusaurus website. In this configuration you would mirror the directory structure of your site in the Quarto directory, and then set the `output-dir` in the project file to point to the Docusaurus directory. For example:
+
+```{.yaml filename="_quarto.yml"}
+project:
+  type: docusaurus
+  output-dir: ../docusaurus-site
+```
+
+## Callouts
+
+
+## Tabsets
+
+
+
+
+## LaTeX Math
+
+By default, Quarto renders LaTeX math within Docusaurus projects using [WebTeX](https://github.com/KTHse/webtex), a service that creates PNG images for publishing on the web given TeX expressions as input.
+
+{{< include _webtex-detail.md >}}
+
+### KaTeX
+
+It is possible to configure Docusaurus to use KaTeX for math rendering. See the Docusaurus documentation on [KaTeX configuration](https://docusaurus.io/docs/markdown-features/math-equations) to learn more about this option.
+
+Once you've confirmed that KaTeX is rendering equations correctly in your site, you should update your `_quarto.yml` file to specify that `katex` rather than `webtex` should be used:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  docusaurus-md:
+    html-math-method: katex
+```
+
+
+
+## Raw HTML
+
+Docusaurus websites don't allow arbitrary HTML content. Rather, JSX is used to emit HTML tags. While these JSX tags look and act like HTML tags most of the time, there are some imoprtant caveats and constraints, most notably that the `class` attribute must be written as `className` and `style` attributes need to be specified as JavaScript objects rather than CSS strings.
+
+If you need to include raw HTML that doesn't conform to JSX, you should use a raw ```` ```{=html} ```` code block. For example:
+
+````{.html}
+```{=html}
+<p style="color: green;">Paragraph</p>
+```
+````
+
+Note that HTML produced by computations (e.g. a Pandas data frame displayed in a notebook) often use raw HTML with `class` and/or `style` tags. This computational output is automatically included in a raw ```` ```{=html} ```` code block so that it renders correctly in Docusaurus.
+
+## Markdown Plugins
+
+
+
+## MDX Blocks
+
+Docusaurus websites use a flavor of markdown ([MDX](https://mdxjs.com/)) that has some major differences from Quarto and Pandoc's native markdown renderer, the biggest of which is that MDX allows direct embedding of JavaScript code and React JSX components.
+
+This is not something you normally need concern yourself with, as when creating `.qmd` files for use in Docusaurus you use standard Quarto and Pandoc markdown, which is then automatically rendered into a form compatible with Docusaurus. If you do want to use MDX constructs directly, enclose them in an ```` ```{=mdx} ```` raw code block. For example:
+
+````{.html}
+```{=mdx}
+export const Highlight = ({children, color}) => (
+  <span
+    style={{
+      backgroundColor: color,
+      borderRadius: '2px',
+      color: '#fff',
+      padding: '0.2rem',
+    }}>
+    {children}
+  </span>
+);
+
+<Highlight color="#25c2a0">Docusaurus GREEN</Highlight> and <Highlight color="#1877F2">Rams blue</Highlight> are my favorite colors.
+
+I can write **Markdown** alongside my _JSX_!
+```
+````
+
+Which is rendered as follows:
+
+![](images/docusaurus-mdx.png){.border}
+
+Note that ordinary markdown content can also be included in `mdx` blocks alonside JavaScript and React components.
+
