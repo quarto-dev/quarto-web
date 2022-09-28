@@ -17,14 +17,13 @@ You might want to do this if you are a data team that wants to contribute notebo
 
 It's important to note that many of the Quarto features related to theming, page layout, and navigation are not applicable when you are using Quarto with Docusaurus. Docusaurus has its own theming system, syntax highlighting, table of contents, page layout, navigational menus, and full text search. You'll use Quarto to execute code and generate markdown that is rendered within the Docusaurus HTML publishing framework rather than Quarto's own.
 
-
 ## Workflow
 
-The basic concept of using Quarto with Docusaurus is that you take _computational_ markdown documents (`.qmd`) or Jupyter notebooks (`.ipynb`) and use them to generate plain markdown files (`.md`) that are rendered to HTML by Docusaurus.
+The basic concept of using Quarto with Docusaurus is that you take *computational* markdown documents (`.qmd`) or Jupyter notebooks (`.ipynb`) and use them to generate plain markdown files (`.md`) that are rendered to HTML by Docusaurus.
 
-**index.qmd**&nbsp;&nbsp;&nbsp;_quarto =>_&nbsp;&nbsp;&nbsp;**index.md**&nbsp;&nbsp;&nbsp;_docusaurus =>_&nbsp;&nbsp;&nbsp;**index.html**
+**index.qmd**   *quarto =\>*   **index.md**   *docusaurus =\>*   **index.html**
 
-The `quarto render` and `quarto preview` commands are used to transform `.qmd` or `.ipynb` files to Docusaurus compatible markdown (`.md`). The computational files are located in the same place you would also locate ordinary markdown files (e.g. the `blog` directory). 
+The `quarto render` and `quarto preview` commands are used to transform `.qmd` or `.ipynb` files to Docusaurus compatible markdown (`.md`). The computational files are located in the same place you would also locate ordinary markdown files (e.g. the `blog` directory).
 
 After rendering, a plain `.md` file is written right alongside the computational document. This markdown file is then processed by Docusaurus.
 
@@ -32,12 +31,12 @@ After rendering, a plain `.md` file is written right alongside the computational
 
 The `quarto preview` command will automatically recognize when it is run from a directory that contains a Docusaurus website:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 cd my-docusaurus-website
 quarto preview
 ```
 
-This will automatically run `docusaurus start` on your behalf to bring up a local preview server. In addition, it will monitor the filesystem for changes to `.qmd` and `.ipynb` inputs and automatically re-render them to Docusaurus compatible `.md` files when they change. 
+This will automatically run `docusaurus start` on your behalf to bring up a local preview server. In addition, it will monitor the filesystem for changes to `.qmd` and `.ipynb` inputs and automatically re-render them to Docusaurus compatible `.md` files when they change.
 
 Note that this also works for the integrated Render/Preview command within the [Quarto VS Code Extension](/docs/tools/vscode.qmd).
 
@@ -45,20 +44,20 @@ Note that this also works for the integrated Render/Preview command within the [
 
 If you are not previewing and want to render all of the Quarto documents (`.qmd`) and notebooks (`.ipynb`) in your site, call `quarto render` from the root directory of the site:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 cd my-docusaurus-website
 quarto render 
 ```
 
 Typically you'll want to do a `quarto render` at the site level before you build the site for publishing:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 quarto render && npm run build
 ```
 
 You can also render individual documents or notebooks:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 quarto render blog/2022-07-26/hello-quarto/index.qmd
 ```
 
@@ -68,7 +67,7 @@ If you have computationally expensive documents you may want to consider using Q
 
 While Quarto works well within a Docusaurus site that has no `_quarto.yml` project config file, you can add one if you want to customize the default behavior, add a bibliography, etc. For example, here is what a simple customized `_quarto.yml` file might look like:
 
-```{.yaml filename="_quarto.yml"}
+``` {.yaml filename="_quarto.yml"}
 project:
   type: docusaurus
       
@@ -88,7 +87,7 @@ It's important to note that if you do provide an explicit `_quarto.yml` file you
 
 You might decide that you prefer to keep all of your Quarto documents and/or notebooks in their own directory, separate from the Docusaurus website. In this configuration you would mirror the directory structure of your site in the Quarto directory, and then set the `output-dir` in the project file to point to the Docusaurus directory. For example:
 
-```{.yaml filename="_quarto.yml"}
+``` {.yaml filename="_quarto.yml"}
 project:
   type: docusaurus
   output-dir: ../docusaurus-site
@@ -100,7 +99,7 @@ Code blocks in Docusaurus are very similar to Quarto. One important thing to kee
 
 If you use the `filename` attribute in Quarto, it will automatically become the code block `title` in Docusaurus:
 
-````markdown
+```` markdown
 ```{.python filename="hello.py"}
 1 + 1
 ```
@@ -110,16 +109,15 @@ If you use the `filename` attribute in Quarto, it will automatically become the 
 
 Code folding is also automatically applied. So, for example the following executable code block:
 
-````python
+``` python
 ```{{python}}
 #| code-fold: true
 1 + 1
-````
+```
 
 Is rendered as a collasable block in Docusaurus:
 
 ![](images/docusaurus-code-fold.png)
-
 
 ## Callouts & Tabsets
 
@@ -127,11 +125,11 @@ Like Quarto, Docusaurus includes support for [Callouts](/docs/authoring/callouts
 
 For example, here is a Quarto callout:
 
-````markdown
+``` markdown
 ::: {.callout-important}
 Note the Quarto callout syntax is used here.
 :::
-````
+```
 
 Which renders in Docusaurus as:
 
@@ -139,7 +137,7 @@ Which renders in Docusaurus as:
 
 Here is a Quarto tabset:
 
-````markdown
+``` markdown
 ::: {.panel-tabset group="fruits"}
 
 ## Apple
@@ -152,7 +150,7 @@ This is an orange 🍊
 This is a banana 🍌
 
 :::
-````
+```
 
 Which renders in Docusaurus as:
 
@@ -170,7 +168,7 @@ Docusaurus websites don't allow arbitrary HTML content. Rather, JSX is used to e
 
 If you need to include raw HTML that doesn't conform to JSX, you should use a raw ```` ```{=html} ```` code block. For example:
 
-````{.html}
+```` html
 ```{=html}
 <p style="color: green;">Paragraph</p>
 ```
@@ -180,12 +178,11 @@ If you need to embed HTML code (e.g. a badge, video, or tweet) you should defini
 
 Note that HTML produced by computations (e.g. a Pandas data frame displayed in a notebook) often use raw HTML with `class` and/or `style` tags. This computational output is automatically included in a raw ```` ```{=html} ```` code block so that it renders correctly in Docusaurus.
 
-
 ### MDX Blocks
 
 You can also use MDX components and JavaScript within Quarto documents that target Docusaurus. To do this, enclose them in an ```` ```{=mdx} ```` raw code block. For example:
 
-````{.html}
+```` html
 ```{=mdx}
 export const Highlight = ({children, color}) => (
   <span
@@ -211,8 +208,6 @@ Which is rendered as follows:
 
 Note that ordinary markdown content can also be included in `mdx` blocks alonside JavaScript and React components.
 
-
-
 ## LaTeX Math
 
 By default, Quarto renders LaTeX math within Docusaurus projects using [WebTeX](https://github.com/KTHse/webtex), a service that creates PNG images for publishing on the web given TeX expressions as input.
@@ -225,7 +220,7 @@ It is possible to configure Docusaurus to use KaTeX for math rendering. See the 
 
 Once you've confirmed that KaTeX is rendering equations correctly in your site, you should update your `_quarto.yml` file to specify that `katex` rather than `webtex` should be used for rendering equations:
 
-```{.yaml filename="_quarto.yml"}
+``` {.yaml filename="_quarto.yml"}
 format:
   docusaurus-md:
     html-math-method: katex
