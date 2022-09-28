@@ -1,0 +1,86 @@
+
+
+## Workflow
+
+The basic concept of using Quarto with {{< meta ssg-name >}} is that you take *computational* markdown documents (`.qmd`) or Jupyter notebooks (`.ipynb`) and use them to generate plain markdown files (`.md`) that are rendered to HTML by {{< meta ssg-name >}}.
+
+**index.qmd**   *quarto =\>*   **index.md**   *{{< meta format-name >}} =\>*   **index.html**
+
+The `quarto render` and `quarto preview` commands are used to transform `.qmd` or `.ipynb` files to {{< meta ssg-name >}} compatible markdown (`.md`). The computational files are located in the same place you would also locate ordinary markdown files (e.g. the `blog` directory).
+
+After rendering, a plain `.md` file is written right alongside the computational document. This markdown file is then processed by {{< meta ssg-name >}}.
+
+### Live Preview
+
+The `quarto preview` command will automatically recognize when it is run from a directory that contains a {{< meta ssg-name >}} website:
+
+``` {.bash filename="Terminal"}
+cd my-{{< meta format-name >}}-website
+quarto preview
+```
+
+This will automatically run `{{< meta ssg-preview >}}` on your behalf to bring up a local preview server. In addition, it will monitor the filesystem for changes to `.qmd` and `.ipynb` inputs and automatically re-render them to {{< meta ssg-name >}} compatible `.md` files when they change.
+
+Note that this also works for the integrated Render/Preview command within the [Quarto VS Code Extension](/docs/tools/vscode.qmd).
+
+### Rendering
+
+If you are not previewing and want to render all of the Quarto documents (`.qmd`) and notebooks (`.ipynb`) in your site, call `quarto render` from the root directory of the site:
+
+``` {.bash filename="Terminal"}
+cd my-{{< meta format-name >}}-website
+quarto render 
+```
+
+Typically you'll want to do a `quarto render` at the site level before you build the site for publishing:
+
+``` {.bash filename="Terminal"}
+quarto render && {{< meta ssg-build >}}
+```
+
+You can also render individual documents or notebooks:
+
+``` {.bash filename="Terminal"}
+quarto render blog/2022-07-26/hello-quarto/index.qmd
+```
+
+If you have computationally expensive documents you may want to consider using Quarto's [freeze](/docs/projects/code-execution.qmd#freeze) feature to only re-execute code when your document source code changes.
+
+Note that if aren't ever rendering at the project level and just have individual files that you want to render with Quarto, you should specify the `{{< meta format-name >}}-md` format as follows:
+
+``` yaml
+---
+title: "My Blog Post"
+format: {{< meta format-name >}}-md
+---
+```
+
+### Configuration
+
+While Quarto works well within a {{< meta ssg-name >}} site that has no `_quarto.yml` project config file, you can add one if you want to customize the default behavior, add a bibliography, etc. For example, here is what a simple customized `_quarto.yml` file might look like:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: {{< meta format-name >}}
+      
+format: 
+  {{< meta format-name >}}-md:
+    code-fold: true
+  
+execute: 
+  warning: false
+
+biliography: references.lib
+```
+
+It's important to note that if you do provide an explicit `_quarto.yml` file you need to explicitly specify the project type (`type: {{< meta format-name >}}`) as shown above.
+
+#### External Directory
+
+You might decide that you prefer to keep all of your Quarto documents and/or notebooks in their own directory, separate from the {{< meta ssg-name >}} website. In this configuration you would mirror the directory structure of your site in the Quarto directory, and then set the `output-dir` in the project file to point to the {{< meta ssg-name >}} directory. For example:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: {{< meta format-name >}}
+  output-dir: ../{{< meta format-name >}}-site
+```

@@ -1,23 +1,21 @@
 ---
 title: Hugo
-format: html
 format-name: hugo
+ssg-name: Hugo
+ssg-description: |
+  [Hugo](https://gohugo.io/) is a very popular open source website publishing system. 
+ssg-preview: hugo serve
+ssg-build: hugo
 ---
 
-## Overview
-
-[Hugo](https://gohugo.io/) is a very popular open source website publishing system. Pages in Hugo websites are typically written in plain markdown, so don't have a straightforward way to automatically and reproducibly incorporate computational output.
-
-Using the Quarto `hugo` format, you can incorporate computational output (e.g. R or Python code that produces plots) into Hugo websites. This article explains how.
-
-See the Hugo [format reference](../reference/formats/markdown/hugo.qmd) for a complete list of all options available for Hugo output.
+{{< include _ssg-intro.qmd >}}
 
 ## Site Config
 
-There are a couple of changes you should make to your Hugo `config.toml` in preparation for using Quarto with Hugo. First, make sure that `.qmd` and `.ipynb` files are not published as part of the site:
+There are a couple of changes you should make to your Hugo `config.toml` in preparation for using Quarto with Hugo. First, make sure that `.qmd` and `.ipynb` files and other source code or data files are not published as part of the site. For example:
 
 ``` toml
-ignoreFiles = [ "\\.qmd$", "\\.ipynb$" ]
+ignoreFiles = [ "\\.qmd$", "\\.ipynb$", "\\.py$" ]
 ```
 
 Next, configure Hugo's markdown renderer to allow raw HTML (as many R and Python packages will produce computational output using raw HTML rather than markdown):
@@ -37,7 +35,7 @@ To add Quarto documents to a Hugo site:
 
 2.  Add an `index.qmd` document to the directory. When rendered this will create an `index.md`, which in turn will ensure that Hugo treats it as a [Page Bundle](https://gohugo.io/content-management/page-bundles/) (automatically copying images and other referened resources to the publish directory).
 
-3.  Add the requisite Hugo [front matter](https://gohugo.io/content-management/front-matter/), then also specify `format: hugo` and any other required Quarto options.
+3.  Add the requisite Hugo [front matter](https://gohugo.io/content-management/front-matter/), then also specify `format: hugo-md` and any other required Quarto options.
 
 For example, let's say we wanted to create a new article named `hello-quarto` within the `content` directory. The filesystem would look like this:
 
@@ -56,7 +54,7 @@ Here's what the source code of `index.qmd` might look like:
     categories: 
       - Matplotlib
       - Coordinates
-    format: hugo
+    format: hugo-md
     jupyter: python3
     ---
 
@@ -80,38 +78,8 @@ Here's what the source code of `index.qmd` might look like:
     plt.show()
     ```
 
-## Workflow
+{{< include _ssg-workflow.qmd >}}
 
-### Rendering
-
-Generating pages for Hugo requires just a simple Quarto render:
-
-```{.bash filename="Terminal"}
-quarto render mysite/content/hello-quarto/index.qmd
-```
-
-Whenever your render the `index.qmd` file, Quarto will execute the code in the file (writing any generated plots, etc. into the article's directory) and then generate an `index.md` file that is subsequently processed by Hugo.
-
-Note that the `index.md` file is *only* updated when you explicitly render with Quarto. Running the `hugo` command to build your site just renders the `index.md` file --- if you want to regenerate this file based on updated code or data you need to explicitly `quarto render` it.
-
-### Live Preview
-
-::: callout-note
-## Quarto v1.2 Pre-Release
-
-Live preview for Hugo websites is a feature of Quarto v1.2. If you want to use this feature please download the [Quarto v1.2 Pre-Release](https://quarto.org/docs/download/prerelease.html) before proceeding.
-:::
-
-The `quarto preview` command will automatically recognize when it is run from a directory that contains a Hugo website:
-
-```{.bash filename="Terminal"}
-cd my-hugo-website
-quarto preview
-```
-
-This will automatically run `hugo serve` on your behalf. In addition, it will monitor the filesystem for changes to `.qmd` and `.ipynb` inputs and automatically re-render them when they change. The Hugo website preview will automatically navigate to any page which is updated.
-
-Note that this also works for the integrated Render/Preview command within the Quarto [VS Code Extension](/docs/tools/vscode.qmd).
 
 ## Shortcodes
 
