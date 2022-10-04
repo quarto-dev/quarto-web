@@ -1,5 +1,6 @@
 ---
 title: "Tables"
+engine: jupyter
 ---
 
 ## Overview
@@ -23,7 +24,7 @@ The most commonly used markdown table is known as a pipe table. Pipe tables supp
 | 123     | 123  |   123 |  123   |
 | 1       | 1    |     1 |   1    |
 
-: Demonstration of pipe table sytnax
+: Demonstration of pipe table syntax
 ```
 
 Here is the table rendered to HTML:
@@ -100,6 +101,32 @@ tbl-colwidths: [75,25]
 
 ## Cross References
 
+For tables produced by executable code cells, include a label with a `tbl-` prefix to make them cross-referenceable. For example:
+
+```{python}
+#| label: tbl-planets
+#| tbl-cap: "Planets"
+#| echo: fenced
+
+from IPython.display import Markdown
+from tabulate import tabulate
+table = [["Sun",696000,1989100000],
+         ["Earth",6371,5973.6],
+         ["Moon",1737,73.5],
+         ["Mars",3390,641.85]]
+Markdown(tabulate(
+  table, 
+  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
+))
+```
+
+::: callout-important
+## Label Prefix
+
+In order for a table to be cross-referenceable, its label must start with the `tbl-` prefix.
+:::
+
+
 ``` include
 _table-crossrefs.md
 ```
@@ -131,7 +158,7 @@ See the article on [Article Layout](article-layout.qmd#margin-captions) for addi
 All of the options described above work for tables produced by executable code cells. For example, here we use the Python [tabulate](https://pypi.org/project/tabulate/) package along with the `Markdown()` function from the IPython [display](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html#) module to print a markdown table:
 
 ```{python}
-#| label: tbl-planets
+#| label: tbl-planet-measures
 #| tbl-cap: "Planets"
 #| echo: fenced
 
@@ -150,6 +177,7 @@ Markdown(tabulate(
 Here we apply the `tbl-cap` and `tbl-colwidths` options to a code cell that uses the knitr `kable()` function to write a markdown table:
 
 ``` {{r}}
+#| label: tbl-cars
 #| tbl-cap: "Cars"
 #| tbl-colwidths: [60,40]
 
@@ -157,10 +185,9 @@ library(knitr)
 kable(head(cars))
 ```
 
-
 If your code cell produces multiple tables, you can also specify subcaptions and layout using cell options:
 
-```{{r}}
+``` {{r}}
 #| label: tbl-example
 #| tbl-cap: "Example"
 #| tbl-subcap: 

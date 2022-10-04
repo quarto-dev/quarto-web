@@ -69,7 +69,7 @@ Here are all of the options available for top navigation:
 Here are the options available for individual navigation items:
 
 | Option       | Description                                                                                                                        |
-|-------------|-----------------------------------------------------------|
+|-------------|----------------------------------------------------------|
 | `href`       | Link to file contained with the project or external URL.                                                                           |
 | `text`       | Text to display for navigation item (defaults to the document `title` if not provided).                                            |
 | `icon`       | Name of one of the standard [Bootstrap 5 icons](https://icons.getbootstrap.com/) (e.g. "github", "twitter", "share", etc.).        |
@@ -134,9 +134,77 @@ Here are all of the options available for side navigation:
 
 For more information on controlling the appearance of the side navigation using HTML themes, see [HTML Themes - Navigation](/docs/output-formats/html-themes.qmd#navigation).
 
-### Sidebar Tools {.unlisted}
+### Auto Generation
 
-In addition to traditional navigation, the sidebar can also display a set of tools (e.g. social actions, github view or edit actions, etc.) A tool definition consists of an icon name and an href to follow when clicked. For `icon`, use the icon name of any of the 1,300+ [Bootstrap Icons](https://icons.getbootstrap.com).
+::: callout-note
+## Pre-release feature
+
+The sidebar auto generation feature described below is currently only available in the Quarto v1.2 pre-release: <https://quarto.org/docs/download/prerelease.html>.
+:::
+
+Above we describe how to explicitly populate the `contents` of your sidebar with navigation items. You can also automatically generate sidebar navigation from the filesystem. The most straightforward way to do this is to specify the `auto: true` option as follows:
+
+``` yaml
+sidebar:
+  contents: auto
+```
+
+Using `contents: auto` at the root level will result in all documents in your website being included within the navigation (save for the home page which can be navigated to via the title link). Navigation is constructed using the following rules:
+
+1.  Navigation item titles will be read from the `title` field of documents.
+
+2.  Sub-directories will create sections and will be automatically titled based on the directory name (including adding capitalization and substituting spaces for dashes and underscores). Use an `index.qmd` in the directory to provide an explicit `title` if you don't like the automatic one.
+
+3.  Order is alphabetical unless a numeric `order` field is provided in document metadata.
+
+Automatic navigation automatically includes items in sub-directories. If you prefer not to do this, use an explicit `/*` to indicate only the documents in the root directory:
+
+``` yaml
+sidebar:
+  contents: /*
+```
+
+Rather than specifying that all documents should be included, you can also specify a directory name or a glob pattern. For example, the following values for `auto` are all valid (note that the second form for `reports` is non-recursive):
+
+``` yaml
+sidebar:
+  contents: reports
+  
+sidebar:
+  contents: reports/*
+  
+sidebar:
+  contents: "*.ipynb"
+```
+
+Note that in YAML we need to quote any strings that begin with `*` (as we do above for `*.ipynb`).
+
+You can automatically build sidebar `contents` anywhere within a sidebar hierarchy. For example, here we add a section that is automatically generated from a directory:
+
+``` yaml
+sidebar:
+  contents:
+    - about.qmd
+    - contributing.qmd
+    - section: Reports
+      contents: reports
+```
+
+You can also include automatically generated items in the middle of a list of normal items by including an item with an `auto` property. Here we add an `auto` entry in the middle of a list of items:
+
+``` yaml
+sidebar:
+  contents:
+    - about.qmd
+    - contributing.qmd
+    - auto: "*-report.qmd"
+```
+
+Note again that we quote the `auto` entry with a `*` in it so that it is correctly parsed.
+
+### Sidebar Tools
+
+In addition to traditional navigation, the sidebar can also display a set of tools (e.g. social actions, GitHub view or edit actions, etc.) A tool definition consists of an icon name and an href to follow when clicked. For `icon`, use the icon name of any of the 1,300+ [Bootstrap Icons](https://icons.getbootstrap.com).
 
 For example:
 
@@ -354,7 +422,7 @@ The links will be displayed immediately below the page table of contents:
 There are a couple of additional options that enable you to customize the behavior of repository links:
 
 | Option        | Description                                                                      |
-|---------------|--------------------------------------------------------|
+|---------------|---------------------------------------------------------|
 | `repo-subdir` | Subdirectory of repository containing source files (defaults to root directory). |
 | `repo-branch` | Repository branch containing the source files (defaults to `main`)               |
 
