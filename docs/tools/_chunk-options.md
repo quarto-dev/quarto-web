@@ -7,8 +7,8 @@ One important difference between R Markdown documents and Quarto documents is th
 
 library(ggplot2)
 ggplot(airquality, aes(Temp, Ozone)) + 
-        geom_point() + 
-        geom_smooth(method = "loess", se = FALSE)
+  geom_point() + 
+  geom_smooth(method = "loess", se = FALSE)
 ```
 
 Quarto uses this approach to both better accommodate longer options like `fig-cap`, `fig-subcap`, and `fig-alt` as well as to make it straightforward to edit chunk options within more structured editors that don't have an easy way to edit chunk metadata (e.g. most traditional notebook UIs).
