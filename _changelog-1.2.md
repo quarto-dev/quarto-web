@@ -1,18 +1,9 @@
 
 
 
-## Revealjs Format
-
-- Introduce template partials for RevealJS. You may provide partials for `title-slide.html` or `toc-slide.html`.
-
 ## Markdown Formats
 
 - Article in advanced on quarto and static site generators
-
-## Websites
-
-- Permit icons in top level navbar, if specified
-
 
 ## TinyTex
 
