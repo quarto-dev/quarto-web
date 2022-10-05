@@ -334,8 +334,13 @@ const projectOptions = readProjectObject("project", {
 });
 writeProjectTable("project", projectOptions);
 
-const projectPreviewOptions = readDefinitionsId("project-preview");
+const projectPreviewOptions = readDefinitionsId("project-preview", {
+  "serve": "Options for external preview server (see [Serve](#serve))"
+});
 writeProjectTable("preview", projectPreviewOptions);
+
+const projectPreviewServeOptions = readDefinitionsId("project-serve");
+writeProjectTable("serve", projectPreviewServeOptions);
 
 const socialMetadataOptions = readDefinitionsId("social-metadata");
 const twitterOptions = socialMetadataOptions.concat(readDefinitionsObject("twitter-card"));

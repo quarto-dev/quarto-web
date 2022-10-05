@@ -2,6 +2,50 @@
 title: "Advanced Reveal"
 ---
 
+## Title Slide
+
+The main title slide is the first slide of the presentation, and its content is generated based on a variety document options (title, subtitle, date, author, institute, etc.). 
+
+### Custom Background
+
+If you want to provide a custom background for the title slide, then do the following:
+
+1. Use the `title-slide-attributes` key to provide background options.
+2. Within this key, specify any of the supported [slide background options](index.qmd#slide-backgrounds),  but with `data-` prepended to them. For example:
+
+For example:
+
+```yaml
+---
+title: My Slide Show
+title-slide-attributes:
+  data-background-image: /path/to/title_image.png
+  data-background-size: contain
+  data-background-opacity: "0.5"
+---
+```
+
+### Custom Template
+
+::: {.callout-note}
+### Quarto v1.2 Required
+
+Custom templates for Reveal title slides are only available in Quarto v1.2, which you can download at <https://quarto.org/docs/download/prerelease.html>.
+:::
+
+You can replace the default title slide entirely with your own template. To do this, specify a `title-slide.html` [template partial](/docs/journals/templates.qmd#template-partials). For example:
+
+```yaml
+title: My Slide Show
+format:
+  revealjs:
+    template-partials:
+      - title-slide.html
+```
+
+Here is the source code for the [default title slide template partial](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-slide.html). Customize this template as required, then save the resutls to `title-slide.html` alongside your presentation. 
+
+
 ## Slide Transitions
 
 Reveal supports a number of animated transition effects for both slide changes and slide background changes. By default no transitions are used, however you can enable them either globally or per-slide using the options described below.
@@ -9,7 +53,7 @@ Reveal supports a number of animated transition effects for both slide changes a
 Here are the available transition types:
 
 | Transition | Description                                                            |
-|------------|------------------------------------------------------------------------|
+|---------------|---------------------------------------------------------|
 | `none`     | No transition (switch instantly)                                       |
 | `fade`     | Cross fade                                                             |
 | `slide`    | Slide horizontally                                                     |
@@ -84,7 +128,7 @@ Reveal will automatically scale presentations uniformly based on the normal size
 You can change the slide size, the margin around content, as well as set limits on content scaling using the following options:
 
 | Option      | Description                                                                              |
-|-------------|------------------------------------------------------------------------------------------|
+|--------------|---------------------------------------------------------|
 | `width`     | Normal width (defaults to 1050)                                                          |
 | `height`    | Normal height (defaults to 700)                                                          |
 | `margin`    | Factor of the display size that should remain empty around the content (defaults to 0.1) |
@@ -176,7 +220,7 @@ You can also disable auto-stretch for an individual slide by adding the `.nostre
 ## Slide Title {.nostretch}
 ```
 
-`auto-stretch` will only apply on non-nested image, which means an image in a feature blocks (e.g fragments, layout panel, columns, ... ) or a custom Divs will be ignored. For custom Divs, you can opt-in `auto-stretch` behavior by adding the class `.r-stretch` to the outer divs. In that the image within the blocks will be unwrapped below. 
+`auto-stretch` will only apply on non-nested image, which means an image in a feature blocks (e.g fragments, layout panel, columns, ... ) or a custom Divs will be ignored. For custom Divs, you can opt-in `auto-stretch` behavior by adding the class `.r-stretch` to the outer divs. In that the image within the blocks will be unwrapped below.
 
 ## Auto Animate
 
@@ -285,7 +329,7 @@ Here's an example where we've given several blocks a matching ID since automatic
 You can override specific animation settings such as easing and duration either for the whole presentation, per-slide or individually for each animated element. The following configuration attributes can be used to change the settings for a specific slide or element:
 
 | **Attribute**            | **Default** | **Description**                                                                                                              |
-|:-------------------------|:-----------:|:-----------------------------------------------------------------------------------------------------------------------------|
+|:-----------|:----------:|:----------------------------------------------|
 | `auto-animate-easing`    |    ease     | A CSS [easing function](https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function).                                   |
 | `auto-animate-unmatched` |    true     | Determines whether elements with no matching auto-animate target should fade in. Set to false to make them appear instantly. |
 | `auto-animate-duration`  |     1.0     | Animation duration in seconds.                                                                                               |
@@ -341,7 +385,7 @@ Slide up while fading in
 Here are all of the available fragment classes:
 
 | **Name**                  | **Effect**                                          |
-|:--------------------------|:----------------------------------------------------|
+|:------------------------|:----------------------------------------------|
 | `fade-out`                | Start visible, fade out                             |
 | `fade-up`                 | Slide up while fading in                            |
 | `fade-down`               | Slide down while fading in                          |
@@ -417,7 +461,7 @@ Reveal uses classic linear slide navigation by default. If you wish you can also
 Use the `navigation-mode` option to fine tune Reveal navigation behavior:
 
 | Navigation Mode | Behavior                                                                                                                                                                  |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|-------------|-----------------------------------------------------------|
 | `linear`        | Left/right arrows step through all slides (both horizontal and vertical).                                                                                                 |
 | `vertical`      | Left/right arrow keys step between horizontal slides. Up/down arrow keys step between vertical slides. Space key steps through all slides (both horizontal and vertical). |
 | `grid`          | When this is enabled, stepping left/right from a vertical stack to an adjacent vertical stack will land you at the same vertical index.                                   |
@@ -521,29 +565,34 @@ Note that many of the most popular Reveal plugins are already included with the 
 
 Let's show an example with the [fullscreen](https://rajgoel.github.io/reveal.js-demos/fullscreen-demo.html). Here are the steps to bundle this plugin to use within your Quarto HTML presentation:
 
-1. Create a folder with the name you want for the plugin, here we'll call it `fullscreen`.
-2. Download the plugin files into the created folder. Here the plugin only have a JS file called `plugin.js` that you can find [on the repo _rajgoel/reveal.js-plugins_](https://raw.githubusercontent.com/rajgoel/reveal.js-plugins/master/fullscreen/plugin.js). You can keep the name or rename it, e.g `fullscreen.js`.
-3. In that folder add a `plugin.yml` file, as in [Quarto Reveal examples](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/plugins). 
-    * `name` is a mandatory field which should be the name of the JS function the JS plugin is defining. Open the JS script you downloaded to look for it.
-    * Other fields are for the resources to be used. In our example, only a JS script so we'll use `script`
+1.  Create a folder with the name you want for the plugin, here we'll call it `fullscreen`.
+
+2.  Download the plugin files into the created folder. Here the plugin only have a JS file called `plugin.js` that you can find [on the repo *rajgoel/reveal.js-plugins*](https://raw.githubusercontent.com/rajgoel/reveal.js-plugins/master/fullscreen/plugin.js). You can keep the name or rename it, e.g `fullscreen.js`.
+
+3.  In that folder add a `plugin.yml` file, as in [Quarto Reveal examples](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/plugins).
+
+    -   `name` is a mandatory field which should be the name of the JS function the JS plugin is defining. Open the JS script you downloaded to look for it.
+    -   Other fields are for the resources to be used. In our example, only a JS script so we'll use `script`
 
     Our `plugin.yml` would be:
 
-    ```yaml
+    ``` yaml
     name: RevealFullscreen
     script: [fullscreen.js]
     ```
-4. Now add the plugin reference into your document YAML header, using the path of the folder your created:
 
-   ```yaml
-   format: 
-    revealjs:
-      revealjs-plugins:
-        - fullscreen
+4.  Now add the plugin reference into your document YAML header, using the path of the folder your created:
+
+    ``` yaml
+    format: 
+     revealjs:
+       revealjs-plugins:
+         - fullscreen
     ```
-5. The custom plugin will be loaded in your presentation and you can use it. The plugin _fullscreen_ documentation shows an example of adding a Map fullscreen in a slide by adding an attribute on the section, and using stretch on the content. This would translate to having this slide in the `.qmd` file:
 
-    ```markdown
+5.  The custom plugin will be loaded in your presentation and you can use it. The plugin *fullscreen* documentation shows an example of adding a Map fullscreen in a slide by adding an attribute on the section, and using stretch on the content. This would translate to having this slide in the `.qmd` file:
+
+    ``` markdown
     ## {fullscreen=true}
 
     <iframe class="stretch" data-src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d61206.89156051744!2d-151.77366863890407!3d-16.50433878928727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sde!4v1467468929561"></iframe>
