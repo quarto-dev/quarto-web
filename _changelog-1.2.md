@@ -5,25 +5,6 @@
 
 - Article in advanced on quarto and static site generators
 
-## TinyTex
-
-- `quarto install tinytex` will now install TinyTex even if a system installation of TeX is detected.
-- `quarto install tinytex` will no longer add TinyTex to the system path by default.
-- When rendering PDFs, Quarto will prefer an existing installation of TinyTex over a system Tex installation
-- To prevent Quarto from using an installation of TinyTex (if you'd prefer the system installation be used), set `latex-tinytex: false` in your project or document front matter.
-- To install TinyTex system wide, using the `--update-path` flag when installing (this will add TinyTex to the system path)
-
-## Video Shortcode
-
-- The video shortcode extension is now native to the Quarto CLI
-
-- Reveal-JS Video Snippet backgrounds are now better supported. For common video snippets, like YouTube, you can specify them as `video` backgrounds and quarto will ensure the correct embed URL and swap to be an `iframe` background if needed.
-
-## Miscellaneous
-
-- New metadata field `quarto-required` to specify required versions of quarto in a document
-
-
 ## Extensions
 
 - Preview live reload for changes to extension source files
