@@ -17,9 +17,10 @@ Use the following links to add your extension to the appropriate YAML file (a pu
 | File                                                                                                                                   | Description                                                                                                                       |
 |----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | [`shortcodes-and-filters.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/shortcodes-and-filters.yml) | Special markdown directives that generate various types of content and/or add new markdown rendering behaviors                    |
-| [revealjs.yml](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/revealjs.yml)                               | Extend the capabilities of HTML presentations created with Revealjs.                                                              |
 | [`journal-articles.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/journal-articles.yml)             | Enable authoring of professional Journal articles using markdown, and produce both LaTeX (PDF) and HTML versions of the articles. |
 | [`custom-formats.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/custom-formats.yml)                 | Create new output formats by bundling together document options, templates, stylesheets, and other content.                       |
+| [`revealjs.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/revealjs.yml)                             | Extend the capabilities of HTML presentations created with Revealjs.                                                              |
+| [`revealjs-formats.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/revealjs-formats.yml)             | Custom Revealjs output formats / templates.                                                                                       |
 
 ### Example
 
