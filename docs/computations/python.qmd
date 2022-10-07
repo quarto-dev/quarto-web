@@ -116,6 +116,67 @@ If you are using a kernel that is contained within an external conda environment
 Note that this step is not required if you are merely using conda with Quarto. It applies to using kernels other than the default Python kernel that happen to be installed within a conda environment separate from the one you are using.
 :::
 
+## Kernels with Virtual Environments
+
+To use Quarto with a virtual environment, you need to install a kernel within the virtual environment. Follow these instructions to create a new virtual environment and install a kernel.
+
+:::{.panel-tabset}
+
+## Windows
+
+```{.bash filename="Terminal"}
+# Create a new virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
+.venv\Scripts\activate.bat
+
+# Install ipykernel
+python3 -m pip install jupyter
+
+# Install a new kernel
+python3 -m ipykernel install --name my-project-kernel --display-name "Python Kernel for My Project" --user
+```
+
+## Mac/Linux
+
+```{.bash filename="Terminal"}
+# Create a new virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
+source .venv/bin/activate
+
+# Install ipykernel
+python3 -m pip install jupyter
+
+# Install a new kernel
+python3 -m ipykernel install --name my-project-kernel --display-name "Python Kernel for My Project" --user
+```
+
+:::
+
+Then, in your Quarto document, reference the new kernel you installed by name:
+
+``` yaml
+---
+title: "My Document"
+jupyter: my-project-kernel
+---
+```
+
+Note that you can also provide a full `kernelspec`, for example:
+
+``` yaml
+---
+title: "My Document"
+jupyter: 
+  kernelspec:
+    name: "my-project-kernel"
+    language: "python"
+    display_name: "Python Kernel for My Project"
+---
+```
 
 ``` include
 _jupyter-daemon.md
