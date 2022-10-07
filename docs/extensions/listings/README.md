@@ -1,6 +1,6 @@
 ## Extension Listings
 
-If you have an extension you'd like to see us include in the listing of [available extensions](https://quarto.org/docs/extensions/), send us a pull request that includes an addition to the appropriate YAML file in this directory.
+If you have an extension you'd like to see us include in the listing of [available extensions](https://quarto.org/docs/extensions/), send us a pull request that includes an addition to the requisite YAML file in this directory.
 
 ### Requirements
 
@@ -12,7 +12,7 @@ Extensions submitted for listing should meet the following requirements:
 
 ### Submissions
 
-You can edit the YAML files online and automatically submit a pull request using the following links (no contributor agreement is required for these pull requests):
+Use the following links to add your extension to the appropriate YAML file (a pull request will be automatically submitted when you commit your edits):
 
 | File                                                                                                                                   | Description                                                                                                                       |
 |----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
