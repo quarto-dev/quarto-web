@@ -23,7 +23,9 @@ Use the following links to add your extension to the appropriate YAML file (a pu
 
 ### Example
 
-The [lighbox](https://github.com/quarto-ext/lightbox) extension provides a good example of an extension [README.md](https://github.com/quarto-ext/lightbox/blob/main/README.md). Here is the corresponding YAML entry for the extension in [`shortcodes-and-filters.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/shortcodes-and-filters.yml):
+The [lighbox](https://github.com/quarto-ext/lightbox) extension provides a good example of an extension [README.md](https://github.com/quarto-ext/lightbox/blob/main/README.md).
+
+Here is the corresponding YAML entry for the extension in [`shortcodes-and-filters.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/shortcodes-and-filters.yml):
 
 ``` yaml
 - name: lightbox
