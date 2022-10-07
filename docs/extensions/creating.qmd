@@ -2,108 +2,48 @@
 title: Creating Extensions
 ---
 
+{{< include _extension-version.qmd >}}
+
 ## Overview
 
-TODO
+Quarto Extensions are a powerful way to modify or extend the behavior of Quarto, and can be created and distributed by anyone. There are several types of extensions available:
 
-Quarto Extensions are a powerful way to modify or extend the behavior of Quarto, and can be created and distributed by anyone. There are three types of extensions available:
-
--   [Shortcodes](shortcodes.qmd) are special markdown directives that generate various types of content. For example, you could create shortcodes to embed tweets or videos in a document.
-
--   [Filters](filters.qmd) are a flexible and powerful tool for introducing new global behaviors and/or new markdown rendering behaviors. For example, you could create filters to implement output folding, an image carousel, or just about anything you can imagine!
-
--   [Formats](formats.qmd) enable you to create new output formats by bundling together document options, templates, stylesheets, and other content.
-
-Here are some examples of extensions developed and maintained by the core Quarto team:
-
-| **Extension**                                                        | **Description**                                                                                 |
-|------------------------------|------------------------------------------|
-| [video](https://github.com/quarto-ext/video)                         | Embed videos in HTML documents and Revealjs presentations.                                      |
-| [lightbox](https://github.com/quarto-ext/lightbox/)                  | Create lightbox treatments for images in your HTML documents.                                   |
-| [fancy-text](https://github.com/quarto-ext/fancy-text)               | Output nicely formatted versions of fancy strings such as LaTeX and BibTeX in multiple formats. |
-| [fontawesome](https://github.com/quarto-ext/fontawesome)             | Use Font Awesome icons in HTML and PDF documents.                                               |
-| [latex-environment](https://github.com/quarto-ext/latex-environment) | Quarto extension to output custom LaTeX environments.                                           |
+| Extension                                   | Description                                                                                                                                                                                                                              |
+|----------------------|--------------------------------------------------|
+| [Shortcodes](shortcodes.qmd)                | Special markdown directives that generate various types of content. For example, you could create shortcodes to embed tweets or videos in a document.                                                                                    |
+| [Filters](filters.qmd)                      | A flexible and powerful tool for introducing new global behaviors and/or new markdown rendering behaviors. For example, you could create filters to implement output folding, an image carousel, or just about anything you can imagine! |
+| [Journal Articles](../journals/formats.qmd) | Enable authoring of professional Journal articles using markdown, and produce both LaTeX (PDF) and HTML versions of the articles.                                                                                                        |
+| [Custom Formats](formats.qmd)               | Create new output formats by bundling together document options, templates, stylesheets, and other content.                                                                                                                              |
+| [Revealjs Plugins](revealjs.qmd)            | Extend the capabilities of HTML presentations created with Revealjs.                                                                                                                                                                     |
 
 : {tbl-colwidths="\[30,70\]"}
 
-This article covers the basics of installing and using extensions. The articles on [Creating Shortcodes](shortcodes.qmd), [Creating Filters](filters.qmd), and [Creating Formats](formats.qmd) cover how to create your own extensions.
+## Development
 
-## Using Shortcodes
+Each type of extension has its own development requirements: in some cases an extension can be created with YAML metadata alone, however in many cases you'll end up doing some custom scripting using Lua.
 
-Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to [Hugo shortcodes](https://gohugo.io/content-management/shortcodes/) and [WordPress shortcodes](https://codex.wordpress.org/Shortcode).
-
-For example, the following shortcode prints the `title` from document metadata:
-
-``` {.markdown shortcodes="false"}
-{{< meta title >}}
-```
-
-The `meta` shortcode is built-in to Quarto. Extensions can provide additional shortcodes. For example, the [`quarto-ext/fontawesome`](https://github.com/quarto-ext/fontawesome) extension provides the `fa` shortcode which enables you to use icons from [Font Awesome Free](https://fontawesome.com/search?m=free) within HTML and PDF documents.
-
-You can use the `fa` shortcode by first installing it:
-
-`quarto install extension quarto-ext/fontawesome`
-
-Then using it within a document as follows:
-
-``` markdown
----
-title: My Awesome Document
----
-
-## Section
-
-This document uses Font Awesome {{{< fa smile >}}}.
-```
-
-## Using Filters
-
-Filters provided by extensions need to be explicitly included in the list of `filters` used to render a document.
-
-To use a filter extension, first install the extension using `quarto install extension`:
-
-``` {.bash filename="Terminal"}
-quarto install extension quarto-ext/latex-environments
-```
-
-Then, add the extension name to the list of `filters` for your document or project:
-
-``` markdown
----
-title: My Environments Document
-format:
-  pdf: default
-filters:
-  - latex-environments
-environments: [program]
----
-
-:::{.program}
-The contents of this div will be output in a `program`
-latex environment, but will appear in HTML (and any other output 
-format as a simple div with the class `program`)
-:::
-```
-
-Note that if you have installed two filters with the same name you can further qualify them using the organization name, for example:
-
-``` yaml
-filters:
-  - quarto-ext/latex-environments
-```
-
-## Learning More
-
-Here are some possible steps for learning more about Quarto extensions:
-
--   The [Quarto Extensions](https://github.com/quarto-ext/) GitHub organization provides a set of extensions developed by the core Quarto team. Many of these extensions implement frequently requested features, and all of them provide sound examples of how to implement extensions.
-
--   [Creating Shortcodes](shortcodes.qmd) describes how to implement your own shortcode extensions.
-
--   [Creating Filters](filters.qmd) describes how to implement your own filter extensions.
+These articles provide in-depth documentation on learning and using Lua for extension development:
 
 -   [Lua Development](lua.qmd) helps you get started with Lua (the language used to create extensions)
 
 -   [Lua API Documentation](lua-api.qmd) provides documentation on the Pandoc and Quarto Lua APIs used for creating extensions.
 
--   [Distributing Extensions](distributing.qmd) goes into more depth on how to package and distribute extensions, both on GitHub and using plain gzip archives.
+## Distribution
+
+There are two distinct ways to distribute extensions to end users:
+
+-   Publish your extension in a public GitHub repository.
+
+-   Bundle your extension into a `.zip` or `.tar.gz` archive.
+
+[Distributing Extensions](distributing.qmd) goes into more depth on how to package and distribute extensions, both on GitHub and using plain gzip archives.
+
+## Examples
+
+The documentation linked to above provides simple motivating examples for each type of extension. Once you understand these, check out the following for more sophisticated examples of each type of extension:
+
+The [Quarto Extensions](https://github.com/quarto-ext/) GitHub organization provides a set of extensions developed by the core Quarto team. Many of these extensions implement frequently requested features, and all of them provide sound examples of how to implement extensions.
+
+The [Quarto Journals](https://github.com/quarto-journals/) GitHub organization contains a set of Journal Article formats developed by the core Quarto team or contributed by third parties.
+
+Finally, most [published extensions](index.qmd) are hosted on GitHub and therefore have source code available that you can learn from.
