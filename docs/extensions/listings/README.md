@@ -1,6 +1,6 @@
 ## Extension Listings
 
-If you have an extension you'd like to see us include in the listing of [available extensions](../index.qmd), send us a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) that includes an addition to the appropriate YAML file in this directory.
+If you have an extension you'd like to see us include in the listing of [available extensions](https://quarto.org/docs/extensions/), send us a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) that includes an addition to the appropriate YAML file in this directory.
 
 Extensions submitted for listing should meet the following requirements:
 
