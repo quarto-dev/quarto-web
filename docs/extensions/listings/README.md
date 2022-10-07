@@ -17,7 +17,9 @@ You can edit the YAML files online and automatically submit a pull request using
 | [`custom-formats.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/custom-formats.yml)                 | Create new output formats by bundling together document options, templates, stylesheets, and other content.                       |
 | [`revealjs-plugins.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/revealjs-plugins.yml)             | Extend the capabilities of HTML presentations created with Revealjs.                                                              |
 
-For example, here the entry for the [lighbox](https://github.com/quarto-ext/lightbox) filter:
+### Example
+
+The [lighbox](https://github.com/quarto-ext/lightbox) extension provides a good example of an extension [README.md](https://github.com/quarto-ext/lightbox/blob/main/README.md). Here is the corresponding YAML entry for the extension in [`shortcodes-and-filters.yml`](https://github.com/quarto-dev/quarto-web/edit/main/docs/extensions/listings/shortcodes-and-filters.yml):
 
 ``` yaml
 - name: lightbox
