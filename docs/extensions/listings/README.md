@@ -6,7 +6,7 @@ Extensions submitted for listing should meet the following requirements:
 
 1.  Hosted from a GitHub repository.
 2.  Include a `README.md` file that describes how to install them and provides examples of syntax and usage.
-3.  Clearly indicates that they are available under an open-source license.
+3.  Clearly indicate that they are available under an open-source license.
 
 You can edit the YAML files online and automatically submit a pull request using the following links (no contributor agreement is required for these pull requests):
 
