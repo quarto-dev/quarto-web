@@ -1,0 +1,71 @@
+---
+title: "Starter Templates"
+
+---
+
+{{< include _extension-version.qmd >}}
+
+## Overview
+
+Starter templates provide a straightforward way for users to get started with new Quarto projects by providing example content and options. You might use starter templates to:
+
+1.  Create a working initial document for [Journal Articles](../journals/index.qmd) or [Custom Formats](formats.qmd).
+
+2.  Provide the intiial content for a custom [Project Type](project-types.qmd). 
+
+3.  Scaffold a standard form of data analysis project used by your organization.
+
+Starter templates are essentially just GitHub repositories that are copied to a new directory on the user's system. As we'll describe below in [Extensions & Templates], often times the repository for a custom format is also used as a starter template.
+
+## Creating a Template
+
+To create a starter template, just create a GitHub repository that includes the files you want copied into projects created with the template. All of the files in the repository are copied save for:
+
+1.  Hidden files (any file or directory name that starts with `.` (e.g. `.gitignore`).
+
+2.  Common GitHub repository files like `README.md` and `LICENSE`.
+
+If you'd like, you can also include a `.quartoignore` file in the root of your repository listing other files or directories you'd like to exclude. Each line of the file should be a glob describing file(s) to ignore (using syntax like a `.gitignore` file).
+
+### template.qmd
+
+There is one special file you'll typically want to include in templates that target creation of documents (as opposed to projects): `template.qmd`. There are two reasons to include a `template.qmd`:
+
+1. It provides an easy to test that your template is working as expected.
+
+2. When the template is copied into the target directory, the `template.qmd` will automatically be renamed to match the name that the user provided for the directory.
+
+If you are creating a template that targets creation of a website or book, a `template.qmd` is generally not necessary (as the `index.qmd` file already serves this purpose).
+
+## Using a Template
+
+Once you've created the template repository and pushed it to GitHub, it can be instantiated with the following command:
+
+``` {.bash filename="Terminal"}
+quarto use template cooltools/cool-project
+```
+
+This command copies the contents of the GitHub repository at `https://github.com/cooltools/cool-project` to the local system (excluding selected files as discussed above).
+
+If the command is run in an empty directory, the user will be prompted whether they'd like to use the existing directory or create a new directory. If the command is run in a directory which contains other files or directories, they'll be prompted for the name of a directory to create.
+
+## Extensions & Templates
+
+When creating [Journal Articles](../journals/index.qmd), [Custom Formats](formats.qmd), or [Project Type](project-types.qmd) extensions, we recommend that you additionally provide a starter template to make it easy for user to get started.
+
+This is generally is as easy as adding a `template.qmd` file to your extension that demonstrates its use. With this configuration, users can either begin using your extension via the template or by a conventional `quarto install` of the extension. 
+
+For example, consider the [ACM](https://github.com/quarto-journals/acm) Journal Article extension. The extension repository supports _either_ getting started with a template:
+
+```{.bash filename="Terminal"}
+quarto use template quarto-journals/acm
+```
+
+Alternatively, you can the format (without the template)into an existing project or directory:
+
+```{.bash filename="Terminal"}
+quarto install extension quarto-journals/acm
+```
+
+
+
