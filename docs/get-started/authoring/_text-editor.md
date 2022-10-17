@@ -356,6 +356,6 @@ Here is what this document looks like when rendered.
 
 You can locate citations, footnotes, and [asides](https://quarto.org/docs/authoring/article-layout.html#asides) in the margin. You can also define custom column spans for figures, tables, or other content. See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.
 
-``` include
-_footer.md
-```
+{{< include _footer.md >}}
+
+

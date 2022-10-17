@@ -19,7 +19,7 @@ If you want to exclude a heading from the table of contents, add both the `.unnu
 ### More Options {.unnumbered .unlisted}
 ```
 
-``` include
-_document-options-section-numbering.md
-_document-options-syntax-highlighting.md
-```
+{{< include _document-options-section-numbering.md >}}
+
+{{< include _document-options-syntax-highlighting.md >}}
+

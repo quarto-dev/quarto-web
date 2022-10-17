@@ -13,9 +13,7 @@ quarto preview document.qmd --to pdf
 quarto preview document.ipynb
 ```
 
-```{.include}
-_jupyter-execute.md
-```
+{{< include _jupyter-execute.md >}}
 
 ## VS Code
 

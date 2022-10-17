@@ -1,8 +1,6 @@
 ## Project
 
-``` include
-_options.md
-```
+{{< include _options.md >}}
 
 ## {{< meta project-type-upper >}}
 
