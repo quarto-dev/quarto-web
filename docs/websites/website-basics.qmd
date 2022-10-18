@@ -13,45 +13,92 @@ Website navigation can be provided through a global navbar, a sidebar with links
 
 Quarto websites can be published to a wide variety of destinations including GitHub Pages, Netlify, RStudio Connect, or any other static hosting service or intranet web server. See the documentation on [Publishing Websites](../publishing/index.qmd) for additional details.
 
-<!---
 ## Quick Start
+
+Follow the Quick Start for your tool of choice to get a simple website up and running. After covering the basics, read on to learn about website navigation and other more advanced website features.
 
 ::: {.panel-tabset group="tools-tabset"}
 
 ### VS Code
 
-VS Code
+To create a new website project within VS Code, execute the **Quarto: Create Project** command from the command-palette:
+
+![](images/vscode-create-project-command.png)
+
+Then, select **Website Project**:
+
+![](images/vscode-create-project-website.png){.border}
+
+You'll be prompted to select a parent directory to create the project within. Then, you'll be asked to name the directory for your website project:
+
+![](images/vscode-create-project-directory.png){.border}
+
+The new website project will be created and opened within VS Code. Click the **Render** button to preview the website:
+
+![](images/vscode-create-project-render.png)
+
+The preview will show to the right of the source file. As you re-render `index.qmd` or render other files like `about.qmd`, the preview is automatically updated.
+
 
 ### RStudio
 
-RStudio
+To create a new website project within RStudio, use the **New Project** command and select **Quarto Website**:
+
+:::{layout-ncol="2"}
+
+![](images/rstudio-project-new-directory.png){.border}
+
+![](images/rstudio-project-website.png){.border}
+:::
+
+Then, provide a directory name and other relevant options for the website:
+
+![](images/rstudio-project-website-options.png){.border fig-alt="A section of the 'New Project Wizard' menu from Rstudio. This section is titled 'Create Quarto Website'. The Quarto logo is displayed on the left. On the right are fields for 'Directory name', and 'Create project as subdirectory of:'. Underneath that are options for 'Engine'. The option for 'Engine' is set to 'None'. Underneath are options for 'Create a git repository', and 'Use visual markdown editor'.There are buttons for 'Create Project' and 'Cancel' arranged side-by-side in the bottom right of the window. There is an option to 'Open in new session' in the button left corner."}
+
+Click the **Render** button to preview the website:
+
+![](images/rstudio-project-website-preview.png)
+
+The preview will show to the right of the source file. As you re-render `index.qmd` or render other files like `about.qmd`, the preview is automatically updated.
+
 
 ### Terminal
 
-Terminal
+To create a new website project from the Terminal, use the `quarto create-project` command, specifying the directory that will hold the new project as first argument:
 
-:::
---->
-
-
-## Getting Started
-
-To create a new website project, use the Quarto `create-project` command:
-
-``` {.bash filename="Terminal"}
+```{.bash filename="Terminal"}
 quarto create-project mysite --type website
 ```
 
-This will create the scaffolding for a simple website in the `mysite` sub-directory. Here is what the `_quarto.yml` config file will look like for the site:
+This will create the scaffolding for a simple website in the `mysite` sub-directory. Use the `quarto preview` command to render and preview the website:
 
-``` yaml
+```{.bash filename="Terminal"}
+quarto preview mysite
+```
+
+The website preview will open in a new web browser. As you edit and save`index.qmd` (or other files like `about.qmd`) the preview is automatically updated.
+
+:::
+
+
+
+
+
+## Workflow
+
+Above we demonstrated how to create and edit a simple website. In this section we go into more depth on website workflow.
+
+### Config File
+
+Every website has a `_quarto.yml` config file that provides website options as well as defaults for HTML documents created within the site. For example, here is the default config file for the simple site created above:
+
+```{.yaml filename="_quarto.yml"}
 project:
   type: website
 
 website:
-  title: "mysite"
+  title: "today"
   navbar:
-    background: primary
     left:
       - href: index.qmd
         text: Home
@@ -64,57 +111,37 @@ format:
     toc: true
 ```
 
-To build and view the site use the `preview` command:
+See the documentation on [Website Navigation](website-navigation.qmd) and [Website Tools](website-tools.qmd) for additional details on website configuration. See [HTML Documents](/docs/output-formats/html-basics.qmd) for details on customizing HTML format options.
+
+### Website Preview
+
+If you are using VS Code or RStudio, the **Render** button automatically renders and runs `quarto preview` in an embedded window. You can also do the same thing from the Terminal if need be:
 
 ``` {.bash filename="Terminal"}
-quarto preview mysite
-```
-
-This will build the website and run a local web server to view it. To render (but not preview) the website into the `_site` directory:
-
-``` {.bash filename="Terminal"}
-quarto render mysite
-```
-
-By default, all valid Quarto input files in the project directory will be included in the website (save for ones with a file or directory prefix of `.` or `_`).
-
-See the [Project Basics](../projects/quarto-projects.qmd) article to learn more about working with projects, including specifying an explicit list of files to render, as well as adding custom pre and post render scripts to your project.
-
-### VS Code
-
-If you are using VS Code you can open a new workspace with your website project using the `code` command from within VS Code:
-
-``` {.bash filename="Terminal"}
-code mysite
-```
-
-### RStudio
-
-If you are using RStudio you can also create a Quarto website via the **New Project** command:
-
-![](images/rstudio-new-website.png){.border fig-alt="A section of the 'New Project Wizard' menu from Rstudio. This section is titled 'Create Quarto Website'. The Quarto logo is displayed on the left. On the right are fields for 'Directory name', and 'Create project as subdirectory of:'. Underneath that are options for 'Engine'. The option for 'Engine' is set to 'None'. Underneath are options for 'Create a git repository', and 'Use visual markdown editor'.There are buttons for 'Create Project' and 'Cancel' arranged side-by-side in the bottom right of the window. There is an option to 'Open in new session' in the button left corner." width="531"}
-
-Render documents within the site using the **Render** command, render the entire site using the **Render Site** command on the **Build** tab.
-
-## Workflow
-
-Quarto includes a live-reloading development server that you will likely find convenient to use while working on websites. Start the server with:
-
-``` {.bash filename="Terminal"}
+# preview the website in the current directory
 quarto preview
 ```
 
-The development server will automatically re-render input files whenever they change.
-
-Changes to configuration files (e.g. `_quarto.yml`) as well as site resources (e.g. theme or CSS files) will also cause an automatic refresh.
-
-If you are using RStudio a site development server will be run automatically when you render a document or the site. You can also start the development server directly using the **Serve Website** command on the **Build** tab.
+Note that when you preview a site (either using VS Code / RStudio integrated tools or from the terminal)  changes to configuration files (e.g. `_quarto.yml`) as well as site resources (e.g. theme or CSS files) will cause an automatic refresh of the preview.
 
 You can customize the behavior of the preview server (port, whether it opens a browser, etc.) using command line options or the `_quarto.yml` config file. See `quarto preview help` or the [project file reference](/docs/reference/projects/options.qmd#preview) for additional details.
+
 
 ::: callout-important
 As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g. `_quarto.yml` or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully `quarto render` your site before deploying it, even if you have already previewed changes to some pages with the preview server.
 :::
+
+
+### Website Render
+
+To render (but not preview) a website, use the `quarto render` command, which will render the website iinto the `_site` directory by default:
+
+``` {.bash filename="Terminal"}
+# render the website in the current directory
+quarto render 
+```
+
+See the [Project Basics](../projects/quarto-projects.qmd) article to learn more about working with projects, including specifying an explicit list of files to render, as well as adding custom pre and post render scripts to your project.
 
 {{< include ../projects/_render-targets.md >}}
 
