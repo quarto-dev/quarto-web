@@ -53,9 +53,103 @@ Below we'll walk through a complete example of a custom Journal format for the A
 
 -   [Authors & Affiliations](authors.qmd)
 
+## Quick Start
+
+Here we'll describe how to create a simple Journal article format extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio you should execute `quarto create` within their repsective integrated Terminal panes. 
+
+To get started, execute `quarto create extension journal` within the parent directory where you'd like the format to be created:
+
+```{.bash filename="Terminal"}
+$ quarto create extension journal
+ ? Extension Name › aps
+```
+
+As shown above, you'll be prompted for an extension name. Type `aps` (an acronym for a fictional academic association) and press Enter---the Journal format extension is then created:
+
+```bash
+Creating extension at /Users/jjallaire/quarto/dev/aps:
+  - Created README.md
+  - Created template.qmd
+  - Created _extensions/aps/aps.lua
+  - Created _extensions/aps/styles.css
+  - Created _extensions/aps/_extension.yml
+  - Created _extensions/aps/header.tex
+  - Created bibliography.bib
+```
+
+If you are running within VS Code or RStudio a new window will open with the extension project. 
+
+Here's what the contents of the files in `_extensions/aps/` look like:
+
+``` {.yaml filename="_extensions/aps/_extension.yml"}
+title: Aps
+author: J.J. Allaire
+version: 1.0.0
+quarto-required: ">=1.2.222"
+contributes:
+  formats:
+    common:
+      toc: true
+      filters:
+        - aps.lua
+    pdf:
+      include-in-header: header.tex
+    html:
+      css: styles.css
+```
+
+The main `_extension.yml` config file defines the output formats available for this Journal. Here we defined `pdf` and `html` formats, which will be available to Quarto documents as `aps-pdf` and `aps-html`, respectively.
+
+The config file also points to a number of other files that are used to customize the appearance of the Journal article:
+
+- `header.tex` --- Custom LaTeX header directives
+
+- `styles.css` --- Custom CSS for HTML output
+
+- `aps.lua` --- Lua filter for varoius custom transformations
+
+Finally, the `template.qmd` provides a base example article for users of the format:
+
+``` {.markdown filename="template.qmd"}
+---
+title: Aps Template
+format:
+  aps-pdf:
+    keep-tex: true  
+  aps-html: default
+author:
+  - name: Sarah Malloc
+    affiliations:
+      - name: An Organization
+        department: The Department
+        address: 1 Main St
+        city: Boston
+        country: USA
+        postal-code: 02210-1022
+      - A second affilication
+    orcid: 0000-0000-0000-0000
+    email: sm@example.org
+    url: https://example.org/
+  - name: Eliza Dealloc
+    affiliations:
+      - Another Affiliation
+abstract: |
+  This document is a template demonstrating the Aps format.
+keywords: [template, demo]
+bibliography: bibliography.bib  
+---
+
+## Introduction {#sec-intro}
+
+*TODO* Create a template that demonstrates the appearance, formatting, layout, and functionality of your format. Learn more about journal formats at <https://quarto.org/docs/journals/>.
+```
+
+To develop your format, render/preview `template.qmd`, and then make changes to the various files in the `_extensions` directory (the preview will automatically refresh when you change these files).
+
+
 ## Example: ACM Format
 
-To demonstrate the basics, we'll walk through some of the code for the [ACM Format](https://github.com/quarto-journals/) available from [quarto-journals](https://github.com/quarto-journals/).
+The Quick Start above creates a very simple Journal article format. Here we'll walk through some of the code for a more complex example, the [ACM Format](https://github.com/quarto-journals/) available from [quarto-journals](https://github.com/quarto-journals/).
 
 ### Format Components
 
