@@ -29,43 +29,51 @@ Quarto supports several shortcodes natively:
 
 This article describes how to create your own shortcodes.
 
-## Shortcode Extensions
+## Quick Start
 
-Before diving into writing custom shortcodes, we'll talk first about how to distribute your shortcode as a [Quarto Extension](index.qmd). While it is possible to use a shortcode by just listing the Lua file in the `shortcodes` document option, bundling a shortcode as an an extension makes it much easier for others to install and use your shortcode.
+Here we'll describe how to create a simple shortcode extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio you should execute `quarto create` within their repsective integrated Terminal panes. 
 
-Here is what the source code repository of an an extension named `shorty` might look like:
+To get started, execute `quarto create extension shortcode` within the parent directory where you'd like the shortcode extension to be created:
 
-``` default
-README.md
-LICENSE
-example.qmd
-_extensions/
-  shorty/
-    _extension.yml
-    shorty.lua
+```{.bash filename="Terminal"}
+$ quarto create extension shortcode
+ ? Extension Name › shorty
 ```
 
-Note that the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during installation). Even so, it's good practice to include a `README.md` and `LICENSE` file, and the `example.qmd` will be useful for developing your extension.
+As shown above, you'll be prompted for an extension name. Type `shorty` and press Enter---the shortcode extension is then created:
 
-Here's what the contents of the files in `_extensions/shorty/` might look like:
+```bash
+Creating extension at /Users/jjallaire/extensions/shorty/shorty:
+  - Created README.md
+  - Created _extensions/shorty/shorty.lua
+  - Created _extensions/shorty/_extension.yml
+  - Created .gitignore
+  - Created example.qmd
+```
+
+If you are running within VS Code or RStudio a new window will open with the extension project. 
+
+Here's what the contents of the files in `_extensions/shorty/` look like:
 
 ``` {.yaml filename="_extensions/shorty/_extension.yml"}
 title: Shorty
-author: Cooltools
+author: J.J. Allaire
 version: 1.0.0
-quarto-required: ">=1.2.0"
+quarto-required: ">=1.2.222"
 contributes:
   shortcodes:
     - shorty.lua
 ```
 
 ``` {.lua filename="_extensions/shorty/shorty.lua"}
-function shorty(args)
-  return pandoc.Str("shorty!")
-end
+return {
+  ['shorty'] = function(args, kwargs, meta) 
+    return pandoc.Str("Hello from Shorty!")
+  end
+}
 ```
 
-Finally, the `example.qmd` file would typically have code that exercises the extension. For example:
+Finally, the `example.qmd` file includes code that exercises the extension. For example:
 
 ``` {.markdown filename="example.qmd"}
 ---
@@ -75,46 +83,17 @@ title: "Shorty Example"
 {{< shorty >}}
 ```
 
-To develop your extension, just make changes to `shorty.lua` and render `example.qmd` to test them out.
+To develop your shortcode, render/preview `example.qmd`, and then make changes to `shorty.lua` (the preview will automatically refresh when you change `shorty.lua`).
 
-### Distribution
+## Development 
 
-If your extension source code it located within a GitHub repository, then it can be installed by referencing the GitHub organization and repository name. For example:
+Shortcodes are created using Lua. If you aren't familar with Lua (or with Pandoc filters), here are some resources to help you along:
 
-``` {.bash filename="Terminal"}
-# install the current HEAD of the extension
-quarto install extension cooltools/shorty
+- [Lua Development](lua.qmd) (Lua is the language used to create shortcodes).
 
-# install a branch or tagged release of the extension
-quarto install extension cooltools/shorty@v1.2
-quarto install extension cooltools/shorty@bugfix-22
-```
+- [Lua API Reference](lua-api.qmd), which describes the Lua extension API for Quarto.
 
-Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
-
-### Examples
-
-You might also find it instructive to examine the source code of these shortcode extensions authored by the Quarto team:
-
-| **Extension**                                                                                     | **Description**                                                                                 |
-|---------------------------|---------------------------------------------|
-| [fancy-text](https://github.com/quarto-ext/fancy-text)                                            | Output nicely formatted versions of fancy strings such as LaTeX and BibTeX in multiple formats. |
-| [fontawesome](https://github.com/quarto-ext/fontawesome)                                          | Use Font Awesome icons in HTML and PDF documents.                                               |
-| [video](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/extensions/quarto/video) | Embed videos in HTML documents and Revealjs presentations.                                      |
-
-: {tbl-colwidths="\[30,70\]"}
-
-## Shortcode Basics {#custom-shortcodes}
-
-You can create your own shortcodes using Lua (the same language used for [filters](filters.qmd)). To get started with developing shortcodes:
-
-1.  Be sure you have a [very recent](https://github.com/quarto-dev/quarto-cli/releases/latest) version of Quarto CLI (shortcode extensions require v1.0.15 or greater).
-
-2.  If necessary, brush up on [Lua Development](lua.qmd) (Lua is the language used to create shortcodes).
-
-3.  Read the [Lua API Reference](lua-api.qmd), which describes the Lua extension API for Quarto.
-
-Custom shortcodes are implemented as Lua functions that take one or more arguments and return a Pandoc AST node (or list of nodes).
+Shortcodes are implemented as Lua functions that take one or more arguments and return a Pandoc AST node (or list of nodes).
 
 Here's the implementation of the `env` shortcode that is built in to Quarto:
 
@@ -140,16 +119,37 @@ You would use this shortcode as follows:
 {{{< env HOME >}}}
 ```
 
-If this shortcode was distributed as an extension (i.e. installed into `_extensions/env/` for the current project) then it is available for use without any further declaration. If it's a plain Lua file not enclosed in an extension then you'll need to explicitly list it in `shortcodes`:
 
-``` yaml
-shortcodes:
-  - env.lua
+## Distribution
+
+If your extension source code it located within a GitHub repository, then it can be installed by referencing the GitHub organization and repository name. For example:
+
+``` {.bash filename="Terminal"}
+# install the current HEAD of the extension
+quarto install extension cooltools/shorty
+
+# install a branch or tagged release of the extension
+quarto install extension cooltools/shorty@v1.2
+quarto install extension cooltools/shorty@bugfix-22
 ```
 
-Below we'll provide a few a few more examples of custom shortcodes and their implementation. In these examples we'll assume that the shortcode has been distributed as an extension so won't use the explicit `shortcodes:` import shown above.
+Note that it is possible to bundle and distribute extensions as simple gzip archives (as opposed to using a GitHub repository as described above). See the article on [Distributing Extensions](distributing.qmd) for additional details.
 
-## Example: Raw Output
+## Examples
+
+You might find it instructive to examine the source code of these shortcode extensions authored by the Quarto team:
+
+| **Extension**                                                                                     | **Description**                                                                                 |
+|---------------------------|---------------------------------------------|
+| [fancy-text](https://github.com/quarto-ext/fancy-text)                                            | Output nicely formatted versions of fancy strings such as LaTeX and BibTeX in multiple formats. |
+| [fontawesome](https://github.com/quarto-ext/fontawesome)                                          | Use Font Awesome icons in HTML and PDF documents.                                               |
+| [video](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/extensions/quarto/video) | Embed videos in HTML documents and Revealjs presentations.                                      |
+
+: {tbl-colwidths="\[30,70\]"}
+
+Some additional annotated examples are provided below.
+
+### Raw Output
 
 Shortcodes can tailor their output to the format being rendered to. This is often useful when you want to conditionally generate rich HTML output but still have the same document render properly to PDF or MS Word.
 
@@ -195,7 +195,7 @@ You'd use this shortcode as follows:
 {{{< pagebreak >}}}
 ```
 
-## Example: Named Arguments
+### Named Arguments
 
 The examples above use either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine whether a short or long SHA1 is displayed:
 
@@ -247,7 +247,7 @@ title: "My Document"
 {{< git-rev short=true >}}
 ```
 
-## Example: Metadata Options
+### Metadata Options
 
 In some cases you may want to provide options that affect how you shortcode behaves. There is a third argument to shortcode handlers (`meta`) that provides access to document and/or project level metadata.
 
