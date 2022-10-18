@@ -25,16 +25,6 @@ You can write Pandoc filters using Lua (via Pandoc's built-in Lua interpreter) o
 -   High performance (no serialization or process execution overhead)
 -   Access to the [Pandoc](https://pandoc.org/lua-filters.html#pandoc-module) and [Quarto](lua.qmd) libraries of Lua helper functions.
 
-To get started with developing Lua filters:
-
-1.  If necessary, brush up on [Lua Development](lua.qmd) (Lua is the language used to create shortcodes).
-
-2.  Review the Pandoc documentation on [Writing Lua Filters](https://pandoc.org/lua-filters.html).
-
-3.  Read the [Lua API Reference](lua-api.qmd), which describes the Lua extension API for Quarto.
-
-If you want to write a JSON filter, see the documentation on [Writing JSON filters](https://pandoc.org/filters.html).
-
 ## Activating Filters
 
 If you've developed a filter and want to use it within a document you need to add it to the list of `filters` for the document. For example, here we arrange for the [spellcheck](https://github.com/pandoc/lua-filters/tree/master/spellcheck) filter to run:
@@ -55,61 +45,84 @@ filters:
   - lightbox
 ```
 
-You'll notice that one of the extensions (`spellcheck.lua`) has a file extension and the other (`lightbox`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to distribute filters as extensions.
+You'll notice that one of the extensions (`spellcheck.lua`) has a file extension and the other (`lightbox`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to create filters as extensions.
 
-## Filter Extensions
 
-If you have developed a filter that you'd like to distribute to others you can bundle the filter as a [Quarto Extension](index.qmd). Bundling a filter as an an extension makes it much easier for others to install, update, and use your filter.
+## Filter Extensions 
 
-Here is what the source code repository of an an extension named `output-folding` might look like:
+### Quick Start
 
-``` default
-README.md
-LICENSE
-example.qmd
-_extensions/
-  output-folding/
-    _extension.yml
-    output-folding.lua
+Here we'll describe how to create a simple filter extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio you should execute `quarto create` within their repsective integrated Terminal panes. 
+
+To get started, execute `quarto create extension filter` within the parent directory where you'd like the filter extension to be created:
+
+```{.bash filename="Terminal"}
+$ quarto create extension filter
+ ? Extension Name › fancy-header
 ```
 
-Note that the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during installation). Even so, it's good practice to include a `README.md` and `LICENSE` file, and the `example.qmd` will be useful for developing your extension.
+As shown above, you'll be prompted for an extension name. Type `fancy-header` and press Enter---the filter extension is then created:
 
-Here's what the contents of the files in `_extensions/output-folding/` might look like:
+```bash
+Creating extension at /Users/jjallaire/quarto/dev/fancy-header:
+  - Created README.md
+  - Created _extensions/fancy-header/_extension.yml
+  - Created _extensions/fancy-header/fancy-header.lua
+  - Created .gitignore
+  - Created example.qmd
+```
 
-``` {.yaml filename="_extensions/output-folding/_extension.yml"}
-title: Output Folding
-author: Cooltools
+If you are running within VS Code or RStudio a new window will open with the extension project. 
+
+Here's what the contents of the files in `_extensions/fancy-header/` look like:
+
+``` {.yaml filename="_extensions/fancy-header/_extension.yml"}
+title: Fancy-header
+author: J.J. Allaire
 version: 1.0.0
-quarto-required: ">=1.2.0"
+quarto-required: ">=99.9.0"
 contributes:
   filters:
-    - output-folding.lua
+    - fancy-header.lua
 ```
 
-``` {.lua filename="_extensions/output-folding/output-folding.lua"}
-function Div(el)
-  -- code required to implement output folding
+``` {.lua filename="_extensions/fancy-header/fancy-header.lua"}
+-- Reformat all heading text 
+function Header(el)
+  el.content = pandoc.Emph(el.content)
+  return el
 end
 ```
 
-Finally, the `example.qmd` file would typically have code that exercises the extension. For example:
+Finally, the `example.qmd` file includes code that exercises the extension. For example:
 
-```` {.markdown filename="example.qmd"}
+``` {.markdown filename="example.qmd"}
 ---
-title: "Output Folding Example"
+title: "Fancy-header Example"
 filters:
-  - output-folding
+  - fancy-header
 ---
 
-```{{python}}
-#| output-fold: true
+## Heading
 
-1 + 1
+This filter adds formatting to heading text.
 ```
-````
 
-To develop your extension, just make changes to `output-folding.lua` and render `example.qmd` to test them out.
+To develop your filter, render/preview `example.qmd`, and then make changes to `fancy-header.lua` (the preview will automatically refresh when you change `fancy-header.lua`).
+
+### Development
+
+To learn more about developing filter extensions:
+
+1.  If necessary, brush up on [Lua Development](lua.qmd) (Lua is the language used to create filters).
+
+2.  Review the Pandoc documentation on [Writing Lua Filters](https://pandoc.org/lua-filters.html).
+
+3.  Read the [Lua API Reference](lua-api.qmd), which describes the Lua extension API for Quarto.
+
+If you want to write a JSON filter, see the documentation on [Writing JSON filters](https://pandoc.org/filters.html).
+
+To create a new filter extension, use the `quarto create extension filter` command as described above.
 
 ### Distribution
 
