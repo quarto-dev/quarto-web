@@ -25,27 +25,82 @@ Here are some examples of books created with Quarto:
 
 Quarto books can be published to a wide variety of destinations including GitHub Pages, Netlify, RStudio Connect, or any other static hosting service or intranet web server. See the documentation on [Publishing Websites](../publishing/index.qmd) for additional details.
 
-## Getting Started
 
-To create a new book project, use the Quarto `create-project` command:
+## Quick Start
 
-``` {.bash filename="Terminal"}
+Follow the Quick Start for your tool of choice to get a simple book up and running. After covering the basics, read on to learn about more advanced book features.
+
+::: {.panel-tabset group="tools-tabset"}
+
+### VS Code
+
+To create a new book project within VS Code, execute the **Quarto: Create Project** command from the command-palette:
+
+![](../websites/images/vscode-create-project-command.png)
+
+Then, select **Book Project**:
+
+![](../websites/images/vscode-create-project-book.png){.border}
+
+You'll be prompted to select a parent directory to create the project within. Then, you'll be asked to name the directory for your book project:
+
+![](../websites/images/vscode-create-project-directory.png){.border}
+
+The new book project will be created and opened within VS Code. Click the **Render** button to preview the book:
+
+![](../websites/images/vscode-create-project-render-book.png)
+
+The preview will show to the right of the source file. As you re-render `index.qmd` or render other files like `intro.qmd`, the preview is automatically updated.
+
+
+### RStudio
+
+To create a new book project within RStudio, use the **New Project** command and select **Quarto Book**:
+
+:::{layout-ncol="2"}
+
+![](../websites/images/rstudio-project-new-directory.png){.border}
+
+![](../websites/images/rstudio-project-book.png){.border}
+:::
+
+Then, provide a directory name and other relevant options for the book:
+
+![](../websites/images/rstudio-project-book-options.png){.border}
+
+Click the **Render** button to preview the book:
+
+![](../websites/images/rstudio-project-book-preview.png)
+
+The preview will show to the right of the source file. As you re-render `index.qmd` or render other files like `intro.qmd`, the preview is automatically updated.
+
+
+### Terminal
+
+To create a new book project from the Terminal, use the `quarto create-project` command, specifying the directory that will hold the new project as first argument:
+
+```{.bash filename="Terminal"}
 quarto create-project mybook --type book
 ```
 
-This will create the scaffolding for a simple book in the `mybook` sub-directory. To build and view the HTML version of the book use the `preview` command:
+This will create the scaffolding for a simple book in the `mybook` sub-directory. Use the `quarto preview` command to render and preview the book:
 
-``` {.bash filename="Terminal"}
+```{.bash filename="Terminal"}
 quarto preview mybook
 ```
 
-This will build the HTML version of the book and run a local web server to view it. Here's what you'll see in your browser for the simple book scaffolding:
+The book preview will open in a new web browser. As you edit and save `index.qmd` (or other files like `intro.qmd`) the preview is automatically updated.
 
-![](images/book-scaffold.png){.border .preview-image fig-alt="A screenshot of the page rendered by starter code for a Quarto book project."}
+:::
 
-The book's chapters are contained in the files `index.qmd`, `intro.qmd`, `summary.qmd`. Try adding some content to one of these files and saving---you'll notice that the book preview is automatically updated in the browser.
 
-You'll also notice that a Quarto project file (`_quarto.yml`) was created in the `mybook` directory. This file contains the initial configuration for your book:
+## Workflow
+
+Above we demonstrated how to create and edit a simple book with chapters contained in the files `index.qmd`, `intro.qmd`, `summary.qmd`. Here we'll cover additional aspects of book workflow in more depth.
+
+### Config File
+
+A Quarto project file (`_quarto.yml`) is contained within the book project directory. This file contains the initial configuration for your book. For example:
 
 ``` yaml
 project:
@@ -72,45 +127,28 @@ format:
     cover-image: cover.png
 ```
 
+
+
 See the [Project Basics](../projects/quarto-projects.qmd) article to learn more about working with projects, including how to add custom pre and post render scripts to your book.
 
-### VS Code
+### Book Preview
 
-If you are using VS Code you can open a new workspace with your book project using the `code` command from within VS Code:
-
-``` {.bash filename="Terminal"}
-code mybook
-```
-
-### RStudio
-
-If you are using RStudio you can also create a Quarto book via the **New Project** command:
-
-![](images/rstudio-new-book.png){.border width="531" fig-alt="RStudio New Project Wizard for Create Quarto Book with input fields for directory name and project directory, and radio buttons for creating a git repository and using the visual markdown editor. At the bottom there are buttons to Create Project, and Cancel."}
-
-Render chapters within the book using the **Render** command, render the entire book using the **Render Book** command on the **Build** tab.
-
-## Workflow
-
-### Development
-
-When working on a book, you'll typically run the local development server as described above and incrementally preview content as you work:
+If you are using VS Code or RStudio, the **Render** button automatically renders and runs `quarto preview` in an embedded window. You can also do the same thing from the Terminal if need be:
 
 ``` {.bash filename="Terminal"}
+# preview the book in the current directory
 quarto preview
 ```
 
-If you are authoring within RStudio, you can run the development server within the RStudio Viewer pane using the **Serve Book** command on the **Build Tab**.
-
-The development server will automatically re-render input files whenever they change.
-
-Changes to configuration files (e.g. `_quarto.yml`) as well as site resources (e.g. theme or CSS files) will also cause an automatic refresh.
+Note that when you preview a book (either using VS Code / RStudio integrated tools or from the terminal)  changes to configuration files (e.g. `_quarto.yml`) as well as book resources (e.g. theme or CSS files) will cause an automatic refresh of the preview.
 
 You can customize the behavior of the preview server (port, whether it opens a browser, etc.) using command line options or the `_quarto.yml` config file. See `quarto preview help` or the [project file reference](/docs/reference/projects/options.qmd#preview) for additional details.
 
+
 ::: callout-important
-As you preview your book, chapters will be rendered and updated. However, if you make changes to global options (e.g. `_quarto.yml` or included files) you need to fully re-render your book to have all of the changes reflected. Consequently, you should always fully `quarto render` your book before deploying it, even if you have already previewed changes to some chapters with the preview server.
+As you preview your book, chapters will be rendered and updated. However, if you make changes to global options (e.g. `_quarto.yml` or included files) you need to fully re-render your book to have all of the changes reflected. Consequently, you should always fully `quarto render` your site before deploying it, even if you have already previewed changes to some pages with the preview server.
 :::
+
 
 ### Publishing
 
