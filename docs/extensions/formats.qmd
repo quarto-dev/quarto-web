@@ -42,11 +42,94 @@ Custom formats can also be used with the `--to` argument to `quarto render`. For
 quarto render document.qmd --to acm-html
 ```
 
-Next, we'll walk through the creation of a custom format that extends the `revealjs` presentation format. If you are specifically interested in using or creating custom formats for journals and manuscripts, you may want to proceed instead to the documentation on [Journal Articles](../journals/index.qmd).
+ Note that if you are specifically interested in using or creating custom formats for journals and manuscripts, you may want to proceed instead to the documentation on [Journal Articles](../journals/index.qmd).
 
-## Format Components
+## Quick Start
 
-Custom formats are a type of [Quarto Extension](index.qmd) and creating a format works much like creating a [filter](filters.qmd) or [shortcode](shortcodes.qmd) extension. We'll walk through a custom format that extends the built-in `revealjs` format as an example. We'll call our format `lexconf`. Here is what the source code repository of the format extension might look like:
+Here we'll describe how to create a simple HTML-based format extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio you should execute `quarto create` within their repsective integrated Terminal panes. 
+
+To get started, execute `quarto create extension format:html` within the parent directory where you'd like the format to be created:
+
+```{.bash filename="Terminal"}
+$ quarto create extension format:html
+ ? Extension Name › lexdoc
+```
+
+As shown above, you'll be prompted for an extension name. Type `lexdoc` (a document format for a fictional company named LexCrop) and press Enter---the custom format extension is then created:
+
+```bash
+Creating extension at /Users/jjallaire/quarto/dev/lexdoc:
+  - Created README.md
+  - Created _extensions/lexdoc/custom.scss
+  - Created _extensions/lexdoc/_extension.yml
+  - Created template.qmd
+```
+
+If you are running within VS Code or RStudio a new window will open with the extension project. 
+
+::: {.callout-note appearance="simple"}
+Note that this example creates a format that is derivative of the Quarto base `html` format. You can similarly create formats that are derivative of `pdf`, `docx`, and `revealjs` as follows:
+
+```{.bash filename="Terminal"}
+quarto create extension format:pdf
+quarto create extension format:docx
+quarto create extension format:revealjs
+```
+:::
+
+Here's what the contents of the files in `_extensions/lexdoc/` look like:
+
+``` {.yaml filename="_extensions/lexdoc/_extension.yml"}
+title: Lexdoc
+author: J.J. Allaire
+version: 1.0.0
+quarto-required: ">=1.2.222"
+contributes:
+  formats:
+    html:
+      toc: true
+      theme: [yeti, custom.scss]
+```
+
+The custom HTML format defined here is very simple. It takes the base `html` format, turns on the table of contents by default, and sets the theme as `yeti` along with a `custom.scss` file for additional customizations:
+
+```{.css filename="_extensions/lexdoc/custom.css"}
+/*-- scss:defaults --*/
+
+/* TODO: Customize appearance with SCSS variables */
+/* See https://quarto.org/docs/output-formats/html-themes.html#theme-options */
+
+/*-- scss:rules --*/
+
+/* TODO: Provide custom CSS rules */
+```
+
+Finally, the `template.qmd` provides a base example article for users of the format:
+
+``` {.markdown filename="template.qmd"}
+---
+title: "Lexdoc Example"
+format:
+  lexdoc-html: default
+author: J.J. Allaire
+date: last-modified
+---
+
+## Introduction
+
+*TODO* Create an example file that demonstrates the formatting and features of your format.
+
+## More Information
+
+You can learn more about controlling the appearance of HTML output here: <https://quarto.org/docs/output-formats/html-basics.html>
+```
+
+To develop your format, render/preview `template.qmd`, and then make changes to the various files in the `_extensions` directory (the preview will automatically refresh when you change these files).
+
+
+## Example: Revealjs
+
+Next, we'll walk through the creation of a custom format that extends the `revealjs` presentation format. Here is what the source code repository of the format extension might look like:
 
 ``` default
 README.md
