@@ -17,6 +17,90 @@ Here are some examples of Revealjs plugins packaged as Quarto extensions:
 
 : {tbl-colwidths="\[30,70\]"}
 
+## Quick Start
+
+Here we'll describe how to create a simple Revealjs plugin extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio you should execute `quarto create` within their repsective integrated Terminal panes. 
+
+To get started, execute `quarto create extension revealjs-plugin` within the parent directory where you'd like the plugin extension to be created:
+
+```{.bash filename="Terminal"}
+$ quarto create extension revealjs-plugin
+ ? Extension Name › shuffler
+```
+
+As shown above, you'll be prompted for an extension name. Type `shuffler` and press Enter---the Revealjs plugin extension is then created:
+
+```bash
+Creating extension at /Users/jjallaire/quarto/dev/shuffler:
+  - Created README.md
+  - Created _extensions/shuffler/_extension.yml
+  - Created _extensions/shuffler/shuffler.css
+  - Created _extensions/shuffler/shuffler.js
+  - Created .gitignore
+  - Created example.qmd
+```
+
+If you are running within VS Code or RStudio a new window will open with the extension project. 
+
+Here's what the contents of the files in `_extensions/shuffler/` look like:
+
+``` {.yaml filename="_extensions/shuffler/_extension.yml"}
+title: Shuffler
+author: J.J. Allaire
+version: 1.0.0
+quarto-required: ">=1.2.222"
+contributes:
+  revealjs-plugins:
+    - name: RevealShuffler
+      script:
+        - shuffler.js
+      stylesheet:
+        - shuffler.css
+```
+
+``` {.lua filename="_extensions/shuffler/shuffler.js"}
+window.RevealShuffler = function () {
+  return {
+    id: "RevealShuffler",
+    init: function (deck) {
+      // TODO: Implement your plugin functionality
+      // Learn more at https://revealjs.com/creating-plugins/
+      
+      // This example shuffles the deck when the 'T' key is pressed
+      deck.addKeyBinding({ keyCode: 84, key: "T" }, () => {
+        deck.shuffle();
+      });
+    },
+  };
+};
+```
+
+There is also a `shuffler.css` file for providing any styles required by your plugin.
+
+Finally, the `example.qmd` file includes code that exercises the extension. For example:
+
+``` {.markdown filename="example.qmd"}
+---
+title: "Shuffler Example"
+format:
+  revealjs: default
+revealjs-plugins:
+  - shuffler
+---
+
+## Breakfast
+
+- Eat eggs
+- Drink coffee
+
+## Dinner
+
+- Eat spaghetti
+- Drink wine
+```
+
+To develop your plugin, render/preview `example.qmd`, and then make changes to `shuffler.js` and `shuffler.css` (the preview will automatically refresh when you change these files).
+
 ## Installation and Use
 
 If your extension source code it located within a GitHub repository, then it can be installed by referencing the GitHub organization and repository name. For example, you can install the `attribution` extension with the following:
