@@ -15,14 +15,14 @@ We also recommend the use of Quarto's built in PDF compilation engine, which amo
 
 To install TinyTeX, use the following command:
 
-```{.bash filename="Terminal"}
-quarto install tool tinytex
+``` {.bash filename="Terminal"}
+quarto install tinytex
 ```
 
 Note that as of [Quarto v1.2](https://quarto.org/docs/download/prerelease.html), TinyTeX is not installed to the system `PATH` so will not affect other applications that use TeX. If you want to use TinyTeX with other applications, add the `--update-path` flag when installing (this will add TinyTex to the system path):
 
-```{.bash filename="Terminal"}
-quarto install tool tinytex --update-path
+``` {.bash filename="Terminal"}
+quarto install tinytex --update-path
 ```
 
 If you are using Quarto v1.2 and already have another installation of TeX that you prefer to use with Quarto, add the `latex-tinytex: false` in your project or document front matter to prevent Quarto from using its internal version.
@@ -30,6 +30,46 @@ If you are using Quarto v1.2 and already have another installation of TeX that y
 If you prefer TeX Live, you can find instructions for installing it here: <https://tug.org/texlive/>.
 
 Note that Quarto's automatic installation of missing TeX packages will work for TinyTeX and TeX Live, but not for other TeX distributions (as it relies on TeX Live's [tlmgr](https://www.tug.org/texlive/tlmgr.html) command).
+
+## Managing TeX
+
+In addition to installing TinyTeX, you may also update or remove the installation of TinyTex. To see the currently installed version of TinyTex, use the command:
+
+``` {.bash filename="Terminal"}
+quarto list tools
+```
+
+which will provide a list of available tools, the installed versions, and the latest available version:
+
+``` bash
+[✓] Inspecting tools
+
+Tool         Status            Installed     Latest
+chromium     Not installed     ---           869685
+tinytex      Up to date        v2022.10      v2022.10
+```
+
+To update to the latest version, use the command:
+
+``` {.bash filename="Terminal"}
+quarto update tinytex
+```
+
+which will download and install the latest version of TinyTex (following the same behavior as described for installing TinyTex above).
+
+To remove TinyTex altogether, use the command:
+
+``` {.bash filename="Terminal"}
+quarto uninstall tinytex
+```
+
+::: callout-tip
+Each year in April, TeXlive updates their remote package repository to the new year's version of TeX. When this happens, previous year installations of TeX will not be able to download and install packages from the remote repository. When this happens, you may see an error like:
+
+*Your TexLive version is not updated enough to connect to the remote repository and download packages. Please update your installation of TexLive or TinyTex.*
+
+When this happens, you can use `quarto update tinytex` to download and install an updated version of tinytex.
+:::
 
 ## Quarto PDF Engine
 
