@@ -81,12 +81,15 @@
     const mappings = {
       [`quarto-${version}-win.msi`]: "Windows",
       [`quarto-${version}-macos.pkg`]: "Mac OS",
-      [`quarto-${version}-linux-amd64.deb`]: "Linux",
+      [`quarto-${version}-linux-amd64.deb`]: "Ubuntu 18+/Debian 10+",
     };
 
     if (window["quarto-download-archives"]) {
       mappings[`quarto-${version}-win.zip`] = "Windows Zip";
       mappings[`quarto-${version}-macos.tar.gz`] = "Mac Tarball";
+    }
+
+    if (window["quarto-download-archives"] || isLinux()) {
       mappings[`quarto-${version}-linux-amd64.tar.gz`] = "Linux Tarball";
       mappings[`quarto-${version}-linux-rhel7-amd64.tar.gz`] =
         "RHEL 7 Tarball";
@@ -127,43 +130,56 @@
   }
 
   function populateDownloadButton(idPrefix, releaseDesc, version, assets) {
-    const osData = guessOS();
-    const osAsset = assets.find((asset) =>
-      asset.name.endsWith(osData.install_extension)
-    );
-
-    const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
-    if (mainDownloadLink) {
-      mainDownloadLink.href = osAsset.download_url;
-      mainDownloadLink.innerText = "";
-
-      const containerEl = window.document.createElement("div");
-      containerEl.className = "container";
-
-      const iconEl = window.document.createElement("div");
-      iconEl.innerHTML = osData.icon;
-      iconEl.className = "icon-container";
-      if (osData.icon_margin) {
-        iconEl.style.paddingTop = osData.icon_margin;
+    
+    if (isLinux()) {
+      const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
+      if (mainDownloadLink) {
+        mainDownloadLink.classList.add("hidden");
       }
-      containerEl.append(iconEl);
-
-      const textContainerEl = window.document.createElement("div");
-      textContainerEl.className = "text-container";
-
-      const mainTextEl = window.document.createElement("div");
-      mainTextEl.innerHTML = `Download Quarto CLI`;
-      textContainerEl.append(mainTextEl);
-
-      const secondaryTextEl = window.document.createElement("div");
-      secondaryTextEl.className = "secondary";
-      secondaryTextEl.innerText = `${version}${
-        releaseDesc ? " " + releaseDesc : ""
-      } (${osData.name})`;
-      textContainerEl.append(secondaryTextEl);
-
-      containerEl.append(textContainerEl);
-      mainDownloadLink.append(containerEl);
+      const mainDownloadText = window.document.getElementById(`${idPrefix}-text`);
+      if (mainDownloadText) {
+        mainDownloadText.classList.remove("hidden");
+      }
+      
+    } else {
+      const osData = guessOS();
+      const osAsset = assets.find((asset) =>
+        asset.name.endsWith(osData.install_extension)
+      );
+  
+      const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
+      if (mainDownloadLink) {
+        mainDownloadLink.href = osAsset.download_url;
+        mainDownloadLink.innerText = "";
+  
+        const containerEl = window.document.createElement("div");
+        containerEl.className = "container";
+  
+        const iconEl = window.document.createElement("div");
+        iconEl.innerHTML = osData.icon;
+        iconEl.className = "icon-container";
+        if (osData.icon_margin) {
+          iconEl.style.paddingTop = osData.icon_margin;
+        }
+        containerEl.append(iconEl);
+  
+        const textContainerEl = window.document.createElement("div");
+        textContainerEl.className = "text-container";
+  
+        const mainTextEl = window.document.createElement("div");
+        mainTextEl.innerHTML = `Download Quarto CLI`;
+        textContainerEl.append(mainTextEl);
+  
+        const secondaryTextEl = window.document.createElement("div");
+        secondaryTextEl.className = "secondary";
+        secondaryTextEl.innerText = `${version}${
+          releaseDesc ? " " + releaseDesc : ""
+        } (${osData.name})`;
+        textContainerEl.append(secondaryTextEl);
+  
+        containerEl.append(textContainerEl);
+        mainDownloadLink.append(containerEl);
+      }
     }
   }
 
@@ -258,6 +274,12 @@
     moreRow.insertCell(2);
     moreRow.insertCell(3);
   }
+
+  function isLinux() {
+    const userAgent = window.navigator.userAgent;
+    return !userAgent.includes("Mac OS") && !userAgent.includes("Windows");
+  }
+
 
   function guessOS() {
     const userAgent = window.navigator.userAgent;
