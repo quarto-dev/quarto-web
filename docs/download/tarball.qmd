@@ -1,0 +1,66 @@
+---
+title: Tarball Installation On Linux
+format:
+  html:
+    include-in-header: 
+      - '_download.html'
+    include-after-body: tarball-after-body.html
+
+---
+
+::: {#download-button .download-button}
+<div>
+
+[\_](_ "Download Quarto"){#download-url .btn .btn-action .btn-action-primary}
+[Find your operating system in the table below]{#download-text .hidden .download-text}
+
+</div>
+:::
+
+
+You can install Quarto for a single user on Linux by using the Quarto tarball and following the below set of steps. 
+
+**1. Download the tarball**
+
+```{.bash filename="Terminal"}
+wget https://github.com/quarto-dev/quarto-cli/releases/download/v^version^/quarto-^version^-linux-amd64.tar.gz
+```
+
+**2. Extract Files**
+
+Extract the contents of the tarball to the location where you typically install software (e.g. `~/opt`). For example:
+
+```{.bash filename="Terminal"}
+mkdir ~/opt
+tar -C ~/opt -xvzf quarto-^version^-linux-amd64.tar.gz
+```
+
+**3. Create a Symlink**
+
+Create a symlink to `bin/quarto` in a folder that is in your path. If there is no such folder, you can create a folder such as `~/bin` and place the symlink there. For example:
+
+For example:
+
+```{.bash filename="Terminal"}
+mkdir ~/bin
+ln -s ~/opt/quarto-^version^/bin/quarto ~/bin/quarto
+```
+
+**4. Add Folder to Path**
+
+Ensure that the folder where you created a symlink is in the path. For example:
+
+```{.bash filename="Terminal"}
+( echo ""; echo 'export PATH=$PATH:~/bin\n' ; echo "" ) >> ~/.bashrc 
+source ~/.bashrc
+```
+
+**5. Check The Installation**
+
+Use `quarto check` to confirm that the installation is successful:
+
+```{.bash filename="Terminal"}
+quarto check
+```
+
+

@@ -130,8 +130,14 @@
   }
 
   function populateDownloadButton(idPrefix, releaseDesc, version, assets) {
-    
-    if (isLinux()) {
+
+    const osData = window["quarto-force-os"] || guessOS();
+    const extension = window["quarto-force-download"] ? window["quarto-force-download"] : osData.install_extension;
+    const osAsset = assets.find((asset) =>
+      asset.name.endsWith(extension)
+    );
+
+    if (isLinux() && !forceDownload) {
       const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
       if (mainDownloadLink) {
         mainDownloadLink.classList.add("hidden");
@@ -141,12 +147,7 @@
         mainDownloadText.classList.remove("hidden");
       }
       
-    } else {
-      const osData = guessOS();
-      const osAsset = assets.find((asset) =>
-        asset.name.endsWith(osData.install_extension)
-      );
-  
+    } else {  
       const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
       if (mainDownloadLink) {
         mainDownloadLink.href = osAsset.download_url;
@@ -187,13 +188,16 @@
     const downloadTableContainer = window.document.getElementById(
       `${idPrefix}-table`
     );
+    if (!downloadTableContainer) {
+      return;
+    }
 
     const table = createTable();
     createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
 
     const tbody = table.createTBody();
     assets.forEach((asset) => {
-      createDownloadRow(tbody, version, asset);
+      createDownloadRow(tbody, version, asset, idPrefix);
     });
     if (!window["quarto-download-archives"]) {
       createMoreRow(version, tbody);
@@ -226,7 +230,7 @@
     });
   }
 
-  function createDownloadRow(tbody, version, asset) {
+  function createDownloadRow(tbody, version, asset, idPrefix) {
     // Ignore assets that aren't in the download mapping structure
     const mapping = downloadMappings(version);
     if (mapping[asset.name]) {
@@ -238,7 +242,12 @@
 
       const downloadCell = row.insertCell(i++);
       const downloadLinkEl = window.document.createElement("a");
-      downloadLinkEl.href = asset.download_url;
+      if (asset.name.endsWith('linux-amd64.tar.gz')) {
+        downloadLinkEl.href = "/docs/download/tarball.html?version=" + version + "&idPrefix=" + idPrefix;
+      } else {
+        downloadLinkEl.href = asset.download_url;
+      }
+      
       downloadLinkEl.innerText = asset.name;
 
       downloadCell.appendChild(downloadLinkEl);
