@@ -91,8 +91,7 @@
 
     if (window["quarto-download-archives"] || isLinux()) {
       mappings[`quarto-${version}-linux-amd64.tar.gz`] = "Linux Tarball";
-      mappings[`quarto-${version}-linux-rhel7-amd64.tar.gz`] =
-        "RHEL 7 Tarball";
+      mappings[`quarto-${version}-linux-rhel7-amd64.tar.gz`] = "RHEL 7 Tarball";
     }
 
     return mappings;
@@ -129,32 +128,36 @@
   }
 
   function populateDownloadButton(idPrefix, releaseDesc, version, assets) {
-
     const osData = window["quarto-force-os"] || guessOS();
-    const extension = window["quarto-force-download"] ? window["quarto-force-download"] : osData.install_extension;
-    const osAsset = assets.find((asset) =>
-      asset.name.endsWith(extension)
-    );
+    const extension = window["quarto-force-download"]
+      ? window["quarto-force-download"]
+      : osData.install_extension;
+    const osAsset = assets.find((asset) => asset.name.endsWith(extension));
 
-    if (isLinux() && !forceDownload) {
-      const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
+    if (isLinux() && !window["quarto-force-os"]) {
+      const mainDownloadLink = window.document.getElementById(
+        `${idPrefix}-url`
+      );
       if (mainDownloadLink) {
         mainDownloadLink.classList.add("hidden");
       }
-      const mainDownloadText = window.document.getElementById(`${idPrefix}-text`);
+      const mainDownloadText = window.document.getElementById(
+        `${idPrefix}-text`
+      );
       if (mainDownloadText) {
         mainDownloadText.classList.remove("hidden");
       }
-      
-    } else {  
-      const mainDownloadLink = window.document.getElementById(`${idPrefix}-url`);
+    } else {
+      const mainDownloadLink = window.document.getElementById(
+        `${idPrefix}-url`
+      );
       if (mainDownloadLink) {
         mainDownloadLink.href = osAsset.download_url;
         mainDownloadLink.innerText = "";
-  
+
         const containerEl = window.document.createElement("div");
         containerEl.className = "container";
-  
+
         const iconEl = window.document.createElement("div");
         iconEl.innerHTML = osData.icon;
         iconEl.className = "icon-container";
@@ -162,21 +165,21 @@
           iconEl.style.paddingTop = osData.icon_margin;
         }
         containerEl.append(iconEl);
-  
+
         const textContainerEl = window.document.createElement("div");
         textContainerEl.className = "text-container";
-  
+
         const mainTextEl = window.document.createElement("div");
         mainTextEl.innerHTML = `Download Quarto CLI`;
         textContainerEl.append(mainTextEl);
-  
+
         const secondaryTextEl = window.document.createElement("div");
         secondaryTextEl.className = "secondary";
         secondaryTextEl.innerText = `${version}${
           releaseDesc ? " " + releaseDesc : ""
         } (${osData.name})`;
         textContainerEl.append(secondaryTextEl);
-  
+
         containerEl.append(textContainerEl);
         mainDownloadLink.append(containerEl);
       }
@@ -241,12 +244,16 @@
 
       const downloadCell = row.insertCell(i++);
       const downloadLinkEl = window.document.createElement("a");
-      if (asset.name.endsWith('linux-amd64.tar.gz')) {
-        downloadLinkEl.href = "/docs/download/tarball.html?version=" + version + "&idPrefix=" + idPrefix;
+      if (asset.name.endsWith("linux-amd64.tar.gz")) {
+        downloadLinkEl.href =
+          "/docs/download/tarball.html?version=" +
+          version +
+          "&idPrefix=" +
+          idPrefix;
       } else {
         downloadLinkEl.href = asset.download_url;
       }
-      
+
       downloadLinkEl.innerText = asset.name;
 
       downloadCell.appendChild(downloadLinkEl);
@@ -287,7 +294,6 @@
     const userAgent = window.navigator.userAgent;
     return !userAgent.includes("Mac OS") && !userAgent.includes("Windows");
   }
-
 
   function guessOS() {
     const userAgent = window.navigator.userAgent;
