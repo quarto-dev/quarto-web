@@ -420,7 +420,7 @@ const hypothesisOptions = readProjectProperties(hypothesisSchema, {
   "services": "Array of service definitions",
   "branding": "Custom branding/colors to apply to UI",
   "focus": "User focused filter set for the available annotations on a page",
-  "requestConfigFromFrame": "Speicfy a host iframe to request configuration from"
+  "requestConfigFromFrame": "Specify a host iframe to request configuration from"
 
 });
 writeProjectTable("hypothesis", hypothesisOptions);
