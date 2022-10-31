@@ -23,3 +23,8 @@ Chunk options included this way use YAML syntax rather than R syntax for consist
 #| fig-cap: !expr paste("Air", "Quality")
 ```
 
+If any spaces are present in your R code you need to enclose your code in quotes. For example:
+
+``` r
+#| include: !expr "'Ozone' %in% names(airquality)"
+```
