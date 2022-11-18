@@ -20,6 +20,9 @@ Note that if you prefer it is still possible to include chunk options on the fir
 Chunk options included this way use YAML syntax rather than R syntax for consistency with options provided in YAML front matter. You can still however use R code for option values by prefacing them with `!expr`. For example:
 
 ``` r
-#| fig-cap: !expr paste("Air", "Quality")
+#| fig-cap: !expr 'paste("Air", "Quality")'
 ```
 
+::: callout-caution
+the `!expr` syntax is an example of a YAML "tag" literal, and it can be unintuitive. `!expr` needs to be followed by a _single YAML "flow scalar"_: see the [YAML spec](https://yaml.org/spec/1.2.2/#73-flow-scalar-styles) for details on how double-quoted, single-quoted, and unquoted strings work.
+:::
