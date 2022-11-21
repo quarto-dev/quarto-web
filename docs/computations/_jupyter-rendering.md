@@ -1,6 +1,6 @@
 ### Rendering
 
-Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the example shown above might be rendered to varoius formats with:
+Quarto will automatically run computations in any markdown document that contains executable code blocks. For example, the example shown above might be rendered to various formats with:
 
 ```{.bash filename="Terminal"}
 quarto render document.qmd # defaults to html
