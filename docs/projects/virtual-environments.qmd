@@ -23,13 +23,13 @@ Here we'll provide a brief run through of creating a venv for a Quarto project. 
 
 To create a new Python 3 virtual environment in the directory `env`:
 
-+--------------+-------------------------+
-| Platform     | Command                 |
-+==============+=========================+
-| Windows      |     py -m venv env      |
-+--------------+-------------------------+
-| Mac/Linux    |     python3 -m venv env |
-+--------------+-------------------------+
++---------------+-------------------------+
+| Platform      | Command                 |
++===============+=========================+
+| Windows       |     py -m venv env      |
++---------------+-------------------------+
+| Mac/Linux     |     python3 -m venv env |
++---------------+-------------------------+
 
 To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:
 
@@ -50,26 +50,26 @@ To use the environment you need to activate it. This differs slightly depending 
 
 Note that you may receive an error about running scripts being disabled when activating within PowerShell. If you get this error then execute the following command:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 :::
 
 Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. ip to install packages into your environment. For example:
 
-+--------------+------------------------------------------------------+
-| Platform     | Command                                              |
-+==============+======================================================+
-| Windows      |     py -m pip install jupyter matplotlib pandas      |
-+--------------+------------------------------------------------------+
-| Mac/Linux    |     python3 -m pip install jupyter matplotlib pandas |
-+--------------+------------------------------------------------------+
++---------------+------------------------------------------------------+
+| Platform      | Command                                              |
++===============+======================================================+
+| Windows       |     py -m pip install jupyter matplotlib pandas      |
++---------------+------------------------------------------------------+
+| Mac/Linux     |     python3 -m pip install jupyter matplotlib pandas |
++---------------+------------------------------------------------------+
 
 Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
 
 To deactivate an environment use the `deactivate` command:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 deactivate
 ```
 
@@ -77,13 +77,13 @@ deactivate
 
 To make your environment reproducible, you need to create a `requirements.txt` file that enumerates all of the packages in use. To do this use the `pip freeze` command:
 
-+--------------+----------------------------------------------+
-| Platform     | Command                                      |
-+==============+==============================================+
-| Windows      |     py -m pip freeze > requirements.txt      |
-+--------------+----------------------------------------------+
-| Mac/Linux    |     python3 -m pip freeze > requirements.txt |
-+--------------+----------------------------------------------+
++---------------+----------------------------------------------+
+| Platform      | Command                                      |
++===============+==============================================+
+| Windows       |     py -m pip freeze > requirements.txt      |
++---------------+----------------------------------------------+
+| Mac/Linux     |     python3 -m pip freeze > requirements.txt |
++---------------+----------------------------------------------+
 
 You should generally check the `requirements.txt` file into version control.
 
@@ -95,13 +95,13 @@ First, follow the [instructions above](#using-venv) for creating and activating 
 
 Then, install packages from `requirements.txt`:
 
-+--------------+------------------------------------------------+
-| Platform     | Command                                        |
-+==============+================================================+
-| Windows      |     py -m pip install -r requirements.txt      |
-+--------------+------------------------------------------------+
-| Mac/Linux    |     python3 -m pip install -r requirements.txt |
-+--------------+------------------------------------------------+
++---------------+------------------------------------------------+
+| Platform      | Command                                        |
++===============+================================================+
+| Windows       |     py -m pip install -r requirements.txt      |
++---------------+------------------------------------------------+
+| Mac/Linux     |     python3 -m pip install -r requirements.txt |
++---------------+------------------------------------------------+
 
 ## Using conda {.platform-table}
 
@@ -109,7 +109,7 @@ This section will cover the basics of creating and using conda environments with
 
 To create a new environment in the directory `env`:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 conda create --prefix env python
 ```
 
@@ -135,17 +135,17 @@ You will likely need to exit and restart your terminal for `conda init` to be re
 
 To use the environment you need to activate it, which you do as follows:
 
-+--------------+--------------------------+
-| Platform     | Command                  |
-+==============+==========================+
-| Windows      |     conda activate .\env |
-+--------------+--------------------------+
-| Mac/Linux    |     conda activate ./env |
-+--------------+--------------------------+
++---------------+--------------------------+
+| Platform      | Command                  |
++===============+==========================+
+| Windows       |     conda activate .\env |
++---------------+--------------------------+
+| Mac/Linux     |     conda activate ./env |
++---------------+--------------------------+
 
 Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Use `conda install` to install packages into your environment. For example:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 conda install jupyter
 conda install pandas matplotlib 
 ```
@@ -154,7 +154,7 @@ Assuming you installed all of the required packages (likely more than just `pand
 
 Use `conda deactivate` to exit an activated environment:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 conda deactivate
 ```
 
@@ -162,7 +162,7 @@ conda deactivate
 
 To make your environment reproducible, you need to create a `environment.yml` file that enumerates all of the packages in use. Do this using the `conda env export` command:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 conda env export > environment.yml
 ```
 
@@ -172,7 +172,7 @@ You should generally check the `environment.yml` file into version control.
 
 To reproduce the environment on another machine you just pass the `environment.yml` file as an argument to `conda env create`:
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 conda env create --prefix env -f environment.yml
 ```
 
@@ -256,6 +256,14 @@ If you need to install R packages, use `install.packages`; if you need to instal
 ### venv / condaenv
 
 RStudio will automatically activate any venv or condaenv that it finds within a project directory. Just be sure to create an RStudio project within the same directory where you created your `env` and things will work as expected with no additional configuration.
+
+::: callout-note
+#### Using python and r together
+
+If your quarto document includes both `{python}` and `{r}` code blocks, then quarto will automatically use [reticulate](https://rstudio.github.io/reticulate/) to execute the python content and may use a different version of python than is included in your environment. To direct RStudio to use a specific version of python, you can specify a path to an installed python version by adding the following line to the `RProfile` file in your project directory:
+
+    Sys.setenv(RETICULATE_PYTHON = "/path/to/your/env/bin/python")
+:::
 
 If you need to install Python packages, simply use `pip` or `conda` within the terminal as described above.
 
