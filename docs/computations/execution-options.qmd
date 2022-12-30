@@ -30,14 +30,21 @@ Code block options are included in a special comment at the top of the block (li
 
 Options available for customizing output include:
 
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Option    | Description                                                                                                                                                                                       |
-|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
++===========+===================================================================================================================================================================================================+
 | `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                                                                        |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `echo`    | Include the source code in output                                                                                                                                                                 |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `output`  | Include the results of executing the code in the output (`true`, `false`, or `asis` to indicate that the output is raw markdown and should not have any of Quarto's standard enclosing markdown). |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `warning` | Include warnings in the output.                                                                                                                                                                   |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                                                                        |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block).                                                      |
++-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here's a Knitr example with some of these additional options included:
 
@@ -104,10 +111,9 @@ How do these sizes make their way into the engine-level defaults for generating 
 -   For Julia, these values are used to initialize the default figure size for the [Plots.jl](https://docs.juliaplots.org/stable/) GR backend.
 
     If you are using another graphics library with Jupyter and want to utilize these values, you can read them from `QUARTO_FIG_WIDTH` and `QUARTO_FIG_HEIGHT` environment variables.
-    
+
 ::: callout-caution
-When using the Knitr engine, `fig-width` and `fig-height` are supported on a per-cell basis. But when using the Jupyter engine, 
-these options only have an effect if specified at the document- or project-level metadata.
+When using the Knitr engine, `fig-width` and `fig-height` are supported on a per-cell basis. But when using the Jupyter engine, these options only have an effect if specified at the document- or project-level metadata.
 :::
 
 ### Caption and Alt Text
@@ -238,17 +244,19 @@ display(Markdown("# Heading 1\n"))
 display(Markdown("## Heading 2\n"))
 ```
 
-{{< include _knitr-options.md >}} 
-
+{{< include _knitr-options.md >}}
 
 ## Intermediates
 
 On the way from markdown input to final output, there are some intermediate files that are created and automatically deleted at the end of rendering. You can use the following options to keep these intermediate files:
 
++--------------+------------------------------------------------------------------------------------------------+
 | Option       | Description                                                                                    |
-|--------------|------------------------------------------------------------------------------------------------|
++==============+================================================================================================+
 | `keep-md`    | Keep the markdown file generated by executing code.                                            |
++--------------+------------------------------------------------------------------------------------------------+
 | `keep-ipynb` | Keep the notebook file generated from executing code (applicable only to markdown input files) |
++--------------+------------------------------------------------------------------------------------------------+
 
 For example, here we specify that we want to keep the jupyter intermediate file after rendering:
 
@@ -372,7 +380,36 @@ jupyter:
     name: python3
 ```
 
-::: {.callout-note}
-# Bash and Python coexistence
-Bash and Python code cells can coexist as you have them here only in Knitr engine (add `engine: knitr` in front matter). If on the other hand you use [Jupyter shell magics](https://jakevdp.github.io/PythonDataScienceHandbook/01.05-ipython-and-shell-commands.html), you can do something similar in Jupyter (but not if this is quite as general).
-:::
+## Shell Commands
+
+Using shell commands (from Bash, Zsh, etc.) within Quarto computational documents differs by engine. If you are using the Jupyter engine you can use [Jupyter shell magics](https://jakevdp.github.io/PythonDataScienceHandbook/01.05-ipython-and-shell-commands.html). For example:
+
+
+
+````markdown
+---
+title: "Using Bash"
+engine: jupyter
+---
+
+```{{python}}
+!echo "foo"
+```
+````
+
+Note that `!` preceding `echo` is what enables a Python cell to be able to execute a shell command.
+
+If you are using the Knitr engine you can use ```` ```{bash} ```` cells, for example:
+
+```` markdown
+---
+title: "Using Bash"
+engine: knitr
+---
+
+```{{bash}}
+echo "foo" 
+```
+````
+
+Note that the Knitr engine also supports ```` ```{python} ```` cells, enabling the combination of R, Python, and Bash in the same document
