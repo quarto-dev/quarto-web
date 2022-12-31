@@ -19,10 +19,27 @@ In Pandoc markdown, a figure is created whenever a captioned image appears by-it
 This results in the following treatment for various output types:
 
 | HTML                                                                              | PDF                                                                  | Word                                                                  |
-|-----------------------------------------------------------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------|
+|---------------------------|-----------------------|-----------------------|
 | ![](images/html-figure.png){fig-alt="A line drawing of an elephant." width="340"} | ![](images/pdf-figure.png){fig-alt="A line drawing of an elephant."} | ![](images/word-figure.png){fig-alt="A line drawing of an elephant."} |
 
 Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using [Cross References](cross-references.html)).
+
+### Figure Sizing
+
+By default figures are displayed using their actual size (subject to the width constraints imposed by the page they are rendered within). You can change the display size by adding the `width` and `height` attributes to the figure. For example:
+
+``` markdown
+![Elephant](elephant.png){width=300}
+```
+
+Note that if only `width` is specified then `height` is calculated automatically. If you need to modify the default behaviour just add an explicit `height` attribute.
+
+The default units for `width` and `height` are pixels. You can also specify sizes using a percentage or a conventional measurement like inches or millimetres. For example:
+
+``` markdown
+![Elephant](elephant.png){width=80%}
+![Elephant](elephant.png){width=4in}
+```
 
 ### Linked Figures
 
@@ -98,7 +115,7 @@ This is illustrated well by @fig-elephant.
 
 For figures produced by executable code cells, include a `label` with a `fig-` prefix to make them cross-referenceable. For example:
 
-````markdown
+```` markdown
 For a demonstration of a line plot, see @fig-line-plot.
 
 ```{{python}}
@@ -205,7 +222,7 @@ Note that the last paragraph in the div block is used as the figure caption.
 
 ## LaTeX Figures
 
-This section describes some figure handling options that are specific to LaTeX output. 
+This section describes some figure handling options that are specific to LaTeX output.
 
 One very important thing to note is that using the `fig-env` and `fig-pos` options described below will trigger the creation of a LaTeX floating environment (most often `\begin{figure}`). Depending upon where this LaTeX is generated it (e.g. is it within another `\begin{figure}`) this could generate invalid LaTeX. To be on the safe side these attributes should typically only be used for images at the very top level of your document.
 
