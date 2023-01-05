@@ -7,7 +7,23 @@ code-annotations: select
 
 ## HTML Grid Customization
 
-Starting in Quarto v1.3, you may control the width of the sidebar, body, and margin columns of HTML page layouts using YAML or SCSS variables. The baseline width(s) that you provide will be used to calculate widths for the different responsives sizes and layouts using in HTML documents. To set these options in YAML, you may use:
+### Background
+
+Quarto HTML documents are arranged in a structure composed of a sidebar, the body of the document, the margin of the document, and the margins between these elements (gutters). This is illustrated below:
+
+![](images/grid.png)
+
+The total page width for a Quarto page is determined by the sum of each of these element widths.
+
+Quarto documents arrange these elements to support different styles of layout (docked, floating), different variants of the layout based upon the content of the page (for example, a slightly adjusted layout for pages containing only a listing), and responsive sizes for each of the layouts. In each of these different layouts, Quarto adjusts the width, positioning, or visibility of the elements to achieve the desired result. Each of these elements have both a maximum and minimum width, allowing content to flow depending upon the width of the browser that is displaying the document. 
+
+In Quarto 1.2, the various widths of each of these elements was predefined in Quarto and wasn't customizable without replacing the entire CSS grid system used by Quarto.
+
+### Customization
+
+Starting in Quarto v1.3, you may control the width of the sidebar, body, and margin columns of HTML page layouts using YAML or SCSS variables. The width(s) that you provide will specify the maximum width for the element and will be used as a baseline value when computing minimum sizes for the elements. In addition, Quarto will use the width(s) that you provide to derive all the various widths for the differing grid styles and responsive sizes (by scaling the maximum value that you provide).
+
+To set these options in YAML, you may use:
 
 ``` yml
 format:
@@ -34,7 +50,11 @@ $grid-margin-width: 250px !default;
 $grid-column-gutter-width: 1.5em !default;
 ```
 
-The values you provide for these elements will typically be used as the maximum value for a grid column, and any minimum or scaling sizes will be derived from that maximum value. You may specify any valid positive [CSS length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) for the column width value.
+`sidebar-width`, `body-width`, and `margin-width` should be specified in pixels (`px`) as the values will be used when computing other sizes. Requiring pixel sizing is a limitation of our approach to the Quarto's layout, but also typically makes sense since the overall document width is usually tied to the browser size and responive breakpoints rather than font size or other relative measures.
+
+`gutter-width` may be specified in pixels or other units such as `em` or `rem` which are responsive to the document font size.
+
+
 
 ## Mermaid Diagram Theming
 
@@ -206,11 +226,11 @@ if(num < 0) { # <2>
 
 ### Removing Annotations
 
-For some formats, you may prefer to remove annotations. In this case, you can set `code-annotations: none`, which will remove the annotation comments for your code and suppress the output of the `OL` which contains the annotation text.
+For some formats, you may prefer to remove annotations. In this case, you can set `code-annotations: none`, which will remove the annotation comments for your code and suppress the output of the ordered list which contains the annotation text.
 
 ### Disabling Code Annotation
 
-You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (and `OL` as is).
+You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (and the original ordered list as is).
 
 ## PDF Figure Rendering
 
