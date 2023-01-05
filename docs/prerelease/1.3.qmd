@@ -2,6 +2,7 @@
 title: Quarto 1.3 Pre-release Notes
 date: last-modified
 search: false
+code-annotations: select
 ---
 
 ## Custom HTML Article Layout Widths
@@ -121,7 +122,7 @@ Starting in Quarto 1.3, when rendering PDFs, Quarto will automatically fetch rem
 
 Both display and executable code cells in Quarto may now include annotations, which will be formatted and displayed properly in any format, but with special formatting for HTML and PDF output. Annotations for a code cell consist of two related elements:
 
-1.  Special comments at the end of lines of code, which serve as the annotation markers. \
+1.  Special comments at the end of lines of code, which serve as the annotation markers.\
     Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `// <2>`). You may repeat an annotation number if the annotation spans multiple lines.
 2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
 
@@ -138,15 +139,15 @@ print("Hello World!") # <1>
 which will result in the following:
 
 ::: panel-tabset
-## \## HTML
+## HTML
 
 ![](images/annote-html.png)
 
-## \## PDF
+## PDF
 
 ![](images/annote-pdf.png)
 
-## \## Docx
+## Docx
 
 ![](images/annote-docx.png)
 :::
@@ -175,14 +176,10 @@ The following input document will produce annotated code as displayed below.
 
 ```` markdown
 ---
-title: Example Annotations
+...
 code-annotations: select
-format:
-  html: default
-code-line-numbers: true
+...
 ---
-
-## Example
 
 ```{{r}}
 num = 47 # <1>
@@ -195,7 +192,7 @@ if(num < 0) { # <2>
   for(i in 1:num) {             # <3>
     factorial = factorial * i   # <3>
   }                             # <3>
-  print(paste("The factorial of", num ,"is",factorial))
+  print(paste("The factorial of", num ,"is",format(factorial)))
 }
 ```
 
@@ -204,7 +201,26 @@ if(num < 0) { # <2>
 3. Actually compute the factorial
 ````
 
-![](images/annotation.png){.border}
+#### Example Output
+
+```{r}
+num = 47 # <1>
+factorial = 1
+if(num < 0) { # <2>
+  print("Sorry, factorial does not exist for negative numbers")
+} else if(num == 0) {
+  print("The factorial of 0 is 1")
+} else {
+  for(i in 1:num) {             # <3>
+    factorial = factorial * i   # <3>
+  }                             # <3>
+  print(paste("The factorial of", num ,"is",format(factorial)))
+}
+```
+
+1. The number, this could instead be user input
+2. Check is the number is negative, positive or zero
+3. Actually compute the factorial
 
 ### Removing Annotations
 
