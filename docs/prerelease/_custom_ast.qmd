@@ -1,21 +1,20 @@
-## Custom AST nodes for filtering
+## Custom AST Nodes
 
 Quarto now supports custom AST nodes in Pandoc filters. This allows more flexibility in defining and using Lua filters.
 
 We will slowly roll out more extensive changes of the AST, but currently, the following objects are custom AST nodes:
 
-- [Callouts](custom-ast-nodes/callout.qmd)
-- [Tabsets](custom-ast-nodes/tabset.qmd)
-- [Conditional Blocks](custom-ast-nodes/conditional-block.qmd)
+-   [Callouts](custom-ast-nodes/callout.qmd)
+-   [Tabsets](custom-ast-nodes/tabset.qmd)
+-   [Conditional Blocks](custom-ast-nodes/conditional-block.qmd)
 
-### Example: Callouts in previous versions of Quarto
+### Example: Callouts
 
 In previous versions of Quarto, callouts would be represented directly as a div with a class starting with `callout`, and the contents laid out in a [particular way](/docs/authoring/callouts.qmd).
 
-While _authoring_ documents, this syntax remains unchanged. But when processing the document, the callout divs are now represented as a custom AST node, which can be processed directly in Lua filters. In Quarto 1.3, callouts can be captured in Lua filters more directly. For example, here is a filter
-that forces every callout to be of type "caution":
+While *authoring* documents, this syntax remains unchanged. But when processing the document, the callout divs are now represented as a custom AST node, which can be processed directly in Lua filters. In Quarto 1.3, callouts can be captured in Lua filters more directly. For example, here is a filter that forces every callout to be of type "caution":
 
-```lua
+``` lua
 function Callout(callout)
   -- do something with the callout
   callout.type = "caution"
