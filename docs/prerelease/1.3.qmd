@@ -5,6 +5,61 @@ search: false
 code-annotations: select
 ---
 
+## Multi-Format HTML Output
+
+Starting in Quarto 1.3, HTML pages (either standalone or in a website) can automatically include links to alternative formats for the page (when specified in the document front matter). The additional formats will be automatically placed within the TOC as a new section, if a TOC is enabled for the page. If no TOC is displayed, the additional formats will be displayed in the right margin at the top of the document.
+
+For example, the following document front matter:
+
+``` yaml
+title: Sample Page
+author: Norah Jones
+date: last-modified
+toc: true
+format: 
+  html: default
+  ipynb: default
+```
+
+Now results in an HTML page which includes the additional notebook format as a part of the TOC region:
+
+![](images/other-format.png){.border}
+
+### Controlling Output
+
+Links to additional formats are displayed by default in Quarto HTML documents, but you can control whether they are shown or even which specific formats are included.
+
+#### Included Formats
+
+You can provide an explicit list of formats to include in the `Other Formats` section by providing a list as the value for `format-links`. For example, this document front matter will display only the link to the Jupyter format of the document, excluding the PDF:
+
+``` yaml
+title: Sample Page
+author: Norah Jones
+date: last-modified
+toc: true
+format: 
+  html: default
+  ipynb: default
+  pdf: default
+format-links: [ipynb]
+```
+
+#### Hiding 'Other Formats'
+
+To stop the other format links from being shown at all, specify `format-links: false` in your document front matter. For example this front matter will not display the 'Other Formats' links:
+
+``` yaml
+title: Sample Page
+author: Norah Jones
+date: last-modified
+toc: true
+format: 
+  html: default
+  ipynb: default
+format-links: false
+```
+
 ## HTML Grid Customization
 
 ### Background
@@ -13,7 +68,7 @@ Quarto HTML documents are arranged in a structure composed of a sidebar, the bod
 
 ![](images/grid.png)
 
-Quarto documents arrange these elements to support different styles of layout (docked, floating), different variants of the layout based upon the content of the page (for example, a slightly adjusted layout for pages containing only a listing), and responsive sizes for each of the layouts. In each of these different layouts, Quarto adjusts the width, positioning, or visibility of the elements to achieve the desired result. Each of these elements have both a maximum and minimum width, allowing content to flow depending upon the width of the browser that is displaying the document. 
+Quarto documents arrange these elements to support different styles of layout (docked, floating), different variants of the layout based upon the content of the page (for example, a slightly adjusted layout for pages containing only a listing), and responsive sizes for each of the layouts. In each of these different layouts, Quarto adjusts the width, positioning, or visibility of the elements to achieve the desired result. Each of these elements have both a maximum and minimum width, allowing content to flow depending upon the width of the browser that is displaying the document.
 
 The total maximum page width for a Quarto page is determined by the sum of each of these element widths. Quarto constrains the page to the width of the browser itself when possible, scaling the width of the elements to best fit the currently available display.
 
