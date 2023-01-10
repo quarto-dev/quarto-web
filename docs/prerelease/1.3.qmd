@@ -60,6 +60,52 @@ format:
 format-links: false
 ```
 
+::: callout-note
+In a Quarto Project, you can use `_metadata.yml`{spellcheck="false"} to control the behavior for a specific folder. Just include the `format`{spellcheck="false"} and `format-links`{spellcheck="false"} options in a `_metadata.yml`{spellcheck="false"} to apply the options to all files in a folder. See [Directory Metadata](/docs/projects/quarto-projects.qmd#directory-metadata) for additional details.
+:::
+
+## Embedding Notebook Contents
+
+Quarto 1.3 supports embedding the output of external notebooks within Quarto documents using the `embed` shortcode and providing a path to a Jupyter Notebook and a cell identifier. For example, using the notebook:
+
+![](images/notebook-simple.png)
+
+You could embed the first code cell using the following shortcode:
+
+``` markdown
+{{< embed plots.ipynb#plot-dot >}}
+```
+
+The result of rendered a page with that embed is:
+
+{{< embed plots.ipynb#plot-dot >}}
+
+### Specifying Cells
+
+The embed specifies the notebook using an input relative path (`plots.ipynb`) followed by an optional cell identifier following a hash character `#plot-dot.` (If the cell identifier is omitted, all cells will be embedded in the document in place of the shortcode).
+
+The cell identifier in an embed will be used to locate the proper cell using the following cell locations:
+
+1.  **Cell `id`**First, the cell metadata will be checked for a matching `id` , if found, this cell will be embedded.
+2.  **Label\
+    **If no cell with an `id` is found, Quarto will use a cell that has a `label` in the code metadata which matches the embed's id.
+3.  **Tags\
+    **If no cell has been found, Quarto will use a cell or cell(s) which has a tag which matches the embed's id.
+
+### Embedding Code
+
+In addition to embedding the output of a code cell, you may include the code from the cell by using the `echo=true` option. For example, the same embed with the echo option produces:
+
+{{< embed plots.ipynb#plot-dot echo=true >}}
+
+::: callout-note
+Code custom customization options for the document in which these cells are embedded will also control these code cells. (For example, `code-fold: true`{spellcheck="false"} will fold the cells by default).
+:::
+
+### Code Cell Options
+
+Content and code that is being embedded from Jupyter notebooks can also code cell options like `fig-cap`, `column`, and so on to include additional options from the Notebook.
+
 ## HTML Grid Customization
 
 ### Background
