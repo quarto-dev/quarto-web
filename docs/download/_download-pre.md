@@ -13,6 +13,11 @@
 ::: {#download-pre-section-news}
 ### Release Notes
 
+{{< include /docs/prerelease/_highlights.qmd >}}
+
+#### Also In This Release
+
 ::: {#download-pre-news .download-news}
 :::
+
 :::
