@@ -11,7 +11,7 @@
 :::
 
 ::: {#download-pre-section-news}
-### Release Notes
+### Highlights
 
 {{< include /docs/prerelease/_highlights.qmd >}}
 
