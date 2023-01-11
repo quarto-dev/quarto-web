@@ -1,0 +1,116 @@
+---
+title: Code Annotation
+code-annotations: select
+---
+
+## Overview
+
+Both display and executable code cells in Quarto may now include annotations, which will be formatted and displayed properly in any format, but with special formatting for HTML and PDF output. Annotations for a code cell consist of two related elements:
+
+1.  Special comments at the end of lines of code, which serve as the annotation markers.\
+    Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `// <2>`). You may repeat an annotation number if the annotation spans multiple lines.
+2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
+
+A very simple example is as follows:
+
+```` markdown
+```r
+foo <- "bar"
+print("Hello World!") # <1>
+```
+1. Here, we print the string 'Hello World'
+````
+
+which will result in the following:
+
+::: panel-tabset
+#### HTML
+
+![](images/annote-html.png)
+
+#### PDF
+
+![](images/annote-pdf.png)
+
+#### Docx
+
+![](images/annote-docx.png)
+:::
+
+When annotations are output for non-HTML and non-PDF formats, the annotation numbers will instead be replaced with a label pointing to the line of code (or lines of code) to which the annotation text applies.
+
+## Annotation Style
+
+For HTML output, there are three options for the display style of annotations:
+
+`below`
+
+:   By default (or if `code-annotations: below` is specified), code annotation text will appear below the code cell.
+
+`hover`
+
+:   Code annotation text will be displayed when the user hovers over the annotation marker for a line of code.
+
+`select`
+
+:   Code annotation text will be displayed when the user clicks on an annotation marker (selecting it). The annotation text can be dismissed by clicking the annotation marker once again.
+
+## Complete Example
+
+The following input document will produce annotated code as displayed below.
+
+```` markdown
+---
+...
+code-annotations: select
+...
+---
+
+```{{r}}
+num = 47 # <1>
+factorial = 1
+if(num < 0) { # <2>
+  print("Sorry, factorial does not exist for negative numbers")
+} else if(num == 0) {
+  print("The factorial of 0 is 1")
+} else {
+  for(i in 1:num) {             # <3>
+    factorial = factorial * i   # <3>
+  }                             # <3>
+  print(paste("The factorial of", num ,"is",format(factorial)))
+}
+```
+
+1. The number, this could instead be user input
+2. Check is the number is negative, positive or zero
+3. Actually compute the factorial
+````
+
+### Example Code Cell
+
+``` r
+num = 47 # <1>
+factorial = 1
+if(num < 0) { # <2>
+  print("Sorry, factorial does not exist for negative numbers")
+} else if(num == 0) {
+  print("The factorial of 0 is 1")
+} else {
+  for(i in 1:num) {             # <3>
+    factorial = factorial * i   # <3>
+  }                             # <3>
+  print(paste("The factorial of", num ,"is",format(factorial)))
+}
+```
+
+1.  The number, this could instead be user input
+2.  Check is the number is negative, positive or zero
+3.  Actually compute the factorial
+
+## Removing Annotations
+
+For some formats, you may prefer to remove annotations. In this case, you can set `code-annotations: none`, which will remove the annotation comments for your code and suppress the output of the ordered list which contains the annotation text.
+
+## Disabling Annotation
+
+You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (and the original ordered list as is).
