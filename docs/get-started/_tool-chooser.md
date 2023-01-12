@@ -16,6 +16,11 @@
       <img src="../images/jupyter-logo.png">Jupyter
     </a>
   </li>
+    <li class="nav-item" role="presentation">
+    <a class="nav-link" href="neovim.html">
+      <img src="../images/neovim-logo.svg">Neovim
+    </a>
+  </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" href="text-editor.html">
       <img src="../images/text-editor-logo.png" id="text-editor-logo">Editor
