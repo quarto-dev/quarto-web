@@ -5,20 +5,23 @@ code-annotations: select
 
 ## Overview
 
-Both display and executable code cells in Quarto may now include annotations, which will be formatted and displayed properly in any format, but with special formatting for HTML and PDF output. Annotations for a code cell consist of two related elements:
-
-1.  Special comments at the end of lines of code, which serve as the annotation markers.\
-    Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `// <2>`). You may repeat an annotation number if the annotation spans multiple lines.
-2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
-
-A very simple example is as follows:
+Both display and executable code cells in Quarto may now include annotations, which will be formatted and displayed properly in any format, but with special formatting for HTML and PDF output. For example:
 
 ```` markdown
 ```r
-foo <- "bar"
-print("Hello World!") # <1>
+num = 370 # <1> 
+sum = 0
+
+temp = num
+while(temp > 0) {           # <2> 
+  digit = temp %% 10        # <2>    
+  sum = sum + (digit ^ 3)   # <2>
+  temp = floor(temp / 10)   # <2>
+}                           # <2>
 ```
-1. Here, we print the string 'Hello World'
+
+1. This could be replaced by a call to gather the number from the user.
+2. Compute the sum of the cube of each digit. If this sum equals the number, this is an Armstrong number.
 ````
 
 which will result in the following:
@@ -32,10 +35,15 @@ which will result in the following:
 
 ![](images/annote-pdf.png)
 
-#### Docx
-
-![](images/annote-docx.png)
 :::
+
+## Annotation Syntax
+
+Annotations for a code cell consist of two related elements:
+
+1. Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `// <2>`). You may repeat an annotation number if the annotation spans multiple lines.
+2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
+
 
 When annotations are output for non-HTML and non-PDF formats, the annotation numbers will instead be replaced with a label pointing to the line of code (or lines of code) to which the annotation text applies.
 
@@ -58,6 +66,8 @@ For HTML output, there are three options for the display style of annotations:
 ## Complete Example
 
 The following input document will produce annotated code as displayed below.
+
+### Example Code
 
 ```` markdown
 ---
@@ -86,7 +96,7 @@ if(num < 0) { # <2>
 3. Actually compute the factorial
 ````
 
-### Example Code Cell
+### Example Output
 
 ``` r
 num = 47 # <1>
