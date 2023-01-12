@@ -24,15 +24,38 @@ The embed specifies the notebook using an input relative path (`plots.ipynb`) fo
 
 The cell identifier in an embed will be used to locate the proper cell using the following cell locations:
 
-1.  **Cell `id`**First, the cell metadata will be checked for a matching `id` , if found, this cell will be embedded.
-2.  **Label\
-    **If no cell with an `id` is found, Quarto will use a cell that has a `label` in the code metadata which matches the embed's id.
-3.  **Tags\
-    **If no cell has been found, Quarto will use a cell or cell(s) which has a tag which matches the embed's id.
+1.  **Cell `id`**\
+    First, the cell metadata will be checked for a matching `id` , if found, this cell will be embedded. (Cell ids are a newer feature of Jupyter Notebooks that are not yet well supported in Jupyter front ends, but this is checked for future compatibility as ids become more used.)
+2.  **Label**\
+    If no cell with an `id` is found, Quarto will use a cell that has a `label` in the code metadata which matches the embed's id.
+3.  **Tags**\
+    If no cell has been found, Quarto will use a cell or cell(s) which has a tag which matches the embed's id.
+
+### Cell Tags
+
+For example, to embed the output of a cell that has a specific tag, like the following (which is tagged with `plot-line`):
+
+![](images/notebook-tag.png){.border}
+
+You would use the following embed:
+
+``` markdown
+{{< embed plots.ipynb#plot-line >}}
+```
+
+which results in the following:
+
+{{< embed plots.ipynb#plot-line >}}
 
 ## Embedding Code
 
-In addition to embedding the output of a code cell, you may include the code from the cell by using the `echo=true` option. For example, the same embed with the echo option produces:
+In addition to embedding the output of a code cell, you may include the code from the cell by using the `echo=true` option. For example, the same embed with the echo option like:
+
+``` markdown
+{{< embed plots.ipynb#plot-dot echo=true >}}
+```
+
+embeds both the code for the cell as well as the outputs of the code cell:
 
 {{< embed plots.ipynb#plot-dot echo=true >}}
 
@@ -73,7 +96,7 @@ results in the following output:
 
 {{< embed plots.ipynb#fig-fruit >}}
 
-## Source Notebook Links
+## Linked Source Notebooks
 
 When you embed the contents of Notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source Notebooks that provided the embedded content. These links will by default appear both inline below the embedded content as well as below the TOC. For example, the following document embeds content from the notebook `plots.ipynb`. You can see the links in the rendered HTML document below:
 
@@ -95,15 +118,17 @@ You can control the placement of the links to source notebook by specifying the 
 
 :   Display only links to source notebooks alongside the TOC. Do not display links inline below the embedded content.
 
-## Source Notebook Views
+### Notebook Views
 
-By default, Quarto will automatically generate an HTML rendering of the notebook which displays the contents of the notebook and includes a button to download the notebook. This makes it easier for users to view the Notebook contents without needing to download and run the Notebook locally. As an example, you can view the preview for the \`plots.ipynb\` notebook used in this document:
+By default, Quarto will automatically generate an HTML rendering of the notebook which displays the contents of the notebook and includes a button to download the notebook. This makes it easier for users to view the Notebook contents without needing to download and run the Notebook locally. For example:
 
-::: {style="text-align: center;"}
-[View Notebook Preview](/docs/prerelease/plots.ipynb.html){.btn .btn-primary}
-:::
+![](images/notebook-view.png){.border}
+
+As an example, you can view the [live preview for the \`plots.ipynb\` notebook](/docs/prerelease/plots.ipynb.html) used in this document.
 
 The notebook preview is generated using Quarto to render the notebook itself. This means that the preview can be generated for any standard Jupyter Notebook- the Notebook will not be executed - but the Jupyter Notebook can also include Quarto directives (e.g. front matter) and markdown, which will be respected (for example, it could reference a bibliography and use citations).
+
+###  View Options
 
 You can control the behavior of notebook views using `notebook-view`. For each source notebook, you can provide a `title` and a `url`. The `title` will be used as the text of the any links to the source notebook and will also appear at the top of the rendered notebook view. The `url`, if provided, will be used as the `href` of any links to the source notebook. This is useful if you have deployed a copy of the source notebook to a site like Github, Google Colab, or Kaggle and would rather link to that instead.
 
