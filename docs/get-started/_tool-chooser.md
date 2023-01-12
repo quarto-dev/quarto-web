@@ -12,13 +12,13 @@
     </a>
   </li>
   <li class="nav-item" role="presentation">
-    <a class="nav-link" href="neovim.html">
-      <img src="../images/neovim-logo.svg">Neovim
-    </a>
-  </li>
-  <li class="nav-item" role="presentation">
     <a class="nav-link" href="jupyter.html">
       <img src="../images/jupyter-logo.png">Jupyter
+    </a>
+  </li>
+    <li class="nav-item" role="presentation">
+    <a class="nav-link" href="neovim.html">
+      <img src="../images/neovim-logo.svg">Neovim
     </a>
   </li>
   <li class="nav-item" role="presentation">
