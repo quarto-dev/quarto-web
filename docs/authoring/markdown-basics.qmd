@@ -276,7 +276,21 @@ Once rendered to HTML, Quarto will translate the markdown into:
 
 Typically, you'll use CSS and/or a [Filter](/docs/extensions/filters.qmd) along with Divs and Spans to provide styling or other behavior within rendered documents.
 
-See the Pandoc documentation on [Divs and Spans](https://pandoc.org/MANUAL.html#divs-and-spans) for additional details.
+### Ordering of Attributes
+
+Both divs and spans in Pandoc can have any combination of identifiers, classes, and attributes. In order for these to be recognized by Pandoc, they have to be provided in a specific order: identifiers, classes, and then attributes. Any of these can be omitted, but must follow that order if they are provided. For example, the following is valid:
+
+``` markdown
+[This is good]{#id .class key="val"}
+```
+
+However, the following _will not be recognized by Pandoc_:
+
+``` markdown
+[This does *not* work!]{.class key="val" #id}
+```
+
+This ordering restriction applies to both divs and spans. See Pandoc's documentation on [Divs and Spans](https://pandoc.org/MANUAL.html#divs-and-spans) for additional details.
 
 ## Callout Blocks
 
