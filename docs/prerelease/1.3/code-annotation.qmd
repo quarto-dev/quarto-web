@@ -1,11 +1,10 @@
 ---
 title: Code Annotation
-code-annotations: select
 ---
 
 ## Overview
 
-Both display and executable code cells in Quarto may now include annotations, which will be formatted and displayed properly in any format, but with special formatting for HTML and PDF output. For example:
+Code blocks and executable code cells in Quarto may now include line-based annotations. Annotations are added within an inline comment at the end of a line followed by a number within angle brackets (e.g. `# <1>`). Include an ordered list below the code block to provide the annotation contents. For example:
 
 ```` markdown
 ```r
@@ -24,7 +23,7 @@ while(temp > 0) {           # <2>
 2. Compute the sum of the cube of each digit. If this sum equals the number, this is an Armstrong number.
 ````
 
-which will result in the following:
+This code will render as follows for HTML and PDF formats:
 
 ::: panel-tabset
 #### HTML
@@ -40,7 +39,8 @@ which will result in the following:
 
 Annotations for a code cell consist of two related elements:
 
-1.  Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `// <2>`). You may repeat an annotation number if the annotation spans multiple lines.
+1.  Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `# <2>`). You may repeat an annotation number if the annotation spans multiple lines.
+
 2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
 
 When annotations are output for non-HTML and non-PDF formats, the annotation numbers will instead be replaced with a label pointing to the line of code (or lines of code) to which the annotation text applies.
@@ -68,24 +68,18 @@ The following input document will produce annotated code as displayed below.
 ### Example Code
 
 ```` markdown
----
-...
-code-annotations: select
-...
----
-
 ```{{r}}
 num = 47 # <1>
 factorial = 1
 if(num < 0) { # <2>
-  print("Sorry, factorial does not exist for negative numbers")
+  print("No factorial for negative numbers")
 } else if(num == 0) {
   print("The factorial of 0 is 1")
 } else {
   for(i in 1:num) {             # <3>
     factorial = factorial * i   # <3>
   }                             # <3>
-  print(paste("The factorial of", num ,"is",format(factorial)))
+  cat("Factorial :", format(factorial), "\n")
 }
 ```
 
@@ -100,14 +94,14 @@ if(num < 0) { # <2>
 num = 47 # <1>
 factorial = 1
 if(num < 0) { # <2>
-  print("Sorry, factorial does not exist for negative numbers")
+  print("No factorial for negative numbers")
 } else if(num == 0) {
   print("The factorial of 0 is 1")
 } else {
   for(i in 1:num) {             # <3>
     factorial = factorial * i   # <3>
   }                             # <3>
-  print(paste("The factorial of", num ,"is",format(factorial)))
+  cat("Factorial :", format(factorial), "\n")
 }
 ```
 
@@ -121,4 +115,4 @@ For some formats, you may prefer to remove annotations. In this case, you can se
 
 ## Disabling Annotation
 
-You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (and the original ordered list as is).
+You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (and the original ordered list) as is.
