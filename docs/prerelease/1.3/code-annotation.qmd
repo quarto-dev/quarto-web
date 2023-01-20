@@ -5,7 +5,33 @@ code-annotations: select
 
 ## Overview
 
-Code blocks and executable code cells in Quarto may now include line-based annotations. Annotations are added within an inline comment at the end of a line followed by a number within angle brackets (e.g. `# <1>`). Include an ordered list below the code block to provide the annotation contents. For example:
+Code blocks and executable code cells in Quarto may now include line-based annotations. Line-based annotations provide a way to attach explanation to lines of code much like footnotes. 
+
+This example, rendered in HTML and PDF formats, uses annotation to draw attention to the first line of code and the while loop: 
+
+::: panel-tabset
+#### HTML
+
+![](images/annote-html.png)
+
+#### PDF
+
+![](images/annote-pdf.png)
+:::
+
+In PDF and HTML formats, annotations are numbered using an annotation marker displayed in the code. In other formats, rather than numbering annotations, annotations are labelled with the line of code (or lines of code) to which the annotation text applies.
+
+Annotations are added using code comments combined with an ordered list using a special syntax. The `code-annotations` option controls whether annotation is disabled (`false`), if annotations should be removed from the output (`none`), and for the HTML format, how annotations should appear (`below` (default), `hover` or `select`).
+
+## Annotation Syntax
+
+Annotations for a code cell consist of two related elements:
+
+1.  Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `# <2>`). You may repeat an annotation number if the annotation spans multiple lines.
+
+2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
+
+For example, the annotations in the overview were produced with the following:
 
 ```` markdown
 ```r
@@ -24,28 +50,6 @@ while(temp > 0) {           # <2>
 2. Compute the sum of the cube of each digit. If this sum equals the number, this is an Armstrong number.
 ````
 
-This code will render as follows for HTML and PDF formats:
-
-::: panel-tabset
-#### HTML
-
-![](images/annote-html.png)
-
-#### PDF
-
-![](images/annote-pdf.png)
-:::
-
-## Annotation Syntax
-
-Annotations for a code cell consist of two related elements:
-
-1.  Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `# <2>`). You may repeat an annotation number if the annotation spans multiple lines.
-
-2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
-
-When annotations are output for non-HTML and non-PDF formats, the annotation numbers will instead be replaced with a label pointing to the line of code (or lines of code) to which the annotation text applies.
-
 ## Annotation Style
 
 For HTML output, there are three options for the display style of annotations:
@@ -62,9 +66,10 @@ For HTML output, there are three options for the display style of annotations:
 
 :   Code annotation text will be displayed when the user clicks on an annotation marker (selecting it). The annotation text can be dismissed by clicking the annotation marker once again.
 
+
 ## Complete Example
 
-Here's an example that uses `code-annotation: select` rather than the default `code-annotation: below`:
+Here's an example that uses `code-annotations: select` rather than the default `code-annotations: below`:
 
 ### Example Code
 
@@ -89,7 +94,7 @@ if(num < 0) { # <2>
 ```
 
 1. The number, this could instead be user input
-2. Check is the number is negative, positive or zero
+2. Check if the number is negative, positive or zero
 3. Actually compute the factorial
 ````
 
@@ -111,13 +116,13 @@ if(num < 0) { # <2>
 ```
 
 1.  The number, this could instead be user input
-2.  Check is the number is negative, positive or zero
+2.  Check if the number is negative, positive or zero
 3.  Actually compute the factorial
 
 ## Removing Annotations
 
-For some formats, you may prefer to remove annotations. In this case, you can set `code-annotations: none`, which will remove the annotation comments for your code and suppress the output of the ordered list which contains the annotation text.
+For some formats, you may prefer to remove annotations from the output. In this case, you can set `code-annotations: none`, which will remove the annotation comments for your code and suppress the output of the ordered list which contains the annotation text.
 
 ## Disabling Annotation
 
-You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (and the original ordered list) as is.
+You can disable code annotation by including the option `code-annotations: false` in your document. This will stop the processing of code annotations and leave your code (including the annotation comments) and the original ordered list as is.
