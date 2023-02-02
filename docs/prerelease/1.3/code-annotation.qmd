@@ -1,58 +1,88 @@
 ---
 title: Code Annotation
-code-annotations: select
+code-annotations: below
 ---
 
 ## Overview
 
 Code blocks and executable code cells in Quarto may now include line-based annotations. Line-based annotations provide a way to attach explanation to lines of code much like footnotes. 
 
-This example, rendered in HTML and PDF formats, uses annotation to draw attention to the first line of code and the while loop: 
+For example, this code uses annotation to describe the steps in an R dplyr pipeline in plain language:
+
+```r
+library(tidyverse)
+library(palmerpenguins)
+penguins |>                                            # <1>
+  mutate(                                              # <2>
+    bill_ratio = bill_depth_mm / bill_length_mm,       # <2>
+    bill_area  = bill_depth_mm * bill_length_mm        # <2>
+  )                                                    # <2>
+```
+1. Take `penguins`, and then,
+2. add new columns for the bill ratio and bill area.
+
+The default HTML annotation style displays annotations in a list below the code block. Clicking on the annotation number in the list highlights the relevant lines in the code. Other [HTML styles](#html-styles) hide the annotations, revealing them in a tooltip when a user hovers or selects a marker.
+
+The PDF format also numbers annotations and displays the annotation text below the code. In other formats, rather than numbering annotations, annotations are labelled with the line of code (or lines of code) to which the annotation text applies.
 
 ::: panel-tabset
-#### HTML
-
-![](images/annote-html.png)
-
 #### PDF
 
 ![](images/annote-pdf.png)
+
+#### GitHub Flavored Markdown
+
+````markdown
+``` r
+library(tidyverse)
+library(palmerpenguins)
+penguins |>
+  mutate(
+    bill_ratio = bill_depth_mm / bill_length_mm,
+    bill_area  = bill_depth_mm * bill_length_mm
+  )
+```
+
+Line 3  
+Take `penguins`, and then,
+
+Lines 4-7  
+add new columns for the bill ratio and bill area.
+````
 :::
 
-In PDF and HTML formats, annotations are numbered using an annotation marker displayed in the code. In other formats, rather than numbering annotations, annotations are labelled with the line of code (or lines of code) to which the annotation text applies.
 
-Annotations are added using code comments combined with an ordered list using a special syntax. The `code-annotations` option controls whether annotation is disabled (`false`), if annotations should be removed from the output (`none`), and for the HTML format, how annotations should appear (`below` (default), `hover` or `select`).
+To add code annotation to a code block, you need to add two things: specially formatted code comments to your code, and an ordered list below your code with your annotation content. Read more in [Annotation Syntax](#annotation-syntax).
 
-## Annotation Syntax
+The `code-annotations` option controls how annotations appear in the HTML format (`below` (default), `hover` or `select`), and in all formats, whether annotation is disabled (`false`), or if annotations should be removed from the output (`none`).
+
+## Annotation Syntax {#annotation-syntax}
 
 Annotations for a code cell consist of two related elements:
 
 1.  Each annotated line should be terminated with a comment (using the code cell's language comment character) followed by a space and then an annotation number enclosed in angle brackets (e.g. `# <2>`). You may repeat an annotation number if the annotation spans multiple lines.
 
-2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line of code(s) with the same annotation number.
+2.  An ordered list that appears immediately after the code cell which includes the contents of each annotation. Each numbered item in the ordered list will correspond with the line(s) of code with the same annotation number.
 
 For example, the annotations in the overview were produced with the following:
 
 ```` markdown
 ```r
-num = 370 # <1> 
-sum = 0
-
-temp = num
-while(temp > 0) {           # <2> 
-  digit = temp %% 10        # <2>    
-  sum = sum + (digit ^ 3)   # <2>
-  temp = floor(temp / 10)   # <2>
-}                           # <2>
+library(tidyverse)
+library(palmerpenguins)
+penguins |>                                      # <1>
+  mutate(                                        # <2>
+    bill_ratio = bill_depth_mm / bill_length_mm, # <2>
+    bill_area  = bill_depth_mm * bill_length_mm  # <2>
+  )                                              # <2>
 ```
-
-1. This could be replaced by a call to gather the number from the user.
-2. Compute the sum of the cube of each digit. If this sum equals the number, this is an Armstrong number.
+1. Take `penguins`, and then,
+2. add new columns for the bill ratio and bill area.
 ````
 
-## Annotation Style
+## Annotation Style {#html-styles}
 
-For HTML output, there are three options for the display style of annotations:
+For HTML output, there are three annotation styles you can set with the `code-annotations` document option:
 
 `below`
 
@@ -60,68 +90,38 @@ For HTML output, there are three options for the display style of annotations:
 
 `hover`
 
-:   Code annotation text will be displayed when the user hovers over the annotation marker for a line of code.
+:   Code annotation text will be displayed when the user hovers over the annotation marker for a line of code. 
+    ![](images/annote-hover.png){width=90%}
 
 `select`
 
 :   Code annotation text will be displayed when the user clicks on an annotation marker (selecting it). The annotation text can be dismissed by clicking the annotation marker once again.
 
-
-## Complete Example
-
-Here's an example that uses `code-annotations: select` rather than the default `code-annotations: below`:
-
-### Example Code
+For example, to set the display style to hover, the complete Quarto file would be:
 
 ```` markdown
 ---
-code-annotations: select
+code-annotations: hover
 ---
 
-```{{r}}
-num = 47 # <1>
-factorial = 1
-if(num < 0) { # <2>
-  print("No factorial for negative numbers")
-} else if(num == 0) {
-  print("The factorial of 0 is 1")
-} else {
-  for(i in 1:num) {             # <3>
-    factorial = factorial * i   # <3>
-  }                             # <3>
-  cat("Factorial :", format(factorial), "\n")
-}
+```r
+library(tidyverse)
+library(palmerpenguins)
+penguins |>                                      # <1>
+  mutate(                                        # <2>
+    bill_ratio = bill_depth_mm / bill_length_mm, # <2>
+    bill_area  = bill_depth_mm * bill_length_mm  # <2>
+  )                                              # <2>
 ```
-
-1. The number, this could instead be user input
-2. Check if the number is negative, positive or zero
-3. Actually compute the factorial
+1. Take `penguins`, and then,
+2. add new columns for the bill ratio and bill area.
 ````
 
-### Example Output
 
-```{.r code-annotations="select"}
-num = 47 # <1>
-factorial = 1
-if(num < 0) { # <2>
-  print("No factorial for negative numbers")
-} else if(num == 0) {
-  print("The factorial of 0 is 1")
-} else {
-  for(i in 1:num) {             # <3>
-    factorial = factorial * i   # <3>
-  }                             # <3>
-  cat("Factorial :", format(factorial), "\n")
-}
-```
-
-1.  The number, this could instead be user input
-2.  Check if the number is negative, positive or zero
-3.  Actually compute the factorial
 
 ## Removing Annotations
 
-For some formats, you may prefer to remove annotations from the output. In this case, you can set `code-annotations: none`, which will remove the annotation comments for your code and suppress the output of the ordered list which contains the annotation text.
+For some formats, you may prefer to remove annotations from the output. In this case, you can set `code-annotations: none`, which will remove the annotation comments from your code and suppress the output of the ordered list which contains the annotation text.
 
 ## Disabling Annotation
 
