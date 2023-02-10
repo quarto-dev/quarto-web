@@ -140,6 +140,7 @@ Some aspects of markdown output can be customized via global, project, or file-l
 
 -   How to wrap / break lines (fixed column, sentence-per-line, etc.).
 -   Where to write footnotes (below the current paragraph or section, or at the end of the document).
+-   Wheter to write inline or reference style links.
 
 You can specify these options in one of two ways:
 
@@ -179,7 +180,7 @@ If you have enabled a global line wrapping option and want to turn off wrapping 
 
 #### References
 
-By default, references are written at the end of the block where their corresponding footnote appears. You can override this behavior using the `quarto.visualEditor.markdownReferences` VS Code setting or by using the `references` option within document or project YAML.
+By default, references (footnotes and reference links) are written at the end of the block where their corresponding footnote appears. You can override this behavior using the `quarto.visualEditor.markdownReferences` VS Code setting or by using the `references` option within document or project YAML.
 
 For example, to write references at the end of sections rather than blocks you would use:
 
@@ -214,6 +215,23 @@ This will result in footnotes in this document using the specified prefix (e.g. 
 Note that if you are within a Quarto [book](../../books/book-basics.qmd) project then a references `prefix` is applied automatically so no changes to `editor` options are required.
 :::
 
+#### Links
+
+Links are written inline by default, however they can be written as reference links (below content as with footnotes) by adding the `links: true` option to the `references` section of document or project YAML. For example:
+
+``` yaml
+---
+title: "My Document"
+editor:
+  markdown:
+    references: 
+      location: block
+      links: true
+---
+```
+
+You can alternatively enable reference links using the VS Code `quarto.visualEditor.markdownReferenceLinks` option.
+
 ### Known Limitations
 
 There are a handful of Pandoc markdown extensions not currently supported by visual editing. These are infrequently used extensions, so in all likelihood they won't affect documents you edit, but are still worth noting.
@@ -228,3 +246,5 @@ There are a handful of Pandoc markdown extensions not currently supported by vis
 | MultiMarkdown attributes | \# Heading \[id\]  | Converted to Pandoc attributes.          |
 
 The visual editor is unable to parse non-YAML title blocks (e.g. old-style % titles or MultiMarkdown titles) and also unable to parse non top-level YAML metadata blocks. If these forms of metadata are encountered, visual mode will fail to load with a warning.
+
+Note that support for reference links can be enabled via the `editor: markdown: references: links` option in document or project YAML, or the VS Code `quarto.visualEditor.markdownReferenceLinks` option. Reference links will be written according the reference location option (either the `block` or `section` in which they appear, or alternatively at the end of the `document`).
