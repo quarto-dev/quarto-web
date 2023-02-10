@@ -1,14 +1,28 @@
 ---
-title: HTML Table processing
+title: HTML Table Processing
 ---
 
 ## Overview
 
-In Quarto 1.3, we have made some changes to how tables are processed. Recent Pandoc versions have added support for parsing HTML tables into Pandoc's native data structures (including features such as rowspans and colspans), and Quarto now leverages this to make it easier to properly formatted tables in all formats.
+In Quarto 1.3, we have made some changes to how tables are processed. Recent Pandoc versions have added support for parsing HTML tables into Pandoc's native data structures (including features such as rowspans and colspans), and Quarto now leverages this to make it easier to produce properly formatted tables in more formats.
 
 ### HTML tables are now processed in every format
 
-Specifically, Quarto will now attempt to parse HTML tables in RawBlock Pandoc nodes and convert them to Markdown tables, in every output format (including non-html formats). As a result, you can now use HTML table syntax in your documents and they will be properly converted to Markdown tables for all formats, and libraries which emit computational tables in HTML format can work in other output formats. In addition, this will allow Lua filters to manipulate the content of tables specified in HTML format.
+Specifically, Quarto will now attempt to parse HTML tables in `RawBlock` nodes in `html` format and convert them to Markdown tables, regardless of output format (intentionally including non-HTML formats). As a result, you can now use HTML table syntax in your documents and they will be properly converted to Markdown tables for all formats, and libraries which emit computational tables in HTML format can work in other output formats. In addition, this will allow Lua filters to manipulate the content of tables specified in HTML format.
+
+::: callout-note
+
+If you're a library author, we hope that you will consider emitting HTML tables in your output. This will allow your users to use the full power of Quarto's table processing in all formats.
+
+With that said, it's possible that our processing of HTML tables interferes with your library's processing. If this is the case, you can disable Quarto's processing of HTML tables by adding the following data attribute to your table:
+
+```
+<table data-quarto-disable-processing="true">
+  ...
+</table>
+```
+
+:::
 
 ### Embedded Markdown content can be specified
 
