@@ -4,13 +4,72 @@ title: Mermaid Diagram Theming
 
 {{< include _pre-release-feature.qmd >}}
 
-Quarto v1.3 updates Mermaid to version 9.2.2, and adds a number of theming options to diagram.
+## Overview
 
-## Default Mermaid Theme
+Quarto v1.3 updates Mermaid to version 9.2.2, and improves color theming of Mermaid diagrams:
 
-Starting in v1.3, Quarto will use the current theme's colors for Mermaid diagrams by default. If you use Quarto's bootswatch built-in themes (or a custom theme that uses the same SCSS variables), Mermaid diagrams in Quarto will automatically follow your project themes.
+-   The default colors for Mermaid diagrams now inherit colors from the current document theme.
+-   Mermaid's own color themes are available via a YAML option.
+-   SCSS and CSS variables are exposed to allow further customization of Mermaid diagram colors.
 
-The SCSS variables used by the default Mermaid theme shipped with quarto, together with their default values, are:
+## Default Colors for Mermaid Diagrams
+
+If you use Quarto's [bootswatch built-in themes](../../output-formats/html-themes.qmd), including the default theme, or a custom theme that uses the same SCSS variables, your Mermaid diagrams will automatically follow your theme.
+
+The following examples demonstrate this with a few of Quarto's built-in bootswatch themes.
+
+::: panel-tabset
+
+## Darkly
+
+![](images/mermaid-darkly.png){fig-alt="A screenshot of a Mermaid flowchart in a document using bootswatch's Darkly theme."}
+
+## Sandstone
+
+![](images/mermaid-sandstone.png){fig-alt="A screenshot of a Mermaid flowchart in a document using bootswatch's Sandstone theme."}
+
+## Vapor
+
+![](images/mermaid-vapor.png){fig-alt="A screenshot of a Mermaid flowchart in a document using bootswatch's Vapor theme."}
+:::
+
+You can read more about the correspondence between Bootstrap's SCSS variables and Quarto's Mermaid SCSS variables, and how to change it, below in [Customizing the Mermaid Theme](#customizing-mermaid).
+
+## Using Mermaid's Built-in Themes
+
+If you want to use Mermaid's own themes, you can do so by configuring the `mermaid` option in your YAML front matter:
+
+``` yml
+format:
+  html:
+    mermaid:
+      theme: forest
+```
+
+The available themes from mermaid are: `default`, `dark`, `forest`, and `neutral`.
+
+::: panel-tabset
+## default
+
+![](images/mermaid-default.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's default theme."}
+
+## dark
+
+![](images/mermaid-dark.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's dark theme."}
+
+## forest
+
+![](images/mermaid-forest.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's forest theme."}
+
+## neutral
+
+![](images/mermaid-neutral.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's neutral theme."}
+
+:::
+
+## Customizing the Mermaid Theme {#customizing-mermaid}
+
+Quarto provides its own Mermaid SCSS and CSS variables that can be overwritten to allow some customization of the diagram theme. The SCSS variables, together with their default values, are:
 
 ``` scss
 $mermaid-bg-color: $body-bg;
@@ -26,7 +85,7 @@ $mermaid-node-bg-color: $primary-transparent;
 $mermaid-node-fg-color: $primary;
 ```
 
-These have CSS variable counterparts that can also be overridden:
+Their CSS variable counterparts are:
 
 ``` css
 :root {
@@ -44,14 +103,12 @@ These have CSS variable counterparts that can also be overridden:
 }
 ```
 
-## Built-in Themes
+For example, to provide a custom color for the background of the nodes you could [add a custom CSS stylesheet](../../output-formats/html-basics.html#css-styles) containing:
 
-If you want to use Mermaid's own themes, you can do so by configuring the `mermaid` option in your YAML front matter:
-
-``` yml
-html:
-  mermaid:
-    theme: forest
+```css
+:root {
+  --mermaid-node-bg-color: #375a7f;
+}
 ```
 
-The available themes from mermaid are: `default`, `dark`, `forest`, and `neutral`.
+You can find the correspondence between Quarto's variables and Mermaid's native CSS classes in Quarto's source code in the file  [embed-mermaid.css](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/html/mermaid/embed-mermaid.css).
