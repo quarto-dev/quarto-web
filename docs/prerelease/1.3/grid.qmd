@@ -6,34 +6,26 @@ title: Article Grid Customization
 
 ## Overview
 
-Starting in Quarto v1.3, you can control the width of the layout components in HTML documents. For example, for a website that makes use of the margin for figures, it might make sense to give more space to the margin and less to the body: 
+Starting in Quarto v1.3, you can control the width of the layout components in HTML documents. For example, if long entries in a sidebar are being wrapped, it may make sense to increase the width of sidebar: 
 
 ::: {layout-ncol=2}
 ![Default Layout](images/grid-default.png){fig-alt="Screenshot of a Quarto website displaying the default layout of the sidebar, body and margin."}
 
-![Wider Margin](images/grid-custom.png){fig-alt="Screenshot of a Quarto website with altered layout, devoting more space to the margin and less to the body than the default layout."}
+![Wider Sidebar](images/grid-wide-sidebar.png){fig-alt="Screenshot of a Quarto website with altered layout, devoting more space to the sidebar."}
 :::
 
-This change can be made by adding the `grid` option to the `_quarto.yml` file, increasing the `margin-width` and decreasing the `body-width` from their defaults:
+This change can be made by adding the `grid` option to the `_quarto.yml` file, increasing the `sidebar-width` from its default of 250px:
 
-```yaml
+```{.yaml filename="_quarto.yml"}
 format:
   html:
     grid:
-      margin-width: 450px
-      body-width: 600px
+      sidebar-width: 350px
 ```
-
-::: {.callout-note}
-## Websites vs. Standalone HTML Pages. 
-
-Customizing the layout of pages that are part of a Quarto website with YAML should happen at the site level in `_quarto.yml`. For HTML documents that aren't part of a website, these options could also be set in the YAML at the top of the document.
-
-:::
 
 There are four variables to control the four components of the layout: the sidebar, the body, the margin and the gutters. 
 
-The rest of this page describes these components, and their default values, as well as how to customize them either with YAML or SCSS  variables.
+The rest of this page describes these components, and their default values, as well as how to customize them either with YAML or SCSS  variables. You can also find [Additional Examples](#more-examples) of customization in action.
 
 ## HTML Page Layout
 
@@ -60,7 +52,7 @@ The values of these variables don't directly specify the display width of the co
 
 You can control the component width variables using YAML or SCSS variables. To set these options in YAML, you may use the `grid` option :
 
-``` yml
+```{.yaml filename="_quarto.yml"}
 format:
   html: 
     grid:
@@ -69,6 +61,14 @@ format:
       margin-width: 300px
       gutter-width: 1.5rem
 ```
+
+::: {.callout-note}
+## Websites vs. Standalone HTML Pages
+
+Customizing the layout of pages that are part of a Quarto website with YAML should happen at the site level in `_quarto.yml`. For HTML documents that aren't part of a website, these options could also be set in the YAML at the top of the document.
+
+:::
+
 
 Similarly, in a [custom theme `scss` file](https://quarto.org/docs/output-formats/html-themes.html#theme-options), you may set variables like:
 
@@ -90,3 +90,35 @@ $grid-column-gutter-width: 1.5rem !default;
 
 `gutter-width` may be specified in pixels or other units such as `em` or `rem` which are responsive to the document font size.
 
+## Additional Examples {#more-examples}
+
+Increasing the margin width may make sense on a website that has many figures or tables in the margin. For example, this YAML increases the `margin-width` by 200px over the default value:
+
+```yaml
+format:
+  html:
+    grid:
+      margin-width: 450px
+```
+
+::: {layout-ncol=2}
+![Default Layout](images/grid-default.png){fig-alt="Screenshot of a Quarto website displaying the default layout of the sidebar, body and margin."}
+
+![Wider Margin](images/grid-wide-margin.png){fig-alt="Screenshot of a Quarto website with altered layout, devoting more space to the margin."}
+:::
+
+The effect of changing `margin-width` without changing `body-width` is to increase the overall page width (there is less white space on the far left and right of the page). Alternatively, to keep the overall page width the same `body-width` can be decreased by the same amount as `margin-width` increased:
+
+```yaml
+format:
+  html:
+    grid:
+      margin-width: 450px
+      body-width: 600px
+```
+
+::: {layout-ncol=2}
+![Default Layout](images/grid-default.png){fig-alt="Screenshot of a Quarto website displaying the default layout of the sidebar, body and margin."}
+
+![Wider Margin, Narrower Body](images/grid-wide-margin-narrow-body.png){fig-alt="Screenshot of a Quarto website with altered layout, devoting more space to the margin and less to the body."}
+:::
