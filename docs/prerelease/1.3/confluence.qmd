@@ -10,28 +10,124 @@ provider-name: Confluence
 
 [Atlassian Confluence](https://www.atlassian.com/software/confluence) is a publishing platform for supporting team collaboration. Confluence has a variety of hosting options which include both free and paid subscription plans.
 
-You can use the `quarto publish` command to publish content into [Confluence Spaces](https://support.atlassian.com/confluence-cloud/docs/use-spaces-to-organize-your-work/). You can publish both individual documents as well as projects composed of multiple documents into a Space.
+Quarto 1.3 adds support for publishing individual documents, as well as projects composed of multiple documents, into [Confluence Spaces](https://support.atlassian.com/confluence-cloud/docs/use-spaces-to-organize-your-work/).
 
-Below, we'll walk through the basics of authoring and publishing confluence documents and projects. Before diving in, be sure that you have either created and signed in to a [free Confluence account](https://www.atlassian.com/try/cloud/signup?bundle=confluence&edition=free) or are [logged into your organization's account](https://start.atlassian.com/).
+Managing Confluence content with Quarto allows you to author content in Markdown, manage that content with your usual version control tools like Git and GitHub, and leverage Quarto's tools for including computational output.
 
-## Authoring
+<!-- Screenshot Example of .qmd and rendered page in Confluence -->
 
-The recommended workflow for Confluence publishing is to edit and preview your content locally using the `confluence-html` format (for individual documents) or the `confluence` project type (for collections of documents).
+<!-- Screenshot Example of file Quarto project, and rendered Pages in Confluence -->
 
-For example, here we specify the `confluence-html` format for a document that we want to eventually publish to Confluence:
 
-``` yaml
+-   [Confluence Publishing Basics](#publishing-basics) walks through the process of publishing a single page to Confluence, including how to [set up your Confluence account](#setting-up-account) in Quarto, and how to [specify a destination](#selecting-destination) for your document in your Confluence Space.
+
+-   Publishing Projects describes how to publish a collection of documents, including how your project structure translates to the structure of pages in your Confluence Space.
+
+-   Publishing Workflow - permissions, etc.
+
+-   Authoring for Confluence - limitations, links
+
+-   Publishing Settings - `_publish.yml`, Managing Accounts.
+
+::: callout-important
+## Be Careful with Sensitive or Confidential Content
+
+Publishing Quarto documents to a public Confluence space will make the content of those documents public. It is your responsibility to understand the permissions of your Confluence Space and verify your publishing destination to protect against any sensitive or confidential content from being made publicly available.
+:::
+
+## Confluence Publishing Basics {#publishing-basics}
+
+To demonstrate the process of publishing to Confluence, we'll take a single document, [`confluence-demo.qmd`](_confluence_examples/confluence-demo.qmd), and publish it as a page to a Confluence space. Here's a small excerpt from the top of `demo.qmd`:
+
+``` markdown
 ---
-title: "My Confluence Doc"
+title: Confluence Demo
 format: confluence-html
 ---
+
+## Overview
+
+Write your content in Quarto documents and publish to Confluence.
 ```
 
-You can edit and preview this document locally using  the **Render** command in VS Code and RStudio, or by using `quarto preview` from the command line:
+Notice that the format is to `confluence-html` in the document YAML. This allows the local preview of the document to mimic the eventual appearance on Confluence. You can preview your document locally as you would any other Quarto document, by using the **Render** command in VS Code and RStudio, or by using `quarto preview` from the command line:
 
-``` bash
-quarto preview mydoc.qmd
+``` {.bash filename="Terminal"}
+quarto preview confluence-demo.qmd
 ```
+
+The result of previewing `demo.qmd` locally is shown below:
+
+![](images/confluence-demo-preview.png){fig-alt="Screenshot of the result of previewing the file confluence-demo.qmd."}
+
+To publish to a document to Confluence use `quarto publish confluence` followed by the file name:
+
+``` {.bash filename="Terminal"}
+quarto publish confluence confluence-demo.qmd
+```
+
+Unless you've published to Confluence before, you'll be prompted to set up an account and select a destination for your page.
+
+### Setting Up Your Account {#setting-up-account}
+
+When you publish to Confluence for the first time, you'll be prompted to set up a Confluence account in Quarto. To prepare, log in to Confluence, and navigate to the space, or page within a space, which you wish to publish to.
+
+You'll first be prompted for your Confluence Domain. This is the first part of the URL to the Confluence page you wish to publish to. For example:
+
+``` {.bash filename="Terminal"}
+$ quarto publish confluence demo.qmd
+? Confluence Domain: ›
+❯ e.g. https://mydomain.atlassian.net/
+```
+
+Next, you'll be asked to enter the Email Address for the account used in this Confluence Domain (if you are unsure, look at your account profile on Confluence):
+
+``` {.bash filename="Terminal"}
+$ quarto publish confluence
+? Confluence Account Email: › 
+```
+
+Finally, you'll be asked for an API Token:
+
+``` {.bash filename="Terminal"}
+$ quarto publish confluence
+? Confluence API Token: ›
+❯ Create an API token at https://id.atlassian.com/manage/api-tokens
+```
+
+Confluence API Tokens are specific to your account. You'll need to [create a token](https://id.atlassian.com/manage/api-tokens), copy, and then paste it into this prompt. For more information on Access Tokens please see the [Confluence Documentation on API Tokens](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).
+
+Quarto saves this account information (domain, email and token) so it can be used for future calls to `quarto publish confluence`. The final prompt will ask you to select a destination for your page.
+
+### Selecting a Destination {#selecting-destination}
+
+Pages in Confluence are arranged in a hierarchy: every page has a parent. When you publish from Quarto to Confluence you'll be asked to specify the parent for your page by providing its URL:
+
+``` {.bash filename="Terminal"}
+$ quarto publish confluence
+? Space or Parent Page URL: ›
+❯ Browse in Confluence to the space or parent, then copy the URL
+```
+
+If you want your page to be at the top level of your space, specify the space itself: 
+```
+https://domain.atlassian.net/wiki/spaces/ABBR
+```
+
+Otherwise, specify the URL for the parent page:  
+```
+https://domain.atlassian.net/wiki/spaces/ABBR/pages/123456
+```
+
+Once the destination is specifed, Quarto will render the page for publishing, publish it to Confluence, and open a browser to view the published page.
+
+An example of the published version of `confluence-demo.qmd` is shown below:
+
+![](images/confluence-demo-published.png){fig-alt="Screenshot of the published confluence-demo.qmd file on Confluence. In the sidebar, the page Confluence Demo is listed under Pages at the top level."}
+
+This page is listed in the sidebar navigation at the top level under Pages because the destination was set to the space URL.
+
+## Publishing a Collection of Documents
 
 For a collection of documents, you'll want to use the `confluence` project type. Here's a minimal `_quarto.yml` project file for Confluence:
 
@@ -53,78 +149,45 @@ projects/
 
 When you use local folders (e.g. the `projects/` folder in the example above) these will be reflected when publishing to Confluence. As with documents, you can preview your project using the **Render** command in VS Code and RStudio, or by using `quarto preview` from the command line:
 
-``` bash
+``` {.bash filename="Terminal"}
 quarto preview
 ```
 
 The project preview produces an HTML website with navigation automatically added to the sidebar. While this site has some similarity in appearance to normal Quarto websites, it's important to note that Confluence projects are a special type of website that don't support the traditional Website features like Listings, Themes and Navigation (as these things are taken care of internally by Confluence).
-
-## Publishing
-
-Use the `quarto publish confluence` command to publish documents and projects to Confluence. For example:
-
-``` bash
-# publish the specified document
-quarto publish confluence mydoc.qmd 
-
-# publish the project in the current directory
-quarto publish confluence 
-```
-
-To publish you'll need to specify and authorize a Confluence account. We'll describe how to do that next.
-
-### Confluence Accounts
-
-If you have one or multiple Confluence accounts, it's important to understand how to create access tokens for publishing and how to manage accounts after they have been created.
-
-When you publish to Confluence using `quarto publish`, an access token is used to grant permission for publishing to your account. If no access token is available for a publish operation then the Quarto CLI will prompt you to authorize one.
-
-#### Authorizing an Access Token
-
-When you publish, you'll be prompted to enter your Confluence Domain. This can be found as the first part of the URL to the Confluence page you wish to publish to. For example:
-
-``` markdown
-$ quarto publish confluence
-? Confluence Domain: ›
-❯ e.g. https://mydomain.atlassian.net/
-```
-
-Next, you'll be assked to enter the Email Address for the account used in this Confluence Domain. For example:
-
-``` markdown
-$ quarto publish confluence
-? Confluence Account Email: ›
-```
-
-If you aren't sure of the email address, first log into the Confluence space you wish to publish to and then inspect your profile.
-
-Finally, you'll be asked for the API Token used for publishing to this space:
-
-``` markdown
-$ quarto publish confluence
-? Confluence API Token: ›
-❯ Create an API token at https://id.atlassian.com/manage/api-tokens
-```
-
-Confluence API Tokens [must be created](https://id.atlassian.com/manage/api-tokens), copied, and then pasted into this CLI prompt. For more information on Access Tokens please see the [Confluence Documentation on API Tokens](https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/).
-
-### Selecting a Destination
-
-Any Confluence page in your space can be a parent for publishing. You can also choose the root of your your personal Confluence space. Using your default browser, browse to the page you would like to publish to, copy the URL, and paste it at this prompt:
-
-``` markdown
-$ quarto publish confluence
-? Space or Parent Page URL: ›
-❯ Browse in Confluence to the space or parent, then copy the URL
-```
-
-Your Quarto site our document will be published into this location.
 
 ::: callout-tip
 ## Publishing pages into Existing Sites
 
 Multiple pages will not be expanded into existing sites alongside other existing pages. Confluence sites with multiple pages will be published under a single new child page.
 :::
+
+## Publishing Workflow
+
+## Authoring 
+
+### Limitations 
+
+The `confluence-html` format supports nearly all of the standard Quarto markdown content types, including tables, callouts, and cross references. Here are the markdown content types currently not supported
+
+| Feature   | Description                           |
+|-----------|---------------------------------------|
+| Citations | We plan to add support in the future. |
+| Videos    | We plan to add support in the future. |
+| Diagrams  | No support yet for Mermaid diagrams.  |
+| Tabsets   | No support yet for Tabsets.           |
+| Equations | No support yet for Equations.         |
+
+### Linking
+
+When creating links between pages in your Confluence Project, you can provide the source file as the link target (rather than the path to the Confluence page). You can also add hash identifiers (`#)` to the source file if you want to link to a particular section in the document. For example:
+
+``` markdown
+[about](about.qmd)
+[about](about.qmd#section)
+```
+
+
+## Publishing Settings
 
 ### \_publish.yml
 
@@ -145,26 +208,6 @@ If you have an existing Confluence Space that you want to publish to, you should
 
 Account information is not stored in `_publish.yml`, so it is suitable for checking in to version control and being shared by multiple publishers.
 
-## Content
-
-The `confluence-html` format supports nearly all of the standard Quarto markdown content types, including tables, callouts, and cross references. Here are the markdown content types currently not supported
-
-| Feature   | Description                           |
-|-----------|---------------------------------------|
-| Citations | We plan to add support in the future. |
-| Diagrams  | No support yet for Mermaid diagrams.  |
-| Videos    | We plan to add support in the future. |
-| Tabsets   | No support yet for Tabsets.           |
-| Equations | No support yet for Equations.         |
-
-### Linking
-
-When creating links between pages in your Confluence Project, you can provide the source file as the link target (rather than the path to the Confluence page). You can also add hash identifiers (`#)` to the source file if you want to link to a particular section in the document. For example:
-
-``` markdown
-[about](about.qmd)
-[about](about.qmd#section)
-```
 
 ## Account Management
 
