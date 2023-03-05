@@ -22,9 +22,9 @@ The next section, [Confluence Publishing Basics](#publishing-basics), walks thro
 
 Before you use Confluence Publishing for your own project you'll want to read the remaining sections on this page:
 
--   Publishing Projects describes how to publish a collection of documents, including how your project structure translates to the structure of pages in your Confluence Space.
+-   [Publishing Projects](#collection-of-documents) describes how to publish a collection of documents, including how your [project structure](#project-structure) translates to the structure of pages in your Confluence Space.
 
--   Publishing Workflow - permissions, etc.
+-   Publishing Workflow describes the model for making updates to Confluence pages published from Quarto, including the page permissions that are set when you publish from Quarto.
 
 -   Authoring for Confluence - limitations, links
 
@@ -76,7 +76,6 @@ When you publish to Confluence for the first time, you'll be prompted to set up 
 You'll first be prompted for your Confluence Domain. This is the first part of the URL to the Confluence page you wish to publish to. For example:
 
 ``` {.bash filename="Terminal"}
-$ quarto publish confluence demo.qmd
 ? Confluence Domain: ›
 ❯ e.g. https://mydomain.atlassian.net/
 ```
@@ -84,14 +83,12 @@ $ quarto publish confluence demo.qmd
 Next, you'll be asked to enter the Email Address for the account used in this Confluence Domain (if you are unsure, look at your account profile on Confluence):
 
 ``` {.bash filename="Terminal"}
-$ quarto publish confluence
 ? Confluence Account Email: › 
 ```
 
 Finally, you'll be asked for an API Token:
 
 ``` {.bash filename="Terminal"}
-$ quarto publish confluence
 ? Confluence API Token: ›
 ❯ Create an API token at https://id.atlassian.com/manage/api-tokens
 ```
@@ -105,7 +102,6 @@ Quarto saves this account information (domain, email and token) so it can be use
 Pages in Confluence are arranged in a hierarchy: every page has a parent. When you publish from Quarto to Confluence you'll be asked to specify the parent for your page by providing its URL:
 
 ``` {.bash filename="Terminal"}
-$ quarto publish confluence
 ? Space or Parent Page URL: ›
 ❯ Browse in Confluence to the space or parent, then copy the URL
 ```
@@ -130,16 +126,16 @@ An example of the published version of `confluence-demo.qmd` is shown below:
 
 In the sidebar navigation this page is listed at the top level under Pages because the destination was set to the space URL.
 
-## Publishing a Collection of Documents
+## Publishing Projects {#collection-of-documents}
 
-For a collection of documents, you'll want to use the `confluence` project type. Here's a minimal `_quarto.yml` project file for Confluence:
+To publish a collection of documents, organise your documents in a [Quarto project](/docs/projects/quarto-projects.html), using the `confluence` project type. Here's a minimal `_quarto.yml` file for a Confluence project:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
   type: confluence
 ```
 
-Include this file in a project directory, then arrange your `.qmd` or `.ipynb` documents into whatever hierarchy you want to use for publishing. For example
+Include this file in a project directory, then arrange your `.qmd` or `.ipynb` documents into whatever hierarchy you want to use for publishing. For example:
 
 ``` default
 _quarto.yml
@@ -150,7 +146,7 @@ projects/
   retrospectives.qmd
 ```
 
-When you use local folders (e.g. the `projects/` folder in the example above) these will be reflected when publishing to Confluence. As with documents, you can preview your project using the **Render** command in VS Code and RStudio, or by using `quarto preview` from the command line:
+As with documents, you can preview your project using the **Render** command in VS Code and RStudio, or by using `quarto preview` from the command line:
 
 ``` {.bash filename="Terminal"}
 quarto preview
@@ -158,13 +154,60 @@ quarto preview
 
 The project preview produces an HTML website with navigation automatically added to the sidebar. While this site has some similarity in appearance to normal Quarto websites, it's important to note that Confluence projects are a special type of website that don't support the traditional Website features like Listings, Themes and Navigation (as these things are taken care of internally by Confluence).
 
-::: callout-tip
-## Publishing pages into Existing Sites
+To publish your project run `quarto publish confluence` from your project folder:
 
-Multiple pages will not be expanded into existing sites alongside other existing pages. Confluence sites with multiple pages will be published under a single new child page.
-:::
+``` {.bash filename="Terminal"}
+quarto publish confluence 
+```
+
+You'll be walked through the same steps as publishing a single document, [setting up an account](#setting-up-account), if needed, and [selecting a destination](#selecting-destination) for your project on Confluence, finishing with your project being published to Confluence.
+
+### Project Structure {#project-structure}
+
+The hierarchy of documents inside folders in your project will be respected in the publishing process. However, since Confluence has no concept of folders, folders are represented by pages in Confluence.
+
+When a project is published, a single page is created in Confluence to hold it. Documents at the top level of the project are published as pages nested under this project page. Folders inside the project are represented by a page, and any documents (or other folders) inside the folder are represented as pages nested under the folder page.
+
+As an example, consider the following project structure:
+
+```         
+example-project
+├── _quarto.yml
+├── project-roadmap.qmd
+├── reports-folder
+│   ├── 2022-01.qmd
+│   ├── 2022-03.qmd
+│   └── index.qmd
+└── team-members.qmd
+```
+
+The Confluence structure resulting from publishing this project to the top level of the space is shown below:
+
+![](images/confluence-project-structure.png){fig-alt="A zoomed in view of the navigation sidebar in Confluence. Under Pages is a page called Project Example Site, nested under this page are pages called Team Members, Project Roadmap, and Reports-folder. Under the Reports-folder page are pages called: Reports, March, and January."}
+
+The titles used in the Confluence sidebar navigation are taken from the page and project title, as specified in the document YAML and `_quarto.yml` respectively, and generated from the folder name for folders.
 
 ## Publishing Workflow
+
+In Confluence, many people are able to make direct edits to pages. However, managing your content from Quarto requires a shift in perspective: edits to pages are made only in the Quarto project, and only one account should publish those changes to Confluence.
+
+Publishing to Confluence is a one-way street: there is no way to bring back content edits from Confluence to your Quarto project. Edits that are made on Confluence will be overwritten next time the page is published from Quarto. Updating a page requires editing the document in Quarto, and rerunning:
+
+``` {.bash filename="Terminal"}
+quarto publish confluence 
+```
+
+To help avoid a situation where someone inadvertently edits a page being managed in Quarto, the permissions for pages are set when you publish so everyone can view the page, but only you, the publisher, can edit the page.
+
+![](images/confluence-permissions.png){fig-alt="Screenshot of the Confluence permissions on a page, with two items: Everyone is set to View; and Charlotte Wickham (Me) is set to Can Edit"}
+
+Permission to edit the page includes publishing updates, so any updates to a page need to be published from the same account as the original publish.
+
+::: callout-note
+## Free Confluence Accounts
+
+Free Confluence accounts do not include control over page permissions. Any page you publish can be both viewed and edited by anyone.
+:::
 
 ## Authoring
 
@@ -210,7 +253,7 @@ If you have an existing Confluence Space that you want to publish to, you should
 
 Account information is not stored in `_publish.yml`, so it is suitable for checking in to version control and being shared by multiple publishers.
 
-## Account Management
+### Account Management
 
 You can list and remove saved Confluence accounts using the `quarto publish accounts` command:
 
