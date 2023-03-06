@@ -176,28 +176,43 @@ You'll be walked through the same steps as publishing a single document, [settin
 
 ### Project Structure {#project-structure}
 
-The hierarchy of documents inside folders in your project will be respected in the publishing process. Confluence's concept of folders is that pages that can have children, so your folders will be represented by pages in Confluence.
+The hierarchy of documents inside folders in your project will be respected in the publishing process. Confluence's concept of folders is that pages can have children, so your folders will be represented by pages in Confluence.
 
 When a project is published, a single page is created in Confluence to hold it. Documents at the top level of the project are published as pages nested under this project page. Folders inside the project are represented by a page, and any documents (or other folders) inside the folder are represented as pages nested under the folder page.
 
 As an example, consider the following project structure:
 
 ```         
-example-project
+example-project/
 ├── _quarto.yml
 ├── project-roadmap.qmd
 ├── reports-folder
-│   ├── 2022-01.qmd
-│   ├── 2022-03.qmd
-│   └── index.qmd
+│   ├── 2023-01.qmd
+│   └── 2023-03.qmd
 └── team-members.qmd
 ```
 
 The Confluence structure resulting from publishing this project to the top level of the space is shown below:
 
-![](images/confluence-project-structure.png){fig-alt="A zoomed in view of the navigation sidebar in Confluence. Under Pages is a page called Project Example Site, nested under this page are pages called Team Members, Project Roadmap, and Reports-folder. Under the Reports-folder page are pages called: Reports, March, and January."}
+![](images/confluence-project-structure.png){fig-alt="A zoomed in view of the navigation sidebar in Confluence. Under Pages is a page called Project Example Site, nested under this page are pages called Team Members, Project Roadmap, and Reports-folder. Under the Reports-folder page are pages called: Reports, March, and January." width="60%"}
 
-The titles used in the Confluence sidebar navigation are taken from the page and project title, as specified in the document YAML and `_quarto.yml` respectively, and generated from the folder name for folders.
+The titles used in the Confluence sidebar navigation are taken from the page and project title, as specified in the document YAML and `_quarto.yml` respectively, and generated from the folder name for folders. Quarto may add some additional characters to meet the Confluences requirement that every page in a space has a unique name.
+
+### `index.qmd`
+
+Pages in Confluence that represent folders will have no content unless an `index.qmd` is found inside the folder. If an `index.qmd` file exists its content will populate the folder page. For example, consider the following `index.qmd`:
+
+````{.markdown filename="index.qmd"}
+---
+title: Reports
+---
+
+Monthly reports on project progress
+````
+
+Adding this to the folder `reports-folder` and re-publishing the site, changes the name of the page representing this folder to "Reports" and adds this contents to the page.
+
+![](images/confluence-index.png){fig-alt="Screenshot of a page in Confluence titled Reports, with a single sentence 'Monthly reports on project progress'. In the sidebar navigation this page is called 'Reports' and is nested under the page called 'Project Example Site'."}
 
 ## Publishing Workflow {#publishing-workflow}
 
@@ -246,7 +261,7 @@ Confluence projects are a special type of website that don't support the traditi
 
 ### Confluence Limitations
 
-As discussed in [Publishing Workflow](#publishing-workflow) edits to page content made in Confluence are overwritten when content is published from Quarto. This is also the case for any inline comments made on Confluence. Page level emojis and page level comments are preserved across publishes. 
+As discussed in [Publishing Workflow](#publishing-workflow) edits to page content made in Confluence are overwritten when content is published from Quarto. This is also the case for any inline comments made on Confluence. Page level emojis and page level comments are preserved across publishes.
 
 ## Publishing Settings {#publishing-settings}
 
