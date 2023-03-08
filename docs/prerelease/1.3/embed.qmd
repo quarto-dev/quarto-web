@@ -20,27 +20,30 @@ Which will embed the plot as follows:
 
 {{< embed plots.ipynb#plot-dot >}}
 
-A link to the source notebook is automatically provided beneath the plot so that users can explore the notebook used to produce the plot. 
+A link to the source notebook is automatically provided beneath the plot so that users can explore the notebook used to produce the plot.
 
 Beyond this basic usage, you can also:
 
-* Specify cells in multiple ways, see [Specifying Cells](#specifying-cells). 
-* Include the cell code along with the output by adding an `echo` option to the shortcode, see [Embedding Code](#embedding-code). 
-* Control the output using code cell options in the source Notebook, including things like figure captions, figure layout, and code display, see [Code Cell Options](#code-cell-options).
-* Customize or exclude the link to the the source  notebooks, see [Links to Source Notebooks](#linked-source-notebooks).
+-   Specify cells in multiple ways, see [Specifying Cells](#specifying-cells).
+
+-   Include the cell code along with the output by adding an `echo` option to the shortcode, see [Embedding Code](#embedding-code).
+
+-   Control the output using code cell options in the source Notebook, including things like figure captions, figure layout, and code display, see [Code Cell Options](#code-cell-options).
+
+-   Customize or exclude the link to the the source notebooks, see [Links to Source Notebooks](#linked-source-notebooks).
 
 ## Specifying Cells {#specifying-cells}
 
-The `embed` shortcode specifies target notebooks using an input relative path followed by a cell identifier (e.g. `plots.ipynb#plot-dot`). If the cell identifier is omitted, all of the cells in the notebook will be embedded in the document.
+The `embed` shortcode specifies target notebooks using a relative path followed by a cell identifier (e.g. `plots.ipynb#plot-dot`). If the cell identifier is omitted, all of the cells in the notebook will be embedded in the document.
 
-The cell identifier in an embed is used to locate the proper cell using the following heuristics
+The cell identifier is used to locate the proper cell using the following heuristics:
 
 1.  **Cell `id`**\
-    First, the cell metadata will be checked for a matching `id` , if found, this cell will be embedded. ([Cell IDs](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html) are a newer feature of Jupyter Notebooks that are not yet well supported in Jupyter front ends, but this is checked for future compatibility as ids become more used).
+    First, the cell metadata will be checked for a matching `id`. ([Cell IDs](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html) are a newer feature of Jupyter Notebooks that are not yet well supported in Jupyter front ends, but `id` is checked first to allow for future compatibility as they become common).
 2.  **Label**\
-    If no cell with an `id` is found, Quarto will use a cell that has a `label` in the code metadata which matches the embed's id.
+    If no cell with a matching `id` is found, Quarto will use a cell that has a `label` in the code metadata which matches the cell identifier.
 3.  **Tags**\
-    If no cell has been found, Quarto will use a cell or cell(s) which has a tag which matches the embed's id.
+    If no cell has been found, Quarto will use a cell or cell(s) whose tag matches the cell identifier.
 
 ### Cell Tags
 
@@ -60,23 +63,23 @@ Which results in the following output:
 
 ## Embedding Code {#embedding-code}
 
-In addition to embedding the output of a code cell, you may include the code from the cell by using the `echo=true` option. For example, the same embed with the echo option like:
+You may include the code from a cell along with the output by using the `echo=true` option. For example, to include the code and the plot from the cell tagged `plot-dot` the embed would be:
 
 ``` markdown
 {{< embed plots.ipynb#plot-dot echo=true >}}
 ```
 
-This embeds both the code for the cell as well as the outputs of the code cell:
+The result in the document is both the code and output for the cell:
 
 {{< embed plots.ipynb#plot-dot echo=true >}}
 
 ::: callout-note
-Code custom customization options for the document in which these cells are embedded will also control these code cells (for example, `code-fold: true`{spellcheck="false"} will fold the cells by default).
+Code options for the document in which these cells are embedded will also control these code cells. For example, if `code-fold: true`{spellcheck="false"} is set in the document metadata, the embedded code will be folded.
 :::
 
 ## Code Cell Options {#code-cell-options}
- 
-Content and code that is being embedded from Jupyter notebooks can also use code cell options like `fig-cap`, `layout-ncol`, to include additional options from the Notebook. For example, here we use several cell options in a notebook cell:
+
+Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, here we use several cell options in a notebook cell:
 
 ``` python
 #| label: fig-fruit
