@@ -6,7 +6,7 @@ title: Embedding Notebook Output
 
 ## Overview
 
-In Quarto 1.3 you can include the output of an external Jupyter notebook in a Quarto document with the `embed` shortcode. To embed a notebook cell, provide the path to a Jupyter Notebook and a cell identifier. For example, using this notebook:
+Starting in Quarto 1.3, you can include the output of an external Jupyter notebook in a Quarto document with the `embed` shortcode. To embed a notebook cell, provide the path to a Jupyter Notebook and a cell identifier. For example, using this notebook:
 
 ![](images/notebook-simple.png)
 
@@ -20,7 +20,9 @@ Which will embed the plot as follows:
 
 {{< embed plots.ipynb#plot-dot >}}
 
-A link to the source notebook is automatically provided beneath the plot so that users can explore the notebook used to produce the plot.
+A link to the source notebook is automatically provided beneath the plot. Following the link takes users to a rendered version of the notebook, allowing them to explore the notebook without having to download and locally run it. 
+
+<!-- screenshot -->
 
 Beyond this basic usage, you can also:
 
@@ -79,7 +81,7 @@ Code options for the document in which these cells are embedded will also contro
 
 ## Code Cell Options {#code-cell-options}
 
-Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, here we use several cell options in a notebook cell:
+Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, this cell in the Notebook specifies figure options including a caption, sub-caption, and layout:
 
 ``` python
 #| label: fig-fruit
@@ -102,7 +104,7 @@ plt.pie(x2)
 plt.show()
 ```
 
-When embedding this cell as follows:
+When this cell is embedded:
 
 `{{{< embed plots.ipynb#fig-fruit >}}}`
 
@@ -112,13 +114,17 @@ The following output is produced:
 
 ## Links to Source Notebooks {#linked-source-notebooks}
 
-When you embed the contents of Notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source Notebooks that provided the embedded content. These links will by default appear both inline below the embedded content as well as below the TOC. For example, the following document embeds content from the notebook `plots.ipynb`. You can see the links in the rendered HTML document below:
+When you embed the contents of Notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source Notebooks that provided the embedded content. These links will by default appear both inline below the embedded content as well as below the table of contents. For example, the following document embeds content from the notebook `plots.ipynb`. You can see the links in the rendered HTML document below:
 
 ![](images/nb-links.png){.border}
 
 ### Link Placement
 
-You can control the placement of the links to source notebook by specifying the option `notebook-links`{spellcheck="false"} with one of the following values:
+You can control the placement of the links to source notebooks by specifying the option `notebook-links`{spellcheck="false"} in the document YAML with one of the following values:
+
+`true`{spellcheck="false"} (default)
+
+:   Display links to source notebooks inline below the embedded content, and alongside the table of contents.
 
 `false`{spellcheck="false"}
 
@@ -126,15 +132,15 @@ You can control the placement of the links to source notebook by specifying the 
 
 `inline`{spellcheck="false"}
 
-:   Display only the inline links to source notebooks (which appear below the embedded content). Do not display links to the source document alongside the TOC.
+:   Display only the links inline below the embedded content.
 
 `global`{spellcheck="false"}
 
-:   Display only links to source notebooks alongside the TOC. Do not display links inline below the embedded content.
+:   Display only the links alongside the table of contents. 
 
 ### Notebook Views
 
-By default, Quarto will automatically generate an HTML rendering of the notebook which displays the contents of the notebook and includes a button to download the notebook. This makes it easier for users to view the Notebook contents without needing to download and run the Notebook locally. For example:
+By default, the link to the source notebook goes to an automatically generated HTML render of the notebook. This makes it easier for users to view the Notebook contents without needing to download and run the Notebook locally. This notebook view displays the contents of the notebook and includes a button to download the notebook.  For example:
 
 ![](images/notebook-view.png){.border}
 
