@@ -6,23 +6,23 @@ title: Embedding Notebook Output
 
 ## Overview
 
-Starting in Quarto 1.3, you can include the output of an external Jupyter notebook in a Quarto document with the `embed` shortcode. To embed a notebook cell, provide the path to a Jupyter Notebook and a cell identifier. For example, using this notebook:
+Starting in Quarto 1.3, you can include the output of an external Jupyter notebook in a Quarto document with the `embed` shortcode. To embed a notebook cell, provide the path to a Jupyter Notebook and a cell identifier. For example, using this notebook called `penguins.ipynb` has a cell labelled `fig-bill-scatter`:
 
 ![](images/notebook-simple.png)
 
-You could embed the first code cell using the following shortcode:
+You could embed the output of this cell using the following shortcode:
 
 ``` markdown
-{{< embed plots.ipynb#plot-dot >}}
+{{< embed penguins.ipynb#fig-bill-scatter >}}
 ```
 
 Which will embed the plot as follows:
 
-{{< embed plots.ipynb#plot-dot >}}
+{{< embed penguins.ipynb#fig-bill-scatter >}}
 
-A link to the source notebook is automatically provided beneath the plot. Following the link takes users to a rendered version of the notebook, allowing them to explore the notebook without having to download and locally run it. 
+A link to the source notebook is automatically provided beneath the plot. Following the link takes users to a rendered version of the notebook, allowing them to explore the notebook without having to download and locally run it. For example, following the link to `penguins.ipynb` gives the following page: 
 
-<!-- screenshot -->
+![](images/notebook-view.png){.border}
 
 Beyond this basic usage, you can also:
 
@@ -36,12 +36,12 @@ Beyond this basic usage, you can also:
 
 ## Specifying Cells {#specifying-cells}
 
-The `embed` shortcode specifies target notebooks using a relative path followed by a cell identifier (e.g. `plots.ipynb#plot-dot`). If the cell identifier is omitted, all of the cells in the notebook will be embedded in the document.
+The `embed` shortcode specifies target notebooks using a relative path followed by a cell identifier (e.g. `penguins.ipynb#fig-bill-scatter`). If the cell identifier is omitted, all of the cells in the notebook will be embedded in the document.
 
 The cell identifier is used to locate the proper cell using the following heuristics:
 
 1.  **Cell `id`**\
-    First, the cell metadata will be checked for a matching `id`. ([Cell IDs](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html) are a newer feature of Jupyter Notebooks that are not yet well supported in Jupyter front ends, but `id` is checked first to allow for future compatibility as they become common).
+    First, the cell metadata will be checked for a matching `id`. ([Cell IDs](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html) are a newer feature of Jupyter Notebooks that are not yet well supported in Jupyter front ends, but `id` is checked first to allow for future compatibility as they become more common).
 2.  **Label**\
     If no cell with a matching `id` is found, Quarto will use a cell that has a `label` in the code metadata which matches the cell identifier.
 3.  **Tags**\
@@ -49,31 +49,31 @@ The cell identifier is used to locate the proper cell using the following heuris
 
 ### Cell Tags
 
-For example, to embed the output of a cell that you have given the tag `plot-line` within Jupyter Lab:
+For example, to embed the output of a cell that you have given the tag `bill-ratio` within Jupyter Lab:
 
 ![](images/notebook-tag.png){.border}
 
 You would use the following embed:
 
 ``` markdown
-{{< embed plots.ipynb#plot-line >}}
+{{< embed penguins.ipynb#bill-ratio >}}
 ```
 
 Which results in the following output:
 
-{{< embed plots.ipynb#plot-line >}}
+{{< embed penguins.ipynb#bill-ratio >}}
 
 ## Embedding Code {#embedding-code}
 
-You may include the code from a cell along with the output by using the `echo=true` option. For example, to include the code and the plot from the cell tagged `plot-dot` the embed would be:
+You may include the code from a cell along with the output by using the `echo=true` option. For example, to include the code and the plot from the cell labelled `species-counts` the embed would be:
 
 ``` markdown
-{{< embed plots.ipynb#plot-dot echo=true >}}
+{{< embed penguins.ipynb#species-counts echo=true >}}
 ```
 
 The result in the document is both the code and output for the cell:
 
-{{< embed plots.ipynb#plot-dot echo=true >}}
+{{< embed penguins.ipynb#species-counts echo=true >}}
 
 ::: callout-note
 Code options for the document in which these cells are embedded will also control these code cells. For example, if `code-fold: true`{spellcheck="false"} is set in the document metadata, the embedded code will be folded.
@@ -81,40 +81,44 @@ Code options for the document in which these cells are embedded will also contro
 
 ## Code Cell Options {#code-cell-options}
 
-Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, this cell in the Notebook specifies figure options including a caption, sub-caption, and layout:
+Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, this cell in the Notebook specifies figure options including a caption, sub-caption, alt text and layout:
 
 ``` python
-#| label: fig-fruit
-#| fig-cap: Charts
+#| label: fig-bill-marginal
+#| fig-cap: Marginal distributions of bill dimensions
 #| fig-subcap: 
-#|   - A distribution of the fruit that I eat each week
-#|   - Another pie chart which shows a distribution of something
+#|   - Gentoo penguins tend to have thinner bills,
+#|   - and Adelie penguins tend to have shorter bills.
+#| fig-alt:
+#|   - Density plot of bill depth by species.
+#|   - Density plot of bill length by species.
 #| layout-ncol: 2
 
-import matplotlib.pyplot as plt
-x=[4,9,16,25,36]
-fig = plt.figure(figsize =(5.5, 5.5))
-plt.pie(x, labels=("Guavas", "Berries","Mangoes","Apples", "Avocado"),
-colors = ( "#a86544", "#eb5b13", "#ebc713", "#bdeb13", "#8aeb13"))
+sns.displot(penguins, 
+            x = "bill_depth_mm", 
+            hue = "species", 
+            kind = "kde", fill = True, aspect = 2, height = 3)
 plt.show()
-
-x2=[4,9,16,25,36]
-fig2 = plt.figure(figsize =(9, 5)) # line 4
-plt.pie(x2)
+sns.displot(penguins, 
+            x = "bill_length_mm", 
+            hue = "species", 
+            kind = "kde", fill = True, aspect = 2, height = 3)
 plt.show()
 ```
 
 When this cell is embedded:
 
-`{{{< embed plots.ipynb#fig-fruit >}}}`
+``` markdown
+{{< embed penguins.ipynb#fig-bill-marginal >}}
+```
 
 The following output is produced:
 
-{{< embed plots.ipynb#fig-fruit >}}
+{{< embed penguins.ipynb#fig-bill-marginal >}}
 
 ## Links to Source Notebooks {#linked-source-notebooks}
 
-When you embed the contents of Notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source Notebooks that provided the embedded content. These links will by default appear both inline below the embedded content as well as below the table of contents. For example, the following document embeds content from the notebook `plots.ipynb`. You can see the links in the rendered HTML document below:
+When you embed the contents of Notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source Notebooks that provided the embedded content. These links will by default appear both inline below the embedded content as well as below the table of contents. For example, the following document embeds content from the notebook `penguins.ipynb`. You can see the links in the rendered HTML document below:
 
 ![](images/nb-links.png){.border}
 
@@ -144,7 +148,7 @@ By default, the link to the source notebook goes to an automatically generated H
 
 ![](images/notebook-view.png){.border}
 
-As an example, you can view the [live preview for the \`plots.ipynb\` notebook](/docs/prerelease/1.3/plots.ipynb.html) used in this document.
+As an example, you can view the [live preview for the \`penguins.ipynb\` notebook](/docs/prerelease/1.3/penguins.ipynb.html) used in this document.
 
 ### View Options
 
@@ -154,7 +158,7 @@ For example:
 
 ``` {.markdown style="whitespace: pre-wrap;"}
 notebook-view:
-  - notebook: plots.ipynb
+  - notebook: penguins.ipynb
     title: "Plots and Computations"
     url: https://colab.research.google.com/drive/12GsIPQ644SI4vkEEHiZn-Qqfbr-bD1__
 ```
