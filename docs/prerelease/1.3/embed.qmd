@@ -28,9 +28,9 @@ Beyond this basic usage, you can also:
 
 -   Specify cells in multiple ways, see [Specifying Cells](#specifying-cells).
 
--   Include the cell code along with the output by adding an `echo` option to the shortcode, see [Embedding Code](#embedding-code).
-
 -   Control the output using code cell options in the source Notebook, including things like figure captions, figure layout, and code display, see [Code Cell Options](#code-cell-options).
+
+-   Include the cell code along with the output by adding an `echo` option to the shortcode, see [Embedding Code](#embedding-code).
 
 -   Customize or exclude the link to the the source notebooks, see [Links to Source Notebooks](#linked-source-notebooks).
 
@@ -63,27 +63,11 @@ Which results in the following output:
 
 {{< embed penguins.ipynb#bill-ratio >}}
 
-## Embedding Code {#embedding-code}
-
-You may include the code from a cell along with the output by using the `echo=true` option. For example, to include the code and the plot from the cell labelled `species-counts` the embed would be:
-
-``` markdown
-{{< embed penguins.ipynb#species-counts echo=true >}}
-```
-
-The result in the document is both the code and output for the cell:
-
-{{< embed penguins.ipynb#species-counts echo=true >}}
-
-::: callout-note
-Code options for the document in which these cells are embedded will also control these code cells. For example, if `code-fold: true`{spellcheck="false"} is set in the document metadata, the embedded code will be folded.
-:::
-
 ## Code Cell Options {#code-cell-options}
 
 Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, this cell in the Notebook specifies figure options including a caption, sub-caption, alt text and layout:
 
-``` python
+```{.python filename="penguins.ipynb"}
 #| label: fig-bill-marginal
 #| fig-cap: Marginal distributions of bill dimensions
 #| fig-subcap: 
@@ -115,6 +99,37 @@ When this cell is embedded:
 The following output is produced:
 
 {{< embed penguins.ipynb#fig-bill-marginal >}}
+
+## Embedding Code {#embedding-code}
+
+You may include the code from a cell along with the output by using the `echo=true` option. For example, to include the code and the plot from the cell labelled `species-counts` the embed would be:
+
+``` markdown
+{{< embed penguins.ipynb#species-counts echo=true >}}
+```
+
+The result in the document is both the code and output for the cell:
+
+{{< embed penguins.ipynb#species-counts echo=true >}}
+
+Like figure options, options for displaying the code will propagate from the source Jupyter Notebook. For example, to fold the code for this cell, you could add `code-fold: true` to the options for the `species-counts` cell:
+
+```{.python filename="penguins.ipynb"}
+#| label: species-counts
+#| code-fold: true
+penguins.groupby("species").size().reset_index(name = "count")
+```
+
+The options set in the YAML header for the document in which these cells are embedded will also control these code cells. For example, to fold all the code, including the code embedded from `penguins.ipynb`, you could add `code-fold: true` to the document YAML:
+
+```{.yaml filename="sample.qmd"}
+title: Exploration of penguin characteristics
+author: Norah Jones
+toc: true
+format:
+  html:
+    code-fold: true
+```
 
 ## Links to Source Notebooks {#linked-source-notebooks}
 
