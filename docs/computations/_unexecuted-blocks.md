@@ -2,13 +2,13 @@
 
 Often you'll want to include a fenced code block purely as documentation (not executable). You can do this by using two curly braces around the language (e.g. `python`, `r`, etc.) rather than one. For example:
 
-``` {{{python}}}
+```{{{python}}}
 1 + 1
 ```
 
 Will be output into the document as:
 
-``` {{python}}
+```{{python}}
 1 + 1
 ```
 
