@@ -13,9 +13,6 @@
 
 ## Websites
 
-- Add suport for 'Back to top' navigational button. Controlled using `back-to-top-navigation:` under `website:`, can be disabled by setting `back-to-top-navigation: false` on individual pages.
-
-- Order sidebar entries using filename rather than title
 
 - Add support for overriding the url used to report an issue with a website using `issue-url` (which can be provided even if there is no repo provided for the website).
 
