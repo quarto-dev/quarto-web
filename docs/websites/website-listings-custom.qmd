@@ -27,15 +27,13 @@ listing:
 
 A simple template for outputing a list of documents might look like:
 
-```` html
-```{=html}
+``` html
 <ul>
 <% for (const item of items) { %>
   <li><a href="<%- item.path %>"><%= item.title %></a></li>
 <% } %>
 </ul>
 ```
-````
 
 which produces simple HTML output like:
 
@@ -124,8 +122,7 @@ By default, sorting, filtering, and pagination are disabled for custom listings 
 
 For example, we can modify the above `custom.ejs` template as follows:
 
-```` html
-```{=html}
+``` html
 <ul class="list">
 <% for (const item of items) { %>
   <li <%= metadataAttrs(item) %>>
@@ -135,7 +132,6 @@ For example, we can modify the above `custom.ejs` template as follows:
 <% } %>
 </ul>
 ```
-````
 
 Once you have included these items in your template, can you then enable the options in your listing:
 
@@ -194,3 +190,29 @@ listing:
 ```
 
 If the listing page is rendered and any of contents are missing a value for either of the required fields, an error will be thrown noting the field that is required and the file or metadata that has omitted it.
+
+## Template Parameters
+
+You may also make your custom template more dynamic by using parameters to control it's behavior. You can provide parameters for custom templates using the `template-params` option like:
+
+```yaml
+listing:
+  template: custom.ejs
+  contents:
+    - items.yml
+  template-params:
+    param1: "param-value"
+```
+
+Template parameters can then be accessed in your template using `<%= params.param1 %>`. For example, we can modify the above `custom.ejs` template as follows:
+
+``` html
+<h3><%= templateParams.param1 %></h3>
+<ul class="pub-list list">
+  <% for (const item of items) { %>
+      <li <%= metadataAttrs(item) %>>
+        <span class="listing-title"><%= item.title %>.</span>
+      </li>
+  <% } %>
+</ul>
+```
