@@ -156,6 +156,12 @@ projects/
   retrospectives.qmd
 ```
 
+Alternatively, to get started with a template project in a new directory, use `quarto create`: 
+
+``` {.bash filename="Terminal"}
+quarto create project confluence
+```
+
 As with documents, you can preview your project using the **Render** command in VS Code and RStudio, or by using `quarto preview` from the command line:
 
 ``` {.bash filename="Terminal"}
@@ -233,9 +239,11 @@ To help avoid a situation where someone inadvertently edits a page being managed
 Permission to edit the page includes publishing updates, so any updates to a page need to be published from the same account as the original publish.
 
 ::: callout-note
-## Free Confluence Accounts
 
-Free Confluence accounts do not include control over page permissions. Any page you publish can be both viewed and edited by anyone.
+## Publishing without Control over Permissions
+
+We attempt to detect if you are publishing to a destination where you do not have control over page permissions and you'll receive a warning. You may proceed with the publish, but any page you publish can be both viewed and edited by anyone with access to the space.
+
 :::
 
 If you delete a page on Confluence, and republish it from Quarto, you'll see the error:
@@ -264,6 +272,26 @@ When creating links between pages in your Confluence Project, you can provide th
 [about](about.qmd)
 [about](about.qmd#section)
 ```
+
+### Raw Confluence Blocks
+
+Raw Confluence blocks allow you to include content that should pass through Quarto unchanged and be interpreted directly by Confluence. For example, [Confluence's Storage Format](https://confluence.atlassian.com/doc/confluence-storage-format-790796544.html) includes specific tags for a task list. To include a Confluence task list in your document, use these tags inside a raw Confluence block:
+
+````markdown
+```{=confluence}
+<ac:task-list>
+    <ac:task>
+        <ac:task-status>incomplete</ac:task-status>
+        <ac:task-body>task list item</ac:task-body>
+    </ac:task>
+</ac:task-list>
+```
+````
+
+When published to Confluence this results in the following list:
+
+![](images/confluence-task-list.png){fig-alt="A screenshot of list with one item. To the left of the item text is an unchecked checkbox." width=25%}
+
 
 ### Website Limitations
 
