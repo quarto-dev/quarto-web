@@ -23,3 +23,4 @@ If you want to exclude a heading from the table of contents, add both the `.unnu
 
 {{< include _document-options-syntax-highlighting.md >}}
 
+{{< include _code-annotation.md >}}
