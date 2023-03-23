@@ -149,7 +149,7 @@ Social metadata is provided as a subkey of `{{< meta project-type >}}` options. 
 
 ## Comments
 
-You can add commenting to your {{< meta project-type >}} using either [Hypothesis](https://web.hypothes.is/) or [Utterances](https://utteranc.es/).
+You can add commenting to your {{< meta project-type >}} using either [Hypothesis](https://web.hypothes.is/), [Utterances](https://utteranc.es/), or [Giscus](https://giscus.app/).
 
 ### Hypothesis
 
