@@ -137,6 +137,38 @@ You should make sure you're not accidentally disclosing installation information
 If quarto finds an existing installation of `texlive` in your system, it will use that. If you're seeing
 issues with rendering to PDF, make sure you have an up-to-date installation of `texlive`. Alternatively, you can have quarto use its own version, by calling `quarto install tinytex`.
 
+## Environment, Libraries, and Dependencies
+
+One common source of tricky problems is the presence of multiple installations of R and Python in a system. Quarto will attempt to find an R or Python installation, and sometimes your shell environment is pointing to a different one.
+
+### knitr
+
+If you suspect that quarto is finding the wrong version of an R installation, you can obtain information about the R installation that Quarto sees by running the following .qmd file:
+
+````
+---
+engine: knitr
+---
+
+```{{r}}
+sessionInfo()
+Sys.getenv()
+.libPaths()
+
+# If the sessioninfo package is available, 
+# it provides output that is easier to read,
+# and can write its results to a file
+sessioninfo:::session_info(to_file = "quarto-session-info-output.txt")
+```
+````
+
+You can then also run those commands from your R environment, and compare the output. If `sessioninfo` is available, then you
+can ask for a difference between the outputs more directly:
+
+```r
+sessioninfo:::session_diff(new = "quarto-session-info-output.txt")
+```
+
 ## Advanced
 
 ### Debugging Jupyter engine issues
