@@ -124,6 +124,8 @@ listing:
 
 This will sort the documents in the post directory first by their date in ascending order, then by their title in descending order.
 
+If you'd like to disable sorting entirely and display the items in the order in which they are specified, you can pass `sort: false` which will disable sorting and preserve the item's original order.
+
 ## Listing Options
 
 It is possible to customize the appearance of listings using the following options for each type of listing display.
@@ -369,6 +371,34 @@ Grid
 
     ![](images/grid-fields.png){.border fig-alt="Grid listing layout item with image thumbnail at the top of the card, followed below by the title, then subtitle, reading time, category tags, and description. Below the description there is a line with author and date, and another line with file and file modified."}
 
+## Including or Excluding Items
+
+You can control what documents are included or excluding based upon the metadata of the items by using the `include` and `exclude` options. These options allow you to specify one or more field names and values that must be present or absent in order for the item to be included or excluded. For example, to include only items authored by `Harlow` or `Tristan`, you write:
+
+``` yaml
+listing:
+  contents: posts
+  type: grid
+  include:
+    author: "{Harlow,Tristan}*"
+```
+
+To exclude any items authored by `Charles`, you write:
+
+``` yaml
+listing:
+  contents: posts
+  type: grid
+  exclude:
+    author: "Charles*"
+```
+
+When including or excluding items based upon a string field value, Quarto will use glob syntax when comparing values. Any other type of comparison will be done by testing for equality.
+
+
+
+
+
 ## User Tools
 
 Listings support interactive tools to allow the viewer of the listing to sort, filter, or page through listings.
@@ -474,3 +504,32 @@ listing:
 :::{#meeting-notes}
 :::
 ```
+
+## YAML Listing Content
+
+In addition to populating a listing with inputs that match one more globs, you can also provide items explicitly via a YAML file. For example, the following listing:
+
+``` yaml
+---
+title: "Listing Example"
+listing:
+  id: sample-listings
+  contents: 
+    - posts
+    - archived-items.yaml
+  sort: "date desc"
+  type: table
+---
+```
+
+will include all the documents in the `posts` directory, but will also merge in the contents of the `archived-items.yaml` file. The contents of the `archived-items.yaml` file should be a list of items, each of which is a map of field names to values. For example:
+
+``` yaml
+- title: "Archived Item 1"
+  author: Norah Jones
+  date: 2020-01-01
+  href: "archived/archived-item-.html"
+  categories: [archived, technology]
+```
+
+This is useful for cases such as migrating existing content to Quarto- you can begin creating new content as Quarto documents, but still include existing content in your listings by providing their metadata via a yaml file.
