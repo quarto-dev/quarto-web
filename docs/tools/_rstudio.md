@@ -1,8 +1,8 @@
-RStudio v2022.07 and later includes support for editing and preview of Quarto documents (the documentation below assumes you are using this build or a later version). 
+RStudio {{< var rstudio.min_version >}} and later includes support for editing and preview of Quarto documents (the documentation below assumes you are using this build or a later version). 
 
-If you are using Quarto within RStudio it is **strongly** recommended that you use the [latest release](https://posit.co/download/rstudio-desktop/) of RStudio (v2023.03).
+If you are using Quarto within RStudio it is **strongly** recommended that you use the [latest release](https://posit.co/download/rstudio-desktop/) of RStudio ({{< var rstudio.current_release >}}).
 
-You can download RStudio v2023.03 from <https://posit.co/download/rstudio-desktop/>.
+You can download RStudio {{< var rstudio.current_release >}} from <https://posit.co/download/rstudio-desktop/>.
 
 ### Creating Documents
 
