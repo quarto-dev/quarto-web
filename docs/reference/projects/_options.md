@@ -33,12 +33,6 @@ Available `preview` options include:
 
 ### Serve
 
-::: {.callout-note}
-### Quarto v1.2 Required
-
-The `preview: serve` options are only available in Quarto v1.2, which you can download at <https://quarto.org/docs/download/>.
-:::
-
 If you are creating a project extension for another publishing system that includes its own preview server (for example, [Hugo](../../output-formats/hugo.qmd) or [Docusaurus](../../output-formats/docusaurus.qmd)) then use the `preview: serve` options to customize the behavior of the preview server.
 
 ::: {#table-serve}
