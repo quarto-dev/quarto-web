@@ -28,6 +28,11 @@
           return response.json();
         })
         .then((dlData) => {
+
+          notifyListeners(
+            dlData
+          );
+
           populateDownloadButton(
             downloadData.prefix,
             downloadData.releaseDesc,
@@ -126,6 +131,14 @@
       const newsDiv = window.document.getElementById(`${idPrefix}-news`);
       if (newsDiv) {
         newsDiv.innerHTML = newsHtml;
+      }
+    }
+  }
+
+  function notifyListeners(dlData) {
+    if (window["quarto-dl-listeners"]) {
+      for (const listener of window["quarto-dl-listeners"]) {
+        listener(dlData);
       }
     }
   }
