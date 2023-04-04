@@ -7,18 +7,6 @@ on:
 name: Deploy Preview
 
 jobs:
-  debug-step: 
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "This is a debug step"
-      - run: |
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.event.action: ${{ github.event.action }}"
-          echo "github.event.pull_request.head.repo.fork: ${{ github.event.pull_request.head.repo.fork }}"
-          echo "github.event.issue.pull_request: ${{ toJSON(github.event.issue.pull_request) }}"
-          echo "github.event.comment.author_association: ${{ github.event.comment.author_association }}"
-          echo "github.event.comment.body: ${{ github.event.comment.body }}"
-
   check-external-pr:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == true }}
