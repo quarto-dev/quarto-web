@@ -7,18 +7,6 @@ on:
 name: Deploy Preview
 
 jobs:
-  debug-step: 
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "This is a debug step"
-      - run: |
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.event.action: ${{ github.event.action }}"
-          echo "github.event.pull_request.head.repo.fork: ${{ github.event.pull_request.head.repo.fork }}"
-          echo "github.event.issue.pull_request: ${{ toJSON(github.event.issue.pull_request) }}"
-          echo "github.event.comment.author_association: ${{ github.event.comment.author_association }}"
-          echo "github.event.comment.body: ${{ github.event.comment.body }}"
-
   check-external-pr:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == true }}
@@ -34,17 +22,14 @@ jobs:
               body: '👋 Thanks for opening a PR to contribute ! Reminder to reviewer: Start a comment with `/deploy-preview` to trigger a deploy of preview to Netlify. Preview link will then be poster in the comment. Please note that the preview will be deleted once the PR is closed or merged'
             })
 
-  trigger-preview-external-pr:
-    # Allow only members and owners to trigger the deploy preview using the /deploy-preview command
-    if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') && startsWith(github.event.comment.body, '/deploy-preview') }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Triggering deploy preview for PR ${{ format('#{0}', github.event.issue.number) }}"
-
   build-deploy-preview:
-    needs: trigger-preview-external-pr
-    # Deploy a preview only if the PR is not from a fork, or explicitly requested by manually by API or PR comment.
-    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true) || needs.trigger-preview-external-pr.result == 'success' || github.event_name == 'workflow_dispatch' }}
+    # Deploy a preview only if 
+    # - the PR is not from a fork,
+    # - requested by PR comment /deploy-preview
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true) || 
+      (github.event.issue.pull_request && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') && startsWith(github.event.comment.body, '/deploy-preview')) 
+      
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
