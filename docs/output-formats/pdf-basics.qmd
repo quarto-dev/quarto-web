@@ -122,39 +122,9 @@ In some cases raw LaTeX will require additional LaTeX packages. The [LaTeX Inclu
 
 ## LaTeX Includes
 
-If you want to include additional content in your document from another file, you can use the `include-in` options:
+{{< include _document-options-includes.md >}}
 
-| Option                | Description                                                                                                              |
-|----------------|--------------------------------------------------------|
-| `include-in-header`   | Include contents of *file*, verbatim, into the LaTeX preamble.                                                           |
-| `include-before-body` | Include contents of *file*, verbatim, at the beginning of the document body (e.g. after the `\begin{document}` command). |
-| `include-after-body`  | Include contents of *file*, verbatim, at the end of the document body (before the the `\end{document}`).                 |
-
-You can specify a single file for multiple files for each of these options. For example:
-
-``` yaml
-format:
-  pdf:
-    include-in-header:
-      - packages.tex
-      - macros.tex
-    include-before-body: before.tex
-```
-
-You can also include latex directly using the `text` sub key. For example:
-
-``` yaml
-format:
-  pdf: 
-    include-in-header: 
-      text: |
-        \usepackage{eplain}
-        \usepackage{easy-todo}
-```
-
-Note the use of the `|` character on the line with `text:` inside `include-in-header:` to indicate that the value is a multi-line string.
-
-You might wish to be explicit about the type of include you're using when using multiple declarations. For that use case, `include-in-header` also supports the `file:` key:
+For example:
 
 ``` yaml
 format:
@@ -165,11 +135,9 @@ format:
           \usepackage{easy-todo}
       - file: packages.tex
       - macros.tex 
-      # if you omit `file:` or `text:` in 
-      # `include-in-header`, quarto assumes you meant a file
 ```
 
-If you don't already have these packages installed locally, then Quarto will automatically install them during rendering of the document.
+Any packages specified using includes that you don't already have installed locally will be installed by Quarto during the rendering of the document.
 
 ## LaTeX Output
 
