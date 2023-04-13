@@ -11,18 +11,11 @@ jobs:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == true }}
     runs-on: ubuntu-latest
-    permissions:
-      issues: write
     steps:
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for opening a PR to contribute ! Reminder to reviewer: Start a comment with `/deploy-preview` to trigger a deploy of preview to Netlify. Preview link will then be poster in the comment. Please note that the preview will be deleted once the PR is closed or merged'
-            })
+      - run: |
+          echo "::error title=Manual action required for preview::PR from fork can be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview"
+          exit 1
+        shell: bash
 
   build-deploy-preview:
     # Deploy a preview only if 
