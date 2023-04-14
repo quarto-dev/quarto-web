@@ -7,15 +7,14 @@ on:
 name: Deploy Preview
 
 jobs:
-  check-external-pr:
+  is-external-pr:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
-    if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' && github.event.pull_request.head.repo.fork == true }}
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
     runs-on: ubuntu-latest
     steps:
       - name: Error with message for manual deploy
         run: |
           echo "::error title=Manual action required for preview::PR from fork can't be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview manually."
-          exit 1
         shell: bash
 
   build-deploy-preview:
@@ -53,8 +52,8 @@ jobs:
           publish-dir: './_site'
           production-deploy: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message:
-            'Deploy from GHA: ${{ github.event.pull_request.title || github.event.head_commit.message }} (${{ github.sha }})'
+          deploy-message: |
+            Deploy from GHA: ${{ github.event.pull_request.title || format('manual from PR {0}', github.event.issue.number) }}
           alias: deploy-preview-${{ github.event.pull_request.number || github.event.issue.number }}
           # these all default to 'true'
           enable-pull-request-comment: true
