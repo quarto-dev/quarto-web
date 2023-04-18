@@ -45,6 +45,7 @@ interface OptionSchema {
   }
   description: string | { short: string, long?: string };
   hidden?: boolean;
+  default?: unknown;
 }
 const formatsFromOptionSchema = (option: OptionSchema) => {
   // if the formats start with ! they are disabled
@@ -66,6 +67,7 @@ interface Option {
   contexts?: string[];
   formats?: string[];
   engine?: string | string[];
+  default?: unknown;
 }
 interface OptionGroup {
   name: string;
@@ -92,6 +94,7 @@ const readGroupOptions = (context: string, name: string): Array<Option> => {
         formats: formatsFromOptionSchema(optionSchema),
         contexts: optionSchema.tags?.contexts,
         engine: optionSchema.tags?.engine,
+        default: optionSchema?.default
       }))
       .filter(group => group.name !== "hidden" && group.name !== "editor");
   } else {
@@ -156,7 +159,7 @@ const optionsForFormat = (format: string) => {
         ...group,
         options: group.options
           .filter(option => option.formats?.includes(format))
-          .map(option => ({ name: option.name, description: option.description }))
+          .map(option => ({ name: option.name, description: option.description, default: option?.default }))
       }
     })
     .filter(group => group.name !== "hidden" && group.name !== "editor" && group.options.length > 0)
