@@ -228,7 +228,8 @@ function readProjectProperties(props: { [name: string]: Record<string, unknown> 
     .filter(key => props[key].hidden !== true)
     .map(key => ({
       name: key,
-      description: descriptions?.[key] || asDescriptionString(findVal(props[key], "description"))
+      description: descriptions?.[key] || asDescriptionString(findVal(props[key], "description")),
+      default: findVal(props[key], "default")
     }))
 }
 
