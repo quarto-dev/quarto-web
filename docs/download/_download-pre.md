@@ -11,11 +11,10 @@
 :::
 
 ::: {#download-pre-section-news}
-### Highlights
 
 {{< include /docs/prerelease/_highlights.qmd >}}
 
-#### Also In This Release
+#### Fixes In This Release
 
 ::: {#download-pre-news .download-news}
 :::
