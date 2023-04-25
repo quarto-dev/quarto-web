@@ -14,7 +14,7 @@
 
 {{< include /docs/prerelease/_highlights.qmd >}}
 
-#### Fixes In This Release
+#### Release Notes
 
 ::: {#download-pre-news .download-news}
 :::
