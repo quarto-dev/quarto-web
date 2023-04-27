@@ -1,5 +1,6 @@
 ---
 title: "Typst Format"
+tbl-colwidths: [35,65]
 ---
 
 Quarto v1.4 includes support for the `typst` output format. [Typst](https://github.com/typst/typst) is a new open-source markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use. Typst creates beautiful PDF output with blazing fast render times.
@@ -8,7 +9,7 @@ Quarto v1.4 includes support for the `typst` output format. [Typst](https://gith
 
 To try out the `typst` format:
 
-1.  Download and install the very latest version of the [Typst CLI](https://github.com/typst/typst#installation).
+1.  Download and install the latest version of the [Typst CLI](https://github.com/typst/typst#installation) (v0.2 or later is required).
 
 2.  Create a document that uses `format: typst`. For example:
 
@@ -23,17 +24,21 @@ To try out the `typst` format:
 
 Rendering or previewing this document will invoke the Typst CLI to create a PDF from your markdown source file.
 
-## Typst Options
+## Typst Formats
 
-The following options are available for `typst` documents:
+When authoring a Typst document you'll be using a Quarto format that is in turn based on a Typst template, which defines its structure, layout, and available options. The default Typst format and template that ships with Quarto includes options for specifying title, author, and abstract information along with basic layout and appearance (numbering, margins, fonts, columns, etc.). We'll describe how to use the default format below, then talk about how to use other formats or create your own formats.
+
+### Default Format
+
+The default Typst format is well suited for most professional articles and reports. The format provides the following options for customizing its output.
 
 | Option                | Description                                                                                                                                                |
-|-------------------------|-----------------------------------------------|
-| `toc`                 | Include a table of contents.                                                                                                                               |
+|---------------------------|---------------------------------------------|
 | `title`               | Main document title                                                                                                                                        |
 | `author`              | One or more document authors.                                                                                                                              |
 | `date`                | Date of publication                                                                                                                                        |
 | `abstract`            | Article abstract                                                                                                                                           |
+| `toc`                 | Include a table of contents.                                                                                                                               |
 | `number-sections`     | Apply numbering to sections and sub-sections                                                                                                               |
 | `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                        |
 | `margin`              | Margins: `x`, `y`, `top`, `bottom`, `left`, `right`. Specified with units (e.g. `y: 1.25in` or `x: 2cm`).                                                  |
@@ -41,19 +46,44 @@ The following options are available for `typst` documents:
 | `fontsize`            | Font size (e.g., `12pt`)                                                                                                                                   |
 | `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                        |
 | `columns`             | Number of columns for body text.                                                                                                                           |
-| `template`            | File containing pandoc template for typst                                                                                                                       |
 | `include-in-header`   | `.typ` file to include in header                                                                                                                           |
 | `include-before-body` | `.typ` file to include before body                                                                                                                         |
 | `include-after-body`  | `.typ` file to include after the body                                                                                                                      |
 | `keep-typ`            | Keep the intermediate `.typ` file after render.                                                                                                            |
 
-: {tbl-colwidths=\[35,65\]}
+For example:
+
+``` yaml
+---
+title: "My Document"
+format:
+  typst:
+    toc: true
+    section-numbering: true
+    columns: 2
+---
+```
+
+### Additional Formats {#additional-formats}
+
+The Typst team has created several useful [templates](https://github.com/typst/templates) which have been adapted for use with Quarto as custom formats. Available formats include:
+
+| Format                                                                   | Usage                                                   |
+|-------------------------|-----------------------------------------------|
+| [Letter](https://github.com/quarto-ext/typst-templates/tree/main/letter) | `quarto use template quarto-ext/typst-templates/letter` |
+| [IEEE](https://github.com/quarto-ext/typst-templates/tree/main/ieee)     | `quarto use template quarto-ext/typst-templates/ieee`   |
+
+: {tbl-colwidths=\[10,90\]}
+
+The source code for these formats is available at <https://github.com/quarto-ext/typst-templates>.
+
+See the section below on [Custom Formats](#custom-formats) for details on creating your own formats or adapting existing Typst templates for use with Quarto.
 
 ## Raw Blocks
 
 If you want to use raw `typst` markup, use a raw `typst` block. For example:
 
-````default
+```` default
 ```{=typst} 
 #set par(justify: true)
 
@@ -64,6 +94,25 @@ In the case of glaciers, fluid dynamics principles can be used to understand how
 
 To learn more about `typst` markup, see the tutorial here: <https://typst.app/docs/tutorial/>.
 
+## Typst File (`.typ`)
+
+The rendering process produces a native Typst file (`.typ)` which is then compiled to PDF using the Typst CLI. This intermediate file is then automatically removed. If you want to preserve the `.typ` file, use the `keep-typ` option. For example:
+
+``` yaml
+---
+title: "My Document"
+format:
+  typst:
+    keep-typ: true
+---
+```
+
+You can compile a `.typ` file to PDF directly using the `typst compile` command in a terminal. For example:
+
+``` {.bash filename="Terminal"}
+$ typst compile article.typ
+```
+
 ## Known Limitations
 
 -   Cross references are supported for figures, sections, and equations (but not subfigures, tables ,or theorems as these aren't yet supported in `typst`)
@@ -71,3 +120,50 @@ To learn more about `typst` markup, see the tutorial here: <https://typst.app/do
 -   Figure panels/layout are not currently supported.
 -   Advanced page layout (panel layout, margin layout, etc.) does not work
 -   Various other small things might not yet be implemented, please let us know if you see things that could use improvement!
+
+## Custom Formats {#custom-formats}
+
+To create a new custom Typst format (or package an existing Typst template for use with Quarto) use the `quarto create` command to get started:
+
+``` {.bash filename="Terminal"}
+$ quarto create extension format
+```
+
+Then, choose `typst` as the base format and provide a name for the extension (e.g. `letter`). A sample Typst format extension will be created based on the code used in the default template that ships with Quarto. It will include the following files which you can edit to implement your custom format:
+
+To implement the custom format, edit the following files:
+
+| File                 | Description                                                                                                                                           |
+|------------------------|-----------------------------------------------|
+| `_extension.yml`     | Basic extension metadata (name, author, description, etc.) and format definition.                                                                     |
+| `README.md`          | Documentation on how to install and use the format.                                                                                                   |
+| `template.qmd`       | A starter document that demonstrates the basics of the format.                                                                                        |
+| `typst-template.typ` | The core Typst template function (documentation on creating Typst templates can be found here: <https://typst.app/docs/tutorial/making-a-template/>). |
+| `typst-show.typ`     | File that calls the template's function (mapping Pandoc metadata to function arguments).                                                              |
+
+You might want to check out the source code for the [Additional Formats](additional-formats) described above for ideas and inspiration. You can find this code here: <https://github.com/quarto-ext/typst>.
+
+### Template Partials
+
+::: callout-note
+This section covers advanced customization of Typst format output and can be safely ignored unless you have found the method of defining custom Typst formats described above too limited.
+:::
+
+Above we describe a method of creating a Typst format based on specifying two [template partials](https://quarto.org/docs/journals/templates.html#template-partials) (`typst-template.typ` and `typst-show.typ`). These partials customize components of the default Typst Pandoc template, but leave some of the core scaffolding including definitions required by Pandoc for its Typst output as well as handling of bibliographies and footnotes (this means that your own custom Typst formats do not need to explicitly handle them).
+
+If you would like to fully override the Pandoc template used for rendering Typst, use the `template` option in your custom format (rather than `template-partials`) and provide an alternate implementation of the default template. For example, your `_extensions.yml` might look like this:
+
+``` {.yaml filename="_extensions.yml"}
+---
+title: Typst Custom Format
+author: Jane Smith
+version: "0.2.0"
+quarto-required: ">=1.4.11"
+contributes:
+  formats:
+    typst:
+      template: template.typ
+---
+```
+
+Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/typst/pandoc/quarto/template.typ)of the default template as a starting point for your `template.typ`. Note that you can call all of the template partials provided by Quarto (e.g. `biblio.typ()` or `notes.typ()` from within your custom template implementation.
