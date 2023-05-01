@@ -4,14 +4,323 @@ title: Front Matter
 
 ## Overview
 
+Scholarly articles require much more detail in their front matter than simply a title and author. Quarto provides a rich set of YAML metadata tags to describe these details. On this page, you'll learn how to specify authors and their affiliations, article summaries like an abstract and keywords, and how to include information on copyright, licensing and funding.
+
+Not all of these options are used in every format. Currently the JATS format makes use of the broadest set of metadata tags, so if you wnat to check how things render we recommend previewing with `format: jats`.
+
 ## Authors & Affiliations
+
+The simplest way to describe an author with a string directly to the `author` key:
+
+``` yaml
+author: Norah Jones
+```
+
+However, when writing scholarly articles, you often want to provide more detail. The `author` key has a number of sub-keys to provide this additional detail. For instance, you can add an author's affiliation by using the `affiliation` key. In the simplest form, an author along with their affiliation can be described by passing a string each to the `name` and `affiliation` sub-keys:
+
+``` yaml
+author:
+  name: Norah Jones
+  affiliation: Carnegie Mellon University
+```
+
+You can read about all the other keys you can provide to `author` and `affiliation` in the corresponding [Author](#author) and [Affiliation](#affiliation) sections below.
+
+Both `author` and `affiliation` can take a list of elements to describe multiple authors, or authors with multiple affiliations. As an example, here is the YAML to describe a document with two authors, the first of which has two affiliations:
+
+``` yaml
+author:
+  - name: Norah Jones
+    affiliation: 
+      - Carnegie Mellon University
+      - University of Chicago
+  - name: Josiah Carberry
+    affiliation: Brown University
+```
+
+Notice that each element of `authors` and `affiliations` is prefaced by a `-` and indented appropriately. You can read more about shortcuts to avoid repetition when authors share affiliations in the [Multiple Authors](#multiple-authors) section below.
+
+### Author {#author}
+
+Beyond `name` and `affiliation`, `author` can also take any of the following:
+
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `email`\             | string         | Contact details for the author. Converted to hyperlinks in many formats.                                                                                            |
+| `fax`\               |                |                                                                                                                                                                     |
+| `url`                |                |                                                                                                                                                                     |
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `orcid`              | string         | Author's Open Researcher and Contributor ID ([ORCID](https://orcid.org/)), in the form `0000-0000-0000-0000`. Creates a link to the author's ORCID in many formats. |
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `note`\              | string         | Notes to attach to an author, such as contribution details;\                                                                                                        |
+| `acknowledgements`   |                | Author's acknowledgements.                                                                                                                                          |
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `corresponding`\     | `true`/`false` | Set this author as:\                                                                                                                                                |
+| `equal-contributor`\ |                | the corresponding author;\                                                                                                                                          |
+| `deceased`           |                | as having contributed equally with all other contributors;\                                                                                                         |
+|                      |                | or deceased.                                                                                                                                                        |
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `id`                 | string         | An identifier to be used to refer to this author in other fields. See an example in [Funding].                                                                      |
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `number`             | number         | A number to identify this author.                                                                                                                                   |
++----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+: Available keys to `author`
+
+An `affilations-url` key can also be provided to `author`, and will be propagated to `url` key of `affiliation`.
+
+As an example, a more complete description of an author might look like:
+
+``` yaml
+author:
+  - name: Josiah Carberry
+    orcid: 0000-0002-1825-0097
+    url: https://en.wikipedia.org/wiki/Josiah_S._Carberry
+    email: josiah@psychoceramics.org
+    corresponding: true
+```
+
+### Affiliation {#affiliation}
+
+Like `author`, you can provide a string is directly to `affiliation`, as in:
+
+``` yaml
+author:
+  name: Norah Jones
+  affiliation: Carnegie Mellon University
+```
+
+Alternatively, you can provide the name explicitly to the `name` key, like:
+
+``` yaml
+author:
+  name: Norah Jones
+  affiliation: 
+    name: Carnegie Mellon University
+```
+
+In addition to `name`, `affiliation` can take any of the following:
+
++--------------------------+------------+----------------------------------------------------------------------------------------+
+| `department`             | String     |                                                                                        |
++--------------------------+------------+----------------------------------------------------------------------------------------+
+| `address`\               | String     | Descriptions of the affiliation's location. May provide any combination of these keys. |
+| `cityregion` or `state`\ |            |                                                                                        |
+| `country` `postal-code`  |            |                                                                                        |
++--------------------------+------------+----------------------------------------------------------------------------------------+
+| `url`                    | String     | Affiliation's website. Converted to a link in many formats.                            |
++--------------------------+------------+----------------------------------------------------------------------------------------+
+| `isniringgold`\          | Numeric    | Affiliation's:\                                                                        |
+| `ror`                    |            | [International Standard Name Identifier (ISNI)](https://isni.org/);\                   |
+|                          |            | [Ringgold ID](https://www.ringgold.com/ringgold-identifier/);\                         |
+|                          |            | [Research Organization Registry (ROR) ID](https://ror.org/)                            |
++--------------------------+------------+----------------------------------------------------------------------------------------+
+
+: Available keys to `affiliation`
+
+For example, a more complete `affiliation` for an author might look like:
+
+``` yaml
+author:
+  name: Josiah Carberry
+  orcid: 0000-0002-1825-0097
+  url: https://en.wikipedia.org/wiki/Josiah_S._Carberry
+  email: josiah@psychoceramics.org
+  corresponding: true
+  affiliation: 
+    - name: Brown University
+      department: Psychoceramics
+      city: Providence
+      region: RI
+      country: US
+      url: www.brown.edu
+      ringgold: 6752
+      isni: 0000000419369094
+```
+
+### Multiple Authors {#multiple-authors}
+
+When there are multiple authors of a document, it is common that they share affiliations. To avoid having to repeat an affiliation's details, you can describe an affiliation once, assign it an id, and then refer to the id in other fields.
+
+One approach is to assign an `id` to each affiliation as they are described within an author. For example, here we assign the two affiliations of the author the ids `cmu` and `chicago`:
+
+``` yaml
+author:
+  - name: Norah Jones
+    affiliation:
+      - id: cmu
+        name: Carnegie Mellon University
+      - id: chicago
+        name: University of Chicago
+```
+
+Then, when adding additional authors, you can refer to affiliations you've defined using `ref:` in their `affiliations`:
+
+``` yaml
+author:
+  - name: Norah Jones
+    affiliation:
+      - id: cmu
+        name: Carnegie Mellon University
+      - id: chicago
+        name: University of Chicago
+  - name: John Hamm
+    affiliation:
+      - ref: cmu
+```
+
+An alternative approach is to define affiliations at the top level, as opposed to within an `author`:
+
+``` yaml
+author:
+  - name: Norah Jones
+    affiliation:
+      - ref: cmu
+      - ref: chicago
+  - name: John Hamm
+    affiliation:
+      - ref: cmu
+affilation:
+  - id: cmu
+    name: Carnegie Mellon University
+  - id: chicago
+    name: University of Chicago
+```
+
+This approach may be more convenient in cases where you also want to refer to affiliations in fields other than `author`, e.g. `funding`.
 
 ## Abstract
 
-Can this be in markdown?
+You can add an abstract with the `abstract` key. Since abstracts are generally longer than a line, and may contain markdown, you'll need to provide it using YAML's folded block style. That is, place a `>` on the same line as `abstract:` and indent your raw abstract text by two spaces.
 
-## Paper & Journal
+For example,
 
-Probably doesn't need much from pre-submission work
+``` yaml
+abstract: >
+  This article describes evaluates novel approaches to do
+  some really important things.
+```
 
-## 
+## Keywords
+
+Keywords can be added with `keywords`:
+
+``` yaml
+keywords: 
+  - open-source 
+  - scientific publishing
+  - reproducible research
+```
+
+## Copyright
+
+You can specify copyright in two ways. Either directly as a string to `copyright`:
+
+``` yaml
+copyright: "Copyright Acme, Inc. 2021. All Rights Reserved"
+```
+
+Which is equivalent to providing the same string to the sub-key `statement`:
+
+``` yaml
+copyright: 
+  statement: "Copyright Acme, Inc. 2021. All Rights Reserved"
+```
+
+Or, alternatively, by specifying a `holder` and `year`:
+
+``` yaml
+copyright: 
+  holder: Acme, Inc
+  year: 2021
+```
+
+When specifying `year` you can also use a range (`year: 2021 - 2023`) or an array (`year: [2021, 2022, 2023]`).
+
+## License
+
+To specify a license, you can pass a string directly to `license`:
+
+``` yaml
+license: "This work is dedicated to the Public Domain"
+```
+
+This is equivalent to specifying the sub-key `text` directly:
+
+``` yaml
+license:
+  text: "This work is dedicated to the Public Domain"
+```
+
+You can add additional details by providing the `type` and `url` sub-keys:
+
+``` yaml
+license:
+  text: > 
+    Permission is granted to copy, distribute and/or 
+    modify this document under the terms of the GNU Free 
+    Documentation License, Version 1.3 or any later version 
+    published by the Free Software Foundation; with no 
+    Invariant Sections, no Front-Cover Texts, and no 
+    Back-Cover Texts. A copy of the license is included in 
+    the section entitled "GNU Free Documentation License
+  type: open-access
+  url: https://www.gnu.org/licenses/fdl-1.3-standalone.html
+```
+
+If you are choosing a Creative Commons license you may simply pass an abbreviation:
+
+``` yaml
+license: "CC BY"
+```
+
+The available abbreviations are covered in the [Creative Commons](cc) section below.
+
+### Creative Commons {#cc}
+
+The Creative Commons copyright licenses and tools forge a balance inside the traditional "all rights reserved" setting that copyright law creates. These tools give everyone from individual creators to large companies and institutions a simple, standardized way to grant copyright permissions to their creative work.
+
+Here are some of the common forms of Creative Commons content license:
+
++-------------+---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| License     | Name                      | Description                                                                                                                                                                                                                                                                                                                                                                           |
++=============+===========================+=======================================================================================================================================================================================================================================================================================================================================================================================+
+| `CC BY`     | Attribution               | This license lets others distribute, remix, tweak, and build upon your work, even commercially, as long as they credit you for the original creation. This is the most accommodating of licenses offered.                                                                                                                                                                             |
++-------------+---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `CC BY-SA`  | Attribution-ShareAlike    | This license lets others remix, tweak, and build upon your work even for commercial purposes, as long as they credit you and license their new creations under the identical terms. This license is often compared to "copyleft" free and open source software licenses. All new works based on yours will carry the same license, so any derivatives will also allow commercial use. |
++-------------+---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `CC BY-ND`  | Attribution-NoDerivs      | This license allows for redistribution, commercial and non-commercial, as long as it is passed along unchanged and in whole, with credit to you.                                                                                                                                                                                                                                      |
++-------------+---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `CC BY-NC`  | Attribution-NonCommercial | This license lets others remix, tweak, and build upon your work non-commercially, and although their new works must also acknowledge you and be non-commercial, they don't have to license their derivative works on the same terms.                                                                                                                                                  |
++-------------+---------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+If you specify a Creative Commons license for your content, Quarto will automatically include the relevant link to the appropriate license.
+
+## Citation
+
+The `citation` key allows you to specify additional metadata that is used to create a citation for the document. You can read more about this in [Creating Citable Articles](/docs/authoring/create-citeable-articles.qmd).
+
+## Funding
+
+The `funding` key can directly take a string describing funding for your work: 
+
+```{.yaml}
+funding: "The author(s) received no specific funding for this work."
+```
+
+This is equivalent to providing the `statement` sub-key directly:
+```{.yaml}
+funding: 
+  statement: "The author(s) received no specific funding for this work."
+```
+
+The `funding` key can also take the sub-keys `source`, `recipient` and `investigator`. Both `recipient` and `investigator` can take a string, or a reference to an author or affiliation using `ref:`. For example, this front matter adds funding where the investigator is specified using an author id:
+
+```{.yaml}
+author:
+  - name: Norah Jones
+    id: nj
+funding:
+  - source: "NIH (Grant #: 1-R01-MH99999-01A1)"
+    investigator: 
+      - ref: nj
+```
