@@ -32,7 +32,7 @@ function Tabset(el)
       local text = pandoc.utils.stringify(tab.title)
       local icon = kTabsetIcons[text]
       if icon then
-        tab.title:insert(1, pandoc.Image("", "/docs/get-started/images/" .. icon))
+        tab.title.content:insert(1, pandoc.Image("", "/docs/get-started/images/" .. icon))
       end
     end
   end
