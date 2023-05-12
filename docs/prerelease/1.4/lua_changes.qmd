@@ -1,0 +1,37 @@
+---
+title: "Lua filter changes"
+---
+
+Quarto v1.4 includes the following new features for Lua filters:
+
+## Relative paths in `require()` calls
+
+In larger, more complex filters, it becomes useful to structure your Lua code in modules.
+Quarto v1.4 supports the use of relative paths in `require()` calls so that small modules
+can be easily created and reused.
+
+For example:
+
+```{.lua filename="filter.lua"}
+local utility = require('./utils')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+Using relative paths this way in quarto makes it harder for multiple filters to accidentally
+create conflicting module names (as would eventually happen when using the standard Lua
+`require('utils')` syntax). It's possible to refer to subdirectories and parent directories as well:
+
+```{.lua filename="filter2.lua"}
+local parsing = require('./utils/parsing')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+```{.lua filename="utils/parsing.lua"}
+local utils = require("../utils")
+-- ...
+```
+
