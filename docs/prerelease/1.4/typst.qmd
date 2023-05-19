@@ -3,15 +3,19 @@ title: "Typst Format"
 tbl-colwidths: [35,65]
 ---
 
+{{< include _pre-release-feature.qmd >}}
+
 Quarto v1.4 includes support for the `typst` output format. [Typst](https://github.com/typst/typst) is a new open-source markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use. Typst creates beautiful PDF output with blazing fast render times.
 
 ## Getting Started
 
 To try out the `typst` format:
 
-1.  Download and install the latest version of the [Typst CLI](https://github.com/typst/typst#installation) (v0.2 or later is required).
+1.  Download and install the [latest pre-release](https://quarto.org/docs/download/prerelease) of Quarto 1.4
 
-2.  Create a document that uses `format: typst`. For example:
+2.  Download and install the latest version of the [Typst CLI](https://github.com/typst/typst#installation) (v0.2 or later is required).
+
+3.  Create a document that uses `format: typst`. For example:
 
     ``` yaml
     ---
@@ -30,24 +34,28 @@ When authoring a Typst document you'll be using a Quarto format that is in turn 
 
 The following options are available for customizing Typst output:
 
-| Option                | Description                                                                                                                                                |
+| Option                | Description                                                                                                                                                                        |
 |---------------------------|---------------------------------------------|
-| `title`               | Main document title                                                                                                                                        |
-| `author`              | One or more document authors.                                                                                                                              |
-| `date`                | Date of publication                                                                                                                                        |
-| `abstract`            | Article abstract                                                                                                                                           |
-| `toc`                 | Include a table of contents.                                                                                                                               |
-| `number-sections`     | Apply numbering to sections and sub-sections                                                                                                               |
-| `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                        |
-| `margin`              | Margins: `x`, `y`, `top`, `bottom`, `left`, `right`. Specified with units (e.g. `y: 1.25in` or `x: 2cm`).                                                  |
-| `papersize`           | Paper size: `a4`, `us-letter`, etc. See the docs on [paper sizes](https://typst.app/docs/reference/layout/page/#parameters–paper) for all available sizes. |
-| `fontsize`            | Font size (e.g., `12pt`)                                                                                                                                   |
-| `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                        |
-| `columns`             | Number of columns for body text.                                                                                                                           |
-| `include-in-header`   | `.typ` file to include in header                                                                                                                           |
-| `include-before-body` | `.typ` file to include before body                                                                                                                         |
-| `include-after-body`  | `.typ` file to include after the body                                                                                                                      |
-| `keep-typ`            | Keep the intermediate `.typ` file after render.                                                                                                            |
+| `title`               | Main document title                                                                                                                                                                |
+| `author`              | One or more document authors.                                                                                                                                                      |
+| `date`                | Date of publication                                                                                                                                                                |
+| `abstract`            | Article abstract                                                                                                                                                                   |
+| `toc`                 | Include a table of contents.                                                                                                                                                       |
+| `number-sections`     | Apply numbering to sections and sub-sections                                                                                                                                       |
+| `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                                                |
+| `margin`              | Margins: `x`, `y`, `top`, `bottom`, `left`, `right`. Specified with units (e.g. `y: 1.25in` or `x: 2cm`).                                                                          |
+| `papersize`           | Paper size: `a4`, `us-letter`, etc. See the docs on [paper sizes](https://typst.app/docs/reference/layout/page/#parameters–paper) for all available sizes.                         |
+| `fontsize`            | Font size (e.g., `12pt`)                                                                                                                                                           |
+| `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                                                |
+| `columns`             | Number of columns for body text.                                                                                                                                                   |
+| `include-in-header`   | `.typ` file to include in header                                                                                                                                                   |
+| `include-before-body` | `.typ` file to include before body                                                                                                                                                 |
+| `include-after-body`  | `.typ` file to include after the body                                                                                                                                              |
+| `keep-typ`            | Keep the intermediate `.typ` file after render.                                                                                                                                    |
+| `bibliography`        | `.bib` file to use for citations processing                                                                                                                                        |
+| `bibliographystyle`   | Style to use with Typst's bibliography processing - See the doc about [bibliography](https://typst.app/docs/reference/meta/bibliography/#parameters–style) to see supported style. |
+| `citeproc`            | If `true`, Pandoc's citeproc will be used for citation processing instead of Typst's own system (which is the default).                                                            |
+| `csl`                 | `.csl` file to use when Pandoc's citeproc is used.                                                                                                                                 |
 
 For example:
 
@@ -60,6 +68,7 @@ format:
     section-numbering: true
     columns: 2
 bibliography: refs.bib
+bibliographystyle: chicago-author-date
 ---
 ```
 
@@ -79,6 +88,20 @@ In the case of glaciers, fluid dynamics principles can be used to understand how
 ````
 
 To learn more about `typst` markup, see the tutorial here: <https://typst.app/docs/tutorial/>.
+
+## Bibliography
+
+Typst comes with its [own citation processing system for Bibliography](https://typst.app/docs/reference/meta/bibliography/) and using `format: typst` defaults to it. If you prefer to use Pandoc's citation processing with a `.csl` file (e.g to use same `.csl` for a HTML and PDF document), set `citeproc: true` explicitly in YAML header.
+
+``` yaml
+---
+title: Typst doc using citeproc
+format: typst
+citeproc: true
+bibliography: refs.bib
+csl: https://www.zotero.org/styles/apa-with-abstract
+---
+```
 
 ## Typst File (`.typ`)
 
@@ -111,12 +134,12 @@ $ typst compile article.typ
 
 You can create highly customized output with Typst by defining a new format based on a custom Typst template. The Typst team has created several useful [templates](https://github.com/typst/templates), a few which which have been adapted for use with Quarto as custom formats. These formats include:
 
-| Format                                                                     | Usage                                                    |
+| Format                                                                         | Usage                                                      |
 |--------------------------|----------------------------------------------|
-| [IEEE](https://github.com/quarto-ext/typst-templates/tree/main/ieee)           | `quarto use template quarto-ext/typst-templates/ieee`    |
-| [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams)             | `quarto use template quarto-ext/typst-templates/ams`     |
-| [Letter](https://github.com/quarto-ext/typst-templates/tree/main/letter)       | `quarto use template quarto-ext/typst-templates/letter`  |
-| [Fiction](https://github.com/quarto-ext/typst-templates/tree/main/fiction)     | `quarto use template quarto-ext/typst-templates/fiction` |
+| [IEEE](https://github.com/quarto-ext/typst-templates/tree/main/ieee)           | `quarto use template quarto-ext/typst-templates/ieee`      |
+| [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams)             | `quarto use template quarto-ext/typst-templates/ams`       |
+| [Letter](https://github.com/quarto-ext/typst-templates/tree/main/letter)       | `quarto use template quarto-ext/typst-templates/letter`    |
+| [Fiction](https://github.com/quarto-ext/typst-templates/tree/main/fiction)     | `quarto use template quarto-ext/typst-templates/fiction`   |
 | [Dept News](https://github.com/quarto-ext/typst-templates/tree/main/dept-news) | `quarto use template quarto-ext/typst-templates/dept-news` |
 
 : {tbl-colwidths=\[20,80\]}
@@ -176,4 +199,3 @@ contributes:
 Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/typst/pandoc/quarto/template.typ) of the default template as a starting point for your `template.typ`. Note that you can call all of the template partials provided by Quarto (e.g. `biblio.typ()` or `notes.typ()` from within your custom template implementation.
 
 The [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams) format provides an example of redefining the main template (in that case, it is to prevent automatic bibliography processing by Quarto in deference to the built-in handling of the Typst AMS template).
-
