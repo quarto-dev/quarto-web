@@ -38,6 +38,10 @@ To follow along, you'll need to install the Jupyter Lab Quarto extension and clo
 If you haven't already, make sure you've installed the pre-release version of Quarto, as described in the [Manuscript Overview](../index.qmd#install).
 :::
 
+### Install Python packages
+
+ADD INSTRUCTIONS Need: numpy, matplotlib
+
 ### Install the Jupyter Lab Quarto Extension
 
 {{< include /docs/tools/_jupyter-lab-extension-install.qmd >}}
@@ -139,16 +143,14 @@ The rest of this page walks you through the cells in this article from top to bo
 
 ## Markdown
 
-Markdown cells in the document will be processed by Quarto's specific markdown syntax. Quarto's markdown syntax is based on [Pandoc Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown), which in turn is based on John Gruber\'s [Markdown](https://daringfireball.net/projects/markdown/), the same markdown Jupyter Notebooks use. You'll find much of the syntax, for example, text formatting like bold, italics, and verbatim code, as well as headings, links and lists familiar:
+Markdown cells in the document will be processed by Quarto's specific markdown syntax. Quarto's markdown syntax is based on [Pandoc Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown), which in turn is based on John Gruber's [Markdown](https://daringfireball.net/projects/markdown/), the same markdown Jupyter Notebooks use. You'll find much of the syntax, for example, text formatting like bold, italics, and verbatim code, as well as headings, links and lists familiar:
 
 {{< include _markdown.qmd >}}
 
 ::: callout-tip
-
 ## Raw and Rendered Markdown
 
 The Quarto extension for Jupyter Lab will display markdown cells as they will appear in rendered form. To see the raw markdown, enter "Edit mode" for the cell. To return to viewing the rendered markdown, "Run" the cell.
-
 :::
 
 ## Figures
@@ -157,27 +159,83 @@ The Quarto extension for Jupyter Lab will display markdown cells as they will ap
 
 ## Tables
 
-Captions 
-Labels
+{{< include _tables.qmd >}}
 
-https://quarto.org/docs/authoring/tables.html
+## Cross References {#cross-ref}
 
-You can also include tables directly from inline computations, see []() below for more details.
-
-## Cross References
-
-(Also link to how to add captions and cross references for plots/table that come from computations)
-
-Already covered figures and tables. Cross references to equations and sections.
+{{< include _cross-refs.qmd >}}
 
 ## Equations
 
+{{< include _equations.qmd >}}
+
+## Inline Computations {#inline-computations}
+
+Your article can include code cells. By default, code itself will not display in the article, but any output including tables and figures will. When you include code cells in your article, you'll also get an additional link to the "Article Notebook" under Notebooks on the manuscript webpage. This is a rendered version of your article notebook that includes the code. 
+
+For example, {{< meta article-file >}}, includes the code cell:
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+
+This doesn't appear in the rendered article, but does in the "Article Notebook". 
+
+SCREENSHOTS of side by side article and article notebook 
+
+You can add Quarto options to code cells by adding a `#|` comment to the top of a code cell, followed by the option in YAML syntax. For example, adding the `echo` option with the value `true` would look like this: 
+
+```python
+#| echo: true
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+
+The `echo` option describes whether the code is included in the article. If you make this change and save {{< meta article-file >}}, you'll see this code now appears in the article. You can find a list of all the code cell options available on the [Jupyter Code Cell](/docs/reference/cells/cells-jupyter.html) reference page. 
+
+The next code cell creates a figure:
+
+```python
+#| label: fig-timeline
+#| fig-cap: Timeline of recent earthquakes on La Palma
+#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.
+
+plt.figure(figsize=(6, 1))
+plt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.ylabel('')
+plt.show()
+```
+
+The figure label (to allow cross referencing), figure caption, and alt text are added using the respective Quarto options: `label`, `fig-cap` and `fig-alt`. 
+
+Inline computations are also a good way to include tables based on data. You can read more about doing this in the Quarto documentation on [Tables from Computations](/docs/authoring/tables.html#computations).
+
+If you have code cell output you don't want to include in your article you can use `output: false`. For example, you may have a value or plot this is helpful for writing your content, but you don't want it to appear in the article itself. The next code cell is an example:
+
+```python
+#| output: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+
+The code and output will still appear in the "Article Notebook". If you'd like to exclude a cell and its output from both the article and the rendered notebook, you could use `include: false` instead:
+
+```python
+#| include: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+
+You can also use computed values directly in your article text by using the `Markdown()` function from the IPython display module. Read more in [Inline Code](/docs/computations/execution-options.html#inline-code).
+
+Rather that including inline computations you can also embed outputs from other notebooks, read more below in [Embedding Notebooks](#embed).
+
 ## Citations
 
-## Inline Computations
-
-Captions and Cross References
-
-## Embed Notebooks
+## Embed Notebooks {#embed}
 
 ## Up Next

@@ -1,0 +1,52 @@
+Quarto can generate cross references that keep track of numbering and linking for you. The general syntax for a cross reference is an `@` followed by a label. For example, to reference the map of La Palma, you could write:
+
+``` markdown
+@fig-map
+```
+
+When rendered, cross references include a word to indicate the type of object being referenced, like "Figure" or "Table". So, for instance, this line in {{< meta article-file >}}:
+
+``` markdown
+La Palma is one of the west most islands in the Volcanic Archipelago of the Canary Islands (@fig-map). 
+```
+
+Results in the text:
+
+> La Palma is one of the west most islands in the Volcanic Archipelago of the Canary Islands (Figure 1).
+
+Where "Figure 1" is also a link to the appropriate figure.
+
+The labels you add to elements must have the appropriate prefix to allow cross referencing:
+
+| Element  | Label Prefix | Rendered Cross Reference |
+|----------|--------------|--------------------------|
+| Figure   | `fig-`       | Figure 1                 |
+| Table    | `tbl-`       | Table 1                  |
+| Equation | `eq-`        | Equation 1               |
+| Section  | `sec-`       | Section 1                |
+
+To cross reference sections your document your YAML header must also include:
+
+```yaml
+number-sections: true
+```
+
+You can add a label to a section heading in curly braces after the heading, e.g:
+
+```markdown
+## Data & Methods {#sec-data-methods}
+```
+
+You can then reference this section in the text, like:
+
+```markdown
+Data and methods are discussed in @sec-data-methods.
+```
+
+Which will be rendered as:
+
+> Data and methods are discussed in Section 2.
+
+You can also cross reference elements produced by computations, see [Inline Computations](#inline-computations) below to see how to add labels to these.
+
+You can read more about the types of objects that can be referenced, including code listings, and mathematical theorems, as well as some of the options to control how references appear in the Quarto [Cross References](/docs/authoring/cross-references.html) documentation.
