@@ -1,5 +1,5 @@
 ---
-title: "Tables"
+title: Tables
 engine: jupyter
 ---
 
@@ -52,6 +52,20 @@ orange|3.09
 The cells of pipe tables cannot contain block elements like paragraphs and lists, and cannot span multiple lines. If a pipe table contains a row whose markdown content is wider than the column width (see `columns` option), then the table will take up the full text width and the cell contents will wrap, with the relative cell widths determined by the number of dashes in the line separating the table header from the table body.
 
 For example `---|-` would make the first column 3/4 and the second column 1/4 of the full text width. On the other hand, if no lines are wider than column width, then cell contents will not be wrapped, and the cells will be sized to their contents.
+
+### Markdown Tables and Bootstrap classes
+
+Bootstrap table classes given as attributes next to a table caption are now inserted into the `<table>` element. The classes permitted are those that apply expressly to the entire table, and these are: `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"light"`, `"dark"`, `"striped"`, `"hover"`, `"active"`, `"bordered"`, `"borderless"`, `"sm"`, `"responsive"`, `"responsive-sm"`, `"responsive-md"`, `"responsive-lg"`, `"responsive-xl"`, `"responsive-xxl"`. For example, the following Markdown table will be rendered with row stripes and the rows will also be highlighted on hover:
+
+```
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {.striped .hover}
+```
 
 ### Authoring
 
@@ -257,3 +271,62 @@ Note that grid tables are quite awkward to write with a plain text editor (becau
 -   Quarto [Visual Editor](https://quarto.org/docs/visual-editor/content.html#editing-tables)
 
 -   Tables Generator's [Plain Text mode](https://www.tablesgenerator.com/text_tables) with `Use reStructuredText syntax` enabled
+
+## HTML Tables
+
+Quarto can process HTML tables in `html` `RawBlock` nodes (_i.e._, `{=html}`) in format and convert them to Markdown tables, regardless of output format (intentionally including non-HTML formats). As a result, you can use HTML table syntax in your documents and they will be properly converted to Markdown tables for all formats, and libraries which emit computational tables in HTML format can work in other output formats. In addition, this allows Lua filters to manipulate the content of tables specified in HTML format.
+
+````html
+```{=html}
+<table>
+  <caption>As described in @Lovelace1864, computers are great.</caption>
+  <thead>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><iframe width="560" height="315" src="https://www.youtube.com/embed/wo9vZccmqwc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+````
+
+In addition, Quarto supports the specification of embedded Markdown content in tables.
+This is done by providing a data attribute `qmd` or `qmd-base64` in an embedded `span` or `div` node.
+These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._  
+For example, consider the following table:
+
+````html
+```{=html}
+<table>
+  <caption><span data-qmd="As described in @Lovelace1864, computers are great."></span></caption>
+  <thead>
+    <tr>
+      <th><span data-qmd="_Header 1_"></span></th>
+      <th><span data-qmd="_Header 2_"></span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span data-qmd="{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}"></span></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+````
+
+## Disabling Quarto Table Processing
+
+It's possible that Quarto processing of HTML tables interferes with your library's processing. If this is the case, you can disable Quarto's processing of HTML tables by adding the following data attribute to your table, _i.e._, `data-quarto-disable-processing="true"`:
+
+```html
+<table data-quarto-disable-processing="true">
+  ...
+</table>
+```
