@@ -1,10 +1,230 @@
 ---
 title: "Authoring Manuscripts"
 article-file: "index.qmd"
+template-repo: "https://github.com/cwickham/manuscript-template"
+tool: 
+  name: "RStudio"
+  is_jupyterlab: false
+  is_rstudio: true
 ---
 
 {{< include ../_tool-chooser.md >}}
 
+## Overview
+
+On this page, we'll show you how to author an academic manuscript with Quarto in {{< meta tool.name >}}. You'll learn how to:
+
+-   Preview your manuscript using the Quarto command line tool.
+
+-   Add scholarly front matter to describe your article.
+
+-   Add things like figures, tables, cross references and citations with Quarto specific markdown.
+
+-   Include output from computations using inline code, or embedded from external notebooks.
+
+### Is this tutorial for me?
+
+We will assume you:
+
+-   are comfortable using {{< meta tool.name >}} to open and edit files,
+-   have a GitHub account, and are comfortable cloning a repo to your computer,
+-   are comfortable navigating your file system, and executing commands in a Terminal.
+
+## Setup
+
+To follow along, you'll need to clone the template repository.
+
+::: callout-important
+## Install Quarto First
+
+If you haven't already, make sure you've installed the pre-release version of Quarto, as described in the [Manuscript Overview](../index.qmd#install).
+:::
+
+### Clone the Template Repository {#clone-repo}
+
+UPDATE THIS TO LINK TO R version of template repo
+
+To follow this tutorial you'll need your own copy of the [template repository]({{< meta template-repo >}})).
+
+1.  Head to [GitHub to create a new repository from the template]({{< meta template-repo >}}/generate).
+
+    Provide a "Repository Name" and make sure you check the box "Include all branches". Then "Create repository from template". ![](images/github-create-from-template.png){fig-alt="Screenshot of GitHub's create a new repo from a template page. Repository name has been filled with manuscript-template, and the box labelled Include all branches is checked."}
+
+2.  Once your repository is created, clone it to your local computer. You can do this any way you are comfortable, but one approach is to use File -> New Project
+
+    EXPLAIN USING RStudio File -> New Project INSTEAD
+
+    ADD SCREENSHOT of RStudio open with files pane open showing directory structure.
+
+## Project Files
+
+{{< include _files.qmd >}}
+
+## Workflow
+
+{{< include _workflow.qmd >}}
+
+## Notebook Structure
+
+The file `index.ipynb` is a Jupyter Notebook. Like any Jupyter Notebook it contains cells that could be raw, markdown or code. There are three features of this notebook that are Quarto specific:
+
+-   The first cell contains a YAML header that is used to set document metadata, including scholarly front matter. This cell must start and end with a line of three dashes (`---`), and within these lines, content is parsed as YAML. You'll notice the cell itself is set to be a Markdown cell, this allows the Quarto Jupyter Lab Extension to visually emulate how some of these options will appear in the rendered document.
+
+-   The other markdown cells use Quarto specific markdown syntax to include things like figures, tables, equations, cross references and citations.
+
+-   Code cells may have special Quarto comments at the top that start with `#|`. These comments set Quarto options that control how the code and its output appear in the article.
+
+The rest of this page walks you through the cells in this article from top to bottom, introducing you to the Quarto features you'll most likely need to write a scholarly article.
+
+## Front Matter
 
 {{< include _front-matter.qmd >}}
 
+## Markdown
+
+Markdown cells in the document will be processed by Quarto's specific markdown syntax. Quarto's markdown syntax is based on [Pandoc Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown), which in turn is based on John Gruber's [Markdown](https://daringfireball.net/projects/markdown/), the same markdown Jupyter Notebooks use. You'll find much of the syntax, for example, text formatting like bold, italics, and verbatim code, as well as headings, links and lists familiar:
+
+{{< include _markdown.qmd >}}
+
+::: callout-tip
+## Raw and Rendered Markdown
+
+The Quarto extension for Jupyter Lab will attempt to display markdown cells as they will appear in rendered form. To see the raw markdown, enter "Edit mode" for the cell. To return to viewing the rendered markdown, "Run" the cell.
+:::
+
+## Figures
+
+{{< include _figures.qmd >}}
+
+## Tables
+
+{{< include _tables.qmd >}}
+
+## Cross References {#cross-ref}
+
+{{< include _cross-refs.qmd >}}
+
+## Equations
+
+{{< include _equations.qmd >}}
+
+## Computations {#inline-computations}
+
+::: callout-tip
+## Python Examples
+
+This section uses Python code examples, but Quarto also supports R, Julia and Observable.
+
+You don't need to rerun the Python code to follow along, but if you would like to, you'll need the `matplotlib` and `numpy` packages.
+:::
+
+Your article can include code cells. By default, code itself will not display in the article, but any output including tables and figures will. When you include code cells in your article, you'll also get an additional link to the "Article Notebook" under Notebooks on the manuscript webpage. This is a rendered version of your article notebook that includes the code.
+
+For example, `{{< meta article-file >}}`, includes the code cell:
+
+``` python
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+
+This doesn't appear in the rendered article, but does in the "Article Notebook".
+
+SCREENSHOTS of side by side article and article notebook
+
+You can add Quarto options to code cells by adding a `#|` comment to the top of a code cell, followed by the option in YAML syntax. For example, adding the `echo` option with the value `true` would look like this:
+
+``` python
+#| echo: true
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+
+The `echo` option describes whether the code is included in the article. If you make this change and save `{{< meta article-file >}}`, you'll see this code now appears in the article. You can find a list of all the code cell options available on the [Jupyter Code Cell](/docs/reference/cells/cells-jupyter.html) reference page.
+
+The next code cell creates a figure:
+
+``` python
+#| label: fig-timeline
+#| fig-cap: Timeline of recent earthquakes on La Palma
+#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.
+
+plt.figure(figsize=(6, 1))
+plt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.ylabel('')
+plt.show()
+```
+
+The figure label (to allow cross referencing), figure caption, and alt text are added using the respective Quarto options: `label`, `fig-cap` and `fig-alt`.
+
+Inline computations are also a good way to include tables based on data. You can read more about doing this in the Quarto documentation on [Tables from Computations](/docs/authoring/tables.html#computations).
+
+If you have code cell output you don't want to include in your article you can use `output: false`. For example, you may have a value that is helpful for writing your content, but you don't want it to appear in the article itself. The next code cell is an example:
+
+``` python
+#| output: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+
+If you are viewing `{{< meta article-file >}}` in Jupyter, or viewing the rendered "Article Notebook", you'll see the value of `avg_years_between_eruptions` displayed below this code, but the value does not appear in the rendered article.
+
+If you'd like to exclude a cell and its output from both the article and the rendered notebook, you could use `include: false` instead:
+
+``` python
+#| include: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+
+You can also use computed values directly in your article text by using the `Markdown()` function from the IPython display module. Read more in [Inline Code](/docs/computations/execution-options.html#inline-code).
+
+Rather that including inline computations you can also embed outputs from other notebooks, read more below in [Embedding Notebooks](#embed).
+
+## Citations
+
+{{< include _citations.qmd >}}
+
+## External Embeds {#embed}
+
+An alternative to including computations directly in the article notebook, is to embed output from other notebooks. This manuscript project includes the notebook `data-screening.ipynb` in the `notebooks/` folder.
+
+To embed output from a notebook, you can use the `embed` shortcode. Quarto shortcodes are special markdown directives that generate content. The `embed` shortcode is used in `{{< meta article-file >}}` in the line:
+
+``` {.markdown shortcodes="false"}
+{{< embed notebooks/data-screening.ipynb#fig-spatial-plot >}}
+```
+
+The double curly braces (`{{`) and angle brackets (`<`) indicate this is a shortcode. The `embed` shortcode requires a path to a notebook cell. In this case, it's the file path to `data-screening.ipynb`, followed by `#` and a cell identifier. Here, the cell identifier is the cell label, set using the Quarto cell option `label` in code cell in the `data-screening.ipynb` notebook:
+
+``` {.python filename="data-screening.ipynb"}
+#| label: fig-spatial-plot
+#| fig-cap: "Locations of earthquakes on La Palma since 2017."
+#| fig-alt: "A scatterplot of earthquake locations plotting latitude 
+#|   against longitude."
+from matplotlib import colormaps
+cmap = colormaps['viridis_r']
+ax = df.plot.scatter(x="Longitude", y="Latitude", 
+                     s=40-df["Depth(km)"], c=df["Magnitude"], 
+                     figsize=(12,10), grid="on", cmap=cmap)
+colorbar = ax.collections[0].colorbar
+colorbar.set_label("Magnitude")
+
+plt.show()
+```
+
+Just like any figure, using a label starting with `fig-` allows it to be cross referenced in the text. Any other options, like the figure caption (`fig-cap`) and alt text (`fig-alt`), can also be set in the source notebook.
+
+In this manuscript, the notebook `data-screening.ipynb` isn't reproducible: you can't regenerate all the outputs because some inputs (e.g. the data) aren't included in the project. However, you can change the Quarto cell options without rerunning the code cells in the notebook. If you edit the caption to:
+
+``` python
+#| fig-cap: "Earthquakes on La Palma since 2017."
+```
+
+When you save `data-screening.ipynb`, you'll find the preview updates and the caption is reflected in the article itself.
+
+## Up Next
+
+{{< include _footer.qmd >}}
