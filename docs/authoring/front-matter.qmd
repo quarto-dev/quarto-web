@@ -53,7 +53,7 @@ The documents produced by the above metadata for the HTML and JATS formats are s
 ![](images/scholarly-front-matter-html.png){fig-alt="Screenshot of the HTML preview from the document with the above metadata."}
 :::
 
-Not all of the metadata keys are used in every format. For example, the HTML format does not display the `keywords`. Currently the JATS format makes use of the broadest set of metadata tags, so if you want to check how things render we recommend previewing with `format: jats`.
+Not all of the metadata keys are used in every format. For example, the HTML format does not display the `keywords`. However, the tags described on this page will generally be supported in [journal article formats](/docs/extensions/listing-journals.html). Currently the JATS format makes use of the broadest set of metadata tags, so if you want to check how things render we recommend previewing with `format: jats`.
 
 ## Authors & Affiliations {#authors-and-affiliations}
 
@@ -105,6 +105,7 @@ Beyond `name` and `affiliation`, `author` can also take any of the following:
 
 +----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `email`\             | string         | Contact details for the author. Converted to hyperlinks in many formats.                                                                                            |
+| `phone`\             |                |                                                                                                                                                                     |
 | `fax`\               |                |                                                                                                                                                                     |
 | `url`                |                |                                                                                                                                                                     |
 +----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -119,8 +120,6 @@ Beyond `name` and `affiliation`, `author` can also take any of the following:
 |                      |                | and/or deceased.                                                                                                                                                    |
 +----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `id`                 | string         | An identifier to be used to refer to this author in other fields. See an example in [Funding].                                                                      |
-+----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `number`             | number         | A number to identify this author.                                                                                                                                   |
 +----------------------+----------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 : Available keys to `author`
@@ -137,6 +136,23 @@ author:
     url: https://en.wikipedia.org/wiki/Josiah_S._Carberry
     email: josiah@psychoceramics.org
     corresponding: true
+---
+```
+
+Quarto will automatically parse the `name` key into its components. 
+However, if this parsing is incorrect you can specify the components, `given`, `family`, `dropping-particle`, and `non-dropping-particle` directly, for example:
+
+``` yaml
+---
+author: 
+  - name: 
+      given: Charles
+      family: Gaulle
+      non-dropping-particle: de
+  - name: 
+      given: Ludwig
+      family: Beethoven
+      dropping-particle: van
 ---
 ```
 
@@ -171,14 +187,16 @@ In addition to `name`, `affiliation` can take any of the following:
 | `address`\              | String    | Affiliation's location. Provide one of `region` or `state`, and any combination of the other keys. |
 | `city`\                 |           |                                                                                                    |
 | `region` or `state`\    |           |                                                                                                    |
-| `country` `postal-code` |           |                                                                                                    |
+| `country`\              |           |                                                                                                    |
+| `postal-code`           |           |                                                                                                    |
 +-------------------------+-----------+----------------------------------------------------------------------------------------------------+
 | `url`                   | String    | Affiliation's website. Converted to a link in many formats.                                        |
 +-------------------------+-----------+----------------------------------------------------------------------------------------------------+
-| `isni`\                 | Numeric   | Affiliation's:\                                                                                    |
-| `ringgold`\             |           | [International Standard Name Identifier (ISNI)](https://isni.org/);\                               |
-| `ror`                   |           | [Ringgold ID](https://www.ringgold.com/ringgold-identifier/);\                                     |
-|                         |           | [Research Organization Registry (ROR) ID](https://ror.org/).                                       |
+|  \                      | \         | Affiliation IDs:\                                                                                  | 
+| `isni`\                 | Numeric\  | 16 digit [International Standard Name Identifier (ISNI)](https://isni.org/); \                     |
+| `ringgold`\             | Numeric\  | 4-6 digit [Ringgold ID](https://www.ringgold.com/ringgold-identifier/);\                           |
+| `ror`                   | String    | [Research Organization Registry (ROR) ID](https://ror.org/), starting with `https://ror.org/`,     |
+|                         |           | followed by a 9 digit alphanumeric identifier.                                                     |
 +-------------------------+-----------+----------------------------------------------------------------------------------------------------+
 
 : Available keys to `affiliation`
@@ -197,7 +215,7 @@ author:
     - name: Brown University
       department: Psychoceramics
       city: Providence
-      region: RI
+      state: RI
       country: US
       url: www.brown.edu
       ringgold: 6752
@@ -264,13 +282,13 @@ This approach may be more convenient in cases where you also want to refer to af
 
 ## Abstract
 
-You can add an abstract with the `abstract` key. Since abstracts are generally longer than a line, and may contain markdown, you'll need to provide it using YAML's folded block style. That is, place a `>` on the same line as `abstract:` and indent your raw abstract text by two spaces.
+You can add an abstract with the `abstract` key. Since abstracts are generally longer than a line, and may contain markdown, you'll need to provide it using YAML's literal block style. That is, place a `|` on the same line as `abstract:` and indent your raw abstract text by two spaces.
 
 For example:
 
 ``` yaml
 ---
-abstract: >
+abstract: |
   This article evaluates novel approaches to do
   some really important things.
 ---
