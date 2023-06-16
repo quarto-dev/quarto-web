@@ -24,7 +24,6 @@ local function injectChooseYourTool()
   end
 end
 
--- note that custom nodes are passed by reference (so mutation works on them)
 function Tabset(el)
   if el.attr.attributes["group"] == "tools-tabset" then
     injectChooseYourTool()
@@ -32,8 +31,9 @@ function Tabset(el)
       local text = pandoc.utils.stringify(tab.title)
       local icon = kTabsetIcons[text]
       if icon then
-        tab.title:insert(1, pandoc.Image("", "/docs/get-started/images/" .. icon))
+        tab.title.content:insert(1, pandoc.Image("", "/docs/get-started/images/" .. icon))
       end
     end
   end
+  return el
 end

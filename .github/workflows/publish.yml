@@ -12,10 +12,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2 
 
+      - name: Get latest pre-release from github
+        id: github-release
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo version=$(gh api repos/quarto-dev/quarto-cli/releases | jq -r 'map(select(.prerelease)) | first | .tag_name | sub("^v";"")') >> "$GITHUB_OUTPUT"
+
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: pre-release
+          version: ${{ steps.github-release.outputs.version }}
 
       - name: Render and Publish 
         uses: quarto-dev/quarto-actions/publish@v2
