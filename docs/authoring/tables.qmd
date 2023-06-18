@@ -17,6 +17,11 @@ This article covers using these features in-depth.
 
 The most commonly used markdown table is known as a pipe table. Pipe tables support specifying per column alignment as well as captions. For example:
 
+
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
 | Default | Left | Right | Center |
 |---------|:-----|------:|:------:|
@@ -27,7 +32,9 @@ The most commonly used markdown table is known as a pipe table. Pipe tables supp
 : Demonstration of pipe table syntax
 ```
 
-Here is the table rendered to HTML:
+::::
+
+:::: {}
 
 | Default | Left | Right | Center |
 |---------|:-----|------:|:------:|
@@ -36,6 +43,10 @@ Here is the table rendered to HTML:
 | 1       | 1    |     1 |   1    |
 
 : Demonstration of pipe table syntax
+
+::::
+
+:::
 
 The beginning and ending pipe characters are optional, but pipes are required between all columns. The colons indicate column alignment as shown. The header cannot be omitted, however you can simulate a headerless table by including a header with blank cells.
 
@@ -53,11 +64,19 @@ The cells of pipe tables cannot contain block elements like paragraphs and lists
 
 For example `---|-` would make the first column 3/4 and the second column 1/4 of the full text width. On the other hand, if no lines are wider than column width, then cell contents will not be wrapped, and the cells will be sized to their contents.
 
-### Markdown Tables and Bootstrap classes
+### Using Bootstrap classes
 
-Bootstrap table classes given as attributes next to a table caption are now inserted into the `<table>` element. The classes permitted are those that apply expressly to the entire table, and these are: `"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"light"`, `"dark"`, `"striped"`, `"hover"`, `"active"`, `"bordered"`, `"borderless"`, `"sm"`, `"responsive"`, `"responsive-sm"`, `"responsive-md"`, `"responsive-lg"`, `"responsive-xl"`, `"responsive-xxl"`. For example, the following Markdown table will be rendered with row stripes and the rows will also be highlighted on hover:
+Bootstrap table classes given as attributes next to a table caption are inserted into the `<table>` element.
+The classes permitted are those that apply expressly to the entire table, and these are:
+`"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"light"`, `"dark"`, `"striped"`, `"hover"`, `"active"`, `"bordered"`, `"borderless"`, `"sm"`, `"responsive"`, `"responsive-sm"`, `"responsive-md"`, `"responsive-lg"`, `"responsive-xl"`, `"responsive-xxl"`.
+For example, the following Markdown table will be rendered with row stripes and the rows will also be highlighted on hover:
 
-```
+::: {layout-ncol="2"}
+
+:::: {}
+
+
+``` markdown
 | fruit  | price  |
 |--------|--------|
 | apple  | 2.05   |
@@ -66,6 +85,22 @@ Bootstrap table classes given as attributes next to a table caption are now inse
 
 : Fruit prices {.striped .hover}
 ```
+
+::::
+
+:::: {}
+
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {.striped .hover}
+
+::::
+
+:::
 
 ### Authoring
 
@@ -83,9 +118,13 @@ For simple tables with only a few cells it's straightforward to create them dire
 
 ## Column Widths
 
-Above we describe a means of specifying column widths using the relative number of dashes in each column header (e.g. `---|-` to get a 75% / 25% split for a two-column table).
+Above we describe a means of specifying column widths using the relative number of dashes in each column header (_e.g._, `---|-` to get a 75% / 25% split for a two-column table).
 
 You can also explicitly specify columns widths using the `tbl-colwidths` attribute or document-level option. For an individual markdown table, add the attribute after the caption. For example:
+
+::: {layout-ncol="2"}
+
+:::: {}
 
 ``` markdown
 | fruit  | price  |
@@ -97,13 +136,55 @@ You can also explicitly specify columns widths using the `tbl-colwidths` attribu
 : Fruit prices {tbl-colwidths="[75,25]"}
 ```
 
+::::
+
+:::: {}
+
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {tbl-colwidths="[75,25]"}
+
+::::
+
+:::
+
 If your table doesn't have a caption, then you can still specify only `tbl-colwidths`:
 
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
 : {tbl-colwidths="[75,25]"}
 ```
 
-Column widths can also be specified at the document level (e.g. to have uniform widths across a set of tables):
+::::
+
+:::: {}
+
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: {tbl-colwidths="[75,25]"}
+
+::::
+
+:::
+
+Column widths can also be specified at the document level (_e.g._, to have uniform widths across a set of tables):
 
 ``` yaml
 ---
@@ -115,22 +196,23 @@ tbl-colwidths: [75,25]
 
 ## Cross References
 
-For tables produced by executable code cells, include a label with a `tbl-` prefix to make them cross-referenceable. For example:
+For tables produced by executable code cells, include a label with a `tbl-` prefix to make them cross-referenceable.
+For example:
 
 ```{python}
 #| label: tbl-planets
-#| tbl-cap: "Planets"
+#| tbl-cap: "Astronomical object"
 #| echo: fenced
 
 from IPython.display import Markdown
 from tabulate import tabulate
-table = [["Sun",696000,1989100000],
-         ["Earth",6371,5973.6],
-         ["Moon",1737,73.5],
-         ["Mars",3390,641.85]]
+table = [["Sun","696,000",1.989e30],
+         ["Earth","6,371",5.972e24],
+         ["Moon","1,737",7.34e22],
+         ["Mars","3,390",6.39e23]]
 Markdown(tabulate(
   table, 
-  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
+  headers=["Astronomical object","R (km)", "mass (kg)"]
 ))
 ```
 
@@ -170,18 +252,18 @@ All of the options described above work for tables produced by executable code c
 
 ```{python}
 #| label: tbl-planet-measures
-#| tbl-cap: "Planets"
+#| tbl-cap: "Astronomical object"
 #| echo: fenced
 
 from IPython.display import Markdown
 from tabulate import tabulate
-table = [["Sun",696000,1989100000],
-         ["Earth",6371,5973.6],
-         ["Moon",1737,73.5],
-         ["Mars",3390,641.85]]
+table = [["Sun","696,000",1.989e30],
+         ["Earth","6,371",5.972e24],
+         ["Moon","1,737",7.34e22],
+         ["Mars","3,390",6.39e23]]
 Markdown(tabulate(
   table, 
-  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
+  headers=["Astronomical object","R (km)", "mass (kg)"]
 ))
 ```
 
@@ -192,7 +274,6 @@ Here we apply the `tbl-cap` and `tbl-colwidths` options to a code cell that uses
 #| tbl-cap: "Cars"
 #| tbl-colwidths: [60,40]
 
-library(knitr)
 kable(head(cars))
 ```
 
@@ -216,70 +297,116 @@ kable(head(pressure))
 
 Grid tables are a more advanced type of markdown tables that allow arbitrary block elements (multiple paragraphs, code blocks, lists, etc.). For example:
 
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
-+---------------+---------------+--------------------+
-| Fruit         | Price         | Advantages         |
-+===============+===============+====================+
-| Bananas       | $1.34         | - built-in wrapper |
-|               |               | - bright color     |
-+---------------+---------------+--------------------+
-| Oranges       | $2.10         | - cures scurvy     |
-|               |               | - tasty            |
-+---------------+---------------+--------------------+
++-----------+-----------+--------------------+
+| Fruit     | Price     | Advantages         |
++===========+===========+====================+
+| Bananas   | $1.34     | - built-in wrapper |
+|           |           | - bright color     |
++-----------+-----------+--------------------+
+| Oranges   | $2.10     | - cures scurvy     |
+|           |           | - tasty            |
++-----------+-----------+--------------------+
 
 : Sample grid table.
 ```
+
+::::
+
+:::: {}
+
++-----------+-----------+--------------------+
+| Fruit     | Price     | Advantages         |
++===========+===========+====================+
+| Bananas   | $1.34     | - built-in wrapper |
+|           |           | - bright color     |
++-----------+-----------+--------------------+
+| Oranges   | $2.10     | - cures scurvy     |
+|           |           | - tasty            |
++-----------+-----------+--------------------+
+
+: Sample grid table.
+
+::::
+
+:::
 
 The row of `=`s separates the header from the table body, and can be omitted for a headerless table. Cells that span multiple columns or rows are not supported.
 
-This is what the table looks like when rendered to markdown:
-
-+---------------+---------------+----------------------+
-| Fruit         | Price         | Advantages           |
-+===============+===============+======================+
-| Bananas       | \$1.34        | -   built-in wrapper |
-|               |               | -   bright color     |
-+---------------+---------------+----------------------+
-| Oranges       | \$2.10        | -   cures scurvy     |
-|               |               | -   tasty            |
-+---------------+---------------+----------------------+
-
-: Sample grid table.
-
 Alignments can be specified as with pipe tables, by putting colons at the boundaries of the separator line after the header:
 
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
-+---------------+---------------+--------------------+
-| Right         | Left          | Centered           |
-+==============:+:==============+:==================:+
-| Bananas       | $1.34         | built-in wrapper   |
-+---------------+---------------+--------------------+
++---------+--------+------------------+
+| Right   | Left   | Centered         |
++========:+:=======+:================:+
+| Bananas | $1.34  | built-in wrapper |
++---------+--------+------------------+
 ```
+
+::::
+
+:::: {}
+
++---------+--------+------------------+
+| Right   | Left   | Centered         |
++========:+:=======+:================:+
+| Bananas | $1.34  | built-in wrapper |
++---------+--------+------------------+
+
+::::
+
+:::
 
 For headerless tables, the colons go on the top line instead:
 
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
-+--------------:+:--------------+:------------------:+
-| Right         | Left          | Centered           |
-+---------------+---------------+--------------------+
++----------:+:----------+:--------:+
+| Right     | Left      | Centered |
++-----------+-----------+----------+
 ```
+
+::::
+
+:::: {}
++----------:+:----------+:--------:+
+| Right     | Left      | Centered |
++-----------+-----------+----------+
+::::
+
+:::
 
 Note that grid tables are quite awkward to write with a plain text editor (because unlike pipe tables, the column indicators must align). Here are some tools that can assist with creating grid tables:
 
 -   Emacs' [table-mode](https://www.gnu.org/software/emacs/manual/html_node/emacs/Text-Based-Tables.html) (`M-x table-insert`)
-
 -   Quarto [Visual Editor](https://quarto.org/docs/visual-editor/content.html#editing-tables)
-
 -   Tables Generator's [Plain Text mode](https://www.tablesgenerator.com/text_tables) with `Use reStructuredText syntax` enabled
 
 ## HTML Tables
 
-Quarto can process HTML tables in `html` `RawBlock` nodes (_i.e._, `{=html}`) in format and convert them to Markdown tables, regardless of output format (intentionally including non-HTML formats). As a result, you can use HTML table syntax in your documents and they will be properly converted to Markdown tables for all formats, and libraries which emit computational tables in HTML format can work in other output formats. In addition, this allows Lua filters to manipulate the content of tables specified in HTML format.
+Quarto can process HTML tables in `html` `RawBlock` nodes (_i.e._, `{=html}`) and convert them to Markdown tables, regardless of the output format (intentionally including non-HTML formats).
+As a result, you can use HTML table syntax in your documents and it will be converted to Markdown syntax for all formats.
+Additionally, libraries that emit computational tables in HTML format can work in other output formats.
 
-````html
+:::: {layout-nrow="2"}
+
+:::: {}
+
+````markdown
 ```{=html}
 <table>
-  <caption>As described in the section above, Quarto are great.</caption>
+  <caption>As described in the section above, Quarto tables are great.</caption>
   <thead>
     <tr>
       <th>Header 1</th>
@@ -296,14 +423,159 @@ Quarto can process HTML tables in `html` `RawBlock` nodes (_i.e._, `{=html}`) in
 ```
 ````
 
+::::
+
+:::: {}
+
+```{=html}
+<table>
+  <caption>As described in the section above, Quarto tables are great.</caption>
+  <thead>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/220px-African_Bush_Elephant.jpg" alt="African Bush Elephant" /></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+::::
+
+:::
+
+This also allows Lua [filters](../extensions/filters.qmd) to manipulate the content of tables specified in HTML format.
+For example, the above table will be converted to the following Pandoc AST which can then be used for any formats, including `pdf`:
+
+```markdown
+Pandoc
+  Meta { unMeta = fromList [] }
+  [ Table
+      ( "" , [] , [ ( "quarto-postprocess" , "true" ) ] )
+      (Caption
+         Nothing
+         [ Plain
+             [ Str "As"
+             , Space
+             , Str "described"
+             , Space
+             , Str "in"
+             , Space
+             , Str "the"
+             , Space
+             , Str "section"
+             , Space
+             , Str "above,"
+             , Space
+             , Str "Quarto"
+             , Space
+             , Str "tables"
+             , Space
+             , Str "are"
+             , Space
+             , Str "great."
+             ]
+         ])
+      [ ( AlignDefault , ColWidthDefault )
+      , ( AlignDefault , ColWidthDefault )
+      ]
+      (TableHead
+         ( "" , [] , [] )
+         [ Row
+             ( "" , [] , [] )
+             [ Cell
+                 ( "" , [] , [ ( "quarto-table-cell-role" , "th" ) ] )
+                 AlignDefault
+                 (RowSpan 1)
+                 (ColSpan 1)
+                 [ Plain [ Str "Header" , Space , Str "1" ] ]
+             , Cell
+                 ( "" , [] , [ ( "quarto-table-cell-role" , "th" ) ] )
+                 AlignDefault
+                 (RowSpan 1)
+                 (ColSpan 1)
+                 [ Plain [ Str "Header" , Space , Str "2" ] ]
+             ]
+         ])
+      [ TableBody
+          ( "" , [] , [] )
+          (RowHeadColumns 0)
+          []
+          [ Row
+              ( "" , [] , [] )
+              [ Cell
+                  ( "" , [] , [] )
+                  AlignDefault
+                  (RowSpan 1)
+                  (ColSpan 1)
+                  [ Plain
+                      [ Image
+                          ( "" , [] , [] )
+                          [ Str "African"
+                          , Space
+                          , Str "Bush"
+                          , Space
+                          , Str "Elephant"
+                          ]
+                          ( "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/220px-African_Bush_Elephant.jpg"
+                          , ""
+                          )
+                      ]
+                  ]
+              , Cell
+                  ( "" , [] , [] )
+                  AlignDefault
+                  (RowSpan 1)
+                  (ColSpan 1)
+                  [ Plain [ Str "Regular" , Space , Str "output" ] ]
+              ]
+          ]
+      ]
+      (TableFoot ( "" , [] , [] ) [])
+  ]
+```
+
 In addition, Quarto supports the specification of embedded Markdown content in tables.
 This is done by providing a data attribute `qmd` or `qmd-base64` in an embedded `span` or `div` node.
 These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._  
-For example, consider the following table:
+For example, consider the following section and table:
 
-````qmd
+:::: {layout-nrow="2"}
 
-## HTML Tables {#sec-html-tables}
+::: {}
+
+```` markdown
+## HTML Tables Example {#sec-html-tables}
+
+```{=html}
+<table>
+  <caption><span data-qmd="As described in [Section -@sec-html-tables], Quarto are great."></span></caption>
+  <thead>
+    <tr>
+      <th><span data-qmd="_Header 1_"></span></th>
+      <th><span data-qmd="_Header 2_"></span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span data-qmd="{{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}}"></span></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+````
+
+:::
+
+::: {}
+
+## HTML Tables Example {#sec-html-tables}
 
 ```{=html}
 <table>
@@ -322,11 +594,16 @@ For example, consider the following table:
   </tbody>
 </table>
 ```
-````
+
+:::
+
+::::
+
 
 ## Disabling Quarto Table Processing
 
-It's possible that Quarto processing of HTML tables interferes with your library's processing. If this is the case, you can disable Quarto's processing of HTML tables by adding the following data attribute to your table, _i.e._, `data-quarto-disable-processing="true"`:
+It's possible that Quarto's processing of HTML tables interferes with your library's processing.
+If this is the case, you can disable Quarto's processing of HTML tables by adding the attribute `data-quarto-disable-processing="true"` to your table, for example:
 
 ```html
 <table data-quarto-disable-processing="true">
