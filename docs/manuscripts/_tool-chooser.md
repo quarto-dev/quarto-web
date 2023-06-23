@@ -3,19 +3,16 @@
   <li class="nav-item" role="presentation">
     <a class="nav-link" href="jupyterlab.html">
       <img src="../images/jupyter-logo.png">Jupyter
-      <small><code>.ipynb</code></br>Python</small>
     </a>
   </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" href="vscode.html">
       <img src="../images/vscode-logo.png">VS Code
-      <small><code>.qmd</code></br>Python</small>
     </a>
   </li>
   <li class="nav-item" role="presentation">
     <a class="nav-link" href="rstudio.html">
       <img src="../images/rstudio-logo.png">RStudio
-      <small><code>.qmd</code></br>R</small>
     </a>
   </li>
 </ul>
