@@ -6,11 +6,11 @@ If you are in a fresh Python 3 environment, installing the `jupyter` package wil
 | Pkg. Manager | Command                        |
 +==============+================================+
 | Pip\         | ``` bash                       |
-| (Windows)    | py -m pip install jupyter      |
+| (Mac/Linux)  | python3 -m pip install jupyter |
 |              | ```                            |
 +--------------+--------------------------------+
 | Pip\         | ``` bash                       |
-| (Mac/Linux)  | python3 -m pip install jupyter |
+| (Windows)    | py -m pip install jupyter      |
 |              | ```                            |
 +--------------+--------------------------------+
 | Conda        | ``` bash                       |
