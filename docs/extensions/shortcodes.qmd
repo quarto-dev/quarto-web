@@ -33,7 +33,7 @@ This article describes how to create your own shortcodes.
 
 ## Quick Start
 
-Here we'll describe how to create a simple shortcode extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio you should execute `quarto create` within their respective integrated Terminal panes. 
+Here we'll describe how to create a simple shortcode extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio, you should execute `quarto create` within their respective integrated terminal panes. 
 
 To get started, execute `quarto create extension shortcode` within the parent directory where you'd like the shortcode extension to be created:
 
@@ -53,7 +53,7 @@ Creating extension at /Users/jjallaire/extensions/shorty/shorty:
   - Created example.qmd
 ```
 
-If you are running within VS Code or RStudio a new window will open with the extension project. 
+If you are running within VS Code or RStudio, a new window will open with the extension project. 
 
 Here's what the contents of the files in `_extensions/shorty/` look like:
 
@@ -111,7 +111,7 @@ function env(args)
 end
 ```
 
-Note that arguments to shortcodes are provided in `args` (a 1-based array), and that each argument is a list of Pandoc inlines (i.e. markdown AST parsed from the text).
+Note that arguments to shortcodes are provided in `args` (a 1-dimensional array), and that each argument is a list of Pandoc inlines (i.e. markdown AST parsed from the text).
 
 We use the `pandoc.utils.stringify()` function to convert the inlines to an ordinary string, and then the `os.getenv()` function to get its value.
 
@@ -120,7 +120,6 @@ You would use this shortcode as follows:
 ``` markdown
 {{{< env HOME >}}}
 ```
-
 
 ## Distribution
 
@@ -199,7 +198,7 @@ You'd use this shortcode as follows:
 
 ### Named Arguments
 
-The examples above use either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine whether a short or long SHA1 is displayed:
+The examples above use either a single argument (`env`) or no arguments at all (`pagebreak`). Here we demonstrate named argument handling by implementing a `git-rev` shortcode that prints the current git revision, providing a `short` option to determine whether a short or long SHA1 value is displayed:
 
 ``` {.lua filename="git.lua"}
 -- run git and read its output
@@ -232,7 +231,7 @@ return {
 }
 ```
 
-There are some new things demonstrated here :
+There are some new things demonstrated here:
 
 1.  Rather than defining our shortcode functions globally, we return a table with the shortcode definitions. This allows us to define helper functions that are not themselves registered as shortcodes. It also enables us to define a shortcode with a dash (`-`) in its name.
 
@@ -251,9 +250,9 @@ title: "My Document"
 
 ### Metadata Options
 
-In some cases you may want to provide options that affect how you shortcode behaves. There is a third argument to shortcode handlers (`meta`) that provides access to document and/or project level metadata.
+In some cases you may want to provide options that affect how your shortcode behaves. There is a third argument to shortcode handlers (`meta`) that provides access to document and/or project level metadata.
 
-Let's implement a different version of the `git-rev` shortcode that emits the revision as a link to GitHub rather than plain text. To do this we make use of `github.owner` and `github.repo` metadata values:
+Let's implement a different version of the `git-rev` shortcode that emits the revision as a link to GitHub rather than plain text. To do this, we make use of `github.owner` and `github.repo` metadata values:
 
 ``` {.lua filename="git.lua"}
 function git(command)
@@ -281,9 +280,9 @@ return {
 }
 ```
 
-As with `args` and `kwargs`, `meta` values are always provided as a list of Pandoc inlines so often need to be converted to string using `pandoc.utils.stringify()`.
+As with `args` and `kwargs`, `meta` values are always provided as a list of Pandoc inlines, so often need to be converted to string using `pandoc.utils.stringify()`.
 
-To use this shortcode in a document we provide the GitHub info as document options, then include the shortcode where we want the link to be:
+To use this shortcode in a document, we provide the GitHub info as document options, then include the shortcode where we want the link to be:
 
 ``` {.markdown shortcodes="false"}
 ---
@@ -300,7 +299,7 @@ The shortcode registration and GitHub metadata could just as well been provided 
 
 ## Raw Arguments
 
-In Quarto >= 1.3 you can also access the raw stream of inlines passed to a shortcode, you can add a `raw_args` parameter. For example:
+In Quarto >= 1.3 you can also access the raw stream of inlines passed to a shortcode by adding a `raw_args` parameter. For example:
 
 ```lua
 function shorty(args, kwargs, meta, raw_args)
