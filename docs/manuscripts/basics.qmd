@@ -8,7 +8,11 @@ Manuscripts are a type of Quarto project that allow you to write scholarly artic
 
 If you are new to Quarto manuscripts, start with the [Manuscript Tutorial](/docs/manuscripts).
 
-On this page, you can learn how to start a manuscript from scratch, and control aspects of the manuscript output.
+On this page, you can learn how to:
+
+* Create a manuscript project
+* Control the manuscript output with options in `_quarto.yml`
+* Add a journal template
 
 ## Creating a Manuscript Project {#create}
 
@@ -35,57 +39,47 @@ If you would rather start with some template content, you can create a new manus
 quarto create project manuscript
 ```
 
-## MECA Archive
-
-One of the formats a manuscript project can produce is a Manuscript Exchange Common Approach (MECA) bundle.
-This bundle is a standardized way to transport your manuscript and its resources, including computational notebooks.
-
-A MECA bundle is produced if the `jats` format is listed as an output format for your article:
-
-``` {.yaml filename="_quarto.yml"}
-format:
-  html: default
-  jats: default
-```
-
-Or, you can explicitly set `meca-archive` to `true` in the `manuscript` options:
-
-``` {.yaml filename="_quarto.yml"}
-manuscript:
-  meca-archive: true
-```
-
-By default the MECA bundle is named after your article file, e.g. `index-meca.zip`, but you can also use `meca-archive` to provide a file name:
-
-``` {.yaml filename="_quarto.yml"}
-manuscript:
-  meca-archive: "archive.zip"
-```
-
-## Manuscript URL
-
-You can set the URL of your manuscript with `manuscript-url`:
-
-``` {.yaml filename="_quarto.yml"}
-manuscript:
-  manuscript-url: 
-```
-
 ## Including Notebooks
 
 Any notebook files (`.qmd` or `.ipynb`) that are included in your project directory will become part of your manuscript.
 These notebooks will be rendered to an HTML notebook view, and will be linked from your manuscript webpage under "Notebooks".
 
-The text for link under "Notebooks" will be the notebook `title` as set in its YAML metadata, of if that isn't set, the first markdown heading in the notebook.
+### Notebook Links
+
+The text for link under "Notebooks" will be the notebook `title` as set in its YAML metadata, or if that isn't set, the first markdown heading in the notebook.
 If neither exist, the link text will be the notebook file name.
 
-You can set the title of the notebook view for a notebook  using `notebooks`:
+You can also set the text using `notebooks`.
+Use `notebook` to specify the path to the notebook, and `title` to set the link text:
 
 ``` {.yaml filename="_quarto.yml"}
 manuscript:
   notebooks:
     - notebook: notebooks/data-screening.ipynb
       title: Data Processing
+```
+
+### External Notebooks
+
+To provide links to notebooks that are hosted elsewhere, add the `url` option:
+
+``` {.yaml filename="_quarto.yml"}
+manuscript:
+  notebooks:
+    - notebook: index.ipynb
+      title: Binder Jupyter Lab Demo
+      url: http://mybinder.org/v2/gh/binder-examples/jupyterlab/master?urlpath=lab/tree/index.ipynb
+```
+
+If you want Quarto to produce an HTML notebook view from your notebook source, 
+but you would like to provide a specific version for download, add the `download-url` option:
+
+``` {.yaml filename="_quarto.yml"}
+manuscript:
+  notebooks:
+    - notebook: notebooks/data-screening.ipynb
+      title: Data Processing
+      download-url: notebooks/data-screening-raw.ipynb
 ```
 
 ## Including Other Resources
@@ -102,11 +96,81 @@ manuscript:
 
 This ensures readers can access your data at: `{manuscript-url}/data/earthquakes.csv`.
 
+## MECA Bundle
+
+One of the formats a manuscript project can produce is a Manuscript Exchange Common Approach (MECA) bundle.
+This bundle is a standardized way to transport your manuscript and its resources, including computational notebooks.
+
+A MECA bundle is produced if the `jats` format is listed as an output format for your article:
+
+``` {.yaml filename="_quarto.yml"}
+format:
+  html: default
+  jats: default
+```
+
+Or, you can explicitly set `meca-bundle` to `true` in the `manuscript` options:
+
+``` {.yaml filename="_quarto.yml"}
+manuscript:
+  meca-bundle: true
+```
+
+By default the MECA bundle is named after your article file, e.g. `index-meca.zip`, but you can also use `meca-bundle` to provide a file name:
+
+``` {.yaml filename="_quarto.yml"}
+manuscript:
+  meca-bundle: "bundle.zip"
+```
+
+## Manuscript URL
+
+Links to your notebooks in non-HTML formats are constructed using the URL of your manuscript website.
+If your manuscript is published to GitHub Pages, Quarto will detect and set the URL for you.
+However, if you publish to a different host, or the automatic detection isn't working, you can set the URL explicitly with `manuscript-url`:
+
+``` {.yaml filename="_quarto.yml"}
+manuscript:
+  manuscript-url: www.posit.co
+```
+
+## Customizing Pages
+
+The article page and notebook views on your manuscript site are HTML pages, and can be customized using options for the `html` format. 
+A full list of options is available at [HTML Options](/docs/reference/formats/html.qmd).
+
+### Theme
+
+For example, you can change the visual styling of your page with the `theme` option by providing an existing theme name:
+
+``` {.yaml filename="_quarto.yml"}
+format:
+  html: 
+    theme: solar
+```
+
+You can read more at [HTML Theming](/docs/output-formats/html-themes.html).
+
+### Commenting
+
+Quarto also integrates with three tools to allow commenting on your manuscript site.
+To enable commenting, use the `comments` option to the `html` format. 
+For example, to enable [Hypothes.is](https://web.hypothes.is/) comments, you just need to add
+`hypothesis: true`:
+
+``` {.yaml filename="_quarto.yml"}
+format:
+  html: 
+    comments:
+      hypothesis: true
+```
+
+The other two tools available are [Utterances](https://utteranc.es/) and [Giscus](https://giscus.app/). You can read about setting them up at [HTML Basics: Commenting](/docs/output-formats/html-basics.html#commenting).
+
 ## Add a Journal Template
 
-Our template included the format `agu-pdf`, a PDF that uses the American Geophysical Union's style guide.
-You can find a list of other available journal formats on the [Quarto Extensions: Journal Articles](/docs/extensions/listing-journals.html) page.
-To use another journal format, for example the **acs** format, you'll need to complete two steps:
+You can find a list of available journal formats on the [Quarto Extensions: Journal Articles](/docs/extensions/listing-journals.html) page.
+To use a journal format, e.g. the [**acs**](https://github.com/quarto-journals/acs#american-chemical-society-acs) format, you'll need to complete two steps:
 
 1.  Install the appropriate journal format.
     You'll most likely be installing in an existing project, so you'll use the `quarto install extension` command, e.g.:
