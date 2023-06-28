@@ -399,9 +399,7 @@ Quarto can process HTML tables in `html` `RawBlock` nodes (_i.e._, `{=html}`) an
 As a result, you can use HTML table syntax in your documents and it will be converted to Markdown syntax for all formats.
 Additionally, libraries that emit computational tables in HTML format can work in other output formats.
 
-:::: {layout-nrow="2"}
-
-:::: {}
+For example, consider the following raw HTML block:
 
 ````markdown
 ```{=html}
@@ -423,9 +421,12 @@ Additionally, libraries that emit computational tables in HTML format can work i
 ```
 ````
 
-::::
+When rendered, this results in the following output for HTML and PDF formats:
+
+::: {layout-ncol=2}
 
 :::: {}
+### HTML Output
 
 ```{=html}
 <table>
@@ -444,106 +445,21 @@ Additionally, libraries that emit computational tables in HTML format can work i
   </tbody>
 </table>
 ```
+::::
 
+:::: {}
+### PDF Output
+
+![](images/raw-table-pdf.png){.border fig-alt="Screenshot of PDF output showing a table with a caption and two columns. The column headers are Header 1 and Header 2, and the cell contents are an image of an elephant and text that reads Regular Output."}
 ::::
 
 :::
 
-This also allows Lua [filters](../extensions/filters.qmd) to manipulate the content of tables specified in HTML format.
-For example, the above table will be converted to the following Pandoc AST which can then be used for any formats, including `pdf`:
-
-```markdown
-Pandoc
-  Meta { unMeta = fromList [] }
-  [ Table
-      ( "" , [] , [ ( "quarto-postprocess" , "true" ) ] )
-      (Caption
-         Nothing
-         [ Plain
-             [ Str "As"
-             , Space
-             , Str "described"
-             , Space
-             , Str "in"
-             , Space
-             , Str "the"
-             , Space
-             , Str "section"
-             , Space
-             , Str "above,"
-             , Space
-             , Str "Quarto"
-             , Space
-             , Str "tables"
-             , Space
-             , Str "are"
-             , Space
-             , Str "great."
-             ]
-         ])
-      [ ( AlignDefault , ColWidthDefault )
-      , ( AlignDefault , ColWidthDefault )
-      ]
-      (TableHead
-         ( "" , [] , [] )
-         [ Row
-             ( "" , [] , [] )
-             [ Cell
-                 ( "" , [] , [ ( "quarto-table-cell-role" , "th" ) ] )
-                 AlignDefault
-                 (RowSpan 1)
-                 (ColSpan 1)
-                 [ Plain [ Str "Header" , Space , Str "1" ] ]
-             , Cell
-                 ( "" , [] , [ ( "quarto-table-cell-role" , "th" ) ] )
-                 AlignDefault
-                 (RowSpan 1)
-                 (ColSpan 1)
-                 [ Plain [ Str "Header" , Space , Str "2" ] ]
-             ]
-         ])
-      [ TableBody
-          ( "" , [] , [] )
-          (RowHeadColumns 0)
-          []
-          [ Row
-              ( "" , [] , [] )
-              [ Cell
-                  ( "" , [] , [] )
-                  AlignDefault
-                  (RowSpan 1)
-                  (ColSpan 1)
-                  [ Plain
-                      [ Image
-                          ( "" , [] , [] )
-                          [ Str "African"
-                          , Space
-                          , Str "Bush"
-                          , Space
-                          , Str "Elephant"
-                          ]
-                          ( "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/220px-African_Bush_Elephant.jpg"
-                          , ""
-                          )
-                      ]
-                  ]
-              , Cell
-                  ( "" , [] , [] )
-                  AlignDefault
-                  (RowSpan 1)
-                  (ColSpan 1)
-                  [ Plain [ Str "Regular" , Space , Str "output" ] ]
-              ]
-          ]
-      ]
-      (TableFoot ( "" , [] , [] ) [])
-  ]
-```
-
 In addition, Quarto supports the specification of embedded Markdown content in tables.
 This is done by providing a data attribute `qmd` or `qmd-base64` in an embedded `span` or `div` node.
-These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._  
-For example, consider the following section and table:
+These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._ 
+
+For example, the following table includes a cross reference, markdown formatting and a shortcode:
 
 :::: {layout-nrow="2"}
 
@@ -574,6 +490,8 @@ For example, consider the following section and table:
 :::
 
 ::: {}
+
+Which renders as follows:
 
 ## HTML Tables Example {#sec-html-tables}
 
