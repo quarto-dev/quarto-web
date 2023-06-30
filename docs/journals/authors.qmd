@@ -4,7 +4,6 @@ title: "Authors & Affiliations"
 
 {{< include ../extensions/_extension-version.qmd >}}
 
-
 ## Overview
 
 An important goal for Quarto is to make it possible to use the same source document to produce multiple output formats. One significant challenge to overcome is defining a consistent way to express author and affiliation metadata such that articles targeting multiple Journals do not require special tweaking of authors and affiliations for each publication.
@@ -84,6 +83,7 @@ author:
       non-dropping-particle: string
     url: string
     email: string
+    phone: string
     fax: string
     orcid: string
     note: string
@@ -92,6 +92,8 @@ author:
       corresponding: boolean
       equal-contributor: boolean
       deceased: boolean
+    roles: 
+      # see schema below
     metadata: object
     affiliations: 
       # see schema below
@@ -152,6 +154,37 @@ author:
     attributes:
       corresponding: true
 ```
+
+### Roles
+
+Author roles can be specified with either `role` or `roles` and can be any of:
+
+-   A single string:
+
+    ``` yaml
+    author: 
+      role: "Conceived and designed the study"
+    ```
+-   An array of strings:
+
+    ``` yaml
+    author: 
+      role: 
+        - conceptualization
+        - methodology
+    ```
+    
+-   An array of key-value pairs of the form `role: contribution`:
+
+    ``` yaml
+    author: 
+      role: 
+        - conceptualization: lead
+        - methodology: supporting
+    ```
+
+If a role matches one of the [CRediT roles or their aliases](https://github.com/quarto-dev/quarto-cli/blob/f65180a75e1cf2996328cd51cb4fd5d02d391511/src/resources/filters/modules/authors.lua#L119-L144), vocabulary decorations are added.
+
 
 ### Arbitrary Metadata
 
