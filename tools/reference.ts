@@ -1,7 +1,7 @@
 
 import { basename, dirname, join } from "https://deno.land/std/path/mod.ts";
 import { expandGlobSync } from "https://deno.land/std/fs/expand_glob.ts";
-import { parse } from "https://deno.land/std/encoding/yaml.ts";
+import { parse } from "https://deno.land/std/yaml/mod.ts";
 import { distinct } from "https://deno.land/std/collections/distinct.ts"
 
 
