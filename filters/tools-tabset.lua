@@ -24,7 +24,6 @@ local function injectChooseYourTool()
   end
 end
 
--- note that custom nodes are passed by reference (so mutation works on them)
 function Tabset(el)
   if el.attr.attributes["group"] == "tools-tabset" then
     injectChooseYourTool()
@@ -36,4 +35,5 @@ function Tabset(el)
       end
     end
   end
+  return el
 end
