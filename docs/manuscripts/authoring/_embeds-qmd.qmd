@@ -1,0 +1,90 @@
+::: callout-note
+## Embedding Quarto Notebooks
+
+This section covers embedding outputs from Quarto documents (`.qmd`). You can also [embed outputs from Jupyter Notebooks (`.ipynb`)](/docs/authoring/notebook-embed.qmd).
+
+:::
+
+An alternative to including computations directly in the article notebook is to embed output from other notebooks. This manuscript project includes the notebook `{{< meta tool.notebook-file >}}` in the `notebooks/` folder.
+
+To embed output from a notebook, you can use the `embed` shortcode. Quarto shortcodes are special markdown directives that generate content. The `embed` shortcode is used in main article file in the line:
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+``` {.markdown filename="index.qmd" shortcodes="false"}
+{{< embed notebooks/explore-earthquakes.qmd#fig-spatial-plot >}}
+```
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+``` {.markdown filename="index.qmd" shortcodes="false"}
+{{< embed notebooks/data-screening.qmd#fig-spatial-plot >}}
+```
+:::
+
+The double curly braces (`{{`) and angle brackets (`<`) indicate this is a shortcode. The `embed` shortcode requires a path to a notebook chunk. In this case, it's the file path to a source notebook, `{{< meta tool.notebook-file >}}`, followed by `#` and a chunk label. The chunk label is set using the Quarto chunk option `label` in `{{< meta tool.notebook-file >}}` notebook:
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+````{.qmd filename="explore-earthquakes.qmd"}
+```{{r}}
+#| label: fig-spatial-plot
+#| fig-cap: "Locations of earthquakes on La Palma since 2017"
+#| fig-alt: "A scatterplot of earthquake locations plotting latitude 
+#|   against longitude."
+la_palma |> 
+  ggplot(aes(Longitude, Latitude)) +
+  geom_point(aes(color = Magnitude, size = 40-`Depth(km)`)) +
+  scale_color_viridis_c(direction = -1) + 
+  scale_size(range = c(0.5, 2), guide = "none") +
+  theme_bw()
+```
+````
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+````{.qmd filename="data-screening.qmd"}
+```{{python}}
+#| label: fig-spatial-plot
+#| fig-cap: Locations of earthquakes on La Palma since 2017.
+#| fig-alt: A scatterplot of earthquake locations plotting latitude against longitude.
+from matplotlib import colormaps
+cmap = colormaps['viridis_r']
+ax = df.plot.scatter(x="Longitude", y="Latitude", 
+                     s=47-df["Depth(km)"], c=df["Magnitude"], 
+                     figsize=(12,10), grid="on", cmap=cmap)
+colorbar = ax.collections[0].colorbar
+colorbar.set_label("Magnitude")
+
+plt.show()
+```
+````
+:::
+
+Just like any figure, using a label starting with `fig-` allows it to be cross referenced in the text. Any other options, like the figure caption (`fig-cap`) and alt text (`fig-alt`), can also be set in the source notebook.
+
+Whenever you change the content of `{{< meta tool.notebook-file >}}`, including updating chunk options like the caption, it will be re-rendered. 
+Consequently, the code in `{{< meta tool.notebook-file >}}` will also be re-run.
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+To re-run the code in this notebook, you'll need to have the tidyverse package: 
+``` r
+install.packages("tidyverse")
+```
+:::
+
+
+For example, if you edit the caption to:
+
+```{.r}
+#| fig-cap: "Earthquakes on La Palma since 2017."
+```
+
+You'll notice in the background `quarto preview` re-renders the file:
+```{.bash filename="Terminal"}
+processing file: {{< meta tool.notebook-file >}}
+                                                                                    output file: {{< meta tool.notebook-file >}}
+
+Rendering output notebook [notebooks/{{< meta tool.notebook-file >}}]
+Rendering HTML preview [notebooks/{{< meta tool.notebook-file >}}]
+```
+
+And then the caption in the main article preview updates.
