@@ -1,0 +1,58 @@
+---
+title: "Inline Execution for Jupyter"
+---
+
+{{< include _pre-release-feature.qmd >}}
+
+## Overview
+
+Quarto v1.4 includes support for executing inline expressions when using Jupyter kernels. Inline expressions are similar to code blocks, except that they use a single tick (`` ` ``) rather than triple tick (```` ``` ````) and can appear anywhere. For example, the following code:
+
+````
+```{{python}}
+x = 5
+```
+
+The answer is `{python} x`.
+````
+
+Will create this markdown output:
+
+````
+The answer is 5.
+````
+
+This syntax works for any Jupyter kernel---so for Julia you would write an inline expression as `` `{julia} x` ``).
+
+## Usage in Notebooks
+
+Inline expressions are always evaulated when rendering and previewing `.qmd` files. However, for notebooks you need to execute the notebook with Quarto in order to evaluate inline expressions (i.e. they won't be evaluated within the JupyterLab, VS Code, or PyCharm notebook editor).
+
+You can work in your favorite notebook front-end without Quarto execution, then once you are ready to publish execute the notebook during rendering as follows:
+
+```{.bash filename="Terminal"}
+$ quarto render notebook.ipynb --execute
+```
+
+You can also turn on execution within the YAML options of a notebook. For example:
+
+```yaml
+---
+title: "My Notebooks"
+execute:
+  enabled: true
+---
+```
+
+## Syntax Compatibility
+
+The Knitr and Observable engines each have their own syntax for inline expressions. To make it easier to learn and use expressions across engines, there is also a mapping from the Jupyter-compatible syntax to the native synaxes of Knitr and Observable. For example:
+
+| Engine     | Example         | Converted   |
+|------------|-----------------|-------------|
+| Knitr      | `` `{r} x` ``   | `` `r x` `` |
+| Observable | `` `{ojs} x` `` | `${x}`      |
+
+So you can use either the standard Quarto inline expression syntax or the native sytnax with these engines.
+
+
