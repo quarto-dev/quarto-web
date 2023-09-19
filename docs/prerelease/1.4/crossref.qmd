@@ -1,0 +1,91 @@
+---
+title: "Crossreferenceable elements"
+---
+
+## Crossreferenceable elements take arbitrary content
+
+Crossreferenceable elements now support any kind of content.
+In previous versions, Quarto figures needed (for the most part) to be images; Quarto tables needed to be `Table` elements, and so on.
+In v1.4, you can declare a Figure like this:
+
+````
+::: {#fig-1}
+
+::: {.figure-content}
+This is the figure content.
+:::
+
+This is a caption.
+
+:::
+````
+
+Here, the identifier of the figure is still `fig-1`, but the content of the "Figure" is a fenced Div with any kind of content. The figure
+itself is still referenced by `@fig-1`. The prefix `fig` identifies the type of crossreferenceable element. By default, Quarto v1.4 has support
+for Figures (`fig-`), Tables (`tbl-`) and Listings (`lst-`).
+
+## Custom crossreferenceable types
+
+In addition, Quarto v1.4 supports custom crossreferenceable types. If your document has a large number of, say diagrams or videos, you might
+want to refer to them directly as such. To use them, add the following to your document or project metadata:
+
+```yaml
+crossref:
+  custom: 
+    - kind: float # crossreferenceable elements with captions are `float`
+      prefix: Diagram # used as the prefix for reference in output ("In Figure 1, ..")
+      name: Diagram # used as the prefix for captions ("Figure 1: ..")
+      ref-type: dia # used as the prefix for the reference identifier ("In @fig-1, ...")
+      latex-env: diagram # used as the custom environment in latex output
+      latex-list-of-name: lod # used as the abbreviation for the latex collation
+```
+
+### Example: supplemental figures and tables
+
+Using custom crossreferenceable types, you can also define "Supplemental Figures", by creating a new prefix (eg, `sfig-`) and giving it the
+same appearance as regular figures. Then, if you only use this prefix for figures in the supplements, you will get a fresh crossref counter.
+
+## Changes in HTML output
+
+Keep in mind the following changes in the HTML output of figures, etc:
+
+- The DOM structure for HTML figures used to be such that the following CSS selector would work:
+  
+  ```
+  div#fig-elephant > figure > figcaption.figure-caption
+  ```
+  
+  In Quarto v1.4, this is now
+  
+  ```
+  div#fig-elephant > figure.quarto-float.quarto-float-fig > figcaption.quarto-float-caption.quarto-float-fig
+  ```
+
+  Here's a minimal, full HTML output for a figure:
+
+  ```html
+  <div id="fig-1" class="quarto-figure quarto-figure-center anchored">
+    <figure class="quarto-float quarto-float-fig figure">
+    <div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+      <img src="./img/content.jpg">
+    </div>
+    <figcaption id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="figure quarto-float-caption quarto-float-fig">
+    Figure&nbsp;1: This is a caption.
+    </figcaption>
+    </figure>
+  </div>
+  ```
+
+  Concretely: 
+
+  - All crossreferenceable elements use the `figure` HTML element with class `quarto-float`.
+  - Different float types are differentiated by the CSS class `quarto-float-fig` (or `-tbl`, `-lst`, or the `ref_type` of custom crossref types) as well as the additional CSS class `figure`, `table`, etc. 
+    If the element is a subfloat, this will be `quarto-subfloat-fig`.
+  - Similarly, float captions use the `figcaption` element with class `quarto-float-caption` (or `quarto-subfloat-caption` if they're a subfloat), and are differentiated by the same additional CSS classes.
+  
+  This setup lets all "floats" be uniformly targeted by a single CSS rule, as well as allowing specific float types and their captions be targeted by a single additional CSS selector.
+
+- Images by themselves used to have a surrounding paragraph; they no longer do.
+
+- Floats include an extra div for ARIA referencing, so that captions are referenced appropriately and uniformly. 
+  As a result, a table appears inside a float, its caption will be hoisted to the figure node itself 
