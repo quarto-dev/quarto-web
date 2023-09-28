@@ -64,6 +64,64 @@ quarto._quarto.ast.add_renderer(
   renderer)
 ```
 
+## More entry points for Lua filters, new syntax
+
+Lua filters can now be declared with the following syntax:
+
+```yml
+---
+filters:
+  - entry-point: before-ast
+    path: filter1.lua
+  - entry-point: after-ast
+    path: filter2.lua
+  - entry-point: before-quarto
+    path: filter3.lua
+  - entry-point: after-quarto
+    path: filter4.lua
+  - entry-point: before-render
+    path: filter5.lua
+  - entry-point: after-render
+    path: filter6.lua
+  - pre.lua
+  - quarto
+  - post.lua
+---
+```
+
+The following diagram shows the coarse structure of Quarto's Lua filter
+chain:
+
+```{mermaid}
+flowchart LR
+  MD[Input] -- "&nbspAST&nbsp" --> AST[Quarto AST]
+  AST -- "&nbspquarto&nbsp" --> AST2[Quarto AST]
+  AST2 -- "&nbsprender&nbsp" --> Output
+```
+
+- `AST` (Abstract Syntax Tree): In this step, Quarto generates its document structure. 
+  This includes:
+  - the creation of custom AST nodes like callouts, reftargets, etc
+  - parsing HTML tables into Pandoc nodes in every format
+  - normalizing metadata such as author information
+- `quarto`: In this step, Quarto annotates the document with necessary information for proper rendering, independent of the output format. 
+  This includes processing and resolution of crossrefs.
+- `render`: In this step, Quarto generates output-specific output from the annotated AST nodes. 
+  After `render` is done, no custom AST nodes will be present in the document.
+
+The user-accessible entry points for user filters are: `before-ast`, `after-ast`, `before-quarto`, `after-quarto`, `before-render`, `after-render`. They appear before and after each of the three main stages above.
+The `before-ast` and `before-render` entry points are new. 
+In 1.4, `before-quarto` and `after-ast` point to the same location in
+the filter chain (similarly for `before-render` and `after-quarto`). 
+In the future, this might change if we decide to change the decomposition of the filter chain.
+
+The old "pre" and "post" filter syntax remains valid. 
+"Pre" filters are injected at the `before-quarto` entry point, and "post" are injected at the `after-render` entry point.
+
+The new syntax still supports JSON filters, as 1.3 filters do.
+Either use `type: json` explicitly, or use a path that doesn't end in `.lua`.
+Similarly, `type: lua` will force the file to be treated as a Lua filter.
+
 ## Relative paths in `require()` calls
 
 In larger, more complex filters, it becomes useful to structure your Lua code in modules.
