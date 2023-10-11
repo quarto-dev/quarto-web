@@ -1,0 +1,101 @@
+---
+title: "Running Documents"
+---
+
+## Overview
+
+There are a number of ways to run Shiny for Python interactive documents:
+
+1.  Use the **Preview** command within VS Code.
+2.  Use the `quarto preview` command line interface with any editor.
+3.  Deploy them to a server for use by a wider audience.
+
+We'll cover all of these scenarios in depth here. 
+
+{{< include _shiny-requirements.qmd >}}
+
+
+## RStudio IDE
+
+While you are developing an interactive document it will likely be most convenient to run within RStudio.
+
+Note that you need RStudio {{< var rstudio.min_version >}} or a later version in order to run Quarto interactive documents. You can download the latest release ({{< var rstudio.current_release >}}) here <https://posit.co/download/rstudio-desktop/>.
+
+Click the **Run Document** button while editing a Shiny interactive document to render and view the document within the IDE:
+
+![](images/rstudio-ide.png){.border}
+
+When you make changes, just click **Run Document** again to see them reflected in the document preview.
+
+Two options you may want to consider enabling are **Run on Save** and **Preview in Viewer Pane** (by default previews occur in an external window). You can access these options on the editor toolbar:
+
+![](images/rstudio-ide-options.png){.border}
+
+## Command Line
+
+You can also run Shiny interactive documents from the command line via `quarto serve`. For example:
+
+```{.bash filename="Terminal"}
+quarto serve document.qmd
+```
+
+There are a number of options to the `serve` command to control the port and host of the document server as well as whether a browser is automatically opened for the running document. You can learn more about these options with `quarto serve help`.
+
+If you are within an R session you can also use the **quarto** R package to run a document:
+
+``` r
+library(quarto)
+quarto_serve("document.qmd")
+```
+
+## Deployment
+
+### ShinyApps
+
+You can publish Shiny interactive documents to the [ShinyApps](http://shinyapps.io/) hosted service. To do this you should ensure that you have:
+
+1.  An account on ShinyApps (use the [signup form](http://shinyapps.io/) to create an account).
+
+2.  The very latest versions of the **rsconnect** and **quarto** R packages. You can install them as follows:
+
+    ``` r
+    install.packages("rsconnect")
+    install.packages("quarto")
+    ```
+
+You can then deploy your interactive document using the `quarto_publish_app()` function of the **quarto** package. You can do this as follows (working from the directory that contains your document):
+
+``` r
+library(quarto)
+quarto_publish_app(server = "shinyapps.io")
+```
+
+If you are using RStudio you can also use the **Publish** button <kbd>![](../../output-formats/images/publish-button.png){width="21"}</kbd> available when working with an interactive document:
+
+![](images/rstudio-ide-publish.png){.border width="587"}
+
+Note that you should always **Run Document** locally prior to publishing your document (as this will create the `.html` file that is served on ShinyApps.
+
+### Posit Connect
+
+[Posit Connect](https://www.rstudio.com/products/connect/) is a server product from Posit for secure sharing of applications, reports, and plots. You can publish Shiny interactive documents to Posit Connect in much the same way as described above for [ShinyApps].
+
+First, make sure you very latest development versions of the **rsconnect** and **quarto** R packages. You can install them as follows:
+
+``` r
+install.packages("rsconnect")
+install.packages("quarto")
+```
+
+Next, deploy your interactive document using the `quarto_publish_app()` function of the **quarto** package, providing the domain name or IP address of your Posit Connect installation via the `server` parameter. You can do this as follows (working from the directory that contains your document):
+
+``` r
+library(quarto)
+quarto_publish_app(server = "rsc.example.com")
+```
+
+If you are using RStudio you can also use the **Publish** button <kbd>![](../../output-formats/images/publish-button.png){width="21"}</kbd> as described above in the ShinyApps documentation:
+
+![](images/rstudio-ide-rsc-publish.png){.border width="573"}
+
+As with ShinyApps, you should always **Run Document** locally prior to publishing your document (as this will create the `.html` file that is served by Posit Connect).
