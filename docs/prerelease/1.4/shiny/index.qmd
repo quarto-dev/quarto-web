@@ -1,0 +1,138 @@
+---
+title: "Shiny for Python"
+---
+
+{{< include ../_pre-release-feature.qmd >}}
+
+## Introduction
+
+The [Shiny](https://shiny.posit.co/py/) package provides an easy way to build web applications with Python. Quarto documents can also now include embedded Shiny components (e.g. a plot with sliders that control its inputs) or even simple Shiny applications that include several components.
+
+This section covers integrating Shiny with Quarto and assumes that you already have basic familiarity with Shiny. To learn more about Shiny please visit <https://shiny.posit.co/py/>.
+
+{{< include _shiny-requirements.qmd >}}
+
+## Hello, Shiny
+
+Here's a simple example that illustrates embedding Shiny components within a Quarto document:
+
+![](images/hello.png){.border}
+
+Here's the source code for this example:
+
+````python
+---
+title: "Penguin Flipper Length"
+format: html
+server: shiny
+---
+
+```{{python}}
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
+```
+
+```{{python}}
+#| panel: input
+from shiny import render, reactive, ui
+ui.input_slider("bins", "Number of bins:", 5, 15, 10)
+```
+
+```{{python}}
+@output
+@render.plot
+def histogram():
+    sns.histplot(data = penguins, x ="flipper_length_mm", 
+                 bins=input.bins())
+
+ui.output_plot("histogram")
+```
+
+
+````
+
+
+There main difference between this document and a normal static document is the he inclusion `server: shiny` within the document's options, which instructs Quarto to run a Shiny Server behind the document:
+
+```yaml
+---
+title: "Penguin Flipper Length"
+format: html
+server: shiny
+---
+```
+
+Note also that we use the `panel: input` cell option to provide visual separation for inputs. The plot rendering code in the next cell uses normal Shiny reactive output syntax.
+
+We'll cover running and deploying Quarto documents with Shiny components in the article on [Running Documents](running.qmd). Before that though, let's cover a more in-depth example.
+
+## Custom Layout
+
+Here's an example that includes multiple inputs as well as a more application like page layout with a sidebar:
+
+![](images/custom.png){.border}
+
+Here's the source code for this example:
+
+````python
+---
+title: "Penguin Bills"
+format: html
+page-layout: full
+server: shiny
+---
+
+```{{python}}
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
+```
+
+```{{python}}
+#| panel: sidebar
+from shiny import render, reactive, ui
+
+ui.input_select("x", "Variable:", 
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+```{{python}}
+#| panel: fill
+
+@output
+@render.plot
+def displot():
+    sns.displot(
+        data=penguins, hue="species", multiple="stack",
+        x=input.x(), rug=input.rug(),kind=input.dist())
+
+ui.output_plot("displot")
+```
+````
+
+There are a couple of things worth noting in this example:
+
+1.  The YAML front-matter includes the `page-layout: full` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
+
+2.  We add `panel: sidebar` and `panel: fill` to the two code cells to specify that we want them laid out in special panel containers.
+
+
+#### Page Layout
+
+Some interactive documents you create will use narrative interspersed with Shiny components and some (like this example) will be full page applications. Some may even by hybrids---for example imagine a sidebar on the left containing inputs that control outputs interspersed with narrative in the main document body.
+
+See the article on [Component Layout](/docs/interactive/layout.qmd) to learn more about the available tools for managing the layout of interactive documents.
+
+## Learning More
+
+To learn more about Shiny for Python interactive documents see the following articles:
+
+-   [Running Documents](running.qmd) covers how to run interactive documents both within VS Code and at the command line, as well as how to deploy them to end users.
+
+-   [Execution Contexts](execution.qmd) goes in depth on when different code cells run (e.g. rendering vs. serving).
+
+-   [Component Layout](/docs/interactive/layout.qmd)) enumerates the various techniques you can use to layout interactive components within your documents.
+
+
+
