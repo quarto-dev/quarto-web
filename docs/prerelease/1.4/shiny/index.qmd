@@ -25,7 +25,6 @@ pip install git+https://github.com/posit-dev/py-shiny.git@quarto-ext#egg=shiny
 
 Here's a simple example that illustrates embedding Shiny components within a Quarto document:
 
-
 ![](images/hello.png){.border}
 
 Here's the source code for this example:
@@ -38,8 +37,8 @@ server: shiny
 ---
 
 ```{{python}}
-import pandas as pd
-data = pd.read_csv("penguins.csv")
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
 ```
 
 ```{{python}}
@@ -49,17 +48,16 @@ ui.input_slider("bins", "Number of bins:", 5, 15, 10)
 ```
 
 ```{{python}}
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 @output
 @render.plot
 def histogram():
-    sns.histplot(data = data, x ="flipper_length_mm", 
+    sns.histplot(data = penguins, x ="flipper_length_mm", 
                  bins=input.bins())
 
 ui.output_plot("histogram")
 ```
+
+
 ````
 
 
@@ -81,58 +79,52 @@ We'll cover running and deploying Quarto documents with Shiny components in the 
 
 Here's an example that includes multiple inputs as well as a more application like page layout with a sidebar:
 
-![](images/iris-k-means.png){.border}
+![](images/custom.png){.border}
 
 Here's the source code for this example:
 
-    ---
-    title: "Iris K-Means Clustering"
-    format: 
-      html:
-        page-layout: custom
-    server: shiny
-    ---
+````python
+---
+title: "Penguin Bills"
+format: html
+page-layout: full
+server: shiny
+---
 
-    ```{{r}}
-    #| panel: sidebar
-    vars <- setdiff(names(iris), "Species")
-    selectInput('xcol', 'X Variable', vars)
-    selectInput('ycol', 'Y Variable', vars, selected = vars[[2]])
-    numericInput('clusters', 'Cluster count', 3, min = 1, max = 9)
-    ```
+```{{python}}
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
+```
 
-    ```{{r}}
-    #| panel: fill
-    plotOutput('plot1')
-    ```
+```{{python}}
+#| panel: sidebar
+from shiny import render, reactive, ui
 
-    ```{{r}}
-    #| context: server
-    selectedData <- reactive({
-        iris[, c(input$xcol, input$ycol)]
-      })
+ui.input_select("x", "Variable:", 
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
 
-    clusters <- reactive({
-      kmeans(selectedData(), input$clusters)
-    })
+```{{python}}
+#| panel: fill
 
-    output$plot1 <- renderPlot({
-      palette(c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3",
-        "#FF7F00", "#FFFF33", "#A65628", "#F781BF", "#999999"))
+@output
+@render.plot
+def displot():
+    sns.displot(
+        data=penguins, hue="species", multiple="stack",
+        x=input.x(), rug=input.rug(),kind=input.dist())
 
-      par(mar = c(5.1, 4.1, 0, 1))
-      plot(selectedData(),
-           col = clusters()$cluster,
-           pch = 20, cex = 3)
-      points(clusters()$centers, pch = 4, cex = 4, lwd = 4)
-    })
-    ```
+ui.output_plot("displot")
+```
+````
 
 There are a couple of things worth noting in this example:
 
-1.  The YAML front-matter includes the `page-layout: custom` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
+1.  The YAML front-matter includes the `page-layout: full` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
 
-2.  We add `panel: sidebar` and `panel: fill` to the two code chunks that define the user-interface to specify that we want them laid out in special panel containers.
+2.  We add `panel: sidebar` and `panel: fill` to the two code cells to specify that we want them laid out in special panel containers.
 
 
 #### Page Layout
@@ -141,23 +133,13 @@ Some interactive documents you create will use narrative interspersed with Shiny
 
 See the article on [Component Layout](/docs/interactive/layout.qmd) to learn more about the available tools for managing the layout of interactive documents.
 
-## Examples
-
-Here are some deployed examples of Quarto documents that use Shiny for Python:
-
-| Example                                                            | Source                       | Description                                                                                  |
-|--------------------------------------------------------------------|------------------------------|----------------------------------------------------------------------------------------------|
-| [Old Faithful](https://jjallaire.shinyapps.io/shiny-old-faithful/) | [Code](https://git.io/J0qnQ) | Demonstrates incorporating an interactive plot into the main flow of a document.             |
-| [K-Means](https://jjallaire.shinyapps.io/shiny-k-means/)           | [Code](https://git.io/J0qnj) | Demonstrates using a more "application-like" page layout (sidebar and main panel)            |
-| [Diamonds](https://jjallaire.shinyapps.io/shiny-diamonds/)         | [Code](https://git.io/J0qcR) | Demonstrates an alternate way to layout inputs (at the bottom of the page in three columns). |
-
 ## Learning More
 
 To learn more about Shiny for Python interactive documents see the following articles:
 
 -   [Running Documents](running.qmd) covers how to run interactive documents both within VS Code and at the command line, as well as how to deploy them to end users.
 
--   [Execution Contexts](execution.qmd) goes in depth on when different code blocks (e.g. rendering vs. serving).
+-   [Execution Contexts](execution.qmd) goes in depth on when different code cells run (e.g. rendering vs. serving).
 
 -   [Component Layout](/docs/interactive/layout.qmd)) enumerates the various techniques you can use to layout interactive components within your documents.
 

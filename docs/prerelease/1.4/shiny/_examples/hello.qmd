@@ -5,8 +5,8 @@ server: shiny
 ---
 
 ```{python}
-import pandas as pd
-data = pd.read_csv("penguins.csv")
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
 ```
 
 ```{python}
@@ -16,14 +16,10 @@ ui.input_slider("bins", "Number of bins:", 5, 15, 10)
 ```
 
 ```{python}
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 @output
 @render.plot
 def histogram():
-    sns.histplot(data = data, x ="flipper_length_mm", 
-                 bins=input.bins())
+    sns.histplot(data = penguins, x ="flipper_length_mm", bins=input.bins())
 
 ui.output_plot("histogram")
 ```
