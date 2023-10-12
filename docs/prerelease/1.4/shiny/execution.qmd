@@ -16,7 +16,7 @@ By default, all of the Python code in your document is executed at two different
 
 If the render time of your document is short, this default execution pattern will likely serve you well and you don't need to think further about optimizing execution contexts.
 
-## Executing Setup Code
+## Setup Context
 
 Many documents include setup code that loads required packages and data. If this setup code takes longer than a couple of seconds, it may make sense to explicitly designate it as setup code using the `context: setup` cell option. For example:
 
@@ -34,20 +34,28 @@ When you add `context: setup` to a cell, the code cell will be executed:
 
 2)  At the startup of the Shiny application (this is in contrast to the default behavior which is to run the code whenever a new user connects to the application).
 
-## Advanced Contexts
-
 Explicitly designating setup code using `context: setup` is likely the only thing you'll need to do in terms of explicitly specifying execution contexts. Not only does `context: setup` address the most common performance issues, it also preserves simple and easy to reason about source code (all data and functions in the document are available at both render and serve time).
 
-That said, if you do wish to tailor execution in a more fine grained way, the following additional contexts are available:
+## UI Context
 
-| Context                 | Description                                                                                                                     |
-|-------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| `context: ui`           | Cell will only run during `quarto render`. Code and data created by this cell are not available when the application is served. |
-| `context: server`       | Cell will run for each new client session. Will not run during `quarto render`. Output of cell is not included in HTML UI.      |
-| `context: server-setup` | Cell will only run at server startup. Will not run during `quarto render`. Output of cell is not included in HTML UI.           |
-: {tbl-colwidths="[40,60]"}
+It's possible that you have cells in your document that _only_ contribute to the user interface and does not need to execute on the server. For example, this could be a static visualization that is never dynamically redrawn in response to changes in inputs.
 
-Note that `context: setup` is simply a combination of `context: ui` and `context: server-setup`.
+To designate a call as only contributing to the user interface, specify the `context: ui` cell option. For example:
+
+````python
+```{{python}}
+#| context: ui
+
+# plot that isn't ever updated after initial rendering 
+sns.lmplot(
+    data=penguins,
+    x="bill_length_mm", y="bill_depth_mm", hue="species",
+    height=5
+)
+```
+````
+
+Cells with `context: ui` will only run during `quarto render`. Code and data created by this cell are not available when the application is served. 
 
 ## Learning More
 
