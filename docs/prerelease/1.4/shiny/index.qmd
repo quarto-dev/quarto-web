@@ -130,12 +130,12 @@ server: shiny
 
 Explore the Palmer Penguins dataset (learn more about the data at <https://github.com/allisonhorst/palmerpenguins/>).
 
-```{{python}}
+```{{python}} # <1>
 #| context: setup   # <1>
-import seaborn as sns
-from shiny import render, reactive, ui
-penguins = sns.load_dataset("penguins")
-```
+import seaborn as sns # <1>
+from shiny import render, reactive, ui # <1>
+penguins = sns.load_dataset("penguins") # <1>
+``` # <1>
 
 ::: {.panel-sidebar}  # <2>
 
@@ -218,23 +218,23 @@ def dataview(): # <9>
 :::
 ````
 
-1. The `context: setup` cell options indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
+1. The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
 
 2. You can define sidebars using a `.panel-sidebar` div. This enables you to include arbitray content in the sidebar including images, narrative, and links.
 
-3. These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields.
+3. These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields of the dataset.
 
-4. When the user interacts with the checkbox groups this results in a different filtered view of the dataset The `@reactive.Calc` function here recomputes the filtered dataset and makes it available as `filtered_penguins()`.
+4. When the user interacts with the checkbox groups this results in a different filtered view of the dataset. The `@reactive.Calc` function recomputes the filtered dataset and makes it available as `filtered_penguins()`.
 
 5. These inputs affect the display of plots but not the contents of the filtered dataset.
 
 6. You can define a tabset using a `.panel-tabset` div (individual tabs are in turn defined using headings, in this case `### Plots` and `### Data`).
 
-7. The `layout` cell options defines how multiple outputs (e.g. plots) within a call should be position. Here we specify that there should be 2 rows, with the top row having a single plot and the second row equally divided between the other two plots.
+7. The `layout` cell option defines how multiple outputs (e.g. plots) within a call should be positioned. Here we specify that there should be two rows, with the top row having a single plot and the second row equally divided between the other two plots.
 
 8. Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
 
-9. The Data tab also references `filtered_penguins()` and is updated whenever the filter changes.
+9. The Data tab also references `filtered_penguins()` and is updated whenever the filtered data changes.
 
 
 ## Learning More
