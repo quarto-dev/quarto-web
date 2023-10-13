@@ -19,50 +19,48 @@ Here's a simple example that illustrates embedding Shiny components within a Qua
 
 ![](images/hello.png){.border}
 
-Here's the source code for this example:
+Here's the source code for this example (click the numbered annotations on the right for additional explanation):
 
-````python
+````{.python}
 ---
 title: "Penguin Flipper Length"
 format: html
-server: shiny
+server: shiny  # <1>
 ---
 
 ```{{python}}
 import seaborn as sns
+from shiny import render, reactive, ui
 penguins = sns.load_dataset("penguins")
 ```
 
 ```{{python}}
-#| panel: input
-from shiny import render, reactive, ui
+#| panel: input  # <2>
 ui.input_slider("bins", "Number of bins:", 5, 15, 10)
 ```
 
 ```{{python}}
-@render.plot
-def histogram():
-    sns.histplot(data = penguins, x ="flipper_length_mm", 
-                 bins=input.bins())
+@render.plot  # <3>
+def histogram(): # <3>
+    sns.histplot(data = penguins, x ="flipper_length_mm", # <3>
+                 bins=input.bins()) # <3>
 ```
 ````
 
+1. The main difference between this document and a normal static document is the inclusion of `server: shiny` within the document's options, which instructs Quarto to run a Shiny process behind the document:
 
-The main difference between this document and a normal static document is the inclusion of `server: shiny` within the document's options, which instructs Quarto to run a Shiny process behind the document:
 
-```yaml
----
-title: "Penguin Flipper Length"
-format: html
-server: shiny
----
-```
+2. We use the `panel: input` cell option to provide visual separation for inputs. The plot rendering code in the next cell uses normal Shiny reactive output syntax.
 
-Note also that we use the `panel: input` cell option to provide visual separation for inputs. The plot rendering code in the next cell uses normal Shiny reactive output syntax.
+3. To render reactive content within Shiny documents you implement a function that returns the content and annotate it with a render decorator (in this case `@render.plot`).
 
-We'll cover running and deploying Quarto documents with Shiny components in the article on [Running Documents](running.qmd). Before that though, let's cover a more in-depth example.
+If you want to try running this example now, paste the `hello.qmd` code from above into a Quarto document within VS Code and execute the **Preview** command:
 
-## Page Layout
+![](images/hello-vscode.png){.border}
+
+Note that while there are some integrated tools available within VS Code, you can use any editor you like for developing Shiny interactive documents. See the [Running Documents](running.qmd) for details on running from the command line, debugging, deployment, etc.
+
+## Sidebar Layout
 
 Here's an example that includes multiple inputs as well as a more application-like page layout with a sidebar:
 
@@ -74,19 +72,18 @@ Here's the source code for this example:
 ---
 title: "Penguin Bills"
 format: html
-page-layout: full
+page-layout: full  # <1>
 server: shiny
 ---
 
 ```{{python}}
 import seaborn as sns
+from shiny import render, reactive, ui
 penguins = sns.load_dataset("penguins")
 ```
 
 ```{{python}}
-#| panel: sidebar
-from shiny import render, reactive, ui
-
+#| panel: sidebar  # <2>
 ui.input_select("x", "Variable:", 
                 choices=["bill_length_mm", "bill_depth_mm"])
 ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
@@ -94,8 +91,7 @@ ui.input_checkbox("rug", "Show rug marks", value = False)
 ```
 
 ```{{python}}
-#| panel: fill
-
+#| panel: fill  # <3>
 @render.plot
 def displot():
     sns.displot(
@@ -104,11 +100,12 @@ def displot():
 ```
 ````
 
-There are a couple of things worth noting in this example:
-
 1.  The YAML front-matter includes the `page-layout: full` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
 
-2.  We add `panel: sidebar` and `panel: fill` to the two code cells to specify that we want them laid out in special panel containers.
+2.  We use `panel: sidebar` to group inputs in a sidebar to the left of the content display.
+
+3. We use `panel: fill` to ensure that the content occupies all of the page to the right of the sidebar.
+
 
 ## In Depth Example
 
@@ -116,7 +113,7 @@ Below is a more in-depth example that demonstrates additional concepts including
 
 ![](images/advanced.png){.border}
 
-The code for this document is below. Click on the various numbered annotations on the right for additional explanation of the techniques used.
+The code for this document is below. Click on the numbered annotations on the right for additional explanation of the techniques used.
 
 ````python
 ---
