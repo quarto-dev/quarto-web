@@ -1,5 +1,6 @@
 ---
 title: "Shiny for Python"
+code-annotations: select
 ---
 
 {{< include ../_pre-release-feature.qmd >}}
@@ -62,7 +63,7 @@ Note also that we use the `panel: input` cell option to provide visual separatio
 
 We'll cover running and deploying Quarto documents with Shiny components in the article on [Running Documents](running.qmd). Before that though, let's cover a more in-depth example.
 
-## Custom Layout
+## Page Layout
 
 Here's an example that includes multiple inputs as well as a more application-like page layout with a sidebar:
 
@@ -111,12 +112,130 @@ There are a couple of things worth noting in this example:
 
 2.  We add `panel: sidebar` and `panel: fill` to the two code cells to specify that we want them laid out in special panel containers.
 
+## In Depth Example
 
-#### Page Layout
+Below is a more in-depth example that demonstrates additional concepts including factoring out setup code, reactive calculations, and more advanced layout constructs. Here is the interactive document we'll be building:
 
-Some interactive documents you create will use narrative interspersed with Shiny components and some (like this example) will be full page applications. Some may even by hybrids---for example imagine a sidebar on the left containing inputs that control outputs interspersed with narrative in the main document body.
+![](images/advanced.png){.border}
 
-See the article on [Component Layout](/docs/interactive/layout.qmd) to learn more about the available tools for managing the layout of interactive documents.
+The code for this document is below. Click on the various numbered annotations on the right for additional explanation of the techniques used.
+
+````python
+---
+title: "Palmer Penguins"
+format: html
+page-layout: full
+server: shiny
+---
+
+Explore the Palmer Penguins dataset (learn more about the data at <https://github.com/allisonhorst/palmerpenguins/>).
+
+```{{python}}
+#| context: setup   # <1>
+import seaborn as sns
+from shiny import render, reactive, ui
+penguins = sns.load_dataset("penguins")
+```
+
+::: {.panel-sidebar}  # <2>
+
+### Penguins ![](images/penguins.png){width=50px}
+
+```{{python}}
+species = list(penguins["species"].value_counts().index) # <3>
+ui.input_checkbox_group(  # <3>
+    "species", "Species:", # <3>
+    species, selected = species # <3>
+)
+
+islands = list(penguins["island"].value_counts().index) # <3>
+ui.input_checkbox_group(  # <3>
+    "islands", "Islands:",  # <3>
+    islands, selected = islands # <3>
+)
+
+@reactive.Calc   # <4>
+def filtered_penguins(): # <4>
+    data = penguins[penguins["species"].isin(input.species())] # <4>
+    data = data[data["island"].isin(input.islands())] # <4>
+    data["bill_ratio"] = \ # <4>
+        (data["bill_length_mm"] / data["bill_depth_mm"]) # <4>
+    return data # <4>
+```
+
+***
+
+```{{python}}  # <5>
+ui.input_select("dist", "Distribution:", choices=["kde", "hist"]) # <5>
+ui.input_checkbox("rug", "Show rug marks", value = False) # <5>
+```
+
+:::
+
+::: {.panel-tabset}  # <6>
+
+### Plots
+
+```{{python}}
+#| layout: [ [100], [50,50] ]  # <7> 
+
+@render.plot  # <8>
+def ratio():  # <8>
+    return sns.displot(  # <8>
+        filtered_penguins(), x = "bill_ratio",  # <8>
+        hue = "species", kind = input.dist(), # <8>
+        fill = True, rug=input.rug() # <8>
+    )
+ui.output_plot("ratio", height="400px") # <8>
+
+@render.plot
+def depth():
+    return sns.displot(
+        filtered_penguins(), x = "bill_depth_mm", 
+        hue = "species", kind = input.dist(), 
+        legend = False, fill = True, rug=input.rug()
+    )
+ui.output_plot("depth", height = "300px")
+
+@render.plot
+def length():
+    return sns.displot(
+        filtered_penguins(), x = "bill_length_mm", 
+        hue = "species", kind = input.dist(), 
+        legend=False, fill = True, rug=input.rug()
+    )
+ui.output_plot("length", height = "300px")
+```
+
+### Data
+
+```{{python}}  # <9>
+@output # <9>
+@render.data_frame # <9>
+def dataview(): # <9>
+    return render.DataGrid(filtered_penguins(), height = "690px") # <9>
+```
+:::
+````
+
+1. The `context: setup` cell options indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
+
+2. You can define sidebars using a `.panel-sidebar` div. This enables you to include arbitray content in the sidebar including images, narrative, and links.
+
+3. These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields.
+
+4. When the user interacts with the checkbox groups this results in a different filtered view of the dataset The `@reactive.Calc` function here recomputes the filtered dataset and makes it available as `filtered_penguins()`.
+
+5. These inputs affect the display of plots but not the contents of the filtered dataset.
+
+6. You can define a tabset using a `.panel-tabset` div (individual tabs are in turn defined using headings, in this case `### Plots` and `### Data`).
+
+7. The `layout` cell options defines how multiple outputs (e.g. plots) within a call should be position. Here we specify that there should be 2 rows, with the top row having a single plot and the second row equally divided between the other two plots.
+
+8. Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
+
+9. The Data tab also references `filtered_penguins()` and is updated whenever the filter changes.
+
 
 ## Learning More
 
@@ -128,5 +247,4 @@ To learn more about Shiny for Python interactive documents see the following art
 
 -   [Component Layout](/docs/interactive/layout.qmd) enumerates the various techniques you can use to layout interactive components within your documents.
 
-
-
+-   [Shiny for Python](https://shiny.posit.co/py/) provides in-depth documentation on all of the available UI and ouput widgets, as well as conceptual discussions on how things work.
