@@ -153,8 +153,6 @@ ui.input_checkbox_group(  # <3>
 def filtered_penguins(): # <4>
     data = penguins[penguins["species"].isin(input.species())] # <4>
     data = data[data["island"].isin(input.islands())] # <4>
-    data["bill_ratio"] = \ # <4>
-        (data["bill_length_mm"] / data["bill_depth_mm"]) # <4>
     return data # <4>
 ``` #<4>
 
@@ -172,23 +170,13 @@ ui.input_checkbox("rug", "Show rug marks", value = False) # <5>
 ### Plots
 
 ```{{python}}
-#| layout: [ [100], [50,50] ]  # <7> 
-
-@render.plot  # <8>
-def ratio():  # <8>
-    return sns.displot(  # <8>
-        filtered_penguins(), x = "bill_ratio",  # <8>
-        hue = "species", kind = input.dist(), # <8>
-        fill = True, rug=input.rug() # <8>
-    )
-
-@render.plot
-def depth():
-    return sns.displot(
-        filtered_penguins(), x = "bill_depth_mm", 
-        hue = "species", kind = input.dist(), 
-        legend = False, fill = True, rug=input.rug()
-    )
+@render.plot # <7>
+def depth(): # <7>
+    return sns.displot( # <7>
+        filtered_penguins(), x = "bill_depth_mm", # <7>
+        hue = "species", kind = input.dist(), # <7>
+        legend = False, fill = True, rug=input.rug() # <7>
+    ) # <7>
 
 @render.plot
 def length():
@@ -201,11 +189,11 @@ def length():
 
 ### Data
 
-```{{python}}  # <9>
-@render.data_frame # <9>
-def dataview(): # <9>
-    return render.DataGrid(filtered_penguins(), height = "690px") # <9>
-``` #<9>
+```{{python}}  # <8>
+@render.data_frame # <8>
+def dataview(): # <8>
+    return render.DataGrid(filtered_penguins(), height = "775px") # <8>
+``` #<8>
 :::
 ````
 
@@ -221,11 +209,9 @@ def dataview(): # <9>
 
 6. You can define a tabset using a `.panel-tabset` div (individual tabs are in turn defined using headings, in this case `### Plots` and `### Data`).
 
-7. The `layout` cell option defines how multiple outputs (e.g. plots) within a call should be positioned. Here we specify that there should be two rows, with the top row having a single plot and the second row equally divided between the other two plots.
+7. Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
 
-8. Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
-
-9. The Data tab also references `filtered_penguins()` and is updated whenever the filtered data changes.
+8. The Data tab also references `filtered_penguins()` and is updated whenever the filtered data changes.
 
 
 ## Learning More
