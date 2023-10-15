@@ -1,24 +1,25 @@
 ---
 title: "Penguin Bills"
 format: 
-  dashboard: default
+  dashboard:
+    fill: true
 ---
 
 ```{python}
 import seaborn as sns
+import matplotlib.pyplot as plt
 penguins = sns.load_dataset("penguins")
-penguins["bill_ratio"] = (penguins["bill_length_mm"] / penguins["bill_depth_mm"])
 ```
 
 ## Row 
 
 ```{python}
-#| title: Ratio of Bill Length to Depth
-sns.displot(
-    penguins, x = "bill_ratio", 
-    hue = "species", kind = "kde", 
-    legend = True, fill = True,
-    aspect = 2.5, height = 4
+#| title: Bill Length vs. Bill Depth
+fig, ax = plt.subplots(figsize=(12, 6))
+sns.scatterplot(
+    x="bill_length_mm", y="bill_depth_mm", 
+    data=penguins, hue="species",
+    ax=ax
 )
 ```
 
@@ -26,21 +27,11 @@ sns.displot(
 
 ```{python}
 #| title: Bill Depth
-sns.displot(
-    penguins, x = "bill_depth_mm", 
-    hue = "species", kind = "kde", 
-    legend = False, fill = True,
-    aspect = 1.67, height = 4
-)
+sns.histplot(x ="bill_depth_mm", data=penguins, hue="species")
 ```
 
 ```{python}
 #| title: Bill Length
-sns.displot(
-    penguins, x = "bill_length_mm", 
-    hue = "species", kind = "kde", 
-    legend=False, fill = True,
-    aspect = 1.67, height = 4
-)
+sns.histplot(x ="bill_length_mm", data=penguins, hue="species")
 ```
 
