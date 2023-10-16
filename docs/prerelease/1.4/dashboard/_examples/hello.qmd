@@ -1,37 +1,40 @@
 ---
 title: "Penguin Bills"
-format: 
+format:
   dashboard:
     fill: true
 ---
 
 ```{python}
-import seaborn as sns
-import matplotlib.pyplot as plt
-penguins = sns.load_dataset("penguins")
+import plotly.express as px
+tips = px.data.tips()
 ```
 
 ## Row 
 
 ```{python}
-#| title: Bill Length vs. Bill Depth
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.scatterplot(
-    x="bill_length_mm", y="bill_depth_mm", 
-    data=penguins, hue="species",
-    ax=ax
+#| title: Smokers and Tips
+px.violin(
+  tips, y="tip", x="smoker", color="sex", box=True, 
+  points="all", hover_data=tips.columns
 )
 ```
 
 ## Row 
 
 ```{python}
-#| title: Bill Depth
-sns.histplot(x ="bill_depth_mm", data=penguins, hue="species")
+#| title: Tips and Bill Total
+px.histogram(
+  tips, x="total_bill", y="tip", color="sex", 
+  marginal="rug", hover_data=tips.columns
+)
 ```
 
 ```{python}
-#| title: Bill Length
-sns.histplot(x ="bill_length_mm", data=penguins, hue="species")
+#| title: Smokers vs. Non-Smokers
+px.box(
+  tips, x="day", y="total_bill", color="smoker", 
+  notched=True
+)
 ```
 
