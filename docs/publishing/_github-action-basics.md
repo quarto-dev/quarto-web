@@ -21,7 +21,7 @@ Do not proceed to the next step(s) until you have a `_publish.yml` that indicate
 
 {{< include _freeze-basics.md >}}
 
-Note that an alternative approach is to execute the code as part of the GitHub Action. For now we'll keep things simpler by executing code locally and storing the computations by using freeze. Then, further below, we'll cover \[Executing Code\] within a GitHub Action.
+Note that an alternative approach is to execute the code as part of the GitHub Action. For now we'll keep things simpler by executing code locally and storing the computations by using freeze. Then, further below, we'll cover [Executing Code](#executing-code) within a GitHub Action.
 
 ### Publish Action
 
