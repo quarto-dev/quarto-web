@@ -18,7 +18,70 @@ Quarto Dashboards make it easy to create interactive dashboards using Python, R,
 
 -   Author using any notebook editor ([JupyterLab](/docs/tools/jupyter-lab.qmd), etc.) or in plain text markdown with any text editor ([VS Code](/docs/tools/vscode.qmd), [RStudio](/docs/tools/rstudio.qmd), [Neovim](/docs/tools/neovim.qmd), etc.)
 
-## Getting Started
+Quarto Dashboards are by default *static* (they are ordinary web pages and don't require a server---you can deploy them on any web host or web server). You can add interactivity to dashboards either using JavaScript visualizations (e.g. Plotly, as demonstrated below) or by using Shiny along with a server (an example of this is also below).
 
+## Example
 
+Let's walk through a simple example to illustrate the basics. This dashboard uses interactive Plotly visualizations to explore various development indicators in the [Gapminder](http://www.gapminder.org/data/) dataset:
 
+![](images/gapminder.png){.border .lightbox}
+
+Dashboards consist of several components:
+
+1)  **Navigation** --- The title, author, and links to sub-pages (if more than one page is defined).
+
+2)  **Rows and columns** --- This example has two rows, the second of which includes two column). Rows and columns are defined using markdown headings (with optional attributes to control height, width, etc.).
+
+3)  **Cards** --- Cards are containers for data, visualizations, and free from content. The content of cards generally mays to computational *cells* in your source document.
+
+Dashboards can be created either using Jupyter notebooks (`.ipynb`) or using plain text markdown (`.qmd`). Here is the code for the notebook version of the above example:
+
+![](images/gapminder-jupyter.png){.border .lightbox}
+
+Here is the plain text `.qmd` version of the dashboard (click on the numbers on the far right for additional explanation of syntax and mechanics):
+
+```` python
+---
+title: "Development Indicators by Continent"
+author: "Gapminder Analytics Group"
+format: dashboard
+---
+
+```{{python}}
+import plotly.express as px
+df = px.data.gapminder()
+```
+
+## Row {height=60%}
+
+```{{python}}
+#| title: GDP and Life Expectancy 
+px.scatter(
+  df, x="gdpPercap", y="lifeExp", 
+  animation_frame="year", animation_group="country",
+  size="pop", color="continent", hover_name="country", 
+  facet_col="continent", log_x=True, size_max=45, 
+  range_x=[100,100000], range_y=[25,90]
+)
+```
+
+## Row {height=40%}
+
+```{{python}}
+#| title: Population
+px.area(
+  df, x="year", y="pop", 
+  color="continent", line_group="country"
+)
+```
+
+```{{python}}
+#| title: Life Expectancy
+px.line(
+  df, x="year", y="lifeExp", 
+  color="continent", line_group="country"
+)
+```
+````
+
+## Shiny Example
