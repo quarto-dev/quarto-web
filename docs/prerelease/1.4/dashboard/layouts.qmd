@@ -17,7 +17,9 @@ Filling the page is generally a good choice when you have only one or two charts
 
 This layout is a simple stack of two charts. This dashboard fills the page and allocates height evenly accross the two charts.
 
-::: {.chart-example .column-body-outset-right layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -42,16 +44,24 @@ format: dashboard
 
 ````
 
+:::
+
+::: {.g-col-6}
+
 ![](images/chart-stack-fill.png)
 
 :::
 
-## Chart Stack (w/ Height)
+:::
+
+## Chart Stack (Height)
 
 Here we use the `height` option to allocate more space to the top chart:
 
 
-::: {.chart-example .column-body-outset-right layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -74,7 +84,13 @@ format: dashboard
 
 ````
 
+:::
+
+::: {.g-col-6}
+
 ![](images/chart-stack-height.png)
+
+:::
 
 :::
 
@@ -83,7 +99,9 @@ format: dashboard
 This layout is a simple stack of three charts. To provide enough room to display all the charts a scrolling layout is used (`scrolling: true`). Note that because of its ability to scroll this layout could easily accommodate many more charts
 
 
-::: {.chart-example .column-body-outset-right layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -105,7 +123,13 @@ format:
 
 ````
 
+:::
+
+::: {.g-col-6}
+
 ![](images/chart-stack-scrolling.png)
+
+:::
 
 :::
 
@@ -113,7 +137,9 @@ format:
 
 This layout fills the page completely and gives prominence to a single chart at the top (with two secondary charts included below). To achieve this layout it specifies `height` attributes on each row to establish their relative sizes.
 
-::: {.chart-example .column-body-outset-right layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -135,7 +161,13 @@ format: dashboard
 ```
 ````
 
+:::
+
+::: {.g-col-6}
+
 ![](images/chart-focal-top.png)
+
+:::
 
 :::
 
@@ -143,7 +175,9 @@ format: dashboard
 
  This layout fills the page completely and gives prominence to a single chart on the left (with two secondary charts included to the right). To achieve this layout we use `orientation: column` (so that top level headings map to columns rather than rows).  Additionally, we specify `width` attributes on each column to establish their relative sizes.
 
-::: {.chart-example .column-body-outset-right layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -167,8 +201,13 @@ format:
 ```
 ````
 
+:::
+
+::: {.g-col-6}
 
 ![](images/chart-focal-left.png)
+
+:::
 
 :::
 
@@ -177,7 +216,9 @@ format:
 
 This layout is a 2x2 grid of charts. This layout uses the default filling behavior however depending on the ideal display size for the charts it might be preferable to allow the page to scroll (`scrolling: true`). 
 
-::: {.chart-example .column-body-outset-right layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -203,17 +244,24 @@ format: dashboard
 
 ````
 
+:::
+
+::: {.g-col-6}
 
 ![](images/chart-grid.png)
 
 :::
 
+:::
 
-## Tabset Column
+
+## Tabset (Column)
 
 This layout displays the right column as a set of two tabs. Tabs are especially useful when you have a large number of components to display and prefer not to require the user to scroll to access everything. Note that we specify a `title` option in each of the cells that produce a tab.
 
-::: {.chart-example layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -239,18 +287,25 @@ format:
 ```
 ````
 
+:::
+
+::: {.g-col-6}
 
 ![](images/chart-tabset-column.png)
 
 :::
 
+:::
 
 
-## Tabset Row
+
+## Tabset (Row)
 
 This layout displays the bottom row as a set of two tabs. 
 
-::: {.chart-example layout-ncol="2"}
+::: {.chart-example .grid}
+
+::: {.g-col-6}
 
 ````python
 ---
@@ -274,11 +329,106 @@ format: dashboard
 ```
 ````
 
+:::
+
+::: {.g-col-6}
 
 ![](images/chart-tabset-row.png)
 
 :::
 
+:::
+
+## Tabset (Nested)
+
+You can include tabsets are arbitrarirly deep levels. Here we include a tabset within a column of a top level row.
+
+::: {.chart-example .grid}
+
+::: {.g-col-6}
+
+````python
+---
+title: "Tabset (Card)"
+format: dashboard
+---
+    
+## Row {height=70%}
+
+```{{python}}
+```
+
+## Row {height=30%}
+
+### Column {.tabset}
+
+```{{python}}
+#| title: Chart 2
+```
+
+```{{python}}
+#| title: Chart 3
+```
+
+### Column
+
+```{{python}}
+```
+
+````
+
+:::
+
+::: {.g-col-6}
+
+![](images/chart-tabset-card.png)
+
+:::
+
+:::
+
+
+
+## Input Sidebar
+
+This layout demonstrates how to add a sidebar to a dashboard page (Shiny or ObservableJS based dashboards will often present user input controls in a sidebar). To include a sidebar you add the `.sidebar` class to a top level column heading:
+
+::: {.chart-example .grid}
+
+::: {.g-col-6}
+
+````python
+---
+title: "Sidebar"
+format: 
+  dashboard:
+    orientation: column
+---
+    
+## Column {.sidebar}
+
+```{{python}}
+```
+
+## Column 
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+
+:::
+
+
+::: {.g-col-6}
+
+![](images/chart-input-sidebar.png)
+
+:::
+
+:::
 
 
 
@@ -293,6 +443,32 @@ format: dashboard
   width: 375px;
   min-width: 375px;
 }
+
+@media only screen and (max-width: 1180px) {
+  .chart-example pre {
+     min-width: 250px;
+     font-size: 0.7em;
+  }
+
+  .chart-example img {
+    width: 250px;
+    min-width: 250px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .chart-example pre {
+     min-width: 200px;
+     font-size: 0.6em;
+  }
+
+  .chart-example img {
+    width: 200px;
+    min-width: 200px;
+  }
+}
+
+
 
 .chart-example div.sourceCode {
   margin: 0;
