@@ -2,7 +2,6 @@
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
 format:
-  html: default
   dashboard:
     orientation: columns 
 server: shiny
@@ -12,6 +11,7 @@ server: shiny
 #| context: setup
 import seaborn as sns
 from shiny import render, reactive, ui
+
 penguins = sns.load_dataset("penguins")
 ```
 
@@ -39,22 +39,15 @@ def filtered_penguins():
     return data
 ```
 
-***
-
 ```{python}
 ui.input_select("dist", "Distribution:", choices=["kde", "hist"])
 ui.input_checkbox("rug", "Show rug marks", value = False)
 ```
 
-***
-
 [Learn more](https://pypi.org/project/palmerpenguins/) about the 
 Palmer Penguins dataset.
 
-
 ## Column 
-
-### Row {height=65%}
 
 ```{python}
 @render.plot
@@ -76,14 +69,8 @@ def length():
     )
 ```
 
-### Row (height=35%)
-
 ```{python}
 @render.data_frame
 def dataview():
     return render.DataGrid(filtered_penguins())
 ```
-
-
-
-
