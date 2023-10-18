@@ -6,7 +6,7 @@ code-annotations: select
 
 ## Introduction
 
-The [Shiny](https://shiny.posit.co/py/) package provides an easy way to build web applications with Python. Quarto dashboards can include embedded Shiny components (e.g. a plot with sliders that control its inputs). Note that these dashboards are no
+The [Shiny](https://shiny.posit.co/py/) package provides an easy way to build web applications with Python. Quarto dashboards can include embedded Shiny components (e.g. a plot with sliders that control its inputs). 
 
 This section covers integrating Shiny with Quarto and assumes that you already have basic familiarity with Shiny. To learn more about Shiny please visit <https://shiny.posit.co/py/>. If you are using R rather than Python, see the documentation on using [Shiny for R](shiny-r.qmd).
 
@@ -33,22 +33,22 @@ author: "Cobblepot Analytics"
 format: # <1>
   dashboard: # <1>
     orientation: columns # <1>
-server: shiny
+server: shiny # <2>
 ---
 
-```{{python}} # <2>
+```{{python}} # <3>
 #| context: setup
 import seaborn as sns
 from shiny import render, reactive, ui
 penguins = sns.load_dataset("penguins")
-``` # <2>
+``` # <3>
 
-## Column {.sidebar} # <3>
+## Column {.sidebar} # <4>
 
 ![](images/penguins.png){width="80%"}
 
 ```{{python}}
-species = list(penguins["species"].value_counts().index) # <4>
+species = list(penguins["species"].value_counts().index) # <5>
 ui.input_checkbox_group(
     "species", "Species:", 
     species, selected = species
@@ -58,35 +58,35 @@ islands = list(penguins["island"].value_counts().index)
 ui.input_checkbox_group(
     "islands", "Islands:", 
     islands, selected = islands
-) # <4>
+) # <5>
 
-@reactive.Calc # <5>
+@reactive.Calc # <6>
 def filtered_penguins():
     data = penguins[penguins["species"].isin(input.species())]
     data = data[data["island"].isin(input.islands())]
     return data
-``` # <5>
+``` # <6>
 
 ```{{python}}
-ui.input_select("dist", "Distribution:", choices=["kde", "hist"]) # <6>
-ui.input_checkbox("rug", "Show rug marks", value = False) $ # <6>
+ui.input_select("dist", "Distribution:", choices=["kde", "hist"]) # <7>
+ui.input_checkbox("rug", "Show rug marks", value = False) $ # <7>
 ```
 
 [Learn more](https://pypi.org/project/palmerpenguins/) about the 
 Palmer Penguins dataset.
 
-## Column {.tabset} # <7>
+## Column {.tabset} # <8>
 
 ### Plots
 
 ```{{python}}
 @render.plot
 def depth():
-    return sns.displot(  # <8>
+    return sns.displot(  # <9>
         filtered_penguins(), x = "bill_depth_mm", 
         hue = "species", kind = input.dist(), 
         fill = True, rug=input.rug()
-    ) # <8>
+    ) # <9>
 ``` 
 
 ```{{python}}
@@ -104,27 +104,29 @@ def length():
 ```{{python}} 
 @render.data_frame
 def dataview():
-    return render.DataGrid(filtered_penguins()) # <9>
+    return render.DataGrid(filtered_penguins()) # <10>
 ``` 
 ````
 
 1. We specify `orientation: columns` for the dashboard so that we can layout a sidebar next to our main outputs.
 
-2. The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
+2. The `server: shiny` option instructs Quarto to run a Shiny Server behind the document.
 
-3. Create sidebars by adding the `.sidebar` class to any column. Sidebars can include code cells as well as images, narrative, and links.
+3. The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
 
-4. These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields of the dataset.
+4. Create sidebars by adding the `.sidebar` class to any column. Sidebars can include code cells as well as images, narrative, and links.
 
-5. When the user interacts with the checkbox groups this results in a different filtered view of the dataset. The `@reactive.Calc` function recomputes the filtered dataset and makes it available as `filtered_penguins()`.
+5. These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields of the dataset.
 
-6. These inputs affect the display of plots but not the contents of the filtered dataset.
+6. When the user interacts with the checkbox groups this results in a different filtered view of the dataset. The `@reactive.Calc` function recomputes the filtered dataset and makes it available as `filtered_penguins()`.
 
-7. Create tabsets by adding the `.tabset` class to a row or column (individual tabs are in turn defined using headings, in this case `### Plots` and `### Data`).
+7. These inputs affect the display of plots but not the contents of the filtered dataset.
 
-8. Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
+8. Create tabsets by adding the `.tabset` class to a row or column (individual tabs are in turn defined using headings, in this case `### Plots` and `### Data`).
 
-9. The Data tab also references `filtered_penguins()` and is updated whenever the filtered data changes.
+9. Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
+
+10. The Data tab also references `filtered_penguins()` and is updated whenever the filtered data changes.
 
 
 ## Learning More

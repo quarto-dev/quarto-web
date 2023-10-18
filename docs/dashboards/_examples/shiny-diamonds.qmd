@@ -33,9 +33,9 @@ selectInput('color', 'Color', c('None', names(dataset)))
 
 ```{r}
 selectInput('facet_row', 'Facet Row',
-            c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
+  c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
 selectInput('facet_col', 'Facet Column',
-            c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
+  c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
 ```
 
 ## Column {.tabset}
@@ -59,7 +59,9 @@ dataset <- reactive({
  
 output$plot <- renderPlot({
   
-  p <- ggplot(dataset(), aes_string(x=input$x, y=input$y)) + geom_point()
+  p <- ggplot(
+    dataset(), 
+    aes_string(x=input$x, y=input$y)) + geom_point()
   
   if (input$color != 'None')
     p <- p + aes_string(color=input$color)
@@ -73,7 +75,7 @@ output$plot <- renderPlot({
   if (input$smooth)
     p <- p + geom_smooth()
   
-  print(p)
+  p
   
 })
 
