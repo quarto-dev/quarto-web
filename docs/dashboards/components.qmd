@@ -1,5 +1,6 @@
 ---
 title: "Dashboard Components"
+lightbox: auto
 ---
 
 ## Overview
@@ -12,7 +13,8 @@ See the [Dashboard Tutorial](tutorial.qmd) for a higher level review of how all 
 
 All dashboards include a top-level navigation bar that provides a logo, title, and optional author. Social and source code links can also be provided. Dashboards with multiple pages also contain a link to each page on the navigation bar. 
 
-**TODO**: Screenshot of navigation bar
+<!--- TODO: Screenshot of navigation bar --->
+
 
 You can specify the `title` and `author` using their respective document options:
 
@@ -23,17 +25,10 @@ author: "Cobblepot Analytics"
 ---
 ```
 
-**TODO**: Document logo, pages, buttons, etc.
+<!--- TODO: Document logo, pages, buttons, etc. --->
 
-**TODO**: Document changing background color, etc.
+<!--- TODO: Document changing background color, etc. --->
 
-
-<!-- TODO
-## Pages
-
-- syntax for pages
-- navigation bar
--->
 
 ## Layout
 
@@ -44,7 +39,7 @@ Dashboards components are laid out using alternating sets of rows and columns. R
 
 ::: {.g-col-5}
 
-````python
+````{.python .pymd}
 ---
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
@@ -84,7 +79,7 @@ By default, dashboards a laid out first by row then by column (`orientation: row
 
 ::: {.g-col-5}
 
-````python
+````{.python .pymd}
 ---
 title: "Diamonds Explorer"
 format: 
@@ -122,15 +117,174 @@ The article on [Dashboard Layouts](layouts.qmd) provides extensive additional ex
 
 ## Tabsets
 
+Use tabsets to include multiple views of data or to include content of secondary importance without having it crown the main display. Tabsets are created by adding the `.tabset` class to a row or column. For example, this layout displays the bottom row as a set of two tabs. 
 
+::: {.chart-example .grid}
 
+::: {.g-col-5}
+
+````{.python .pymd}
+---
+title: "Palmer Penguins"
+format: dashboard
+---
+    
+## Row
+
+```{{python}}
+```
+
+## Row {.tabset}
+
+```{{python}}
+#| title: Chart 2
+```
+
+```{{python}}
+#| title: Chart 3
+```
+````
+
+:::
+
+::: {.g-col-7}
+
+![](images/chart-tabset-row.png)
+
+:::
+
+:::
+
+You can include tabsets at arbitrarirly deep levels. Here we include a tabset within a column of a top level row. Each cell within the tabset column becomes a tab.
+
+::: {.chart-example .grid}
+
+::: {.g-col-5}
+
+````{.python .pymd}
+---
+title: "Palmer Penguins"
+format: dashboard
+---
+    
+## Row {height=70%}
+
+```{{python}}
+```
+
+## Row {height=30%}
+
+### Column {.tabset}
+
+```{{python}}
+#| title: Chart 2
+```
+
+```{{python}}
+#| title: Chart 3
+```
+
+### Column
+
+```{{python}}
+```
+
+````
+
+:::
+
+::: {.g-col-7}
+
+![](images/chart-tabset-card.png)
+
+:::
+
+:::
+
+Note that we need to provide navigational titles for our tabs. We do that here by adding a `title` option to the cell used to produce each tab.
 
 
 ## Cards
 
-- padding
-- title
-- expandable
+Cards are the fundamental unit of display for content within dashboards. By default, cards are displayed with no title and a small bit of padding around the edges. Here is a card that displays a [Leaflet](https://ipyleaflet.readthedocs.io) map:
+
+![](images/leaflet-card.png)
+
+You can add a title to a card by including the `title` cell option. You can also customize the padding using the `padding` option. For example:
+
+````{.python .pymd}
+```{{python}}
+#| title: "World Map"
+#| padding: 0px
+from ipyleaflet import Map, basemaps, basemap_to_tiles
+Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
+    center=(48.204793, 350.121558), zoom=2)
+```
+````
+
+![](images/leaflet-card-title-padding.png)
+
+Note that while cards often contain a plot or data table, cards can also include arbitrary markdown content. Create a content-based card using a heading with the `.card` class. You will often also want to include the `.flow` class so that the height of the card matches exactly its content:
+
+<!--- TODO: expandable cards --->
+
+
+## Value Boxes
+
+Value boxes are a great way to prominently display simple values within a dashboard. For example, here is a dashboard row with three value boxes:
+
+![](images/value-boxes.png)
+
+Here is the code you might use to create these value boxes. Note that we use a mix of Python and R cells in this example to illustrate the syntax for each language. Note also that we assume the variables `articles`, `comments`, and `spam` are computed previously within the document.
+
+````{.python .pymd}
+## Row 
+
+```{{python}}
+#| component: valuebox
+#| title: "Articles per day"
+#| icon: pencil
+#| color: blue
+articles
+```
+
+```{{python}}
+#| component: valuebox
+#| title: "Comments per day"
+dict(
+  icon = "pencil",
+  color = "blue",
+  value = comments
+)
+```
+
+```{{r}}
+#| component: valuebox
+#| title: "Spam per day"
+list(
+  icon = "trash",
+  color = "orange",
+  value = spam
+)
+```
+````
+
+You can choose between specifying value box options within YAML or within the `dict()` or `list()` printed by the cell (the latter syntax is handy when you want the `icon` or `color` to be dynamic based on the value).
+
+The `icon` used in value boxes can be any of the 2,000 available [bootstrap icons](https://icons.getbootstrap.com).
+
+You can also create value boxes using plain markdown (in which case you'll typically include the value using an inline expression). For example:
+
+
+````{.python .pymd}
+## Row
+
+::: {.valuebox icon="pencil" color="blue"}
+Articles per day
+
+`{python} articles`
+:::
+````
 
 ## Plots
 
@@ -144,42 +298,116 @@ The article on [Dashboard Layouts](layouts.qmd) provides extensive additional ex
 - paged tables
 - tbl-colwidths
 
-## Value Boxes
-
-- cell component syntax
-
-::: {.valuebox icon="foo"}
-My valuebox
-
-42
-:::
-
 
 
 ## Text Content
 
-- how can I get into my dashboards
-- markdown cards
-- .flow
-::: {.card}
+While you often fill dashboard cards with plots and tables, you can also include arbitrary markdown content anywhere within a dashboard. For example, here is a dashboard where the bottom row is ordinary markdown:
 
-:::
+![](images/markdown-row.png){.border}
 
-### My Card {.card}
+We included this content in our dashboard using a `## Row` with the `.flow` class applied to it (so that its height is automatically determined by the size of the markdown content):
 
-adsfasdf
+````{.python .pymd}
+## Row
+
+```{{python}}
+#| title: Population
+px.area(df, x="year", y="pop", color="continent", 
+        line_group="country")
+```
+
+```{{python}}
+#| title: Life Expectancy
+px.line(df, x="year", y="lifeExp", color="continent", 
+        line_group="country")
+```
+
+## Row {.flow}
+
+Gapminder combines data from multiple sources into
+unique coherent time-series that can’t be found
+elsewhere. Learn more about the Gampminder dataset at
+ <https://www.gapminder.org/data/>.
+ 
+````
+
+You can also stack text content within a column. For example:
+
+![](images/text-content-column.png){.border}
+
+To do this just add a heading alongside the other cells in the column (typically you'll want to specify the `.flow`class so the card is automatically sized to its content):
+
+````{.python .pymd}
+## Column
+
+```{{python}}
+#| title: Population
+px.area(df, x="year", y="pop", color="continent", 
+        line_group="country")
+```
+
+
+```{{python}}
+#| title: Life Expectancy
+px.line(df, x="year", y="lifeExp", color="continent", 
+        line_group="country")
+```
+
+### {.flow}
+
+Gapminder combines data from multiple sources into
+unique coherent time-series that can’t be found
+elsewhere. Learn more about the Gampminder dataset at
+<https://www.gapminder.org/data/>.
+````
+
 
 ## Sidebars
 
-- sidebars
-- width attribute
-- expando or not
-- accordian
+Sidebars are a great place to group inputs for Shiny interactive dashboards. To include a sidebar you add the `.sidebar` class to a top level column heading:
 
-## Input Panels
+::: {.chart-example .grid}
 
-- examples of the syntax
+::: {.g-col-5}
 
+````{.python .pymd}
+---
+title: "Sidebar"
+format: 
+  dashboard:
+    orientation: columns
+---
+    
+## Column {.sidebar}
+
+```{{python}}
+```
+
+## Column 
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+
+:::
+
+
+::: {.g-col-7}
+
+![](images/chart-input-sidebar.png)
+
+:::
+
+:::
+
+<!--- TODO: Sidebar width and expando behavior --->
+
+
+<!--- TODO: Input Panels --->
 
 
 
