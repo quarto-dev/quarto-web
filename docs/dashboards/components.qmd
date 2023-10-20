@@ -11,28 +11,34 @@ See the [Dashboard Tutorial](tutorial.qmd) for a higher level review of how all 
 
 ## Navigation
 
-All dashboards include a top-level navigation bar that provides a logo, title, and optional author. Social and source code links can also be provided. Dashboards with multiple pages also contain a link to each page on the navigation bar. 
+All dashboards include a top-level navigation bar that can provides a logo, title, and author. Dashboards with multiple pages also contain a link to each page on the navigation bar. 
 
-<!--- TODO: Screenshot of navigation bar --->
+<!--- TODO: Screenshot of navigation bar with pages --->
 
 
-You can specify the `title` and `author` using their respective document options:
+You can specify the `title`, `author`, and `logo` using their respective document options:
 
 ```yaml
 ---
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
+logo: penguins.png
 ---
 ```
 
-<!--- TODO: Document logo, pages, buttons, etc. --->
+As illustrated above, links to each of the dashboard's pages are provided automatically. 
 
-<!--- TODO: Document changing background color, etc. --->
+## Pages
+
+Dashboards consist of one or more pages. By default, dashboards have only a single page. To introduce multiple pages, use level 1 headings above the level 2 headings used to define rows and columns. For example:
+
+
+
 
 
 ## Layout
 
-Dashboards components are laid out using alternating sets of rows and columns. Rows and columns are in turn defined by markdown headings and computational cells. For example, here's a simple layout with two rows, where the second row is split into two columns:
+Within a page, dashboards components are laid out using alternating sets of rows and columns. Rows and columns are in turn defined by markdown headings and computational cells. For example, here's a simple layout with two rows, where the second row is split into two columns:
 
 
 ::: {.chart-example .grid}
@@ -70,7 +76,13 @@ format: dashboard
 
 :::
 
-Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create columns.
+Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create cards that are laid out horizontally within the row.
+
+::: {.callout-note}
+While all of the layout examples below will use a single-page dashboard, they work just the same when dashboards include multiple pages.
+:::
+
+### Orientation
 
 By default, dashboards a laid out first by row then by column (`orientation: rows`). However, you can change this by specifying the `orientation: columns` option:
 
@@ -206,11 +218,40 @@ Note that we need to provide navigational titles for our tabs. We do that here b
 
 ## Cards
 
-Cards are the fundamental unit of display for content within dashboards. By default, cards are displayed with no title and a small bit of padding around the edges. Here is a card that displays a [Leaflet](https://ipyleaflet.readthedocs.io) map:
+Cards are the fundamental unit of display within dashboards. Cards are created automatically for cells and markdown content that are within rows and columns. So for example, each of the Python cells here become cards:
+
+````{.python .pymd}
+## Column {width=40%}
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+
+Markdown content that exists outside of cells is also automatically collected up into a card:
+
+````{.python .pymd}
+## Column {width=40%}
+
+```{{python}}
+```
+
+![](image.png)
+This text and the image above will become a card
+
+```{{python}}
+```
+````
+
+### Display Options
+
+By default, cards are displayed with no title and a small bit of padding around the edges. Here is a card that displays a [Leaflet](https://ipyleaflet.readthedocs.io) map:
 
 ![](images/leaflet-card.png)
 
-You can add a title to a card by including the `title` cell option. You can also customize the padding using the `padding` option. For example:
+You can add a title to a card by including the `title` cell option. You can also customize the padding using the `padding` option. For example, here we add a title and remove the padding entirely:
 
 ````{.python .pymd}
 ```{{python}}
@@ -224,10 +265,22 @@ Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
 
 ![](images/leaflet-card-title-padding.png)
 
-Note that while cards often contain a plot or data table, cards can also include arbitrary markdown content. Create a content-based card using a heading with the `.card` class. You will often also want to include the `.flow` class so that the height of the card matches exactly its content:
+### Internal Layout
 
-<!--- TODO: expandable cards --->
+Typically a cell used to create a card will produce a single plot or table. If however a cell produces multiple outputs you can use cell layout options to organize their display. For example, this card includes two plots and the `layout-ncol` option is used to display them side-by-side:
 
+````{.python .pymd}
+```{{python}}
+#| title: "Tipping Behavior"
+#| layout-ncol: 2
+px.box(df, x="sex", y="total_bill", color="smoker")
+px.violin(df, x="sex", y="total_bill", color="smoker")
+```
+````
+
+![](images/card-layout-ncol.png)
+
+See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for additional documentation on custom layouts.
 
 ## Value Boxes
 
@@ -269,11 +322,13 @@ list(
 ```
 ````
 
-You can choose between specifying value box options within YAML or within the `dict()` or `list()` printed by the cell (the latter syntax is handy when you want the `icon` or `color` to be dynamic based on the value).
+You can choose between specifying value box options within YAML or within a `dict()` or `list()` (for Python and R, respectively) printed by the cell. The latter syntax is handy when you want the `icon` or `color` to be dynamic based on the value.
 
 The `icon` used in value boxes can be any of the 2,000 available [bootstrap icons](https://icons.getbootstrap.com).
 
-You can also create value boxes using plain markdown (in which case you'll typically include the value using an inline expression). For example:
+### Markdown Syntax
+
+You can also create value boxes using plain markdown (in which case you'll typically include the value via an inline expression). For example:
 
 
 ````{.python .pymd}
@@ -288,25 +343,27 @@ Articles per day
 
 ## Plots
 
+<!-- TODO: plots --->
+
 - use some javascript!
 - or, choose figure sizes very carefully!
 - language specific
 
 ## Tables
 
+<!-- TODO: tables --->
+
 - default treatment for tables (fixed headings, etc.)
 - paged tables
 - tbl-colwidths
 
-
-
 ## Text Content
 
-While you often fill dashboard cards with plots and tables, you can also include arbitrary markdown content anywhere within a dashboard. For example, here is a dashboard where the bottom row is ordinary markdown:
+While you often fill dashboard cards with plots and tables, you can also include arbitrary markdown content anywhere within a dashboard. For example, here is a dashboard where the bottom row is plain markdown:
 
 ![](images/markdown-row.png){.border}
 
-We included this content in our dashboard using a `## Row` with the `.flow` class applied to it (so that its height is automatically determined by the size of the markdown content):
+We included this content in our dashboard by placing it in its own row below the top row:
 
 ````{.python .pymd}
 ## Row
@@ -323,7 +380,7 @@ px.line(df, x="year", y="lifeExp", color="continent",
         line_group="country")
 ```
 
-## Row {.flow}
+## Row
 
 Gapminder combines data from multiple sources into
 unique coherent time-series that can’t be found
@@ -336,7 +393,7 @@ You can also stack text content within a column. For example:
 
 ![](images/text-content-column.png){.border}
 
-To do this just add a heading alongside the other cells in the column (typically you'll want to specify the `.flow`class so the card is automatically sized to its content):
+To do this just include the content alongside the other cells in the column:
 
 ````{.python .pymd}
 ## Column
@@ -347,14 +404,11 @@ px.area(df, x="year", y="pop", color="continent",
         line_group="country")
 ```
 
-
 ```{{python}}
 #| title: Life Expectancy
 px.line(df, x="year", y="lifeExp", color="continent", 
         line_group="country")
 ```
-
-### {.flow}
 
 Gapminder combines data from multiple sources into
 unique coherent time-series that can’t be found
@@ -408,6 +462,8 @@ format:
 
 
 <!--- TODO: Input Panels --->
+
+<!--- TODO: scrolling: true once it comes online --->
 
 
 
