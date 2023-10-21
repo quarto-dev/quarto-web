@@ -11,10 +11,9 @@ See the [Dashboard Tutorial](tutorial.qmd) for a higher level review of how all 
 
 ## Navigation
 
-All dashboards include a top-level navigation bar that can provides a logo, title, and author. Dashboards with multiple pages also contain a link to each page on the navigation bar. 
+All dashboards include a top-level navigation bar that provide a title and (optionally) a logo and author. Dashboards with multiple pages also contain a link to each page on the navigation bar:
 
-<!--- TODO: Screenshot of navigation bar with pages --->
-
+![](images/navigation-toolbar.png)
 
 You can specify the `title`, `author`, and `logo` using their respective document options:
 
@@ -26,19 +25,9 @@ logo: penguins.png
 ---
 ```
 
-As illustrated above, links to each of the dashboard's pages are provided automatically. 
-
-## Pages
-
-Dashboards consist of one or more pages. By default, dashboards have only a single page. To introduce multiple pages, use level 1 headings above the level 2 headings used to define rows and columns. For example:
-
-
-
-
-
 ## Layout
 
-Within a page, dashboards components are laid out using alternating sets of rows and columns. Rows and columns are in turn defined by markdown headings and computational cells. For example, here's a simple layout with two rows, where the second row is split into two columns:
+Within a page, dashboard components are laid out using alternating sets of rows and columns. Rows and columns are in turn defined by markdown headings and computational cells. For example, here's a simple layout with two rows, where the second row is split into two columns:
 
 
 ::: {.chart-example .grid}
@@ -76,15 +65,11 @@ format: dashboard
 
 :::
 
-Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create cards that are laid out horizontally within the row.
-
-::: {.callout-note}
-While all of the layout examples below will use a single-page dashboard, they work just the same when dashboards include multiple pages.
-:::
+Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create cards that are laid out in columns within the row.
 
 ### Orientation
 
-By default, dashboards a laid out first by row then by column (`orientation: rows`). However, you can change this by specifying the `orientation: columns` option:
+By default, dashboard pages are laid out first by row, then by column. However, you can change this by specifying the `orientation: columns` document option:
 
 
 ::: {.chart-example .grid}
@@ -124,7 +109,82 @@ format:
 :::
 
 
+### Fill vs. Scrolling
+
+By default, dashboard content fills all available space in the page. You can alternatively specify the `scrolling: true` option to layout content using its natural height and scroll to accomodate page overflow. For example:
+
+::: {.chart-example .grid}
+
+::: {.g-col-5}
+
+````{.python .pymd}
+---
+title: "Scrolling"
+format: 
+  dashboard:
+    scrolling: true 
+---
+    
+```{{python}}
+```
+
+```{{python}}
+```
+
+```{{python}}
+```
+
+
+````
+
+:::
+
+::: {.g-col-7}
+
+![](images/chart-stack-scrolling.png)
+
+:::
+
+:::
+
+Because of its ability to scroll this layout could easily accommodate many more charts. While this is useful, you might also consider [Pages](#pages) and [Tabsets](#tabsets) (described in the next two sections) as alternate ways to present content within layouts that fill their page.
+
 The article on [Dashboard Layouts](layouts.qmd) provides extensive additional example layouts which you can use as a basis for your own dashboards.
+
+
+## Pages
+
+The layout examples above demonstrated only single-page dashboards. To introduce multiple pages, use level 1 headings above the level 2 headings used to define rows and columns. For example, here is a dashboard that splits content across two pages:
+
+````{.python .pymd}
+---
+title: "Palmer Penguins"
+format: dashboard
+---
+    
+# Bills 
+
+```{{python}}
+```
+
+# Flippers {orientation="columns"}
+
+## Column
+
+```{{python}}
+```
+
+```{{python}}
+```
+
+## Column 
+
+```{{python}}
+```
+````
+
+
+Note that we can set a per-page orientation by adding an `orientation` attribute to the page haeding (here `orientation="columns"` for the second page).  
 
 
 ## Tabsets
@@ -462,8 +522,5 @@ format:
 
 
 <!--- TODO: Input Panels --->
-
-<!--- TODO: scrolling: true once it comes online --->
-
 
 
