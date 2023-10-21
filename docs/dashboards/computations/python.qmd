@@ -1,5 +1,127 @@
 ---
 title: "Dashboards with Python"
+lightbox: auto
 ---
+
+In this article we'll provide some Python specific guideance for including static and interactive [Plots](#plots) and [Tables](#tables) in your dashboards.
+
+
+## Plots
+
+{{< include ../_plots-interactive.md >}}
+
+### plotly
+
+[Plotly](https://plotly.com/python/) is a popular Python package for JavaScript based plots, and works very well in dashboard layouts. Plotly is also noteworthy because it includes many interactive features while still not requiring a server. For example, this plot supports an animated display of values changing over time:
+
+````{.python .pymd}
+```{{python}}
+import plotly.express as px
+df = px.data.gapminder()
+px.scatter(
+  df, x="gdpPercap", y="lifeExp", 
+  animation_frame="year", animation_group="country",
+  size="pop", color="continent", hover_name="country", 
+  facet_col="continent", log_x=True, size_max=45, 
+  range_x=[100,100000], range_y=[25,90]
+)
+```
+````
+
+![](../images/plotly-interactive.png)
+
+### matplotlib
+
+{{< include ../_plots-raster.md >}}
+
+If you are using [Matplotlib](https://matplotlib.org) (or libraries built on it like [Seaborn](https://seaborn.pydata.org)) then you can do this via the `figure.figsize` global option (or alternatively per-figure if that's more convenient):
+
+````python
+```{{python}}
+import matplotlib.pyplot as plt
+plt.rcParams['figure.figsize'] = (12, 3)
+```
+````
+
+In the case that your plots are laid out at a wider aspct ratio, setting this option can make a huge difference in terms of using available space. For example, the top plot in the stack below uses the default figure size of 8 x 5 and the bottom one uses the 12 x 3 ratio specified above:
+
+![](../images/matplotlib-size.png)
+
+
+## Tables
+
+You can include data tables within dashboards in one of two ways:
+
+- As a simple tabular display.
+- As an interactive widget that includes sorting, filtering, and pagination.
+
+There are many Python packages available for producing tabular output. We'll cover two of the more populare libraries (**tabulate** and **itables**) below.
+
+### tabulate
+
+The Python [tabulate](https://github.com/astanin/python-tabulate) package supports creating markdown tables from Pandas data frames, NumPy arrays, and many other data types. You can generate a markdown table from any Pandas data frame via the `to_markdown()` method (being sure to wrap it as `Markdown` output using IPython):
+
+````python
+```{{python}}
+import pandas as pd
+from IPython.display import Markdown
+
+penguins = pd.read_csv("penguins.csv")\
+
+Markdown(penguins.to_markdown(index=False))
+```
+````
+
+Note that the `index = False` parameter supresses the display of the row index. Here is a card containing output from `tabulate`:
+
+![](../images/tabulate.png)
+
+
+You can also import `tabulate` directly and pass in the object to print directly:
+
+````python
+```{{python}}
+from tabulate import tabulate
+Markdown(
+  tabulate(penguins, showindex=False, 
+           headers=penguins.columns)
+)
+```
+````
+
+### itables
+
+The Python [itables](https://mwouts.github.io/itables/quick_start.html) package supports creating interactive data tables from Pandas and Polars DataFrames that you can sort, paginate, scroll, or filter.
+
+Use the `show()` method from `itables` to display an interactive table (note that we also specify the `flow` class for the cell so that the table determines its own height rather than having it allocated by the layout system):
+
+````python
+```{{python}}
+#| classes: flow
+from itables import show
+show(penguins)
+```
+````
+
+![](../images/itables-flow.png)
+
+If you prefer scrolling to paginated tables, use the `scrollY` and `paging` options as follows:
+
+````python
+```{{python}}
+from itables import show
+show(penguins, scrollY=True,  paging=False)
+```
+````
+
+![](../images/itables-scrolling.png)
+
+## Shiny
+
+You can use [Shiny for Python](https://shiny.posit.co/py/) add add interactivity to a Python based dashboard.  For example, here's a very simple interactive dashbboard you might build using Shiny:
+
+![](../images/penguins-shiny.png){.border .lightbox}
+
+Learn more in the article on [Dashboards with Shiny for Python](/docs/dashboards/interactivity/shiny-python.qmd).
 
 
