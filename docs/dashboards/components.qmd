@@ -432,7 +432,64 @@ Note that the need to explicitly size plots is confined to traditional plotting 
 
 ## R
 
-(Under Construction)
+{{< include _plots-interactive.md >}}
+
+### htmlwidgets
+
+The [htmlwidgets](https://www.htmlwidgets.org/) framework provides high-level R bindings for JavaScript data visualization libraries. Some popular htmlwidgets include:
+
+1.  [Plotly](https://plot.ly/r/), which via its ggplotly interface allows you to easily translate your ggplot2 graphics to an interactive web-based version.
+
+2.  [Leaflet](https://rstudio.github.io/leaflet/), a library for creating dynamic maps that support panning and zooming, with various annotations like markers, polygons, and popups.
+
+3.  [dygraphs](https://rstudio.github.io/dygraphs), which provides rich facilities for charting time-series data and includes support for many interactive features including series/point highlighting, zooming, and panning.
+
+You can use htmlwidgets just like you use normal R plots. For example, here is how we embed a [Leaflet](http://rstudio.github.io/leaflet/) map:
+
+```{{r}}
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=174.768, lat=-36.852, popup="The birthplace of R")
+```
+
+There are dozens of packages on CRAN that provide htmlwidgets. You can find example uses of several of the more popular htmlwidgets in the htmlwidgets [showcase](https://www.htmlwidgets.org/showcase_leaflet.html) and browse all available widgets in the [gallery](https://gallery.htmlwidgets.org).
+
+### R Graphics
+
+You can use any chart created with standard R raster graphics (base, lattice, grid, etc.) within dashboards. When using standard R graphics, you’ll need to pay a bit more attention to getting the size of plots right for the layout they’ll be viewed in (since these charts are static PNG images it’s not possible for them to seamlessly fill the bounds of their container).
+
+The key is to define knitr `fig-width` and `fig-height` options that enable the plots to fit into their layout container as closely as possible.
+
+Here’s an example of a layout that includes 3 charts from R base graphics:
+
+````{.python .pymd}
+## Row {height="65%"}
+
+```{{r}}
+#| fig-width: 10
+#| fig-height: 8
+plot(cars)
+```
+
+## Row {height="35%"}
+        
+```{{r}}
+#| fig-width: 5
+#| fig-height: 4
+plot(pressure)
+```
+    
+```{{r}}
+#| fig-width: 5
+#| fig-height: 4
+plot(airmiles)
+```
+````
+
+We’ve specified an explicit `fig-height` and `fig-width` for each plot so that their rendered size fits their layout container as closely as possible. Note that the ideal values for these dimensions typically need to be determined by experimentation.
+
+
 :::
 
 ## Tables
@@ -510,8 +567,6 @@ show(penguins, scrollY=True,  paging=False)
 ![](images/itables-scrolling.png)
 
 ## R
-
-(Under Construction)
 :::
 
 ## Text Content
