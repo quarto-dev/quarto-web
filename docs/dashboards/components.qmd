@@ -499,8 +499,6 @@ You can include data tables within dashboards in one of two ways:
 -   As a simple tabular display.
 -   As an interactive widget that includes sorting, filtering, and pagination.
 
-Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). Tables produced by computations are well supported, but the details vary by environment.
-
 Below we provide some language specific tips and techniques for including tables within dashboards.
 
 ::: {.panel-tabset group="language"}
@@ -567,6 +565,44 @@ show(penguins, scrollY=True,  paging=False)
 ![](images/itables-scrolling.png)
 
 ## R
+
+There are many R packages available for producing tabular output. We’ll cover two of the more popular approaches (kable and DT) below.
+
+### kable
+
+Simple markdown tables are ideal for smaller numbers of records (i.e. 20-250 rows). Use the `knitr::kable()` function to output markdown tables:
+
+````{.python .pymd}
+```{{r}}
+knitr::kable(mtcars)
+```
+````
+
+Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). 
+
+### DT
+
+The [DT](https://rstudio.github.io/DT/) package (an interface to the DataTables JavaScript library) can display R matrices or data frames as interactive HTML tables that support filtering, pagination, and sorting.
+
+To include a DataTable you use the `DT::datatable` function:
+
+````{.python .pymd}
+```{{r}}
+library(DT)
+datatable(mtcars, options = list(bPaginate = FALSE))
+```
+````
+
+Note that we specified the `bPaginate = FALSE` option. This is appropriate for smaller datasets where scrolling provides a comfortable way of navigating through the data.
+
+If you have a large dataset where you want to enable pagination, you should be sure to specify the `pageLength` option to show more than the default 10 rows of your dataset per page:
+
+````{.python .pymd}
+```{{r}}
+datatable(mtcars, options = list(pageLength = 25))
+```
+````
+
 :::
 
 ## Text Content
