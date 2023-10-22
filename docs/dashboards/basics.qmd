@@ -1,13 +1,11 @@
 ---
-title: "Dashboard Components"
+title: "Dashboard Basics"
 lightbox: auto
 ---
 
 ## Overview
 
 Dashboards are compositions of various components used to present data and provide navigation. Below we'll describe all of the available components in depth. 
-
-See the [Dashboard Tutorial](tutorial.qmd) for a higher level review of how all of these components work together.
 
 ## Navigation
 
@@ -325,22 +323,50 @@ Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
 
 ![](images/leaflet-card-title-padding.png)
 
-### Internal Layout
+In the section below on [Cell Output](#cell-output) there are additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.).
 
-Typically a cell used to create a card will produce a single plot or table. If however a cell produces multiple outputs you can use cell layout options to organize their display. For example, this card includes two plots and the `layout-ncol` option is used to display them side-by-side:
+
+## Sidebars
+
+Sidebars are a great place to group inputs for Shiny interactive dashboards. To include a sidebar you add the `.sidebar` class to a top level column heading:
+
+::: {.chart-example .grid}
+
+::: {.g-col-5}
 
 ````{.python .pymd}
+---
+title: "Sidebar"
+format: 
+  dashboard:
+    orientation: columns
+---
+    
+## Column {.sidebar}
+
 ```{{python}}
-#| title: "Tipping Behavior"
-#| layout-ncol: 2
-px.box(df, x="sex", y="total_bill", color="smoker")
-px.violin(df, x="sex", y="total_bill", color="smoker")
+```
+
+## Column 
+
+```{{python}}
+```
+
+```{{python}}
 ```
 ````
 
-![](images/card-layout-ncol.png)
+:::
 
-See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for additional documentation on custom layouts.
+
+::: {.g-col-7}
+
+![](images/chart-input-sidebar.png)
+
+:::
+
+:::
+
 
 ## Value Boxes
 
@@ -401,18 +427,64 @@ Articles per day
 :::
 ````
 
+
 ## Plots
 
 Plots are by far the most common content type displayed in dashboards. Both interactive JavaScript-based plots (e.g. [Plotly](https://plotly.com/graphing-libraries/)) and standard raster based plots (e.g. [Matplotlib](https://matplotlib.org) or [ggplot2](https://ggplot2.tidyverse.org) are supported.
 
+Below we provide some language specific tips and techniques for including plots within dashboards.
+
+::: {.panel-tabset group="language"}
+
+## Python
+
 {{< include _plots-interactive.md >}}
+
+### plotly
+
+[Plotly](https://plotly.com/python/) is a popular Python package for JavaScript based plots, and works very well in dashboard layouts. Plotly is also noteworthy because it includes many interactive features while still not requiring a server. For example, this plot supports an animated display of values changing over time:
+
+````{.python .pymd}
+```{{python}}
+import plotly.express as px
+df = px.data.gapminder()
+px.scatter(
+  df, x="gdpPercap", y="lifeExp", 
+  animation_frame="year", animation_group="country",
+  size="pop", color="continent", hover_name="country", 
+  facet_col="continent", log_x=True, size_max=45, 
+  range_x=[100,100000], range_y=[25,90]
+)
+```
+````
+
+![](images/plotly-interactive.png)
+
+### matplotlib
 
 {{< include _plots-raster.md >}}
 
-See these articles for language-speicfic techniques on using both JavaScript and traditional plots in dashboards:
+If you are using [Matplotlib](https://matplotlib.org) (or libraries built on it like [Seaborn](https://seaborn.pydata.org)) then you can do this via the `figure.figsize` global option (or alternatively per-figure if that's more convenient):
 
-- [Plots in Python](computations/python.qmd#plots)
-- [Plots in R](computations/r.qmd#plots) 
+````python
+```{{python}}
+import matplotlib.pyplot as plt
+plt.rcParams['figure.figsize'] = (12, 3)
+```
+````
+
+In the case that your plots are laid out at a wider aspct ratio, setting this option can make a huge difference in terms of using available space. For example, the top plot in the stack below uses the default figure size of 8 x 5 and the bottom one uses the 12 x 3 ratio specified above:
+
+![](images/matplotlib-size.png)
+
+Note that the need to explicitly size plots is confined to traditonal gplotting libraries---if you use Plotly or another JavaScript based plotting system plots will automatically resize to fill their container.
+
+## R
+
+(Under Construction)
+
+:::
+
 
 ## Tables
 
@@ -421,10 +493,83 @@ You can include data tables within dashboards in one of two ways:
 - As a simple tabular display.
 - As an interactive widget that includes sorting, filtering, and pagination.
 
-Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). Tables produced by computations are well supported, but the details vary by environment. See these articles for language-speicfic techniques on presenting and customizing tables:
+Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). Tables produced by computations are well supported, but the details vary by environment. 
 
-- [Tables in Python](computations/python.qmd#tables)
-- [Tables in R](computations/r.qmd#tables) 
+Below we provide some language specific tips and techniques for including tables within dashboards.
+
+::: {.panel-tabset group="language"}
+
+## Python
+
+There are many Python packages available for producing tabular output. We'll cover two of the more populare libraries (**tabulate** and **itables**) below.
+
+### tabulate
+
+The Python [tabulate](https://github.com/astanin/python-tabulate) package supports creating markdown tables from Pandas data frames, NumPy arrays, and many other data types. You can generate a markdown table from any Pandas data frame via the `to_markdown()` method (being sure to wrap it as `Markdown` output using IPython):
+
+````python
+```{{python}}
+import pandas as pd
+from IPython.display import Markdown
+
+penguins = pd.read_csv("penguins.csv")\
+
+Markdown(penguins.to_markdown(index=False))
+```
+````
+
+Note that the `index = False` parameter supresses the display of the row index. Here is a card containing output from `tabulate`:
+
+![](images/tabulate.png)
+
+
+You can also import `tabulate` directly and pass in the object to print directly:
+
+````python
+```{{python}}
+from tabulate import tabulate
+Markdown(
+  tabulate(penguins, showindex=False, 
+           headers=penguins.columns)
+)
+```
+````
+
+### itables
+
+The Python [itables](https://mwouts.github.io/itables/quick_start.html) package supports creating interactive data tables from Pandas and Polars DataFrames that you can sort, paginate, scroll, or filter.
+
+Use the `show()` method from `itables` to display an interactive table (note that we also specify the `flow` class for the cell so that the table determines its own height rather than having it allocated by the layout system):
+
+````python
+```{{python}}
+#| classes: flow
+from itables import show
+show(penguins)
+```
+````
+
+![](images/itables-flow.png)
+
+If you prefer scrolling to paginated tables, use the `scrollY` and `paging` options as follows:
+
+````python
+```{{python}}
+from itables import show
+show(penguins, scrollY=True,  paging=False)
+```
+````
+
+![](images/itables-scrolling.png)
+
+## R
+
+(Under Construction)
+
+:::
+
+
+
 
 ## Text Content
 
@@ -485,51 +630,49 @@ elsewhere. Learn more about the Gampminder dataset at
 <https://www.gapminder.org/data/>.
 ````
 
+## Cell Output
 
-## Sidebars
+The output of each computational cell within your notebook or source document will be contained witihn a [Card](#cards). Below we describe some special rules observed when creating cards.
 
-Sidebars are a great place to group inputs for Shiny interactive dashboards. To include a sidebar you add the `.sidebar` class to a top level column heading:
+### Excluded Cells
 
-::: {.chart-example .grid}
-
-::: {.g-col-5}
+Cells that produce no output do not become cards (for example, cells used to import packages, load and filter data, etc. In some cases a cell might produce unexpected output that you want to exclude. To do this add the `output: false` option to the cell:
 
 ````{.python .pymd}
----
-title: "Sidebar"
-format: 
-  dashboard:
-    orientation: columns
----
-    
-## Column {.sidebar}
-
 ```{{python}}
-```
-
-## Column 
-
-```{{python}}
-```
-
-```{{python}}
+#| output: false
+# (code that produces unexpected output)
 ```
 ````
 
-:::
+### Expressions
 
+By default, all output from top level expressions is displayed within dashboards. This means that multiple plots can easily be generated from a cell. For example:
 
-::: {.g-col-7}
+````{.python .pymd}
+```{{python}}
+#| title: "Tipping Behavior"
+px.box(df, x="sex", y="total_bill", color="smoker")
+px.violin(df, x="sex", y="total_bill", color="smoker")
+```
+````
 
-![](images/chart-input-sidebar.png)
+This behavior correponds to the `"all"` setting for [Jupyter shell interactivity](https://ipython.readthedocs.io/en/stable/config/options/terminal.html#configtrait-InteractiveShell.ast_node_interactivity). You can customize this behavior within Quarto using the `ipynb-shell-interactivity` option. 
 
-:::
+### Card Layout
 
-:::
+If a cell produces multiple outputs you can use cell layout options to organize their display. For example, here we modify the example of to display plots side-by-side using the `layout-ncol` option:
 
-<!--- TODO: Sidebar width and expando behavior --->
+````{.python .pymd}
+```{{python}}
+#| title: "Tipping Behavior"
+#| layout-ncol: 2
+px.box(df, x="sex", y="total_bill", color="smoker")
+px.violin(df, x="sex", y="total_bill", color="smoker")
+```
+````
 
+![](images/card-layout-ncol.png)
 
-<!--- TODO: Input Panels --->
-
+See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for additional documentation on custom layouts.
 
