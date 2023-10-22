@@ -7,7 +7,7 @@ lightbox: auto
 
 ## Overview
 
-Dashboards are compositions of various components used to present data and provide navigation. Below we'll describe all of the available components in depth. 
+Dashboards are compositions of various components used to present data and provide navigation. Below we'll describe all of the available components in depth.
 
 ## Navigation
 
@@ -17,7 +17,7 @@ All dashboards include a top-level navigation bar that provide a title and (opti
 
 You can specify the `title`, `author`, and `logo` using their respective document options:
 
-```yaml
+``` yaml
 ---
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
@@ -29,12 +29,9 @@ logo: penguins.png
 
 Within a page, dashboard components are laid out using alternating sets of rows and columns. Rows and columns are in turn defined by markdown headings and computational cells. For example, here's a simple layout with two rows, where the second row is split into two columns:
 
-
 ::: {.chart-example .grid}
-
-::: {.g-col-5}
-
-````{.python .pymd}
+::: g-col-5
+```` {.python .pymd}
 ---
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
@@ -54,15 +51,11 @@ format: dashboard
 ```{{python}}
 ```
 ````
-
 :::
 
-::: {.g-col-7}
-
+::: g-col-7
 ![](images/chart-focal-top.png)
-
 :::
-
 :::
 
 Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create cards that are laid out in columns within the row.
@@ -71,12 +64,9 @@ Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents
 
 By default, dashboard pages are laid out first by row, then by column. However, you can change this by specifying the `orientation: columns` document option:
 
-
 ::: {.chart-example .grid}
-
-::: {.g-col-5}
-
-````{.python .pymd}
+::: g-col-5
+```` {.python .pymd}
 ---
 title: "Diamonds Explorer"
 format: 
@@ -97,27 +87,20 @@ format:
 ```{{python}}
 ```
 ````
-
 :::
 
-::: {.g-col-7}
-
+::: g-col-7
 ![](images/chart-focal-left.png)
-
 :::
-
 :::
-
 
 ### Fill vs. Scrolling
 
-By default, dashboard content fills all available space in the page. You can alternatively specify the `scrolling: true` option to layout content using its natural height and scroll to accomodate page overflow. For example:
+By default, dashboard content fills all available space in the page. You can alternatively specify the `scrolling: true` option to layout content using its natural height and scroll to accommodate page overflow. For example:
 
 ::: {.chart-example .grid}
-
-::: {.g-col-5}
-
-````{.python .pymd}
+::: g-col-5
+```` {.python .pymd}
 ---
 title: "Scrolling"
 format: 
@@ -134,29 +117,23 @@ format:
 ```{{python}}
 ```
 
-
 ````
-
 :::
 
-::: {.g-col-7}
-
+::: g-col-7
 ![](images/chart-stack-scrolling.png)
-
 :::
-
 :::
 
 Because of its ability to scroll this layout could easily accommodate many more charts. While this is useful, you might also consider [Pages](#pages) and [Tabsets](#tabsets) (described in the next two sections) as alternate ways to present content within layouts that fill their page.
 
 The article on [Dashboard Layouts](layouts.qmd) provides extensive additional example layouts which you can use as a basis for your own dashboards.
 
-
-## Pages
+## Pages {#pages}
 
 The layout examples above demonstrated only single-page dashboards. To introduce multiple pages, use level 1 headings above the level 2 headings used to define rows and columns. For example, here is a dashboard that splits content across two pages:
 
-````{.python .pymd}
+```` {.python .pymd}
 ---
 title: "Palmer Penguins"
 format: dashboard
@@ -183,19 +160,15 @@ format: dashboard
 ```
 ````
 
+Note that we can set a per-page orientation by adding an `orientation` attribute to the page heading (here `orientation="columns"` for the second page).
 
-Note that we can set a per-page orientation by adding an `orientation` attribute to the page haeding (here `orientation="columns"` for the second page).  
+## Tabsets {#tabsets}
 
-
-## Tabsets
-
-Use tabsets to include multiple views of data or to include content of secondary importance without having it crown the main display. Tabsets are created by adding the `.tabset` class to a row or column. For example, this layout displays the bottom row as a set of two tabs. 
+Use tabsets to include multiple views of data or to include content of secondary importance without having it crown the main display. Tabsets are created by adding the `.tabset` class to a row or column. For example, this layout displays the bottom row as a set of two tabs.
 
 ::: {.chart-example .grid}
-
-::: {.g-col-5}
-
-````{.python .pymd}
+::: g-col-5
+```` {.python .pymd}
 ---
 title: "Palmer Penguins"
 format: dashboard
@@ -216,24 +189,18 @@ format: dashboard
 #| title: Chart 3
 ```
 ````
-
 :::
 
-::: {.g-col-7}
-
+::: g-col-7
 ![](images/chart-tabset-row.png)
-
+:::
 :::
 
-:::
-
-You can include tabsets at arbitrarirly deep levels. Here we include a tabset within a column of a top level row. Each cell within the tabset column becomes a tab.
+You can include tabsets at arbitrarily deep levels. Here we include a tabset within a column of a top level row. Each cell within the tabset column becomes a tab.
 
 ::: {.chart-example .grid}
-
-::: {.g-col-5}
-
-````{.python .pymd}
+::: g-col-5
+```` {.python .pymd}
 ---
 title: "Palmer Penguins"
 format: dashboard
@@ -260,27 +227,21 @@ format: dashboard
 
 ```{{python}}
 ```
-
 ````
-
 :::
 
-::: {.g-col-7}
-
+::: g-col-7
 ![](images/chart-tabset-card.png)
-
 :::
-
 :::
 
 Note that we need to provide navigational titles for our tabs. We do that here by adding a `title` option to the cell used to produce each tab.
 
-
-## Cards
+## Cards {#cards}
 
 Cards are the fundamental unit of display within dashboards. Cards are created automatically for cells and markdown content that are within rows and columns. So for example, each of the Python cells here become cards:
 
-````{.python .pymd}
+```` {.python .pymd}
 ## Column {width=40%}
 
 ```{{python}}
@@ -292,7 +253,7 @@ Cards are the fundamental unit of display within dashboards. Cards are created a
 
 Markdown content that exists outside of cells is also automatically collected up into a card:
 
-````{.python .pymd}
+```` {.python .pymd}
 ## Column {width=40%}
 
 ```{{python}}
@@ -313,7 +274,7 @@ By default, cards are displayed with no title and a small bit of padding around 
 
 You can add a title to a card by including the `title` cell option. You can also customize the padding using the `padding` option. For example, here we add a title and remove the padding entirely:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{python}}
 #| title: "World Map"
 #| padding: 0px
@@ -327,16 +288,13 @@ Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
 
 In the section below on [Cell Output](#cell-output) there are additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.).
 
-
 ## Sidebars
 
 Sidebars are a great place to group inputs for Shiny interactive dashboards. To include a sidebar you add the `.sidebar` class to a top level column heading:
 
 ::: {.chart-example .grid}
-
-::: {.g-col-5}
-
-````{.python .pymd}
+::: g-col-5
+```` {.python .pymd}
 ---
 title: "Sidebar"
 format: 
@@ -357,18 +315,12 @@ format:
 ```{{python}}
 ```
 ````
-
 :::
 
-
-::: {.g-col-7}
-
+::: g-col-7
 ![](images/chart-input-sidebar.png)
-
 :::
-
 :::
-
 
 ## Value Boxes
 
@@ -378,7 +330,7 @@ Value boxes are a great way to prominently display simple values within a dashbo
 
 Here is the code you might use to create these value boxes. Note that we use a mix of Python and R cells in this example to illustrate the syntax for each language. Note also that we assume the variables `articles`, `comments`, and `spam` are computed previously within the document.
 
-````{.python .pymd}
+```` {.python .pymd}
 ## Row 
 
 ```{{python}}
@@ -418,8 +370,7 @@ The `icon` used in value boxes can be any of the 2,000 available [bootstrap icon
 
 You can also create value boxes using plain markdown (in which case you'll typically include the value via an inline expression). For example:
 
-
-````{.python .pymd}
+``` {.python .pymd}
 ## Row
 
 ::: {.valuebox icon="pencil" color="blue"}
@@ -427,8 +378,7 @@ Articles per day
 
 `{python} articles`
 :::
-````
-
+```
 
 ## Plots
 
@@ -437,7 +387,6 @@ Plots are by far the most common content type displayed in dashboards. Both inte
 Below we provide some language specific tips and techniques for including plots within dashboards.
 
 ::: {.panel-tabset group="language"}
-
 ## Python
 
 {{< include _plots-interactive.md >}}
@@ -446,7 +395,7 @@ Below we provide some language specific tips and techniques for including plots 
 
 [Plotly](https://plotly.com/python/) is a popular Python package for JavaScript based plots, and works very well in dashboard layouts. Plotly is also noteworthy because it includes many interactive features while still not requiring a server. For example, this plot supports an animated display of values changing over time:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{python}}
 import plotly.express as px
 df = px.data.gapminder()
@@ -468,48 +417,45 @@ px.scatter(
 
 If you are using [Matplotlib](https://matplotlib.org) (or libraries built on it like [Seaborn](https://seaborn.pydata.org)) then you can do this via the `figure.figsize` global option (or alternatively per-figure if that's more convenient):
 
-````python
+```` python
 ```{{python}}
 import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = (12, 3)
 ```
 ````
 
-In the case that your plots are laid out at a wider aspct ratio, setting this option can make a huge difference in terms of using available space. For example, the top plot in the stack below uses the default figure size of 8 x 5 and the bottom one uses the 12 x 3 ratio specified above:
+In the case that your plots are laid out at a wider aspect ratio, setting this option can make a huge difference in terms of using available space. For example, the top plot in the stack below uses the default figure size of 8 x 5 and the bottom one uses the 12 x 3 ratio specified above:
 
 ![](images/matplotlib-size.png)
 
-Note that the need to explicitly size plots is confined to traditonal gplotting libraries---if you use Plotly or another JavaScript based plotting system plots will automatically resize to fill their container.
+Note that the need to explicitly size plots is confined to traditional plotting libraries---if you use Plotly or another JavaScript based plotting system plots will automatically resize to fill their container.
 
 ## R
 
 (Under Construction)
-
 :::
-
 
 ## Tables
 
 You can include data tables within dashboards in one of two ways:
 
-- As a simple tabular display.
-- As an interactive widget that includes sorting, filtering, and pagination.
+-   As a simple tabular display.
+-   As an interactive widget that includes sorting, filtering, and pagination.
 
-Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). Tables produced by computations are well supported, but the details vary by environment. 
+Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). Tables produced by computations are well supported, but the details vary by environment.
 
 Below we provide some language specific tips and techniques for including tables within dashboards.
 
 ::: {.panel-tabset group="language"}
-
 ## Python
 
-There are many Python packages available for producing tabular output. We'll cover two of the more populare libraries (**tabulate** and **itables**) below.
+There are many Python packages available for producing tabular output. We'll cover two of the more popular libraries (**tabulate** and **itables**) below.
 
 ### tabulate
 
 The Python [tabulate](https://github.com/astanin/python-tabulate) package supports creating markdown tables from Pandas data frames, NumPy arrays, and many other data types. You can generate a markdown table from any Pandas data frame via the `to_markdown()` method (being sure to wrap it as `Markdown` output using IPython):
 
-````python
+```` python
 ```{{python}}
 import pandas as pd
 from IPython.display import Markdown
@@ -524,10 +470,9 @@ Note that the `index = False` parameter supresses the display of the row index. 
 
 ![](images/tabulate.png)
 
-
 You can also import `tabulate` directly and pass in the object to print directly:
 
-````python
+```` python
 ```{{python}}
 from tabulate import tabulate
 Markdown(
@@ -543,7 +488,7 @@ The Python [itables](https://mwouts.github.io/itables/quick_start.html) package 
 
 Use the `show()` method from `itables` to display an interactive table (note that we also specify the `flow` class for the cell so that the table determines its own height rather than having it allocated by the layout system):
 
-````python
+```` python
 ```{{python}}
 #| classes: flow
 from itables import show
@@ -555,7 +500,7 @@ show(penguins)
 
 If you prefer scrolling to paginated tables, use the `scrollY` and `paging` options as follows:
 
-````python
+```` python
 ```{{python}}
 from itables import show
 show(penguins, scrollY=True,  paging=False)
@@ -567,11 +512,7 @@ show(penguins, scrollY=True,  paging=False)
 ## R
 
 (Under Construction)
-
 :::
-
-
-
 
 ## Text Content
 
@@ -581,7 +522,7 @@ While you often fill dashboard cards with plots and tables, you can also include
 
 We included this content in our dashboard by placing it in its own row below the top row:
 
-````{.python .pymd}
+```` {.python .pymd}
 ## Row
 
 ```{{python}}
@@ -611,7 +552,7 @@ You can also stack text content within a column. For example:
 
 To do this just include the content alongside the other cells in the column:
 
-````{.python .pymd}
+```` {.python .pymd}
 ## Column
 
 ```{{python}}
@@ -632,7 +573,7 @@ elsewhere. Learn more about the Gampminder dataset at
 <https://www.gapminder.org/data/>.
 ````
 
-## Cell Output
+## Cell Output {#cell-output}
 
 The output of each computational cell within your notebook or source document will be contained witihn a [Card](#cards). Below we describe some special rules observed when creating cards.
 
@@ -640,7 +581,7 @@ The output of each computational cell within your notebook or source document wi
 
 Cells that produce no output do not become cards (for example, cells used to import packages, load and filter data, etc. In some cases a cell might produce unexpected output that you want to exclude. To do this add the `output: false` option to the cell:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{python}}
 #| output: false
 # (code that produces unexpected output)
@@ -651,7 +592,7 @@ Cells that produce no output do not become cards (for example, cells used to imp
 
 By default, all output from top level expressions is displayed within dashboards. This means that multiple plots can easily be generated from a cell. For example:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{python}}
 #| title: "Tipping Behavior"
 px.box(df, x="sex", y="total_bill", color="smoker")
@@ -659,13 +600,13 @@ px.violin(df, x="sex", y="total_bill", color="smoker")
 ```
 ````
 
-This behavior correponds to the `"all"` setting for [Jupyter shell interactivity](https://ipython.readthedocs.io/en/stable/config/options/terminal.html#configtrait-InteractiveShell.ast_node_interactivity). You can customize this behavior within Quarto using the `ipynb-shell-interactivity` option. 
+This behavior corresponds to the `"all"` setting for [Jupyter shell interactivity](https://ipython.readthedocs.io/en/stable/config/options/terminal.html#configtrait-InteractiveShell.ast_node_interactivity). You can customize this behavior within Quarto using the `ipynb-shell-interactivity` option.
 
 ### Card Layout
 
 If a cell produces multiple outputs you can use cell layout options to organize their display. For example, here we modify the example of to display plots side-by-side using the `layout-ncol` option:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{python}}
 #| title: "Tipping Behavior"
 #| layout-ncol: 2
@@ -677,4 +618,3 @@ px.violin(df, x="sex", y="total_bill", color="smoker")
 ![](images/card-layout-ncol.png)
 
 See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for additional documentation on custom layouts.
-
