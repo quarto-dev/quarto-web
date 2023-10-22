@@ -1,0 +1,120 @@
+---
+title: "Shiny for Python"
+code-annotations: select
+---
+
+{{< include ../_pre-release-feature.qmd >}}
+
+## Introduction
+
+The [Shiny](https://shiny.posit.co/py/) package provides an easy way to build web applications with Python. Quarto documents can also now include embedded Shiny components (e.g. a plot with sliders that control its inputs) or even simple Shiny applications that include several components.
+
+This section covers integrating Shiny with Quarto and assumes that you already have basic familiarity with Shiny. To learn more about Shiny please visit <https://shiny.posit.co/py/>.
+
+{{< include _shiny-requirements.qmd >}}
+
+## Hello, Shiny
+
+Here's a simple example that illustrates embedding Shiny components within a Quarto document:
+
+![](images/hello.png){.border}
+
+Here's the source code for this example (click the numbered annotations on the right for additional explanation):
+
+````{.python .pymd}
+---
+title: "Penguin Flipper Length"
+format: html
+server: shiny  # <1>
+---
+
+```{{python}}
+import seaborn as sns
+from shiny import render, reactive, ui
+penguins = sns.load_dataset("penguins")
+```
+
+```{{python}}
+#| panel: input  # <2>
+ui.input_slider("bins", "Number of bins:", 5, 15, 10)
+```
+
+```{{python}}
+@render.plot  # <3>
+def histogram(): # <3>
+    sns.histplot(data = penguins, x ="flipper_length_mm", # <3>
+                 bins=input.bins()) # <3>
+```
+````
+
+1. The main difference between this document and a normal static document is the inclusion of `server: shiny` within the document's options, which instructs Quarto to run a Shiny process behind the document:
+
+
+2. We use the `panel: input` cell option to provide visual separation for inputs. The plot rendering code in the next cell uses normal Shiny reactive output syntax.
+
+3. To render reactive content within Shiny documents you implement a function that returns the content and annotate it with a render decorator (in this case `@render.plot`).
+
+If you want to try running this example now, paste the `hello.qmd` code from above into a Quarto document within VS Code and execute the **Preview** command:
+
+![](images/hello-vscode.png){.border}
+
+Note that while there are some integrated tools available within VS Code, you can use any editor you like for developing Shiny interactive documents. See the [Running Documents](running.qmd) for details on running from the command line, debugging, deployment, etc.
+
+## Sidebar Layout
+
+Here's an example that includes multiple inputs as well as a more application-like page layout with a sidebar:
+
+![](images/custom.png){.border}
+
+Here's the source code for this example:
+
+````{.python .pymd}
+---
+title: "Penguin Bills"
+format: html
+page-layout: full  # <1>
+server: shiny
+---
+
+```{{python}}
+import seaborn as sns
+from shiny import render, reactive, ui
+penguins = sns.load_dataset("penguins")
+```
+
+```{{python}}
+#| panel: sidebar  # <2>
+ui.input_select("x", "Variable:", 
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+```{{python}}
+#| panel: fill  # <3>
+@render.plot
+def displot():
+    sns.displot(
+        data=penguins, hue="species", multiple="stack",
+        x=input.x(), rug=input.rug(),kind=input.dist())
+```
+````
+
+1.  The YAML front-matter includes the `page-layout: full` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
+
+2.  We use `panel: sidebar` to group inputs in a sidebar to the left of the content display.
+
+3. We use `panel: fill` to ensure that the content occupies all of the page to the right of the sidebar.
+
+
+## Learning More
+
+To learn more about Shiny for Python interactive documents see the following articles:
+
+-   [Running Documents](running.qmd) covers how to run interactive documents both within VS Code and at the command line, as well as how to deploy them to end users.
+
+-   [Execution Contexts](execution.qmd) goes in depth on when different code cells run (e.g. rendering vs. serving).
+
+-   [Component Layout](/docs/interactive/layout.qmd) enumerates the various techniques you can use to layout interactive components within your documents.
+
+-   [Shiny for Python](https://shiny.posit.co/py/) provides in-depth documentation on all of the available UI and ouput widgets, as well as conceptual discussions on how things work.

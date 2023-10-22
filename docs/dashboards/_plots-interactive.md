@@ -1,0 +1,1 @@
+If practical for your domain, it's generally preferable to use JavaScript-based plots rather than traditional plots within dashboards. This is because JavaScript-based plots automatically resize to fill their container, so make much better use of space in fill layouts. 

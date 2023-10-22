@@ -1,0 +1,83 @@
+---
+title: "Palmer Penguins"
+format: html
+page-layout: full
+server: shiny
+---
+
+Explore the Palmer Penguins dataset (learn more about the data at <https://github.com/allisonhorst/palmerpenguins/>).
+
+```{python}
+#| context: setup
+import seaborn as sns
+from shiny import render, reactive, ui
+penguins = sns.load_dataset("penguins")
+```
+
+::: {.panel-sidebar}
+
+### Penguins ![](images/penguins.png){width=50px}
+
+```{python}
+species = list(penguins["species"].value_counts().index)
+ui.input_checkbox_group(
+    "species", "Species:", 
+    species, selected = species
+)
+
+islands = list(penguins["island"].value_counts().index)
+ui.input_checkbox_group(
+    "islands", "Islands:", 
+    islands, selected = islands
+)
+
+@reactive.Calc
+def filtered_penguins():
+    data = penguins[penguins["species"].isin(input.species())]
+    data = data[data["island"].isin(input.islands())]
+    return data
+```
+
+***
+
+```{python}
+ui.input_select("dist", "Distribution:", choices=["kde", "hist"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+:::
+
+::: {.panel-tabset}
+
+### Plots
+
+```{python}
+@render.plot
+def depth():
+    return sns.displot(
+        filtered_penguins(), x = "bill_depth_mm", 
+        hue = "species", kind = input.dist(), 
+        fill = True, rug=input.rug()
+    )
+
+@render.plot
+def length():
+    return sns.displot(
+        filtered_penguins(), x = "bill_length_mm", 
+        hue = "species", kind = input.dist(), 
+        fill = True, rug=input.rug()
+    )
+```
+
+### Data
+
+```{python}
+@render.data_frame
+def dataview():
+    return render.DataGrid(filtered_penguins(), height = "775px")
+```
+
+:::
+
+
+

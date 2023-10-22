@@ -1,0 +1,1 @@
+If you want to use traditional plotting libraries they are also well supported, but you'll just need to pay a bit more attention to getting the size of plots right for the layout they'll be viewed in.

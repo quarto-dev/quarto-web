@@ -1,0 +1,136 @@
+---
+title: "Dashboards with Shiny for Python"
+code-annotations: select
+---
+
+## Introduction
+
+The [Shiny](https://shiny.posit.co/py/) package provides an easy way to build web applications with Python. Quarto dashboards can include embedded Shiny components (e.g. a plot with sliders that control its inputs).
+
+This section covers integrating Shiny with Quarto and assumes that you already have basic familiarity with Shiny. To learn more about Shiny please visit <https://shiny.posit.co/py/>. If you are using R rather than Python, see the documentation on using [Shiny for R](shiny-r.qmd).
+
+{{< include /docs/prerelease/1.4/shiny/_shiny-requirements.qmd >}}
+
+## Walkthrough
+
+Here we'll explore an in-depth example that covers many of the techniques you'll use when creating dashboards with Shiny, including factoring out setup code, reactive calculations, and more advanced layout constructs like sidebars and tabsets. Here is the interactive document we'll be building:
+
+![](../images/penguins-shiny.png){.border .lightbox}
+
+Dashboards can be created either using Jupyter notebooks (`.ipynb`) or using plain text markdown (`.qmd`). Here is the code for the notebook version of the above example:
+
+![](../images/penguins-shiny-jupyter.png){.border .lightbox}
+
+Here is the plain text `.qmd` version of the dashboard (click on the numbers on the far right for additional explanation of syntax and mechanics):
+
+```` {.python .pymd}
+--- 
+title: "Palmer Penguins"
+author: "Cobblepot Analytics"
+format: # <1>
+  dashboard: # <1>
+    orientation: columns # <1>
+server: shiny # <2>
+---
+
+```{{python}} # <3>
+#| context: setup
+import seaborn as sns
+from shiny import render, reactive, ui
+penguins = sns.load_dataset("penguins")
+``` # <3>
+
+## Column {.sidebar} # <4>
+
+![](images/penguins.png){width="80%"}
+
+```{{python}}
+species = list(penguins["species"].value_counts().index) # <5>
+ui.input_checkbox_group(
+    "species", "Species:", 
+    species, selected = species
+)
+
+islands = list(penguins["island"].value_counts().index)
+ui.input_checkbox_group(
+    "islands", "Islands:", 
+    islands, selected = islands
+) # <5>
+
+@reactive.Calc # <6>
+def filtered_penguins():
+    data = penguins[penguins["species"].isin(input.species())]
+    data = data[data["island"].isin(input.islands())]
+    return data
+``` # <6>
+
+```{{python}}
+ui.input_select("dist", "Distribution:", choices=["kde", "hist"]) # <7>
+ui.input_checkbox("rug", "Show rug marks", value = False) $ # <7>
+```
+
+[Learn more](https://pypi.org/project/palmerpenguins/) about the 
+Palmer Penguins dataset.
+
+## Column {.tabset} # <8>
+
+### Plots
+
+```{{python}}
+@render.plot
+def depth():
+    return sns.displot(  # <9>
+        filtered_penguins(), x = "bill_depth_mm", 
+        hue = "species", kind = input.dist(), 
+        fill = True, rug=input.rug()
+    ) # <9>
+``` 
+
+```{{python}}
+@render.plot
+def length():
+    return sns.displot(
+        filtered_penguins(), x = "bill_length_mm", 
+        hue = "species", kind = input.dist(), 
+        fill = True, rug=input.rug()
+    )
+``` 
+
+### Data
+
+```{{python}} 
+@render.data_frame
+def dataview():
+    return render.DataGrid(filtered_penguins()) # <10>
+``` 
+````
+
+1.  We specify `orientation: columns` for the dashboard so that we can layout a sidebar next to our main outputs.
+
+2.  The `server: shiny` option instructs Quarto to run a Shiny Server behind the document.
+
+3.  The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
+
+4.  Create sidebars by adding the `.sidebar` class to any column. Sidebars can include code cells as well as images, narrative, and links.
+
+5.  These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields of the dataset.
+
+6.  When the user interacts with the checkbox groups this results in a different filtered view of the dataset. The `@reactive.Calc` function recomputes the filtered dataset and makes it available as `filtered_penguins()`.
+
+7.  These inputs affect the display of plots but not the contents of the filtered dataset.
+
+8.  Create tabsets by adding the `.tabset` class to a row or column (individual tabs are in turn defined using headings, in this case `### Plots` and `### Data`).
+
+9.  Plots are rendered by referencing the filtered dataset (`filtered_penguins()` as well as the plot display oriented inputs (`input.dist()` and `input.rug()`). Plots are automatically re-rendered when the dataset or these inputs change.
+
+10. The Data tab also references `filtered_penguins()` and is updated whenever the filtered data changes.
+
+## Learning More
+
+To learn more about Shiny for Python interactive documents see the following articles:
+
+-   [Running Documents](/docs/prerelease/1.4/shiny/running.qmd) covers in more depth how to run Shiny dashboards both within VS Code and at the command line, as well as how to deploy them to end users.
+
+-   [Execution Contexts](/docs/prerelease/1.4/shiny/execution.qmd) goes in depth on when different code cells run (e.g. rendering vs. serving).
+
+-   [Shiny for Python](https://shiny.posit.co/py/) provides in-depth documentation on all of the available UI and ouput widgets, as well as conceptual discussions on how things work.

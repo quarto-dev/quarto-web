@@ -1,0 +1,136 @@
+---
+title: "Dashboards with Shiny for R"
+code-annotations: select
+---
+
+## Introduction
+
+The [Shiny](https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html) package provides an easy way to build web applications with R. Quarto dashboards can include embedded Shiny components (e.g. a plot with sliders that control its inputs).
+
+This section covers integrating Shiny with Quarto and assumes that you already have basic familiarity with Shiny. To learn more about Shiny please visit <https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html>. If you are using Python rather than R, see the documentation on using [Shiny for Python](shiny-python.qmd).
+
+## Walkthrough
+
+Here we'll explore an in-depth example that covers many of the techniques you'll use when creating dashboards with Shiny, including factoring out setup code, reactive calculations, and more advanced layout constructs like sidebars and tabsets. Here is the interactive document we'll be building:
+
+![](../images/shiny-diamonds.png){.border .lightbox}
+
+Here is the source code for this dashboard (click on the numbers on the far right for additional explanation of syntax and mechanics):
+
+```` {.python .pymd}
+---
+title: "Diamonds Explorer"
+author: "Barkamian Analytics"
+format: # <1>
+  dashboard: # <1>
+     orientation: columns # <1>
+server: shiny # <2>
+---
+
+```{{r}} # <3>
+#| context: setup
+library(ggplot2)
+dataset <- diamonds
+``` # <3>
+
+## Column {.sidebar} # <4>
+
+```{{r}}
+sliderInput('sampleSize', 'Sample Size', 
+            min=1, max=nrow(dataset),
+            value=min(1000, nrow(dataset)), 
+            step=500, round=0)
+br()
+checkboxInput('jitter', 'Jitter')
+checkboxInput('smooth', 'Smooth')
+```
+
+```{{r}} #<5>
+selectInput('x', 'X', names(dataset)) 
+selectInput('y', 'Y', names(dataset), names(dataset)[[2]])
+selectInput('color', 'Color', c('None', names(dataset)))
+```
+
+```{{r}}
+selectInput('facet_row', 'Facet Row',
+  c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
+selectInput('facet_col', 'Facet Column',
+  c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
+``` # <5>
+
+## Column {.tabset} # <6>
+
+```{{r}}
+#| title: Plot
+plotOutput('plot')
+```
+
+```{{r}}
+#| title: Data
+tableOutput('data')
+``` # <6>
+
+```{{r}}
+#| context: server # <7>
+
+dataset <- reactive({ # <8>
+  diamonds[sample(nrow(diamonds), input$sampleSize),] # <8>
+}) # <8>
+ 
+output$plot <- renderPlot({  # <9>
+  
+  p <- ggplot(
+    dataset(), 
+    aes_string(x=input$x, y=input$y)) + geom_point()
+  
+  if (input$color != 'None')
+    p <- p + aes_string(color=input$color)
+  
+  facets <- paste(input$facet_row, '~', input$facet_col)
+  if (facets != '. ~ .')
+    p <- p + facet_grid(facets)
+  
+  if (input$jitter)
+    p <- p + geom_jitter()
+  if (input$smooth)
+    p <- p + geom_smooth()
+  
+  p
+  
+})
+
+output$data <- renderTable({ # <10>
+  dataset()
+})
+```
+````
+
+1.  We specify `orientation: columns` for the dashboard so that we can layout a sidebar next to our main outputs.
+
+2.  The `server: shiny` option instructs Quarto to run a Shiny Server behind the document.
+
+3.  The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
+
+4.  Create sidebars by adding the `.sidebar` class to any column. Sidebars can include code cells as well as images, narrative, and links.
+
+5.  These select inputs have their contents dynamically driven from the available columns in the dataset.
+
+6.  Create tabsets by adding the `.tabset` class to a row or column (individual tabs are in turn defined by the cells below, with their `title` option set as a cell option).
+
+7.  Include server code (reactives that compute values or render output) in a cell with `context: server`.
+
+8.  The `dataset()` reactive will be called to re-sample the dataset every time the sample size changes.
+
+9.  The `renderPlot()` function regenerates the plot whenever the `dataset()` reactive or another input option changes.
+
+10. The `renderTable()` function regenerates the table whenever the `dataset()` reactive changes.
+
+## Learning More
+
+To learn more about Shiny for R interactive documents see the following articles:
+
+-   [Running Documents](/docs/interactive/shiny/running.qmd) covers how to run interactive documents both within RStudio and at the command line, as well as how to deploy them to end users.
+
+-   [Execution Contexts](/docs/interactive/shiny/execution.qmd) goes in depth on when different code blocks (e.g. rendering vs. serving) run as well as how to cache expensive computations for more responsive documents.
+
+-   [External Resources](/docs/interactive/shiny/resources.qmd) describes how to make sure that Shiny can locate resources (e.g. CSS, JS, images, etc.) that you include in your document.
