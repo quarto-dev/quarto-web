@@ -10,9 +10,9 @@ server: shiny
 ```{python}
 #| context: setup
 import seaborn as sns
-from shiny import render, reactive, ui
-
 penguins = sns.load_dataset("penguins")
+species = list(penguins["species"].value_counts().index)
+islands = list(penguins["island"].value_counts().index)
 ```
 
 ## Column {.sidebar}
@@ -20,13 +20,13 @@ penguins = sns.load_dataset("penguins")
 ![](images/penguins.png){width="80%"}
 
 ```{python}
-species = list(penguins["species"].value_counts().index)
+from shiny import render, reactive, ui
+
 ui.input_checkbox_group(
     "species", "Species:", 
     species, selected = species
 )
 
-islands = list(penguins["island"].value_counts().index)
 ui.input_checkbox_group(
     "islands", "Islands:", 
     islands, selected = islands
@@ -76,5 +76,5 @@ def length():
 ```{python}
 @render.data_frame
 def dataview():
-    return render.DataGrid(filtered_penguins())
+    return render.DataGrid(filtered_penguins(), height = "100%")
 ```
