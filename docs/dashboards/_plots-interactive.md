@@ -1,1 +1,2 @@
-If practical for your domain, it's generally preferable to use JavaScript-based plots rather than traditional plots within dashboards. This is because JavaScript-based plots automatically resize to fill their container, so make much better use of space in fill layouts. 
+There are pros and cons to using JavaScript-based plots within dashboards. JavaScript-based plots include interactive features and handle resizing to fill their container better that static plots, however they also embed the underlying data directly in the published page (one copy of the dataset per plot) which can lead to slower load times.
+ 
