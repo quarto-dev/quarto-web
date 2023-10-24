@@ -1,0 +1,119 @@
+---
+title: "Dashboards Reference"
+tbl-colwidths: [25,75]
+---
+
+## Format
+
+The following document and format options are either dashboard-specific or have special behavior within dashboards (note that in addition to these options all standard [HTML Format](/docs/reference/formats/html.qmd) options are available):
+
+| Option        | Description                                               |
+|--------------------------|----------------------------------------------|
+| `title`       | Title (displayed in top left of navigation bar).          |
+| `author`      | Author (displayed alongside title in smaller font)        |
+| `logo`        | Logo (displayed left of the title in the navigation bar)  |
+| `orientation` | `rows` or `columns` (default: `rows`)                     |
+| `scrolling`   | Use scrolling rather than fill layout? (default: `false`) |
+| `expandable`  | Make card content expandable (default: `true`)            |
+| `theme`       | Dashboard theme (built in or custom scss)                 |
+
+For example:
+
+``` yaml
+---
+title: "Dashboard"
+author: "Acme, Inc."
+logo: images/acme.png
+format:
+  dashboard:
+     theme: default
+     orientation: rows
+     expandable: true
+     scrolling: false
+---
+```
+
+## Pages
+
+[Pages](http://localhost:6978/docs/dashboards/components.html#pages) can specify a custom orientation that is distinct from the global orientation.
+
+| Option        | Description                                         |
+|---------------|-----------------------------------------------------|
+| `orientation` | `rows` or `columns` (default to global orientation) |
+
+For example:
+
+``` {.python .pymd}
+---
+title: "Dashboard"
+format: 
+  dashboard:
+    orientation: columns
+---
+
+# Plots {orientation="rows"}
+```
+
+## Rows & Columns
+
+Rows and columns support options for customizing their layout sizing behavior:
+
+| Option   | Description                                                                   |
+|--------------------------|----------------------------------------------|
+| `width`  | Percentage or absolute pixel width (defaults to evenly spaced across row)     |
+| `height` | Precentage or absolute pixel height (defaults to evenly spaced across column) |
+
+For example:
+
+``` {.python .pymd}
+---
+title: "Dashboard"
+format: dashboard
+---
+
+## Row {height="65%"}
+
+## Row {height="35%"}
+```
+
+Note that if some components specify an explicit `width` or `height` and others do not, then remaining space will be distributed evenly across those elements.
+
+## Card Options
+
+Card options enable you to specify a title and various layout behaviors:
+
+| Option       | Description                                                     |
+|--------------------------|----------------------------------------------|
+| `title`      | Title displayed in card header                                  |
+| `padding`    | Padding around card content (default: `8px`)                    |
+| `expandable` | Make card content expandable (default: `true`)                  |
+| `width`      | Percentage or absolute pixel width (defaults to evenly spaced)  |
+| `height`     | Precentage or absolute pixel height (defaults to evenly spaced) |
+
+For example:
+
+```` {.python .pymd}
+```{{python}}
+#| title: "Life Expectancy"
+#| padding: 3px
+#| expandable: false
+#| width: 70%
+```
+````
+
+## Value Boxes
+
+[Value Boxes](components.qmd#value-boxes) support the following options:
+
+| Option  | Description                                                                                          |
+|--------------------------|----------------------------------------------|
+| `title` | Title displayed above value                                                                          |
+| `icon`  | Icon id (from [bootstrap icons](https://icons.getbootstrap.com_)).                                   |
+| `color` | Background color---this can be any CSS color or one of the theme specific color aliases (see below). |
+| `value` | Main display value.                                                                                  |
+
+Available themed aliases for `color` include:
+
+{{< include _valuebox-colors.md >}}
+
+Note that value box options can be specified either as cell options or by printing a `dict()` (for Python) or `list()` (for R) (this is helpful when options need to be dynamic). See the [Value Boxes](components.qmd#value-boxes) component documentation for details.
