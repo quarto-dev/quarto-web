@@ -60,52 +60,11 @@ If you want to try running this example now, paste the `hello.qmd` code from abo
 
 Note that while there are some integrated tools available within VS Code, you can use any editor you like for developing Shiny interactive documents. See the [Running Documents](running.qmd) for details on running from the command line, debugging, deployment, etc.
 
-## Sidebar Layout
+## Dashboards
 
-Here's an example that includes multiple inputs as well as a more application-like page layout with a sidebar:
+You can use [Quarto Dashboards](/docs/dashboards/interactivity/shiny-python.qmd) to create very sophisticated layouts for interactive documents. Here is an example that uses `format: dashboard`:
 
-![](images/custom.png){.border}
-
-Here's the source code for this example:
-
-````{.python .pymd}
----
-title: "Penguin Bills"
-format: html
-page-layout: full  # <1>
-server: shiny
----
-
-```{{python}}
-import seaborn as sns
-from shiny import render, reactive, ui
-penguins = sns.load_dataset("penguins")
-```
-
-```{{python}}
-#| panel: sidebar  # <2>
-ui.input_select("x", "Variable:", 
-                choices=["bill_length_mm", "bill_depth_mm"])
-ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
-ui.input_checkbox("rug", "Show rug marks", value = False)
-```
-
-```{{python}}
-#| panel: fill  # <3>
-@render.plot
-def displot():
-    sns.displot(
-        data=penguins, hue="species", multiple="stack",
-        x=input.x(), rug=input.rug(),kind=input.dist())
-```
-````
-
-1.  The YAML front-matter includes the `page-layout: full` option (to indicate we want our content to occupy the entire page rather than being centered with padding).
-
-2.  We use `panel: sidebar` to group inputs in a sidebar to the left of the content display.
-
-3. We use `panel: fill` to ensure that the content occupies all of the page to the right of the sidebar.
-
+{{< include /docs/dashboards/interactivity/_shiny-sidebar.md >}}
 
 ## Learning More
 
