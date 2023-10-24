@@ -116,7 +116,6 @@ format:
 
 ```{{python}}
 ```
-
 ````
 :::
 
@@ -296,8 +295,6 @@ By default, you can zoom in on the content of cards using the expand button in t
 
 If you don't want cards to be expandable you can specify `expandable: false` (either at the document level or for individual cards).
 
-
-
 ## Sidebars
 
 Sidebars are a great place to group inputs for Shiny interactive dashboards. To include a sidebar you add the `.sidebar` class to a top level column heading:
@@ -347,7 +344,7 @@ Here is the code you might use to create these value boxes. Note that we use a m
 #| component: valuebox
 #| title: "Articles per day"
 #| icon: pencil
-#| color: blue
+#| color: primary
 articles
 ```
 
@@ -356,7 +353,7 @@ articles
 #| title: "Comments per day"
 dict(
   icon = "pencil",
-  color = "blue",
+  color = "primary",
   value = comments
 )
 ```
@@ -366,7 +363,7 @@ dict(
 #| title: "Spam per day"
 list(
   icon = "trash",
-  color = "orange",
+  color = "danger",
   value = spam
 )
 ```
@@ -374,7 +371,24 @@ list(
 
 You can choose between specifying value box options within YAML or within a `dict()` or `list()` (for Python and R, respectively) printed by the cell. The latter syntax is handy when you want the `icon` or `color` to be dynamic based on the value.
 
+### Icon and Color
+
 The `icon` used in value boxes can be any of the 2,000 available [bootstrap icons](https://icons.getbootstrap.com).
+
+The `color` can be any CSS color value, however there are some color aliases that are tuned specifically for dashboards that you might consider using by default:
+
+| Color Alias | Theme Color(s) |
+|-------------|----------------|
+| `primary`   | Blue           |
+| `secondary` | Gray           |
+| `success`   | Green          |
+| `info`      | Bright Blue    |
+| `warning`   | Yellow/Orange  |
+| `danger`    | Red            |
+| `light`     | Light Gray     |
+| `dark`      | Black          |
+
+: {.sm}
 
 ### Markdown Syntax
 
@@ -467,13 +481,13 @@ There are dozens of packages on CRAN that provide htmlwidgets. You can find exam
 
 ### R Graphics
 
-You can use any chart created with standard R raster graphics (base, lattice, grid, etc.) within dashboards. When using standard R graphics, you’ll need to pay a bit more attention to getting the size of plots right for the layout they’ll be viewed in (since these charts are static PNG images it’s not possible for them to seamlessly fill the bounds of their container).
+You can use any chart created with standard R raster graphics (base, lattice, grid, etc.) within dashboards. When using standard R graphics, you'll need to pay a bit more attention to getting the size of plots right for the layout they'll be viewed in (since these charts are static PNG images it's not possible for them to seamlessly fill the bounds of their container).
 
 The key is to define knitr `fig-width` and `fig-height` options that enable the plots to fit into their layout container as closely as possible.
 
-Here’s an example of a layout that includes 3 charts from R base graphics:
+Here's an example of a layout that includes 3 charts from R base graphics:
 
-````{.python .pymd}
+```` {.python .pymd}
 ## Row {height="65%"}
 
 ```{{r}}
@@ -497,9 +511,7 @@ plot(airmiles)
 ```
 ````
 
-We’ve specified an explicit `fig-height` and `fig-width` for each plot so that their rendered size fits their layout container as closely as possible. Note that the ideal values for these dimensions typically need to be determined by experimentation.
-
-
+We've specified an explicit `fig-height` and `fig-width` for each plot so that their rendered size fits their layout container as closely as possible. Note that the ideal values for these dimensions typically need to be determined by experimentation.
 :::
 
 ## Tables
@@ -574,31 +586,30 @@ show(penguins, maxBytes = 200 * 1024)
 ```
 ````
 
-
 #### Options
 
 Note that a few `itables` options are set automatically within dashboards to ensure that they display well in cards of varying sizes. The option defaults are:
 
-````python
+``` python
 from itables import options
 options.paging = False
 options.dom = "ifrt"
 options.maxBytes = 1024 * 1024
 options.classes = "display nowrap compact"
 options.language = { "info": "Showing _TOTAL_ entries" }
-````
+```
 
 You can specify alternate options as you like to override these defaults.
 
 ## R
 
-There are many R packages available for producing tabular output. We’ll cover two of the more popular approaches (kable and DT) below.
+There are many R packages available for producing tabular output. We'll cover two of the more popular approaches (kable and DT) below.
 
 ### kable
 
 Simple markdown tables are ideal for smaller numbers of records (i.e. 20-250 rows). Use the `knitr::kable()` function to output markdown tables:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{r}}
 knitr::kable(mtcars)
 ```
@@ -606,7 +617,7 @@ knitr::kable(mtcars)
 
 ![](images/kable.png)
 
-Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required). 
+Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required).
 
 ### DT
 
@@ -614,7 +625,7 @@ The [DT](https://rstudio.github.io/DT/) package (an interface to the DataTables 
 
 To include a DataTable you use the `DT::datatable` function:
 
-````{.python .pymd}
+```` {.python .pymd}
 ```{{r}}
 library(DT)
 datatable(mtcars)
@@ -627,16 +638,15 @@ datatable(mtcars)
 
 Note that a few `DT` options are set automatically within dashboards to ensure that they display well in cards of varying sizes. The option defaults are:
 
-````r
+``` r
 options(DT.options = list(
   bPaginate = FALSE, 
   dom = "ifrt", 
   language = list(info = "Showing _TOTAL_ entries")
 ))
-````
+```
 
 You can specify alternate options as you like to override these defaults.
-
 :::
 
 ## Text Content
@@ -702,13 +712,12 @@ elsewhere. Learn more about the Gampminder dataset at
 
 You can use [inline expressions](/docs/prerelease/1.4/inline.qmd) to make text content dynamic. For example, here we have a row with text content that makes use of Python expressions:
 
-````{.python .pymd}
+``` {.python .pymd}
 ## Row
 
 The sample size was `{python} sample`. The mean reported 
 rating was `{python} rating`.
-
-````
+```
 
 ## Cell Output {#cell-output}
 
