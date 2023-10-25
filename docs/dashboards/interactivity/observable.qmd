@@ -18,7 +18,10 @@ This example covers many of the techniques you'll use when creating dashboards w
 
 ![](../images/penguins-ojs.png){.border}
 
-Here is the source code for this dashboard (click on the numbers on the far right for additional explanation of syntax and mechanics):
+The source code for this dashboard is below. Note that we add the <br/>
+`//| output: false` option to the first cell: this is to designate the cell as having only intermediate computations (so it should not be turned into a card in the dashboard layout).
+
+Click on the numbers on the far right for additional explanation of syntax and mechanics)
 
 ```` {.python .pymd}
 ---
@@ -27,38 +30,38 @@ author: "Cobblepot Analytics"
 format: dashboard
 ---
 
-```{{ojs}}  # <1>
-data = FileAttachment("palmer-penguins.csv") # <1>
-  .csv({ typed: true }) 
-```  # <1>
+```{{ojs}}
+//| output: false # <1>
 
-```{{ojs}} # <2>
-filtered = data.filter(function(penguin) {  # <2>
-  return bill_length_min < penguin.bill_length_mm && # <2>
-         islands.includes(penguin.island); # <2>
-}) # <2>
+data = FileAttachment("penguins.csv") # <2>
+  .csv({ typed: true }) # <2>
+
+filtered = data.filter(function(penguin) {  # <3>
+  return bill_length_min < penguin.bill_length_mm && # <3>
+         islands.includes(penguin.island); # <3>
+}) # <3>
 ```
 
-# {.sidebar} # <3>
+# {.sidebar} # <4>
 
 ![](images/penguins.png){width="80%"}
 
-```{{ojs}} # <4>
+```{{ojs}} # <5>
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
 )
 viewof islands = Inputs.checkbox(
   ["Torgersen", "Biscoe", "Dream"], 
-  { value: ["Torgersen", "Biscoe"], 
+  { value: ["Torgersen", "Biscoe", "Dream"], 
     label: "Islands:"
   }
 )
-``` # <4>
+``` # <5>
 
-# Plot # <5>
+# Plot # <6>
 
-```{{ojs}} # <6>
+```{{ojs}} # <7>
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -76,30 +79,30 @@ Plot.rectY(filtered,
     ]
   }
 )
-```  # <6>
+```  # <7>
 
 # Data
 
-```{{ojs}} # <7>
+```{{ojs}} # <8>
 Inputs.table(filtered)
-``` # <7>
+``` # <8>
 ````
 
-1.  We specify `orientation: columns` for the dashboard so that we can layout a sidebar next to our main outputs.
+1. We set `output: false` to indicate that this cell includes only intermediate calculations and should not have its contents printed.
 
-1.  We read the raw penguins dataset from a CSV when the page loads.
+2.  We read the raw penguins dataset from a CSV when the page loads.
 
-2.  `filtered` is a value that is automatically recomputed when variables declared with `viewof` change (in this case `bill_length_min` and `islands`).
+3.  `filtered` is a value that is automatically recomputed when variables declared with `viewof` change (in this case `bill_length_min` and `islands`).
 
-3.  Create sidebars by adding the `.sidebar` class to a level 2 header. Sidebars can include code cells as well as images, narrative, and links.
+4.  Create global sidebars by adding the `.sidebar` class to a level 1 header. Sidebars can include code cells as well as images, narrative, and links.
 
-4.  Here we define our inputs using `viewof` so that the `filtered` dataset is automatically recomputed when they change.
+5.  Here we define our inputs using `viewof` so that the `filtered` dataset is automatically recomputed when they change.
 
-5. Level 1 headings (here `# Plots` and `# Data`) create pages within the dashboard.
+6. Level 1 headings (here `# Plots` and `# Data`) create pages within the dashboard.
 
-6.  The plot is automatically redrawn whenever the `filtered` dataset changes.
+7.  The plot is automatically redrawn whenever the `filtered` dataset changes.
 
-7.  The tabular data display is automatically refreshed whenever the `filtered` dataset changes.
+8.  The tabular data display is automatically refreshed whenever the `filtered` dataset changes.
 
 ## Learning More
 
