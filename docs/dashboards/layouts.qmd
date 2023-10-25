@@ -208,6 +208,42 @@ format: dashboard
 :::
 :::
 
+## Multiple Pages
+
+This layout defines multiple pages using level 1 markdown headers. Each page has its own top-level navigation tab. Further, the second page uses a distinct orientation via the `orientation` attribute. The use of multiple columns and rows with custom `width` and `height` attributes is also demonstrated.
+
+````{.python .pymd}
+---
+title: "Multiple Pages"
+format: dashboard
+---
+
+# Page 1
+    
+## Column {width="60%"}
+    
+```{{python}}
+```
+   
+## Column {width="40%"}
+   
+```{{python}}
+```  
+
+# Page 2 {orientation="rows"}
+   
+## Row {height="60%"}
+ 
+```{{python}}
+```
+
+## Row {height="40%"}
+   
+```{{python}}
+```
+    
+````
+
 ## Tabset (Column)
 
 This layout displays the right column as a set of two tabs. Tabs are especially useful when you have a large number of components to display and prefer not to require the user to scroll to access everything. Note that we specify a `title` option in each of the cells that produce a tab.
@@ -321,19 +357,17 @@ format: dashboard
 
 ## Input Sidebar
 
-This layout demonstrates how to add a sidebar to a dashboard page (Shiny or ObservableJS based dashboards will often present user input controls in a sidebar). To include a sidebar you add the `.sidebar` class to a top level column heading:
+This layout demonstrates how to add a sidebar to a dashboard page (Shiny or ObservableJS based dashboards will often present user input controls in a sidebar). To include a sidebar you add the `.sidebar` class to a level 2 heading
 
 ::: {.chart-example .grid}
 ::: g-col-6
 ```` {.python .pymd}
 ---
 title: "Sidebar"
-format: 
-  dashboard:
-    orientation: columns
+format: dashboard
 ---
     
-## Column {.sidebar}
+## {.sidebar}
 
 ```{{python}}
 ```
@@ -352,3 +386,28 @@ format:
 ![](images/chart-input-sidebar.png)
 :::
 :::
+
+## Global Sidebar
+
+If you have a dashboard with [multiple pages](#multiple-pages), you may want the sidebar to be global (i.e. visible across all pages). To do this, add the `.sidebar` class to a level one heading:
+
+```` {.python .pymd}
+---
+title: "Sidebar"
+format: dashboard
+---
+    
+# {.sidebar}
+
+Sidebar content
+
+# Page 1 
+
+```{{python}}
+```
+
+# Page 2
+
+```{{python}}
+```
+````

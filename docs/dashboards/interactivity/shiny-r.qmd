@@ -22,19 +22,17 @@ Here is the source code for this dashboard (click on the numbers on the far righ
 ---
 title: "Diamonds Explorer"
 author: "Barkamian Analytics"
-format: # <1>
-  dashboard: # <1>
-     orientation: columns # <1>
-server: shiny # <2>
+format: dashboard
+server: shiny # <1>
 ---
 
-```{{r}} # <3>
+```{{r}} # <2>
 #| context: setup
 library(ggplot2)
 dataset <- diamonds
 ``` # <3>
 
-## Column {.sidebar} # <4>
+# {.sidebar} # <3>
 
 ```{{r}}
 sliderInput('sampleSize', 'Sample Size', 
@@ -46,7 +44,7 @@ checkboxInput('jitter', 'Jitter')
 checkboxInput('smooth', 'Smooth')
 ```
 
-```{{r}} #<5>
+```{{r}} # <4>
 selectInput('x', 'X', names(dataset)) 
 selectInput('y', 'Y', names(dataset), names(dataset)[[2]])
 selectInput('color', 'Color', c('None', names(dataset)))
@@ -57,28 +55,28 @@ selectInput('facet_row', 'Facet Row',
   c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
 selectInput('facet_col', 'Facet Column',
   c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
-``` # <5>
+``` # <4>
 
-## Column {.tabset} # <6>
+# Plot # <5>
 
 ```{{r}}
-#| title: Plot
 plotOutput('plot')
 ```
 
+# Data
+
 ```{{r}}
-#| title: Data
 tableOutput('data')
-``` # <6>
+``` # <5>
 
 ```{{r}}
-#| context: server # <7>
+#| context: server # <6>
 
-dataset <- reactive({ # <8>
-  diamonds[sample(nrow(diamonds), input$sampleSize),] # <8>
-}) # <8>
+dataset <- reactive({ # <7>
+  diamonds[sample(nrow(diamonds), input$sampleSize),] # <7>
+}) # <7>
  
-output$plot <- renderPlot({  # <9>
+output$plot <- renderPlot({  # <8>
   
   p <- ggplot(
     dataset(), 
@@ -100,31 +98,30 @@ output$plot <- renderPlot({  # <9>
   
 })
 
-output$data <- renderTable({ # <10>
+output$data <- renderTable({ # <9>
   dataset()
 })
 ```
 ````
 
-1.  We specify `orientation: columns` for the dashboard so that we can layout a sidebar next to our main outputs.
 
-2.  The `server: shiny` option instructs Quarto to run a Shiny Server behind the document.
+1.  The `server: shiny` option instructs Quarto to run a Shiny Server behind the document.
 
-3.  The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
+2.  The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
 
-4.  Create sidebars by adding the `.sidebar` class to any column. Sidebars can include code cells as well as images, narrative, and links.
+3.  Create global sidebars by adding the `.sidebar` class to level 1 headers. Sidebars can include code cells as well as images, narrative, and links.
 
-5.  These select inputs have their contents dynamically driven from the available columns in the dataset.
+4.  These select inputs have their contents dynamically driven from the available columns in the dataset.
 
-6.  Create tabsets by adding the `.tabset` class to a row or column (individual tabs are in turn defined by the cells below, with their `title` option set as a cell option).
+5.   Level 1 headings (here `# Plots` and `# Data`) create pages within the dashboard.
 
-7.  Include server code (reactives that compute values or render output) in a cell with `context: server`.
+6.  Include server code (reactives that compute values or render output) in a cell with `context: server`.
 
-8.  The `dataset()` reactive will be called to re-sample the dataset every time the sample size changes.
+7.  The `dataset()` reactive will be called to re-sample the dataset every time the sample size changes.
 
-9.  The `renderPlot()` function regenerates the plot whenever the `dataset()` reactive or another input option changes.
+8.  The `renderPlot()` function regenerates the plot whenever the `dataset()` reactive or another input option changes.
 
-10. The `renderTable()` function regenerates the table whenever the `dataset()` reactive changes.
+9. The `renderTable()` function regenerates the table whenever the `dataset()` reactive changes.
 
 ## Learning More
 

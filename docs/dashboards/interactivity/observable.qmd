@@ -24,28 +24,26 @@ Here is the source code for this dashboard (click on the numbers on the far righ
 ---
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
-format: # <1>
-  dashboard: # <1>
-    orientation: columns # <1>
+format: dashboard
 ---
 
-```{{ojs}}  # <2>
-data = FileAttachment("palmer-penguins.csv") # <2>
+```{{ojs}}  # <1>
+data = FileAttachment("palmer-penguins.csv") # <1>
   .csv({ typed: true }) 
-```  # <2>
+```  # <1>
 
-```{{ojs}} # <3>
-filtered = data.filter(function(penguin) {  # <3>
-  return bill_length_min < penguin.bill_length_mm && # <3>
-         islands.includes(penguin.island); # <3>
-}) # <3>
+```{{ojs}} # <2>
+filtered = data.filter(function(penguin) {  # <2>
+  return bill_length_min < penguin.bill_length_mm && # <2>
+         islands.includes(penguin.island); # <2>
+}) # <2>
 ```
 
-## Column {.sidebar} # <4>
+# {.sidebar} # <3>
 
 ![](images/penguins.png){width="80%"}
 
-```{{ojs}} # <5>
+```{{ojs}} # <4>
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
@@ -56,13 +54,11 @@ viewof islands = Inputs.checkbox(
     label: "Islands:"
   }
 )
-``` # <5>
+``` # <4>
 
-## Column {.tabset} # <6>
+# Plot # <5>
 
-### Plot
-
-```{{ojs}} # <7>
+```{{ojs}} # <6>
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -80,30 +76,30 @@ Plot.rectY(filtered,
     ]
   }
 )
-```  # <7>
+```  # <6>
 
-### Data
+# Data
 
-```{{ojs}} # <8>
+```{{ojs}} # <7>
 Inputs.table(filtered)
-``` # <8>
+``` # <7>
 ````
 
 1.  We specify `orientation: columns` for the dashboard so that we can layout a sidebar next to our main outputs.
 
-2.  We read the raw penguins dataset from a CSV when the page loads.
+1.  We read the raw penguins dataset from a CSV when the page loads.
 
-3.  `filtered` is a value that is automatically recomputed when variables declared with `viewof` change (in this case `bill_length_min` and `islands`).
+2.  `filtered` is a value that is automatically recomputed when variables declared with `viewof` change (in this case `bill_length_min` and `islands`).
 
-4.  Create sidebars by adding the `.sidebar` class to any column. Sidebars can include code cells as well as images, narrative, and links.
+3.  Create sidebars by adding the `.sidebar` class to a level 2 header. Sidebars can include code cells as well as images, narrative, and links.
 
-5.  Here we define our inputs using `viewof` so that the `filtered` dataset is automatically recomputed when they change.
+4.  Here we define our inputs using `viewof` so that the `filtered` dataset is automatically recomputed when they change.
 
-6.  Create tabsets by adding the `.tabset` class to a row or column (individual tabs are in turn defined using headings, in this case `### Plot` and `### Data`).
+5. Level 1 headings (here `# Plots` and `# Data`) create pages within the dashboard.
 
-7.  The plot is automatically redrawn whenever the `filtered` dataset changes.
+6.  The plot is automatically redrawn whenever the `filtered` dataset changes.
 
-8.  The tabular data display is automatically refreshed whenever the `filtered` dataset changes.
+7.  The tabular data display is automatically refreshed whenever the `filtered` dataset changes.
 
 ## Learning More
 
