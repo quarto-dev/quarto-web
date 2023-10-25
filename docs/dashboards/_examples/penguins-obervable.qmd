@@ -1,25 +1,22 @@
 ---
 title: "Palmer Penguins"
 author: "Cobblepot Analytics"
-format:
-  dashboard: 
-    orientation: columns
+format: dashboard
 ---
 
-```{ojs}
-//| output: false
-data = FileAttachment("penguins.csv").csv({ typed: true })
-```
 
 ```{ojs}
 //| output: false
+
+data = FileAttachment("penguins.csv").csv({ typed: true })
+
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length_mm &&
          islands.includes(penguin.island);
 })
 ```
 
-## Column {.sidebar}
+# {.sidebar}
 
 ![](images/penguins.png){width="80%"}
 
@@ -28,6 +25,7 @@ viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
 )
+
 viewof islands = Inputs.checkbox(
   ["Torgersen", "Biscoe", "Dream"], 
   { value: ["Torgersen", "Biscoe"], 
@@ -39,11 +37,9 @@ viewof islands = Inputs.checkbox(
 A simple example based on Allison Horst's [Palmer Penguins](https://
 allisonhorst.github.io/palmerpenguins/) dataset.
 
-## Column 
+# Plot
 
 ```{ojs}
-//| title: Plot
-//| classes: expandable
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -63,8 +59,10 @@ Plot.rectY(filtered,
 )
 ```
 
+# Data
+
 ```{ojs}
-//| title: Data
 Inputs.table(filtered)
 ```
+
 
