@@ -2,6 +2,8 @@
 
 [Layouts](layouts.qmd) includes a variety of sample layouts which you can use as a starting point for your own dashboards.
 
+[Examples](examples/index.qmd) provides a gallery of example dashboards you can use as inspiration for your own.
+
 [Theming](theming.qmd) describes the various way to customized the fonts, colors, layout and other aspects of dashboard apperance.
 
 [Parameters](parameters.qmd) explains how to create dashboard variants by defining parameters and providing distinct values for them on the command line.
