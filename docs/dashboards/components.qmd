@@ -246,10 +246,10 @@ format: dashboard
 
 We provide navigational titles for our tabs by adding a `title` option to the cell used to produce each tab.
 
-Note that you can also have tabs that contain only markdown. To do this use a `::: {.card}` div and include a `title` attribute for the tab:
+Note that you can also have tabs that contain only markdown. To do this use a `::: {.content}` div and include a `title` attribute for the tab:
 
 ````python
-::: {.card title="My Title"}
+::: {.content title="My Title"}
 Card text 
 :::
 ````
@@ -270,7 +270,7 @@ Cards are the fundamental unit of display within dashboards. Cards are created a
 ```
 ````
 
-Markdown content that exists outside of cells is also automatically collected up into a card:
+You can also create cards that contain arbitrary markdown via a `.content` div. For example:
 
 ```` {.python .pymd}
 ## Column {width=40%}
@@ -278,23 +278,25 @@ Markdown content that exists outside of cells is also automatically collected up
 ```{{python}}
 ```
 
-![](image.png)
-This text and the image above will become a card
+::: {.content}
+This text will be displayed within a card
+:::
 
 ```{{python}}
 ```
 ````
 
-Note that if you want to provide a title for a markdown card use an explicit `::: {.card}` div. For example:
+Note that if you want to provide a title for a markdown card use the `title` attribute. For example:
 
 ````python
-::: {.card title="My Title"}
-![](image.png)
-This text and the image above will become a card
+::: {.content title="My Title"}
+This text will be displayed within a card
 :::
 ````
 
-In the section below on [Cell Output](#cell-output) there are additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.).
+Note that if you are authoring within a Jupyter Notebook then markdown cells automatically become `.content` divs.
+
+In the section on [Cell Output](data-presentation.qmd#cell-output) there are additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.).
 
 ### Display Options
 
@@ -315,6 +317,25 @@ Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
 ````
 
 ![](images/leaflet-card-title-padding.png)
+
+You can create a dynamic `title` by printing a `title=` expression as a cell's first output. For example:
+
+```` {.python .pymd}
+```{{python}}
+from ipyleaflet import Map, basemaps, basemap_to_tiles
+
+lat = 48
+long = 350
+
+print("title=", f"World Map at {lat}, {long}")
+
+Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
+    center=(lat, long), zoom=2)
+```
+````
+
+Note that for R you would use the `cat()` rather than `print()` function.
+
 
 #### Expanding Cards
 
