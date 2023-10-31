@@ -272,7 +272,7 @@ dict(
 #| component: valuebox
 #| title: "Comments per day"
 dict(
-  icon = "pencil",
+  icon = "chat",
   color = "primary",
   value = comments
 )
@@ -298,6 +298,44 @@ The `icon` used in value boxes can be any of the 2,000 available [bootstrap icon
 The `color` can be any CSS color value, however there are some color aliases that are tuned specifically for dashboards that you might consider using by default:
 
 {{< include _valuebox-colors.md >}}
+
+### Shiny
+
+In a Shiny interactive dashboard you can have value boxes that update dynamically based on the state of the application. The details on how to do this are language-specific:
+
+::: {.panel-tabset group="language"}
+
+#### Python
+
+Use the `ui.value_box()` function within a function decorated with `@render.ui`. For example:
+
+````python
+```{{python}}
+from shiny import render, ui
+@render.ui
+def value():
+    return ui.value_box("Value", input.value())
+```
+````
+
+#### R
+
+Use the `bslib::value_box()` function along with an optional icon drawn from the `bsicons` package. For example:
+
+````python
+```{{r}}
+library(bslib)
+library(bsicons)
+value_box(
+  title = "Value",
+  value = textOutput("valuetext"),
+  showcase = bs_icon("music-note-beamed")
+)
+```
+````
+
+:::
+
 
 ### Markdown Syntax
 
