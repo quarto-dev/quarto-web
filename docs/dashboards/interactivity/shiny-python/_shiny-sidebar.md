@@ -32,7 +32,7 @@ ui.input_checkbox("rug", "Show rug marks", value = False)  # <3>
 def displot():
     sns.displot(
         data=penguins, hue="species", multiple="stack",
-        x=input.x(), rug=input.rug(),kind=input.dist()) # <4>
+        x=input.x(), rug=input.rug(), kind=input.dist()) # <4>
 ```
 
 ````
