@@ -25,4 +25,4 @@ See the following documentation for information on deploying Shiny applications 
 
 : {tbl-colwidths="\[30,70\]"}
 
-You can also deploy interactive Shiny documents in a serverless configuration (where Python runs in the browser via [Pyodide](https://pyodide.org/)). The [Retirement Calculator](https://github.com/wch/retirement-simulation-dashboard) is an example that demonstrates this workflow.
+You can also deploy interactive Shiny documents in a serverless configuration (where Python runs in the browser via [Pyodide](https://pyodide.org/)). The [Retirement Simulation](https://github.com/wch/retirement-simulation-dashboard) is an example that demonstrates this workflow.
