@@ -21,5 +21,8 @@ See the following documentation for information on deploying Shiny applications 
 | [Hugging Face](https://huggingface.co/docs/hub/spaces-sdks-docker-shiny#shiny-for-python)             | Cloud hosting service             |
 | [Shiny Server](https://shiny.posit.co/py/docs/deploy.html#deploy-to-shiny-server-open-source)         | Open source application server    |
 | [Posit Connect](https://shiny.posit.co/py/docs/deploy.html#deploy-to-posit-connect-commercial)        | Commerical publishing platform    |
-| [Other Services](https://shiny.posit.co/py/docs/deploy.html#other-hosting-options)                 | Custom server/hosting environment |
+| [Other Services](https://shiny.posit.co/py/docs/deploy.html#other-hosting-options)                    | Custom server/hosting environment |
+
 : {tbl-colwidths="\[30,70\]"}
+
+You can also deploy interactive Shiny documents in a serverless configuration (where Python runs in the browser via [Pyodide](https://pyodide.org/)). The [Retirement Calculator](https://github.com/wch/retirement-simulation-dashboard) is an example that demonstrates this workflow.
