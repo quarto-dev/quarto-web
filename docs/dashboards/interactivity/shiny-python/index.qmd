@@ -44,9 +44,14 @@ Make sure each input ID in your Shiny dashboard is unique. If you use the same I
 
 The second argument for each input function is usually a human-readable string that will be displayed next to the input control. For example, the `ui.input_select()` function passes `"Variable:"`as the second argument, which is why the select box has the label "Variable:" next to it.
 
-<!--
-TODO: Introduce components gallery
--->
+```` {.python .pymd}
+```{{python}}
+ui.input_select("x", label="Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+```
+````
+
+This example only uses two types of inputs, but Shiny has many more. See the [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/) for previews and code snippets.
 
 In many dashboards, it's desirable to visually gather all of your input controls into a sidebar. You can do this by adding the `.sidebar` class to a level 2 header, as in the `## {.sidebar}` line above.
 
@@ -72,17 +77,15 @@ The `input.x()` and `input.rug()` method calls are retrieving the values of the 
 
 Note that our code never calls the `displot()` function! Just the act of defining the function, and decorating it with `@render.plot`, is enough to tell Shiny and Quarto to:
 
-1. Insert a plot into the dashboard at this location.
-2. Use the function body to create the plot.
-3. Automatically re-run the function body whenever the values of `input.x()`, `input.rug()`, or `input.dist()` change due to user interaction, and use the result to update the existing plot.
+* Insert a plot into the dashboard at this location.
+* Use the function body to create the plot.
+* Automatically re-run the function body whenever the values of `input.x()`, `input.rug()`, or `input.dist()` change due to user interaction, and use the result to update the existing plot.
 
-This example only contains a single `@render.plot` output, but it's possible for Shiny apps to contain multiple outputs, and outputs of different types, as you'll see in the following example.
-
-<!-- TODO: Link to output gallery -->
+This example only contains a single `@render.plot` output, but it's possible for Shiny apps to contain multiple outputs, and outputs of different types, as you'll see in the following example. See the [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/#outputs) to see what's available.
 
 ### Reactive Programming
 
-In the previous section, we said that the `displot` function would re-run whenever any of the inputs it referred to changed. Shiny is a **reactive programming** framework, meaning it automatically tracks the relationships between inputs and outputs in your app. When an input changes, only outputs that are affected by that input are re-rendered. This is a powerful feature that makes it easy to create dashboards that respond to user input efficiently.
+In the previous section, we said that the `displot` function would re-run _automatically_ whenever any of the inputs it referred to changed. Shiny is a **reactive programming** framework, meaning it takes care of tracking the relationships between inputs and outputs in your app. When an input changes, only outputs that are affected by that input are re-rendered. This is a powerful feature that makes it easy to create dashboards that respond to user input efficiently.
 
 ::: {.callout-note}
 The `input` object is designed to be tracked by Shiny's reactive framework, 
@@ -175,5 +178,7 @@ To learn more about Shiny for Python interactive documents see the following art
 -   [Running Dashboards](running.qmd) covers in more depth how to run Shiny dashboards both within VS Code and at the command line, as well as how to deploy them to end users.
 
 -   [Execution Contexts](execution.qmd) goes in depth on when different code cells run (e.g. rendering vs. serving).
+
+-   [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/) gives a preview of Shiny's built-in input and output widgets.
 
 -   [Shiny for Python](https://shiny.posit.co/py/) provides in-depth documentation on all of the available UI and ouput widgets, as well as conceptual discussions on how things work.
