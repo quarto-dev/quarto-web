@@ -9,9 +9,9 @@ Dashboards are compositions of components used to provide navigation and present
 
 ## Navigation
 
-All dashboards include a top-level navigation bar that provide a title and (optionally) a logo and author. Dashboards with multiple pages also contain a link to each page on the navigation bar:
+All dashboards include a top-level navigation bar that provide a title and (optionally) a logo and author. Dashboards with [multiple pages](#pages) also contain a link to each page on the navigation bar:
 
-![](images/navigation-toolbar.png)
+![](images/navigation-toolbar.png){fig-alt="Screenshot of a dashboard navigation bar. The bar begins with a logo of three penguins, then the title Palmer Penguins followed by the author Cobblepot Analytics. There are also three links to pages: Bills, Flippers and Data."}
 
 You can specify the `title`, `author`, and `logo` using their respective document options:
 
@@ -52,23 +52,20 @@ format: dashboard
 :::
 
 ::: g-col-7
-![](images/chart-focal-top.png)
+![](images/chart-focal-top.png){fig-alt="A schematic of a page layout showing Chart 1 at the top using the full page width, then Chart 2 and Chart 3 side by side in a row below it."}
 :::
 :::
 
-Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create cards that are laid out in columns within the row.
+Here, level 2 markdown headings (e.g. `## Row {height=70%}`) define the contents of rows as well as their relative height. The ```` ```{python} ```` code cells in turn automatically create cards that are laid out in columns within the row. 
 
-### Fill vs. Flow
 
-Each row in your dashboard that is not given an explicit height will determine its size by either filling available space or by flowing to its natural height. Filling layout is generally the default, however for certain types of content (e.g. markdown text) flow layout is the default.
+::: {.callout-note}
 
-If the default behavior isn't what you want, you can explicitly specify filling or flowing behavior usign the `.fill` and `.flow` classes applied to a row. For example:
+## Heading text isn't required
 
-````{.python .pymd}
-## Row {.fill}
+Although markdown headings are used to define the layout of rows and columns in Quarto dashboards, the heading text itself is discarded. We use the headings `Row` and `Column` in these docs to aid understanding of the layouts, but you can use more descriptive headings if they help you navigate your source code.
 
-## Row {.flow}
-````
+:::
 
 ### Orientation
 
@@ -100,9 +97,23 @@ format:
 :::
 
 ::: g-col-7
-![](images/chart-focal-left.png)
+![](images/chart-focal-left.png){fig-alt="A schematic of a page layout showing Chart 1 on the left using the full page height, and on the right Chart 2 and Chart 3 are one above the other."}
 :::
 :::
+
+### Fill vs. Flow
+
+Each row in your dashboard that is not given an explicit height will determine its size by either filling available space or by flowing to its natural height. Filling layout is generally the default, however for certain types of content (e.g. markdown text) flow layout is the default.
+
+If the default behavior isn't what you want, you can explicitly specify filling or flowing behavior usign the `.fill` and `.flow` classes applied to a row. For example:
+
+````{.python .pymd}
+## Row {.fill}
+
+## Row {.flow}
+````
+
+
 
 ### Scrolling
 
@@ -130,7 +141,7 @@ format:
 :::
 
 ::: g-col-7
-![](images/chart-stack-scrolling.png)
+![](images/chart-stack-scrolling.png){fig-alt="A schematic of a dashboard layout showing three charts stacked vertically."}
 :::
 :::
 
@@ -140,7 +151,7 @@ The article on [Dashboard Layouts](layouts.qmd) provides extensive additional ex
 
 ## Pages {#pages}
 
-The layout examples above demonstrated only single-page dashboards. To introduce multiple pages, use level 1 headings above the level 2 headings used to define rows and columns. For example, here is a dashboard that splits content across two pages:
+The layout examples above demonstrated only single-page dashboards. To introduce multiple pages, use level 1 headings above the level 2 headings used to define rows and columns. The text of the level 1 headings will be used to link to the pages in the navigation bar. For example, here is a dashboard that splits content across two pages:
 
 ```` {.python .pymd}
 ---
@@ -173,7 +184,7 @@ Note that we can set a per-page orientation by adding an `orientation` attribute
 
 ## Tabsets {#tabsets}
 
-Use tabsets to include multiple views of data or to include content of secondary importance without having it crown the main display. Tabsets are created by adding the `.tabset` class to a row or column. For example, this layout displays the bottom row as a set of two tabs.
+Use tabsets to include multiple views of data or to include content of secondary importance without having it crowd the main display. Tabsets are created by adding the `.tabset` class to a row or column. For example, this layout displays the bottom row as a set of two tabs.
 
 ::: {.chart-example .grid}
 ::: g-col-5
@@ -201,11 +212,11 @@ format: dashboard
 :::
 
 ::: g-col-7
-![](images/chart-tabset-row.png)
+![](images/chart-tabset-row.png){fig-alt="Schematic of a dashboard layout showing Chart 1 at the top using the full page width. Below Chart 1, a panel with two tabs is shown: the Chart 2 tab is selected and occupies the full page width; the Chart 3 tab is unselected."}
 :::
 :::
 
-You can include tabsets at arbitrarily deep levels. Here we include a tabset within a column of a top level row. Each cell within the tabset column becomes a tab.
+You can include tabsets at arbitrarily deep levels. Here we include a tabset within a column of a top level row:
 
 ::: {.chart-example .grid}
 ::: g-col-5
@@ -240,13 +251,13 @@ format: dashboard
 :::
 
 ::: g-col-7
-![](images/chart-tabset-card.png)
+![](images/chart-tabset-card.png){fig-alt="Schematic of a dashboard layout showing Chart 1 at the top using the full page width. The row below Chart 1 is split into two columns. In the left column is a panel with two tabs: Chart 2 and Chart 3. In the right column is Chart 4."}
 :::
 :::
 
-We provide navigational titles for our tabs by adding a `title` option to the cell used to produce each tab.
+Each cell within the tabset column becomes a tab, and we provide navigational titles for our tabs by adding a `title` option to the cell used to produce each tab.
 
-Note that you can also have tabs that contain only markdown. To do this use a `::: {.card}` div and include a `title` attribute for the tab:
+You can also have tabs that contain only markdown. To do this use a `::: {.card}` div and include a `title` attribute for the tab:
 
 ````python
 ::: {.card title="My Title"}
@@ -254,7 +265,7 @@ Card text
 :::
 ````
 
-In the examples above, each tab include a single card. If you want tabs to contain multiple cards, you can introduce another level of tab headings, each of which can contain multiple cards. For example:
+In the examples above, each tab included a single card. If you want tabs to contain multiple cards, introduce another level of headings below the tabset row or column. For example:
 
 ````{.python .pymd}
 ---
@@ -309,7 +320,7 @@ This text will be displayed within a card
 ```
 ````
 
-Note that if you want to provide a title for a markdown card use the `title` attribute. For example:
+To provide a title for a markdown card use the `title` attribute. For example:
 
 ````python
 ::: {.card title="My Title"}
@@ -319,13 +330,13 @@ This text will be displayed within a card
 
 Note that if you are authoring within a Jupyter Notebook then markdown cells automatically become `.content` divs.
 
-In the section on [Cell Output](data-presentation.qmd#cell-output) there are additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.).
+For additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.), see [Cell Output](data-presentation.qmd#cell-output).
 
 ### Display Options
 
 By default, cards are displayed with no title and a small bit of padding around the edges. Here is a card that displays a [Leaflet](https://ipyleaflet.readthedocs.io) map:
 
-![](images/leaflet-card.png)
+![](images/leaflet-card.png){fig-alt="Screenshot of a map inset from a light grey border around the card."}
 
 You can add a title to a card by including the `title` cell option. You can also customize the padding using the `padding` option. For example, here we add a title and remove the padding entirely:
 
@@ -339,9 +350,14 @@ Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
 ```
 ````
 
-![](images/leaflet-card-title-padding.png)
+![](images/leaflet-card-title-padding.png){fig-alt="Screenshot of a card with the title World Map displayed in the light grey bar at the top. The card contains a map with no inset from the card border."}
+
 
 You can create a dynamic `title` by printing a `title=` expression as a cell's first output. For example:
+
+::: {.panel-tabset}
+
+## Python
 
 ```` {.python .pymd}
 ```{{python}}
@@ -357,14 +373,30 @@ Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
 ```
 ````
 
-Note that for R you would use the `cat()` rather than `print()` function.
+## R
+
+````{.markdown}
+```{{r}}
+library(leaflet)
+
+lat <- 48
+long <- 350
+
+cat("title=", "World Map at", lat, long)
+
+leaflet() |> addTiles() |> 
+  setView(long, lat, zoom = 2)
+```
+````
+
+:::
 
 
 #### Expanding Cards
 
 By default, you can zoom in on the content of cards using the expand button in the bottom right:
 
-![](images/leaflet-card-expandable.png)
+![](images/leaflet-card-expandable.png){fig-alt="Screenshot of a card with the cursor hovering over an icon in the bottom right showing the pop up text Expand."}
 
 If you don't want cards to be expandable you can specify `expandable: false` (either at the document level or for individual cards).
 
@@ -396,7 +428,7 @@ format: dashboard
 :::
 
 ::: g-col-7
-![](images/chart-input-sidebar.png)
+![](images/chart-input-sidebar.png){fig-alt="Schematic of a dashboard layout showing a sidebar as grey column on the left filling the page height. On the left, Chart 1 and Chart 2 are one above the other."}
 :::
 :::
 
