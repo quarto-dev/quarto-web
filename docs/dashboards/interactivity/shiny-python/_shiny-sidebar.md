@@ -1,5 +1,5 @@
 
-![](/docs/dashboards/images/shiny-simple.png){.border}
+![](/docs/dashboards/images/shiny-simple.png){.border fig-alt="A screenshot of a Penguin Bills dashboard. A sidebar on the left contains two dropdown menus, one for Variable and one for Distribution and a checkbox to show rugmarks. On the right a plot occupies the full page height and shows a histogram of bill_length_mm colored by species."}
 
 Here is the source code for this dashboard (click on the numbers on the far right for additional explanation):
 
