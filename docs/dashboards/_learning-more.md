@@ -1,5 +1,9 @@
 
 
+[Dashboard Components](components.qmd) shows you how to control the navigation bar, and how to arrange your content across pages, rows, columns, tabsets, sidebars, and cards.
+
+[Data Presentation](data-presentation.qmd) shows you how to display data in your dashboard as plots, tables, value boxes, and text.
+
 [Layouts](layouts.qmd) includes a variety of sample layouts which you can use as a starting point for your own dashboards.
 
 [Examples](examples/index.qmd) provides a gallery of example dashboards you can use as inspiration for your own.
