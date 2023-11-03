@@ -1,0 +1,66 @@
+---
+title: "AST processing changes in v1.4"
+---
+
+In Quarto v1.3, we added support for parsing HTML tables as native Pandoc elements, so that sophisticated table layouts are available in more formats. Quarto v1.4 extends this in a few ways.
+
+## Finer control over table processing
+
+In v1.3, this HTML processing could be disabled only by specifying an option in the HTML table itself, using `quarto-disable-processing="true"`.
+
+In v1.4, this behavior can be controlled by document- and project-level metadata, using the `html-table-processing: none` YAML option:
+
+````qmd
+---
+html-table-processing: none
+---
+
+No HTML tables in this document will be processed.
+
+```{{r}}
+library(huxtable)
+# your huxtable tables won't be processed by quarto
+```
+
+````
+
+In addition, you can disable the processing selectively in parts of the document, by surrounding the elements with a fenced div having the attribute `{html-table-processing="none"}`:
+
+````qmd
+---
+html-table-processing: none
+---
+
+No HTML tables in this document will be processed.
+
+::: {html-table-processing="none"}
+
+```{{r}}
+library(huxtable)
+# your huxtable tables won't be processed by quarto because of
+# the surrounding div
+```
+
+:::
+
+```{{r}}
+library(gt)
+# your gt tables will be processed as in 1.3
+```
+````
+
+## Include Quarto markdown in LaTeX Raw Blocks
+
+In Quarto v1.3, HTML rawblocks can contain the syntax `<span data-qmd="<<markdown-content>>"/>` of `<span data-qmd-base64="<<base64-encoded-markdown-content>>"` to allow libraries that emit raw blocks to benefit
+from Quarto features such as crossref resolution and shortcodes.
+
+In Quarto v1.4, this feature is also available in LaTeX formats. If the syntax `\QuartoMarkdownBase64{<<base64-encoded-markdown-content>>}` is detected by Quarto, the contents will be decoded,
+processed in Quarto (including user filters), and then inserted back into the LaTeX raw block.
+
+This is useful for third-party libraries that seek to emit LaTeX content that nevertheless 
+can have "quarto content". Note that, unlike the HTML feature, Quarto currently only 
+supports base-64 encoded content in LaTeX blocks.
+
+Note that, unlike the HTML table parsing feature, this LaTeX feature cannot currently be disabled.
+We expect this to not be necessary because `QuartoMarkdownBase64` is unlikely to conflict with
+existing LaTeX environments.
