@@ -36,7 +36,17 @@ The first thing to do is add `server: shiny` to the front matter. This tells Qua
 
 Next, we use functions matching the pattern `ui.input_xxx` to create input controls. For example, `ui.input_select()` creates a select box, `ui.input_slider()` creates a slider, and so on. The values returned by these functions are then rendered into HTML and JavaScript by Quarto.
 
-This example only uses two types of inputs, but Shiny has many more. Use the [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/) to see them all, along with code snippets you can copy and paste into your dashboard.
+This example only uses two types of inputs, but Shiny has many more. Use the [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/) to see them all, along with code snippets you can copy and paste into your dashboard. 
+
+The example above defined an input with the following code:
+
+
+```` {.python .pymd}
+```{{python}}
+ui.input_select("x", label="Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+```
+````
 
 **Every input function takes an input ID as its first argument.** An input ID is string that uniquely identifies this input; it must be a simple, syntactically valid Python variable name. We will use this ID to access the input's value from other parts of the dashboard.
 
@@ -46,14 +56,21 @@ Make sure each input ID in your Shiny dashboard is unique. If you use the same I
 
 The second argument for each input function is usually a human-readable string that will be displayed next to the input control. For example, the `ui.input_select()` function passes `"Variable:"`as the second argument, which is why the select box has the label "Variable:" next to it.
 
-```` {.python .pymd}
+#### Sidebars
+
+In many dashboards, it's desirable to visually gather all of your input controls into a sidebar. You can do this by adding the `.sidebar` class to a level 2 header, as we did in the example:
+
+````{.python .pymd}
+## {.sidebar}
+
 ```{{python}}
-ui.input_select("x", label="Variable:",
+from shiny import render, reactive, ui
+3ui.input_select("x", "Variable:",
                 choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
 ```
 ````
-
-In many dashboards, it's desirable to visually gather all of your input controls into a sidebar. You can do this by adding the `.sidebar` class to a level 2 header, as in the `## {.sidebar}` line above.
 
 ### Displaying Dynamic Output
 
@@ -73,7 +90,7 @@ def displot():
 
 The function here is given the name `displot`. The body of the function is using typical Seaborn code to create the plot. And a `@render.plot` decorator is added to the function, to indicate to Shiny that this function should be used to create a plot. (If you haven't seen decorators before, they're a Python feature that allows you to add additional behavior to a function.)
 
-The `input.x()` and `input.rug()` method calls are retrieving the values of the `x` and `rug` inputs created earlier in the dashboard.
+The `input.x()`, `input.rug()`. and `input.dist()` method calls are retrieving the values of the `x`, `rug`, and `dist` inputs created earlier in the dashboard.
 
 Note that our code never calls the `displot()` function! Just the act of defining the function, and decorating it with `@render.plot`, is enough to tell Shiny and Quarto to:
 
@@ -105,17 +122,34 @@ Here is the source code for this dashboard. You can click on the numbers on the 
 
 {{< include _shiny-advanced.md >}}
 
-### Setup Chunks
+### Setup Cell
 
-In static Quarto documents, `{python}` code chunks run only when the document is rendered, not when it is viewed. In `server: shiny` documents, `{python}` code chunks are run both during render time _and_ each time the dashboard is loaded in a browser. This is important because each visitor to the dashboard needs their own independent copies of inputs/outputs in memory, so that simultaneous users don't interfere with each other.
+In static Quarto documents, `{python}` code cells run only when the document is rendered, not when it is viewed. In `server: shiny` documents, `{python}` code cells are run both during render time _and_ each time the dashboard is loaded in a browser. This is important because each visitor to the dashboard needs their own independent copies of inputs/outputs in memory, so that simultaneous users don't interfere with each other.
 
-However, sometimes we have code that would be excessive to run for every user, and we only want the code to run once, when the document's Shiny runtime process is starting up. For example, in the example above, we load data using `sns.load_dataset("penguins")`; it would be wasteful in terms of both time and memory to load the data once for each user, instead of once for the process.
+However, sometimes we have code that would be excessive to run for every user, and we only want the code to run once, when the document's Shiny runtime process is starting up. For example, in the example above, we import packages and load data using `sns.load_dataset("penguins")`:
 
-By simply adding `#| context: setup` to the code chunk, we can tell Quarto to run the code only once, when the Shiny process starts up. This is called a **setup chunk**. Setup chunks are a great way to factor out code that you want to run once, not on every page load. Variables you define in setup chunks can be read by all other code chunks in the document.
+````{.python .pymd}
+```{{python}}
+#| context: setup
+import seaborn as sns
+from shiny import render, reactive, ui
+penguins = sns.load_dataset("penguins")
+```
+````
+
+We do this in a setup cell because it would be wasteful in terms of both time and memory to load the data once for each user, instead of once for the process.
+
+By simply adding `#| context: setup` to the code cell, we can tell Quarto to run the code only once, when the Shiny process starts up. Setup cells are a great way to factor out code that you want to run once, not on every page load. Variables you define in setup cells can be read by all other code cells in the document.
 
 ### Dashboard Pages
 
-At the top of this dashboard, you can see "Plots" and "Data" headings. These are called **dashboard pages**. Dashboard pages are a way to organize your dashboard into multiple pages, each with its own set of outputs. You can insert dashboard pages by adding level 1 headers to your Markdown--in this case, `# Plots` and `# Data`.
+At the top of this dashboard, you can see "Plots" and "Data" headings. These are called **dashboard pages**. Dashboard pages are a way to organize your dashboard into multiple pages, each with its own set of outputs. You can insert dashboard pages by adding level 1 headers to your Markdown. In this case, `# Plots` and `# Data`:
+
+```` {.python .pymd}
+# Plots
+
+# Data
+````
 
 ### Data Frame Outputs
 
@@ -174,6 +208,8 @@ Note the `filtered_penguins()` call. To reiterate, this call does not necessaril
 ## Learning More
 
 To learn more about Shiny for Python interactive documents see the following articles:
+
+-   [Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/#outputs) enumerates the available Shiny inputs and outputs, along with code snippets you can copy and paste into your dashboard. 
 
 -   [Running Dashboards](running.qmd) covers in more depth how to run Shiny dashboards both within VS Code and at the command line, as well as how to deploy them to end users.
 
