@@ -34,7 +34,7 @@ px.scatter(
 ```
 ````
 
-![](images/plotly-interactive.png)
+![](images/plotly-interactive.png){fig-alt="Screenshot of a card titled GDP and Life Expectancy. The card contains a plot with a set of scatterplots. Below the plot is a slider of years with a play and stop button."}
 
 ### matplotlib
 
@@ -51,7 +51,7 @@ plt.rcParams['figure.figsize'] = (12, 3)
 
 In the case that your plots are laid out at a wider aspect ratio, setting this option can make a huge difference in terms of using available space. For example, the top plot in the stack below uses the default figure size of 8 x 5 and the bottom one uses the 12 x 3 ratio specified above:
 
-![](images/matplotlib-size.png)
+![](images/matplotlib-size.png){fig-alt="Screenshot of a two cards one above the other. The top card contains a plot with large areas of white space on either side. The bottom card contains the same plot but resized to reduce the white space."}
 
 Note that the need to explicitly size plots is confined to traditional plotting libraries---if you use Plotly or another JavaScript based plotting system plots will automatically resize to fill their container.
 
@@ -136,14 +136,14 @@ The Python [tabulate](https://github.com/astanin/python-tabulate) package suppor
 ```{{python}}
 import pandas as pd
 from IPython.display import Markdown
-penguins = pd.read_csv("penguins.csv")\
+penguins = pd.read_csv("penguins.csv")
 Markdown(penguins.to_markdown(index=False))
 ```
 ````
 
 Note that the `index = False` parameter supresses the display of the row index. Here is a card containing output from `tabulate`:
 
-![](images/tabulate.png)
+![](images/tabulate.png){fig-alt="Screenshot of a card showing a table of penguins data. The data frame column names appear bold in a row at top. Data rows have a background that alternates between white and grey."}
 
 You can also import `tabulate` directly and pass in the object to print directly:
 
@@ -170,7 +170,7 @@ show(penguins)
 ```
 ````
 
-![](images/itables-scrolling.png)
+![](images/itables-scrolling.png){fig-alt="Screenshot of a card showing a table of penguins data. Above the table a Search box appears. The data frame column names appear bold in a row at top and each columns has sorting buttons."}
 
 #### Downsampling
 
@@ -213,7 +213,7 @@ knitr::kable(mtcars)
 ```
 ````
 
-![](images/kable.png)
+![](images/kable.png){fig-alt="Screenshot of a card showing a table of penguins data. The data frame column names appear bold in a row at top. Data rows have a background that alternates between white and grey."}
 
 Simple markdown tables in dashboards automatically fill their container (scrolling horizontally and vertically as required).
 
@@ -230,7 +230,7 @@ datatable(mtcars)
 ```
 ````
 
-![](images/dt.png)
+![](images/dt.png){fig-alt="Screenshot of a card showing a table of penguins data. Above the table a Search box appears. The data frame column names appear bold in a row at top and each columns has sorting buttons."}
 
 #### Options
 
@@ -251,7 +251,7 @@ You can specify alternate options as you like to override these defaults.
 
 Value boxes are a great way to prominently display simple values within a dashboard. For example, here is a dashboard row with three value boxes:
 
-![](images/value-boxes.png)
+![](images/value-boxes.png){fig-alt="A row of three value boxes. The first has a grey background, a large pencil icon, small text that says Articles per day, and a large number 45. The second has a grey background, a large comment icon, small text that says Comments per day, and a large number 126. The third has a yellow background, a large trashcan icon, small text that says Spam per day, and a large number 50. "}
 
 Here is the code you might use to create these value boxes. Note that we use a mix of Python and R cells in this example to illustrate the syntax for each language. Note also that we assume the variables `articles`, `comments`, and `spam` are computed previously within the document.
 
@@ -295,9 +295,11 @@ You can choose between specifying value box options within YAML or within a `dic
 
 The `icon` used in value boxes can be any of the 2,000 available [bootstrap icons](https://icons.getbootstrap.com).
 
-The `color` can be any CSS color value, however there are some color aliases that are tuned specifically for dashboards that you might consider using by default:
+The `color` can be any CSS color value, however there are some color aliases that are tuned specifically for dashboards that you might consider using by default: 
 
 {{< include _valuebox-colors.md >}}
+
+While the aliases apply to all [themes](theming.qmd), the colors they correspond to vary.
 
 ### Shiny
 
@@ -339,7 +341,7 @@ value_box(
 
 ### Markdown Syntax
 
-You can also create value boxes using plain markdown (in which case you'll typically include the value via an inline expression). For example:
+You can also create value boxes using plain markdown, in which case you'll typically include the value via an inline expression. For example:
 
 ``` {.python .pymd}
 ## Row
@@ -359,9 +361,9 @@ While you often fill dashboard cards with plots and tables, you can also include
 
 Here is a dashboard where the last card in a column is plain markdown:
 
-![](images/text-content-column.png){.border}
+![](images/text-content-column.png){.border fig-alt="Screenshot of a dashboard with three cards arranged vertically in a column. The first two cards contain plots, the last card contains text that begins 'Gapminder combines data ...'."}
 
-To do this just include a `.content` div alongside the other cells:
+To do this just include a `.card` div alongside the other cells:
 
 ```` {.python .pymd}
 ## Column
@@ -407,11 +409,11 @@ elsewhere. Learn more about the Gampminder dataset at
 :::
 ````
 
-![](images/text-content-fused.png){.border}
+![](images/text-content-fused.png){.border fig-alt="Screenshot of a single card. The card contains a plot then text below it that begins 'Gapminder combines data...'."}
 
 ### Leading Content
 
-Content that is included at the very top of a dashboard (and not explicitly within a `.content` div) is consider leading content, and will be included as is (with no border). For example:
+Content that is included at the very top of a dashboard (and not explicitly within a `.content` div) is considered leading content, and will be included as is with no card styling (e.g. with no border). For example:
 
 ````{.python .pymd}
 ---
@@ -446,24 +448,13 @@ The output of each computational cell within your notebook or source document wi
 
 ### Dynamic Titles
 
-You can create a dynamic `title` by printing a `title=` expression as a cell's first output (in contract to including the `title` as a YAML cell option). For example:
+You can create a dynamic `title` by printing a `title=` expression as a cell's first output (in contrast to including the `title` as a YAML cell option). For example:
 
-```` {.python .pymd}
-```{{python}}
-from ipyleaflet import Map, basemaps, basemap_to_tiles
-
-print("title=", f"World Map at {lat}, {long}")
-
-Map(basemap=basemap_to_tiles(basemaps.OpenStreetMap.Mapnik),
-    center=(lat, long), zoom=2)
-```
-````
-
-Note that for R you would use the `cat()` rather than `print()` function.
+{{< include _dynamic-title.md >}}
 
 ### Excluded Cells
 
-Cells that produce no output do not become cards (for example, cells used to import packages, load and filter data, etc. In some cases a cell might produce unexpected output that you want to exclude. To do this add the `output: false` option to the cell:
+Cells that produce no output do not become cards (for example, cells used to import packages, load and filter data, etc). If a cell produces unexpected output that you want to exclude add the `output: false` option to the cell:
 
 ```` {.python .pymd}
 ```{{python}}
@@ -488,7 +479,7 @@ This behavior corresponds to the `"all"` setting for [Jupyter shell interactivit
 
 ### Card Layout
 
-If a cell produces multiple outputs you can use cell layout options to organize their display. For example, here we modify the example of to display plots side-by-side using the `layout-ncol` option:
+If a cell produces multiple outputs you can use cell layout options to organize their display. For example, here we modify the example to display plots side-by-side using the `layout-ncol` option:
 
 ```` {.python .pymd}
 ```{{python}}
@@ -499,6 +490,6 @@ px.violin(df, x="sex", y="total_bill", color="smoker")
 ```
 ````
 
-![](images/card-layout-ncol.png)
+![](images/card-layout-ncol.png){fig-alt="A screenshot of a dashboard card with the title Tipping behavior showing two plots side by side."}
 
 See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for additional documentation on custom layouts.
