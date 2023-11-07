@@ -18,7 +18,7 @@ penguins = sns.load_dataset("penguins")
 ## {.sidebar} # <2>
 
 ```{{python}}
-from shiny import render, reactive, ui
+from shiny import render, ui
 ui.input_select("x", "Variable:",   # <3>
                 choices=["bill_length_mm", "bill_depth_mm"])
 ui.input_select("dist", "Distribution:", choices=["hist", "kde"])

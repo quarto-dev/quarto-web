@@ -1,9 +1,139 @@
 ---
-title: "Inputs for Interactive Dashboards"
+title: "Input Layout for Dashboards"
 ---
+
+## Overview
+
+There are several ways to layout inputs within interactive dashboards:
+
+- [Sidebars](#sidebars) provide a collapsible, full height panel for inputs.
+
+- [Input Panels](#input-panels) provide a toolbar-style horizontal panel for inputs.
+
+- [Card Inputs](#card-inputs) are directly embedded in the header or footer of cards.
+
+These techniques all create regions for inputs with a special background color to distinguish them from ordinary content. You can also locate inputs anywhere else you wish within a dashboard (i.e. in a standard card). 
+
 
 ## Sidebars
 
+Sidebars are a great place to group inputs for interactive dashboards. Within sidebars, input widgets are laid out top to bottom and occupy the full width of the sidebar.
+
+To include a sidebar on a page, add the `.sidebar` class to a level 2 heading:
+
+```` {.python .pymd}
+---
+title: "Sidebar"
+format: dashboard
+server: shiny
+---
+    
+## {.sidebar}
+
+```{{python}}
+from shiny import ui
+ui.input_select("x", "Variable:",   # <3>
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)  # <3>
+```
+
+## Column 
+
+```{{python}}
+from shiny import render
+@render.plot
+def displot():
+    return sns.displot(
+        data=penguins, hue="species", multiple="stack",
+        x=input.x(), rug=input.rug(), kind=input.dist())
+```
+````
+
+![](/docs/dashboards/images/shiny-simple.png){.border fig-alt="A screenshot of a Penguin Bills dashboard. A sidebar on the left contains two dropdown menus, one for Variable and one for Distribution and a checkbox to show rugmarks. On the right a plot occupies the full page height and shows a histogram of bill_length_mm colored by species."}
+
+Note that sidebars can be shown and hidden using the button at the top right.
+
+By default, sidebars have a width of 275px. You can change this by adding a `width` attribute to the `.sidebar` heading. For example:
+
+````{.python .pymd}
+## {.sidebar width="350px"}
+````
+
+
+### Global Sidebar
+
+If you have a dashboard with [multiple pages](#pages), you may want the sidebar to be global (i.e. visible across all pages). To do this, add the `.sidebar` class to a level 1 heading:
+
+```` {.python .pymd}
+---
+title: "Sidebar"
+format: dashboard
+server: shiny
+---
+    
+# {.sidebar}
+
+Sidebar content
+
+# Plots
+
+```{{python}}
+```
+
+# Data
+
+```{{python}}
+```
+````
+
+![](../images/penguins-shiny.png){.border fig-alt="Screenshot of a Palmer Penguins dashboard. Navigation bar shows two pages: Plots and Data. On the left is a sidebar with an image of penguins followed by four inputs: a set of checkboxes for Species; a set of checkboxes for Islands; and dropdown for Distribution; and a checkbox to show rug marks. On the right the page is divided into two rows each showing a density plot: the top row of bill_depth_mm; the bottom row of bill_length_mm"}
+
+
+The above example also demonstrates that you can place arbitrary content within sidebars (narrative text, links, images, etc.). 
+
 ## Input Panels
 
+Input panels are similar to sidebars, but provide a horizontal layout for inputs (more like a conventional toolbar). Here we adapt the first example from above to use an input panel rather than sidebar:
+
+
+```` {.python .pymd}
+---
+title: "Input Panel"
+format: dashboard
+server: shiny
+---
+    
+```{{python}}
+#| content: inputs
+from shiny import render, ui
+ui.input_select("x", "Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+    
+````
+
 ## Card Inputs
+
+You can also attach inputs directly to a card. Here we adapt the input panel from above to be a header for the next card:
+
+````{.python .pymd}
+```{{python}}
+#| content: inputs
+#| header-for: next
+from shiny import render, ui
+ui.input_select("x", "Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+````
+
+You can also attach inputs to the footer of a card using the `footer-for` option. The `header-for` and `footer-for` options can specify `next`, `previous`, or the `label` of any other cell.
+
+
+## Column Layout
+
+If you have a large number of inputs to present you may also want to take advantage of column layout to organize them visually.
