@@ -279,36 +279,48 @@ kable(head(cars))
 
 If your code cell produces multiple tables, you can also specify subcaptions and layout using cell options:
 
-::: {.panel-tabset}
+::: {.panel-tabset group="language"}
+
+## Python
+
+````python
+```{{python}}
+#| label: tbl-example
+#| tbl-cap: "Example"
+#| tbl-subcap: 
+#|   - "MPG"
+#|   - "Taxis"
+#| layout-ncol: 2
+
+import seaborn as sns
+from IPython.display import Markdown, display
+mpg = sns.load_dataset("mpg").head(10)
+taxis = sns.load_dataset("taxis").head(10)
+
+display(Markdown(mpg.to_markdown(index = False)))
+display(Markdown(taxis.to_markdown(index = False)))
+```
+````
+
+Note that we use the [`display()`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html#IPython.display.display) function imported from `IPython` so that we can render multiple outputs from a single cell (by default cells only output their last expression).
+
 ## R
 
-``` {.r}
+````python
+```{{r}}
 #| label: tbl-example
 #| tbl-cap: "Example"
 #| tbl-subcap: 
 #|   - "Cars"
 #|   - "Pressure"
 #| layout-ncol: 2
-#| echo: fenced
 
 library(knitr)
 kable(head(cars))
 kable(head(pressure))
 ```
+````
 
-## Python
-
-``` {.python}
-#| label: tbl-example
-#| tbl-cap: "Example"
-#| tbl-subcap: 
-#|   - "Cars"
-#|   - "Pressure"
-#| layout-ncol: 2
-#| echo: fenced
-
-Markdown(cars + pressure)
-```
 
 :::
 
