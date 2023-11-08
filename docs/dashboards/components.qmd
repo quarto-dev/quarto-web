@@ -344,7 +344,7 @@ This text will be displayed within a card
 
 Note that if you are authoring within a Jupyter Notebook then markdown cells automatically become `.card` divs.
 
-For additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.), see [Cell Output](data-presentation.qmd#cell-output).
+For additional details on how cells and their content are mapped to cards (e.g. excluding cells, cells with multiple outputs, etc.), see [Cell Output](data-display.qmd#cell-output).
 
 ### Display Options
 
@@ -436,9 +436,68 @@ Sidebar content
 ```
 ````
 
+## Toolbars
+
+Toolbars are similar to sidebars, but provide a horizontal layout for inputs. Create a toolbar by adding the `.toolbar` class to a row heading. For example, here we create a toolbar for an interactive dashboard that uses Shiny:
+
+
+```` {.python .pymd}
+---
+title: "Toolbar"
+format: dashboard
+server: shiny
+---
+    
+## {.toolbar}
+    
+```{{python}}
+from shiny import ui
+ui.input_select("x", "Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+## Row
+
+```{{python}}
+@render.plot
+def displot():
+  sns.displot(
+    data=penguins, hue="species", multiple="stack",
+    x=input.x(), rug=input.rug(), kind=input.dist())
+```
+````
+
+### Card Toolbars
+
+In some cases you may want to marry inputs more directly to a single output. To do this, define a card toolbar immediately above the cell that generates the output. You can do this by either adding the `content: card-toolbar` option to a cell or by creating a div with the `.card-toolbar` class. For example:
+
+```` {.python .pymd}     
+```{{python}}
+#| content: card-toolbar
+from shiny import ui, render
+ui.input_select("x", "Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+```{{python}}
+@render.plot
+def displot():
+  sns.displot(
+    data=penguins, hue="species", multiple="stack",
+    x=input.x(), rug=input.rug(), kind=input.dist())
+```
+````
+
+
+
+
 ## Learning More
 
-[Data Presentation](data-presentation.qmd) shows you how to display data in your dashboard as plots, tables, value boxes, and text.
+[Data Display](data-display.qmd) shows you how to display data in your dashboard as plots, tables, value boxes, and text.
 
 [Layouts](layouts.qmd) includes a variety of sample layouts which you can use as a starting point for your own dashboards.
 
