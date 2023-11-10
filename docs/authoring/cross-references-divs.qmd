@@ -133,7 +133,7 @@ A line plot
 :::
 ````
 
-In the above example, you can reference the figure with `@fig-line-plot`, but not the code which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-references for executable code blocks]() for details.
+In the above example, you can reference the figure with `@fig-line-plot`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-references for executable code blocks]() for details.
 
 
 ## Tables
@@ -177,6 +177,7 @@ Astronomical object
 :::
 ````
 
+In the above example, you can reference the table with `@tbl-planets`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-references for executable code blocks]() for details.
 
 ## Listings
 
@@ -194,7 +195,66 @@ Customers Query
 :::
 ````
 
-Note that the above example is a non-executable code cell. To cross-reference code in an executable code cell you need to use code cell options, not the div syntax, as described in [Cross-references for executable code blocks]().
+This also works for executable code cells that produce no output:
+
+````markdown
+::: {#lst-assign}
+
+```{{r}}
+x <- 1
+```
+
+Assignment in R
+
+:::
+````
+
+However, if any output is produced, it is assumed the output should be the content of the cross reference, and the code is lifted out and placed inline. For example, the code cell here produces output:
+
+````{.markdown}
+::: {#lst-assign-output}
+
+```{{r}}
+x <- 1
+x
+```
+
+Assignment in R
+
+:::
+
+@lst-assign-output
+
+````
+
+When rendered the above results in output being the contents of the listing, with the code appearing before the listing:
+
+![](images/crossrefs-listing-output.png){fig-alt="Screenshot of a listing cross reference. A code cell comes first, followed by Listing 1 which contains code output."}
+
+If you need to reference both the code its output, use a combination of a display block and a code block with the code cell option `echo: false`:
+
+````{.markdown}
+::: {#lst-assign-both}
+
+```r
+x <- 1
+x
+```
+
+```{{r}}
+#| echo: false
+x <- 1
+x
+```
+
+Assignment in R
+
+:::
+
+````
+
+When the output is a figure or table, you can reference the code and the output individually by using code cell options, rather than the div syntax, as described in [Cross-references for executable code blocks]().
+
 
 ## Diagrams
 
