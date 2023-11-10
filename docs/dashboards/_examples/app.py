@@ -61,20 +61,14 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
 
     # ========================================================================
 
-    @render.data_frame
-    def dataview():
-        return render.DataGrid(filtered_penguins(), height = "100%")
-
-    # ========================================================================
 
 
 
-
-_static_assets = ["shiny_files","images/penguins.png","styles.css"]
+_static_assets = ["shiny-sidebar_files","images/penguins.png"]
 _static_assets = {"/" + sa: Path(__file__).parent / sa for sa in _static_assets}
 
 app = App(
-    Path(__file__).parent / "shiny.html",
+    Path(__file__).parent / "shiny-sidebar.html",
     server,
     static_assets=_static_assets,
 )

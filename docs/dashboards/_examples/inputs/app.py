@@ -14,7 +14,7 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
 
     # ========================================================================
 
-    from shiny import render, ui
+    from shiny import ui, render
     ui.input_select("x", "Variable:",
                     choices=["bill_length_mm", "bill_depth_mm"])
     ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
@@ -24,20 +24,20 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
 
     @render.plot
     def displot():
-        sns.displot(
-            data=penguins, hue="species", multiple="stack",
-            x=input.x(), rug=input.rug(), kind=input.dist())
+      sns.displot(
+        data=penguins, hue="species", multiple="stack",
+        x=input.x(), rug=input.rug(), kind=input.dist())
 
     # ========================================================================
 
 
 
 
-_static_assets = ["input-panel_files"]
+_static_assets = ["card-toolbar_files"]
 _static_assets = {"/" + sa: Path(__file__).parent / sa for sa in _static_assets}
 
 app = App(
-    Path(__file__).parent / "input-panel.html",
+    Path(__file__).parent / "card-toolbar.html",
     server,
     static_assets=_static_assets,
 )
