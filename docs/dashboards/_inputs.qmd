@@ -1,0 +1,143 @@
+
+## Sidebars
+
+Sidebars are a great place to group inputs for Shiny interactive dashboards. To include a sidebar, add the `.sidebar` class to a level 2 heading:
+
+```` {.python .pymd style="overflow-x: hidden;"}
+---
+title: "Sidebar"
+format: dashboard
+---
+    
+## {.sidebar}
+
+```{{python}}
+```
+
+## Column 
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+
+Here's how a sidebar would appear (note there is a button in the top right that enables the user to optionally close the sidebar):
+
+![](/docs/dashboards/images/sidebar.png){.border fig-alt="A screenshot of a Penguin Bills dashboard. A sidebar on the left contains two dropdown menus, one for Variable and one for Distribution and a checkbox to show rugmarks. On the right there are two plots: a histogram of bill_length_mm colored by species and a histogram of bill_depth_mm colored by species."}
+
+### Global Sidebar
+
+If you have a dashboard with [multiple pages](#pages), you may want the sidebar to be global (i.e. visible across all pages). To do this, add the `.sidebar` class to a level 1 heading:
+
+```` {.python .pymd}
+---
+title: "Sidebar"
+format: dashboard
+---
+    
+# {.sidebar}
+
+Sidebar content
+
+# Plots
+
+```{{python}}
+```
+
+# Data
+
+```{{python}}
+```
+````
+
+
+
+## Toolbars
+
+Toolbars are similar to sidebars, but provide a horizontal layout for inputs. Create a toolbar by adding the `.toolbar` class to a level 2 row heading. For example, here we create a toolbar for an interactive dashboard that uses Shiny:
+
+```` {.python .pymd}
+---
+title: "Toolbar"
+format: dashboard
+server: shiny
+---
+    
+## {.toolbar}
+    
+```{{python}}
+from shiny import ui, render
+ui.input_select("x", "Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+## Row
+
+```{{python}}
+@render.plot
+def displot():
+  sns.displot(
+    data=penguins, hue="species", multiple="stack",
+    x=input.x(), rug=input.rug(), kind=input.dist())
+```
+````
+
+### Global Toolbar
+
+If you have a dashboard with [multiple pages](#pages), you may want the toolbar to be global (i.e. visible across all pages). To do this, add the `.toolbar` class to a level 1 heading:
+
+
+```` {.python .pymd}
+---
+title: "Toolbar"
+format: dashboard
+server: shiny
+---
+    
+# {.toolbar}
+
+Toolbar content
+
+# Page 1 
+
+```{{python}}
+```
+
+# Page 2
+
+```{{python}}
+```
+````
+
+
+## Card Toolbars
+
+In some cases you may want to marry inputs more directly to a single output. To do this, define a card toolbar immediately above the cell that generates the output. You can do this by either adding the `content: card-toolbar` option to a cell or by creating a div with the `.card-toolbar` class. For example:
+
+```` {.python .pymd}     
+```{{python}}
+#| title: Penguin Bills
+#| content: card-toolbar
+from shiny import ui, render
+ui.input_select("x", "Variable:",
+                choices=["bill_length_mm", "bill_depth_mm"])
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+```{{python}}
+@render.plot
+def displot():
+  sns.displot(
+    data=penguins, hue="species", multiple="stack",
+    x=input.x(), rug=input.rug(), kind=input.dist())
+```
+````
+
+![](/docs/dashboards/images/card-toolbar.png){.border fig-alt="A screenshot of a Penguin Bills card. The card toolbar contains two dropdown menus, one for Variable and one for Distribution and a checkbox to show rugmarks. Below, a plot shows a histogram of bill_length_mm colored by species."}
+
+Note that the `title` attribute is optional for card toolbars (if there is no title then inputs will left aligned in the place where the title is normallly displayed).
