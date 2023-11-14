@@ -5,70 +5,39 @@ from __future__ import annotations
 from pathlib import Path
 from shiny import App, Inputs, Outputs, Session, ui
 
-import seaborn as sns
-penguins = sns.load_dataset("penguins")
-species = list(penguins["species"].value_counts().index)
-islands = list(penguins["island"].value_counts().index)
-
-# ========================================================================
-
 
 
 
 def server(input: Inputs, output: Outputs, session: Session) -> None:
-    from shiny import render, reactive, ui
-
-    ui.input_checkbox_group(
-        "species", "Species:", 
-        species, selected = species
-    )
-
-    ui.input_checkbox_group(
-        "islands", "Islands:", 
-        islands, selected = islands
-    )
-
-    @reactive.Calc
-    def filtered_penguins():
-        data = penguins[penguins["species"].isin(input.species())]
-        data = data[data["island"].isin(input.islands())]
-        return data
+    import seaborn as sns
+    penguins = sns.load_dataset("penguins")
 
     # ========================================================================
 
-    ui.input_select("dist", "Distribution:", choices=["kde", "hist"])
+    from shiny import render, ui
+    ui.input_select("x", "Variable:",
+                    choices=["bill_length_mm", "bill_depth_mm"])
+    ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
     ui.input_checkbox("rug", "Show rug marks", value = False)
 
     # ========================================================================
 
     @render.plot
-    def depth():
-        return sns.displot(
-            filtered_penguins(), x = "bill_depth_mm", 
-            hue = "species", kind = input.dist(), 
-            fill = True, rug=input.rug()
-        )
-
-    # ========================================================================
-
-    @render.plot
-    def length():
-        return sns.displot(
-            filtered_penguins(), x = "bill_length_mm", 
-            hue = "species", kind = input.dist(), 
-            fill = True, rug=input.rug()
-        )
+    def displot():
+        sns.displot(
+            data=penguins, hue="species", multiple="stack",
+            x=input.x(), rug=input.rug(),kind=input.dist())
 
     # ========================================================================
 
 
 
 
-_static_assets = ["shiny-sidebar_files","images/penguins.png"]
+_static_assets = ["shiny-python-simple_files"]
 _static_assets = {"/" + sa: Path(__file__).parent / sa for sa in _static_assets}
 
 app = App(
-    Path(__file__).parent / "shiny-sidebar.html",
+    Path(__file__).parent / "shiny-python-simple.html",
     server,
     static_assets=_static_assets,
 )

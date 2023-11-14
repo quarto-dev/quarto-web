@@ -9,16 +9,9 @@ from shiny import App, Inputs, Outputs, Session, ui
 
 
 def server(input: Inputs, output: Outputs, session: Session) -> None:
+    from shiny import ui, render
     import seaborn as sns
     penguins = sns.load_dataset("penguins")
-
-    # ========================================================================
-
-    from shiny import ui, render
-    ui.input_select("x", "Variable:",
-                    choices=["bill_length_mm", "bill_depth_mm"])
-    ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
-    ui.input_checkbox("rug", "Show rug marks", value = False)
 
     # ========================================================================
 
@@ -27,6 +20,13 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
       sns.displot(
         data=penguins, hue="species", multiple="stack",
         x=input.x(), rug=input.rug(), kind=input.dist())
+
+    # ========================================================================
+
+    ui.input_select("x", "Variable:",
+                    choices=["bill_length_mm", "bill_depth_mm"])
+    ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+    ui.input_checkbox("rug", "Show rug marks", value = False)
 
     # ========================================================================
 
