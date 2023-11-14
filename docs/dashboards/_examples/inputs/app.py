@@ -33,11 +33,11 @@ def server(input: Inputs, output: Outputs, session: Session) -> None:
 
 
 
-_static_assets = ["card-toolbar_files"]
+_static_assets = ["toolbar_files"]
 _static_assets = {"/" + sa: Path(__file__).parent / sa for sa in _static_assets}
 
 app = App(
-    Path(__file__).parent / "card-toolbar.html",
+    Path(__file__).parent / "toolbar.html",
     server,
     static_assets=_static_assets,
 )
