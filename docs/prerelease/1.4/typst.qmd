@@ -53,6 +53,8 @@ The following options are available for customizing Typst output:
 | `bibliographystyle`   | Style to use with Typst's bibliography processing - See the doc about [bibliography](https://typst.app/docs/reference/meta/bibliography/#parameters–style) to see supported style. |
 | `citeproc`            | If `true`, Pandoc's citeproc will be used for citation processing instead of Typst's own system (which is the default).                                                            |
 | `csl`                 | `.csl` file to use when Pandoc's citeproc is used.                                                                                                                                 |
+| `mainfont`            | Name of system font to use for the main font.                                                                                                                                      |
+| `font-paths`          | Adds additional directories to search for fonts when compiling with Typst.                                                                                                         |
 
 For example:
 
@@ -145,6 +147,24 @@ The `quarto typst` command uses the version of Typst built in to Quarto and supp
 ``` {.bash filename="Terminal"}
 $ quarto typst --version
 ```
+
+## Fonts support
+
+The main font used for the document can be specified with `mainfont` YAML configuration. Typst will search by default into installed system fonts. You can set additional paths to search into using `font-paths`. For example, 
+
+``` yaml
+---
+title: "My Document"
+format: 
+  typst:
+      mainfont: "Agbalumo"
+      font-paths: myfonts
+---
+```
+
+This will search for `Agbalumo` font also in a local `./myfonts/` directory, for a `.ttf` or `.otf` matching the font name.
+
+`TYPST_FONT_PATHS` environment variable is also taken into account for compatibility with Typst configuration, and setting `font-paths` will take precedence over any path set in TYPST_FONT_PATHS environment variable.
 
 ## Known Limitations
 
