@@ -11,7 +11,7 @@ Dashboards are compositions of components used to provide navigation and present
 
 ## Plots
 
-Plots are by far the most common content type displayed in dashboards. Both interactive JavaScript-based plots (e.g. [Plotly](https://plotly.com/graphing-libraries/)) and standard raster based plots (e.g. [Matplotlib](https://matplotlib.org) or [ggplot2](https://ggplot2.tidyverse.org)) are supported.
+Plots are by far the most common content type displayed in dashboards. Both interactive JavaScript-based plots (e.g. [Altair](https://altair-viz.github.io) and [Plotly](https://plotly.com/graphing-libraries/)) and standard raster based plots (e.g. [Matplotlib](https://matplotlib.org) or [ggplot2](https://ggplot2.tidyverse.org)) are supported.
 
 Below we provide some language specific tips and techniques for including plots within dashboards.
 
@@ -24,6 +24,7 @@ Below we provide some language specific tips and techniques for including plots 
 
 ```` {.python .pymd}
 ```{{python}}
+#| title: GDP and Life Expectancy
 import plotly.express as px
 df = px.data.gapminder()
 px.scatter(
@@ -37,6 +38,27 @@ px.scatter(
 ````
 
 ![](images/plotly-interactive.png){fig-alt="Screenshot of a card titled GDP and Life Expectancy. The card contains a plot with a set of scatterplots. Below the plot is a slider of years with a play and stop button."}
+
+### altair
+
+[Altair](https://altair-viz.github.io) is a declarative statistical visualization library for Python based on Vega and Vega-Lite. Altair plots are JavaScript based so automatically resize themselves to fit their container within dashboards.
+
+```` {.python .pymd}
+```{{python}}
+#| title: Iowa Electricity
+import altair as alt
+from vega_datasets import data
+source = data.iowa_electricity()
+alt.Chart(source).mark_area(opacity=0.3).encode(
+    x="year:T",
+    y=alt.Y("net_generation:Q").stack(None),
+    color="source:N"
+)
+```
+````
+
+![](images/altair.png)
+
 
 ### matplotlib
 
