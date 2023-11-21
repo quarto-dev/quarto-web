@@ -59,7 +59,6 @@ alt.Chart(source).mark_area(opacity=0.3).encode(
 
 ![](images/altair.png)
 
-
 ### matplotlib
 
 {{< include _plots-raster.md >}}
@@ -150,7 +149,84 @@ Below we provide some language specific tips and techniques for including tables
 ::: {.panel-tabset group="language"}
 ## Python
 
-There are many Python packages available for producing tabular output. We'll cover two of the more popular libraries (tabulate and itables) below.
+There are many Python packages available for producing tabular output. We'll cover two of the more popular libraries (itables and tabulate) below.
+
+
+### itables
+
+The Python [itables](https://mwouts.github.io/itables/quick_start.html) package supports creating interactive data tables from Pandas and Polars DataFrames that you can sort and filter.
+
+Use the `show()` method from `itables` to display an interactive table:
+
+```` python
+```{{python}}
+from itables import show
+show(penguins)
+```
+````
+
+![](images/itables-scrolling.png){fig-alt="Screenshot of a card showing a table of penguins data. Above the table a Search box appears. The data frame column names appear bold in a row at top and each columns has sorting buttons."}
+
+
+#### Options
+
+Note that a few `itables` options are set automatically within dashboards to ensure that they display well in cards of varying sizes. The option defaults are:
+
+``` python
+from itables import options
+options.dom = 'fiBrtlp'
+options.maxBytes = 1024 * 1024
+options.language = dict(info = "Showing _TOTAL_ entries")
+options.classes = "display nowrap compact"
+options.paging = False
+options.searching = True
+options.ordering = True
+options.info = True
+options.lengthChange = False
+options.autoWidth = False
+options.responsive = True
+options.keys = True
+options.buttons = []
+```
+
+You can specify alternate options as you like to override these defaults. Options can be specified in the call to `show()` or globally as illustrated above. Here's an example of specifying an option with `show()`:
+
+```python
+show(penguins, searching = False, ordering = False)
+```
+
+You can find the reference for all of the DataTables options here: <https://datatables.net/reference/option/>. All base options are available, as well as the options for the following extensions (which are automatically included by Quarto):
+
+- <https://datatables.net/extensions/buttons/>
+- <https://datatables.net/extensions/keytable/>
+- <https://datatables.net/extensions/responsive/>
+
+For example, to enable the copy and export (excel/pdf) buttons in a call to `show()`:
+
+```python
+show(penguins, buttons = ['copy', 'excel', 'pdf'])
+```
+
+Or alternatively, to enable these buttons for all tables:
+
+``` python
+from itables import options
+options.buttons = ['copy', 'excel', 'pdf']
+```
+
+
+#### Downsampling
+
+When a table is displayed, the table data is embedded in the dashboard output. To prevent dashboards from being too heavy to load for larger datasets, itables will display only a subset of the table---one that fits into `maxBytes` (1024kb by default).
+
+If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0)`. For example, to set a limit of 200kb:
+
+```` python
+```{{python}}
+show(penguins, maxBytes = 200 * 1024)
+```
+````
+
 
 ### tabulate
 
@@ -174,54 +250,12 @@ You can also import `tabulate` directly and pass in the object to print directly
 ```` python
 ```{{python}}
 from tabulate import tabulate
-Markdown(
+Markdown( 
   tabulate(penguins, showindex=False, 
            headers=penguins.columns)
 )
 ```
 ````
-
-### itables
-
-The Python [itables](https://mwouts.github.io/itables/quick_start.html) package supports creating interactive data tables from Pandas and Polars DataFrames that you can sort and filter.
-
-Use the `show()` method from `itables` to display an interactive table:
-
-```` python
-```{{python}}
-from itables import show
-show(penguins)
-```
-````
-
-![](images/itables-scrolling.png){fig-alt="Screenshot of a card showing a table of penguins data. Above the table a Search box appears. The data frame column names appear bold in a row at top and each columns has sorting buttons."}
-
-#### Downsampling
-
-When a table is displayed, the table data is embedded in the dashboard output. To prevent dashboards from being too heavy to load for larger datasets, itables will display only a subset of the table---one that fits into `maxBytes` (1024kb by default).
-
-If you wish, you can increase the value of `maxBytes` or even deactivate the limit (with `maxBytes=0)`. For example, to set a limit of 200kb:
-
-```` python
-```{{python}}
-show(penguins, maxBytes = 200 * 1024)
-```
-````
-
-#### Options
-
-Note that a few `itables` options are set automatically within dashboards to ensure that they display well in cards of varying sizes. The option defaults are:
-
-``` python
-from itables import options
-options.paging = False
-options.dom = "ifrt"
-options.maxBytes = 1024 * 1024
-options.classes = "display nowrap compact"
-options.language = { "info": "Showing _TOTAL_ entries" }
-```
-
-You can specify alternate options as you like to override these defaults.
 
 ## R
 
@@ -319,7 +353,7 @@ You can choose between specifying value box options within YAML or within a `dic
 
 The `icon` used in value boxes can be any of the 2,000 available [bootstrap icons](https://icons.getbootstrap.com).
 
-The `color` can be any CSS color value, however there are some color aliases that are tuned specifically for dashboards that you might consider using by default: 
+The `color` can be any CSS color value, however there are some color aliases that are tuned specifically for dashboards that you might consider using by default:
 
 {{< include _valuebox-colors.md >}}
 
@@ -330,12 +364,11 @@ While the aliases apply to all [themes](theming.qmd), the colors they correspond
 In a Shiny interactive dashboard you can have value boxes that update dynamically based on the state of the application. The details on how to do this are language-specific:
 
 ::: {.panel-tabset group="language"}
-
 #### Python
 
 Use the `ui.value_box()` function within a function decorated with `@render.ui`. For example:
 
-````python
+```` python
 ```{{python}}
 from shiny import render, ui
 @render.ui
@@ -348,7 +381,7 @@ def value():
 
 Use the `bslib::value_box()` function along with an optional icon drawn from the `bsicons` package. For example:
 
-````python
+```` python
 ```{{r}}
 library(bslib)
 library(bsicons)
@@ -359,9 +392,7 @@ value_box(
 )
 ```
 ````
-
 :::
-
 
 ### Markdown Syntax
 
@@ -379,7 +410,7 @@ Articles per day
 
 ## Text Content
 
-While you often fill dashboard cards with plots and tables, you can also include arbitrary markdown content anywhere within a dashboard. 
+While you often fill dashboard cards with plots and tables, you can also include arbitrary markdown content anywhere within a dashboard.
 
 ### Content Cards
 
@@ -418,7 +449,7 @@ Note that if you are authoring using a Jupyter Notebook then markdown cells auto
 
 To include content alongside the ouptut of a cell, just enclose the both the cell and the content in a `.card` div. For example:
 
-````{.python .pymd}
+```` {.python .pymd}
 ::: {.card title="Life Expectancy"}
 
 ```{{python}}
@@ -439,7 +470,7 @@ elsewhere. Learn more about the Gampminder dataset at
 
 Content that is included at the very top of a dashboard (and not explicitly within a `.content` div) is considered leading content, and will be included as is with no card styling (e.g. with no border). For example:
 
-````{.python .pymd}
+```` {.python .pymd}
 ---
 title: "My Dashboard"
 format: dashboard
@@ -453,7 +484,6 @@ rows/columns, with no border.
 ```{{python}}
 ```
 ````
-
 
 ### Dynamic Content
 
@@ -520,7 +550,6 @@ See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for ad
 
 ## Learning More
 
-
 [Layout](layout.qmd) shows you how to control the navigation bar, and how to arrange your content across pages, rows, columns, tabsets, and cards.
 
 [Inputs](inputs.qmd) demonstrates various ways to layout inputs for interactive dashboards (sidebars, toolbars, attaching inputs directly to cards, etc.)
@@ -534,5 +563,3 @@ See the article on [Figures](/docs/authoring/figures.qmd#complex-layouts) for ad
 [Deployment](deployment.qmd) covers how to deploy both static dashboards (which require only a web host, but not a server) and Shiny dashboards (which require a Shiny Server).
 
 [Interactivity](interactivity/index.qmd) explores the various ways to create interactive dashboards that enable more flexible data exploration.
-
-
