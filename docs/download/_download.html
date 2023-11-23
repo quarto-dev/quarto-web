@@ -37,7 +37,10 @@
             downloadData.prefix,
             downloadData.releaseDesc,
             dlData.version,
-            dlData.assets
+            dlData.assets,
+            new Date(dlData.created).toLocaleString("en-US", {
+              dateStyle: "medium",
+            })
           );
           populateDownloadTable(
             downloadData.prefix,
@@ -143,7 +146,7 @@
     }
   }
 
-  function populateDownloadButton(idPrefix, releaseDesc, version, assets) {
+  function populateDownloadButton(idPrefix, releaseDesc, version, assets, releaseDate) {
     const osData = window["quarto-force-os"] || guessOS();
     const extension = window["quarto-force-download"]
       ? window["quarto-force-download"]
@@ -193,7 +196,7 @@
         secondaryTextEl.className = "secondary";
         secondaryTextEl.innerText = `${version}${
           releaseDesc ? " " + releaseDesc : ""
-        } (${osData.name})`;
+        } (${osData.name}) | Date: ${releaseDate}`;
         textContainerEl.append(secondaryTextEl);
 
         containerEl.append(textContainerEl);
