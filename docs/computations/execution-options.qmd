@@ -149,10 +149,8 @@ To include executable expressions within markdown in a Python notebook, you use 
 ```{{python}}
 #| echo: false
 radius = 10
-from IPython.display import display, Markdown
-display(Markdown("""
-The radius of the circle is {radius}.
-""".format(radius = radius)))
+from IPython.display import Markdown
+Markdown(f"The _radius_ of the circle is **{radius}**.")
 ```
 
 You can do the same in a Julia notebook using the [`Markdown`](https://docs.julialang.org/en/v1/stdlib/Markdown/) package:
@@ -224,7 +222,7 @@ Which generates the following output:
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
 
-If we had not specified `output: asis` then the output would have been this:
+If we had not specified `output: asis` the output, as seen in the intermediate markdown, would have included Quarto's `.cell-output` div:
 
 ```` default
 ::: {.cell-output-stdout}
@@ -232,7 +230,7 @@ If we had not specified `output: asis` then the output would have been this:
 # Heading 1
 
 ## Heading 2
-
+  
 ```
 :::
 ````
@@ -241,9 +239,9 @@ For the Jupyter engine, you can also create raw markdown output using the functi
 
 ```{{python}}
 #| echo: false
-from IPython.display import display, Markdown
-display(Markdown("# Heading 1\n"))
-display(Markdown("## Heading 2\n"))
+radius = 10
+from IPython.display import Markdown
+Markdown(f"The _radius_ of the circle is **{radius}**.")
 ```
 
 {{< include _knitr-options.md >}}
@@ -344,7 +342,7 @@ Here are the basic rules for automatic binding:
 | .md       | No engine (note that if an `md` document does contain executable code blocks then an error will occur)                                                                                                                                 |
 +-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-You can override the engine used via the `engine` option. For example:
+For `.qmd` files in particular, you can override the engine used via the `engine` option. For example:
 
 ``` markdown
 engine: jupyter

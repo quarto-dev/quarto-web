@@ -56,26 +56,32 @@ When a Quarto document is rendered, R code blocks are automatically executed. Yo
 1)  Using the **Render** button in RStudio:
 
     ![](/docs/tools/images/rstudio-render.png){.border-bottom width="612" fig-alt="The top section of a qmd file as displayed in RStudio. There is a toolbar right above the document containing various options, including 'Render.' There is a stylized, segmented blue arrow pointing at the word."}
+    
+    The **Render** button will render the first format listed in the document YAML. If no format is specified, then it will render to HTML.
 
 2)  From the system shell using the `quarto render` command:
 
     ```{.bash filename="Terminal"}
-    quarto render document.qmd # defaults to html
+    quarto render document.qmd # all formats
     quarto render document.qmd --to pdf
     quarto render document.qmd --to docx
     ```
 
-    Note that the target file (in this case `document.qmd`) should always be the very first command line argument.
+    Note that the target file (in this case `document.qmd`) should always be the very first command line argument. 
+    
+    The `render` command will render all formats listed in the document YAML. If no formats are specified, then it will render to HTML. You can also provide the `--to` argument to target a specific format.
 
 3)  From the R console using the **quarto** R package:
 
     ``` r
     library(quarto)
-    quarto_render("document.qmd") # defaults to html
+    quarto_render("document.qmd") # all formats
     quarto_render("document.qmd", output_format = "pdf")
     ```
-
-    Note that the Quarto R package is a convenience for command line rendering from R, and is not required for using Quarto with R.
+    
+    The function `quarto_render()` is a wrapper around `quarto render` and by default, will render all formats listed in the document YAML. 
+     
+    Note that the Quarto R package is a convenience for command line rendering from R, and is not required for using Quarto with R. 
 
 ## Installation
 
@@ -106,13 +112,10 @@ The [Quarto Extension](https://marketplace.visualstudio.com/items?itemName=quart
 
 You can install the VS Code extension by searching for 'quarto' in the extensions panel or from the [extension marketplace](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
 
-When using VS Code there is not yet an integrated **Render** button for previewing documents. Rather, you should execute the `quarto preview` command from the VS Code terminal:
+The VS Code extension includes a **Quarto: Preview** command that can be accessed via the Command Palette, the keyboard shortcut {{< kbd mac=Command-Shift-K win=Control-Shift-K linux=Control-Shift-K >}}, or a **Preview** button in the editor. 
+After rendering, a preview is displayed in a pane within VS Code alongside your document.
 
-```{.bash filename="Terminal"}
-quarto preview document.qmd
-```
-
-The document will be re-rendered and the preview updated whenever you make changes to it in VS Code.
+You can read more about using VS Code in [Tools: VS Code](/docs/tools/vscode.qmd).
 
 ## Emacs
 

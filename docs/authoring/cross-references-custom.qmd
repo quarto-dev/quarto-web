@@ -1,0 +1,112 @@
+---
+title: Custom Cross-Reference Types
+crossref:
+  custom:
+    - kind: float
+      name: Video
+      prefix: Video
+      ref-type: vid
+---
+
+{{< include /docs/prerelease/1.4/_pre-release-feature.qmd >}}
+
+## Overview
+
+You can define custom cross-reference types using the `custom` key to the `crossref` option either in your document or project metadata. At a minimum, a custom type needs:
+
+-   `kind` which currently can only be `float`
+-   `ref-type` an abbreviation used in the reference identifier ("In `@fig-1`, ...")
+-   `prefix` used for the reference in output ("In Figure 1, ...")
+-   `name` used in front of the caption text ("Figure 1: ...")
+
+For example, the following YAML defines a new cross-reference type for videos:
+
+``` yaml
+crossref:
+  custom:
+    - kind: float
+      name: Video
+      prefix: Video
+      ref-type: vid
+```
+
+You can then use this new type with the [Cross-Reference Div Syntax](cross-references-divs.qmd) in a document:
+
+``` {.markdown shortcodes="false"}
+::: {#vid-cern}
+
+{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}
+
+"CERN: The Journey of Discovery"
+
+:::
+
+In @vid-cern...
+```
+
+Which renders as:
+
+::: {#vid-cern}
+{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}
+
+"CERN: The Journey of Discovery"
+:::
+
+In @vid-cern...
+
+## PDF Output
+
+If your output format is PDF you'll also need to specify `latex-env`, a name to be used for the float environment wrapped around the element in the intermediate TeX. For example, to use the custom video reference type in PDF you could add `latex-env: video`:
+
+``` yaml
+crossref:
+  custom:
+    - kind: float
+      name: Video
+      prefix: Video
+      ref-type: vid
+      latex-env: video
+```
+
+You can add a listing of your custom cross-references to your document by including a raw LaTeX `\listof` command. The name of the command, is `listof` followed by the value of `latex-env` value, followed by an `s`. For example, for the custom video type above, where the `latex-env` was `video`, the command is `\listofvideos{}`:
+
+``` yaml
+---
+crossref:
+  custom:
+    - kind: float
+      name: Video
+      prefix: Video
+      ref-type: vid
+      latex-env: video
+---
+
+\listofvideos{}
+
+```
+
+By default, the title of the listing is constructed from the `name` value. You can specify something else with the `latex-list-of-description` value.
+
+## Example: Supplemental Figures
+
+As another example of a custom cross-reference type consider a document with supplemental figures. For instance, you might require: 
+
+-   Supplemental figures have their own counter, distinct from that of figures.
+-   Supplemental figures have labels that look like "Figure S1", "Figure S2" etc.
+-   Supplemental figures appear in their own "List of Supplementary Figures" listing.
+
+You could define this supplemental figure type with the following:
+
+```yaml
+crossref:
+  custom:
+    - kind: float
+      ref-type: suppfig
+      latex-env: suppfig
+      prefix: Figure S
+      name: Figure S
+      space-before-numbering: false
+      latex-list-of-description: Supplementary Figure
+```
+
+Note the use of `space-before-numbering: false`, which prevents a space between the `name` or `prefix` and the counter, so that labels will appear as "Figure S1", "Figure S2" etc.

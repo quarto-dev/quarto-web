@@ -1,0 +1,72 @@
+---
+title: "Running Dashboards"
+lightbox: auto
+---
+
+## Overview
+
+There are a number of ways to run Shiny for Python interactive documents:
+
+1.  Use the **Quarto: Preview** command within VS Code.
+2.  Use the `quarto preview` command line interface with any editor.
+3.  Deploy them to a server for use by a wider audience.
+
+We'll cover all of these scenarios in depth here.
+
+{{< include _shiny-requirements.qmd >}}
+
+## VS Code
+
+The [Quarto VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) provides integrated support for previewing Shiny interactive documents (just use the **Quarto: Preview** command as you normally would with a static document):
+
+![](images/preview-dashboard.png){.border fig-alt="Screenshot of VS Code with the file shiny.qmd open in the left pane. On the right is a pane labelled Quarto Preview showing the live dashboard."}
+
+Note that you need the very latest version of the VS Code extension (v1.105.0 or greater) to preview Shiny interactive documents.
+
+## Command Line
+
+If you are using another notebook or text editor, you can also preview Shiny interactive documents from the command line via `quarto preview`. This works the same for notebooks (`.ipynb`) and plain text markdown (`.qmd`). For example:
+
+``` {.bash filename="Terminal"}
+quarto preview example.ipynb
+quarto preview example.qmd
+```
+
+There are a number of options to the `preview` command to control the port and host of the document server as well as whether a browser is automatically opened for the running document. You can learn more about these options with `quarto preview help`.
+
+If you want to serve your document without the features of `quarto preview` (i.e. automatic re-rendering when the document changes) you can use the `quarto serve` command:
+
+``` {.bash filename="Terminal"}
+quarto serve example.qmd
+```
+
+
+## Deployment
+
+{{< include _shiny-deployment.md >}}
+
+
+## Debugging
+
+You can run an interactive debugging session for Shiny  documents by debugging the generated `.py` application file (e.g. `hello-app.py`). Use the **Debug Shiny App** menu command at the top right of the editor to launch a debugging session:
+
+![](images/debug.png){.border fig-alt="Screenshot of VS Code with the file hello-app.py open. In the top right, a menu is open from the Run dropdown with the Debug Shiny App item selected."}
+
+::: {.callout-caution title="Important Note"}
+The file you are debugging (e.g. `hello-app.py`) is _generated_ from your interactive document. You should therefore not edit this file directly (as it will be overwritten on the next render) but rather the source document from which it is generated (e.g. `hello.qmd`).
+:::
+
+## Learning More
+
+To learn more about Shiny for Python interactive documents see the following articles:
+
+-   [Getting Started](index.qmd) explains the basics of Shiny interactive documents.
+
+-   [Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/#outputs) enumerates the available Shiny inputs and outputs, along with code snippets you can copy and paste into your dashboard. 
+
+-   [Input Layout](../../inputs.qmd) describes various ways to layout Shiny inputs (sidebars, input panels, attaching inputs directly to cards, etc.)
+
+
+-   [Execution Contexts](execution.qmd) goes in depth on when different code cells run (e.g. rendering vs. serving).
+
+-   [Shiny for Python](https://shiny.posit.co/py/) provides in-depth documentation on all of the available UI and ouput widgets, as well as conceptual discussions on how things work.

@@ -1,0 +1,172 @@
+---
+title: "Connect Email Generation"
+---
+
+{{< include _pre-release-feature.qmd >}}
+
+## Overview
+
+Quarto v1.4 adds an email generation feature that can be used for HTML documents published in [Posit Connect](https://posit.co/products/enterprise/connect/). This feature extends the HTML output format and enables users to generate HTML and/or text emails that can be selectively delivered when the document is rendered in Connect.
+
+## Authoring a Connect Email
+
+A connect email is authored as part of an HTML document. A typical HTML document with an associated Connect email might look something like this:
+
+```markdown
+---
+format: email
+---
+
+The report content. Anything that is here is not part of the email message.
+
+::: {.email}
+
+::: {.subject}
+The subject line.
+:::
+
+::: {.email-text}
+An optional text-only version of the email message..
+:::
+
+The HTML email content. Here you can add code cells, produce images, and write accompanying text.
+This content is not seen when viewing the rendered document on Connect (it's only
+seen when sending an email from the Connect document page). Emails from Connect
+can be sent manually, and they can also be scheduled.
+
+:::
+
+Any additional report content not part of the email message.
+
+```
+
+The key things to note are:
+
+* In the document YAML the format is set to email: `format: email`.
+
+* The email content goes inside a fenced div (`:::`) with the class `.email`. The `.email` div can appear anywhere in the HTML document so long as it only appears once. Inside this `.email` div:
+
+    * The subject line goes inside a div with the class `.subject`. The `.subject` div is **required**, and should only contain text.
+
+    * A text-only version of the email goes inside a div with the class `.email-text`. The `email-text` div is **optional**, and will serve as a fallback should an email client not be able to display HTML email.
+
+Any images generated in the email portion of the document (for example, static plots) will be embedded in the email message as Base64 images. This ensures the email content is be self-contained and doesn't need to be stored elsewhere and retrieved. By necessity, interactive or otherwise complex outputs cannot be used since they cannot be understood by email clients.
+
+### Adding Attachments
+
+If your reporting creates data files (like CSVs or Excel files), these can attached to the email message. You can do this by declaring the file names in `email-attachments` in the YAML header. Say, for instance, the files `"raw_data.csv"` and `"summary.csv"` were written to the working directory through a render of the document. You could make these available as email attachments like this:
+
+```yaml
+---
+format: email
+email-attachments:
+  - raw_data.csv
+  - summary.csv
+---
+```
+
+It doesn't matter where in the document those files were generated (e.g., inside or outside of the `.email` div), the key thing is that those files _were_ generated through a document render.
+
+### Suppressing Scheduled Emails
+
+Emails on Connect can be set to regularly send upon render. However, you may have conditions where you would like an email associated with the main document _not_ be sent upon rendering at the scheduled time --- this is known in Connect as suppressing a scheduled email. 
+
+You can control whether an email is sent, using a div with the `.email-scheduled` class. The contents of the `.email-scheduled` div should be `TRUE`, `True`, or `"yes"` (something _truthy_) if we want emails to be sent unimpeded. To suppress the sending of email on a Connect render, the contents of the `.email-scheduled` div should be `FALSE`, `False`, or `"no"` (which is _falsy_). 
+
+Here is an example where the associated email is _only_ sent when a certain condition is true. The example uses R but could equivalently be done with Python or any of the other computation engines available in Quarto.
+
+````markdown
+---
+format: email
+---
+
+```{{r}}
+#| echo: false
+
+library(profitcalcs)
+
+profit <- determine_profit()
+
+if (profit < 0) {
+
+  # Send email since we have a reason for it
+
+  subject <- "We have a problem here"
+  send_email <- TRUE
+
+} else {
+
+  # Don't send email; everything is fine
+
+  subject <- "No email. This won't be sent"
+  send_email <- FALSE
+}
+```
+
+The email body follows.
+
+::: {.email}
+
+Our profit was `{r} profit` this quarter and we felt you should know.
+
+::: {.subject}
+`{r} subject`
+:::
+
+::: {.email-scheduled}
+`{r} send_email`
+:::
+
+:::
+
+````
+
+The condition for sending or not, whether `profit < 0`, is computed in the first code cell. The main email div is set up with child divs to handle the email subject (`.subject`) and whether the email should be sent (`.email-scheduled`). Inline R code injects those divs with values stored in variables; since `send_email` will either be `TRUE` or `FALSE` the email will be sent (or not) depending on the value of `profit`.
+
+## Previewing an Email
+
+When you locally render a document with the `email` format, you'll get HTML output that excludes the `.email` div. For faster email development and iteration, you'll likely want to preview the email content itself. 
+
+To preview the email content, set `email-preview: true` in the document's YAML header:
+
+```{.yaml filename="report.qmd"}
+---
+format: email
+email-preview: true
+---
+```
+
+With this option set, when you render, e.g. with `quarto render report.qmd`, an HTML file `email-preview.html` will be produced in the `email-preview/` directory. 
+
+When viewing the HTML file, note that the footer of the email will be an abbreviated version of what is normally generated through a Connect render. Also, there won't be any indication that attachments are included as part of the email (though email clients do tend to present email attachments differently: either as an extended footer and alternately as indicated in the client's top UI for a message).
+
+
+## Deploying to Connect
+
+Posit Connect has a two ways to deploy documents: documents are rendered locally, then sent to the Connect server; or document source code (along with any needed resources) is sent to the Connect server and rendered on the server. Quarto emails can only be rendered and sent when using the latter scheme. 
+
+::: {.panel-tabset}
+
+### R
+
+To do this in an R-based workflow, publish the .qmd document using the `quarto_publish_doc()` function from the `quarto` package. Here's an example of how this works:
+
+```r
+library(quarto)
+
+quarto_publish_doc(
+  "r_report.qmd",
+  name = "quarto-r-report-with-email",
+  server = "<Connect server address>",
+  account = "<username>",
+  render = "server"
+)
+```
+
+### Python
+
+If using a Python-based workflow, all principles for formatting the document still apply. The method of deploying is a bit different: one should use the `rsconnect-python` library for deployment. It offers a CLI for deployment and many examples are available in the [project README](https://github.com/rstudio/rsconnect-python).
+
+::: 
+
+Once the render on Connect succeeds, navigate to the report in your Connect instance. In the rendered view of the report, the email portion is not visible. Given you are the author of the report you can send yourself the email by clicking on the email icon on the top navigation bar and selecting the option to send the email to yourself. Should the email look satisfactory, you can use various Connect options for the given report to regularly send the email upon render (at a frequency of your choosing) to authorized individuals added to this document.

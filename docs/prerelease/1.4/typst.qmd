@@ -24,7 +24,7 @@ To try out the `typst` format:
     Hello, typst!
     ```
 
-Rendering or previewing this document will invoke the Typst CLI to create a PDF from your markdown source file. Note that Quarto includes version 0.5 of the Typst CLI so no separate installation of Typst is required.
+Rendering or previewing this document will invoke the Typst CLI to create a PDF from your markdown source file. Note that Quarto includes version 0.8 of the Typst CLI so no separate installation of Typst is required.
 
 ## Typst Format
 
@@ -44,7 +44,6 @@ The following options are available for customizing Typst output:
 | `margin`              | Margins: `x`, `y`, `top`, `bottom`, `left`, `right`. Specified with units (e.g. `y: 1.25in` or `x: 2cm`).                                                                          |
 | `papersize`           | Paper size: `a4`, `us-letter`, etc. See the docs on [paper sizes](https://typst.app/docs/reference/layout/page/#parameters–paper) for all available sizes.                         |
 | `fontsize`            | Font size (e.g., `12pt`)                                                                                                                                                           |
-| `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                                                |
 | `columns`             | Number of columns for body text.                                                                                                                                                   |
 | `include-in-header`   | `.typ` file to include in header                                                                                                                                                   |
 | `include-before-body` | `.typ` file to include before body                                                                                                                                                 |
@@ -54,6 +53,8 @@ The following options are available for customizing Typst output:
 | `bibliographystyle`   | Style to use with Typst's bibliography processing - See the doc about [bibliography](https://typst.app/docs/reference/meta/bibliography/#parameters–style) to see supported style. |
 | `citeproc`            | If `true`, Pandoc's citeproc will be used for citation processing instead of Typst's own system (which is the default).                                                            |
 | `csl`                 | `.csl` file to use when Pandoc's citeproc is used.                                                                                                                                 |
+| `mainfont`            | Name of font to use for the main font, search among system fonts or `font-paths` if specified.                                                                                     |
+| `font-paths`          | Adds additional directories to search for fonts when compiling with Typst.                                                                                                         |
 
 For example:
 
@@ -63,7 +64,7 @@ title: "My Document"
 format:
   typst:
     toc: true
-    section-numbering: true
+    section-numbering: 1.1.a
     columns: 2
 bibliography: refs.bib
 bibliographystyle: chicago-author-date
@@ -71,6 +72,40 @@ bibliographystyle: chicago-author-date
 ```
 
 See the section below on [Custom Formats](#custom-formats) for details on creating your own specialized formats for use with Typst.
+
+
+## Bibliography
+
+Typst comes with its [own citation processing system for Bibliography](https://typst.app/docs/reference/meta/bibliography/) and using `format: typst` defaults to it. If you prefer to use Pandoc's citation processing with a `.csl` file (e.g to use same `.csl` for a HTML and PDF document), set `citeproc: true` explicitly in YAML header.
+
+``` yaml
+---
+title: Typst doc using citeproc
+format: typst
+citeproc: true
+bibliography: refs.bib
+csl: https://www.zotero.org/styles/apa-with-abstract
+---
+```
+
+## Typst Blocks
+
+If you want to change the appearance of blocks using native Typst `#block()` calls, you can add the `.block` class to a Div and provide whatever arguments are appropriate. For example:
+
+```` markdown
+::: {.block fill="luma(230)" inset="8pt" radius="4pt"}
+
+This is a block with gray background and slightly rounded corners.
+
+:::
+````
+
+This gets compiled to
+
+```` default
+#block(fill:luma(230), inset=8pt, radius=4pt, 
+[This is a block with gray background and slightly rounded corners])
+````
 
 ## Raw Blocks
 
@@ -87,19 +122,6 @@ In the case of glaciers, fluid dynamics principles can be used to understand how
 
 To learn more about `typst` markup, see the tutorial here: <https://typst.app/docs/tutorial/>.
 
-## Bibliography
-
-Typst comes with its [own citation processing system for Bibliography](https://typst.app/docs/reference/meta/bibliography/) and using `format: typst` defaults to it. If you prefer to use Pandoc's citation processing with a `.csl` file (e.g to use same `.csl` for a HTML and PDF document), set `citeproc: true` explicitly in YAML header.
-
-``` yaml
----
-title: Typst doc using citeproc
-format: typst
-citeproc: true
-bibliography: refs.bib
-csl: https://www.zotero.org/styles/apa-with-abstract
----
-```
 
 ## Typst File (`.typ`)
 
@@ -120,17 +142,33 @@ You can compile a `.typ` file to PDF directly using the `quarto typst compile` c
 $ quarto typst compile article.typ
 ```
 
-The `quarto typst` command uses the version of Typst built in to Quarto and support all Typst CLI actions and flags. For example, to determine the version fo Typst embedeed in Quarto:
+The `quarto typst` command uses the version of Typst built in to Quarto and support all Typst CLI actions and flags. For example, to determine the version of Typst embedeed in Quarto:
 
 ``` {.bash filename="Terminal"}
 $ quarto typst --version
 ```
 
+## Fonts support
+
+The main font used for the document can be specified with `mainfont` YAML configuration. Typst will search by default into installed system fonts. You can set additional paths to search into using `font-paths`. For example, 
+
+``` yaml
+---
+title: "My Document"
+format: 
+  typst:
+      mainfont: "Agbalumo"
+      font-paths: myfonts
+---
+```
+
+This will search for `Agbalumo` font also in a local `./myfonts/` directory, for a `*.ttf` or `*.otf` file matching the font name.
+
+`TYPST_FONT_PATHS` environment variable is also taken into account for compatibility with Typst configuration, but setting `font-paths` will take precedence over any path set in `TYPST_FONT_PATHS` environment variable.
+
 ## Known Limitations
 
--   Cross references are supported for figures, sections, and equations (but not subfigures, tables ,or theorems as these aren't yet supported in `typst`)
 -   Callouts are not yet supported (they become block quotes with a bold heading)
--   Figure panels/layout are not currently supported.
 -   Advanced page layout (panel layout, margin layout, etc.) does not work
 -   Various other small things might not yet be implemented, please let us know if you see things that could use improvement!
 
@@ -140,6 +178,7 @@ You can create highly customized output with Typst by defining a new format base
 
 | Format                                                                         | Usage                                                      |
 |--------------------------|----------------------------------------------|
+| [Poster](https://github.com/quarto-ext/typst-templates/tree/main/poster)       | `quarto use template quarto-ext/typst-templates/poster`    |
 | [IEEE](https://github.com/quarto-ext/typst-templates/tree/main/ieee)           | `quarto use template quarto-ext/typst-templates/ieee`      |
 | [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams)             | `quarto use template quarto-ext/typst-templates/ams`       |
 | [Letter](https://github.com/quarto-ext/typst-templates/tree/main/letter)       | `quarto use template quarto-ext/typst-templates/letter`    |

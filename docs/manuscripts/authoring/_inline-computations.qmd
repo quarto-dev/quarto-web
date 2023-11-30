@@ -1,0 +1,249 @@
+::: {.content-visible unless-meta="tool.is_rstudio"}
+::: callout-tip
+## Python Examples
+
+This section uses Python code examples, but Quarto also supports R, Julia and Observable.
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+You don't need to rerun the Python code to follow along, but if you would like to, you'll need the `matplotlib` and `numpy` packages.
+:::
+:::
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+::: callout-tip
+## R Examples
+
+This section uses R code examples, but Quarto also supports Python, Julia and Observable.
+:::
+:::
+
+Your article can include executable code. By default, code itself will not display in the article, but any output including tables and figures will. When you include code in your article, you'll also get an additional link to the "Article Notebook" under Notebooks on the manuscript webpage. This is a rendered version of your article notebook that includes the code.
+
+For example, `{{< meta tool.article-file >}}`, includes:
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+``` python
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+``` r
+eruptions <- c(1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021)
+n_eruptions <- length(eruptions)
+```
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+```{{python}}
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+:::
+
+This code doesn't appear in the rendered article, but does in the "Article Notebook".
+
+::: {.content-visible unless-meta="tool.is_rstudio"}
+::: {layout-ncol=2}
+![Rendered Article](images/code-webpage.png){.border fig-alt="Screenshot of the rendered article with a section starting with 'Let x denote'. No code is visible."}
+
+![Article Notebook](images/code-article-notebook.png){.border fig-alt="Screenshot of the Article Notebook with a section starting with 'Let x denote'. Code is visible in two cells. The first cell starts 'import matplotlib'"}
+:::
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+::: {layout-ncol=2}
+![Rendered Article](images/code-webpage.png){.border fig-alt="Screenshot of the rendered article with a section starting with 'Let x denote'. No code is visible."}
+
+![Article Notebook](images/code-article-notebook-r.png){.border fig-alt="Screenshot of the Article Notebook with a section starting with 'Let x denote'. Code is visible in two blocks. The first block starts 'eruptions <-'"}
+:::
+:::
+
+You can add Quarto options to code cells by adding a `#|` comment to the top, followed by the option in YAML syntax. For example, adding the `echo` option with the value `true` would look like this:
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+``` python
+#| echo: true
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+```{{r}}
+#| echo: true
+eruptions <- c(1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021)
+n_eruptions <- length(eruptions)
+```
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+```{{python}}
+#| echo: true
+import matplotlib.pyplot as plt
+import numpy as np
+eruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]
+```
+:::
+
+The `echo` option describes whether the code is included in the rendered article. If you make this change and save `{{< meta tool.article-file >}}`, you'll see this code now appears in the article.
+
+::: {.content-visible unless-meta="tool.is_rstudio"}
+You can find a list of all the code cell options available on the [Jupyter Code Cell](/docs/reference/cells/cells-jupyter.html) reference page.
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+You can find a list of all the code cell options available on the [Knitr Code Cell](/docs/reference/cells/cells-knitr.html) reference page.
+:::
+
+The next code cell creates a figure:
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+``` python
+#| label: fig-timeline
+#| fig-cap: Timeline of recent earthquakes on La Palma
+#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.
+
+plt.figure(figsize=(6, 1))
+plt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.ylabel('')
+plt.show()
+```
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+```{{r}}
+#| label: fig-timeline
+#| fig-cap: Timeline of recent earthquakes on La Palma
+#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.
+#| fig-height: 1.5
+#| fig-width: 6
+par(mar = c(3, 1, 1, 1) + 0.1)
+plot(
+  eruptions, rep(0, n_eruptions), 
+  pch = "|", axes = FALSE
+)
+axis(1)
+box()
+```
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+```{{python}}
+#| label: fig-timeline
+#| fig-cap: Timeline of recent earthquakes on La Palma
+#| fig-alt: An event plot of the years of the last 8 eruptions on La Palma.
+
+plt.figure(figsize=(6, 1))
+plt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')
+plt.gca().axes.get_yaxis().set_visible(False)
+plt.ylabel('')
+plt.show()
+```
+:::
+
+The `label` option is used to add an identifier to code cell and its output, for example to allow cross referencing. The prefix `fig-` is required for figure cross references, but the suffix, in this case `timeline`, is up to you. You'll learn more about [Cross References](#cross-ref) below. 
+
+The option `fig-cap` provides the caption text displayed below the figure in the manuscript, and  `fig-alt` provides alt text for the figure, helping your manuscript webpage to meet accessibility guidelines. 
+
+Computations are also a good way to include tables based on data. You can read more about doing this in the Quarto documentation on [Tables from Computations](/docs/authoring/tables.html#computations).
+
+If you have code output you don't want to include in your article you can use `output: false`. For example, you may have a value that is helpful for writing your content, but you don't want it to appear in the article itself. The next code cell is an example:
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+``` python
+#| output: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+```{{r}}
+#| output: false
+avg_years_between_eruptions <- mean(diff(eruptions[-n_eruptions]))
+avg_years_between_eruptions
+```
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+```{{python}}
+#| output: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+:::
+
+If you are viewing the rendered "Article Notebook", you'll see the value of `avg_years_between_eruptions` displayed below this code, but the value does not appear in the rendered article.
+
+If you'd like to exclude a cell and its output from both the article and the rendered notebook, you could use `include: false` instead:
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+``` python
+#| include: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+```{{r}}
+#| include: false
+avg_years_between_eruptions <- mean(diff(eruptions[-n_eruptions]))
+avg_years_between_eruptions
+```
+:::
+
+::: {.content-visible when-meta="tool.is_vscode"}
+```{{python}}
+#| include: false
+avg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))
+avg_years_between_eruptions
+```
+:::
+
+::: {.content-visible unless-meta="tool.is_rstudio"}
+You can also use computed values directly in your article text by using the `Markdown()` function from the IPython display module. Read more in [Inline Code](/docs/computations/execution-options.html#inline-code).
+:::
+
+::: {.content-visible when-meta="tool.is_rstudio"}
+You can use computed values directly in your article text using the syntax `` `r expr` ``. For example, consider this line in `index.qmd`:
+
+``` markdown
+Based on data up to and including 1971, eruptions on La Palma happen every `r round(avg_years_between_eruptions, 1)` years on average.
+```
+
+When rendered, it displays as:
+
+> Based on data up to and including 1971, eruptions on La Palma happen every 79.8 years on average.
+
+You can read more about using code inline at [Inline Code](/docs/computations/execution-options.html#inline-code).
+:::
+
+Rather than including computations directly in your article you can also embed outputs from other notebooks, read more below in [Embedding Notebooks](#embed).
+
+### When is code executed?
+
+::: {.content-visible when-meta="tool.is_jupyterlab"}
+
+By default, Quarto doesn't execute any code in `.ipynb` notebooks.
+If you need to update cell outputs, run the appropriate cells, and save the notebook. 
+
+:::
+
+::: {.content-visible unless-meta="tool.is_jupyterlab"}
+
+By default, Quarto will execute code in a `.qmd` notebook during the rendering process. This means, as you edit `index.qmd` you may notice messages that indicate code is being run.
+
+This manuscript template uses Quarto's freeze feature, which allows us to avoid having to set up a computational environment on GitHub during the publishing process. Freeze saves the rendered versions of notebooks so that they are not re-rendered, and consequently, the code is not re-evaluated unless their source changes.
+
+You may not have noticed, but the first time you rendered the manuscript no code was evaluated. This was because the template repo included the `_freeze/` folder, and the contents of `index.qmd` had not changed since the freeze was generated. As you change `index.qmd`, code will be re-evaluated, and the contents of `_freeze/` will be updated. Remember when you come to publish, you'll need to commit the changes in `_freeze/` as well.
+
+:::
+

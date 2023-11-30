@@ -17,13 +17,17 @@ listing: default
 ---
 ```
 
-Will result in a listing of all documents in the directory (with the exception of the current document). It might look something like this:
+will result in a listing of all documents in the directory (with the exception of the current document). It might look something like this:
 
 ![](images/listing-example.png){.border fig-alt="Screenshot of Listing Example page. There is a navbar at the top with the site name on the left, and a collapsed menu icon on the right. The header (Listing example). Below on the left there is a sortable dropdown for the order in which the items are displayed. On the right, across, is a search input box. The items are listed full-width rows that display the item’s metadata (author and date), title, description, and image."}
 
 ## Listing Contents
 
-You can control what documents are included in the listing by using the `contents` option, which allows you to provide a set of input files (or globs of input files) that should be included in the listing. For each of the inputs that matches the `contents` of a listing, an item will be included using the metadata in the front matter of the document. Please note: to have an item in the list, it must contains at least the "title" metadata.
+You can control what documents are included in the listing by using the `contents` option, which allows you to provide a set of input files (or globs of input files) that should be included in the listing. For each of the inputs that matches the `contents` of a listing, an item will be included using the metadata in the front matter of the document. 
+
+::: {.callout-note}
+To have an item in the list, it must contains at least the "title" metadata.
+:::
 
 For example to include all the Quarto documents in the `posts` directory, you would write:
 
@@ -58,7 +62,7 @@ In addition to specifying lists of files or globs, contents can contain lists of
 
 ## Listing Types
 
-There are three built in types of listings that you can choose from. Use the `type` option to choose the appearance of the listing:
+There are three built-in types of listings that you can choose from. Use the `type` option to choose the appearance of the listing:
 
 ``` yaml
 ---
@@ -110,7 +114,7 @@ listing:
   sort: "date"
 ```
 
-Each `sort` key in can include a field name and optionally either `asc` or `desc` to control whether to sort in ascending or descending order. When only the name is specified, sorting by that field will be in ascending order.
+Each `sort` key can include a field name and optionally either `asc` or `desc` to control whether to sort in ascending or descending order. When only the name is specified, sorting by that field will be in ascending order.
 
 The sort key can also contain one or more fields to sort by. For example:
 
@@ -122,9 +126,9 @@ listing:
     - "title desc"
 ```
 
-This will sort the documents in the post directory first by their date in ascending order, then by their title in descending order.
+This will sort the documents in the `posts` directory first by their date in ascending order, then by their title in descending order.
 
-If you'd like to disable sorting entirely and display the items in the order in which they are specified, you can pass `sort: false` which will disable sorting and preserve the item's original order.
+If you'd like to disable sorting entirely and display the items in the order in which they are specified, you can pass `sort: false` (which will disable sorting and preserve the item's original order).
 
 ## Listing Options
 
@@ -139,7 +143,7 @@ It is possible to customize the appearance of listings using the following optio
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image-align`       | Whether to place the image on the right or left side of the post content. Defaults to `right`.                                                          |
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `image-height`      | The height of the image being displayed. The width is automatically determined and the image will fill the rectangle without scaling (cropped to fill). |
+| `image-height`      | The height of the image being displayed. The width is automatically determined and the image will fill the rectangle without scaling (i.e. cropped to fill). |
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image-placeholder` | The default image for items if they have no image.                                                                                                      |
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -151,7 +155,7 @@ It is possible to customize the appearance of listings using the following optio
 +=====================+=========================================================================================================================================================+
 | `max-items`         | The maximum number of items to include in this listing.                                                                                                 |
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `image-height`      | The height of the image being displayed. The width is automatically determined and the image will fill the rectangle without scaling (cropped to fill). |
+| `image-height`      | The height of the image being displayed. The width is automatically determined and the image will fill the rectangle without scaling (i.e. cropped to fill). |
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image-placeholder` | The default image for items if they have no image.                                                                                                      |
 +---------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -169,7 +173,7 @@ It is possible to customize the appearance of listings using the following optio
 +=====================+=====================================================================================================================================================+
 | `max-items`         | The maximum number of items to include in this listing.                                                                                             |
 +---------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-| `image-height`      | The height of the image being displayed. The width is automatically select and the image will fill the rectangle without scaling (cropped to fill). |
+| `image-height`      | The height of the image being displayed. The width is automatically select and the image will fill the rectangle without scaling (i.e. cropped to fill). |
 +---------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image-placeholder` | The default image for items if they have no image.                                                                                                  |
 +---------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -197,7 +201,7 @@ It is possible to customize the appearance of listings using the following optio
 +--------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `date-format`            | The date format to use when displaying dates (e.g. `d-M-yyyy`).                                                                                                                                                                  |
 |                          |                                                                                                                                                                                                                                  |
-|                          | You may either provide a date style (`full`, `long`, `medium`, or `short`) or a format string for formatting the date. The behavior of date styles varies depending upon locale, but examples in the `en` locale are as follows: |
+|                          | You may either provide a date style (`full`, `long`, `medium`, `short` or `iso`) or a format string for formatting the date. The behavior of date styles varies depending upon locale, but examples in the `en` locale are as follows: |
 |                          |                                                                                                                                                                                                                                  |
 |                          | full                                                                                                                                                                                                                             |
 |                          |                                                                                                                                                                                                                                  |
@@ -215,10 +219,14 @@ It is possible to customize the appearance of listings using the following optio
 |                          |                                                                                                                                                                                                                                  |
 |                          | :   2/5/22                                                                                                                                                                                                                       |
 |                          |                                                                                                                                                                                                                                  |
+|                          | iso                                                                                                                                                                                                                              |
+|                          |                                                                                                                                                                                                                                  |
+|                          | :   2022-05-22                                                                                                                                                                                                                   |
+|                          |                                                                                                                                                                                                                                  |
 |                          | Learn more about supported date formatting values [here](/docs/reference/dates.qmd).                                                                                                                                             |
 +--------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-In addition to the above listing wide options, each listing type has a variety of options to customize its appearance.
+In addition to the above listing-wide options, each listing type has a variety of options to customize its appearance.
 
 ## Categories
 
@@ -261,7 +269,7 @@ listing:
   feed: true
 ```
 
-When a feed is enabled for a listing on a page, an RSS file will automatically be generated using the name of the the file. For example, `index.qmd` will produce a feed at `index.xml`. A link to the feed will be included in the `head` of the page as well.
+When a feed is enabled for a listing on a page, an RSS file will be automatically generated using the name of the the file. For example, `index.qmd` will produce a feed at `index.xml`. A link to the feed will be included in the `head` of the page as well.
 
 Generating feeds requires that the `site-url` be set for the site in your `_quarto.yml` file. For example:
 
@@ -351,19 +359,19 @@ listing:
 
 which produces:
 
-![Table with custom list of fields](images/list-fields-list.png){fig-alt="Table with small image thumbnail for each item and custom list of fields: Date, Title, Author, and Reading Time."}
+![](images/list-fields-list.png){fig-alt="Table with small image thumbnail for each item and custom list of fields: Date, Title, Author, and Reading Time."}
 
 Each type of listing will handle the fields in different ways.
+
+Default
+
+:   For default type listings, the various fields will be placed logically, with the `image` in the right column, the `title`, `subtitle`, and `description` in the center column, and any other fields in the left column.
+
+    ![](images/default-fields.png){.border .column-page-right fig-alt="Default listings layout with the image in the right column, the title, subtitle, and description in the center column, and author, date, reading time, file, and file modified fields in the left column."}
 
 Tables
 
 :   For table type listings, the list of fields will be displayed as columns in the order that the fields appear in the list.
-
-Default
-
-:   For default type listings, the various fields will be placed logically, with the image in the right column, the title, subtitle, and description in the center column, and any other fields in the left column.
-
-    ![](images/default-fields.png){.border .column-page-right fig-alt="Default listings layout with the image in the right column, the title, subtitle, and description in the center column, and author, date, reading time, file, and file modified fields in the left column."}
 
 Grid
 
@@ -394,10 +402,6 @@ listing:
 ```
 
 When including or excluding items based upon a string field value, Quarto will use glob syntax when comparing values. Any other type of comparison will be done by testing for equality.
-
-
-
-
 
 ## User Tools
 
@@ -507,7 +511,7 @@ listing:
 
 ## YAML Listing Content
 
-In addition to populating a listing with inputs that match one more globs, you can also provide items explicitly via a YAML file. For example, the following listing:
+In addition to populating a listing with inputs that match one or more globs, you can also provide items explicitly via a YAML file. For example, the following listing:
 
 ``` yaml
 ---
@@ -528,8 +532,8 @@ will include all the documents in the `posts` directory, but will also merge in 
 - title: "Archived Item 1"
   author: Norah Jones
   date: 2020-01-01
-  href: "archived/archived-item-.html"
+  path: "archived/archived-item-.html"
   categories: [archived, technology]
 ```
 
-This is useful for cases such as migrating existing content to Quarto- you can begin creating new content as Quarto documents, but still include existing content in your listings by providing their metadata via a yaml file.
+This is useful for cases such as migrating existing content to Quarto - you can begin creating new content as Quarto documents, but still include existing content in your listings by providing their metadata via a yaml file.
