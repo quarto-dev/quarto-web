@@ -65,28 +65,26 @@ The tools for publishing code differ depending on whether you are using the Knit
 
 ### Knitr (R)
 
-The [quarto](https://rstudio.github.io/rsconnect/) R package includes a set of publishing functions that you can use for publishing Quarto projects with R code to Posit Cloud. For example, here we publish a document and a website:
+The [quarto](https://rstudio.github.io/rsconnect/) R package includes a set of publishing functions that you can use for publishing Quarto projects with R code to Posit Cloud. 
+
+Your credentials can be found in Posit Cloud under Account > Tokens. To add your credentials, use:
+```r
+library(rsconnect)
+
+rsconnect::setAccountInfo(
+  name = 'abcde-nora-jones',
+  token = 'F69A5954CC09A97B7D74C73C6C7384EB',
+  secret = 'lcVIQGISmcSxG5VJhuRXNWHrWs7wLwaoubm8AcC7',
+  server = 'posit.cloud'
+)
+```
+
+Once your credentials have been added, you can publish your project. Here we publish a document and a website:
 
 ``` r
 library(rsconnect)
 
-deployDoc(
-  "document.qmd", 
-  server = "posit.cloud", 
-  account = "njones"
-)
-
-deployApp(
-  "./my-site",
-  server = "rsc.example.com", 
-  account = "njones",
-  render = "server"
-)
-```
-
-Note that once you've published for the first time you can update without providing the explicit arguments:
-
-``` r
+deployDoc("document.qmd")
 deployApp("./my-site")
 ```
 
