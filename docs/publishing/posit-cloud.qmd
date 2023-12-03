@@ -1,0 +1,332 @@
+---
+title: "Posit Cloud"
+editor: visual
+heading-pad: '#'
+---
+
+{{< include /docs/prerelease/1.4/_pre-release-feature.qmd >}}
+
+## Overview
+
+On [Posit Cloud](https://posit.cloud), you can create data projects and publish results from your web browser. Use Posit Cloud when you want to organize all your static documents and interactive applications in one place.
+
+There are several ways to publish Quarto content to Posit Cloud:
+
+1.  Use the `quarto publish` command to publish static content rendered on your local machine.
+
+2.  Use the [rsconnect-python](https://docs.posit.co/rsconnect-python/) Python package or [rsconnect](https://rstudio.github.io/rsconnect/) R package to publish code for rendering on Posit Cloud.
+
+3.  Use a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions), to render and publish to Posit Cloud.
+
+Each of these options is covered in detail below. If you are just getting started, we strongly recommend using the first approach (`quarto publish`). Then, as your needs evolve, you can consider other more sophisticated options.
+
+## Publish Command
+
+The `quarto publish` command is the easiest way to publish locally rendered content. From the directory where your project is located, execute the `quarto publish` command for Posit Cloud:
+
+```{.bash filename="Terminal"}
+quarto publish posit-cloud
+```
+
+If you haven't previously published to Posit Cloud you'll be prompted to enter your token and token secret (available under Account > Tokens):
+
+```{.bash filename="Terminal"}
+$ quarto publish posit-cloud
+ ? Token: › F69A5954CC09A97B7D74C73C6C7384EB
+ ? Token secret: › ****************************************
+```
+
+After authenticating, your content will be rendered and published, and then a browser will open to view its page on Posit Cloud.
+
+A record of your previous publishes will be stored in a `_publish.yml` file within the project or document directory. This file stores the service, id, and URL of the published content. For example:
+
+``` yaml
+- source: project
+  posit-cloud:
+    - id: "1234"
+      url: "https://posit.cloud/content/1234"
+```
+
+Account information is not stored in this file, so it is suitable for checking in to version control and being shared by multiple publishers.
+
+You can customize this behavior of `quarto publish` by providing the following command line options:
+
+{{< include _cli-options.md >}}
+
+To publish a document rather than a website or book, provide the path to the document:
+
+```{.bash filename="Terminal"}
+quarto publish posit-cloud document.qmd
+```
+
+## Publishing with Code
+
+In the preceding example, we rendered content locally and then published it to Posit Cloud. In some cases, however, you may want to publish your source code to Posit Cloud and then have it rendered on the server.
+
+The tools for publishing code differ depending on whether you are using the Knitr (R) or Jupyter (Python) engine, so we'll cover them separately below.
+
+### Knitr (R)
+
+The [rsconnect](https://rstudio.github.io/rsconnect/) R package includes a set of publishing functions that you can use for publishing Quarto projects with R code to Posit Cloud. 
+
+Your credentials can be found in Posit Cloud under Account > Tokens. To add your credentials, use:
+```r
+library(rsconnect)
+
+setAccountInfo(
+  name = 'abcde-nora-jones',
+  token = 'F69A5954CC09A97B7D74C73C6C7384EB',
+  secret = 'lcVIQGISmcSxG5VJhuRXNWHrWs7wLwaoubm8AcC7',
+  server = 'posit.cloud'
+)
+```
+
+Once your credentials have been added, you can publish your project. Here we publish a document and a website:
+
+``` r
+library(rsconnect)
+
+deployDoc("document.qmd")
+deployApp("./my-site")
+```
+
+#### RStudio IDE
+
+If you are using the RStudio IDE, there is also support for push-button publishing to Posit Cloud. Use the publish button <kbd>![](images/publish-button.png){width="23" height="20"}</kbd> from the source editor or viewer pane to publish a document or a website.
+
+See the Posit Cloud documentation on [Publishing](https://posit.cloud/learn/guide#publish) for additional details.
+
+### Jupyter (Python)
+
+The [rsconnect-python](https://docs.posit.co/rsconnect-python/) Python package provides a command line interface (CLI) that you can use to publish Quarto documents and websites that use Jupyter to Posit Cloud. To use the CLI:
+
+1.  First, install the rsconnect-python package and configure an Posit Cloud credential for publishing (values available under Account > Tokens):
+
+    ```{.bash filename="Terminal"}
+    rsconnect add \
+              --account 'abcde-nora-jones' \
+              --name 'posit.cloud' \
+              --token 'F69A5954CC09A97B7D74C73C6C7384EB' \
+              --secret 'lcVIQGISmcSxG5VJhuRXNWHrWs7wLwaoubm8AcC7' \
+              --server 'posit.cloud'
+    ```
+
+2.  Then, use the `rsconnect deploy quarto` command from your project directory:
+
+    ```{.bash filename="Terminal"}
+    rsconnect deploy quarto
+    ```
+
+See the complete documentation on [Publishing Quarto Content](https://docs.posit.co/connect/user/publishing-cli-quarto/) for additional details on using the CLI for publishing.
+
+## Continuous Integration
+
+You can also deploy Quarto content using a Continuous Integration (CI) service like [Jenkins](https://www.jenkins.io/), [Airflow](https://airflow.apache.org/), or [GitHub Actions](https://docs.github.com/en/actions). In most cases, this will entail scripting the `quarto publish` command, however in the case of GitHub Actions, you can take advantage of the standard Quarto [publish action](https://github.com/quarto-dev/quarto-actions/tree/main/publish).
+
+When publishing to Posit Cloud from a CI service you'll need to consider whether you want to execute your Python or R code directly on the CI server or whether you want to take advantage of previously [frozen](.../projects/code-execution.html#freeze) execution results. We'll explore this possibility first and then proceed to the specifics of how to publish from CI.
+
+### Freezing Computations
+
+Depending on how complicated your run-time requirements (packages, database credentials, etc.) are, you might find it more convenient to restrict execution of Python and R code to local contexts that have the required software and credentials.
+
+{{< include _freeze-basics.md >}}
+
+If you'd rather have CI publishing execute all Python and R code contained in your project, you'll need to ensure that the requisite version of these tools (and any required packages) are installed on the CI server. How to do this is outside the scope of this article---to learn more about saving and restoring dependencies, see the article on [Virtual Environments](../projects/virtual-environments.qmd).
+
+### Publish Command
+
+You can publish Quarto content to Posit Cloud using any CI service by scripting the `quarto publish` command. To do this, you'll need to make sure that your credentials are available as environment variables on the CI server.
+
+| Variable             | Description                           |
+|----------------------|---------------------------------------|
+| `POSIT_CLOUD_TOKEN`  | A user's authentication token.        |
+| `POSIT_CLOUD_SECRET` | The secret associated with the token. |
+
+You will furthermore need to specify the ID of the target content to update. This will most frequently be drawn from the `_publish.yml` file that is saved into your project directory during publishing. For example:
+
+```{.yaml filename="_publish.yml"}
+- source: project
+  posit-cloud:
+    - id: 1234
+      url: 'https://posit.cloud/content/1234/'
+```
+
+Assuming that you have a `_publish.yml` like the above, you can publish to Posit Cloud from CI with the following commands:
+
+```{.bash filename="Terminal"}
+export POSIT_CLOUD_TOKEN=F69A5954CC09A97B7D74C73C6C7384EB
+export POSIT_CLOUD_SECRET=lcVIQGISmcSxG5VJhuRXNWHrWs7wLwaoubm8AcC7
+quarto publish posit-cloud
+```
+
+Alternatively, if you don't have a `_publish.yml` file, you can specify the ID on the command line as follows:
+
+```{.bash filename="Terminal"}
+quarto publish posit-cloud --id 1234
+```
+
+### GitHub Actions
+
+If your CI service is [GitHub Actions](https://docs.github.com/en/actions) then you can take advantage of Quarto's standard [publish action](https://github.com/quarto-dev/quarto-actions/tree/main/publish) to automate deploying to Posit Cloud.
+
+#### User Credentials
+
+Before creating the publish action, you need to ensure that your repository has the credentials required for publishing to Posit Cloud. You can do this as follows:
+
+1.  If you don't already have one, create a token and token secret in Posit Cloud (under Account > Tokens).
+
+2.  Add the token secret to your repository's action **Secrets** (accessible within repository **Settings**). Under **Repository Secrets**, you'll see a **New repository secret** button:
+
+    ![](images/gh-new-repository-secret.png){.border fig-alt="Screenshot of a GitHub repository's Secrets and Variables page for Actions."}
+
+    Click the button and add the API Key from step 1 as a secret named `POSIT_CLOUD_SECRET`:
+
+    ![](images/gh-action-posit-cloud-secret.png){.border fig-alt="Screenshot of a GitHub repository's page for adding a new Actions secret."}
+
+#### Publish Action
+
+To setup your publish action, create a `.github/workflows/publish.yml` file in your repository. If you are [Freezing Computations] (i.e. not running Python or R code within your action), then the file would look something like this:
+
+```{.yaml filename=".github/workflows/publish.yml"}
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: posit-cloud
+          POSIT_CLOUD_TOKEN: F69A5954CC09A97B7D74C73C6C7384EB
+          POSIT_CLOUD_SECRET: ${{ secrets.POSIT_CLOUD_SECRET }}
+```
+
+Once you've pushed your updated repository (including the publish action and `_freeze` directory) to GitHub, your action will run with this and subsequent commits, automatically rendering and publishing to Posit Cloud.
+
+#### Executing Code
+
+If you prefer, you can also configure GitHub Actions to execute Python or R code as part of rendering. While this might reflexively seem like the best approach, consider the following requirements imposed when you execute code within a CI service like GitHub Actions:
+
+{{< include _ci-execute-requirements.md >}}
+
+##### Prerequisites
+
+The best way to ensure that your code can be executed within a GitHub Action is to use a virtual environment like [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) or [renv](https://rstudio.github.io/renv/articles/renv.html) with your project (below we'll provide example actions for each). If you aren't familiar with using these tools check out the article on using [Virtual Environments](../projects/virtual-environments.qmd) with Quarto to learn more.
+
+Once you've decided to execute code within your GitHub Action you can remove the `freeze: auto` described above from your `_quarto.yml` configuration. Note that if you want to use `freeze` selectively for some documents or directories that is still possible (for a directory, create a `_metadata.yml` file in the directory and specify your freeze configuration there---this is what Quarto does by default for the `posts` folder of blog projects).
+
+##### Example: Jupyter with venv
+
+Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to Posit Cloud:
+
+```{.yaml filename=".github/workflows/publish.yml"}
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install Python and Dependencies
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - run: pip install jupyter
+      - run: pip install -r requirements.txt
+      
+      - name: Render and Publish 
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: posit-cloud
+          POSIT_CLOUD_TOKEN: F69A5954CC09A97B7D74C73C6C7384EB
+          POSIT_CLOUD_SECRET: ${{ secrets.POSIT_CLOUD_SECRET }}
+```
+
+##### Example: Knitr with renv
+
+Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to Posit Cloud:
+
+```{.yaml filename=".github/workflows/publish.yml"}
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+name: Quarto Publish
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3 
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
+      - name: Install R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.2.0'
+      
+      - name: Install R Dependencies 
+        uses: r-lib/actions/setup-renv@v2
+        with:
+          cache-version: 1
+      
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: posit-cloud
+          POSIT_CLOUD_TOKEN: F69A5954CC09A97B7D74C73C6C7384EB
+          POSIT_CLOUD_SECRET: ${{ secrets.POSIT_CLOUD_SECRET }}
+```
+
+#### Additional Options
+
+It's possible to have a Quarto project in a larger GitHub repository, where the Quarto project does not reside at the top-level directory. In this case, add a `path` input to the invocation of the `publish` action. For example:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: posit-cloud
+    path: subdirectory-to-use
+    POSIT_CLOUD_TOKEN: F69A5954CC09A97B7D74C73C6C7384EB
+    POSIT_CLOUD_SECRET: ${{ secrets.POSIT_CLOUD_SECRET }}
+```
+
+By default, `quarto publish` will re-render your project before publishing it. However, if you store the rendered output in version control, you don't need the GitHub action to re-render the project. In that case, add the option `render: false` to the `publish` action:
+
+``` yaml
+- name: Render and Publish
+  uses: quarto-dev/quarto-actions/publish@v2
+  with:
+    target: posit-cloud
+    render: false
+    POSIT_CLOUD_TOKEN: F69A5954CC09A97B7D74C73C6C7384EB
+    POSIT_CLOUD_SECRET: ${{ secrets.POSIT_CLOUD_SECRET }}
+```
