@@ -24,7 +24,7 @@ To try out the `typst` format:
     Hello, typst!
     ```
 
-Rendering or previewing this document will invoke the Typst CLI to create a PDF from your markdown source file. Note that Quarto includes version 0.8 of the Typst CLI so no separate installation of Typst is required.
+Rendering or previewing this document will invoke the Typst CLI to create a PDF from your markdown source file. Note that Quarto includes version 0.9 of the Typst CLI so no separate installation of Typst is required.
 
 ## Typst Format
 
@@ -90,7 +90,7 @@ csl: https://www.zotero.org/styles/apa-with-abstract
 
 ## Typst Blocks
 
-If you want to change the appearance of blocks using native Typst `#block()` calls, you can add the `.block` class to a Div and provide whatever arguments are appropriate. For example:
+If you want to change the appearance of blocks using native [Typst `#block()`](https://typst.app/docs/reference/layout/block/) calls, you can add the `.block` class to a Div and provide whatever arguments are appropriate. For example:
 
 ```` markdown
 ::: {.block fill="luma(230)" inset="8pt" radius="4pt"}
@@ -142,7 +142,7 @@ You can compile a `.typ` file to PDF directly using the `quarto typst compile` c
 $ quarto typst compile article.typ
 ```
 
-The `quarto typst` command uses the version of Typst built in to Quarto and support all Typst CLI actions and flags. For example, to determine the version of Typst embedeed in Quarto:
+The `quarto typst` command uses the version of Typst built in to Quarto and supports all Typst CLI actions and flags. For example, to determine the version of Typst embedded in Quarto:
 
 ``` {.bash filename="Terminal"}
 $ quarto typst --version
@@ -150,7 +150,7 @@ $ quarto typst --version
 
 ## Fonts support
 
-The main font used for the document can be specified with `mainfont` YAML configuration. Typst will search by default into installed system fonts. You can set additional paths to search into using `font-paths`. For example, 
+The main font used for the document can be specified with the `mainfont` YAML option. Typst will search by default in installed system fonts. You can set additional paths to search using `font-paths`. For example: 
 
 ``` yaml
 ---
@@ -162,14 +162,14 @@ format:
 ---
 ```
 
-This will search for `Agbalumo` font also in a local `./myfonts/` directory, for a `*.ttf` or `*.otf` file matching the font name.
+This will search for a `*.ttf` or `*.otf` file matching the font name in the `./myfonts/` directory, in addition to searching in installed system fonts.
 
-`TYPST_FONT_PATHS` environment variable is also taken into account for compatibility with Typst configuration, but setting `font-paths` will take precedence over any path set in `TYPST_FONT_PATHS` environment variable.
+The `TYPST_FONT_PATHS` environment variable is also taken into account for compatibility with Typst configuration, but setting `font-paths` will take precedence over any path set in the `TYPST_FONT_PATHS` environment variable.
 
 ## Known Limitations
 
--   Callouts are not yet supported (they become block quotes with a bold heading)
--   Advanced page layout (panel layout, margin layout, etc.) does not work
+-   Callouts are not yet supported (they become block quotes with a bold heading).
+-   Advanced page layout (panel layout, margin layout, etc.) does not work.
 -   Various other small things might not yet be implemented, please let us know if you see things that could use improvement!
 
 ## Custom Formats {#custom-formats}
@@ -189,6 +189,8 @@ You can create highly customized output with Typst by defining a new format base
 
 The source code for these formats is available at <https://github.com/quarto-ext/typst-templates>.
 
+### Create a Format
+
 To create a new custom Typst format (or package an existing Typst template for use with Quarto) use the `quarto create` command to get started:
 
 ``` {.bash filename="Terminal"}
@@ -196,8 +198,6 @@ $ quarto create extension format
 ```
 
 Then, choose `typst` as the base format and provide a name for the extension (e.g. `letter`). A sample Typst format extension will be created based on the code used in the default template that ships with Quarto. It will include the following files which you can edit to implement your custom format:
-
-To implement the custom format, edit the following files:
 
 | File                 | Description                                                                                                                                           |
 |-------------------------|-----------------------------------------------|
@@ -239,6 +239,6 @@ contributes:
 ---
 ```
 
-Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/typst/pandoc/quarto/template.typ) of the default template as a starting point for your `template.typ`. Note that you can call all of the template partials provided by Quarto (e.g. `biblio.typ()` or `notes.typ()` from within your custom template implementation.
+Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/typst/pandoc/quarto/template.typ) of the default template as a starting point for your `template.typ`. Note that you can call all of the template partials provided by Quarto (e.g. `biblio.typ()` or `notes.typ()`) from within your custom template implementation.
 
 The [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams) format provides an example of redefining the main template (in that case, it is to prevent automatic bibliography processing by Quarto in deference to the built-in handling of the Typst AMS template).
