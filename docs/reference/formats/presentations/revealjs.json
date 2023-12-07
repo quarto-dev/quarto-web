@@ -42,10 +42,6 @@
         "description": "One or more CSS style sheets."
       },
       {
-        "name": "section-divs",
-        "description": "Wrap sections in `<section>` tags and attach identifiers to the enclosing `<section>`\nrather than the heading itself.\n"
-      },
-      {
         "name": "identifier-prefix",
         "description": "Specify a prefix to be added to all identifiers and internal links in HTML and\nDocBook output, and to footnote numbers in Markdown and Haddock output. \nThis is useful for preventing duplicate identifiers when generating fragments\nto be included in other pages.\n"
       },
@@ -167,7 +163,7 @@
       },
       {
         "name": "output-location",
-        "description": "Location of output relative to the code that generated it. The possible values are as follows:\n\n- `default`: Normal flow of the slide after the code\n- `fragment`: In a fragment (not visible until you advance)\n- `slide`: On a new slide after the curent one\n- 'column': In an adjacent column \n- `column-fragment`:   In an adjacent column (not visible until you advance)\n\nNote that this option is supported only for the `revealjs` format.\n"
+        "description": "Location of output relative to the code that generated it. The possible values are as follows:\n\n- `default`: Normal flow of the slide after the code\n- `fragment`: In a fragment (not visible until you advance)\n- `slide`: On a new slide after the curent one\n- `column`: In an adjacent column \n- `column-fragment`:   In an adjacent column (not visible until you advance)\n\nNote that this option is supported only for the `revealjs` format.\n"
       }
     ]
   },
@@ -350,6 +346,10 @@
     "title": "Print to PDF",
     "options": [
       {
+        "name": "pdf-max-pages-per-slide",
+        "description": "\"Slides that are too tall to fit within a single page will expand onto multiple pages. You can limit how many pages a slide may expand to using this option\"\n"
+      },
+      {
         "name": "pdf-separate-fragments",
         "description": "Prints each fragment on a separate slide"
       },
@@ -419,7 +419,7 @@
       },
       {
         "name": "margin",
-        "description": "Factor of the display size that should remain empty around the content"
+        "description": "For `revealjs`, the factor of the display size that should remain empty around the content (e.g. 0.1).\n\nFor `typst`, a dictionary with the fields defined in the Typst documentation:\n`x`, `y`, `top`, `bottom`, `left`, `right` (margins are specified in `cm` units,\ne.g. `5cm`).\n"
       },
       {
         "name": "min-scale",
@@ -436,6 +436,10 @@
       {
         "name": "disable-layout",
         "description": "Disables the default reveal.js slide layout (scaling and centering)\n"
+      },
+      {
+        "name": "code-block-height",
+        "description": "Sets the maximum height for source code blocks that appear in the presentation.\n"
       }
     ]
   },
@@ -511,7 +515,7 @@
       },
       {
         "name": "code-link",
-        "description": "Enables hyper-linking of functions within code blocks \nto their online documentation.\n\nCode linking is currently implemented only for the knitr engine \n(via the [downlit](https://downlit.r-lib.org/) package).\n"
+        "description": "Enables hyper-linking of functions within code blocks \nto their online documentation.\n\nCode linking is currently implemented only for the knitr engine \n(via the [downlit](https://downlit.r-lib.org/) package). \nA limitation of downlit currently prevents code linking \nif `code-line-numbers` is also `true`.\n"
       },
       {
         "name": "code-annotations",
@@ -542,7 +546,7 @@
       },
       {
         "name": "echo",
-        "description": "Include cell source code in rendered output.\n\n- `true` (default): include source code in output\n- `false`: do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines\n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Include cell source code in rendered output.\n\n- `true` (default in most formats): include source code in output\n- `false` (default in presentation formats like `beamer`, `revealjs`, and `pptx`): do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines\n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
       },
       {
         "name": "output",
@@ -801,10 +805,6 @@
         "description": "Produce a standalone HTML file with no external dependencies, using\n`data:` URIs to incorporate the contents of linked scripts, stylesheets,\nimages, and videos. The resulting file should be \"self-contained,\" in the\nsense that it needs no external files and no net access to be displayed\nproperly by a browser. This option works only with HTML output formats,\nincluding `html4`, `html5`, `html+lhs`, `html5+lhs`, `s5`, `slidy`,\n`slideous`, `dzslides`, and `revealjs`. Scripts, images, and stylesheets at\nabsolute URLs will be downloaded; those at relative URLs will be sought\nrelative to the working directory (if the first source\nfile is local) or relative to the base URL (if the first source\nfile is remote).  Elements with the attribute\n`data-external=\"1\"` will be left alone; the documents they\nlink to will not be incorporated in the document.\nLimitation: resources that are loaded dynamically through\nJavaScript cannot be incorporated; as a result, some\nadvanced features (e.g.  zoom or speaker notes) may not work\nin an offline \"self-contained\" `reveal.js` slide show.\n"
       },
       {
-        "name": "self-contained",
-        "description": "Produce a standalone HTML file with no external dependencies. Note that\nthis option has been deprecated in favor of `embed-resources`.\n"
-      },
-      {
         "name": "self-contained-math",
         "description": "Embed math libraries (e.g. MathJax) within `self-contained` output.\nNote that math libraries are not embedded by default because they are \n quite large and often time consuming to download.\n"
       },
@@ -829,6 +829,10 @@
         "description": "Filters to pre-process ipynb files before rendering to markdown"
       },
       {
+        "name": "ipynb-shell-interactivity",
+        "description": "Specify which nodes should be run interactively (displaying output from expressions)\n"
+      },
+      {
         "name": "extract-media",
         "description": "Extract images and other media contained in or linked from the source document to the\npath DIR, creating it if necessary, and adjust the images references in the document\nso they point to the extracted files. Media are downloaded, read from the file\nsystem, or extracted from a binary container (e.g. docx), as needed. The original\nfile paths are used if they are relative paths not containing ... Otherwise filenames\nare constructed from the SHA1 hash of the contents.\n"
       },
@@ -847,6 +851,10 @@
       {
         "name": "dpi",
         "description": "Specify the default dpi (dots per inch) value for conversion from pixels to inch/\ncentimeters and vice versa. (Technically, the correct term would be ppi: pixels per\ninch.) The default is `96`. When images contain information about dpi internally, the\nencoded value is used instead of the default specified by this option.\n"
+      },
+      {
+        "name": "html-table-processing",
+        "description": "If `none`, do not process tables in HTML input."
       }
     ]
   },
@@ -869,7 +877,7 @@
     "title": "Library",
     "options": [
       {
-        "name": "reveal-js-url",
+        "name": "revealjs-url",
         "description": "Directory containing reveal.js files."
       }
     ]
