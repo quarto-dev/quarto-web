@@ -3,9 +3,8 @@ title: Custom Cross-Reference Types
 crossref:
   custom:
     - kind: float
-      name: Video
-      prefix: Video
-      ref-type: vid
+      reference-prefix: Video
+      key: vid
 ---
 
 {{< include /docs/prerelease/1.4/_pre-release-feature.qmd >}}
@@ -16,8 +15,8 @@ You can define custom cross-reference types using the `custom` key to the `cross
 
 -   `kind` which currently can only be `float`
 -   `ref-type` an abbreviation used in the reference identifier ("In `@fig-1`, ...")
--   `prefix` used for the reference in output ("In Figure 1, ...")
--   `name` used in front of the caption text ("Figure 1: ...")
+-   `reference-prefix` used for the reference in output ("In Figure 1, ...")
+-   `caption-prefix` used in front of the caption text ("Figure 1: ..."). If `caption-prefix` is unspecified, Quarto will use the value of `reference-prefix`.
 
 For example, the following YAML defines a new cross-reference type for videos:
 
@@ -25,9 +24,8 @@ For example, the following YAML defines a new cross-reference type for videos:
 crossref:
   custom:
     - kind: float
-      name: Video
-      prefix: Video
-      ref-type: vid
+      reference-prefix: Video
+      key: vid
 ```
 
 You can then use this new type with the [Cross-Reference Div Syntax](cross-references-divs.qmd) in a document:
@@ -62,30 +60,27 @@ If your output format is PDF you'll also need to specify `latex-env`, a name to 
 crossref:
   custom:
     - kind: float
-      name: Video
-      prefix: Video
-      ref-type: vid
+      reference-prefix: Video
+      key: vid
       latex-env: video
 ```
 
-You can add a listing of your custom cross-references to your document by including a raw LaTeX `\listof` command. The name of the command, is `listof` followed by the value of `latex-env` value, followed by an `s`. For example, for the custom video type above, where the `latex-env` was `video`, the command is `\listofvideos{}`:
+You can add a listing of your custom cross-references to your document by including a raw LaTeX `\listof` command. The name of the command is `listof` followed by the value of `latex-env` value, followed by an `s`. For example, for the custom video type above, where the `latex-env` was `video`, the command is `\listofvideos{}`:
 
 ``` yaml
 ---
 crossref:
   custom:
     - kind: float
-      name: Video
-      prefix: Video
-      ref-type: vid
-      latex-env: video
+      reference-prefix: Video
+      key: vid
 ---
 
 \listofvideos{}
 
 ```
 
-By default, the title of the listing is constructed from the `name` value. You can specify something else with the `latex-list-of-description` value.
+By default, the title of the listing is constructed from the `reference-prefix` value. You can specify something else with the `latex-list-of-description` value.
 
 ## Example: Supplemental Figures
 
@@ -101,12 +96,11 @@ You could define this supplemental figure type with the following:
 crossref:
   custom:
     - kind: float
-      ref-type: suppfig
+      key: suppfig
       latex-env: suppfig
-      prefix: Figure S
-      name: Figure S
+      reference-prefix: Figure S
       space-before-numbering: false
       latex-list-of-description: Supplementary Figure
 ```
 
-Note the use of `space-before-numbering: false`, which prevents a space between the `name` or `prefix` and the counter, so that labels will appear as "Figure S1", "Figure S2" etc.
+Note the use of `space-before-numbering: false`, which prevents a space between the `reference-prefix` or `caption-prefix` and the counter, so that labels will appear as "Figure S1", "Figure S2" etc.
