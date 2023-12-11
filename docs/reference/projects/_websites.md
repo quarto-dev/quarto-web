@@ -91,6 +91,7 @@ Action buttons that appear on the sidebar. For example:
 Search options are specified under the `search` key of `{{< meta project-type >}}`. For example:
 
 ``` yaml
+---
 {{< meta project-type >}}:
   search:
     location: navbar
