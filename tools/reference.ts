@@ -120,7 +120,7 @@ const cellOptions = Object.keys(cellGroups).map(group => {
 // document options
 const documentGroups = groups["document"];
 const documentOptions = Object.keys(documentGroups)
-  .filter(group => !["comments", "crossref"].includes(group))
+  .filter(group => !["comments"].includes(group))
   .map(group => {
 
     const title = documentGroups[group]["title"];
@@ -311,18 +311,37 @@ function findVal(object: any, key: string) {
 }
 
 // Metadata pages
-function writeMetadataTable(name: string, options: Array<Option>) {
+function writeMetadataTable(name: string, title: string, options: Array<Option>) {
   const path = `docs/reference/metadata/${name}.json`;
   const metadata = [{
-    "name": "citation",
-    "title": "Citation",
+    "name": name,
+    "title": title,
     "options": options
   }];
   Deno.writeTextFileSync(path, JSON.stringify(metadata, undefined, 2));
 }
 
 const citationOptions = readDefinitionsId("csl-item");
-writeMetadataTable("citation", citationOptions);
+writeMetadataTable("citation", "Citation", citationOptions);
+
+// Crossref Page
+const crossrefs = readSchema("document-crossref.yml");
+const crossrefOptions = crossrefs.find(value => value.name ==  "crossref")["schema"]["anyOf"][1]["object"]["properties"];
+const customCrossrefOptions = findVal(crossrefs, "custom")["arrayOf"]["object"]["properties"];
+
+const crossrefMetadata = [
+{
+  "name": "crossref",
+  "title": "Crossref",
+  "options": readProjectProperties(crossrefOptions)
+},
+{
+  "name": "crossref-custom",
+  "title": "Custom",
+  "description": "Use the `custom` option to `crossref` to define new types of cross reference. For example: \n\n```yaml\n---\ncrossref:\n  custom:\n    - key: vid\n      kind: float\n      reference-prefix: Video\n---\n```\n",
+  "options": readProjectProperties(customCrossrefOptions),
+}];
+Deno.writeTextFileSync(`docs/reference/metadata/crossref.json`, JSON.stringify(crossrefMetadata, undefined, 2));
 
 function writeProjectTable(name: string, options: Array<Option>) {
   const path = `docs/reference/projects/${name}.json`;
