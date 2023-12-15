@@ -11,8 +11,10 @@
 :::
 
 ::: {#download-section-news}
-### Release Notes
+
+### Release Notes {#download-release-notes}
 
 ::: {#download-news .download-news}
 :::
+
 :::
