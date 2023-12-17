@@ -383,6 +383,9 @@ const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
 
+const manuscriptOptions = readProjectObject("manuscript");
+writeProjectTable("manuscript", manuscriptOptions);
+
 const navitemOptions = readNavigationItem({
   "menu": "Submenu of [navigation items](#nav-items)"
 });
