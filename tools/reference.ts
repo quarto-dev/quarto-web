@@ -242,7 +242,7 @@ function readProjectObject(name: string, descriptions?: Record<string, string>) 
   const supers = obj["schema"]["object"]["super"];
   if (supers) {
     (supers as { resolveRef: string }[]).forEach((sup) => {
-      results.push(...readDefinitionsId(sup.resolveRef));
+      results.push(...readDefinitionsId(sup.resolveRef, descriptions));
     })
   }
 
@@ -383,7 +383,9 @@ const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
 
-const manuscriptOptions = readProjectObject("manuscript");
+const manuscriptOptions = readProjectObject("manuscript", {
+  "notebooks": "Options for notebooks included under the heading \"Notebooks\". See [Including Notebooks](/docs/manuscripts/components.html#including-notebooks) for more details."
+});
 writeProjectTable("manuscript", manuscriptOptions);
 
 const navitemOptions = readNavigationItem({
