@@ -233,6 +233,7 @@ function readProjectObject(name: string, descriptions?: Record<string, string>) 
   // deno-lint-ignore no-explicit-any
   const obj = project.find(value => value.name == name) as any;
 
+  console.log({name, descriptions});
   const results = [];
   const props = obj["schema"]["object"]["properties"];
   if (props) {
@@ -383,7 +384,7 @@ const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
 
-const manuscriptOptions = readProjectObject("manuscript", {
+const manuscriptOptions = readDefinitionsId("manuscript-schema", {
   "notebooks": "Options for notebooks included under the heading \"Notebooks\". See [Including Notebooks](/docs/manuscripts/components.html#including-notebooks) for more details."
 });
 writeProjectTable("manuscript", manuscriptOptions);
