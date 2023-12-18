@@ -233,7 +233,6 @@ function readProjectObject(name: string, descriptions?: Record<string, string>) 
   // deno-lint-ignore no-explicit-any
   const obj = project.find(value => value.name == name) as any;
 
-  console.log({name, descriptions});
   const results = [];
   const props = obj["schema"]["object"]["properties"];
   if (props) {
