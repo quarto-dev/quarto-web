@@ -75,6 +75,84 @@ bibliographystyle: chicago-author-date
 
 See the section below on [Custom Formats](#custom-formats) for details on creating your own specialized formats for use with Typst.
 
+## Page Layout
+
+You can control the size of the page (`papersize`), the page margins (`margin`), and the number of columns used for page content (`columns`). For example, the following YAML modifies all three options:
+
+```yaml
+---
+title: Page Layout
+format:
+  typst:
+    papersize: a5
+    margin:
+      x: 1cm
+      y: 1cm
+    columns: 2
+---
+```
+
+The resulting layout is shown below alongside an example of the default layout:
+
+:::{layout-ncol=2}
+
+![Customized Layout](images/typst-custom-page.png){.border fig-alt="Screenshot of one page of PDF document. The document shows a two columns of text. Compared to the previous screenshot, the page is narrower and longer, and the margins are smaller."}
+
+![Default Layout](images/typst-default-page.png){.border fig-alt="Screenshot of one page of PDF document. The document shows a single column of text."}
+
+:::
+
+You can read more about these page layout options in the sections below.
+
+### Paper Size
+
+The `papersize` option expects a string matching one of Typst's supported [paper sizes](https://typst.app/docs/reference/layout/page/#parameters-paper). The default template is equivalent to:
+
+```yaml
+papersize: us-letter
+```
+
+### Margins
+
+The `margin` option expects one or more of the suboptions: `x`, `y`, `top`, `bottom`, `left` and `right`. The default template uses margins equivalent to:
+
+```yaml
+margin:
+  x: 1.25in
+  y: 1.25in
+```
+
+This sets the margins in the horizontal direction (`x`), i.e. `left` and `right`, as well as the margins in the vertical direction (`y`), i.e. `top` and `bottom` to 1.25 inches.
+
+The values for the margins are specfied using Typst's [length](https://typst.app/docs/reference/layout/length/), (e.g. `5cm`) or  [relative length](https://typst.app/docs/reference/layout/relative/) (e.g. `10%`) types. If you specify a single margin:
+
+```yaml
+margin:
+  left: 1cm
+```
+
+The unspecified margins will will inherit from the default margins.
+
+### Columns
+
+The `columns` option expects a number - the number of columns your body content should have. The default template sets `columns` to `1`. 
+
+
+{{< include /docs/output-formats/_document-options-toc.md >}}
+
+{{< include /docs/output-formats/_document-options-section-numbering.md >}}
+
+You can also customize the display of the section numbers with the `section-numbering` YAML option. This option expects a string that describes the numbering schema. For example, the following schema describes numbering sections with numerals, subsection with uppercase letters, and subsubsections with lower case letters, using `.` as a separator:
+
+```yaml
+---
+section-numbering: 1.A.a
+---
+```
+
+You can read more about sepcifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
+
+{{< include /docs/output-formats/_code-annotation.md >}}
 
 ## Bibliography
 
@@ -109,7 +187,7 @@ This gets compiled to
 [This is a block with gray background and slightly rounded corners])
 ````
 
-## Raw Blocks
+## Raw Typst 
 
 If you want to use raw `typst` markup, use a raw `typst` block. For example:
 
@@ -150,7 +228,7 @@ The `quarto typst` command uses the version of Typst built in to Quarto and supp
 $ quarto typst --version
 ```
 
-## Fonts support
+## Fonts Support
 
 The main font used for the document can be specified with the `mainfont` YAML option. Typst will search by default in installed system fonts. You can set additional paths to search using `font-paths`. For example: 
 
