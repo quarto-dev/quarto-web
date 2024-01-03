@@ -9,7 +9,24 @@ aliases:
 
 ## Overview
 
-Quarto v1.4 includes support for the `typst` output format. [Typst](https://github.com/typst/typst) is a new open-source markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use. Typst creates beautiful PDF output with blazing fast render times.
+[Typst](https://github.com/typst/typst) is a new open-source markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use. Typst creates beautiful PDF output with blazing fast render times.
+
+Use the `typst` format to create a PDF document via Typst. For example:
+
+```{.yaml filename="hello-typst.qmd"}
+---
+title: "Hello Typst!"
+format:
+  typst:
+    toc: true
+    section-numbering: 1.1.a
+    columns: 2
+---
+```
+
+Rendering or previewing this document will invoke the Typst CLI to create `hello-typst.pdf`, a PDF file, from your markdown source file. Quarto includes the Typst CLI so no separate installation of Typst is required.
+
+The above example highlights a few of the options available for Typst output. This document covers these and other options in detail. See the Typst [format reference](/docs/reference/formats/typst.qmd) for a complete list of all available options.
 
 One of the highlights of Typst is the ease of creating highly customized templates. For example, here are some Typst templates that you can use in Quarto as custom formats:
 
@@ -34,75 +51,6 @@ Since Typst is under active development, there are still some limitations to Qua
 -   Advanced page layout (e.g. using the `.column` classes as explained in [Article Layout](https://quarto.org/docs/authoring/article-layout.html)) is not implemented.
 
 -   Various other small things might not yet be implemented. Please [let us know](https://github.com/quarto-dev/quarto-cli/issues/new/choose) if you see things that could use improvement!
-
-## Getting Started
-
-To try out the `typst` format:
-
-1.  Download and install the [latest pre-release](https://quarto.org/docs/download/prerelease) of Quarto 1.4 (ensure you have installed Quarto v1.4.145 or  higher).
-
-2.  Create a document that uses `format: typst`. For example:
-
-    ```{.yaml filename="hello-typst.qmd"}
-    ---
-    title: "My document"
-    format: typst
-    ---
-
-    Hello, typst!
-    ```
-
-Rendering or previewing this document will invoke the Typst CLI to create a PDF from your markdown source file. Note that Quarto includes the Typst CLI so no separate installation of Typst is required.
-
-## Typst Format
-
-When authoring a Typst document you'll be using a Quarto format that is in turn based on a Typst template, which defines its structure, layout, and available options. The default Typst format and template that ships with Quarto (`format: typst`) includes options for specifying title, author, and abstract information along with basic layout and appearance (numbering, margins, fonts, columns, etc.).
-
-The following options are available for customizing Typst output:
-
-| Option                | Description                                                                                                                                                                        |
-|---------------------------|---------------------------------------------|
-| `title`               | Main document title                                                                                                                                                                |
-| `author`              | One or more document authors.                                                                                                                                                      |
-| `date`                | Date of publication                                                                                                                                                                |
-| `abstract`            | Article abstract                                                                                                                                                                   |
-| `toc`                 | Include a table of contents.                                                                                                                                                       |
-| `toc-depth`           | Specify the number of section levels to include in the table of contents.                                                                                                          |
-| `toc-title`           | The title used for the table of contents.                                                                                                                                          |
-| `number-sections`     | Apply numbering to sections and sub-sections                                                                                                                                       |
-| `number-depth`        | The number of section levels that should receive numbering                                                                                                                                          |
-| `section-numbering`   | Schema to use for numbering sections, e.g. `1.1.a`.                                                                                                                                |
-| `margin`              | Margins: `x`, `y`, `top`, `bottom`, `left`, `right`. Specified with units (e.g. `y: 1.25in` or `x: 2cm`).                                                                          |
-| `papersize`           | Paper size: `a4`, `us-letter`, etc. See the docs on [paper sizes](https://typst.app/docs/reference/layout/page/#parameters–paper) for all available sizes.                         |
-| `columns`             | Number of columns for body text.                                                                                                                                                   |
-| `include-in-header`   | `.typ` file to include in header                                                                                                                                                   |
-| `include-before-body` | `.typ` file to include before body                                                                                                                                                 |
-| `include-after-body`  | `.typ` file to include after the body                                                                                                                                              |
-| `keep-typ`            | Keep the intermediate `.typ` file after render.                                                                                                                                    |
-| `bibliography`        | `.bib` file to use for citations processing                                                                                                                                        |
-| `bibliographystyle`   | Style to use with Typst's bibliography processing - See the doc about [bibliography](https://typst.app/docs/reference/meta/bibliography/#parameters–style) to see supported styles.|
-| `citeproc`            | If `true`, Pandoc's citeproc will be used for citation processing instead of Typst's own system (which is the default).                                                            |
-| `csl`                 | `.csl` file to use when Pandoc's citeproc is used.                                                                                                                                 |
-| `fontsize`            | Font size (e.g., `12pt`)                                                                                                                                                           |
-| `mainfont`            | Name of font to use for the main font, search among system fonts or `font-paths` if specified.                                                                                     |
-| `font-paths`          | Adds additional directories to search for fonts when compiling with Typst.                                                                                                         |                                                                                                     |
-
-For example:
-
-``` yaml
----
-title: "My Document"
-format:
-  typst:
-    toc: true
-    section-numbering: 1.1.a
-    columns: 2
-bibliography: refs.bib
-bibliographystyle: chicago-author-date
----
-```
-
-See the section below on [Custom Formats](#custom-formats) for details on creating your own specialized formats for use with Typst.
 
 ## Page Layout
 
