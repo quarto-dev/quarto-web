@@ -1,15 +1,15 @@
 ---
-title: "Script Rendering for knitr"
+title: "Script Rendering for Knitr"
 ---
 
 {{< include _pre-release-feature.qmd >}}
 
 ## Overview
 
-Quarto v1.4 includes support for rendering R script files (e.g. `.r` or `.R`) that are specially formatted as report. Script rendering is based on `knitr::spin()` feature and makes use of the same [syntax rules](https://bookdown.org/yihui/rmarkdown-cookbook/spin.html), with slight additions: 
+Quarto v1.4 includes support for rendering R script files (e.g. `.r` or `.R`) that are specially formatted as a report. Script rendering is based on the `knitr::spin()` feature and makes use of the same [syntax rules](https://bookdown.org/yihui/rmarkdown-cookbook/spin.html), with slight additions: 
 
-- The R script must start with YAML block header inside roxygen comment i.e. using `#'` special comment.
-- Cell options can be passed using YAML syntax comment as in `.qmd` i.e. using `#|` special comment.
+- The R script must start with YAML block header inside roxygen comments i.e. using the special `#'` comment.
+- Cell options can be passed using YAML syntax as in `.qmd` i.e. using the special `#|` comment.
 
 For example, here is an R script that includes both markdown and code cells:
 
@@ -47,7 +47,7 @@ ggplot(data = penguins,
 
 ```
 
-Usual `.qmd` content lines starts with `#'`, which includes the YAML header block and any in-document Markdown content. R code is the main content of the R script and included without any delimitation. Cell options are included as normal using `#|` prefixed comments (e.g. `#| echo: false`), and apply to any R code below. Cells are split when Markdown content are inserted in-between R code, e.g. use `#'` to create another block.
+Lines that would be content in a `.qmd` start with `#'` and  include the YAML header block and any in-document Markdown content. R code is the main content of the R script and is included without any delimitation. Cell options are included as normal using `#|` prefixed comments (e.g. `#| echo: false`), and apply to any R code below. Code cells are split when Markdown content occurs , e.g. use `#'` to create another code block.
 
 ## Render and Preview
 
@@ -59,13 +59,13 @@ $ quarto render script.R
 $ quarto preview script.R
 ```
 
-R scripts rendered with Quarto must begin with a YAML block with lined starting by `#'` (which normally includes the `title` and other YAML options). This convention is how Quarto knows that it should render the `.R` script to output format. The YAML block must follow usual rules and be indented properly.
+R scripts rendered with Quarto must begin with a YAML block whose lines start with `#'` (which normally includes the `title` and other YAML options). This convention is how Quarto knows that it should render the `.R` script. The YAML block must follow the usual rules and be indented properly.
 
 ## Scripts in Projects
 
-R scripts can also be included within [projects](/docs/projects/quarto-projects.qmd) (e.g. websites, blogs, etc.). Scripts within projects are only rendered by Quarto when they start with YAML block header prefixed by `#'` comments.
+R scripts can also be included within [projects](/docs/projects/quarto-projects.qmd) (e.g. websites, blogs, etc.). Scripts within projects are only rendered by Quarto when they start with a YAML block header prefixed by `#'` comments.
 
-If for some reason you need to ignore such script, you can create an explict render list in `_quarto.yml` that excludes individual scripts as required, for example:
+If for some reason you need to ignore such a script, you can create an explict render list in `_quarto.yml` that excludes individual scripts as required, for example:
 
 ```yaml
 project:
