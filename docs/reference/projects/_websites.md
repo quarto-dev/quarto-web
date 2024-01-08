@@ -15,7 +15,7 @@ Options that define the top navigation bar for a {{< meta project-type >}} For e
 
 ## Nav Items
 
-Nav items appear in the `left` or `right` key of `navbar` definitions. For example:
+Nav items appear in the `left` or `right` key of `navbar` definitions, or `contents` key of `sidevbar` definitions. For example:
 
 ``` yaml
 ---
