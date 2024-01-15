@@ -11,7 +11,9 @@ crossref:
 
 ## Overview
 
-You can define custom cross-reference types using the `custom` key to the `crossref` option either in your document or project metadata. At a minimum, a custom type needs:
+Cross-referenceable [figures](#figures), [tables](#tables) and [code listings](#code-listings) are examples of *float* cross-references. Floats can appear in the rendered document at locations other than where they are defined, i.e. they float, and usually have captions. 
+
+You can define custom float cross-reference types using the `custom` key to the `crossref` option either in your document or project metadata. At a minimum, a custom type needs:
 
 - `kind`, which currently can only be `float`
 - `key`, the abbreviation used in the reference identifier ("In `@fig-1`, ...")
@@ -59,6 +61,7 @@ You can find a complete listing of the options available for the `custom` key on
 If your output format is PDF you'll also need to specify `latex-env`, a name to be used for the float environment wrapped around the element in the intermediate TeX. For example, to use the custom video reference type in PDF you could add `latex-env: video`:
 
 ``` yaml
+format: pdf
 crossref:
   custom:
     - kind: float
@@ -67,22 +70,24 @@ crossref:
       latex-env: video
 ```
 
-You can add a listing of your custom cross-references to your document by including a raw LaTeX `\listof` command. The name of the command is `listof` followed by the value of `latex-env` value, followed by an `s`. For example, for the custom video type above, where the `latex-env` was `video`, the command is `\listofvideos{}`:
+You can add a listing of your custom cross-references to your document by including a raw LaTeX `\listof` command. The name of the command is `listof` followed by the value of `latex-env`, followed by an `s`. For example, for the custom video type above, where the `latex-env` was `video`, the command is `\listofvideos{}`:
 
 ``` yaml
 ---
+format: pdf
 crossref:
   custom:
     - kind: float
       reference-prefix: Video
       key: vid
+      latex-env: video
 ---
 
 \listofvideos{}
 
 ```
 
-By default, the title of the listing is constructed from the `reference-prefix` value. You can specify something else with the `latex-list-of-description` value.
+By default, the title of the listing (e.g "List of Videos") is constructed from the `reference-prefix` value. You can specify something else with the `latex-list-of-description` value.
 
 ## Example: Supplemental Figures
 
