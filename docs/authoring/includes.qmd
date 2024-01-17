@@ -28,9 +28,9 @@ Include shortcodes need to appear by themselves in a line, and they need to be s
 
 ## Content
 
-A concrete example would be if you have several articles about a topic that share a common introduction. Here we have an article titled "Revealjs Presentations" that wants to include some basic information on presentations not specific to Revealjs (we do that by including `_basics.qmd`):
+A concrete example would be if you have several articles about a topic that share a common introduction. Here, we have an article titled "Revealjs Presentations" that wants to include some basic information on presentations not specific to Revealjs (we do that by including `_basics.qmd`). We also have some demo code stored as scripts that we want to include as non-executed examples (we do that by including `_demo.R` and `_demo.py` inside source code blocks):
 
-``` markdown
+```` markdown
 ---
 title: "Revealjs Presentations"
 ---
@@ -45,9 +45,27 @@ present your ideas to others!
 ## Revealjs Options
 
 More content here...
+
+## Do it yourself with R
+
+```r 
+{{{< include _demo.R >}}}
 ```
 
-Note that we use an underscore (`_`) prefix for the included file. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standalone files) by a `quarto render` of a project.
+Copy the R code above in your session.
+
+## Do it yourself with Python
+
+```python
+{{{< include _demo.py >}}}
+```
+
+Copy the Python code above and run it.
+
+
+````
+
+Note that we use an underscore (`_`) prefix for the included files. You should always use an underscore prefix with included files so that they are automatically ignored (i.e. not treated as standalone files) by a `quarto render` of a project.
 
 ## Computations
 
@@ -64,11 +82,27 @@ title: "My Document"
 Use the data...
 ```
 
+where the content would be 
+
+````{.markdown filename="_data.qmd"}
+
+Load the `sp500` from [`great_tables`](https://posit-dev.github.io/great-tables/)
+
+```{{python}}
+import great_tables as gt
+from great_tables.data import sp500
+sp500.head()
+```
+
+````
+
 A couple of important things to remember when using computational includes:
 
 1)  All computations still share a single engine (e.g. knitr or jupyter)
 
 2)  Computational includes work only in `.qmd` files (they don't work in `.ipynb` notebook files)
+
+Note that you can't use  the `include` shortcode within a computational code block itself - as the example above shows, the executable code block needs to be inside the included document.
 
 ```{=html}
 <style type="text/css">

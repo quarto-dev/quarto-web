@@ -1,17 +1,22 @@
 ---
 title: "Cross References"
 format: html
+toc-expand: 2
+toc-depth: 4
+aliases: 
+  - /docs/authoring/cross-references-listings.html
+  - /docs/authoring/cross-references-callouts.html
 ---
 
 ## Overview
 
-Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables. Every cross-referenceable entity requires a label (unique identifier prefixed with type e.g. `#fig-element`) and caption (description). For example, this is a cross-referenceable figure:
+Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to various entities like figures and tables. Every cross-referenceable entity requires a label---a unique identifier prefixed with a cross-reference type e.g. `#fig-element`. For example, this is a cross-referenceable figure:
 
 ``` markdown
 ![Elephant](elephant.png){#fig-elephant}
 ```
 
-The presence of the caption (`Elephant`) and label (`#fig-elephant`) make this figure referenceable. This enables you to use the following syntax to refer to it elsewhere in the document:
+The presence of the label (`#fig-elephant`) makes this figure referenceable. This enables you to use the following syntax to refer to it elsewhere in the document:
 
 ``` markdown
 See @fig-elephant for an illustration.
@@ -21,23 +26,79 @@ Here is what this would look like rendered to HTML:
 
 ![](images/crossref-figure.png){.border fig-alt="A line drawing of an elephant. The caption 'Figure 1: Elephant' is centered beneath it." width="100%"}
 
-Quarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from Knitr and Jupyter.
-
 Note that cross reference identifiers must start with their type (e.g. `fig-` or `tbl-`). So the identifier `#fig-elephant` is valid for a cross-reference but the identifiers `#elephant` and `#elephant-fig` are not.
 
-There are options available that control the text used for titles and references. For example, you could change "Figure 1" to read "Fig 1" or "fig. 1". See the [options documentation](#options) for details on how to customize the text used for cross-references.
+Quarto enables you to create cross-references to figures, tables, equations, sections, code listings, theorems, proofs, and more. Cross references can also be applied to dynamic output from Knitr and Jupyter. 
 
-::: {.callout-note style="padding-bottom: 16px"}
-Quarto's syntax for cross-references is based on [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) (which is in turn based on this discussion: <https://github.com/jgm/pandoc/issues/813>). There are however several differences (mostly related to handling computational output) to note:
+On this page you'll learn:
 
-1.  Quarto uses the prefix `#fig-` rather than `#fig:` (which is more compatible with Jupyter notebook [cell ids](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html)).
-2.  Quarto is able to reference raw HTML and LaTeX figures and tables (which are often produced by executable code blocks).
-3.  Quarto has support for referencing theorems and proofs (and related types).
-:::
+*  Different ways to use the `@` syntax to create [References](#references).
+*  How to add [Lists](#lists) of references in LaTeX / PDF output.
 
-## Figures
+Then, we enumerate the syntax for the different types of elements you might want to reference:
 
-As described above, this is the markdown used to create a cross-referenceable figure and then refer to it:
+*  [Floats](#floats): [Figures](#figures), [Tables](#tables) and [Code Listings](#code-listings)
+* Blocks: [Callouts](#callouts), [Theorems and Proofs](#theorems-and-proofs) and [Equations](#equations) 
+*  [Sections](#sections)
+
+There are options available that control the text used for titles and references. For example, you could change "Figure 1" to read "Fig 1" or "fig. 1". See the [options documentation](cross-reference-options.qmd) for details on how to customize the text used for cross-references.
+
+## References
+
+The examples on this page all use the default syntax for inline references (e.g. `@fig-elephant`), which results in the reference text "Figure 1", "Table 1", etc.
+
+You can customize the appearance of inline references by either changing the syntax of the inline reference or by setting options. Here are the various ways to compose a cross-reference and their resulting output:
+
+| Type          | Syntax                | Output   |
+|---------------|-----------------------|----------|
+| Default       | `@fig-elephant`       | Figure 1 |
+| Capitalized   | `@Fig-elephant`       | Figure 1 |
+| Custom Prefix | `[Fig @fig-elephant]` | Fig 1    |
+| No Prefix     | `[-@fig-elephant]`    | 1        |
+
+Note that the capitalized syntax makes no difference for the default output, but would indeed capitalize the first letter if the default prefix had been changed via an [option](cross-reference-options.qmd#references) to use lower case (e.g. "fig.").
+
+These syntax variations work not only for Figures, but for all cross-referenceable elements in Quarto such as Tables, Equations, Theorems, and so on.
+
+You can also group cross-references using the following syntax:
+
+``` markdown
+As illustrated in [@fig-elephant; @fig-panther; @fig-rabbit].
+```
+
+There are a number of options that can be used to further customize the treatment of cross-references. See the guide on [Cross Reference Options](cross-reference-options.qmd#references) for additional details.
+
+## Lists
+
+For LaTeX / PDF output, you can use the raw LaTeX commands `\listoffigures`, `\listoftables` and `\listoflistings` to produce listings of all figures, tables, etc. within a document. You can use the `lof-title`, `lot-title`, and `lol-title` crossref options to customize the title of the listing.
+
+For example:
+
+``` markdown
+---
+title: "My Document"
+crossref:
+  lof-title: "List of Figures"
+format: pdf
+---
+
+\listoffigures
+```
+
+Note that the default titles for the lists use the form displayed above (i.e. "List of \<Type\>").
+
+## Floats
+
+[Figures](#figures), [tables](#tables) and [code listings](#code-listings) are known as "float" cross-references. Floats can appear in the rendered document at locations other than where they are defined, i.e. they float, and usually have captions. 
+
+In addition to the compact syntax for the most common uses of float cross-references, you can also define float cross-references with a div syntax. Use the div syntax when you need more flexibility in the content of your cross-reference, for example, to have a [video](cross-references-divs.qmd#videos) be referenced as a figure. Basic examples of the div syntax are included in the sections below, but you can find more complicated examples in [Cross-Reference Div Syntax](cross-references-divs.qmd). 
+
+You can also define custom types of float cross-reference to reference elements beyond figures, tables and code listings. Read more at [Custom Float Cross-References](cross-references-custom.qmd).
+
+
+### Figures
+
+As described on the Overview above, this is the markdown used to create a cross-referenceable figure and then refer to it:
 
 ``` markdown
 ![Elephant](elephant.png){#fig-elephant}
@@ -47,7 +108,11 @@ See @fig-elephant for an illustration.
 
 Note again that cross-reference identifiers must start with their type (e.g. `#fig-`) and that cross-reference identifiers must be all lower case.
 
-### Subfigures
+{{< include _cross-reference-divs-figure.qmd >}}
+
+You can read about using div syntax with figures at [Cross-Reference Div Syntax](cross-references-divs.qmd#figures).
+
+#### Subfigures
 
 You may want to create a figure composed of multiple subfigures. To do this, enclose the figures in a div (with its own label and caption) and give each subfigure its own label and (optionally) caption. You can then refer to either the entire figure in a reference or a single subfigure:
 
@@ -70,12 +135,12 @@ Here is what this looks like when rendered as HTML:
 
 Note that we also used the `layout-ncol` attribute to specify a two-column layout. See the article on [Figures](figures.qmd) for more details on laying out panels of figures.
 
-### Computations
+#### Computations
 
 Figures produced by Jupyter and Knitr can also be cross-referenced. To do this, add a `label` and `fig-cap` option at the top of the code block. For example:
 
 ::: panel-tabset
-#### Jupyter
+##### Jupyter
 
     ```{{python}}
     #| label: fig-plot
@@ -90,7 +155,7 @@ Figures produced by Jupyter and Knitr can also be cross-referenced. To do this, 
 
 ![](images/crossref-figure-jupyter.png){fig-alt="A line plot with the label 'Figure 1: Plot' centered underneath it. The text 'For example, see fig. 1' is underneath this label and aligned to the left."}
 
-#### Knitr
+##### Knitr
 
     ```{{r}}
     #| label: fig-plot
@@ -137,26 +202,9 @@ If you'd like subfigure captions that include only an identifier, e.g. "(a)", an
 #| layout-ncol: 2
 ```
 
-## Tables
+### Tables
 
-For tables produced by executable code cells, include a label with a `tbl-` prefix to make them cross-referenceable. For example:
-
-```{python}
-#| label: tbl-planets
-#| tbl-cap: "Planets"
-#| echo: fenced
-
-from IPython.display import Markdown
-from tabulate import tabulate
-table = [["Sun",696000,1989100000],
-         ["Earth",6371,5973.6],
-         ["Moon",1737,73.5],
-         ["Mars",3390,641.85]]
-Markdown(tabulate(
-  table, 
-  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
-))
-```
+{{< include _table-crossrefs.md >}}
 
 ::: callout-important
 ## Label Prefix
@@ -164,9 +212,15 @@ Markdown(tabulate(
 In order for a table to be cross-referenceable, its label must start with the `tbl-` prefix.
 :::
 
-{{< include _table-crossrefs.md >}}
+{{< include _cross-reference-divs-table.qmd >}}
 
-### Computations
+You can read more about using div syntax with tables at [Cross-Reference Div Syntax](cross-references-divs.qmd#tables).
+
+#### Subtables
+
+{{< include _table-crossrefs-subtables.md >}}
+
+#### Computations
 
 You can also cross-reference tables created from code executed via computations. To do this, add the `label` and `tbl-cap` cell options. For example:
 
@@ -211,6 +265,79 @@ kable(head(pressure))
 ```
 
 ![](/docs/authoring/images/crossref-subtable-nocaption-knitr.png){fig-align="center" width="80%"}
+
+
+### Code Listings
+
+To create a reference-able code block, add a `#lst-` identifier along with a `lst-cap` attribute. For example:
+
+```` markdown
+```{#lst-customers .sql lst-cap="Customers Query"}
+SELECT * FROM Customers
+```
+
+Then we query the customers database (@lst-customers).
+````
+
+{{< include _cross-reference-divs-listing.qmd >}}
+
+You can read more about using div syntax for code listings in [Cross-Reference Div Syntax](cross-references-divs.qmd).
+
+{{< include _cross-references-listings.qmd >}}
+
+## Callouts
+
+{{< include _cross-references-callouts.qmd >}}
+
+## Theorems and Proofs
+
+Theorems are commonly used in articles and books in mathematics. To include a reference-able theorem, create a div with a `#thm-` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via the first heading in the block. You can include any content you like within the div. For example:
+
+``` markdown
+::: {#thm-line}
+
+## Line
+
+The equation of any straight line, called a linear equation, can be written as:
+
+$$
+y = mx + b
+$$
+:::
+
+See @thm-line.
+```
+
+![](images/crossref-theorem.png){fig-alt="A snippet of a LaTeX document. The first line reads: 'Thereom 1 (Line) The equation of any straight line, called a linear equation, can be written as:' Cenetered on a separate line is the equation 'y = mx + b'. The text 'See thm. 1' is aligned to the left underneath that."}
+
+For LaTeX output, the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is used for typesetting theorems. For other formats an appropriate treatment is used (the above is an example of HTML output).
+
+There are a number of theorem variations supported, each with their own label prefix:
+
+| **Label Prefix** | **Printed Name** | **LaTeX Environment** |
+|------------------|------------------|-----------------------|
+| `#thm-`          | Theorem          | theorem               |
+| `#lem-`          | Lemma            | lemma                 |
+| `#cor-`          | Corollary        | corollary             |
+| `#prp-`          | Proposition      | proposition           |
+| `#cnj-`          | Conjecture       | conjecture            |
+| `#def-`          | Definition       | definition            |
+| `#exm-`          | Example          | example               |
+| `#exr-`          | Exercise         | exercise              |
+| `#sol-`          | Solution         | solution              |
+| `#rem-`          | Remark           | remark                |
+
+The `proof` environment receives similar typesetting as theorems, however it is not numbered (and therefore cannot be cross-referenced). To create a proof add the `.proof` class to a div:
+
+``` markdown
+::: {.proof}
+By induction.
+:::
+```
+
+As with theorems you can optionally include a heading as the first element of the div (or a `name` attribute) to give the environment a caption for typesetting (this typically appears in parentheses after the environment title).
+
+For LaTeX output the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is used to typeset these environments. For other formats a similar treatment is used, but you can further customizing this using CSS.
 
 ## Equations
 
@@ -257,211 +384,4 @@ number-sections: true
 ---
 ```
 
-## Code Listings
 
-To create a reference-able code block, add a `#lst-` identifier along with a `lst-cap` attribute. For example:
-
-```` markdown
-```{#lst-customers .sql lst-cap="Customers Query"}
-SELECT * FROM Customers
-```
-
-Then we query the customers database (@lst-customers).
-````
-
-::: {.callout-note}
-
-Note that code listings currently only work with _display code blocks_ (as opposed to executable code blocks). If you wish to both execute and reference a code block, use a combination of a display block and a code block with `echo: false` in the cell YAML.
-
-:::
-
-
-
-## Theorems and Proofs
-
-Theorems are commonly used in articles and books in mathematics. To include a reference-able theorem, create a div with a `#thm-` label (or one of other theorem-type labels described below). You also need to specify a theorem name either via the first heading in the block. You can include any content you like within the div. For example:
-
-``` markdown
-::: {#thm-line}
-
-## Line
-
-The equation of any straight line, called a linear equation, can be written as:
-
-$$
-y = mx + b
-$$
-:::
-
-See @thm-line.
-```
-
-![](images/crossref-theorem.png){fig-alt="A snippet of a LaTeX document. The first line reads: 'Thereom 1 (Line) The equation of any straight line, called a linear equation, can be written as:' Cenetered on a separate line is the equation 'y = mx + b'. The text 'See thm. 1' is aligned to the left underneath that."}
-
-For LaTeX output, the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is used for typesetting theorems. For other formats an appropriate treatment is used (the above is an example of HTML output).
-
-There are a number of theorem variations supported, each with their own label prefix:
-
-| **Label Prefix** | **Printed Name** | **LaTeX Environment** |
-|------------------|------------------|-----------------------|
-| `#thm-`          | Theorem          | theorem               |
-| `#lem-`          | Lemma            | lemma                 |
-| `#cor-`          | Corollary        | corollary             |
-| `#prp-`          | Proposition      | proposition           |
-| `#cnj-`          | Conjecture       | conjecture            |
-| `#def-`          | Definition       | definition            |
-| `#exm-`          | Example          | example               |
-| `#exr-`          | Exercise         | exercise              |
-
-The `proof`, `remark`, and `solution` environments generally receive similar typesetting as theorems, however they are not numbered (and therefore cannot be cross-referenced). To create these environments just use them as the class name of a div:
-
-``` markdown
-::: {.solution}
-The solution.
-:::
-```
-
-As with theorems you can optionally include a heading as the first element of the div (or a `name` attribute) to give the environment a caption for typesetting (this typically appears in parentheses after the environment title).
-
-For LaTeX output the [amsthm](https://ctan.org/pkg/amsthm?lang=en) package is used to typeset these environments. For other formats a similar treatment is used, but you can further customizing this using CSS.
-
-## References
-
-The examples above have all used the default syntax for inline references (e.g. `@fig-elephant`), which results in the reference text "Figure 1", "Table 1", etc.
-
-You can customize the appearance of inline references by either changing the syntax of the inline reference or by setting options. Here are the various ways to compose a cross-reference and their resulting output:
-
-| Type          | Syntax                | Output   |
-|---------------|-----------------------|----------|
-| Default       | `@fig-elephant`       | Figure 1 |
-| Capitalized   | `@Fig-elephant`       | Figure 1 |
-| Custom Prefix | `[Fig @fig-elephant]` | Fig 1    |
-| No Prefix     | `[-@fig-elephant]`    | 1        |
-
-Note that the capitalized syntax makes no difference for the default output, but would indeed capitalize the first letter if the default had been change via an option to use lower case (e.g. "fig.").
-
-These syntax variations work not only for Figures, but for all cross-referenceable elements in Quarto such as Tables, Equations, Theorems, and so on.
-
-You can also group cross-references using the following syntax:
-
-``` markdown
-As illustrated in [@fig-elephant; @fig-panther; @fig-rabbit].
-```
-
-There are a number of options that can be used to further customize the treatment of cross-references. See the section below on [References Options](#references-1) for additional details.
-
-## Chapter Numbering
-
-You can use the `crossref: chapters` option to indicate that top-level headings (H1) in your document correspond to chapters, and that cross-references should be sub-numbered by chapter. For example:
-
-``` markdown
----
-title: "My Document"
-author: "Jane Doe"
-number-sections: true
-crossref:
-  chapters: true
----
-
-# Introduction
-
-![Elephant](elephant.png){#fig-elephant}
-
-See @fig-elephant for an illustration.
-```
-
-![](images/crossref-chapters.png){fig-alt="A line drawing of an elephant. Above it is the text '1 Introduction' in large, bold font. The label 'Figure 1.1: Elephant' is centered underneath it. The text 'See fig. 1.1 for an illustration' is aligned to the left underneath that."}
-
-## Lists
-
-For LaTeX / PDF output, you can use the raw LaTeX commands `\listoffigures`, `\listoftables` and `\listoflistings` to produce listings of all figures, tables, etc. within a document. You can use the `lof-title`, `lot-title`, and `lol-title` crossref options to customize the title of the listing.
-
-For example:
-
-``` markdown
----
-title: "My Document"
-crossref:
-  lof-title: "List of Figures"
-format: pdf
----
-
-\listoffigures
-```
-
-Note that the default titles for the lists use the form displayed above (i.e. "List of \<Type\>").
-
-## Options {#options}
-
-There are a wide variety of options available for customizing caption labels and references. These options are all specified within the `crossref` key of document metadata.
-
-::: {.callout-note appearance="simple"}
-Note that since LaTeX does its own formatting and layout of figures and tables, not all of these options will apply when rendering to PDF. Specifically, delimiter options like `title-delim` and numbering options like `labels` don't work for PDF output. Additionally, formatting directives are not applied (e.g. italicizing the figure title) for LaTeX titles.
-:::
-
-### Titles
-
-You can specify the title prefix used for captions using `*-title` options. You can also specify the delimiter used between the prefix and the caption using the `title-delim` option. For example:
-
-``` yaml
----
-title: "My Document"
-crossref:
-  fig-title: Fig     # (default is "Figure")
-  tbl-title: Tbl     # (default is "Table")
-  title-delim: "—"   # (default is ":")
----
-```
-
-### References {#references-1}
-
-You can specify the prefix used for inline reference type using `*-prefix` options. You can also specify whether references should be hyper-linked using the `ref-hyperlink` option. For example:
-
-``` yaml
----
-title: "My Document"
-crossref:
-  fig-prefix: figure   # (default is "Figure")
-  tbl-prefix: table    # (default is "Table")
-  ref-hyperlink: false # (default is true)
----
-```
-
-### Numbering
-
-There are a variety of numbering schemes available for cross-references, including:
-
--   `arabic` (1, 2, 3)
-
--   `roman` (I, II, III, IV)
-
--   `roman i` (i, ii, iii, iv)
-
--   `alpha x` (start from letter 'x')
-
--   `alpha X` (start from letter 'X')
-
-You can specify the number scheme used for all types (other than sub-references) using the `labels` option. For sub-references (e.g. subfigures), you can specify the number scheme using the `subref-labels` option. For example:
-
-``` yaml
----
-title: "My Document"
-crossref:
-  labels: alpha a        # (default is arabic)
-  subref-labels: roman i # (default is alpha a)
----
-```
-
-If you would like, you can specify the number scheme for a specific type using the `*-labels` options. For example:
-
-``` yaml
----
-title: "My Document"
-crossref:
-  fig-labels: alpha a    # (default is arabic)
-  tbl-labels: alpha a    # (default is arabic)
-  subref-labels: roman i # (default is alpha a)
----
-```
-
-If both `labels` and a type specific label option is provided, the type specific option will override the `labels` option.
