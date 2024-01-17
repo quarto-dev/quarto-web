@@ -2,13 +2,13 @@
 title: Cross-Reference Div Syntax
 ---
 
-{{< include /docs/prerelease/1.4/_pre-release-feature.qmd >}}
+{{< include /docs/_require-1.4.qmd >}}
 
 ## Overview
 
-Along with compact syntax for the most common uses of cross-references, Quarto also provides a more general div syntax for declaring elements that can be cross-referenced.
+Cross-referenceable [figures](#figures), [tables](#tables) and [code listings](#code-listings) are known as *float* cross-references. Floats can appear in the rendered document at locations other than where they are defined, i.e. they float, and usually have captions. 
 
-To declare a cross-referenceable element place the content inside a fenced div with the reference identifier as an attribute. The last paragraph inside the fenced div will be treated as the caption. For example:
+Along with compact syntax for the most common uses of cross-references, Quarto also provides a more general div syntax for declaring floats that can be cross-referenced. To declare a cross-referenceable float, place the content inside a fenced div with the reference identifier as an attribute. The last paragraph inside the fenced div will be treated as the caption. For example:
 
 ````{.markdown}
 ::: {#fig-example}
@@ -20,7 +20,7 @@ Caption
 :::
 ````
 
-To be recognized as a cross-reference the identifier must begin with one of the built-in reference types (Figures (`fig-`), Tables (`tbl-`) and Listings (`lst-`)), or be defined as a custom cross-reference type.
+To be recognized as a cross-reference the identifier must begin with one of the built-in float reference types (Figures (`fig-`), Tables (`tbl-`) and Listings (`lst-`)), or be defined as a [custom float cross-reference](cross-references-custom.qmd) type.
 
 You can then refer to the element as usual with the `@` syntax, e.g. 
 
@@ -103,20 +103,16 @@ A code cell treated like a figure.
 :::
 
 
-The following sections demonstrate this div syntax for common use cases.
+On this page, we illustrate common use cases for [Figures](#figures), [Tables](#tables) and [Code Listings](#listings) then some applications of the div syntax to:
 
-## Figures
+* [Cross-reference a video](#videos)
+* [Cross-reference a diagram](#diagrams)
+* [Produce subreferences to mixed content](#subreferences)
+* [Use computed values in a caption](#computed-captions)
 
-To create a cross-reference to a figure using div syntax, create a fenced div with an id starting with `fig-`, include the image followed by the caption inside the div:
+## Figures {#figures}
 
-````markdown
-::: {#fig-elephant}
-
-![](elephant.png)
-
-An Elephant
-:::
-````
+{{< include _cross-reference-divs-figure.qmd >}}
 
 You can cross-reference a figure created by an executable code cell by including the code cell as the content:
 
@@ -133,26 +129,12 @@ A line plot
 :::
 ````
 
-In the above example, you can reference the figure with `@fig-line-plot`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-References for Executable Code Blocks](cross-references-listings.qmd) for details.
+In the above example, you can reference the figure with `@fig-line-plot`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-References for Executable Code Blocks](cross-references.qmd#code-listings) for details.
 
 
 ## Tables
 
-To create a cross-reference to a table using div syntax, create a fenced div with an id starting with `tbl-`, include the table followed by the caption inside the div:
-
-````markdown
-::: {#tbl-letters}
-
-| Col1 | Col2 | Col3 |
-|------|------|------|
-| A    | B    | C    |
-| E    | F    | G    |
-| A    | G    | G    |
-
-My Caption
-
-::: 
-````
+{{< include _cross-reference-divs-table.qmd >}}
 
 If the table is produced by an executable code cell, put the cell inside the div as content, e.g:
 
@@ -177,23 +159,11 @@ Astronomical object
 :::
 ````
 
-In the above example, you can reference the table with `@tbl-planets`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-References for Executable Code Blocks](cross-references-listings.qmd) for details.
+In the above example, you can reference the table with `@tbl-planets`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-References for Executable Code Blocks](cross-references.qmd#code-listings) for details.
 
 ## Listings
 
-To create a cross-reference to a code listing using div syntax, create a fenced div with an id starting with `lst-`, include the code cell followed by the caption inside the div:   
-
-````markdown
-::: {#lst-customers}
-
-```{.sql}
-SELECT * FROM Customers
-```
-
-Customers Query
-
-:::
-````
+{{< include _cross-reference-divs-listing.qmd >}}
 
 This also works for executable code cells that produce no output:
 
@@ -253,61 +223,16 @@ Assignment in R
 
 ````
 
-When the output is a figure or table, you can reference the code and the output individually by using code cell options, rather than the div syntax, as described in [Cross-References for Executable Code Blocks](cross-references-listings.qmd).
+When the output is a figure or table, you can reference the code and the output individually by using code cell options, rather than the div syntax, as described in [Cross-References for Executable Code Blocks](cross-references.qmd#code-listings).
 
 
 ## Diagrams
 
-You can also use div syntax to create a cross-references to a diagram by treating it like a figure. For example, @fig-simple is created using:
-
-````markdown
-::: {#fig-simple}
-
-```{dot}
-graph {
-  A -- B
-}
-```
-
-This is a simple graphviz graph
-:::
-````
-
-::: {#fig-simple .column-margin}
-
-```{dot}
-//| fig-width: 1.5
-graph {
-  A -- B
-}
-```
-
-This is a simple graphviz graph
-:::
-
-If you would rather give diagrams a label and counter distinct from figures, consider defining [Custom Cross-Reference Types](cross-references-custom.qmd).
+{{< include _cross-reference-divs-diagram.qmd >}}
 
 ## Videos 
 
-To add a cross-reference to a video, use the cross-reference div syntax and treat it like a figure. For example, 
-
-````{.markdown shortcodes=false}
-::: {#fig-cern}
-
-{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}
-
-The video "CERN: The Journey of Discovery"
-
-:::
-
-In @fig-cern...
-````
-
-Which renders as:
-
-![](images/crossrefs-video.png){fig-alt="Screenshot that shows a YouTube video followed by the caption, 'Figure 1: The video CERN: The Journey of Discovery'. Below the caption is the text 'In Figure 1 ...'."}
-
-If you would rather give videos a label and counter distinct from figures, consider defining [Custom Cross-Reference Types](cross-references-custom.qmd).
+{{< include _cross-reference-divs-video.qmd >}}
 
 ## Subreferences
 
@@ -413,7 +338,7 @@ This renders as:
 ![](images/crossrefs-complex-layout.png){fig-alt="A screenshot of a figure layout with two rows. The top row has two columns: on the left an image of an elephant silhouetted against a sunset with the caption (a) An image file; on the right a scatterplot with the caption (b) A computational figure. In the bottom row is a flow chart with a node Transform linked to the node Visualize with the caption (c) A diagram. Below the layout is the caption: Figure 1: Example figure combining different types of content."}
 
 
-## Computed Values in Captions
+## Computed Captions
 
 If you want to include computed values in a caption, use the cross-reference div syntax, along with an [inline code expression](http://localhost:6234/docs/computations/execution-options.html#inline-code). For example:
 
@@ -460,7 +385,7 @@ This dataset has `{r} length(x)` observations.
 
 ::::
 
-## Cross-references with Conditional Content
+## Conditional Content
 
 The cross-reference div syntax combined with [conditional content](docs/authoring/conditional.html) allows the content of your reference to vary by format. For example, you might want an interactive JavaScript based plot when the format is HTML, but otherwise produce a static plot:
 
