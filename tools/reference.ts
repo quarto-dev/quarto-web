@@ -443,7 +443,6 @@ const utterancesOptions = readProjectProperties(findVal(definitions, "utterances
 writeProjectTable("utterances", utterancesOptions);
 
 const giscussOptions = readProjectProperties(findVal(definitions, "giscus")!["object"]["properties"]);
-console.log({giscussOptions});
 writeProjectTable("giscus", giscussOptions);
 
 const hypothesisSchema = findVal(definitions, "hypothesis")!["anyOf"][1]["object"]["properties"];
