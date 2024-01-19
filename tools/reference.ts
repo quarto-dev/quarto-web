@@ -296,18 +296,24 @@ function readSidebarObject(descriptions?: Record<string, string>) {
 
 // deno-lint-ignore no-explicit-any
 function findVal(object: any, key: string) {
-  let value;
-  Object.keys(object).some(function (k) {
+
+  const keys = Object.keys(object);
+  for (const k of keys) {
     if (k === key) {
-      value = object[k];
-      return true;
+      return object[k];
     }
+  }
+
+  for (const k of keys) {
     if (object[k] && typeof object[k] === 'object') {
-      value = findVal(object[k], key);
-      return value !== undefined;
+      const value = findVal(object[k], key) as any;
+      if (value !== undefined) {
+        return value;
+      }
     }
-  });
-  return value;
+  }
+
+  return undefined;
 }
 
 // Metadata pages
@@ -326,7 +332,7 @@ writeMetadataTable("citation", "Citation", citationOptions);
 
 // Crossref Page
 const crossrefs = readSchema("document-crossref.yml");
-const crossrefOptions = crossrefs.find(value => value.name ==  "crossref")["schema"]["anyOf"][1]["object"]["properties"];
+const crossrefOptions = (crossrefs as any[]).find(value => value.name ==  "crossref")["schema"]["anyOf"][1]["object"]["properties"];
 const customCrossrefOptions = findVal(crossrefs, "custom")["arrayOf"]["object"]["properties"];
 
 const crossrefMetadata = [
@@ -437,6 +443,7 @@ const utterancesOptions = readProjectProperties(findVal(definitions, "utterances
 writeProjectTable("utterances", utterancesOptions);
 
 const giscussOptions = readProjectProperties(findVal(definitions, "giscus")!["object"]["properties"]);
+console.log({giscussOptions});
 writeProjectTable("giscus", giscussOptions);
 
 const hypothesisSchema = findVal(definitions, "hypothesis")!["anyOf"][1]["object"]["properties"];
