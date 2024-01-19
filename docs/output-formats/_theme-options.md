@@ -12,7 +12,7 @@ theme:
   - custom.scss
 ```
 
-Your `custom.scss` file might look something like this:
+Your `custom.scss` file should include variables defined in sass variables section and might look something like this:
 
 ``` css
 /*-- scss:defaults --*/
