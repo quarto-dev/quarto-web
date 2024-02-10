@@ -2,7 +2,7 @@ There are 11 built-in themes provided for Reveal presentations (you can also cre
 
 The `default` theme is used automatically --- use the `theme` option to switch to an alternate theme. For example
 
-```{.yaml code-preview="/docs/presentations/revealjs/examples/theme-dark.qmd"}
+```yaml
 ---
 title: "Presentation"
 format:
