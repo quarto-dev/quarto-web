@@ -42,8 +42,11 @@ async function run() {
     const redirects = [];
     for (asset of releaseRaw.assets) {
       const algorithm = "sha256";
-      const assetFile = await fetch(asset.browser_download_url);
-      const buffer = await assetFile.buffer();
+      const response = await fetch(asset.browser_download_url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch asset. The http request for the asset at ${asset.browser_download_url} return the status ${response.status}`);
+      }
+      const buffer = await response.buffer();
       const checksum = hasha(buffer, { algorithm });
       
       if (asset.name === 'changelog.md') {

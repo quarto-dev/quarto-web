@@ -1,0 +1,74 @@
+---
+title: "Execution Contexts"
+---
+
+## Overview
+
+Shiny interactive documents contain both code that executes at render time as well as code that executes on the server in response to user actions and changes in input values. A solid understanding of these execution contexts is important both to have the right mental model during development as well as to optimize the performance of your document.
+
+## Default Execution
+
+By default, all of the Python code in your document is executed at two different times:
+
+1)  When you render the document using `quarto render` or `quarto preview`; and
+
+2)  Whenever a new user connects to the Shiny application generated from the document.
+
+If the render time of your document is short, this default execution pattern will likely serve you well and you don't need to think further about optimizing execution contexts.
+
+## Setup Context
+
+Many documents include setup code that loads required packages and data. If this setup code takes longer than a couple of seconds, it may make sense to explicitly designate it as setup code using the `context: setup` cell option. For example:
+
+````python
+```{{python}}
+#| context: setup
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
+```
+````
+
+When you add `context: setup` to a cell, the code cell will be executed:
+
+1)  When you render the document using `quarto render` or `quarto preview`; and
+
+2)  At the startup of the Shiny application (this is in contrast to the default behavior which is to run the code whenever a new user connects to the application).
+
+Explicitly designating setup code using `context: setup` is likely the only thing you'll need to do in terms of explicitly specifying execution contexts. Not only does `context: setup` address the most common performance issues, it also preserves simple and easy to reason about source code (all data and functions in the document are available at both render and serve time).
+
+## UI Context
+
+It's possible that you have cells in your document that _only_ contribute to the user interface and does not need to execute on the server. For example, this could be a static visualization that is never dynamically redrawn in response to changes in inputs.
+
+To designate a call as only contributing to the user interface, specify the `context: ui` cell option. For example:
+
+````python
+```{{python}}
+#| context: ui
+
+# plot that isn't ever updated after initial rendering 
+sns.lmplot(
+    data=penguins,
+    x="bill_length_mm", y="bill_depth_mm", hue="species",
+    height=5
+)
+```
+````
+
+Cells with `context: ui` will only run during `quarto render`. Code and data created by this cell are not available when the application is served. 
+
+## Learning More
+
+To learn more about Shiny for Python interactive documents see the following articles:
+
+-   [Getting Started](index.qmd) explains the basics of Shiny interactive documents.
+
+-   [Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/#outputs) enumerates the available Shiny inputs and outputs, along with code snippets you can copy and paste into your dashboard. 
+
+-   [Input Layout](../../inputs.qmd) describes various ways to layout inputs (sidebars, input panels, attaching inputs directly to cards, etc.).
+
+-   [Running Dashboards](running.qmd) covers how to run interactive dashboards both within VS Code and at the command line, as well as how to deploy them to end users.
+
+-   [Shiny for Python](https://shiny.posit.co/py/) provides in-depth documentation on all of the available UI and ouput widgets, as well as conceptual discussions on how things work.
+
+

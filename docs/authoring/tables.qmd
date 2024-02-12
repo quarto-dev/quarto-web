@@ -224,6 +224,12 @@ In order for a table to be cross-referenceable, its label must start with the `t
 
 {{< include _table-crossrefs.md >}}
 
+See the article on [Cross References](cross-references.qmd) for additional details.
+
+### Subtables
+
+{{< include _table-crossrefs-subtables.md >}}
+
 ## Caption Location
 
 By default, table captions are positioned above tables. You can modify this behavior using the `tbl-cap-location` option. For example:
@@ -279,6 +285,34 @@ kable(head(cars))
 
 If your code cell produces multiple tables, you can also specify subcaptions and layout using cell options:
 
+::: {.panel-tabset group="language"}
+
+## Python
+
+````python
+```{{python}}
+#| label: tbl-example
+#| tbl-cap: "Example"
+#| tbl-subcap: 
+#|   - "MPG"
+#|   - "Taxis"
+#| layout-ncol: 2
+
+import seaborn as sns
+from IPython.display import Markdown, display
+mpg = sns.load_dataset("mpg").head(10)
+taxis = sns.load_dataset("taxis").head(10)
+
+display(Markdown(mpg.to_markdown(index = False)))
+display(Markdown(taxis.to_markdown(index = False)))
+```
+````
+
+Note that we use the [`display()`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html#IPython.display.display) function imported from `IPython` so that we can render multiple outputs from a single cell (by default cells only output their last expression).
+
+## R
+
+````python
 ```{{r}}
 #| label: tbl-example
 #| tbl-cap: "Example"
@@ -286,20 +320,20 @@ If your code cell produces multiple tables, you can also specify subcaptions and
 #|   - "Cars"
 #|   - "Pressure"
 #| layout-ncol: 2
-#| echo: fenced
 
 library(knitr)
 kable(head(cars))
 kable(head(pressure))
 ```
+````
+
+
+:::
 
 ## Grid Tables
 
 Grid tables are a more advanced type of markdown tables that allow arbitrary block elements (multiple paragraphs, code blocks, lists, etc.). For example:
 
-::: {layout-ncol="2"}
-
-:::: {}
 
 ``` markdown
 +-----------+-----------+--------------------+
@@ -315,9 +349,7 @@ Grid tables are a more advanced type of markdown tables that allow arbitrary blo
 : Sample grid table.
 ```
 
-::::
-
-:::: {}
+Which looks like this when rendered to HTML:
 
 +-----------+-----------+--------------------+
 | Fruit     | Price     | Advantages         |
@@ -331,17 +363,11 @@ Grid tables are a more advanced type of markdown tables that allow arbitrary blo
 
 : Sample grid table.
 
-::::
-
-:::
 
 The row of `=`s separates the header from the table body, and can be omitted for a headerless table. Cells that span multiple columns or rows are not supported.
 
 Alignments can be specified as with pipe tables, by putting colons at the boundaries of the separator line after the header:
 
-::: {layout-ncol="2"}
-
-:::: {}
 
 ``` markdown
 +---------+--------+------------------+
@@ -350,10 +376,7 @@ Alignments can be specified as with pipe tables, by putting colons at the bounda
 | Bananas | $1.34  | built-in wrapper |
 +---------+--------+------------------+
 ```
-
-::::
-
-:::: {}
+Which looks like this when rendered to HTML:
 
 +---------+--------+------------------+
 | Right   | Left   | Centered         |
@@ -361,31 +384,21 @@ Alignments can be specified as with pipe tables, by putting colons at the bounda
 | Bananas | $1.34  | built-in wrapper |
 +---------+--------+------------------+
 
-::::
-
-:::
 
 For headerless tables, the colons go on the top line instead:
 
-::: {layout-ncol="2"}
-
-:::: {}
-
 ``` markdown
 +----------:+:----------+:--------:+
 | Right     | Left      | Centered |
 +-----------+-----------+----------+
 ```
 
-::::
+Which looks like this when rendered to HTML:
 
-:::: {}
 +----------:+:----------+:--------:+
 | Right     | Left      | Centered |
 +-----------+-----------+----------+
-::::
 
-:::
 
 Note that grid tables are quite awkward to write with a plain text editor (because unlike pipe tables, the column indicators must align). Here are some tools that can assist with creating grid tables:
 
@@ -520,8 +533,41 @@ Which renders as follows:
 
 ## Disabling Quarto Table Processing
 
-It's possible that Quarto's processing of HTML tables interferes with your library's processing.
-If this is the case, you can disable Quarto's processing of HTML tables by adding the attribute `data-quarto-disable-processing="true"` to your table, for example:
+It's possible that Quarto's processing of HTML tables may interfere with the HTML produced computationally with table packages in R and Python (or other supported languages).
+
+You can disable Quarto's HTML table processing at a document level or project level with the option `html-table-processing`:
+
+```{.yaml}
+---
+format:
+  html:
+    html-table-processing: none
+---
+```
+
+This option is also available as a code cell option for Knitr and Jupyter, e.g. 
+
+````{markdown}
+```{{r}}
+#| html-table-processing: none
+
+# R Code that generates an HTML table
+```
+````
+
+To disable Quarto's HTML table processing for parts of a document use a div with the attribute `html-table-processing="none"`:
+
+````{.markdown}
+::: {html-table-processing="none"}
+
+Content with HTML tables you don't want processed.
+
+:::
+````
+
+### Library authors
+
+If you are the author of a library that emits HTML tables you might like to disable Quarto's processing of HTML tables by adding the attribute `data-quarto-disable-processing="true"` to the `<table>` element. For example:
 
 ```html
 <table data-quarto-disable-processing="true">

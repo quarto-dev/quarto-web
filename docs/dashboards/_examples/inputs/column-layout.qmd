@@ -1,0 +1,60 @@
+---
+title: "Palmer Penguins"
+author: "Cobblepot Analytics"
+format: dashboard
+server: shiny
+---
+
+```{python}
+#| context: setup
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
+species = list(penguins["species"].value_counts().index)
+islands = list(penguins["island"].value_counts().index)
+```
+
+::: {.inputs header-for="next" layout-ncol="3"}
+
+```{python}
+from shiny import render, reactive, ui
+ui.input_checkbox_group(
+    "species", "Species:", 
+    species, selected = species
+)
+```
+
+```{python}
+ui.input_checkbox_group(
+    "islands", "Islands:", 
+    islands, selected = islands
+)
+```
+
+```{python}
+ui.input_select("dist", "Distribution:", choices=["kde", "hist"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+:::
+
+
+
+```{python}
+@reactive.Calc
+def filtered_penguins():
+    data = penguins[penguins["species"].isin(input.species())]
+    data = data[data["island"].isin(input.islands())]
+    return data
+```
+
+
+```{python}
+#| title: Bill Depth
+@render.plot
+def depth():
+    return sns.displot(
+        filtered_penguins(), x = "bill_depth_mm", 
+        hue = "species", kind = input.dist(), 
+        fill = True, rug=input.rug()
+    )
+```

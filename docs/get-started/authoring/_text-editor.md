@@ -81,7 +81,7 @@ format:
   pdf:
     geometry: 
       - top=30mm
-      - left=30mm
+      - left=20mm
   docx: default
 ```
 

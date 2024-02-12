@@ -98,7 +98,7 @@
       },
       {
         "name": "echo",
-        "description": "Include cell source code in rendered output.\n\n- `true` (default): include source code in output\n- `false`: do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines\n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Include cell source code in rendered output.\n\n- `true` (default in most formats): include source code in output\n- `false` (default in presentation formats like `beamer`, `revealjs`, and `pptx`): do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines\n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
       },
       {
         "name": "output",
@@ -157,10 +157,6 @@
     "title": "Tables",
     "options": [
       {
-        "name": "tbl-colwidths",
-        "description": "Apply explicit table column widths for markdown grid tables and pipe\ntables that are more than `columns` characters wide (72 by default). \n\nSome formats (e.g. HTML) do an excellent job automatically sizing\ntable columns and so don't benefit much from column width specifications.\nOther formats (e.g. LaTeX) require table column sizes in order to \ncorrectly flow longer cell content (this is a major reason why tables \n> 72 columns wide are assigned explicit widths by Pandoc).\n\nThis can be specified as:\n\n- `auto`: Apply markdown table column widths except when there is a\n  hyperlink in the table (which tends to throw off automatic\n  calculation of column widths based on the markdown text width of cells).\n  (`auto` is the default for HTML output formats)\n\n- `true`: Always apply markdown table widths (`true` is the default\n  for all non-HTML formats)\n\n- `false`: Never apply markdown table widths.\n\n- An array of numbers (e.g. `[40, 30, 30]`): Array of explicit width percentages.\n"
-      },
-      {
         "name": "df-print",
         "description": "Method used to print tables in Knitr engine documents:\n\n-  `default`: Use the default S3 method for the data frame.\n-  `kable`: Markdown table using the `knitr::kable()` function.\n-  `tibble`: Plain text table using the `tibble` package.\n-  `paged`: HTML table with paging for row and column overflow.\n\nThe default printing method is `kable`.\n"
       }
@@ -185,6 +181,16 @@
       {
         "name": "citation-abbreviations",
         "description": "JSON file containing abbreviations of journals that should be\nused in formatted bibliographies when `form=\"short\"` is\nspecified. The format of the file can be illustrated with an\nexample:\n\n```json\n{ \"default\": {\n    \"container-title\": {\n      \"Lloyd's Law Reports\": \"Lloyd's Rep\",\n      \"Estates Gazette\": \"EG\",\n      \"Scots Law Times\": \"SLT\"\n    }\n  }\n}\n```\n"
+      }
+    ]
+  },
+  {
+    "name": "crossref",
+    "title": "Crossrefs",
+    "options": [
+      {
+        "name": "crossref",
+        "description": "Configuration for crossref labels and prefixes."
       }
     ]
   },
@@ -287,6 +293,14 @@
         "description": "Filters to pre-process ipynb files before rendering to markdown"
       },
       {
+        "name": "ipynb-shell-interactivity",
+        "description": "Specify which nodes should be run interactively (displaying output from expressions)\n"
+      },
+      {
+        "name": "plotly-connected",
+        "description": "If true, use the \"notebook_connected\" plotly renderer, which downloads\nits dependencies from a CDN and requires an internet connection to view.\n"
+      },
+      {
         "name": "extract-media",
         "description": "Extract images and other media contained in or linked from the source document to the\npath DIR, creating it if necessary, and adjust the images references in the document\nso they point to the extracted files. Media are downloaded, read from the file\nsystem, or extracted from a binary container (e.g. docx), as needed. The original\nfile paths are used if they are relative paths not containing ... Otherwise filenames\nare constructed from the SHA1 hash of the contents.\n"
       },
@@ -305,6 +319,10 @@
       {
         "name": "dpi",
         "description": "Specify the default dpi (dots per inch) value for conversion from pixels to inch/\ncentimeters and vice versa. (Technically, the correct term would be ppi: pixels per\ninch.) The default is `96`. When images contain information about dpi internally, the\nencoded value is used instead of the default specified by this option.\n"
+      },
+      {
+        "name": "html-table-processing",
+        "description": "If `none`, do not process tables in HTML input."
       }
     ]
   },
@@ -318,7 +336,7 @@
       },
       {
         "name": "columns",
-        "description": "Specify length of lines in characters. This affects text wrapping in generated source\ncode (see `wrap`). It also affects calculation of column widths for plain text\ntables.\n"
+        "description": "Specify length of lines in characters. This affects text wrapping in generated source\ncode (see `wrap`). It also affects calculation of column widths for plain text\ntables. \n\nFor `typst`, number of columns for body text.\n"
       },
       {
         "name": "tab-stop",

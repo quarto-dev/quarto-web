@@ -1,0 +1,263 @@
+---
+title: "Typst Basics"
+tbl-colwidths: [35,65]
+aliases: 
+  - /docs/prerelease/1.4/typst.html
+---
+
+{{< include /docs/_require-1.4.qmd >}}
+
+## Overview
+
+[Typst](https://github.com/typst/typst) is a new open-source markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use. Typst creates beautiful PDF output with blazing fast render times.
+
+Use the `typst` format to create a PDF document via Typst. For example:
+
+```{.yaml filename="hello-typst.qmd"}
+---
+title: "Hello Typst!"
+format:
+  typst:
+    toc: true
+    section-numbering: 1.1.a
+    columns: 2
+---
+```
+
+Rendering or previewing this document will invoke the Typst CLI to create `hello-typst.pdf`, a PDF file, from your markdown source file. Quarto includes the Typst CLI so no separate installation of Typst is required.
+
+The above example highlights a few of the options available for Typst output. This document covers these and other options in detail. See the Typst [format reference](/docs/reference/formats/typst.qmd) for a complete list of all available options.
+
+One of the highlights of Typst is the ease of creating highly customized templates. For example, here are some Typst templates that you can use in Quarto as custom formats:
+
+::: {layout-ncol=4}
+
+![IEEE](images/typst-format-ieee.png){.lightbox group="custom-formats" fig-alt="Screenshot of a page showing a article styled according IEEE standards. The title is centered with authors below in two columns."}
+
+![Poster](images/typst-format-poster.png){.lightbox group="custom-formats" fig-alt="Screenshot of a poster in landscape orientiation. The poster includes a logo in the top right, a title in the top left, and content arranged in three columns."}
+
+![Letter](images/typst-format-letter.png){.lightbox group="custom-formats" fig-alt="Screenshot of a page showing a letter. A sender address is across the top of the page, followed by a recipient address left justified. The body of the letter includes a subject line in bold."}
+
+![Dept News](images/typst-format-dept-news.png){.lightbox group="custom-formats" fig-alt="Screenshot of a page showing a department newsletter. The page is split vertically with a white column on the left and a red one on the right. An image spans across the column with the text \"Award Winning Science\" oriented to run vertically down its right side."}
+
+:::
+
+ Learn more about how to use them, and how to create your own in [Custom Formats](typst-custom.qmd).
+
+## Known Limitations
+
+Since Typst is under active development, there are still some limitations to Quarto's Typst support:
+
+-   The default size of images may not reflect the behavior you are used to in other output formats. This is a problem that Typst, pandoc and Quarto are actively working to fix. In the meantime, you can manually [specify image widths](/docs/authoring/figures.qmd#figure-sizing).
+
+-   Advanced page layout (e.g. using the `.column` classes as explained in [Article Layout](https://quarto.org/docs/authoring/article-layout.html)) is not implemented.
+
+-   Various other small things might not yet be implemented. Please [let us know](https://github.com/quarto-dev/quarto-cli/issues/new/choose) if you see things that could use improvement!
+
+## Page Layout
+
+You can control the size of the page (`papersize`), the page margins (`margin`), and the number of columns used for page content (`columns`). For example, the following YAML modifies all three options:
+
+```yaml
+---
+title: Page Layout
+format:
+  typst:
+    papersize: a5
+    margin:
+      x: 1cm
+      y: 1cm
+    columns: 2
+---
+```
+
+The resulting layout is shown below alongside an example of the default layout:
+
+:::{layout-ncol=2}
+
+![Customized Layout](images/typst-custom-page.png){.border fig-alt="Screenshot of one page of PDF document. The document shows a two columns of text. Compared to the previous screenshot, the page is narrower and longer, and the margins are smaller."}
+
+![Default Layout](images/typst-default-page.png){.border fig-alt="Screenshot of one page of PDF document. The document shows a single column of text."}
+
+:::
+
+You can read more about these page layout options in the sections below.
+
+### Paper Size
+
+The `papersize` option expects a string matching one of Typst's supported [paper sizes](https://typst.app/docs/reference/layout/page/#parameters-paper). The default template is equivalent to:
+
+```yaml
+papersize: us-letter
+```
+
+### Margins
+
+The `margin` option expects one or more of the suboptions: `x`, `y`, `top`, `bottom`, `left` and `right`. The default template uses margins equivalent to:
+
+```yaml
+margin:
+  x: 1.25in
+  y: 1.25in
+```
+
+This sets the margins in the horizontal direction (`x`), i.e. `left` and `right`, as well as the margins in the vertical direction (`y`), i.e. `top` and `bottom` to 1.25 inches.
+
+The values for the margins are specfied using Typst's [length](https://typst.app/docs/reference/layout/length/), (e.g. `5cm`) or  [relative length](https://typst.app/docs/reference/layout/relative/) (e.g. `10%`) types. You can specify a single margin:
+
+```yaml
+margin:
+  left: 1cm
+```
+
+Then, any unspecified margins will inherit from the default margins.
+
+### Columns
+
+The `columns` option expects a number - the number of columns your body content should have. The default template sets `columns` to `1`. 
+
+
+{{< include /docs/output-formats/_document-options-toc.md >}}
+
+{{< include /docs/output-formats/_document-options-section-numbering.md >}}
+
+You can also customize the display of the section numbers with the `section-numbering` YAML option. This option expects a string that describes the numbering schema. For example, the following schema describes numbering sections with numerals, subsection with uppercase letters, and subsubsections with lower case letters, using `.` as a separator:
+
+```yaml
+---
+section-numbering: 1.A.a
+---
+```
+
+You can read more about sepcifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
+
+{{< include /docs/output-formats/_code-annotation.md >}}
+
+## Bibliography
+
+Typst comes with its [own citation processing system for bibliographies](https://typst.app/docs/reference/meta/bibliography/) and using `format: typst` defaults to it. To specify a bibliography style using Typst's system, use the `bibliographystyle` option. Provide a string from [Typst's list of built-in styles](https://typst.app/docs/reference/model/bibliography/#parameters-style), e.g.:
+
+``` yaml
+bibliography: refs.bib
+bibliographystyle: apa
+```
+
+Or alternatively, provide a path to a local CSL file:
+
+``` yaml
+bibliography: refs.bib
+bibliographystyle: my-csl-style.csl
+```
+
+If you prefer to use Pandoc's citation processing, set `citeproc: true` explicitly in YAML header:
+
+``` yaml
+citeproc: true
+bibliography: refs.bib
+  csl: https://www.zotero.org/styles/apa-with-abstract
+```
+
+To provide a citation style file to Pandoc's citation processing system use the `csl` option, as described in [Citation Style](https://quarto.org/docs/authoring/footnotes-and-citations.html#sec-citations-style).
+
+
+## Typst Blocks
+
+If you want to change the appearance of blocks using native [Typst `#block()`](https://typst.app/docs/reference/layout/block/) calls, you can add the `.block` class to a Div and provide whatever arguments are appropriate. For example:
+
+```` markdown
+::: {.block fill="luma(230)" inset="8pt" radius="4pt"}
+
+This is a block with gray background and slightly rounded corners.
+
+:::
+````
+
+This gets compiled to
+
+```` default
+#block(fill:luma(230), inset:8pt, radius:4pt,
+[This is a block with gray background and slightly rounded corners.])
+````
+
+## Raw Typst 
+
+If you want to use raw `typst` markup, use a raw `typst` block. For example:
+
+```` default
+```{=typst} 
+#set par(justify: true)
+
+== Background 
+In the case of glaciers, fluid dynamics principles can be used to understand how the movement and behavior of the ice is influenced by factors such as temperature, pressure, and the presence of other fluids (such as water).
+```
+````
+
+To learn more about `typst` markup, see the tutorial here: <https://typst.app/docs/tutorial/>.
+
+
+## Typst File (`.typ`)
+
+The rendering process produces a native Typst file (`.typ)` which is then compiled to PDF using the Typst CLI. This intermediate file is then automatically removed. If you want to preserve the `.typ` file, use the `keep-typ` option. For example:
+
+``` yaml
+---
+title: "My Document"
+format:
+  typst:
+    keep-typ: true
+---
+```
+
+You can compile a `.typ` file to PDF directly using the `quarto typst compile` command in a terminal. For example:
+
+``` {.bash filename="Terminal"}
+$ quarto typst compile article.typ
+```
+
+The `quarto typst` command uses the version of Typst built in to Quarto and supports all Typst CLI actions and flags. For example, to determine the version of Typst embedded in Quarto:
+
+``` {.bash filename="Terminal"}
+$ quarto typst --version
+```
+
+## Fonts Support
+
+The main font used for the document can be specified with the `mainfont` YAML option. Typst will search by default in installed system fonts. You can set additional paths to search using `font-paths`. For example: 
+
+``` yaml
+---
+title: "My Document"
+format: 
+  typst:
+    mainfont: "Agbalumo"
+    font-paths: myfonts
+---
+```
+
+This will search for a `*.ttf` or `*.otf` file matching the font name in the `./myfonts/` directory, in addition to searching in installed system fonts.
+
+The `TYPST_FONT_PATHS` environment variable is also taken into account for compatibility with Typst configuration, but setting `font-paths` will take precedence over any path set in the `TYPST_FONT_PATHS` environment variable.
+
+Set the base size of the font used in the document with `fontsize`. The size used in the default template is equivalent to:
+
+```yaml
+---
+fontsize: 11pt
+---
+```
+
+
+## Includes
+
+{{< include /docs/output-formats/_document-options-includes.md >}}
+
+For example:
+
+``` yaml
+format:
+  typst:
+    include-before-body:
+      - text: |
+          #show heading: set text(navy)
+```
+

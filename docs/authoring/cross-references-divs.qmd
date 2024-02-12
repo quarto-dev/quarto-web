@@ -1,0 +1,419 @@
+---
+title: Cross-Reference Div Syntax
+---
+
+{{< include /docs/_require-1.4.qmd >}}
+
+## Overview
+
+Cross-referenceable [figures](#figures), [tables](#tables) and [code listings](#code-listings) are known as *float* cross-references. Floats can appear in the rendered document at locations other than where they are defined, i.e. they float, and usually have captions. 
+
+Along with compact syntax for the most common uses of cross-references, Quarto also provides a more general div syntax for declaring floats that can be cross-referenced. To declare a cross-referenceable float, place the content inside a fenced div with the reference identifier as an attribute. The last paragraph inside the fenced div will be treated as the caption. For example:
+
+````{.markdown}
+::: {#fig-example}
+
+CONTENT
+
+Caption
+
+:::
+````
+
+To be recognized as a cross-reference the identifier must begin with one of the built-in float reference types (Figures (`fig-`), Tables (`tbl-`) and Listings (`lst-`)), or be defined as a [custom float cross-reference](cross-references-custom.qmd) type.
+
+You can then refer to the element as usual with the `@` syntax, e.g. 
+
+```markdown
+@fig-example shows...
+```
+
+The content can be any Quarto markdown. For example, @fig-table is a markdown table treated like a figure:
+
+````markdown
+::: {#fig-table}
+
+| A | B |
+|---|---|
+| C | D |
+
+A table treated like a figure 
+
+:::
+````
+
+::: {#fig-table .column-margin}
+
+| A | B |
+|---|---|
+| C | D |
+
+A table treated like a figure 
+
+:::
+
+@tbl-table is an image treated like a table:
+
+````markdown
+::: {#tbl-table}
+
+![](table.png)
+
+An image treated like a table
+
+:::
+````
+
+::: {#tbl-table .column-margin}
+
+![](images/crossref-div-table.png)
+
+An image treated like a table
+
+:::
+
+@fig-code is a code cell treated like a figure:
+
+````markdown
+::: {#fig-code}
+
+```r
+library(tidyverse)
+starwars |> 
+  ggplot(aes(height, mass)) + 
+  geom_point()
+```
+
+A code cell treated like a figure.
+
+:::
+````
+
+::: {#fig-code .column-margin}
+
+```r
+library(tidyverse)
+starwars |> 
+  ggplot(aes(height, mass)) + 
+  geom_point()
+```
+
+A code cell treated like a figure.
+
+:::
+
+
+On this page, we illustrate common use cases for [Figures](#figures), [Tables](#tables) and [Code Listings](#listings) then some applications of the div syntax to:
+
+* [Cross-reference a video](#videos)
+* [Cross-reference a diagram](#diagrams)
+* [Produce subreferences to mixed content](#subreferences)
+* [Use computed values in a caption](#computed-captions)
+
+## Figures {#figures}
+
+{{< include _cross-reference-divs-figure.qmd >}}
+
+You can cross-reference a figure created by an executable code cell by including the code cell as the content:
+
+````markdown
+::: {#fig-line-plot}
+
+```{{python}}
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+
+A line plot
+:::
+````
+
+In the above example, you can reference the figure with `@fig-line-plot`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-References for Executable Code Blocks](cross-references.qmd#code-listings) for details.
+
+
+## Tables
+
+{{< include _cross-reference-divs-table.qmd >}}
+
+If the table is produced by an executable code cell, put the cell inside the div as content, e.g:
+
+````markdown
+::: {#tbl-planets}
+
+```{{python}}
+from IPython.display import Markdown
+from tabulate import tabulate
+table = [["Sun","696,000",1.989e30],
+         ["Earth","6,371",5.972e24],
+         ["Moon","1,737",7.34e22],
+         ["Mars","3,390",6.39e23]]
+Markdown(tabulate(
+  table, 
+  headers=["Astronomical object","R (km)", "mass (kg)"]
+))
+```
+
+Astronomical object
+
+:::
+````
+
+In the above example, you can reference the table with `@tbl-planets`, but not the code, which appears inline. If you would also like to be able to refer to the code, you can do so using code chunk options rather than the div syntax, see [Cross-References for Executable Code Blocks](cross-references.qmd#code-listings) for details.
+
+## Listings
+
+{{< include _cross-reference-divs-listing.qmd >}}
+
+This also works for executable code cells that produce no output:
+
+````markdown
+::: {#lst-assign}
+
+```{{r}}
+x <- 1
+```
+
+Assignment in R
+
+:::
+````
+
+However, if any output is produced, it is assumed the output should be the content of the cross-reference, and the code is lifted out and placed inline. For example, the code cell here produces output:
+
+````{.markdown}
+::: {#lst-assign-output}
+
+```{{r}}
+x <- 1
+x
+```
+
+Assignment in R
+
+:::
+
+@lst-assign-output
+
+````
+
+When rendered the above results in output being the contents of the listing, with the code appearing before the listing:
+
+![](images/crossrefs-listing-output.png){fig-alt="Screenshot of a listing cross-reference. A code cell comes first, followed by Listing 1 which contains code output."}
+
+If you need to reference both the code its output, use a combination of a display block and a code block with the code cell option `echo: false`:
+
+````{.markdown}
+::: {#lst-assign-both}
+
+```r
+x <- 1
+x
+```
+
+```{{r}}
+#| echo: false
+x <- 1
+x
+```
+
+Assignment in R
+
+:::
+
+````
+
+When the output is a figure or table, you can reference the code and the output individually by using code cell options, rather than the div syntax, as described in [Cross-References for Executable Code Blocks](cross-references.qmd#code-listings).
+
+
+## Diagrams
+
+{{< include _cross-reference-divs-diagram.qmd >}}
+
+## Videos 
+
+{{< include _cross-reference-divs-video.qmd >}}
+
+## Subreferences
+
+::: callout-note
+
+When your sub-content is either all figures or all tables there is abbreviated syntax, see the Cross References page for [Subfigures](cross-references.html#subfigures) and [Subtables](cross-references.html#subtables) for details.
+
+:::
+
+Cross-reference divs can be nested to create elements with subreferences. For example, the outer div here defines the `fig-subrefs` reference along with the main caption, while the inner divs define `fig-first` and `fig-second` along with their respective captions:
+
+````markdown
+:::: {#fig-subrefs}
+
+::: {#fig-first}
+
+CONTENT 1
+
+First caption
+:::
+
+::: {#fig-second}
+
+CONTENT 2
+
+Second caption
+:::
+
+Main caption
+::::
+````
+
+This renders as:
+
+:::: {#fig-subrefs}
+
+::: {#fig-first}
+
+CONTENT 1
+
+First caption
+:::
+
+::: {#fig-second}
+
+CONTENT 2
+
+Second caption
+:::
+
+Main caption
+::::
+
+Both the main element and the sub elements can be referenced directly in the text, e.g. 
+
+```markdown
+@fig-subrefs, @fig-first, @fig-second
+```
+
+This renders as: @fig-subrefs, @fig-first, @fig-second.
+
+Combined with layout attributes, you can create complex layouts of mixed content where each element can be referenced. For example:
+
+````markdown
+:::: {#fig-complex layout="[[1, 1], [1]]"}
+
+::: {#fig-elephant}
+
+![](images/elephant.jpg)
+
+An image file
+:::
+
+::: {#fig-scatterplot}
+
+```{{r}}
+#| echo: false
+plot(1:10)
+```
+
+A computational figure
+:::
+
+::: {#fig-diagram}
+
+```{dot}
+//| fig-height: 2
+digraph {
+  rankdir = "LR";
+  Transform -> Visualize
+}
+```
+
+A diagram
+:::
+
+Example figure combining different types of content
+::::
+````
+
+This renders as:
+
+![](images/crossrefs-complex-layout.png){fig-alt="A screenshot of a figure layout with two rows. The top row has two columns: on the left an image of an elephant silhouetted against a sunset with the caption (a) An image file; on the right a scatterplot with the caption (b) A computational figure. In the bottom row is a flow chart with a node Transform linked to the node Visualize with the caption (c) A diagram. Below the layout is the caption: Figure 1: Example figure combining different types of content."}
+
+
+## Computed Captions
+
+If you want to include computed values in a caption, use the cross-reference div syntax, along with an [inline code expression](../computations/execution-options.html#inline-code). For example:
+
+:::: {.panel-tabset}
+
+## Python
+
+
+````markdown
+::: {#fig-box}
+
+```{{python}}
+#| echo: false
+import matplotlib.pyplot as plt
+
+x = [1, 2, 3, 4, 5, 10]
+p = plt.boxplot(x)
+plt.show()
+```
+
+This dataset has `{python} len(x)` observations.
+
+:::
+````
+
+## R
+
+````markdown
+::: {#fig-box}
+
+```{{r}}
+#| echo: false
+
+
+x <- c(1, 2, 3, 4, 5, 10)
+boxplot(x)
+
+```
+
+This dataset has `{r} length(x)` observations.
+
+:::
+````
+
+::::
+
+## Conditional Content
+
+The cross-reference div syntax combined with [conditional content](docs/authoring/conditional.html) allows the content of your reference to vary by format. For example, you might want an interactive JavaScript based plot when the format is HTML, but otherwise produce a static plot:
+
+
+````markdown
+
+::: {#fig-scatterplot}  
+  
+:::: {.content-visible when-format="html"}
+
+```{{r}}
+# Code to produce JaveScript based plot
+```
+::::
+
+:::: {.content-visible unless-format="html"}
+
+```{{r}}
+# Code to produce static plot
+```
+::::
+
+Scatterplot
+
+:::
+
+@fig-scatterplot
+````
+
+
+

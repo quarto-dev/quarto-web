@@ -140,53 +140,7 @@ plt.show()
 
 ## Inline Code
 
-Jupyter, Knitr and OJS all support executing inline code within markdown (e.g. to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines.
-
-### Jupyter
-
-To include executable expressions within markdown in a Python notebook, you use [`IPython.display.Markdown`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html) to dynamically generate markdown from within an ordinary code cell. For example, if we have a variable `radius` we can use it within markdown as follows:
-
-```{{python}}
-#| echo: false
-radius = 10
-from IPython.display import display, Markdown
-display(Markdown("""
-The radius of the circle is {radius}.
-""".format(radius = radius)))
-```
-
-You can do the same in a Julia notebook using the [`Markdown`](https://docs.julialang.org/en/v1/stdlib/Markdown/) package:
-
-```{{julia}}
-#| echo: false
-radius = 10
-using Markdown
-Markdown.parse("""
-The radius of the circle is $radius.
-""")
-```
-
-Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
-
-### Knitr
-
-To include executable expressions within markdown for Knitr, enclose the expression in `` `r ` ``. For example, if we have a variable `radius` we can use it within markdown as follows:
-
-``` markdown
-## Circle
-
-The radius of the circle is `r radius`.
-```
-
-### OJS
-
-To include reactive OJS expressions within markdown, use the syntax `${expr}`. For example, if we have a reactive called `radius` we can use it within markdown as follows:
-
-``` markdown
-## Circle
-
-The radius of the circle is ${radius}
-```
+Jupyter, Knitr and OJS all support executing inline code within markdown (e.g. to allow narrative to automatically use the most up to date computations). The syntax for this varies across the engines. See [Inline Code](inline-code.qmd) for details.
 
 ## Raw Output
 
@@ -224,7 +178,7 @@ Which generates the following output:
 
 Note that we also include the `echo: false` option to ensure that the code used to generate markdown isn't included in the final output.
 
-If we had not specified `output: asis` then the output would have been this:
+If we had not specified `output: asis` the output, as seen in the intermediate markdown, would have included Quarto's `.cell-output` div:
 
 ```` default
 ::: {.cell-output-stdout}
@@ -232,7 +186,7 @@ If we had not specified `output: asis` then the output would have been this:
 # Heading 1
 
 ## Heading 2
-
+  
 ```
 :::
 ````
@@ -241,12 +195,59 @@ For the Jupyter engine, you can also create raw markdown output using the functi
 
 ```{{python}}
 #| echo: false
-from IPython.display import display, Markdown
-display(Markdown("# Heading 1\n"))
-display(Markdown("## Heading 2\n"))
+radius = 10
+from IPython.display import Markdown
+Markdown(f"The _radius_ of the circle is **{radius}**.")
 ```
 
 {{< include _knitr-options.md >}}
+
+## Jupyter Options
+
+### Expression Printing
+
+When multiple expressions are present in a code cell, by default, only the last top-level expression is captured in the rendered output. For example, consider the code cell:
+
+::: {layout-ncol="2"}
+```` markdown
+```{{python}}
+"first"
+"last"
+```
+````
+:::
+
+When rendered to HTML the output generated is:
+
+``` markdown
+'last'
+```
+
+This behavior corresponds to the `last_expr` setting for [Jupyter shell interactivity](https://ipython.readthedocs.io/en/stable/config/options/terminal.html#configtrait-InteractiveShell.ast_node_interactivity).
+
+You can control this behavior with the `ipynb-shell-interactivity` option. For example, to capture all top-level expressions set it to `all`:
+
+``` yaml
+---
+title: All expressions
+format: html
+ipynb-shell-interactivity: all
+---
+```
+
+Now the above code cell results in the output:
+
+``` markdown
+'first'
+
+'last'
+```
+
+::: callout-note
+## All Expressions are Printed in Dashboards
+
+For [dashboards](/docs/dashboards/) the default setting of `ipynb-shell-interactivity` is `all.`
+:::
 
 ## Intermediates
 
@@ -344,7 +345,7 @@ Here are the basic rules for automatic binding:
 | .md       | No engine (note that if an `md` document does contain executable code blocks then an error will occur)                                                                                                                                 |
 +-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-You can override the engine used via the `engine` option. For example:
+For `.qmd` files in particular, you can override the engine used via the `engine` option. For example:
 
 ``` markdown
 engine: jupyter

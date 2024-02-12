@@ -25,7 +25,7 @@ project:
     - section*.qmd
 ```
 
-You can also use the prefix `!` to ignore some paths in the `render` list. Note that in that case you need to start by specifying everything you *do* want to render. For example:
+You can also use the prefix `!` to ignore some files or directories in the `render` list. Note that in that case you need to start by specifying everything you *do* want to render. For example:
 
 ``` yaml
 project:

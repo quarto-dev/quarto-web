@@ -1,0 +1,42 @@
+---
+title: "Palmer Penguins"
+author: "Cobblepot Analytics"
+format: 
+  dashboard:
+    orientation: columns
+server: shiny
+---
+
+```{python}
+import seaborn as sns
+penguins = sns.load_dataset("penguins")
+```
+
+
+## Column 
+
+### {.toolbar}
+
+```{python}
+from shiny import render, ui
+ui.input_select("dist", "Distribution:", choices=["hist", "kde"])
+ui.input_checkbox("rug", "Show rug marks", value = False)
+```
+
+### Row
+
+```{python}
+@render.plot
+def displot():
+    sns.displot(
+        data=penguins, hue="species", multiple="stack",
+        x="bill_length_mm", rug=input.rug(),kind=input.dist())
+```
+
+## Column
+
+```{python}
+@render.data_frame
+def dataview():
+    return render.DataGrid(penguins, height = "100%")
+```
