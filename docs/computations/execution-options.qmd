@@ -202,6 +202,53 @@ Markdown(f"The _radius_ of the circle is **{radius}**.")
 
 {{< include _knitr-options.md >}}
 
+## Jupyter Options
+
+### Expression Printing
+
+When multiple expressions are present in a code cell, by default, only the last top-level expression is captured in the rendered output. For example, consider the code cell:
+
+::: {layout-ncol="2"}
+```` markdown
+```{{python}}
+"first"
+"last"
+```
+````
+:::
+
+When rendered to HTML the output generated is:
+
+``` markdown
+'last'
+```
+
+This behavior corresponds to the `last_expr` setting for [Jupyter shell interactivity](https://ipython.readthedocs.io/en/stable/config/options/terminal.html#configtrait-InteractiveShell.ast_node_interactivity).
+
+You can control this behavior with the `ipynb-shell-interactivity` option. For example, to capture all top-level expressions set it to `all`:
+
+``` yaml
+---
+title: All expressions
+format: html
+ipynb-shell-interactivity: all
+---
+```
+
+Now the above code cell results in the output:
+
+``` markdown
+'first'
+
+'last'
+```
+
+::: callout-note
+## All Expressions are Printed in Dashboards
+
+For [dashboards](/docs/dashboards/) the default setting of `ipynb-shell-interactivity` is `all.`
+:::
+
 ## Intermediates
 
 On the way from markdown input to final output, there are some intermediate files that are created and automatically deleted at the end of rendering. You can use the following options to keep these intermediate files:
