@@ -35,20 +35,22 @@ project:
 
 Then, add a `.nojekyll` file to the root of your repository that tells GitHub Pages not to do additional processing of your published site using Jekyll (the GitHub default site generation tool):
 
-+-----------+---------------------------------+
-| Mac/Linux | ``` {.bash filename="Terminal"} |
-|           | touch .nojekyll                 |
-|           | ```                             |
-+-----------+---------------------------------+
-| Windows   | ``` {.bash filename="Terminal"} |
-|           | copy NUL .nojekyll              |
-|           | ```                             |
-+-----------+---------------------------------+
++---------------+---------------------------------+
+| Mac/Linux     | ``` {.bash filename="Terminal"} |
+|               | touch .nojekyll                 |
+|               | ```                             |
++---------------+---------------------------------+
+| Windows       | ``` {.bash filename="Terminal"} |
+|               | copy NUL .nojekyll              |
+|               | ```                             |
++---------------+---------------------------------+
 
 Now, render your site and push it to GitHub:
 
 ``` {.bash filename="Terminal"}
 quarto render
+git add docs
+git commit -m "Publish site to docs/"
 git push
 ```
 
@@ -62,17 +64,22 @@ Once you've made this configuration change GitHub will trigger a deployment of y
 
 The `quarto publish` command is an easy way to publish locally rendered documents and websites. Before attempting to use `quarto publish` (either locally or from a GitHub Action) you should be sure to configure the [Source Branch](#source-branch) and [Ignore Output](#ignoring-output) as described below.
 
-::: callout-caution
-## Windows Compatibility
-
-Many users have reported problems with using `quarto publish gh-pages` on Windows systems. We are investigating and hoping to have a fix for this soon, but in the meantime we recommend against using `quarto publish gh-pages` on Windows (rather, try using the [Render to `docs`](#render-to-docs) workflow described above).
-:::
-
 ### Source Branch {#source-branch}
 
-Before attempting to publish you should ensure that the **Source** branch for your repository is `gh-pages` and that the site directory is set to the repository root (`/`). You can modify these options in **Settings** : **Pages** for your repository. For example:
+Before attempting to publish you should ensure that the **Source** branch for your repository is `gh-pages` and that the site directory is set to the repository root (`/`). You can modify these options in **Settings** : **Pages** for your repository. For example, if you already have a `gh-pages` branch:
 
 ![](images/gh-pages-user-site.png){.border}
+
+If you do not already have a `gh-pages` branch, you can create one as follows. First, make sure you have committed all changes to your current working branch with `git status`. Then:
+
+``` {.bash filename="Terminal"}
+git checkout --orphan gh-pages
+git reset --hard # make sure all changes are committed before running this!
+git commit --allow-empty -m "Initialising gh-pages branch"
+git push origin gh-pages
+```
+
+Double-check that the last `git push` action has indeed set the **Settings** : **Pages** for your repository as expected in the previous figure. Get back to your original repository branch with, for example, `git checkout main`.
 
 ### Ignoring Output {#ignoring-output}
 
@@ -124,7 +131,13 @@ Note that an alternative approach is to execute the code as part of the GitHub A
 
 #### Publish Action
 
-Add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
+Before configuring the publishing action, it's important that you run `quarto publish gh-pages` locally, once. This will create the `_publish.yml` configuration required by the subsequent invocations of the GitHub Action. To do this, run the following from within your project:
+
+``` bash
+quarto publish gh-pages
+```
+
+Once you've completed a local publish, add a `publish.yml` GitHub Action to your project by creating this YAML file and saving it to `.github/workflows/publish.yml`:
 
 ``` {.yaml filename=".github/workflows/publish.yml"}
 on:
@@ -141,7 +154,7 @@ jobs:
       contents: write
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -153,6 +166,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+This action will run whenever you push to the `main` branch of your repository. It will also run when you manually trigger the action from the **Actions** tab of your repository. The action will render your content and publish it to GitHub Pages, thus you need to ensure that GitHub Actions has permission to write to your repository. This is done by checking the **Read and write permissions** box under **Workflow permissions** in the **Actions** section of your repository **Settings**.
 
 Once you've done this, check all of the newly created files (including the `_freeze` directory) into your repository and then push to GitHub. A GitHub Pages site will be created for your repository, and every time you push a new change to the repository it will be automatically rebuilt to reflect the change. Consult the **Pages** section of your repository **Settings** to see what the URL and publish status for your site is.
 
@@ -177,7 +192,7 @@ jobs:
       contents: write
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -217,7 +232,7 @@ jobs:
       contents: write
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2

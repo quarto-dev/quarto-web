@@ -1,18 +1,18 @@
 ---
-title: "RStudio Connect"
+title: "Posit Connect"
 editor: visual
 heading-pad: '#'
 ---
 
 ## Overview
 
-[RStudio Connect](https://www.rstudio.com/products/connect/) is a publishing platform for secure sharing of data products within an organization. Use RStudio Connect when you want to publish content within an organization rather than on the public internet.
+[Posit Connect](https://www.rstudio.com/products/connect/) is a publishing platform for secure sharing of data products within an organization. Use Posit Connect when you want to publish content within an organization rather than on the public internet.
 
-There are several ways to publish Quarto content to RStudio Connect:
+There are several ways to publish Quarto content to Posit Connect:
 
 1.  Use the `quarto publish` command to publish static content rendered on your local machine.
 
-2.  Use the [rsconnect-python](https://docs.rstudio.com/rsconnect-python/) Python package or [quarto](https://quarto-dev.github.io/quarto-r/) R package to publish code for rendering on an RStudio Connect server (e.g. for a scheduled report).
+2.  Use the [rsconnect-python](https://docs.rstudio.com/rsconnect-python/) Python package or [quarto](https://quarto-dev.github.io/quarto-r/) R package to publish code for rendering on an Posit Connect server (e.g. for a scheduled report).
 
 3.  Use Connect's support for [Git backed content](https://docs.rstudio.com/connect/user/git-backed/) to automatically re-publish content when code is checked in to a Git repository.
 
@@ -74,7 +74,7 @@ The tools for publishing code differ depending on whether you are using the Knit
 
 ### Knitr (R)
 
-The [quarto](https://quarto-dev.github.io/quarto-r/) R package includes a set of publishing functions that you can use for publishing Quarto projects with R code to RStudio Connect. For example, here we publish a document and a website:
+The [quarto](https://quarto-dev.github.io/quarto-r/) R package includes a set of publishing functions that you can use for publishing Quarto projects with R code to Posit Connect. For example, here we publish a document and a website:
 
 ``` r
 library(quarto)
@@ -105,7 +105,7 @@ See the article on [Quarto Publishing from R](https://quarto-dev.github.io/quart
 
 #### RStudio IDE
 
-If you are using the RStudio IDE, there is also support for push-button publishing to RStudio Connect. Use the publish button <kbd>![](images/publish-button.png){width="23" height="20"}</kbd> from the source editor or viewer pane to publish a document or a website:
+If you are using the RStudio IDE, there is also support for push-button publishing to Posit Connect. Use the publish button <kbd>![](images/publish-button.png){width="23" height="20"}</kbd> from the source editor or viewer pane to publish a document or a website:
 
 ![](images/rstudio-publish.png){.border}
 
@@ -113,9 +113,9 @@ See the Connect documentation on [Publishing from the RStudio IDE](https://docs.
 
 ### Jupyter (Python)
 
-The [rsconnect-python](https://docs.rstudio.com/rsconnect-python/) Python package provides a command line interface (CLI) that you can use to publish Quarto documents and websites that use Jupyter to RStudio Connect. To use the CLI:
+The [rsconnect-python](https://docs.rstudio.com/rsconnect-python/) Python package provides a command line interface (CLI) that you can use to publish Quarto documents and websites that use Jupyter to Posit Connect. To use the CLI:
 
-1.  First, install the rsconnect-python package and configure an RStudio Connect server for publishing: <https://docs.rstudio.com/connect/user/connecting-cli/>
+1.  First, install the rsconnect-python package and configure an Posit Connect server for publishing: <https://docs.rstudio.com/connect/user/connecting-cli/>
 
 2.  Then, use the `rsconnect deploy quarto` command from your project directory:
 
@@ -139,13 +139,13 @@ See the article on [Publishing Jupyter Notebooks](https://docs.rstudio.com/conne
 
 ## Publishing from Git
 
-Content may be deployed to RStudio Connect directly from a remote Git repository. Content will automatically fetch from the associated remote Git repository and re-deploy. This allows for integration with Git-centric workflows and continuous deployment automation.
+Content may be deployed to Posit Connect directly from a remote Git repository. Content will automatically fetch from the associated remote Git repository and re-deploy. This allows for integration with Git-centric workflows and continuous deployment automation.
 
-In order to deploy Git-backed content to RStudio Connect you'll follow a two step process:
+In order to deploy Git-backed content to Posit Connect you'll follow a two step process:
 
 1.  Create and commit a manifest file (this includes information on the R or Python dependencies required to render your content)
 
-2.  Link RStudio Connect to the Git repository
+2.  Link Posit Connect to the Git repository
 
 Note that Quarto must be installed on the Connect server before you attempt to publish from Git (this is typically done by an administrator, see the [Quarto Installation](https://docs.rstudio.com/resources/install-quarto/) documentation for additional details).
 
@@ -199,8 +199,8 @@ You can publish Quarto content to Connect using any CI service by scripting the 
 
 | Variable          | Description                                                                |
 |------------------|------------------------------------------------------|
-| `CONNECT_SERVER`  | Address of RStudio Connect server (e.g., `https://connect.example.com`).    |
-| `CONNECT_API_KEY` | RStudio Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) |
+| `CONNECT_SERVER`  | Address of Posit Connect server (e.g., `https://connect.example.com`).    |
+| `CONNECT_API_KEY` | Posit Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) |
 
 You will furthermore need to specify the ID of the target content to update. This will most frequently be drawn from the `_publish.yml` file that is saved into your project directory during publishing. For example:
 
@@ -233,7 +233,7 @@ If your CI service is [GitHub Actions](https://docs.github.com/en/actions) then 
 
 Before creating the publish action, you need to ensure that your repository has the credentials required for publishing to Connect. You can do this as follows:
 
-1.  If you don't already have one, create an RStudio Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) from the requisite Connect server and then copy it to the clipboard.
+1.  If you don't already have one, create an Posit Connect [API Key](https://docs.rstudio.com/connect/user/api-keys/) from the requisite Connect server and then copy it to the clipboard.
 
 2.  Add the Connect API Key to your repository's action **Secrets** (accessible within repository **Settings**). You will see a **New repository secret** button at the top right:
 
@@ -260,7 +260,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v4 
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -304,7 +304,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v4 
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -342,7 +342,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2 
+        uses: actions/checkout@v4 
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2

@@ -8,7 +8,8 @@ In addition to the 3 built in types of listings, you can also build a completely
 
 ## Listing Templates
 
-To build a custom listing display, you create an [EJS template](https://ejs.co) that will be used to generate the HTML for a set of items that are passed to the template. EJS templates allow to generate HTML using plain javascript, making it easy to loop through items and output their values in your custom HTML.
+To build a custom listing display, you create an [EJS template](https://ejs.co) that will be used to generate the HTML for a set of items that are passed to the template. EJS templates allow you to generate HTML using plain javascript, making it easy to loop through items and output their values in your custom HTML.
+
 
 To use a custom template, pass it in the `template` option for a listing:
 
@@ -27,21 +28,30 @@ listing:
 
 A simple template for outputing a list of documents might look like:
 
-```` html
-```{=html}
+``` html
 <ul>
 <% for (const item of items) { %>
   <li><a href="<%- item.path %>"><%= item.title %></a></li>
 <% } %>
 </ul>
 ```
-````
 
 which produces simple HTML output like:
 
 ![](images/listing-custom-output.png){.border}
 
-When rendered, the above template will receive an array of listing items called `items.` When the contents of a listing are loaded from a list a documents, each of those items will be populated with the fields described in [Listing Item Fields](website-listings.qmd#listing-item-fields). In addition, any other fields included in a documents metadata will be passed as a property of the item, making it possible to use custom metadata in your documents and the listing display.
+When rendered, the above template will receive an array of listing items called `items`. When the contents of a listing are loaded from a list of documents, each of those items will be populated with the fields described in [Listing Item Fields](website-listings.qmd#listing-item-fields). In addition, any other fields included in a documents metadata will be passed as a property of the item, making it possible to use custom metadata in your documents and the listing display.
+
+::: {.callout-note}
+
+Note that Quarto uses `lodash` to render the EJS templates. The `lodash` uses different syntax for HTML escaping text in templates. 
+
+````
+HTML escaped value:   <%- value %>
+HTML unescaped value: <%= value %>
+````
+
+:::
 
 ## Metadata Listings
 
@@ -124,8 +134,7 @@ By default, sorting, filtering, and pagination are disabled for custom listings 
 
 For example, we can modify the above `custom.ejs` template as follows:
 
-```` html
-```{=html}
+``` html
 <ul class="list">
 <% for (const item of items) { %>
   <li <%= metadataAttrs(item) %>>
@@ -135,9 +144,8 @@ For example, we can modify the above `custom.ejs` template as follows:
 <% } %>
 </ul>
 ```
-````
 
-Once you have included these items in your template, can you then enable the options in your listing:
+Once you have included these items in your template, you can then enable the options in your listing:
 
 ``` yaml
 listing:
@@ -167,9 +175,9 @@ listing:
 
 ### Date Sorting and Formatting
 
-To properly format and sort date values, you can specify type information for fields in your items. If you specify a field is a date, it will automatically be formatted using the specified date formatting (either default or specified using `date-format`) and will support date sorting in ascending or descending order. If you specific a field as a number, it will support ascending and descending numeric sorting.
+To properly format and sort date values, you can specify type information for fields in your items. If you specify a field is a date, it will automatically be formatted using the specified date formatting (either default or specified using `date-format`) and will support date sorting in ascending or descending order. If you specify a field as a number, it will support ascending and descending numeric sorting.
 
-You and specify field types as follows
+You can specify field types as follows:
 
 ``` yaml
 listing:
@@ -193,4 +201,30 @@ listing:
   field-required: [name, custom-field]
 ```
 
-If the listing page is rendered an any of contents are missing a value for either of the required fields, an error will be thrown noting the field that is required and the file or metadata that has omitted it.
+If the listing page is rendered and any of contents is missing a value for either of the required fields, an error will be thrown noting the field that is required and the file or metadata that has omitted it.
+
+## Template Parameters
+
+You may also make your custom template more dynamic by using parameters to control its behavior. You can provide parameters for custom templates using the `template-params` option like:
+
+```yaml
+listing:
+  template: custom.ejs
+  contents:
+    - items.yml
+  template-params:
+    param1: "param-value"
+```
+
+Template parameters can then be accessed in your template using `<%= params.param1 %>`. For example, we can modify the above `custom.ejs` template as follows:
+
+``` html
+<h3><%= templateParams.param1 %></h3>
+<ul class="pub-list list">
+  <% for (const item of items) { %>
+      <li <%= metadataAttrs(item) %>>
+        <span class="listing-title"><%= item.title %>.</span>
+      </li>
+  <% } %>
+</ul>
+```

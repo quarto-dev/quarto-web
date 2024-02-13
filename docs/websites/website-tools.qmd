@@ -6,14 +6,19 @@ title: "Website Tools"
 
 You can provide standard headers and footers for pages on your site. These can apply to the main document body or to the sidebar. Available options include:
 
++-----------------+---------------------------------------------------------------------------------------------+
 | Value           | Description                                                                                 |
-|-----------------|---------------------------------------------------------------------------------------------|
++=================+=============================================================================================+
 | `body-header`   | Markdown to insert at the beginning of each page's body (below the title and author block). |
++-----------------+---------------------------------------------------------------------------------------------+
 | `body-footer`   | Markdown to insert below each page's body.                                                  |
++-----------------+---------------------------------------------------------------------------------------------+
 | `margin-header` | Markdown to insert above right margin content (i.e. table of contents).                     |
++-----------------+---------------------------------------------------------------------------------------------+
 | `margin-footer` | Markdown to insert below right margin content.                                              |
++-----------------+---------------------------------------------------------------------------------------------+
 
-For example (included in _quarto.yml) :
+For example (included in \_quarto.yml) :
 
 ``` yaml
 body-header: | 
@@ -21,6 +26,7 @@ body-header: |
 margin-header: |
   ![Logo image](/img/logo.png)
 ```
+
 Note that links to figures should start with a `/` to work on each level of the website.
 
 ## Social Metadata
@@ -33,7 +39,7 @@ You can enhance your website and the content that you publish to it by including
 
 {{< include ../books/_book-vs-website-key.qmd >}}
 
-As you read the documentation below, keep in mind to substitute `book` for `website` if you are authoring a book. 
+As you read the documentation below, keep in mind to substitute `book` for `website` if you are authoring a book.
 
 ### Favicon
 
@@ -64,7 +70,8 @@ You may also provide additional metadata to be used when generating the Twitter 
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `description` | A short description of the content. Quarto will automatically use the `description` metadata from the page metadata. If you'd like you can override this just for the Twitter Card by including a `description` in the `twitter-card` metadata.                                        |
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `image`       | The path to a preview image for this content. By default, Quarto will use the `image` value from the `site:` metadata. If you provide an image, you may also optionally provide an `image-width` and `image-height` to improve the appearance of your Twitter Card.                    |
+| `image`       | The path to a preview image for this content.  By default, Quarto will use the `image` value from the document metadata, or if that isn't specified, the `image` value from the `website:` metadata.                                                                                   |
+|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` to improve the appearance of your Twitter Card.                                                                                                                                           |
 |               |                                                                                                                                                                                                                                                                                        |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                                                   |
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -80,7 +87,7 @@ Here is a more comprehensive example of specifying Twitter Card metadata in a `q
 ``` yaml
 website:
   twitter-card:
-    creator: "@dragsonstyle"
+    creator: "@dragonstyle"
     site: "@rstudio"
 ```
 
@@ -106,13 +113,14 @@ You may also provide additional metadata to be used when generating the Open Gra
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `description` | A short description of the content. Quarto will automatically use the `description` metadata from the page metadata. If you'd like you can override this just for the Open Graph metadata by including a `description` in the `open-graph` metadata. |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `image`       | The path to a preview image for this content. By default, Quarto will use the `image` value from the `site:` metadata. If you provide an image, you may also optionally provide an `image-width` and `image-height`.                                 |
+| `image`       | The path to a preview image for this content.  By default, Quarto will use the `image` value from the document metadata, or if that isn't specified, the `image` value from the `website:` metadata.                                                 |
+|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` to improve the appearance of your Twitter Card.                                                                                                         |
 |               |                                                                                                                                                                                                                                                      |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                 |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `locale`      | The locale that the Open Graph metadata is marked up in.                                                                                                                                                                                             |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `site-name`   | The name which should be displayed for the overall site. If not explicitly provided in the `open-graph` metadata, Quarto will use the `site:title` value.                                                                                            |
+| `site-name`   | The name which should be displayed for the overall site. If not explicitly provided in the `open-graph` metadata, Quarto will use the `website:title` value.                                                                                         |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here is a more comprehensive example of specifying Open Graph metadata in a `quarto.yml` file:
@@ -130,30 +138,28 @@ Quarto will automatically merge global metadata found in the `website: open-grap
 
 You can specify a preview image for your article in several different ways:
 
-1.  You can explicitly provide a full url to the preview image using the `image` field in the appropriate metadata. For example:
+1.  **Full URL**: You can explicitly provide a full url to the preview image using the `image` field in the appropriate metadata. For example:
 
-    ``` yaml
+    ``` {.yaml filename="page.qmd"}
     title: "My Document"
-    twitter-card:
-      image: "https://quarto.org/docs/websites/images/tools.png"
+    image: "https://quarto.org/docs/websites/images/tools.png"
     ```
 
-2.  You may provide a document relative path to an image (such as `images/preview-code.png`) or a project relative path to an image (such as `/images/preview-code.png`). If you provide a relative path such as this, you must also provide a `site-url` in your site's metadata. For example in your `_quarto.yml` configuration file:
+2.  **Relative Path**: You may provide a document relative path to an image (such as `images/preview-code.png`) or a project relative path to an image (such as `/images/preview-code.png`). If you provide a relative path such as this, you must also provide a `site-url` in your site's metadata. For example in your `_quarto.yml` configuration file:
 
-    ``` yaml
+    ``` {.yaml filename="_quarto.yml"}
     website:
       site-url: "https://www.quarto.org"
     ```
 
     and in your document front matter:
 
-    ``` yaml
+    ``` {.yaml filename="page.qmd"}
     title: "My Document"
-    twitter-card:
-      image: "/docs/websites/images/tools.png"
+    image: "/docs/websites/images/tools.png"
     ```
 
-3.  Any image that is being rendered in the page may also be used as a preview image by giving it the class name `preview-image`. Quarto will select the first image it finds with this class. For example, the following image will be used as the preview image when included on a page:
+3.  **Image Class**: Any image that is being rendered in the page may also be used as a preview image by giving it the class name `preview-image`. Quarto will select the first image it finds with this class. For example, the following image will be used as the preview image when included on a page:
 
     ``` markdown
     ![](images/tools.png){.preview-image}
@@ -161,7 +167,22 @@ You can specify a preview image for your article in several different ways:
 
     If you label an image with this class, you must also provide a `site-url` in your site's metadata.
 
-4.  If none of the above ways of specifying a preview image have been used, Quarto will attempt to find a preview image by looking for an image included in the rendered document with one of the following names: `preview.png`, `feature.png`, `cover.png`, or `thumbnail.png`.
+4.  **Image Filename**: If none of the above ways of specifying a preview image have been used, Quarto will attempt to find a preview image by looking for an image included in the rendered document with one of the following names: `preview.png`, `feature.png`, `cover.png`, or `thumbnail.png`.
+
+If you'd like to provide a default that is used when pages specify a preview image in none of the above ways, specify it at the site level:
+
+```{.yaml filename="_quarto.yml"}
+website:
+  image: "https://quarto.org/quarto-dark-bg.jpeg"
+```
+
+If you would like to prevent preview image discovery on a page, set `image` to `false`:
+
+```{.yaml filename="page.qmd"}
+---
+image: false
+---
+```
 
 ## Google Analytics
 
@@ -183,7 +204,7 @@ In addition to this basic configuration, you can exercise more fine grained cont
 +----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `storage`      | **cookies -** Use cookies to store unique user and session identification (default).                                                                                                                |
 |                |                                                                                                                                                                                                     |
-|                | **none** - Do not use cookies to store unique user and session identification.                                                                                                                      |
+|                | **none -** Do not use cookies to store unique user and session identification.                                                                                                                      |
 |                |                                                                                                                                                                                                     |
 |                | For more about choosing storage options see [Storage].                                                                                                                                              |
 +----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -191,6 +212,8 @@ In addition to this basic configuration, you can exercise more fine grained cont
 +----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `version`      | The version number of Google Analytics to use. Currently supports either 3 (for analytics.js) or 4 (for gtag). This is automatically detected based upon the `tracking-id`, but you may specify it. |
 +----------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+: {tbl-colwidths="[20,80]"}
 
 ### Storage
 
@@ -208,7 +231,7 @@ If you choose `none` for storage, this will have the following effects:
 
 Quarto includes the ability to request cookie consent before enabling scripts that set cookies, using [Cookie Consent](https://www.cookieconsent.com).
 
-The user's cookie preferences will automatically control [Google Analytics] (if enabled) and can be used to control custom scripts you add as well (see [Custom Scripts and Cookie Consent]. You can enable the default request for cookie consent using the following:
+The user's cookie preferences will automatically control [Google Analytics] (if enabled) and can be used to control custom scripts you add as well (see [Custom Scripts and Cookie Consent]). You can enable the default request for cookie consent using the following:
 
 ``` yaml
 website:
@@ -242,10 +265,15 @@ You can further customize the appearance and behavior of the consent using the f
 |              |                                                                                                                                                                                      |
 |              | **dark -** A dark colored banner.                                                                                                                                                    |
 +--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `language`   | The language to be used when displaying the cookie consent prompt specified using an IETF language tag.                                                                              |
+|              | If not specified, the document language will be used.                                                                                                                                |
++--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `policy-url` | The url to the website's cookie or privacy policy.                                                                                                                                   |
 +--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `prefs-text` | The text to display for the cookie preferences link in the website footer.                                                                                                           |
 +--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+: {tbl-colwidths="[20,80]"}
 
 A custom example might look more like:
 
@@ -278,12 +306,17 @@ Cookie Consent works by preventing the execution of scripts unless the user has 
 
 2.  Add a `cookie-consent` attribute to your script tag, setting it one of the following 4 levels:
 
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | Level                | Description                                                                                                            |
-    |----------------------|------------------------------------------------------------------------------------------------------------------------|
+    +======================+========================================================================================================================+
     | `strictly-necessary` | Strictly scripts are loaded automatically and cannot be disabled by the user.                                          |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | `functionality`      | Scripts that are required for basic functionality of the website, for example, remembering a user language preference. |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
     | `tracking`           | Scripts that are used to track users, for example [Google Analytics].                                                  |
-    | `targeting`          | Scripts that are used for the purposed of advertising to ad targeting, for example Google AdSense remarketing.         |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
+    | `targeting`          | Scripts that are used for the purpose of advertising to ad targeting, for example Google AdSense remarketing.          |
+    +----------------------+------------------------------------------------------------------------------------------------------------------------+
 
 An example script that is used for user tracking would look like:
 
@@ -337,9 +370,11 @@ theme:
 For more about selecting the dark and light themes for your website, see [Dark Mode](../output-formats/html-themes.html#dark-mode).
 
 ::: column-page-outset
++--------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
 | Light                                                                                                        | Dark                                                                                                      |
-|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
++==============================================================================================================+===========================================================================================================+
 | ![](images/site-light.png){fig-alt="A Quarto sidebar showing a light theme. The 'Dark mode' toggle is off."} | ![](images/site-dark.png){fig-alt="A Quarto sidebar showing a dark theme. The 'Dark mode' toggle is on."} |
++--------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------+
 :::
 
 When enabled, a toggle that allows your reader to control the appearance of the website will appear. The toggle will automatically be added to the website navigation as follows:

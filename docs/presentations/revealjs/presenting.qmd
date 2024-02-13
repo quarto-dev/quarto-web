@@ -200,7 +200,7 @@ When you click on a hyperlink with `preview-links: true`, the link will be navig
 
 Available values for `preview-link` include:
 
-| Option  | Description                                                                             |
+| Value   | Description                                                                             |
 |---------|-----------------------------------------------------------------------------------------|
 | `auto`  | Preview links when presenting in full-screen mode (otherwise navigate to them normally) |
 | `true`  | Always preview links                                                                    |
@@ -224,6 +224,8 @@ You can also set this option on a per-link basis. These two links respectively e
 
 [NoPreview](https://example.com){preview-link="false"}
 ```
+
+Previewing website in HTML format will use an `<iframe>`, which not all websites will allow (e.g. they could set in their respone header [`X-Frame-Options` to `deny`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options), or [`frame-ancestor` restriction in their `Content-Security-Policy`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors)). If a website disallow `iframe` usage, the preview will not be working in the Quarto document output.
 
 ## Slide Tone
 
@@ -290,7 +292,7 @@ There are two main ways to publish Reveal presentations:
     Note that specifying `embed-resources` can slow down rendering by a couple of seconds, so you may want to enable `embed-resources` only when you are ready to publish. Also note that Reveal plugin [Chalkboard] is not compatible with `embed-resources` --- when [Chalkboard] plugin is enabled, specifying `embed-resources: true` will result an error.
     :::
 
-See the documentation on [Publishing HTML](../../publishing/index.qmd) for details on additional ways to publish Reveal presentations including GitHub Pages and RStudio Connect.
+See the documentation on [Publishing HTML](../../publishing/index.qmd) for details on additional ways to publish Reveal presentations including GitHub Pages and Posit Connect.
 
 ## Navigation Options
 
@@ -397,8 +399,8 @@ The following options are available to customize the behavior and appearance of 
 | `chalk-width`       | The drawing width of the chalk; larger values draw thicker lines. Defaults to `7`.                                                                  |
 | `chalk-effect`      | A float in the range `[0.0, 1.0]`, the intensity of the chalk effect on the chalk board. Full effect (default) `1.0`, no effect `0.0`.              |
 | `src`               | Optional file name for pre-recorded drawings (download drawings using the <kbd>D</kbd> key).                                                        |
-| `read-only`         | Configuration option to prevent changes to existing drawings. If set to `true` no changes can be made, if set to false `false` changes can be made, |
-| `buttons`           | Add chalkboard buttons at the bottom of the slide (defaults to `true`)                                                                              |
+| `read-only`         | Configuration option to prevent changes to existing drawings. `true`: no changes can be made, `false` (default): changes can be made.               |
+| `buttons`           | Add chalkboard buttons at the bottom of the slide (defaults to `true`).                                                                             |
 | `transition`        | Gives the duration (in milliseconds) of the transition for a slide change, so that the notes canvas is drawn after the transition is completed.     |
 
 For example, the following configuration specifies that we want to use the `whiteboard` theme with a (thicker) boardmarker width, and that we want to hide the chalkboard buttons at the bottom of each slide:
@@ -415,7 +417,7 @@ format:
 ---
 ```
 
-If you disable the chalkboard buttons globally you can selectively re-enable them for indvidual slides with the `chalkboard-buttons` attribute. For example:
+If you disable the chalkboard buttons globally you can selectively re-enable them for inidvidual slides with the `chalkboard-buttons` attribute. For example:
 
 ``` markdown
 ## Slide Title {chalkboard-buttons="true"}

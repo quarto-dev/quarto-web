@@ -24,21 +24,16 @@ local function injectChooseYourTool()
   end
 end
 
-function Div(el)
-  if el.classes:includes("panel-tabset") then
-    if el.attributes["group"] == "tools-tabset" then
-      injectChooseYourTool()
-      return el:walk({
-        Header = function(headingEl)
-          local text = pandoc.utils.stringify(headingEl.content)
-          local icon = kTabsetIcons[text]
-          if icon then
-            headingEl.content:insert(1, pandoc.Image("", "/docs/get-started/images/" .. icon))
-            return headingEl
-          end
-        end
-      })
+function Tabset(el)
+  if el.attr.attributes["group"] == "tools-tabset" then
+    injectChooseYourTool()
+    for i, tab in ipairs(el.tabs) do
+      local text = pandoc.utils.stringify(tab.title)
+      local icon = kTabsetIcons[text]
+      if icon then
+        tab.title.content:insert(1, pandoc.Image("", "/docs/get-started/images/" .. icon))
+      end
     end
   end
-
+  return el
 end

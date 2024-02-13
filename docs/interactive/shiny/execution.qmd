@@ -89,7 +89,7 @@ Sharing code between rendering contexts works a bit differently depending on if 
 
 To have code execute in both rendering and serving contexts, create a code chunk with `context: setup`. For example:
 
-``` {{r}}
+```{{r}}
 #| context: setup
 #| include: false
 
@@ -109,7 +109,7 @@ The loading and manipulation of data often dominates the startup time of Shiny a
 
 You can define prerendered data by adding the `context: data` option to an R code chunk. The chunk will be executed during render and any R objects it creates will be saved to an .RData file, which will then be loaded during Shiny server startup. For example, we could take the the setup chunk illustrated above and factor out the data loading into its own chunk:
 
-``` {{r}}
+```{{r}}
 #| context: data
 #| include: false
 
@@ -123,7 +123,7 @@ Note that R objects created within a `context: data` chunk are available to both
 
 You can further improve the performance of data rendering by adding the `cache: true` option to the data chunk. This will cause the code chunk to be re-executed only when required. For example:
 
-``` {{r}}
+```{{r}}
 #| context: data
 #| include: false
 #| cache: true
@@ -139,7 +139,7 @@ You can also invalidate an existing cache by removing the `_cache` directory alo
 
 #### context: server-start
 
-There is one additional execution context that enables you to share code and data across multiple user sessions. Chunks with `context: server-start` executee once when the Shiny document is first run and are *not* re-executed for each new user of the document. Using `context: server-start` is appropriate for several scenarios including:
+There is one additional execution context that enables you to share code and data across multiple user sessions. Chunks with `context: server-start` execute once when the Shiny document is first run and are *not* re-executed for each new user of the document. Using `context: server-start` is appropriate for several scenarios including:
 
 1.  Establishing shared connections to remote servers (e.g. databases, Spark contexts, etc.).
 
@@ -147,7 +147,7 @@ There is one additional execution context that enables you to share code and dat
 
 For example:
 
-``` {{r}}
+```{{r}}
 #| context: server-start
 
 library(DBI)

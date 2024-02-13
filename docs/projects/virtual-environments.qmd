@@ -9,13 +9,15 @@ There are several popular flavors of virtual environment, we will cover the foll
 
 1.  [venv](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment) (built into Python 3)
 
-2.  [conda](https://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab) (built in to Anaconda/Miniconda)
+2.  [conda](https://towardsdatascience.com/managing-project-specific-environments-with-conda-406365a539ab) (built into Anaconda/Miniconda)
 
 3.  [renv](https://rstudio.github.io/renv/articles/renv.html) (package for managing R environments)
 
-Below we'll provide some example workflows for using these tools with Quarto. In these examples we'll assume that you are already within a project directory that contains Quarto documents (so the environment will be created as a sub-directory of the project).
+Below we'll provide some example workflows for using these tools with Quarto. In these examples we'll assume that you are already within a project directory that contains Quarto documents (so the virtual environment will be created as a sub-directory of the project).
 
 We'll also cover using virtual environments with [JupyterLab](#jupyterlab), [RStudio](#rstudio), and [VS Code](#vs-code).
+
+Quarto can also detect the virtual environments discussed on this page to configure your project for Binder. Read more at [Using Quarto with Binder](binder.qmd).
 
 ## Using venv {#using-venv .platform-table}
 
@@ -23,27 +25,35 @@ Here we'll provide a brief run through of creating a venv for a Quarto project. 
 
 To create a new Python 3 virtual environment in the directory `env`:
 
-+--------------+-------------------------+
-| Platform     | Command                 |
-+==============+=========================+
-| Windows      |     py -m venv env      |
-+--------------+-------------------------+
-| Mac/Linux    |     python3 -m venv env |
-+--------------+-------------------------+
++--------------+------------------------------------------------+
+| Platform     | Command                                        |
++==============+================================================+
+| Mac/Linux    | ```{.bash filename="Terminal"}                 |
+|              | python3 -m venv env                            |
+|              | ```                                            |
++--------------+------------------------------------------------+
+| Windows      | ```{.powershell filename="Terminal"}           |
+|              | py -m venv env                                 |
+|              | ```                                            |
++--------------+------------------------------------------------+
 
 To use the environment you need to activate it. This differs slightly depending on which platform / shell you are using:
 
-+---------------+------------------------------+
-| Shell         | Command                      |
-+===============+==============================+
-| Windows\      |     env\Scripts\activate.bat |
-| (Command)     |                              |
-+---------------+------------------------------+
-| Windows\      |     env\Scripts\Activate.ps1 |
-| (PowerShell)  |                              |
-+---------------+------------------------------+
-| Mac/Linux     |     source env/bin/activate  |
-+---------------+------------------------------+
++---------------+-----------------------------------------+
+| Shell         | Command                                 |
++===============+=========================================+
+| Mac/Linux     | ```{.bash filename="Terminal"}          |
+|               | source env/bin/activate                 |
+|               | ```                                     |
++---------------+-----------------------------------------+
+| Windows\      | ```{.powershell filename="Terminal"}    |
+| (Command)     | env\Scripts\activate.bat                |
+|               | ```                                     |
++---------------+-----------------------------------------+
+| Windows\      | ```{.powershell filename="Terminal"}    |
+| (PowerShell)  | env\Scripts\Activate.ps1                |
+|               | ```                                     |
++---------------+-----------------------------------------+
 
 ::: callout-note
 #### PowerShell Note
@@ -55,14 +65,18 @@ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 ```
 :::
 
-Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. ip to install packages into your environment. For example:
+Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Using `pip` to install packages into your environment. For example:
 
 +--------------+------------------------------------------------------+
 | Platform     | Command                                              |
 +==============+======================================================+
-| Windows      |     py -m pip install jupyter matplotlib pandas      |
+| Mac/Linux    | ```{.bash filename="Terminal"}                       |
+|              | python3 -m pip install jupyter matplotlib pandas     |
+|              | ```                                                  |
 +--------------+------------------------------------------------------+
-| Mac/Linux    |     python3 -m pip install jupyter matplotlib pandas |
+| Windows      | ```{.powershell filename="Terminal"}                 |
+|              | py -m pip install jupyter matplotlib pandas          |
+|              | ```                                                  |
 +--------------+------------------------------------------------------+
 
 Assuming you installed all of the required packages (likely more than just `pandas` and `matplotlib`) you should now be able to `quarto render` documents within the directory.
@@ -80,9 +94,13 @@ To make your environment reproducible, you need to create a `requirements.txt` f
 +--------------+----------------------------------------------+
 | Platform     | Command                                      |
 +==============+==============================================+
-| Windows      |     py -m pip freeze > requirements.txt      |
+| Mac/Linux    | ```{.bash filename="Terminal"}               |
+|              | python3 -m pip freeze > requirements.txt     |
+|              | ```                                          |
 +--------------+----------------------------------------------+
-| Mac/Linux    |     python3 -m pip freeze > requirements.txt |
+| Windows      | ```{.powershell filename="Terminal"}         |
+|              | py -m pip freeze > requirements.txt          |
+|              | ```                                          |
 +--------------+----------------------------------------------+
 
 You should generally check the `requirements.txt` file into version control.
@@ -98,9 +116,13 @@ Then, install packages from `requirements.txt`:
 +--------------+------------------------------------------------+
 | Platform     | Command                                        |
 +==============+================================================+
-| Windows      |     py -m pip install -r requirements.txt      |
+| Mac/Linux    | ```{.bash filename="Terminal"}                 |
+|              | python3 -m pip install -r requirements.txt     |
+|              | ```                                            |
 +--------------+------------------------------------------------+
-| Mac/Linux    |     python3 -m pip install -r requirements.txt |
+| Windows      | ```{.bash filename="Terminal"}                 |
+|              | py -m pip install -r requirements.txt          |
+|              | ```                                            |
 +--------------+------------------------------------------------+
 
 ## Using conda {.platform-table}
@@ -115,33 +137,41 @@ conda create --prefix env python
 
 If this is the first time you've used conda in your shell, you may need to execute one of the following commands before using other conda tools:
 
-+--------------------+---------------------------+
-| Shell              | Command                   |
-+====================+===========================+
-| Windows\           |     conda init cmd.exe    |
-| (Command)          |                           |
-+--------------------+---------------------------+
-| Windows\           |     conda init powershell |
-| (PowerShell)       |                           |
-+--------------------+---------------------------+
-| Linux / Older Mac\ |     conda init bash       |
-| (Bash)             |                           |
-+--------------------+---------------------------+
-| Newer Mac\         |     conda init zsh        |
-| (Zsh)              |                           |
-+--------------------+---------------------------+
++--------------------+---------------------------------------+
+| Shell              | Command                               |
++====================+=======================================+
+| Newer Mac\         | ```{.bash filename="Terminal"}        |
+| (Zsh)              | conda init zsh                        |
+|                    | ```                                   |
++--------------------+---------------------------------------+
+| Linux / Older Mac\ | ```{.bash filename="Terminal"}        |
+| (Bash)             | conda init bash                       |
+|                    | ```                                   |
++--------------------+---------------------------------------+
+| Windows\           | ```{.powershell filename="Terminal"}  |
+| (Command)          | conda init cmd.exe                    |
+|                    | ```                                   |
++--------------------+---------------------------------------+
+| Windows\           | ```{.powershell filename="Terminal"}  |
+| (PowerShell)       | conda init powershell                 |
+|                    | ```                                   |
++--------------------+---------------------------------------+
 
 You will likely need to exit and restart your terminal for `conda init` to be reflected in your session.
 
 To use the environment you need to activate it, which you do as follows:
 
-+--------------+--------------------------+
-| Platform     | Command                  |
-+==============+==========================+
-| Windows      |     conda activate .\env |
-+--------------+--------------------------+
-| Mac/Linux    |     conda activate ./env |
-+--------------+--------------------------+
++--------------+--------------------------------------+
+| Platform     | Command                              |
++==============+======================================+
+| Mac/Linux    | ```{.bash filename="Terminal"}       |
+|              | conda activate ./env                 |
+|              | ```                                  |
++--------------+--------------------------------------+
+| Windows      | ```{.powershell filename="Terminal"} |
+|              | conda activate .\env                 |
+|              | ```                                  |
++--------------+--------------------------------------+
 
 Once you've activated the environment, you need to ensure that you have the packages required to render your documents. This will typically encompass `jupyter` / `jupyterlab` plus whatever other packages are used in your Python code. Use `conda install` to install packages into your environment. For example:
 
@@ -228,18 +258,24 @@ renv::restore()
 
 To use Jupyter or JupyterLab within a Python virtual environment you just need to activate the environment and then launch the Jupyter front end. For example:
 
-+----------------------+------------------------------+
-| Shell                | Command                      |
-+======================+==============================+
-| Windows\             |     env\Scripts\activate.bat |
-| (Command)            |     py -m jupyter lab        |
-+----------------------+------------------------------+
-| Windows (PowerShell) |     env\Scripts\Activate.ps1 |
-|                      |     py -m jupyter lab        |
-+----------------------+------------------------------+
-| Mac/Linux            |     source env/bin/activate  |
-|                      |     python3 -m jupyter lab   |
-+----------------------+------------------------------+
++----------------------+--------------------------------------+
+| Shell                | Command                              |
++======================+======================================+
+|                      | ```{.bash filename="Terminal"}       |
+| Mac/Linux            | source env/bin/activate              |
+|                      | python3 -m jupyter lab               |
+|                      | ```                                  |
++----------------------+--------------------------------------+
+|                      | ```{.powershell filename="Terminal"} |
+| Windows\             | env\Scripts\activate.bat             |
+| (Command)            | py -m jupyter lab                    |
+|                      | ```                                  |
++----------------------+--------------------------------------+
+|                      | ```{.powershell filename="Terminal"} |
+| Windows\             | env\Scripts\Activate.ps1             |
+| (PowerShell)         | py -m jupyter lab                    |
+|                      | ```                                  |
++----------------------+--------------------------------------+
 
 All of the Python packages installed within the `env` will be available in your Jupyter notebook session. The workflow is similar if you are using conda environments.
 
@@ -261,8 +297,11 @@ If you need to install Python packages, simply use `pip` or `conda` within the t
 
 ## VS Code {#vs-code}
 
-If you create a virtual environment in the `env/` directory as described above, Visual Studio Code should automatically discover that environment when you load a workspace from the environment's parent directory.
+If you create a virtual environment with `venv` in the `env/` directory as described above, Visual Studio Code should automatically discover that environment when you load a workspace from the environment's parent directory.
 
-Note that this applies only to `venv` not Conda environments (which have a separate mechanism for binding to the current VS Code session).
+Visual Studio Code will also automatically detect a conda environment, but you need to bind it to the current session with the **Python: Select Interpreter** command.
 
-You can read more about VS Code support for virtual environments here: <https://code.visualstudio.com/docs/python/environments>.
+If you have installed the Quarto executable in a conda environment rather than in a system-wide install, you need to launch VSCode from a terminal with that conda environment activated in order for VSCode to detect the conda installation of Quarto.
+The Quarto path setting in the Quarto VSCode extension does not work with Quarto installed in conda environments.
+
+You can read more about VS Code support for Python virtual environments here: <https://code.visualstudio.com/docs/python/environments>.

@@ -1,0 +1,195 @@
+---
+title: Quarto 1.4 
+subtitle: Quarto 1.4 is released
+description: |
+  Quarto 1.4 brings new formats for dashboards and Typst, a new manuscript project type, a cross-reference overhaul, Shiny for Python support, and a ton of other updates.
+categories:
+  - Quarto 1.4
+  - Releases
+author: Charlotte Wickham
+date: "01/24/2024"
+image: "images/thumbnail.png"
+image-alt: "Quarto 1.4 with a party popper"
+---
+
+Quarto 1.4 has been officially released! You can get the current release from <https://quarto.org/docs/download/>.
+
+This release has tons of new features. Some of the big ones we want to spotlight are: Dashboards, Typst, Inline Code Syntax, Cross-References and Manuscripts.
+
+## Dashboards
+
+Quarto Dashboards streamline the creation of interactive dashboards, giving you an effortless way to lay out interactive components, visualizations, tabular data, and annotations. Here are some examples (click on the image to visit the live version):
+
+::: {layout-ncol="3"}
+[![](/docs/dashboards/examples/thumbnails/stock-explorer-dashboard.png){.border fig-alt="Screenshot of a Stock Trader dashboard: a row of three values boxes, then a row with a stock ticker graph and a table of closing values. Navy blue and green theme."}](https://jjallaire.github.io/stock-explorer-dashboard/)
+
+[![](/docs/dashboards/examples/thumbnails/customer-churn-dashboard.png){.border fig-alt="Screenshot of a Customer Churn dashboard: a row of three values boxes, then a row with two plots, then a row with a table. Light blue and yellow theme."}](https://jjallaire.github.io/customer-churn-dashboard/)
+
+[![](/docs/dashboards/examples/thumbnails/penguins-dashboard.png){.border fig-alt="Screenshot of a Palmer Penguins dashboard: a sidebar with checkboxes and a dropdown, and two plots in main panel. Blue theme."}](https://jjallaire.shinyapps.io/penguins-dashboard/)
+:::
+
+For the source code of these dashboards and additional examples see the [examples gallery](/docs/dashboards/examples/index.qmd). When you are ready to build your own Quarto dashboard head to our guide on [Dashboards](/docs/dashboards/index.qmd).
+
+## Typst
+
+[Typst](https://github.com/typst/typst){.external} is a new open-source markup-based typesetting system that is designed to be as powerful as LaTeX while being much easier to learn and use. Typst creates beautiful PDF output with blazing fast render times.
+
+Quarto 1.4 includes the Typst CLI, so all you need to get started creating PDFs via Typst is to use `format: typst`: 
+
+````{.markdown filename="hello-typst.qmd"}
+---
+title: "Hello Typst!"
+format: typst
+---
+
+My first Typst document
+````
+
+We are particularly excited about how easy it is to make templates for journal articles, conference posters, newsletters and more with Typst. Here are some examples you can use in Quarto as [custom formats](/docs/output-formats/typst-custom.qmd):
+
+::: {layout-ncol=4}
+
+![IEEE](images/typst-format-ieee.png){.lightbox group="custom-formats" fig-alt="Screenshot of a page showing a article styled according IEEE standards. The title is centered with authors below in two columns."}
+
+![Poster](images/typst-format-poster.png){.lightbox group="custom-formats" fig-alt="Screenshot of a poster in landscape orientiation. The poster includes a logo in the top right, a title in the top left, and content arranged in three columns."}
+
+![Letter](images/typst-format-letter.png){.lightbox group="custom-formats" fig-alt="Screenshot of a page showing a letter. A sender address is across the top of the page, followed by a recipient address left justified. The body of the letter includes a subject line in bold."}
+
+![Dept News](images/typst-format-dept-news.png){.lightbox group="custom-formats" fig-alt="Screenshot of a page showing a department newsletter. The page is split vertically with a white column on the left and a red one on the right. An image spans across the column with the text \"Award Winning Science\" oriented to run vertically down its right side."}
+
+:::
+
+Start your Typst journey with Quarto in our guide on [Typst Basics](/docs/output-formats/typst.qmd).
+
+## Inline Code Syntax
+
+Quarto 1.4 introduces a unified syntax for including computed values inline. The syntax for inline code is similar to code blocks, except you use a single tick (`` ` ``) rather than triple ticks (```` ``` ````), and you can use it in the middle of markdown:
+
+::: {layout-ncol="3"}
+
+::: {}
+### Jupyter
+
+```` markdown
+```{{python}}
+radius = 5
+```
+
+The radius of the circle is `{python} radius`
+````
+
+This syntax works for any Jupyter kernel---so for Julia you would write an inline expression as `` `{julia} radius` ``).
+
+:::
+
+::: {}
+
+### Knitr
+
+```` markdown
+```{{r}}
+radius <- 5
+```
+
+The radius of the circle is `{r} radius`
+````
+
+:::
+
+::: {}
+### OJS
+
+```` markdown
+```{{ojs}}
+radius = 5
+```
+
+The radius of the circle is `{ojs} radius`
+````
+:::
+
+:::
+
+And don't worry if you are used to using `` `r ` `` that syntax remains fully supported. Read more at [Inline Code](/docs/computations/inline-code.qmd).
+
+## Cross-References
+
+Cross-references have been overhauled in Quarto 1.4, enabling you to do things like:
+
+*   Flexibly define the content of float cross-references (e.g. figures, tables and code listings) with the new [Cross-Reference Div Syntax](/docs/authoring/cross-references-divs.qmd). For example, @tbl-table is an image treated like a table:
+    
+    ::: {layout-ncol="2"}
+
+    ````markdown
+    ::: {#tbl-table}
+
+    ![](table.png)
+
+    An image treated like a table
+
+    :::
+    ````
+    
+    ::: {#tbl-table}
+
+    ![](images/crossref-div-table.png)
+
+    An image treated like a table
+
+    :::
+
+    :::
+    
+    And notice if you hover over the reference as it appears in the text, e.g. hover over this link to @tbl-table, you'll get a floating preview of the content---that's new too.
+
+*   Define [custom types of float cross-reference](/docs/authoring/cross-references-custom.qmd), which you could use to create cross-references to Videos, Diagrams or [Supplemental Figures](https://quarto.org/docs/authoring/cross-references-custom.html#example-supplemental-figures).
+    
+*   Cross-reference [executable code cells](/docs/authoring/cross-references.qmd#code-listings), [callouts](/docs/authoring/cross-references.qmd#callouts) and [remarks and solutions](/docs/authoring/cross-references.html#theorems-and-proofs).
+
+## Manuscripts
+
+Quarto manuscript projects provide a framework for writing and publishing scholarly articles. You can use notebooks (`.qmd` or `.ipynb`) as the source of content and computations, and then publish these computations alongside the manuscript, allowing readers to dive into your code.
+
+The output of a manuscript project is a website containing the article in multiple formats (e.g. LaTeX, MS Word) along with rendered versions of the notebooks in the project:
+
+::: {layout="[[3,1]]"}
+
+![Article Content](images/article-content.png){fig-alt="A screenshot of the content area on the manuscript webpage. Content shows a title block including the article title, authors, and abstract, body text, and an image with a caption." .border}
+
+![Navigation](images/webpage-menu.png){fig-alt="A screenshot of the menu on the right hand side of the manuscript webpage. The menu has headings: Table of contents, Other Formats, Notebooks and Other Links." .border}
+
+:::
+
+Read more about manuscripts and how to get started in our guide to [Manuscripts](/docs/manuscripts/index.qmd).
+
+## Other Highlights
+
+Some other highlights include:
+
+-   [Shiny for Python](/docs/dashboards/interactivity/shiny-python/index.qmd)---Support for using Shiny for Python within Quarto documents. 
+
+-   [Script Rendering](/docs/computations/render-scripts.qmd)---Render specially formatted `.py`, `.jl` and `.r` script files.
+    
+-   [Easy Binder Configuration for Quarto Projects](/docs/projects/binder.qmd)---Support for generating files required to deploy a Quarto project to [Binder](mybinder.org){.external}.
+
+-   [Connect Email Generation](https://docs.posit.co/connect/user/quarto/#email-customization){.external}---Extends the `html` output format so that HTML/text emails can be created and selectively delivered through Posit Connect.
+
+-   [Publish to Posit Cloud](/docs/publishing/posit-cloud.qmd)---Adds `posit-cloud` as a venue for `quarto publish`.
+
+-   [Lightbox Treatment for Images and Figures](/docs/output-formats/html-lightbox-figures.qmd)---Support for zooming into images and figures as well as grouping multiple images into a gallery.
+
+If you build Quarto extensions, you should also be aware of some developer-facing changes:
+
+-   [Lua changes](/docs/prerelease/1.4/lua_changes.qmd)---New Support for crossreferenceable elements in filters, extensible renderers of quarto AST nodes such as `FloatRefTarget` and `Callout`, the use of relative paths in `require()` calls, and more precise specification of where a filter will be inserted.
+
+-   [AST processing changes](/docs/prerelease/1.4/ast.qmd)---Improvements to the HTML table processing added in v1.3 and a way for LaTeX raw blocks to include Quarto-compatible markdown for processing.
+
+You can find all the other changes in 1.4 in the [Release Notes](https://quarto.org/docs/download/#download-section-news).
+
+## Acknowledgements
+
+We'd like to say a huge thank you to everyone who contributed to this release by opening issues and pull requests:
+
+{{< include _contribs.md >}}
+
+The party popper emoji in the [listing and social card image](images/thumbnail.png) for this post comes from [OpenMoji](https://openmoji.org/){.external}– the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#){.external}

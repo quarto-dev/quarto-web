@@ -1,7 +1,7 @@
 
 One important difference between R Markdown documents and Quarto documents is that in Quarto chunk options are typically included in special comments at the top of code chunks rather than within the line that begins the chunk. For example:
 
-``` {{r}}
+```{{r}}
 #| echo: false
 #| fig-cap: "Air Quality"
 

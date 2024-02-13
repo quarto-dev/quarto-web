@@ -40,7 +40,7 @@ Some additional learning resources you might find useful include:
 
 ### Quarto Preview
 
-Beginning with v1.2, `quarto preview` is now aware of Lua source files within extensions, and will automatically reload the preview whenever a Lua source file changes.
+Quarto preview, `quarto preview`, is aware of Lua source files within extensions, and will automatically reload the preview whenever a Lua source file changes.
 
 This makes it very easy to incrementally develop and debug Lua code (especially when combined with the [native](#native-format) format a described below). Live reloading for Lua files will work no matter what source code editor you are using (VS Code, RStudio, Neovim, etc.).
 
@@ -56,17 +56,17 @@ While you can use any text editor along with `quarto preview` for developing Lua
 
 Code completion covers the Lua base library as well as the Pandoc and Quarto Lua APIs, and also provides documentation on hover:
 
-![](images/vscode-lua-completions.png){.border width="95%"}
+![](images/vscode-lua-completions.png){.border fig-alt="Screenshot of Lua file open in VS Code with code completion popup showing for Lua function." width="95%"}
 
 Diagnostics check for many common errors including failing to check for `nil`, undefined global values, shadowing of local variables, unused functions, etc.
 
-![](images/vscode-lua-diagnostics.png){.border width="95%"}
+![](images/vscode-lua-diagnostics.png){.border fig-alt="Screenshot of Lua file open in VS Code with diagnostic errors shown in Problems pane below the code editor." width="95%"}
 
 #### Installation
 
 To get started with using VS Code for Lua extension development, install the following software:
 
-1.  Install the latest version of [Quarto v1.2](https://quarto.org/docs/download/)
+1.  Install the latest version (v1.2 or greater) of [Quarto](https://quarto.org/docs/download/)
 
 2.  Install the latest version (v1.40.0 or greater) of the [Quarto VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto).
 
@@ -81,12 +81,6 @@ There are many options available for configuring Lua completion and diagnostics.
 Use the functions in the `quarto.log` module to add diagnostic logging to your extension. You can use both temporary logging calls to debug a particular problem as well as add logging calls that are always present but only activated when the `--trace` flag is passed to `quarto render` or `quarto preview`.
 
 The `quarto.log` module is based on the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) project from [\@wlupton](https://github.com/wlupton). You'll recognize the functions described below from that module (e.g. `logging.output()`, `logging.warning()`, etc). For documentation on using all of the logging functions see the project [README](https://github.com/wlupton/pandoc-lua-logging) file.
-
-::: callout-note
-#### Version Requirements
-
-Note that the `quarto.log` module requires Quarto v1.2. If you are using an earlier version you can still use the `quarto.utils.dump()` function for logging as described [here](lua-api.qmd#utility-functions).
-:::
 
 ### quarto.log.output
 
@@ -299,6 +293,6 @@ The `.luarc.json` file will also be automatically added to `.gitignore` since it
 
 You can change any of the settings within this file save for the `Lua.workspace.library` and `Lua.runtime.plugin` (these are automatically maintained by the Quarto extension based on where Quarto is installed). See the [Settings Reference](https://github.com/sumneko/lua-language-server/wiki/Settings) for all available settings.
 
-If you prefer to mange this file manually, simply remove the `Generator` key and Quarto will no longer update the `Lua.workspace.library` and `Lua.runtime.plugin` settings automatically.
+If you prefer to manage this file manually, simply remove the `Generator` key and Quarto will no longer update the `Lua.workspace.library` and `Lua.runtime.plugin` settings automatically.
 
 You can also globally disable the automatic creation of `.luarc.json` using the **Quarto \> Lua: Provide Types** VS Code setting.

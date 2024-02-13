@@ -5,10 +5,6 @@ comments:
   hypothesis: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning=FALSE)
-```
-
 ## Overview
 
 Use the `html` format to create HTML output. For example:
@@ -30,9 +26,16 @@ This example highlights a few of the options available for HTML output. This doc
 
 Use the `toc` option to include an automatically generated table of contents in the output document. Use the `toc-depth` option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:
 
-``` markdown
+``` yaml
 toc: true
 toc-depth: 2
+```
+
+Use the `toc-expand` option to specify how much of the table of contents to show initially (defaults to 1 with auto-expansion as the user scrolls). Use `true` to expand all or `false` to collapse all.
+
+``` yaml
+toc: true
+toc-expand: 2
 ```
 
 You can customize the title used for the table of contents using the `toc-title` option:
@@ -56,11 +59,57 @@ format:
     toc-location: left
 ```
 
+If you would like to display a table of contents both in the body and floating left or right, you can specify `left-body` or `right-body` respectively.
+
 The floating table of contents can be used to navigate to sections of the document and also will automatically highlight the appropriate section as the user scrolls. The table of contents is responsive and will become hidden once the viewport becomes too narrow. See an example on the right of this page.
 
 Note that the `toc-location` option is not available when you disable the standard HTML theme (e.g. if you specify the `theme: none` or `theme: pandoc` option).
 
 {{< include _document-options-section-numbering.md >}}
+
+## Code Links and Other Links
+
+Use `code-links` and `other-links` to add links that will appear in the page navigation under the headings "Code Links" and "Other Links" respectively. For example, consider the following document YAML header:
+
+``` yaml
+---
+format:
+  html:
+    other-links:
+      - text: NASA Open Data
+        href: https://data.nasa.gov/
+    code-links:
+      - text: Data Import Code
+        icon: file-code
+        href: data-import.py
+---
+```
+
+When rendered this results in:
+
+![](images/html-other-links.png){fig-alt="Screenshot of a HTML page shdwing the headers 'Other Links' and 'Code Links' below the Table of Contents on the right of the page. The 'Other Links' header is followed by a link with the text 'NASA Open Data', and the header 'Code Links' is followed by a link with the text 'Data Import Code'."}
+
+You can provide the following options for items in `code-links` and `other-links`:
+
+| Option   | Description                                                         |
+|--------------------|----------------------------------------------------|
+| `text`   | The text to be displayed for the link.                              |
+| `href`   | The URL for the link.                                               |
+| `icon`   | The [bootstrap icon](https://icons.getbootstrap.com/) for the link. |
+| `rel`    | The rel used in the `a` tag for this link.                          |
+| `target` | The target used in the `a` tag for this link.                       |
+
+### GitHub and Binder Links
+
+For projects there are also two special values you can pass as items to `code-links`:
+
+`repo`
+
+:   Add a link to "GitHub Repo" under "Code Links" that points at the GitHub repository of your project.
+
+`binder`
+
+:   Add a link to “Launch Binder” under "Code Links" if your project is configured to [Use Binder](/docs/projects/binder.qmd).
 
 ## CSS Styles
 
@@ -96,14 +145,14 @@ Available math rendering methods include:
 
 | Method    | Description                                                                                                                                                                                                                      |
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `mathjax` | Use [MathJax](https://www.mathjax.org/) to display embedded TeX math in HTML output.                                                                                                                                             |
+| `mathjax` | Use [MathJax](https://www.mathjax.org/) to display embedded TeX math in HTML output. The default configuration for [MathJax](https://docs.mathjax.org/) is [`tex-chtml-full.js`](https://docs.mathjax.org/en/latest/web/components/combined.html?highlight=tex-chtml-full.js#tex-chtml-full) which loads all [MathJax's extensions](https://docs.mathjax.org/en/latest/input/tex/extensions.html) except `colorv2` and `physics` (available using `\require{physics}`).                                                                                                                                         |
 | `katex`   | Use [KaTeX](https://github.com/Khan/KaTeX) to display embedded TeX math in HTML output.                                                                                                                                          |
 | `webtex`  | Convert TeX formulas to `<img>` tags that link to an external script that converts formulas to images.                                                                                                                           |
 | `gladtex` | Enclose TeX math in `<eq>` tags in HTML output. The resulting HTML can then be processed by [GladTeX](https://humenda.github.io/GladTeX/) to produce images of the typeset formulas and an HTML file with links to these images. |
 | `mathml`  | Convert TeX math to [MathML](https://www.w3.org/Math/) (note that currently only Firefox and Safari natively support MathML)                                                                                                     |
 | `plain`   | No special processing (formulas are put inside a `span` with `class="math").`                                                                                                                                                    |
 
-Note that this is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
+Note that there is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
 
 ## Tabsets
 
@@ -212,10 +261,6 @@ def fizz_buzz(num):
 
 ### Tabset Groups
 
-::: callout-note
-Tabset groups are a new feature of [Quarto v1.1](https://quarto.org/docs/download/) so please be sure you've installed that version before attempting to use them.
-:::
-
 If you have multiple tabsets that include the same tab names, you can define a tabset `group`. Tabs within a `group` are all switched together (so in the example above once a reader switches to R or Python in one tabset the others will follow along). For example:
 
 ``` markdown
@@ -313,18 +358,21 @@ You can also specify one or both of these behaviors for an individual link using
 
 ## Reference Popups
 
-If you hover your mouse over the citation and footnote in this sentence you'll see a popup displaying the reference contents:
+If you hover your mouse over the citation, footnote and cross-reference in this sentence you'll see a popup displaying the reference contents:
 
-   Hover over @xie2015 to see a reference to the definitive book on knitr[^1].
+   Hover over @xie2015 to see a reference to the definitive book on knitr[^1]. @lst-hover shows you how to disable hover behaviour.
 
 This behavior is enabled by default. You can disable it with the following options:
 
-``` yaml
+::: {#lst-hover}
+```{.yaml}
 format:
   html:
     citations-hover: false
     footnotes-hover: false
+    crossrefs-hover: false
 ```
+:::
 
 ## Commenting
 
@@ -335,7 +383,7 @@ comments:
   hypothesis: true
 ```
 
-You can see the Hypothesis UI at the far right of the page. Rather than `true`, you can specify any of the available Hypothesis [embedding options](https://h.readthedocs.io/projects/client/en/latest/publishers/config/) as a sub-key of `hypothesis`. For example:
+You can see the Hypothesis UI at the far right of the page. Rather than `true`, you can specify any of the available Hypothesis [embedding options](/docs/reference/projects/websites.html#hypothesis) as a sub-key of `hypothesis`. For example:
 
 ``` yaml
 comments:
@@ -343,7 +391,7 @@ comments:
     theme: clean
 ```
 
-You can enable [Utterances](https://utteranc.es/){.external} commenting using the `utterances` option. Here you need to specify at least the Git repo you want to use for storing comments:
+You can enable [Utterances](https://utteranc.es/){.external} commenting using the `utterances` option. Here you need to specify at least the GitHub repo you want to use for storing comments:
 
 ``` yaml
 comments:
@@ -351,7 +399,7 @@ comments:
     repo: quarto-dev/quarto-docs
 ```
 
-You can also specify the other options [documented here](https://utteranc.es/).
+You can also specify the other options [documented here](/docs/reference/projects/websites.html#utterances).
 
 You may also enable [Giscus](https://giscus.app) for commenting using the `giscus` option. Giscus will store comments in the 'Discussions' of a Github repo.
 
@@ -380,7 +428,22 @@ title: "Home Page"
 comments: false
 ```
 
-{{< include _document-options-end.md >}}
+## Includes
+
+{{< include _document-options-includes.md >}}
+
+For example:
+
+``` yaml
+format:
+  html:
+    include-in-header:
+      - text: |
+          <script src="https://examples.org/demo.js"></script>
+      - file: analytics.html
+      - comments.html
+    include-before-body: header.html
+```
 
 ## Minimal HTML
 

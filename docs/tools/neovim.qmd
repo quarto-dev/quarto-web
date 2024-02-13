@@ -1,0 +1,102 @@
+---
+title: Neovim
+resources:
+ - images/neovim-*.png
+---
+
+## Overview
+
+The Quarto Neovim plugin aims to not reinvent the wheel.
+Existing plugins in the Neovim ecosystem are leveraged to provide the full experience.
+Some of the features provided by [quarto-nvim](https://github.com/quarto-dev/quarto-nvim) and enhanced by plugins found in the [kickstarter configuration](https://github.com/jmbuhr/quarto-nvim-kickstarter) are:
+
+-   Preview for Quarto documents.
+-   Syntax highlighting for markdown and embedded languages
+-   Completion for embedded languages (e.g. Python, R, Julia, etc.)
+-   Commands and key-bindings for running cells and selected lines.
+-   Completion for bibliography references, file paths, LaTeX math symbols, emoji.
+-   Optional spellchecking and completion.
+-   Code snippets.
+-   Export of code chunks into standalone scripts.
+
+![](./../get-started/hello/images/neovim-overview.png){.border fig-alt="Three windows arranged side by side. The window on the left is a qmd file opened in Neovim. The upper window on the right is a web browser. The contents of the qmd document are rendered by Quarto in the browser window. The third window is a rendered graph showing the output of executing a code chunk in the qmd file."}
+
+More [screenshots](https://github.com/jmbuhr/quarto-nvim-kickstarter#screenshots)
+
+### Installation
+
+Installation instructions for the quarto plugin and the kickstarter configuration can be found in the respective readme files of the repository:
+
+- [quarto-nvim](https://github.com/quarto-dev/quarto-nvim)
+- [quarto-nvim-kickstarter](https://github.com/jmbuhr/quarto-nvim-kickstarter)
+
+## Render and Preview
+
+To render and preview, execute the **QuartoPreview** command by pressing `:` to enter command mode and typing the command (there is autocompletion if you press the <kbd>tab</kbd> key).
+In the kickstarter configuration, there are more shortcuts starting with <kbd>space q</kbd> (spacebar followed by q, in normal mode).
+
+After running the `QuartoPreview` command in Neovim, the preview will automatically update each time the buffer is saved.
+
+## Running Code Cells
+
+{{< include ../get-started/hello/_neovim-running-cells.md >}}
+
+Here are all of the commands and keyboard shortcuts available for executing cells:
+
+| Quarto Command       | Keyboard Shortcut   |
+|----------------------|---------------------|
+| Create new terminal  | <kbd>space c _x_</kbd><br> where _x_ is the starting letter of python, r, ipython, julia or bash  |
+| Choose terminal      | <kbd>space c c</kbd> |
+| Show terminal id     | <kbd>space c s</kbd> |
+| Run Current Cell     | <kbd>space Enter</kbd> |
+| Run Current Cell     | <kbd>ctrl Enter</kbd> (insert or normal mode)^[if your terminal emulator supports this, see [Running Cells](../get-started/hello/neovim.qmd#running-cells)] |
+| Run Selected Line(s) | <kbd>Enter</kbd> (visual mode) |
+
+Note that you can quickly insert a new code cell using the <kbd>Alt+I</kbd> and <kbd>Alt+Shift+I</kbd> keyboard shortcuts, the first being an R and the second being a python code chunk.
+Feel free to change this from the kickstarter configuration depending on your most-used language.
+
+## Contextual Assistance
+
+In a code chunk you get autocompletion for the respective language.
+Use <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> to iterate through the suggestions^[or set your own keybindings for it [here](https://github.com/jmbuhr/quarto-nvim-kickstarter/blob/main/lua/plugins/completion.lua)].
+
+![](./images/neovim-code-completion.png)
+
+::: {.callout-note}
+The otter in the completion list means that the completion plugin [cmp](https://github.com/hrsh7th/nvim-cmp) got it's completion suggestions from the [otter.nvim](https://github.com/jmbuhr/otter.nvim) plugin, which keeps track of the code in your Quarto document behind the scenes by writing only the code parts to another (an otter) document.
+:::
+
+## Code Snippets
+
+Code snippets are templates that make it easier to enter repeating code patterns (e.g. code blocks, callouts, divs, etc.).
+You will find them in the autocompletion list and can trigger them with enter.
+Sometimes they contain multiple places within the snippet where the cursor can jump to.
+Use <kbd>ctrl+n</kbd> to jump to the next site.
+
+For example, we might want to create a two column layout, so we type `col2` and accept the suggestion with <kbd>Enter</kbd> to get
+
+```
+::: {layout-ncol=2}
+
+:::
+```
+
+If you find other helpful snippets, feel free to add a pull request to extend the ones included in the kickstarter configuration [snippet list](https://github.com/jmbuhr/quarto-nvim-kickstarter/blob/main/snips/snippets/markdown.json).
+
+## Document Navigation
+
+Vim is famously good at letting you navigate documents quickly.
+Here, we only have a look at some additional features provided by quarto-nvim.
+For the full range of options, refer to the documentation of vim/neovim and of the plugins included in the kickstarter configuration.
+
+- Press <kbd>space l o</kbd> to toggle a section overview
+- Navigate to the next code chunk with <kbd>[c</kbd> or the previous one with <kbd>]c</kbd>
+- Delete/Change/Yank the code of a chunk with <kbd>dio</kbd>/<kbd>cio</kbd>/<kbd>yio</kbd>
+- Delete/Change/Yank a whole code chunk with it's delimiters with <kbd>dao</kbd>/<kbd>cao</kbd>/<kbd>yao</kbd>
+
+Take a look at the files of the kickstarter configuration for more inspiration.
+
+## Extending Quarto: Lua Development in Neovim
+
+Since Lua is already the language used to configure Neovim and the kickstarter configuration installs the Lua Language Server, code completion and diagnostics will be enabled for Quarto [extension development](/docs/extensions/index.qmd). 
+

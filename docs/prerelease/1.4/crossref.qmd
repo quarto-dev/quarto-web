@@ -1,0 +1,49 @@
+---
+title: "Behind the Scenes Changes to Cross-References"
+---
+
+## Changes in HTML output
+
+The changes to cross-references in Quarto 1.4 also introduce some changes to the underlying HTML output of figures and other cross-referencable elements. For most users, these changes will be invisible. However, if you are operating on Quarto HTML output, you may be impacted. In particular:
+
+- The DOM structure for HTML figures used to be such that the following CSS selector would work:
+  
+  ```
+  div#fig-elephant > figure > figcaption.figure-caption
+  ```
+  
+  In Quarto v1.4, this is now
+  
+  ```
+  div#fig-elephant > figure.quarto-float.quarto-float-fig > figcaption.quarto-float-caption.quarto-float-fig
+  ```
+
+  Here's a minimal, full HTML output for a figure:
+
+  ```html
+  <div id="fig-1" class="quarto-figure quarto-figure-center anchored">
+    <figure class="quarto-float quarto-float-fig figure">
+    <div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+      <img src="./img/content.jpg">
+    </div>
+    <figcaption id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="quarto-float-caption quarto-float-fig">
+    Figure&nbsp;1: This is a caption.
+    </figcaption>
+    </figure>
+  </div>
+  ```
+
+  Concretely: 
+
+  - All cross-referenceable elements use the `figure` HTML element with class `quarto-float`.
+  - Different float types are differentiated by the CSS class `quarto-float-fig` (or `-tbl`, `-lst`, or the `ref_type` of custom cross-reference types) as well as the additional CSS class `figure`, `table`, etc. 
+    If the element is a subfloat, this will be `quarto-subfloat-fig`.
+  - Similarly, float captions use the `figcaption` element with class `quarto-float-caption` (or `quarto-subfloat-caption` if they're a subfloat), and also have the `quarto-float-*` CSS classes.
+  
+  This setup lets all "floats" be uniformly targeted by a single CSS rule, as well as allowing specific float types and their captions be targeted by a single additional CSS selector.
+
+- Images by themselves used to have a surrounding paragraph; they no longer do.
+
+- Floats include an extra div for ARIA referencing, so that captions are referenced appropriately and uniformly. 
+  As a result, if a table appears inside a float, its caption will be hoisted to the figure node itself.
+

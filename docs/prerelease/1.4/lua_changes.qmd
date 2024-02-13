@@ -1,0 +1,140 @@
+---
+title: "Lua filter changes"
+---
+
+{{< include /docs/_require-1.4.qmd >}}
+
+Quarto v1.4 includes the following new features for Lua filters:
+
+## Support for crossreferenceable elements in filters
+
+Quarto v1.4 brings significant changes to the handling of figures, tables, listings, etc.
+These changes simplify the writing of Lua filters that targets those elements, but will 
+generally require changes in existing.
+
+### The `FloatRefTarget` AST node
+
+In v1.4, crossreferenceable elements all have a single generic type, `FloatRefTarget`. 
+This element can be constructed explicitly in a Lua filter.
+It can also be used as the element to be processed in a Lua filter directly.
+
+```{.lua}
+-- A filter targeting FloatRefTarget nodes
+return {
+  FloatRefTarget = function(float)
+    if float.caption_long then
+      float.caption_long.content:insert(pandoc.Str("[This will appear at the beginning of every caption]"))
+      return float
+    end
+  end
+}
+```
+
+`FloatRefTarget` nodes have the following fields:
+
+- `type`: The type of element: `Figure`, `Table`, `Listing`, etc. Quarto v1.4 supports
+  custom node types that can be declared at the document or project level.
+- `content`: The content of the Figure, Table, etc. Quarto v1.4
+  accepts any content in any `FloatRefTarget` type (so if your tables are better displayed
+  as an image, you can use that.).
+- `caption_long`: The caption that appears in the main body of the document
+- `caption_short`: The caption that appears in the element collations (such as a list of tables, 
+  list of figures, etc.)
+- `identifier`, `attributes`, `classes`: these are analogous to `Attr` fields in Pandoc AST elements like spans and divs. 
+  `identifier`, in addition, needs to be the string that is used in a crossref (`fig-cars`, `tbl-votes`, `lst-query`, and so on).
+- `parent_id`: if a `FloatRefTarget` is a subfloat of a parent multiple-element float, then `parent_id` will hold the identifier
+  of the parent float.
+
+## Custom formats and Custom renderers
+
+Quarto v1.4 adds support for extensible renderers of quarto AST nodes such as `FloatRefTarget`, `Callout`.
+In order to declare a custom renderer, add the following to a Lua filter:
+
+```lua
+local predicate = function(float)
+  -- return true if this renderer should be used;
+  -- typically, this will return true if the custom format is active.
+end
+local renderer = function(float)
+  -- returns a plain Pandoc representation of the rendered figure.
+end
+quarto._quarto.ast.add_renderer(
+  "FloatRefTarget", 
+  predicate, 
+  renderer)
+```
+
+## Relative paths in `require()` calls
+
+In larger, more complex filters, it becomes useful to structure your Lua code in modules.
+Quarto v1.4 supports the use of relative paths in `require()` calls so that small modules
+can be easily created and reused.
+
+For example:
+
+```{.lua filename="filter.lua"}
+local utility = require('./utils')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+Using relative paths this way in quarto makes it harder for multiple filters to accidentally
+create conflicting module names (as would eventually happen when using the standard Lua
+`require('utils')` syntax). It's possible to refer to subdirectories and parent directories as well:
+
+```{.lua filename="filter2.lua"}
+local parsing = require('./utils/parsing')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+```{.lua filename="utils/parsing.lua"}
+local utils = require("../utils")
+-- ...
+```
+
+## More precise targeting of AST processing phases
+
+Before Quarto 1.4, Lua filters are either "pre" filters (the default setting), or "post" filters.
+Those filters are specified like this:
+
+```yaml
+# "pre" filters:
+filters:
+  - pre_filter_1.lua
+  - pre_filter_2.lua  
+  # ...
+# "post" filters:
+filters:
+  - quarto
+  - post_filter_1.lua
+  - post_filter_2.lua  
+  # ...
+```
+
+This syntax continues to work in 1.4. 
+In addition, it is now possible to specify more precisely the place where a specific filter will be inserted. 
+Quarto's AST processing phase is now split into three parts: `ast`, `quarto`, and `render`.
+
+- `ast`: normalizes the input syntax from Pandoc, recognizing constructs such as `Callout`, `FloatRefTarget`, and so on.
+- `quarto`: processes the normalized syntax, for example by resolving cross-references.
+- `render`: produces format-specific output from the processed input.
+
+In Quarto 1.4, Lua filters can be inserted before or after any of these stages:
+
+```yaml
+filters:
+  - at: pre-ast
+    path: filter1.lua
+  - at: post-quarto
+    path: filter2.lua
+  - at: post-render
+    path: filter3.lua
+```
+
+Any of the stages can be prefixed by `pre-` or `post-`.
+In Quarto 1.4, `pre-quarto` and `post-ast` correspond to the same insertion location in the filter chain, as do `post-quarto` and `pre-render`.
+Quarto 1.3's "pre" filters correspond to `pre-quarto`, and "post" filters correspond to `post-render`. `pre-ast` and `pre-render` are new insertion locations.
+We will consider adding more insertion locations, should the need arise.

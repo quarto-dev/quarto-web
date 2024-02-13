@@ -11,7 +11,7 @@ The main title slide is the first slide of the presentation, and its content is 
 If you want to provide a custom background for the title slide, then do the following:
 
 1. Use the `title-slide-attributes` key to provide background options.
-2. Within this key, specify any of the supported [slide background options](index.qmd#slide-backgrounds),  but with `data-` prepended to them. For example:
+2. Within this key, specify any of the supported [slide background options](index.qmd#slide-backgrounds),  but with `data-` prepended to them. 
 
 For example:
 
@@ -27,12 +27,6 @@ title-slide-attributes:
 
 ### Custom Template
 
-::: {.callout-note}
-### Quarto v1.2 Required
-
-Custom templates for Reveal title slides are only available in Quarto v1.2, which you can download at <https://quarto.org/docs/download/>.
-:::
-
 You can replace the default title slide entirely with your own template. To do this, specify a `title-slide.html` [template partial](/docs/journals/templates.qmd#template-partials). For example:
 
 ```yaml
@@ -43,7 +37,7 @@ format:
       - title-slide.html
 ```
 
-Here is the source code for the [default title slide template partial](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-slide.html). Customize this template as required, then save the resutls to `title-slide.html` alongside your presentation. 
+Here is the source code for the [default title slide template partial](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-slide.html). Customize this template as required, then save the results to `title-slide.html` alongside your presentation. 
 
 
 ## Slide Transitions
@@ -53,7 +47,7 @@ Reveal supports a number of animated transition effects for both slide changes a
 Here are the available transition types:
 
 | Transition | Description                                                            |
-|---------------|---------------------------------------------------------|
+|------------|------------------------------------------------------------------------|
 | `none`     | No transition (switch instantly)                                       |
 | `fade`     | Cross fade                                                             |
 | `slide`    | Slide horizontally                                                     |
@@ -109,7 +103,7 @@ You can hide a slide by adding the `visibility="hidden"` attribute to the slide 
 
 When preparing a presentation it can sometimes be helpful to prepare optional slides that you may or may not have time to show. This is easily done by appending a few slides at the end of the presentation, however this means that the Reveal progress bar and slide numbering will hint that there are additional slides.
 
-To "hide" those slides from then numbering system you can use `visibility="uncounted"`. For example:
+To "hide" those slides from the numbering system you can use `visibility="uncounted"`. For example:
 
 ``` markdown
 ## Slide 1
@@ -128,7 +122,7 @@ Reveal will automatically scale presentations uniformly based on the normal size
 You can change the slide size, the margin around content, as well as set limits on content scaling using the following options:
 
 | Option      | Description                                                                              |
-|--------------|---------------------------------------------------------|
+|-------------|------------------------------------------------------------------------------------------|
 | `width`     | Normal width (defaults to 1050)                                                          |
 | `height`    | Normal height (defaults to 700)                                                          |
 | `margin`    | Factor of the display size that should remain empty around the content (defaults to 0.1) |
@@ -192,6 +186,16 @@ Big Text
 :::
 ```
 
+### Center
+
+The `center` class when applied to a slide, will vertically center the slide content by adding the appropriate spacing at the top of the slide. Vertical distances between elements will not be modified. For example:
+
+``` markdown
+## This will be centered {.center}
+
+This text is moved as well
+```
+
 ### Stretch
 
 The `r-stretch` layout helper lets you resize an element, like an image or video, to cover the remaining vertical space in a slide. For example, here the image will automatically be resized to fit space remaining outside of the slide title and text before and after it:
@@ -220,7 +224,15 @@ You can also disable auto-stretch for an individual slide by adding the `.nostre
 ## Slide Title {.nostretch}
 ```
 
-`auto-stretch` will only apply on non-nested image, which means an image in a feature blocks (e.g fragments, layout panel, columns, ... ) or a custom Divs will be ignored. For custom Divs, you can opt-in `auto-stretch` behavior by adding the class `.r-stretch` to the outer divs. In that the image within the blocks will be unwrapped below.
+Or apply `.nostretch` directly to an individual image:
+
+```markdown
+![](image.png){.nostretch fig-align="center" width="800px"}
+```
+
+`auto-stretch` will only apply to non-nested images, which means an image in a feature block (e.g fragments, layout panel, columns, ... ) or a custom Div will be ignored. For custom Divs, you can opt-in to `auto-stretch` behavior by adding the class `.r-stretch` to the outer div. 
+
+{{< include _callout-auto-stretch-scrollable.qmd >}}
 
 ## Auto Animate
 
@@ -294,7 +306,7 @@ When you navigate between two auto-animated slides we'll do our best to automati
 
 In situations where automatic matching is not feasible you can give the objects that you want to animate between a matching `data-id` attribute. We prioritize matching `data-id` values above our automatic matching.
 
-Here's an example where we've given several blocks a matching ID since automatic matching has no content to go on. This example also makes use of some additional animation attributes (`auto-animate-easing` and `auto-animate-delay`), which we'll describe the use of in the next section.
+Here's an example where we've given several blocks a matching ID since automatic matching has no content to go on. This example also makes use of some additional animation attributes (`auto-animate-easing` and `auto-animate-delay`), which we'll describe in the next section.
 
 ``` {.markdown .reveal-demo code-preview="demo/mini/auto-animate-stack.qmd"}
 ## {auto-animate=true auto-animate-easing="ease-in-out"}
@@ -328,14 +340,14 @@ Here's an example where we've given several blocks a matching ID since automatic
 
 You can override specific animation settings such as easing and duration either for the whole presentation, per-slide or individually for each animated element. The following configuration attributes can be used to change the settings for a specific slide or element:
 
-| **Attribute**            | **Default** | **Description**                                                                                                              |
-|:-----------|:----------:|:----------------------------------------------|
-| `auto-animate-easing`    |    ease     | A CSS [easing function](https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function).                                   |
-| `auto-animate-unmatched` |    true     | Determines whether elements with no matching auto-animate target should fade in. Set to false to make them appear instantly. |
-| `auto-animate-duration`  |     1.0     | Animation duration in seconds.                                                                                               |
-| `auto-animate-delay`     |      0      | Animation delay in seconds (can only be set for specific elements, not at the slide level).                                  |
-| `auto-animate-id`        |  *absent*   | An id tying auto-animate slides together.                                                                                    |
-| `auto-animate-restart`   |  *absent*   | Breaks apart two adjacent auto-animate slides (even with the same id).                                                       |
+| **Attribute**            | **Default** | **Description**                                                                                                                |
+|:-------------------------|:-----------:|:-------------------------------------------------------------------------------------------------------------------------------|
+| `auto-animate-easing`    |    ease     | A CSS [easing function](https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function).                                     |
+| `auto-animate-unmatched` |    true     | Determines whether elements with no matching auto-animate target should fade in. Set to `false` to make them appear instantly. |
+| `auto-animate-duration`  |     1.0     | Animation duration in seconds.                                                                                                 |
+| `auto-animate-delay`     |      0      | Animation delay in seconds (can only be set for specific elements, not at the slide level).                                    |
+| `auto-animate-id`        |  *absent*   | An id tying auto-animate slides together.                                                                                      |
+| `auto-animate-restart`   |  *absent*   | Breaks apart two adjacent auto-animate slides (even with the same id).                                                         |
 
 You can override the global defaults for easing, unmatched, and duration as follows:
 
@@ -385,14 +397,14 @@ Slide up while fading in
 Here are all of the available fragment classes:
 
 | **Name**                  | **Effect**                                          |
-|:------------------------|:----------------------------------------------|
+|:--------------------------|:----------------------------------------------------|
 | `fade-out`                | Start visible, fade out                             |
 | `fade-up`                 | Slide up while fading in                            |
 | `fade-down`               | Slide down while fading in                          |
 | `fade-left`               | Slide left while fading in                          |
 | `fade-right`              | Slide right while fading in                         |
 | `fade-in-then-out`        | Fades in, then out on the next step                 |
-| `fade-in-then-semi-out`   | Fades in, then to 50% on the next step              |
+| `fade-in-then-semi-out`   | Fades in, then out to 50% on the next step          |
 | `grow`                    | Scale up                                            |
 | `semi-fade-out`           | Fade out to 50%                                     |
 | `shrink`                  | Scale down                                          |
@@ -406,7 +418,7 @@ Here are all of the available fragment classes:
 
 ### Nested Fragments
 
-Multiple fragments can be applied to the same element sequentially by wrapping it, this will fade in the text on the first step, turn it red on the second and partially fade out on the third::
+Multiple fragments can be applied to the same element sequentially by wrapping it. The following example will fade in the text on the first step, turn it red on the second and partially fade out on the third:
 
 ``` {.markdown .reveal-demo code-preview="demo/mini/fragments-nested.qmd"}
 ::: {.fragment .fade-in}
@@ -461,10 +473,10 @@ Reveal uses classic linear slide navigation by default. If you wish you can also
 Use the `navigation-mode` option to fine tune Reveal navigation behavior:
 
 | Navigation Mode | Behavior                                                                                                                                                                  |
-|-------------|-----------------------------------------------------------|
-| `linear`        | Left/right arrows step through all slides (both horizontal and vertical).                                                                                                 |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `linear`        | Left/right arrows keys step through all slides (both horizontal and vertical).                                                                                            |
 | `vertical`      | Left/right arrow keys step between horizontal slides. Up/down arrow keys step between vertical slides. Space key steps through all slides (both horizontal and vertical). |
-| `grid`          | When this is enabled, stepping left/right from a vertical stack to an adjacent vertical stack will land you at the same vertical index.                                   |
+| `grid`          | When enabled, stepping left/right from a vertical stack to an adjacent vertical stack will land you at the same vertical index.                                           |
 
 If you use `vertical` or `grid` navigation, you should structure your slides using level 1 headings for the horizontal axis and level 2 headings for the vertical axis. For example:
 
@@ -511,9 +523,9 @@ Note that using `controls-layout: bottom-right` isn't compatible with including 
 You can also disable the controls entirely with `controls: false`.
 
 ::: callout-warning
-While vertical slides do provide some additional flexibility over the traditional linear model, they are in practice very confusing for end users (mostly because they are so unexpected). Users will often skip the vertical content because they simply don't know its there.
+While vertical slides do provide some additional flexibility over the traditional linear model, they are in practice very confusing for end users (mostly because they are so unexpected). Users will often skip the vertical content because they simply don't know it's there.
 
-If your content benefits from vertical orientation (e.g. you have optional drill-down content that you don't want in the main flow of the presentation) by all means use the vertical mode. Just know that if you distribute your slides to users they will very likely not end up viewing any of the vertical content.
+If your content benefits from vertical orientation (e.g. you have optional drill-down content that you don't want in the main flow of the presentation), you can by all means use the vertical mode. Just know that if you distribute your slides to users they will very likely not end up viewing any of the vertical content.
 :::
 
 ## Touch Navigation
@@ -538,11 +550,11 @@ Note that we also enable `controls` at the same time (as users on phones or tabl
 
 To use [Revealjs plugins](https://github.com/hakimel/reveal.js/wiki/Plugins,-Tools-and-Hardware), you need to package them into a directory with a config file (`plugin.yml`). The config file lets Quarto know how to inject the plugin into the presentation (e.g. what scripts and/or css files to include, what the default configuration should be, etc.).
 
-See the source code of the plugins that are built in to Quarto Reveal for examples:
+See the source code of the plugins that are built into Quarto Reveal for examples:
 
 <https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/plugins>
 
-To use a plugin, just include a reference to its directory in the list of `plugins`. For example:
+To use a plugin, just include a reference to its directory in the list of `revealjs-plugins`. For example:
 
 ``` yaml
 ---
@@ -554,7 +566,7 @@ format:
 ---
 ```
 
-Note that many of the most popular Reveal plugins are already included with the Quarto version of Reveal, so there is no need to include them separately. Built in plugins include:
+Note that many of the most popular Reveal plugins are already included with the Quarto version of Reveal, so there is no need to include them separately. Built-in plugins include:
 
 -   [Multiplex](https://github.com/reveal/multiplex)
 -   [RevealMenu](https://github.com/denehyg/reveal.js-menu)

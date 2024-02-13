@@ -1,0 +1,35 @@
+An alternative to including computations directly in the article notebook is to embed output from other notebooks. This manuscript project includes the notebook `data-screening.ipynb` in the `notebooks/` folder.
+
+To embed output from a notebook, you can use the `embed` shortcode. Quarto shortcodes are special markdown directives that generate content. The `embed` shortcode is used in `{{< meta tool.article-file >}}` in the line:
+
+``` {.markdown shortcodes="false"}
+{{< embed notebooks/data-screening.ipynb#fig-spatial-plot >}}
+```
+
+The double curly braces (`{{`) and angle brackets (`<`) indicate this is a shortcode. The `embed` shortcode requires a path to a notebook cell. In this case, it's the file path to `data-screening.ipynb`, followed by `#` and a cell identifier. Here, the cell identifier is the cell label, set using the Quarto cell option `label` in code cell in the `data-screening.ipynb` notebook:
+
+``` {.python filename="data-screening.ipynb"}
+#| label: fig-spatial-plot
+#| fig-cap: "Locations of earthquakes on La Palma since 2017."
+#| fig-alt: "A scatterplot of earthquake locations plotting latitude 
+#|   against longitude."
+from matplotlib import colormaps
+cmap = colormaps['viridis_r']
+ax = df.plot.scatter(x="Longitude", y="Latitude", 
+                     s=40-df["Depth(km)"], c=df["Magnitude"], 
+                     figsize=(12,10), grid="on", cmap=cmap)
+colorbar = ax.collections[0].colorbar
+colorbar.set_label("Magnitude")
+
+plt.show()
+```
+
+Just like any figure, using a label starting with `fig-` allows it to be cross referenced in the text. Any other options, like the figure caption (`fig-cap`) and alt text (`fig-alt`), can also be set in the source notebook.
+
+In this manuscript, the notebook `data-screening.ipynb` isn't reproducible: you can't regenerate all the outputs because some inputs (e.g. the data) aren't included in the project. However, you can change the Quarto cell options without rerunning the code cells in the notebook. If you edit the caption to:
+
+``` python
+#| fig-cap: "Earthquakes on La Palma since 2017."
+```
+
+When you save `data-screening.ipynb`, you'll find the preview updates and the caption is reflected in the article itself.

@@ -81,7 +81,7 @@ format:
   pdf:
     geometry: 
       - top=30mm
-      - left=30mm
+      - left=20mm
   docx: default
 ```
 
@@ -239,7 +239,7 @@ See @eq-stddev to better understand standard deviation.
 
 ```{{python}}
 #| label: fig-simple
-#| fig-cap: Simple Plot
+#| fig-cap: "Simple Plot"
 import matplotlib.pyplot as plt
 plt.plot([1,23,2,4])
 plt.show()
@@ -267,7 +267,7 @@ We cross-referenced sections, figures, and equations. The table below shows how 
 |          |               |                                  |
 |          |               | ``` {.default code-copy="false"} |
 |          |               | #| label: fig-simple             |
-|          |               | #| fig-cap: Simple Plot          |
+|          |               | #| fig-cap: "Simple Plot"        |
 |          |               | ```                              |
 +----------+---------------+----------------------------------+
 | Equation | `@eq-stddev`  | At end of display equation:      |

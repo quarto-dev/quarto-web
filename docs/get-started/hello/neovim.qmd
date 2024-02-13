@@ -1,0 +1,229 @@
+---
+title: "Tutorial: Hello, Quarto"
+editor_options:
+  markdown:
+    wrap: sentence
+    canonical: true
+---
+
+{{< include ../_tool-chooser.md >}}
+
+## Overview
+
+In this tutorial we'll show you how to use Quarto with Neovim. While we cover the basics here, you will also want to review the article on [Using Neovim with Quarto](/docs/tools/neovim.qmd) to learn more about installing, using, and customizing Neovim for Quarto. 
+
+If you already have Neovim configured to your liking, you may only want to add the [quarto-nvim](https://github.com/quarto-dev/quarto-nvim) plugin and only refer to this guide for inspiration and seeing the possibilities.
+But if you are entirely new to Neovim or want to simply try out a configuration already set up for data science with Quarto, you should head over to this [kickstarter configuration](https://github.com/jmbuhr/quarto-nvim-kickstarter).
+This is also what we will be using for this tutorial.
+
+::: callout-note
+Neovim is a highly customizable editor.
+So much so that Neovim core member TJ Devries has recently coined the term Personal Development Environments (PDE)^[In [this video](https://www.youtube.com/watch?v=QMVIJhC9Veg)] to separate the concept from Integrated Development Environments (IDEs) such as VS Code and RStudio.
+
+Out of the box neovim is fairly minimal.
+To work efficiently and get all the nice features, you have to configure it.
+You have to make it your own.
+If this approach sounds enticing to you, read on.
+Welcome to the rabbit hole. 🐰
+:::
+
+
+You can also watch [this video](https://youtu.be/3sj7clNowlA) for a quick guide to getting started with the kickstarter configuration alongside this write-up.
+
+{{< video https://youtu.be/3sj7clNowlA >}}
+
+The Quarto Neovim plugin aims to not reinvent the wheel.
+Existing plugins in the Neovim ecosystem are leveraged to provide the full experience.
+Some of the features provided by `quarto-nvim` and enhanced by plugins found in the kickstarter configuration are:
+
+-   Preview for Quarto documents.
+-   Syntax highlighting for markdown and embedded languages
+-   Completion for embedded languages (e.g. Python, R, Julia, etc.)
+-   Commands and key-bindings for running cells and selected lines.
+-   Completion for bibliography references, file paths, LaTeX math symbols, emoji.
+-   Optional spellchecking and completion.
+-   Code snippets.
+-   Export of code chunks into standalone scripts.
+
+See the article on [Using Neovim with Quarto](/docs/tools/neovim.qmd) for all of the details.
+
+### Basic Workflow
+
+Quarto `.qmd` files contain a combination of markdown and executable code cells.
+Here's what it might look like in Neovim to edit and preview a `.qmd` file:
+
+![](./images/neovim-overview.png){.border fig-alt="Three windows arranged side by side. The window on the left is a qmd file opened in Neovim. The upper window on the right is a web browser. The contents of the qmd document are rendered by Quarto in the browser window. The third window is a rendered graph showing the output of executing a code chunk in the qmd file."}
+
+The document on the right is *rendered* into the HTML version you see on the left.
+This is the basic model for Quarto publishing---take a source document and render it to a variety of [output formats](https://quarto.org/docs/output-formats/all-formats.html), including HTML, PDF, MS Word, etc.
+
+The tutorials will make use of the `matplotlib` and `plotly` Python packages---the commands you can use to install them are given in the table below.
+
++-----------+-----------------------------------------------------+
+| Platform  | Commands                                            |
++===========+=====================================================+
+|           | ```{.bash filename="Terminal"}                      |
+| Mac/Linux | python3 -m pip install jupyter matplotlib plotly    |
+|           | ```                                                 |
++-----------+-----------------------------------------------------+
+|           | ```{.powershell filename="Terminal"}                |
+| Windows   | py -m pip install jupyter matplotlib plotly         |
+|           | ```                                                 |
++-----------+-----------------------------------------------------+
+
+::: callout-note
+Note that while this tutorial uses Python, using Julia (via the [IJulia](https://julialang.github.io/IJulia.jl/stable/) kernel) or using R (via the [knitr package](https://github.com/yihui/knitr)), are also well supported.
+See the articles on [Using Julia](/docs/computations/julia.qmd) and [Using R](/docs/computations/r.qmd) for additional details.
+:::
+
+## Render and Preview
+
+We'll start out by rendering a simple example (`hello.qmd`) to a couple of formats.
+If you want to follow along step-by-step in your own environment, create a new file named `hello.qmd` and copy the following content into it.
+
+```` markdown
+---
+title: "Quarto Basics"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
+```{{python}}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r);
+ax.set_rticks([0.5, 1, 1.5, 2]);
+ax.grid(True);
+plt.show()
+```
+````
+
+To render and preview, execute the **QuartoPreview** command by pressing `:` to enter command mode and typing the command (there is autocompletion if you press the <kbd>tab</kbd> key).
+In the kickstarter configuration, there are more shortcuts starting with <kbd>space q</kbd> (spacebar followed by q, in normal mode).
+
+### How it Works
+
+When you render a `.qmd` file with Quarto, the executable code blocks are processed by Jupyter, and the resulting combination of code, markdown, and output is converted to plain markdown.
+Then, this markdown is processed by [Pandoc](http://pandoc.org/), which creates the finished format.
+
+![](images/qmd-how-it-works.png){alt="" fig-alt="Workflow diagram starting with a qmd file, then Jupyter, then md, then pandoc, then PDF, MS Word, or HTML." fig-align="left"}
+
+### Authoring
+
+Let's try making a small change and then re-rendering:
+
+1.  Change the line of code that defines `theta` as follows:
+
+    ``` python
+    theta = 4 * np.pi * r
+    ```
+
+2.  Save the file using either `:w` in normal mode or `ctrl-s` ^[if you are using the kickstarter configuration -- otherwise `ctrl-s` puts your terminal in a waiting mode until you press `ctrl+q`, which can be confusing]
+
+The document is rendered, and the browser preview is updated.
+This is the basic workflow for authoring with Quarto.
+
+### Running Cells
+
+{{< include _neovim-running-cells.md >}}
+
+There are few different types of content in `hello.qmd`, let's work a bit with each type.
+
+## YAML Options
+
+At the top of the file there is a YAML block with document level options.
+
+``` yaml
+---
+title: "Quarto Basics"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+```
+
+Try changing the `code-fold` option to `false`:
+
+``` yaml
+format: 
+  html:
+    code-fold: false
+```
+
+Then re-render the document by saving it.
+You'll notice that the code is now shown above the plot, where previously it was hidden with a **Code** button that could be used to show it.
+
+Narrative content is written using markdown.
+Here we specify a header and a cross-reference to the figure created in the code cell below.
+
+``` markdown
+## Polar Axis
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+```
+
+Try changing the header and re-rendering---the preview will update with the new header text.
+
+## Code Cells
+
+Code cells contain executable code to be run during render, with the output (and optionally the code) included in the rendered document.
+
+```` markdown
+```{{python}}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+````
+
+You are likely familiar with the Matplotlib code given here.
+However, there are some less familiar components at the top of the code cell: `label` and `fig-cap` options.
+Cell options are written in YAML using a specially prefixed comment (`#|`).
+
+In this example, the cell options are used to make the figure cross-reference-able.
+Try changing the `fig-cap` and/or the code then re-rendering to see the updated preview.
+
+There are a wide variety of [cell options](/docs/reference/cells/cells-jupyter.qmd) that you can apply to tailor your output.
+We'll delve into these options in the next tutorial.
+
+::: callout-note
+One particularly useful cell option for figures is `fig-alt`, which enables you to add alternative text to images for users with visual impairments.
+See Amy Cesal's article on [Writing Alt Text for Data Visualization](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81) to learn more.
+:::
+
+
+## Next Up
+
+You now know the basics of creating and authoring Quarto documents. The following tutorials explore Quarto in more depth:
+
+-   [Tutorial: Computations](../computations/) --- Learn how to tailor the behavior and output of executable code blocks.
+
+-   [Tutorial: Authoring](../authoring/) --- Learn more about output formats and technical writing features like citations, crossrefs, and advanced layout.
+
+See the article on [Using Neovim with Quarto](/docs/tools/neovim.qmd) to learn more about installing, using, and customizing Neovim for Quarto. 

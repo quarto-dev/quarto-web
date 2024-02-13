@@ -28,11 +28,19 @@
           return response.json();
         })
         .then((dlData) => {
+
+          notifyListeners(
+            dlData
+          );
+
           populateDownloadButton(
             downloadData.prefix,
             downloadData.releaseDesc,
             dlData.version,
-            dlData.assets
+            dlData.assets,
+            new Date(dlData.created).toLocaleString("en-US", {
+              dateStyle: "medium",
+            })
           );
           populateDownloadTable(
             downloadData.prefix,
@@ -55,12 +63,15 @@
           if (!window["quarto-download-nonews"]) {
             populateNews(downloadData.prefix, dlData.description);
           } else {
-            const newsSection = window.document.getElementById(
-              `${downloadData.prefix}-section-news`
-            );
-            if (newsSection) {
-              newsSection.remove();
-            }
+            
+            const idsToRemove = [`${downloadData.prefix}-section-news`, `download-section-highlights`, `toc-download-section-highlights`, `toc-${downloadData.prefix}-release-notes`];
+            idsToRemove.forEach((id) => {
+              const el = window.document.getElementById(id);
+              if (el !== null) {
+                el.remove();
+              }
+            })
+
           }
 
           window.tippy("a.checksum[data-tippy-content]", {
@@ -82,6 +93,8 @@
       [`quarto-${version}-win.msi`]: "Windows",
       [`quarto-${version}-macos.pkg`]: "Mac OS",
       [`quarto-${version}-linux-amd64.deb`]: "Ubuntu 18+/Debian 10+",
+      [`quarto-${version}-linux-arm64.deb`]: "Linux Arm64",
+      
     };
 
     if (window["quarto-download-archives"]) {
@@ -90,7 +103,8 @@
     }
 
     if (window["quarto-download-archives"] || isLinux()) {
-      mappings[`quarto-${version}-linux-amd64.tar.gz`] = "Linux Tarball";
+      mappings[`quarto-${version}-linux-amd64.tar.gz`] = "Linux x86 Tarball";
+      mappings[`quarto-${version}-linux-arm64.tar.gz`] = "Linux Arm64 Tarball";
       mappings[`quarto-${version}-linux-rhel7-amd64.tar.gz`] = "RHEL 7 Tarball";
     }
 
@@ -127,7 +141,15 @@
     }
   }
 
-  function populateDownloadButton(idPrefix, releaseDesc, version, assets) {
+  function notifyListeners(dlData) {
+    if (window["quarto-dl-listeners"]) {
+      for (const listener of window["quarto-dl-listeners"]) {
+        listener(dlData);
+      }
+    }
+  }
+
+  function populateDownloadButton(idPrefix, releaseDesc, version, assets, releaseDate) {
     const osData = window["quarto-force-os"] || guessOS();
     const extension = window["quarto-force-download"]
       ? window["quarto-force-download"]
@@ -177,7 +199,7 @@
         secondaryTextEl.className = "secondary";
         secondaryTextEl.innerText = `${version}${
           releaseDesc ? " " + releaseDesc : ""
-        } (${osData.name})`;
+        } (${osData.name}) | Date: ${releaseDate}`;
         textContainerEl.append(secondaryTextEl);
 
         containerEl.append(textContainerEl);

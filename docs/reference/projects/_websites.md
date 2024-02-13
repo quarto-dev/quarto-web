@@ -15,7 +15,7 @@ Options that define the top navigation bar for a {{< meta project-type >}} For e
 
 ## Nav Items
 
-Nav items appear in the `left` or `right` key of `navbar` definitions. For example:
+Nav items appear in the `left` or `right` key of `navbar` definitions, or `contents` key of `sidebar` definitions. For example:
 
 ``` yaml
 ---
@@ -91,6 +91,7 @@ Action buttons that appear on the sidebar. For example:
 Search options are specified under the `search` key of `{{< meta project-type >}}`. For example:
 
 ``` yaml
+---
 {{< meta project-type >}}:
   search:
     location: navbar
@@ -149,7 +150,7 @@ Social metadata is provided as a subkey of `{{< meta project-type >}}` options. 
 
 ## Comments
 
-You can add commenting to your {{< meta project-type >}} using either [Hypothesis](https://web.hypothes.is/) or [Utterances](https://utteranc.es/).
+You can add commenting to your {{< meta project-type >}} using either [Hypothesis](https://web.hypothes.is/), [Utterances](https://utteranc.es/), or [Giscus](https://giscus.app/).
 
 ### Hypothesis
 

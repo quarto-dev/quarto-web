@@ -10,7 +10,7 @@ Quarto includes native support for [Observable JS](https://observablehq.com/@obs
 
 The creators of Observable JS (Observable, Inc.) run a hosted service at <https://observablehq.com/> where you can create and publish notebooks. Additionally, you can use Observable JS ("OJS") in standalone documents and websites via its [core libraries](https://github.com/observablehq). Quarto uses these libraries along with a [compiler](https://github.com/asg017/unofficial-observablehq-compiler/tree/beta) that is run at render time to enable the use of OJS within Quarto documents.
 
-OJS works in any Quarto document (plain markdown as well as Jupyter and Knitr documents). Just include your code in an `{ojs}` executable code block. The rest of this article explains the basics of using OJS with Quarto.
+OJS works in any Quarto document (plain markdown as well as Jupyter and Knitr documents). Just include your code in an `{ojs}` executable code block. Documents that use OJS need to run on the `http://` or `https://` protocol and not the `file://` protocol. The rest of this article explains the basics of using OJS with Quarto.
 
 ## Example
 
@@ -58,13 +58,13 @@ Plot.rectY(filtered,
 
 Let's take a look at the source code for this example. First we create an `{ojs}` cell that reads in some data from a CSV file using a [FileAttachment](https://observablehq.com/@observablehq/file-attachments):
 
-``` {{ojs}}
+```{{ojs}}
 data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
 ```
 
 The example above doesn't plot all of the data but rather a filtered subset. To create our filter we'll need some inputs, and we'll want to be able to use the values of these inputs in our filtering function. To do this, we use the `viewof` keyword and with some standard [Inputs](https://observablehq.com/@observablehq/inputs):
 
-``` {{ojs}}
+```{{ojs}}
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
@@ -79,7 +79,7 @@ viewof islands = Inputs.checkbox(
 
 Now we write the filtering function that will transform the `data` read from the CSV using the values of `bill_length_min` and `island`.
 
-``` {{ojs}}
+```{{ojs}}
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length_mm &&
          islands.includes(penguin.island);
@@ -90,7 +90,7 @@ Here we see reactivity in action: we don't need any special syntax to refer to t
 
 Finally, we'll plot the filtered data using [Observable Plot](https://observablehq.com/@observablehq/plot) (an open-source JavaScript library for quick visualization of tabular data):
 
-``` {{ojs}}
+```{{ojs}}
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 
@@ -134,7 +134,7 @@ The libraries are somewhat special because they are automatically available with
 
 Using other JavaScript libraries is also straightforward, they just need to be explicitly imported. For example, here we import a some libraries using the [require](https://github.com/observablehq/stdlib#require) function (which in turn loads NPM modules from [jsDelivr](https://www.jsdelivr.com/){.uri}):
 
-``` {{ojs}}
+```{{ojs}}
 d3 = require("d3@7")
 topojson = require("topojson")
 ```
@@ -160,7 +160,7 @@ The call to `ojs_define(data = penguins)` says that we want to make a variable n
 
 Depending on the visualization library you use, one additional step may be required to consume the data from JavaScript. In this case, the `Plot` function expects data by row rather than by column, so we `transpose()` it before filtering:
 
-``` {{ojs}}
+```{{ojs}}
 filtered = transpose(data).filter(function(penguin) {
   return bill_length_min < penguin.bill_length_mm &&
          islands.includes(penguin.island);
@@ -187,7 +187,7 @@ execute:
 
 You can also specify this option on a per-cell basis. For example:
 
-``` {{ojs}}
+```{{ojs}}
 //| echo: false
 data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
 ```

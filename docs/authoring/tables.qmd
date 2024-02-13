@@ -1,5 +1,5 @@
 ---
-title: "Tables"
+title: Tables
 engine: jupyter
 ---
 
@@ -17,6 +17,11 @@ This article covers using these features in-depth.
 
 The most commonly used markdown table is known as a pipe table. Pipe tables support specifying per column alignment as well as captions. For example:
 
+
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
 | Default | Left | Right | Center |
 |---------|:-----|------:|:------:|
@@ -27,7 +32,9 @@ The most commonly used markdown table is known as a pipe table. Pipe tables supp
 : Demonstration of pipe table syntax
 ```
 
-Here is the table rendered to HTML:
+::::
+
+:::: {}
 
 | Default | Left | Right | Center |
 |---------|:-----|------:|:------:|
@@ -36,6 +43,10 @@ Here is the table rendered to HTML:
 | 1       | 1    |     1 |   1    |
 
 : Demonstration of pipe table syntax
+
+::::
+
+:::
 
 The beginning and ending pipe characters are optional, but pipes are required between all columns. The colons indicate column alignment as shown. The header cannot be omitted, however you can simulate a headerless table by including a header with blank cells.
 
@@ -53,6 +64,44 @@ The cells of pipe tables cannot contain block elements like paragraphs and lists
 
 For example `---|-` would make the first column 3/4 and the second column 1/4 of the full text width. On the other hand, if no lines are wider than column width, then cell contents will not be wrapped, and the cells will be sized to their contents.
 
+### Using Bootstrap classes
+
+Bootstrap table classes given as attributes next to a table caption are inserted into the `<table>` element.
+The classes permitted are those that apply expressly to the entire table, and these are:
+`"primary"`, `"secondary"`, `"success"`, `"danger"`, `"warning"`, `"info"`, `"light"`, `"dark"`, `"striped"`, `"hover"`, `"active"`, `"bordered"`, `"borderless"`, `"sm"`, `"responsive"`, `"responsive-sm"`, `"responsive-md"`, `"responsive-lg"`, `"responsive-xl"`, `"responsive-xxl"`.
+For example, the following Markdown table will be rendered with row stripes and the rows will also be highlighted on hover:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+
+``` markdown
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {.striped .hover}
+```
+
+::::
+
+:::: {}
+
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {.striped .hover}
+
+::::
+
+:::
+
 ### Authoring
 
 For simple tables with only a few cells it's straightforward to create them directly in markdown. As tables get larger, it makes sense to use an authoring tool. Some table authoring tools to consider include:
@@ -69,9 +118,13 @@ For simple tables with only a few cells it's straightforward to create them dire
 
 ## Column Widths
 
-Above we describe a means of specifying column widths using the relative number of dashes in each column header (e.g. `---|-` to get a 75% / 25% split for a two-column table).
+Above we describe a means of specifying column widths using the relative number of dashes in each column header (_e.g._, `---|-` to get a 75% / 25% split for a two-column table).
 
 You can also explicitly specify columns widths using the `tbl-colwidths` attribute or document-level option. For an individual markdown table, add the attribute after the caption. For example:
+
+::: {layout-ncol="2"}
+
+:::: {}
 
 ``` markdown
 | fruit  | price  |
@@ -83,13 +136,55 @@ You can also explicitly specify columns widths using the `tbl-colwidths` attribu
 : Fruit prices {tbl-colwidths="[75,25]"}
 ```
 
+::::
+
+:::: {}
+
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: Fruit prices {tbl-colwidths="[75,25]"}
+
+::::
+
+:::
+
 If your table doesn't have a caption, then you can still specify only `tbl-colwidths`:
 
+::: {layout-ncol="2"}
+
+:::: {}
+
 ``` markdown
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
 : {tbl-colwidths="[75,25]"}
 ```
 
-Column widths can also be specified at the document level (e.g. to have uniform widths across a set of tables):
+::::
+
+:::: {}
+
+| fruit  | price  |
+|--------|--------|
+| apple  | 2.05   |
+| pear   | 1.37   |
+| orange | 3.09   |
+
+: {tbl-colwidths="[75,25]"}
+
+::::
+
+:::
+
+Column widths can also be specified at the document level (_e.g._, to have uniform widths across a set of tables):
 
 ``` yaml
 ---
@@ -101,22 +196,23 @@ tbl-colwidths: [75,25]
 
 ## Cross References
 
-For tables produced by executable code cells, include a label with a `tbl-` prefix to make them cross-referenceable. For example:
+For tables produced by executable code cells, include a label with a `tbl-` prefix to make them cross-referenceable.
+For example:
 
 ```{python}
 #| label: tbl-planets
-#| tbl-cap: "Planets"
+#| tbl-cap: "Astronomical object"
 #| echo: fenced
 
 from IPython.display import Markdown
 from tabulate import tabulate
-table = [["Sun",696000,1989100000],
-         ["Earth",6371,5973.6],
-         ["Moon",1737,73.5],
-         ["Mars",3390,641.85]]
+table = [["Sun","696,000",1.989e30],
+         ["Earth","6,371",5.972e24],
+         ["Moon","1,737",7.34e22],
+         ["Mars","3,390",6.39e23]]
 Markdown(tabulate(
   table, 
-  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
+  headers=["Astronomical object","R (km)", "mass (kg)"]
 ))
 ```
 
@@ -126,7 +222,13 @@ Markdown(tabulate(
 In order for a table to be cross-referenceable, its label must start with the `tbl-` prefix.
 :::
 
-{{< include _table-crossrefs.md >}} 
+{{< include _table-crossrefs.md >}}
+
+See the article on [Cross References](cross-references.qmd) for additional details.
+
+### Subtables
+
+{{< include _table-crossrefs-subtables.md >}}
 
 ## Caption Location
 
@@ -156,102 +258,319 @@ All of the options described above work for tables produced by executable code c
 
 ```{python}
 #| label: tbl-planet-measures
-#| tbl-cap: "Planets"
+#| tbl-cap: "Astronomical object"
 #| echo: fenced
 
 from IPython.display import Markdown
 from tabulate import tabulate
-table = [["Sun",696000,1989100000],
-         ["Earth",6371,5973.6],
-         ["Moon",1737,73.5],
-         ["Mars",3390,641.85]]
+table = [["Sun","696,000",1.989e30],
+         ["Earth","6,371",5.972e24],
+         ["Moon","1,737",7.34e22],
+         ["Mars","3,390",6.39e23]]
 Markdown(tabulate(
   table, 
-  headers=["Planet","R (km)", "mass (x 10^29 kg)"]
+  headers=["Astronomical object","R (km)", "mass (kg)"]
 ))
 ```
 
 Here we apply the `tbl-cap` and `tbl-colwidths` options to a code cell that uses the knitr `kable()` function to write a markdown table:
 
-``` {{r}}
+```{{r}}
 #| label: tbl-cars
 #| tbl-cap: "Cars"
 #| tbl-colwidths: [60,40]
 
-library(knitr)
 kable(head(cars))
 ```
 
 If your code cell produces multiple tables, you can also specify subcaptions and layout using cell options:
 
-``` {{r}}
+::: {.panel-tabset group="language"}
+
+## Python
+
+````python
+```{{python}}
+#| label: tbl-example
+#| tbl-cap: "Example"
+#| tbl-subcap: 
+#|   - "MPG"
+#|   - "Taxis"
+#| layout-ncol: 2
+
+import seaborn as sns
+from IPython.display import Markdown, display
+mpg = sns.load_dataset("mpg").head(10)
+taxis = sns.load_dataset("taxis").head(10)
+
+display(Markdown(mpg.to_markdown(index = False)))
+display(Markdown(taxis.to_markdown(index = False)))
+```
+````
+
+Note that we use the [`display()`](https://ipython.readthedocs.io/en/stable/api/generated/IPython.display.html#IPython.display.display) function imported from `IPython` so that we can render multiple outputs from a single cell (by default cells only output their last expression).
+
+## R
+
+````python
+```{{r}}
 #| label: tbl-example
 #| tbl-cap: "Example"
 #| tbl-subcap: 
 #|   - "Cars"
 #|   - "Pressure"
 #| layout-ncol: 2
-#| echo: fenced
 
 library(knitr)
 kable(head(cars))
 kable(head(pressure))
 ```
+````
+
+
+:::
 
 ## Grid Tables
 
 Grid tables are a more advanced type of markdown tables that allow arbitrary block elements (multiple paragraphs, code blocks, lists, etc.). For example:
 
+
 ``` markdown
-+---------------+---------------+--------------------+
-| Fruit         | Price         | Advantages         |
-+===============+===============+====================+
-| Bananas       | $1.34         | - built-in wrapper |
-|               |               | - bright color     |
-+---------------+---------------+--------------------+
-| Oranges       | $2.10         | - cures scurvy     |
-|               |               | - tasty            |
-+---------------+---------------+--------------------+
++-----------+-----------+--------------------+
+| Fruit     | Price     | Advantages         |
++===========+===========+====================+
+| Bananas   | $1.34     | - built-in wrapper |
+|           |           | - bright color     |
++-----------+-----------+--------------------+
+| Oranges   | $2.10     | - cures scurvy     |
+|           |           | - tasty            |
++-----------+-----------+--------------------+
 
 : Sample grid table.
 ```
+
+Which looks like this when rendered to HTML:
+
++-----------+-----------+--------------------+
+| Fruit     | Price     | Advantages         |
++===========+===========+====================+
+| Bananas   | $1.34     | - built-in wrapper |
+|           |           | - bright color     |
++-----------+-----------+--------------------+
+| Oranges   | $2.10     | - cures scurvy     |
+|           |           | - tasty            |
++-----------+-----------+--------------------+
+
+: Sample grid table.
+
 
 The row of `=`s separates the header from the table body, and can be omitted for a headerless table. Cells that span multiple columns or rows are not supported.
 
-This is what the table looks like when rendered to markdown:
-
-+---------------+---------------+----------------------+
-| Fruit         | Price         | Advantages           |
-+===============+===============+======================+
-| Bananas       | \$1.34        | -   built-in wrapper |
-|               |               | -   bright color     |
-+---------------+---------------+----------------------+
-| Oranges       | \$2.10        | -   cures scurvy     |
-|               |               | -   tasty            |
-+---------------+---------------+----------------------+
-
-: Sample grid table.
-
 Alignments can be specified as with pipe tables, by putting colons at the boundaries of the separator line after the header:
 
+
 ``` markdown
-+---------------+---------------+--------------------+
-| Right         | Left          | Centered           |
-+==============:+:==============+:==================:+
-| Bananas       | $1.34         | built-in wrapper   |
-+---------------+---------------+--------------------+
++---------+--------+------------------+
+| Right   | Left   | Centered         |
++========:+:=======+:================:+
+| Bananas | $1.34  | built-in wrapper |
++---------+--------+------------------+
 ```
+Which looks like this when rendered to HTML:
+
++---------+--------+------------------+
+| Right   | Left   | Centered         |
++========:+:=======+:================:+
+| Bananas | $1.34  | built-in wrapper |
++---------+--------+------------------+
+
 
 For headerless tables, the colons go on the top line instead:
 
 ``` markdown
-+--------------:+:--------------+:------------------:+
-| Right         | Left          | Centered           |
-+---------------+---------------+--------------------+
++----------:+:----------+:--------:+
+| Right     | Left      | Centered |
++-----------+-----------+----------+
 ```
+
+Which looks like this when rendered to HTML:
+
++----------:+:----------+:--------:+
+| Right     | Left      | Centered |
++-----------+-----------+----------+
+
 
 Note that grid tables are quite awkward to write with a plain text editor (because unlike pipe tables, the column indicators must align). Here are some tools that can assist with creating grid tables:
 
 -   Emacs' [table-mode](https://www.gnu.org/software/emacs/manual/html_node/emacs/Text-Based-Tables.html) (`M-x table-insert`)
-
 -   Quarto [Visual Editor](https://quarto.org/docs/visual-editor/content.html#editing-tables)
+-   Tables Generator's [Plain Text mode](https://www.tablesgenerator.com/text_tables) with `Use reStructuredText syntax` enabled
+
+## HTML Tables
+
+Quarto can process HTML tables in `html` `RawBlock` nodes (_i.e._, `{=html}`) and convert them to Markdown tables, regardless of the output format (intentionally including non-HTML formats).
+As a result, you can use HTML table syntax in your documents and it will be converted to Markdown syntax for all formats.
+Additionally, libraries that emit computational tables in HTML format can work in other output formats.
+
+For example, consider the following raw HTML block:
+
+````markdown
+```{=html}
+<table>
+  <caption>As described in the section above, Quarto tables are great.</caption>
+  <thead>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/220px-African_Bush_Elephant.jpg" alt="African Bush Elephant" /></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+````
+
+When rendered, this results in the following output for HTML and PDF formats:
+
+::: {layout-ncol=2}
+
+:::: {}
+### HTML Output
+
+```{=html}
+<table>
+  <caption>As described in the section above, Quarto tables are great.</caption>
+  <thead>
+    <tr>
+      <th>Header 1</th>
+      <th>Header 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/African_Bush_Elephant.jpg/220px-African_Bush_Elephant.jpg" alt="African Bush Elephant" /></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+::::
+
+:::: {}
+### PDF Output
+
+![](images/raw-table-pdf.png){.border fig-alt="Screenshot of PDF output showing a table with a caption and two columns. The column headers are Header 1 and Header 2, and the cell contents are an image of an elephant and text that reads Regular Output."}
+::::
+
+:::
+
+In addition, Quarto supports the specification of embedded Markdown content in tables.
+This is done by providing a data attribute `qmd` or `qmd-base64` in an embedded `span` or `div` node.
+These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._ 
+
+For example, the following table includes a cross reference, markdown formatting and a shortcode:
+
+:::: {layout-nrow="2"}
+
+::: {}
+
+```` markdown
+## HTML Tables Example {#sec-html-tables}
+
+```{=html}
+<table>
+  <caption><span data-qmd="As described in [Section -@sec-html-tables], Quarto are great."></span></caption>
+  <thead>
+    <tr>
+      <th><span data-qmd="_Header 1_"></span></th>
+      <th><span data-qmd="_Header 2_"></span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span data-qmd="{{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}}"></span></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+````
+
+:::
+
+::: {}
+
+Which renders as follows:
+
+## HTML Tables Example {#sec-html-tables}
+
+```{=html}
+<table>
+  <caption><span data-qmd="As described in [Section -@sec-html-tables], Quarto are great."></span></caption>
+  <thead>
+    <tr>
+      <th><span data-qmd="_Header 1_"></span></th>
+      <th><span data-qmd="_Header 2_"></span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span data-qmd="{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}"></span></td>
+      <td>Regular output</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+:::
+
+::::
+
+
+## Disabling Quarto Table Processing
+
+It's possible that Quarto's processing of HTML tables may interfere with the HTML produced computationally with table packages in R and Python (or other supported languages).
+
+You can disable Quarto's HTML table processing at a document level or project level with the option `html-table-processing`:
+
+```{.yaml}
+---
+format:
+  html:
+    html-table-processing: none
+---
+```
+
+This option is also available as a code cell option for Knitr and Jupyter, e.g. 
+
+````{markdown}
+```{{r}}
+#| html-table-processing: none
+
+# R Code that generates an HTML table
+```
+````
+
+To disable Quarto's HTML table processing for parts of a document use a div with the attribute `html-table-processing="none"`:
+
+````{.markdown}
+::: {html-table-processing="none"}
+
+Content with HTML tables you don't want processed.
+
+:::
+````
+
+### Library authors
+
+If you are the author of a library that emits HTML tables you might like to disable Quarto's processing of HTML tables by adding the attribute `data-quarto-disable-processing="true"` to the `<table>` element. For example:
+
+```html
+<table data-quarto-disable-processing="true">
+  ...
+</table>
+```

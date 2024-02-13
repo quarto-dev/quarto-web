@@ -18,14 +18,13 @@ author:
   - name: Nora Jones 
     url: https://example.com/norajones
     affiliation: Spacely Sprockets
-    affiliation-url: https://example.com/spacelysprokets
+    affiliation-url: https://example.com/spacelysprockets
 citation:
   url: https://example.com/summarizing-output
 bibliography: biblio.bib
 ---
 ```
-
-If you omit the citation url, Quarto will attempt to generate a citation url by using the `site-url` and the current page's location. If you'd like to allow Quarto to generate the citation url, you can omit the citation url and simply enable citation output on the page. For example:
+Name particles can be further defined in the `name` key following the [Citation Style Language (CSL) specification for naming particles](https://docs.citationstyles.org/en/stable/specification.html#name-particles). If you omit the citation url, Quarto will attempt to generate a citation url by using the `site-url` and the current page's location. If you'd like to allow Quarto to generate the citation url, you can omit the citation url and simply enable citation output on the page. For example:
 
 ``` yaml
 ---
@@ -46,6 +45,18 @@ bibliography: biblio.bib
 When this metadata is available, a citation appendix is automatically added to the article. The citation appendix will present both a copy-able `bibtex` representation of the document and a formatted representation of the citation (based upon the document's CSL file, if specified). For example:
 
 ![](images/appendix-citation.png){.border fig-alt="Appearance of a citation appendix contains both BibTeX citation and plain text citation for attribution."}
+
+By default both the `bibtex` and formatted representations are displayed. You can use the `appendix-cite-as` option to control this behavior:
+
++-----------------------------+------------------------------------------------+
+| `appendex-cite-as: false`   | Do not include any citations in the appendix.  |
++-----------------------------+------------------------------------------------+
+| `appendix-cite-as: bibtex`  | Show only the BibTeX version of the citation.  |
++-----------------------------+------------------------------------------------+
+| `appendix-cite-as: display` | Show only the display version of the citation. |
++-----------------------------+------------------------------------------------+
+
+: {tbl-colwidths="\[50,50\]"}
 
 ## Journal Articles
 
@@ -223,6 +234,38 @@ Quarto's approach to emitting scholarly metadata is to take the standard CSL fie
 | `collection-title`                                                                                                                            | `citation_series_title`                                                                 |
 +-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
 
+[^1]: Specify one or more authors using one of the following:
+
+    ``` yaml
+    author: Norah Jones
+    ```
+
+    or multiple values like:
+
+    ``` yaml
+    author:
+    -   Norah Jones
+    -   Nick Fury
+    ```
+
+    The list of authors provded under the citation key will be used instead of the document authors when generating the html metadata.
+
+[^2]: Specify one or more editors using one of the following:
+
+    ``` yaml
+    editors: Norah Jones
+    ```
+
+    or multiple values like:
+
+    ``` yaml
+    editors:
+    -   Norah Jones
+    -   Nick Fury
+    ```
+
+[^3]: Note that the `keyword` citation field is a comma separated string of keywords (consistent with CSL).
+
 For example, citation data for a published conference paper defined as such in the document front matter:
 
 ``` yaml
@@ -264,35 +307,3 @@ provides HTML metadata like:
 <meta name="citation_conference_title" content="Proceedings of the annual conference of the Society for Research">
 <meta name="citation_conference" content="Society for Research">
 ```
-
-[^1]: Specify one or more authors using one of the following:
-
-    ``` yaml
-    author: Norah Jones
-    ```
-
-    or multiple values like:
-
-    ``` yaml
-    author:
-    -   Norah Jones
-    -   Nick Fury
-    ```
-
-    The list of authors provded under the citation key will be used instead of the document authors when generating the html metadata.
-
-[^2]: Specify one or more editors using one of the following:
-
-    ``` yaml
-    editors: Norah Jones
-    ```
-
-    or multiple values like:
-
-    ``` yaml
-    editors:
-    -   Norah Jones
-    -   Nick Fury
-    ```
-
-[^3]: Note that the `keyword` citation field is a comma separated string of keywords (consistent with CSL).

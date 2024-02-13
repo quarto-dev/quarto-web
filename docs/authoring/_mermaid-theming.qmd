@@ -1,0 +1,111 @@
+{{< include ../_require-1.3.qmd >}}
+
+The following sections describe the ways in which you can control the color theme of Mermaid diagrams:
+
+- Using the current document theme.
+- Using one of Mermaid's own color themes via a YAML option.
+- Using SCSS and CSS variables.
+
+### Default Colors for Mermaid Diagrams
+
+If you use Quarto's [bootswatch built-in themes](../output-formats/html-themes.qmd), including the default theme, or a custom theme that uses the same SCSS variables, your Mermaid diagrams will automatically follow your theme.
+
+The following examples demonstrate this with a few of Quarto's built-in bootswatch themes.
+
+::: panel-tabset
+
+## Darkly
+
+![](images/mermaid-darkly.png){fig-alt="A screenshot of a Mermaid flowchart in a document using bootswatch's Darkly theme."}
+
+## Sandstone
+
+![](images/mermaid-sandstone.png){fig-alt="A screenshot of a Mermaid flowchart in a document using bootswatch's Sandstone theme."}
+
+## Vapor
+
+![](images/mermaid-vapor.png){fig-alt="A screenshot of a Mermaid flowchart in a document using bootswatch's Vapor theme."}
+:::
+
+You can read more about the correspondence between Bootstrap's SCSS variables and Quarto's Mermaid SCSS variables, and how to change it, below in [Customizing the Mermaid Theme](#customizing-mermaid).
+
+### Using Mermaid's Built-in Themes
+
+If you want to use Mermaid's own themes, you can do so by configuring the `mermaid` option in your YAML front matter:
+
+``` yml
+format:
+  html:
+    mermaid:
+      theme: forest
+```
+
+The available themes from mermaid are: `default`, `dark`, `forest`, and `neutral`.
+
+::: panel-tabset
+## default
+
+![](images/mermaid-default.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's default theme."}
+
+## dark
+
+![](images/mermaid-dark.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's dark theme."}
+
+## forest
+
+![](images/mermaid-forest.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's forest theme."}
+
+## neutral
+
+![](images/mermaid-neutral.png){fig-alt="A screenshot of a Mermaid flowchart using the Mermaid's neutral theme."}
+
+:::
+
+### Customizing the Mermaid Theme {#customizing-mermaid}
+
+Quarto provides its own Mermaid SCSS and CSS variables that can be overwritten to allow some customization of the diagram theme. The SCSS variables, together with their default values, are:
+
+<!-- This comes from quarto-dev/quarto-cli/src/resources/formats/html/_quarto-rules.scss -->
+
+``` scss
+$mermaid-bg-color: $body-bg;
+$mermaid-edge-color: $secondary;
+$mermaid-node-fg-color: $body-color;
+$mermaid-fg-color: $body-color;
+$mermaid-fg-color--lighter: lighten($body-color, 10%);
+$mermaid-fg-color--lightest: lighten($body-color, 20%);
+$mermaid-font-family: $font-family-sans-serif;
+$mermaid-label-bg-color: $body-bg;
+$mermaid-label-fg-color: $primary;
+$mermaid-node-bg-color: rgba($primary, 0.1);
+$mermaid-node-fg-color: $primary;
+
+```
+
+Their CSS variable counterparts are:
+
+``` css
+:root {
+  --mermaid-bg-color: #{$mermaid-bg-color};
+  --mermaid-edge-color: #{$mermaid-edge-color};
+  --mermaid-node-fg-color: #{$mermaid-node-fg-color};
+  --mermaid-fg-color: #{$mermaid-fg-color};
+  --mermaid-fg-color--lighter: #{$mermaid-fg-color--lighter};
+  --mermaid-fg-color--lightest: #{$mermaid-fg-color--lightest};
+  --mermaid-font-family: #{$mermaid-font-family};
+  --mermaid-label-bg-color: #{$mermaid-label-bg-color};
+  --mermaid-label-fg-color: #{$mermaid-label-fg-color};
+  --mermaid-node-bg-color: #{$mermaid-node-bg-color};
+  --mermaid-node-fg-color: #{$mermaid-node-fg-color};
+}
+```
+
+For example, to provide a custom color for the background of the nodes you could [add a custom CSS stylesheet](../../output-formats/html-basics.html#css-styles) containing:
+
+```css
+:root {
+  --mermaid-node-bg-color: #375a7f;
+}
+```
+
+You can find the correspondence between Quarto's variables and Mermaid's native CSS classes in Quarto's source code in the file  [embed-mermaid.css](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/html/mermaid/embed-mermaid.css).

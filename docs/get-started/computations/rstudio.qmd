@@ -23,7 +23,7 @@ We recommend also checking the box for **Render on Save** for a live preview of 
 <i class="bi bi-download"></i> [Download computations.qmd](_computations.qmd){download="computations.qmd"}
 :::
 
-Note that you will need to open this document in the [latest release](https://rstudio.com/products/rstudio/download/) of RStudio (v2022.07) which you can download [here](https://rstudio.com/products/rstudio/download/).
+Note that you will need to open this document in RStudio {{< var rstudio.min_version >}} or later, which you can download [here](https://posit.co/download/rstudio-desktop/).
 
 ## Cell Output
 
@@ -70,7 +70,7 @@ The `echo` option can be set to `true`, `false`, or `fenced`.
 The last one might be of special interest for writing documentation and teaching materials as it allows you to include the fenced code delimiter in your code output to emphasize that executable code requires that delimiter.
 You can read more about this option in the [Fenced Echo](https://quarto.org/docs/computations/execution-options.html#fenced-echo) documentation.
 
-There a large number of other options available for cell output, for example `warning` for showing/hiding warnings (which can be especially helpful for package loading messages), `include` as a catch all for preventing any output (code or results) from being included in output, and `error` to prevent errors in code execution from halting the rendering of the document (and print the error in the rendered document).
+There are a large number of other options available for cell output, for example `warning` for showing/hiding warnings (which can be especially helpful for package loading messages), `include` as a catch all for preventing any output (code or results) from being included in output, and `error` to prevent errors in code execution from halting the rendering of the document (and print the error in the rendered document).
 
 See the [Knitr Cell Options](https://quarto.org/docs/reference/cells/cells-knitr.html) documentation for additional details.
 
@@ -129,6 +129,7 @@ Save the document and observe that the functions are now clickable hyperlinks.
 ![](images/rstudio-code-link-preview.png){.column-page-right fig-alt="Rendered version of the computations.qmd document. The document contains a title (Quarto Computations), text, code chunks, and a plot. The screenshot shows that function names in code chunks are clickable, and clicking on one brings you to documentation on the package website (which is shown on the foreground of the image). The function shown is theme_minimal() from ggplot2."}
 
 Note that code linking is currently implemented only for the knitr engine via the [downlit](https://downlit.r-lib.org/) package.
+A limitation of downlit currently prevents code linking if `code-line-numbers` and/or `code-annotations` are also `true`.
 
 ## Figures
 
@@ -140,7 +141,7 @@ We'll add the following chunk options.
 ``` r
 #| label: fig-scatterplot
 #| fig-cap: "City and highway mileage for 38 popular models of cars."
-#| fig-alt: "Scatterplot of city vs. highway mileage for cars, where points are colored by the number of cylinders. The plot displays a positive, linear, and strong relationship between city and highway mileage, and mileage increases as the number cylinders decreases."
+#| fig-alt: "Scatterplot of city vs. highway mileage for cars, where points are colored by the number of cylinders. The plot displays a positive, linear, and strong relationship between city and highway mileage, and mileage increases as the number of cylinders decreases."
 #| fig-width: 6
 #| fig-height: 3.5
 ```
@@ -231,19 +232,14 @@ See the documentation on [Article Layout](../../authoring/article-layout.qmd) to
 
 ## Inline Code
 
-To include executable expressions within markdown, enclose the expression in `` `r ` ``.
+To include executable expressions within markdown, enclose the expression in `` `{r} ` ``^[Quarto also supports the Knitr syntax `` `r ` ``, read more in [Inline Code](/docs/computations/inline-code.qmd)].
 For example, we can use inline code to state the number of observations in our data.
 Try adding the following markdown text to your Quarto document.
 
-```{=html}
-<div class="sourceCode">
-<pre class="sourceCode markdown">
-<code class="sourceCode markdown">
-There are &#96;r nrow(mpg)&#96; observations in our data. 
-</code>
-</pre>
-</div>
-```
+````markdown
+There are `{r} nrow(mpg)` observations in our data.
+````
+
 Save your document and inspect the rendered output.
 The expression inside the backticks has been executed and the sentence includes the actual number of observations.
 
@@ -311,5 +307,3 @@ Otherwise, you can download a completed version of `computations.qmd` below.
 :::
 
 {{< include _footer.md >}}
-
-

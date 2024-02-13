@@ -1,0 +1,1 @@
+If you are using traditional plotting libraries within static dashboards, you'll need to pay a bit more attention to getting the size of plots right for the layout they'll be viewed in. Note that this is not a concern for plots in interactive Shiny dashboards since all plot types are resized dynamically by Shiny.

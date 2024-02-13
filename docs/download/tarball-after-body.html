@@ -1,5 +1,6 @@
 <script type="text/javascript">
   const params = new URL(document.location).searchParams;
+
   const version = params.get("version");
   const idPrefix = params.get("idPrefix");
 
@@ -23,21 +24,35 @@
     icon_margin: "6px",
   };
 
-  window.document.addEventListener("DOMContentLoaded", function () {
-    const fixText = (node) => {
-      if (node.nodeType === 3) {
-        node.data = node.data.replaceAll("^version^", version);
-      } else if (node.nodeType === 1) {
-        for (const childNode of node.childNodes) {
-          fixText(childNode);
-        }
-      }
-    };
 
-    // Read the version off of the query string and replace any text references to it
-    const codeEls = window.document.querySelectorAll("code.sourceCode.bash");
-    for (const codeEl of codeEls) {
-      fixText(codeEl);
+  if (version === null) {
+    window["quarto-dl-listeners"] = window["quarto-dl-listeners"] || [];
+    window["quarto-dl-listeners"].push((dlData) => {
+      // Read the version off of the query string and replace any text references to it
+      const codeEls = window.document.querySelectorAll("code.sourceCode.bash");
+      for (const codeEl of codeEls) {
+        fixText(codeEl, dlData.version);
+      }
+    });
+  }
+
+  const fixText = (node, versionReplace) => {
+    if (node.nodeType === 3) {
+      node.data = node.data.replaceAll("^version^", versionReplace);
+    } else if (node.nodeType === 1) {
+      for (const childNode of node.childNodes) {
+        fixText(childNode, versionReplace);
+      }
+    }
+  };
+
+  window.document.addEventListener("DOMContentLoaded", function () {
+    if (version !== null) {
+      // Read the version off of the query string and replace any text references to it
+      const codeEls = window.document.querySelectorAll("code.sourceCode.bash");
+      for (const codeEl of codeEls) {
+        fixText(codeEl, version);
+      }
     }
   });
 </script>

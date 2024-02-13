@@ -10,9 +10,13 @@
 ::: {#download-table .download-table}
 :::
 
+{{< include /docs/prerelease/_highlights-release.qmd >}}
+
 ::: {#download-section-news}
-### Release Notes
+
+### Release Notes {#download-release-notes}
 
 ::: {#download-news .download-news}
 :::
+
 :::

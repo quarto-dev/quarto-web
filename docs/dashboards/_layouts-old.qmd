@@ -1,0 +1,464 @@
+---
+title: "Dashboard Layouts"
+---
+
+## Overview
+
+This page includes a variety of sample layouts which you can use as a starting point for your own dashboards.
+
+When creating a layout, it's important to decide up front whether you want your charts to fill the web page vertically (changing in height as the browser changes) or if you want the charts to maintain their original height (with the page scrolling as necessary to display all of the charts).
+
+Filling the page is generally a good choice when you have only one or two charts vertically stacked. Alternatively you can use `scrolling: true` to specify a scrolling layout, which is generally a better choice for three or more charts vertically stacked.
+
+## Chart Stack
+
+This layout is a simple stack of two charts. This dashboard fills the page and allocates height evenly across the two charts.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Stack"
+format: dashboard  
+---
+    
+```{{python}}
+
+```
+
+```{{python}}
+
+```
+
+
+
+
+
+
+
+````
+:::
+
+::: g-col-6
+![](images/chart-stack-fill.png){fig-alt="Page is split into two equal height rows: Chart 1 is in top row, Chart 2 in bottom row. Dashboard Schematic."}
+:::
+:::
+
+## Chart Stack (Height)
+
+Here we use the `height` option to allocate more space to the top chart. Note that we don't specify a height on the bottom chart as it will be automatically computed to fill the remaining space.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Stack w/ Height"
+format: dashboard
+---
+    
+```{{python}}
+#| height: 70%
+
+```
+
+```{{python}}
+
+```
+
+
+
+
+````
+:::
+
+::: g-col-6
+![](images/chart-stack-height.png){fig-alt="Page is split into two rows, the top row has a larger height than bottom row. Chart 1 is in top row, Chart 2 in bottom row. Dashboard Schematic."}
+:::
+:::
+
+## Chart Stack (Scrolling)
+
+This layout is a simple stack of three charts. To provide enough room to display all the charts a scrolling layout is used (`scrolling: true`). Note that because of its ability to scroll this layout could easily accommodate many more charts.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Stack (Scrolling)"
+format: 
+  dashboard:
+    scrolling: true 
+---
+    
+```{{python}}
+```
+
+```{{python}}
+```
+
+```{{python}}
+```
+
+````
+:::
+
+::: g-col-6
+![](images/chart-stack-scrolling.png){fig-alt="Page is split into three equal height rows. Chart 1 is in top row, Chart 2 in middle row, Chart 3 in bottom row. Dashboard Schematic."}
+:::
+:::
+
+## Focal Chart (Top)
+
+This layout fills the page completely and gives prominence to a single chart at the top (with two secondary charts included below). To achieve this layout it specifies `height` attributes on each row to establish their relative sizes.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Focal (Top)"
+format: dashboard
+---
+    
+## Row {height=70%}
+
+```{{python}}
+```
+
+## Row {height=30%}
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-focal-top.png){fig-alt="Page is split into two rows. The top row has a larger height than the second row. Chart 1 is in the top row and spans the full page width. The bottom row is split into two equal width columns. Chart 3 is in the left column; Chart 4 is in the right column. Dashboard Schematic."}
+:::
+:::
+
+## Focal Chart (Left)
+
+This layout fills the page completely and gives prominence to a single chart on the left (with two secondary charts included to the right). To achieve this layout we use `orientation: columns` (so that top level headings map to columns rather than rows). Additionally, we specify `width` attributes on each column to establish their relative sizes.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Focal (Left)"
+format: 
+  dashboard:
+    orientation: columns
+---
+    
+## Column {width=60%}
+
+```{{python}}
+```
+
+## Column {width=40%}
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-focal-left.png){fig-alt="Page is split into two columns. The left column is wider than the right, and contains Chart 1 spanning the full page height. The second column is split into two equal height rows: Chart 2 in the top row, and Chart 3 in the bottom row. Dashboard Schematic."}
+:::
+:::
+
+## Chart Grid (2x2)
+
+This layout is a 2x2 grid of charts. This layout uses the default filling behavior however depending on the ideal display size for the charts it might be preferable to allow the page to scroll (`scrolling: true`).
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Grid (2x2)"
+format: dashboard
+---
+    
+## Row 
+
+```{{python}}
+```
+
+```{{python}}
+```
+
+## Row
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-grid.png){fig-alt="Page is split into a grid with two equal height rows and two equal width columns. Chart 1 top left; Chart 2 top right; Chart 3 bottom left; Chart 4 bottom right. Dashboard Schematic."}
+:::
+:::
+
+## Multiple Pages
+
+This layout defines multiple pages using level 1 markdown headers. Each page has its own top-level navigation tab. Further, the second page uses a distinct orientation via the `orientation` attribute. The use of multiple columns and rows with custom `width` and `height` attributes is also demonstrated.
+
+````{.python .pymd}
+---
+title: "Multiple Pages"
+format: dashboard
+---
+
+# Page 1
+    
+## Column {width="60%"}
+    
+```{{python}}
+```
+   
+## Column {width="40%"}
+   
+```{{python}}
+```  
+
+# Page 2 {orientation="rows"}
+   
+## Row {height="60%"}
+ 
+```{{python}}
+```
+
+## Row {height="40%"}
+   
+```{{python}}
+```
+    
+````
+
+## Tabset (Column)
+
+This layout displays the right column as a set of two tabs. Tabs are especially useful when you have a large number of components to display and prefer not to require the user to scroll to access everything. Note that we specify a `title` option in each of the cells that produce a tab.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Tabset (Column)"
+format: 
+  dashboard:
+    orientation: columns
+---
+    
+## Column
+
+```{{python}}
+```
+
+## Column {.tabset}
+
+```{{python}}
+#| title: Chart 2
+```
+
+```{{python}}
+#| title: Chart 3
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-tabset-column.png){fig-alt="Page is split into two equal width columns. The left column has Chart 1 spanning the full page height. The right column has a tabset spanning the full page height: Chart 2 is selected; Chart 3 is unselected. Dashboard Schematic."}
+:::
+:::
+
+## Tabset (Row)
+
+This layout displays the bottom row as a set of two tabs.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Tabset (Row)"
+format: dashboard
+---
+    
+## Row
+
+```{{python}}
+```
+
+## Row {.tabset}
+
+```{{python}}
+#| title: Chart 2
+```
+
+```{{python}}
+#| title: Chart 3
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-tabset-row.png){fig-alt="Page is split into two equal height rows. The top row has Chart 1 spanning the full page width. The bottom row has a tabset spanning the full page width: Chart 2 is selected; Chart 3 is unselected. Dashboard Schematic."}
+:::
+:::
+
+## Tabset (Nested)
+
+You can include tabsets as arbitrarily deep levels. Here we include a tabset within a column of a top level row.
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Tabset (Card)"
+format: dashboard
+---
+    
+## Row {height=70%}
+
+```{{python}}
+```
+
+## Row {height=30%}
+
+### Column {.tabset}
+
+```{{python}}
+#| title: Chart 2
+```
+
+```{{python}}
+#| title: Chart 3
+```
+
+### Column
+
+```{{python}}
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-tabset-card.png){fig-alt="Page is split into two rows: the first higher than the second. Chart 1 is in the top row and spans the full page width. The bottom row is split into two equal width columns. The left column has a tabset: Chart 2 is selected; Chart 3 is unselected. The right column contains Chart 4. Dashboard Schematic."}
+:::
+:::
+
+## Input Sidebar
+
+This layout demonstrates how to add a sidebar to a dashboard page (Shiny or ObservableJS based dashboards will often present user input controls in a sidebar). To include a sidebar you add the `.sidebar` class to a level 2 heading
+
+::: {.chart-example .grid}
+::: g-col-6
+```` {.python .pymd}
+---
+title: "Sidebar"
+format: dashboard
+---
+    
+## {.sidebar}
+
+```{{python}}
+```
+
+## Column 
+
+```{{python}}
+```
+
+```{{python}}
+```
+````
+:::
+
+::: g-col-6
+![](images/chart-input-sidebar.png){fig-alt="Page is split into two columns. The column on the left is narrower than the right, and has a grey background representing the sidebar. The column on the right is split into two rows: Chart 1 in the top row; Chart 2 in the bottom row. Dashboard Schematic."}
+:::
+:::
+
+## Global Sidebar
+
+If you have a dashboard with [multiple pages](#multiple-pages), you may want the sidebar to be global (i.e. visible across all pages). To do this, add the `.sidebar` class to a level one heading:
+
+```` {.python .pymd}
+---
+title: "Sidebar"
+format: dashboard
+---
+    
+# {.sidebar}
+
+Sidebar content
+
+# Page 1 
+
+```{{python}}
+```
+
+# Page 2
+
+```{{python}}
+```
+````
+
+
+## Input Toolbar
+
+Toolbars are similar to sidebars, but provide a horizontal layout for inputs. Create a toolbar by adding the `.toolbar` class to a row heading. For example:
+
+
+```` {.python .pymd}
+    
+## {.toolbar}
+    
+```{{python}}
+```
+
+## Row
+
+```{{python}}
+```
+````
+
+## Card Toolbar
+
+In some cases you may want to marry inputs more directly to a single output. To do this, define a card toolbar immediately above the cell that generates the output. For example:
+
+```` {.python .pymd}     
+```{{python}}
+#| content: card-toolbar
+```
+
+```{{python}}
+```
+````
+
+
+## Learning More
+
+
+[Dashboard Components](components.qmd) shows you how to control the navigation bar, and how to arrange your content across pages, rows, columns, tabsets, sidebars, and cards.
+
+[Data Display](data-display.qmd) shows you how to display data in your dashboard as plots, tables, value boxes, and text.
+
+[Examples](examples/index.qmd) provides a gallery of example dashboards you can use as inspiration for your own.
+
+[Theming](theming.qmd) describes the various way to customize the fonts, colors, layout and other aspects of dashboard appearance.
+
+[Parameters](parameters.qmd) explains how to create dashboard variants by defining parameters and providing distinct values for them on the command line.
+
+[Deployment](deployment.qmd) covers how to deploy both static dashboards (which require only a web host, but not a server) and Shiny dashboards (which require a Shiny Server).
+
+[Interactivity](interactivity/index.qmd) explores the various ways to create interactive dashboards that enable more flexible data exploration.
+

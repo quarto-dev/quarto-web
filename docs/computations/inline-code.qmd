@@ -1,0 +1,177 @@
+---
+title: "Inline Code"
+format: html
+aliases: 
+  - /docs/prerelease/1.4/inline.html
+---
+
+## Overview
+
+Inline code allows you to execute code within markdown, e.g. to automatically use the most up-to-date computations in narrative. Quarto provides an inline code syntax that works across all three engines (Jupyter, Knitr and OJS).
+
+The syntax for inline code is similar to code blocks, except you use a single tick (`` ` ``) rather than triple ticks (```` ``` ````), and you can use it in the middle of markdown. For example, the following code stores the variable `radius` in a code block and then accesses it in a sentence using inline code:
+
+::: {.panel-tabset group="engine"}
+## Jupyter
+
+```` markdown
+```{{python}}
+radius = 5
+```
+
+The radius of the circle is `{python} radius`
+````
+
+This syntax works for any Jupyter kernel---so for Julia you would write an inline expression as `` `{julia} radius` ``).
+
+## Knitr
+
+```` markdown
+```{{r}}
+radius <- 5
+```
+
+The radius of the circle is `{r} radius`
+````
+
+## OJS
+
+```` markdown
+```{{ojs}}
+radius = 5
+```
+
+The radius of the circle is `{ojs} radius`
+````
+:::
+
+The result of the code is this markdown output:
+
+``` markdown
+The radius of the circle is 5.
+```
+
+::: callout-caution
+Inline expressions should be confined to simple values that you have pre-computed within normal code cells (rather than function calls that do non-trivial work). This is because the protocol used for inline expressions is not compatible with some Python libraries (especially those that use multi-threading or multi-processing).
+:::
+
+Quarto also supports the native syntaxes of Knitr and OJS. Read more below in [Syntax Compatibility].
+
+## Usage in Notebooks
+
+Inline expressions are always evaluated when rendering and previewing `.qmd` files. However, for notebooks you need to execute the notebook with Quarto to evaluate inline expressions (i.e. they won't be evaluated within the JupyterLab, VS Code, or PyCharm notebook editor).
+
+You can work in your favorite notebook front-end without Quarto execution, then once you are ready to publish execute the notebook during rendering as follows:
+
+``` {.bash filename="Terminal"}
+$ quarto render notebook.ipynb --execute
+```
+
+You can also turn on execution within the YAML options of a notebook. For example:
+
+``` yaml
+---
+title: "My Notebooks"
+execute:
+  enabled: true
+---
+```
+
+## Markdown Output
+
+By default, the output of inline expressions is treated as ordinary text (i.e. markdown within it is not rendered). Any markdown-like syntax within the output of inline expressions will be automatically escaped. For example, the following inline expression:
+
+``` markdown
+ `{python} '**not bold**'` 
+```
+
+Will produce the following markdown:
+
+``` markdown
+\*\*not bold\*\*
+```
+
+To explicitly create markdown output, you'll need to use a function specific to your engine:
+
+::: {.panel-tabset group="engine"}
+### Jupyter
+
+Use the `Markdown()` function from `IPython.display`:
+
+```` markdown
+```{{python}}
+from IPython.display import Markdown
+```
+
+This is `{python} Markdown('**bold**')`
+````
+
+### Knitr
+
+Use the `I()` function:
+
+``` markdown
+This is `{r} I("**bold**")`
+```
+
+### OJS
+
+Use the `md` function:
+
+```` markdown
+```{{ojs}}
+text = md`This is **bold**`
+```
+
+`{ojs} text`
+````
+:::
+
+## Escaping
+
+If you are writing documentation about inline expressions (as we are in this article!) then you may need to escape the syntax so that it doesn't execute. You can do that in one of two ways:
+
+1)  Use a double-brace around the expression. For example: `` `{{{python}}} x` ``
+
+2)  Enclose the expression in an extra backtick. For example: ``` ``{python} x`` ```
+
+Each of the expressions above will render (unevaluated) as `` `{{python}} x` `` within the output document.
+
+## Engine Binding
+
+If you use inline expressions in a document that does not have any other executable code blocks then you should explicitly set the `engine` document option to ensure that your expressions are evaluated (automatic engine binding works for blocks but not inlines). For example:
+
+``` markdown
+---
+title: "My Document"
+engine: jupyter
+---
+
+`{python} "hello"`
+```
+
+## Syntax Compatibility
+
+To make it easier to learn and use expressions across engines, Quarto provides a single syntax that works for all engines. However, you can also use the native syntaxes of Knitr and Observable.
+
+### Knitr
+
+The native Knitr syntax also uses single backticks (`` ` ``) but doesn't enclose `r` in curly braces. For example:
+
+``` markdown
+The radius of the circle is `r radius`.
+```
+
+The native Knitr inline syntax has a different default behavior for handling [Markdown Output]. Specifically, it treats all inline output as *containing markdown*. This means the above example is equivalent to:
+
+```markdown
+The radius of the circle is `{r} I(radius)`.
+```
+
+### OJS
+
+Natively, OJS uses the syntax `${expr}`. For example:
+
+``` markdown
+The radius of the circle is ${radius}
+```

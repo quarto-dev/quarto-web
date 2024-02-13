@@ -19,10 +19,27 @@ In Pandoc markdown, a figure is created whenever a captioned image appears by-it
 This results in the following treatment for various output types:
 
 | HTML                                                                              | PDF                                                                  | Word                                                                  |
-|-----------------------------------------------------------------------------------|----------------------------------------------------------------------|-----------------------------------------------------------------------|
+|---------------------------|-----------------------|-----------------------|
 | ![](images/html-figure.png){fig-alt="A line drawing of an elephant." width="340"} | ![](images/pdf-figure.png){fig-alt="A line drawing of an elephant."} | ![](images/word-figure.png){fig-alt="A line drawing of an elephant."} |
 
 Note that for LaTeX / PDF output figures are automatically numbered (you can arrange for figures to be numbered in other formats using [Cross References](cross-references.html)).
+
+### Figure Sizing
+
+By default figures are displayed using their actual size (subject to the width constraints imposed by the page they are rendered within). You can change the display size by adding the `width` and `height` attributes to the figure. For example:
+
+``` markdown
+![Elephant](elephant.png){width=300}
+```
+
+Note that if only `width` is specified then `height` is calculated automatically. If you need to modify the default behaviour just add an explicit `height` attribute.
+
+The default units for `width` and `height` are pixels. You can also specify sizes using a percentage or a conventional measurement like inches or millimetres. For example:
+
+``` markdown
+![Elephant](elephant.png){width=80%}
+![Elephant](elephant.png){width=4in}
+```
 
 ### Linked Figures
 
@@ -85,6 +102,59 @@ format:
   pdf:
     default-image-extension: tex
 ```
+
+### Lightbox Figures
+
+In HTML output formats you can add  lightbox styling and behavior to images to allow a reader to click to see a larger version of the image. For example, the following image has lightbox treatment (click on the image to see lightbox in action):
+
+![An elephant](elephant.png){.lightbox width=50%}
+
+Lightbox treatment can be added by adding the class `.lightbox` to an image: 
+
+```markdown
+![An elephant](elephant.png){.lightbox}
+```
+
+For further details and other ways to enable and disable lightbox treatment see [Lightbox Figures](/docs/output-formats/html-lightbox-figures.qmd).
+
+### Applying Multiple Parameters 
+To combine the above methods, separate arguments by a space, for example:
+``` markdown
+![](elephant.png){fig-alt="A drawing of an elephant." fig-align="left" width=20%}
+```
+
+## Cross References
+
+You can cross-reference figures by adding an ID with the `fig-` prefix to them, and then referencing the figure using the `@` prefix. For example:
+
+``` markdown
+![An Elephant](elephant.png){#fig-elephant}
+
+This is illustrated well by @fig-elephant.
+```
+
+For figures produced by executable code cells, include a `label` with a `fig-` prefix to make them cross-referenceable. For example:
+
+```` markdown
+For a demonstration of a line plot, see @fig-line-plot.
+
+```{{python}}
+#| label: fig-line-plot
+#| fig-cap: "A line plot "
+
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+````
+
+::: callout-important
+## Label Prefix
+
+In order for a figure to be cross-referenceable, its label must start with the `fig-` prefix.
+:::
+
+See the article on [Cross References](cross-references.qmd) for additional details.
 
 ## Subfigures
 
@@ -172,25 +242,24 @@ Note that the last paragraph in the div block is used as the figure caption.
 
 ## LaTeX Figures
 
-This section describes some figure handling options that are specific to LaTeX output. 
+This section describes some figure handling options that are specific to LaTeX output.
 
 One very important thing to note is that using the `fig-env` and `fig-pos` options described below will trigger the creation of a LaTeX floating environment (most often `\begin{figure}`). Depending upon where this LaTeX is generated it (e.g. is it within another `\begin{figure}`) this could generate invalid LaTeX. To be on the safe side these attributes should typically only be used for images at the very top level of your document.
 
 ### Environments
 
-There are a number of LaTeX packages that provide custom figure environments. For example, the [mdframed](https://ctan.org/pkg/mdframed?lang=en) package includes an `mdframed` environment used to enclose figures in a special border style. By default, Quarto uses the standard `figure` environment, but you can use the `fig-env` attribute to specify a custom one. For example:
+There are a number of LaTeX packages that provide custom figure environments. For example, in two-column formats, the `figure*` environment spans both columns of the document. You can explicitly pass the figure environment to use as the `fig-env` attribute of the image or the fenced div:
 
 ``` markdown
----
-title: "Sidenotes"
-format:
-  pdf:
-    include-in-header: 
-      text: |
-        \usepackage{mdframed}
----
+![Elephant](surus.jpg){#fig-elephant fig-env="figure*"}
 
-![Elephant](elephant.png){fig-env="mdframed"}
+::: {#fig-elephant-2 fig-env="figure*"}
+
+![](surus.jpg)
+
+Another elephant.
+
+:::
 ```
 
 ### Figure Position
@@ -218,7 +287,7 @@ format:
 
 ```
 
-![](figure.png){fig.pos='b'}
+![](figure.png){fig-pos='b'}
 ````
 
 See [this article](https://www.latex-project.org/publications/2014-FMi-TUB-tb111mitt-float-placement.pdf) for additional details on LaTeX figure positioning.
@@ -322,7 +391,7 @@ You can also use negative values to create space between elements. For example:
 If you have a layout with a row of images of differing heights, you can control their vertical alignment using the `layout-valign` attribute. A simple example:
 
 ``` markdown
-::: {layout="[25,-2,10]" layout-valign="bottom"}
+::: {layout="[15,-2,10]" layout-valign="bottom"}
 ![Surus](surus.png)
 
 ![Lin Wang](lin-wang.png)
@@ -335,14 +404,21 @@ Note that vertical alignment isn't limited to images, you can also vertically al
 
 ## Computations
 
-### Figures
+Figures produced by executable code blocks are automatically included in your document. 
+To set the ID, caption and link, use the chunk options `label`, `fig-cap` and `fig-link` respectively. 
+Other attributes, e.g. `fig-align` and `fig-alt`, can be set using the chunk option of the same name.
+
+You can control the default size for computational figures using the `fig-width` and `fig-height` options in the document header.  
+Read more about these options in [Execution Options: Figure Options](https://quarto.org/docs/computations/execution-options.html#figure-options).
+
+### Layout 
 
 Note that figure layout attributes also work for figures produced by executable code blocks. Here are examples for both Jupyter and Knitr:
 
 ::: panel-tabset
 #### Jupyter
 
-``` {{python}}
+```{{python}}
 #| layout-ncol: 2
 #| fig-cap: 
 #|   - "Line Plot 1"
@@ -360,7 +436,7 @@ plt.show()
 
 #### Knitr
 
-``` {{r}}
+```{{r}}
 #| layout-ncol: 2
 #| fig-cap: 
 #|   - "Speed and Stopping Distances of Cars"
@@ -377,14 +453,14 @@ Note that in these examples we also use the `fig-cap` option to apply a caption 
 
 ### Subcaptions
 
-You can create subcaptions for computational output by combining the the `fig-cap` and `fig-subcap` options. When applying captions to computational output you can optionally include a `label` with a `fig-` prefix---if you do this then the figure will be numbered and [cross-referenceable](cross-references.qmd).
+You can create subcaptions for computational output by combining the `fig-cap` and `fig-subcap` options. When applying captions to computational output you can optionally include a `label` with a `fig-` prefix---if you do this then the figure will be numbered and [cross-referenceable](cross-references.qmd).
 
 ::: panel-tabset
 #### Jupyter
 
-``` {{python}}
+```{{python}}
 #| label: fig-charts
-#| fig-cap: Charts
+#| fig-cap: "Charts"
 #| fig-subcap: 
 #|   - "First"
 #|   - "Second"
@@ -402,9 +478,9 @@ plt.show()
 
 #### Knitr
 
-``` {{r}}
+```{{r}}
 #| label: fig-charts
-#| fig-cap: Charts
+#| fig-cap: "Charts"
 #| fig-subcap: 
 #|   - "Cars"
 #|   - "Pressure"
@@ -421,7 +497,7 @@ plot(pressure)
 
 The `layout` works the same way for figures produced by Knitr or Jupyter. For example, here's an Rmd code chunk that produces 3 plots and defines a custom layout for them:
 
-``` {{r}}
+```{{r}}
 #| layout: [[45,-10, 45], [100]]
 
 plot(cars)
@@ -462,3 +538,26 @@ Note that headings are automatically combined with the block that follows them, 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur gravida eu erat et fring. Morbi congue augue vel eros ullamcorper, eget convallis tortor sagittis. Fusce sodales viverra mauris a fringilla. Donec feugiat, justo eu blandit placerat, enim dui volutpat turpis, eu dictum lectus urna eu urna. Mauris sed massa ornare, interdum ipsum a, semper massa. 
 :::
 ```
+
+For more complicated content use divs (`:::`) to divide your content into blocks for the layout. For example, here's how you could lay out a code cell along with some text, next to a figure:
+
+````markdown
+:::: {layout="[ 40, 60 ]"}
+
+::: {#first-column}
+```r
+# Some code
+```
+
+Some text that should be laid out below the code
+:::
+
+::: {#second-column}
+![](elephant.png)
+:::
+
+::::
+````
+
+The id attributes (`#first-column` and `#second-column`) are optional, 
+but aid readability.

@@ -4,7 +4,6 @@ title: "Authors & Affiliations"
 
 {{< include ../extensions/_extension-version.qmd >}}
 
-
 ## Overview
 
 An important goal for Quarto is to make it possible to use the same source document to produce multiple output formats. One significant challenge to overcome is defining a consistent way to express author and affiliation metadata such that articles targeting multiple Journals do not require special tweaking of authors and affiliations for each publication.
@@ -15,10 +14,10 @@ Quarto's answer to this challenge is two-fold:
 
 2.  Provide de-normalized views of authors together with affiliations such that it is straightforward for template authors to create the LaTeX required by Journals.
 
-Below we'll explore these facilities in more detail from the standpoint of both template authors and article writers.
+Below we'll explore these facilities in more detail from the standpoint of template authors. To learn more about these facilities from the perspective of article writers, see [Authors & Affiliations](/docs/authoring/front-matter.qmd#authors-and-affiliations).
 
 ::: callout-note
-Note that while there is a great deal of variety afforded in how authors and affiliations are specified, for a given Journal `template.qmd` you will likely have a preferred approach, and its good form to seed the template with an example of this approach.
+Note that while there is a great deal of variety afforded in how authors and affiliations are specified, for a given Journal `template.qmd` you will likely have a preferred approach, and it's good form to seed the template with an example of this approach.
 :::
 
 ## Author Metadata
@@ -58,7 +57,7 @@ The `authors` metadata key contains the normalized author data structure. Affili
 
 ### affiliations
 
-The `affiliations` metadata key contains the normalized affiliation data structure. Ids are automatically assigned if not defined. Affiliations contain no reference to their authors, so are typically not used by templates to output affiliation data. The order the affiliations appear in the metadata will be preserved.
+The `affiliations` metadata key contains the normalized affiliation data structure. Ids are automatically assigned if not defined. Affiliations contain no reference to their authors, so are typically not used by templates to output affiliation data. The order the affiliations appear in the metadata will be preserved. Duplicate affiliations are removed.
 
 ### by-author
 
@@ -84,7 +83,10 @@ author:
       non-dropping-particle: string
     url: string
     email: string
+    phone: string
     fax: string
+    degrees: 
+      # see schema below
     orcid: string
     note: string
     acknowledgements: string
@@ -92,6 +94,8 @@ author:
       corresponding: boolean
       equal-contributor: boolean
       deceased: boolean
+    roles: 
+      # see schema below
     metadata: object
     affiliations: 
       # see schema below
@@ -131,6 +135,27 @@ name:
   dropping-particle: von
 ```
 
+### Degrees
+
+Degrees or academic titles can specified with `degrees` and can be either of:
+
+-   A single string:
+
+    ``` yaml
+    author: 
+      degrees: PhD
+    ```
+-   An array of strings:
+
+    ``` yaml
+    author: 
+      degrees:
+        - PhD
+        - MsSc
+    ```
+
+It will always be normalized into an array of degrees.
+
 ### Attributes
 
 Recognized attribute keys that appear at the top level (for example, `corresponding`) will automatically be normalized under attributes. For example:
@@ -152,6 +177,36 @@ author:
     attributes:
       corresponding: true
 ```
+
+### Roles
+
+Author roles can be specified with either `role` or `roles` and can be any of:
+
+-   A single string:
+
+    ``` yaml
+    author: 
+      role: "Conceived and designed the study"
+    ```
+-   An array of strings:
+
+    ``` yaml
+    author: 
+      role: 
+        - conceptualization
+        - methodology
+    ```
+    
+-   An array of key-value pairs of the form `role: contribution`:
+
+    ``` yaml
+    author: 
+      role: 
+        - conceptualization: lead
+        - methodology: supporting
+    ```
+
+If a role matches one of the [CRediT roles or their aliases](https://github.com/quarto-dev/quarto-cli/blob/f65180a75e1cf2996328cd51cb4fd5d02d391511/src/resources/filters/modules/authors.lua#L119-L144), the additional properties `vocab-identifier`, `vocab-term`, and `vocab-term-indentifier`, will be added to the role with the appropriate value from the CRediT specification.
 
 ### Arbitrary Metadata
 
@@ -190,6 +245,7 @@ affiliations:
     number: number
     name: string
     department: string
+    group: string
     address: string
     city: string
     region: string
@@ -202,7 +258,7 @@ affiliations:
 
 -   You may specify either state or region- either will be normalized into the region key.
 
--   If the you specify only a string for an affiliation, it will be used as the name of affiliation.
+-   If you specify only a string for an affiliation, it will be used as the name of affiliation.
 
 -   You may omit an id and the id will be automatically generated (a simple counter based id will be used).
 

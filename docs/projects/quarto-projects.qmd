@@ -23,17 +23,28 @@ If you are just getting started with Quarto and/or you don't have previous exper
 
 ## Creating Projects
 
-Use the `quarto create-project` command to create a new project. If you have an existing directory of documents that you want to treat as a project just invoke `create-project` with no arguments from within the directory:
+Use the `quarto create project` command to create a new project, using the prompt.
 
 ``` {.bash filename="Terminal"}
-quarto create-project
+quarto create project
 ```
 
-To create a project in a new directory just provide a directory name on the command line:
+``` {.bash filename="Output"}
+ ? Type
+ ❯ default
+   website
+   blog
+   manuscript
+   book
+   confluence
+```
+
+Or define the type and the project name as arguments.
 
 ``` {.bash filename="Terminal"}
-quarto create-project myproject
+quarto create project <type> <name>
 ```
+
 
 ## Shared Metadata
 
@@ -109,9 +120,12 @@ Note that when metadata is combined, objects and arrays are merged rather than s
 
 : {tbl-colwidths="\[33,33,33\]"}
 
+The one exception to metadata merging is `format`. 
+If the document-level YAML defines a format, it must define the complete list of formats to be rendered. 
+
 ### Metadata Includes
 
-You might find it convenient to break your metadata into multiple files. You can do this using the `metadata-files` option. For example, here we include some website options within a `_quarto.yml`:
+You might find it convenient to break your metadata into multiple files. You can do this using the `metadata-files` option. For example, here we include some website options with a separate `_website.yml` in the `_quarto.yml`:
 
 ``` {.yaml filename="_quarto.yml"}
 project:
@@ -165,7 +179,7 @@ You can also render only the files within a sub-directory of a project. For exam
 quarto render articles
 ```
 
-Note that when rendering a project, command line arguments you pass to `quarto render` will be used for each file in the project. For example. this command will render only the PDF format:
+Note that when rendering a project, command line arguments you pass to `quarto render` will be used for each file in the project. For example, this command will render only the PDF format:
 
 ``` {.bash filename="Terminal"}
 quarto render --to pdf
@@ -190,9 +204,8 @@ These articles provide additional documentation on more advanced features of Qua
 
 -   [Project Profiles](profiles.qmd) describes how you can adapt both the options and content of your projects for different scenarios (e.g. development vs. production or creating multiple versions of a book or website).
 
--   [Environment Variables](environment.qmd) covers how to define environment variables that should set whenever your project is rendered (including how to vary those variables by project profile and/or for use in local development).
+-   [Environment Variables](environment.qmd) covers how to define environment variables that should be set whenever your project is rendered (including how to vary those variables by project profile and/or for use in local development).
 
 -   [Project Scripts](scripts.qmd) describes how to add periodic or pre/post render scripts to projects for special processing of input data and project outputs.
 
 -   [Virtual Environments](virtual-environments.qmd) explores how to create project-specific package libraries, which helps with faithfully reproducing your environment over time as well as ensuring that upgrading a package in one project doesn't break other projects.
-
