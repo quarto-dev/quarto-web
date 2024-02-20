@@ -409,7 +409,7 @@ writeProjectTable("sidebartool", sidebarToolOptions);
 
 const navbarOptions = readDefinitionsObject("navbar", {
   "left": "List of items for the left side of the navbar (see [Nav Items](#nav-items))",
-  "right": "List of items for the left side of the navbar (see [Nav Items](#nav-items))"
+  "right": "List of items for the right side of the navbar (see [Nav Items](#nav-items))"
 });
 writeProjectTable("navbar", navbarOptions);
 
