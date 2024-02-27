@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.COMMIT_PAT }}
+#        with:
+#          token: ${{ secrets.COMMIT_PAT }}
       - name: Regenerate Download Json
         uses: ./.github/workflows/actions/release-info
         with:
@@ -21,11 +21,12 @@ jobs:
           redirects-path: '_redirects'
           redirects-template: /download/latest/$$prefix$$-$$suffix$$.$$extension$$
           pre-redirects-template: /download/prerelease/$$prefix$$-$$suffix$$.$$extension$$
-          github-token: ${{ github.token }}
+          github-token: ${{ github.token }}          
       - name: Commit Changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           repository: .
           commit_user_name: Github Action Runner
           commit_user_email: runner@quarto.org
+          default_author: github_actions
           skip_checkout: true
