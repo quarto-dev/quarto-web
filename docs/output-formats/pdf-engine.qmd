@@ -104,18 +104,32 @@ You can use the `pdf-engine` and `pdf-engine-opts` to control the PDF engine tha
 ``` yaml
 title: "My Document"
 pdf-engine: lualatex
-pdf-engine-opt: -outdir=out
+pdf-engine-opts:
+  - '--no-shell-escape'
+  - '--halt-on-error'
 ```
 
-The above example will use the `lualatex` PDF engine rather than the default `xelatex`.
+The above example will use the `lualatex` PDF engine with some specific options, rather than the default `xelatex`.
 
 ## Latexmk
 
-Quarto includes a built in Latexmk engine, which will run the `pdf-engine` more than once to generate your PDF (for example if you're using cross references or a bibliography). In addition, this engine will detect and attempt to install missing packages, fonts, or commands if TeX Live is available.
+Quarto includes a built-in Latexmk engine, which will run the `pdf-engine` more than once to generate your PDF (for example, if you are using cross references or a bibliography). In addition, this engine will detect and attempt to install missing packages, fonts, or commands if TeX Live is available.
 
-You can disable Quarto's built in Latexmk engine by settng the `latex-auto-mk` option to `false`. For example:
+You can disable Quarto's built-in Latexmk engine by setting the `latex-auto-mk` option to `false`. For example:
 
 ``` yaml
 title: "My Document"
 latex-auto-mk: false
 ```
+
+Engine options can still be set using [`pdf-engine-opts`](#alternate-pdf-engines). For example: 
+
+``` yaml
+latex-auto-mk: false
+pdf-engine: latexmk
+pdf-engine-opts:
+  - '-auxdir=custom-aux'
+  - '-emulate-aux-dir'
+```
+
+The above example will use `latexmk` as a PDF engine and set some options to modify the directory name for auxiliary files.
