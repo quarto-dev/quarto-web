@@ -17,7 +17,7 @@ page-navigation: false
 ---
 ```
 
-Or to control page navigation for all pages in a directory specify `page-navigation` in [`_metadata.yml`](https://quarto.org/docs/projects/quarto-projects.qmd#directory-metadata):
+Or to control page navigation for all pages in a directory specify `page-navigation` in [`_metadata.yml`](/docs/projects/quarto-projects.qmd#directory-metadata):
 
 ``` {.yaml filename="_metadata.yml"}
 page-navigation: false
