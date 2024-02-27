@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.COMMIT_PAT }}
+        uses: actions/checkout@v4
+#        with:
+#          token: ${{ secrets.COMMIT_PAT }}
       - name: Regenerate Download Json
         uses: ./.github/workflows/actions/release-info
         with:
@@ -21,11 +21,12 @@ jobs:
           redirects-path: '_redirects'
           redirects-template: /download/latest/$$prefix$$-$$suffix$$.$$extension$$
           pre-redirects-template: /download/prerelease/$$prefix$$-$$suffix$$.$$extension$$
-          github-token: ${{ github.token }}
+          github-token: ${{ github.token }}          
       - name: Commit Changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           repository: .
           commit_user_name: Github Action Runner
           commit_user_email: runner@quarto.org
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           skip_checkout: true
