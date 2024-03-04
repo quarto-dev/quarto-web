@@ -2,12 +2,18 @@ on:
   workflow_dispatch:
   push:
     branches: main
+  workflow_run:
+    workflows: [Update Downloads]
+    branches: [main]
+    types:
+      - completed
 
 name: Quarto Publish
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4 
