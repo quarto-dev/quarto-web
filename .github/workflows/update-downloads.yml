@@ -7,6 +7,8 @@ on:
 jobs:
   update-downloads:
     runs-on: ubuntu-latest
+    outputs:
+      changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -23,6 +25,7 @@ jobs:
           pre-redirects-template: /download/prerelease/$$prefix$$-$$suffix$$.$$extension$$
           github-token: ${{ github.token }}          
       - name: Commit Changes
+        id: auto-commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           repository: .
@@ -30,3 +33,8 @@ jobs:
           commit_user_email: runner@quarto.org
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           skip_checkout: true
+
+  publish-changes:
+    needs: [ update-downloads ]
+    if: ${{ needs.update-downloads.outputs.changes_detected }}
+    uses: ./.github/workflows/publish.yml
