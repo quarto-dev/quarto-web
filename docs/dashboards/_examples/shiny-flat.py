@@ -3,7 +3,7 @@ import seaborn as sns
 from shiny import ui, reactive, render
 penguins = sns.load_dataset("penguins")
 
-@reactive.Calc
+@reactive.calc
 def filtered_penguins():
    data = penguins[penguins["species"].isin(input.species())]
    data = data[data["island"].isin(input.islands())]
@@ -19,13 +19,13 @@ with ui.sidebar():
 
    species = list(penguins["species"].value_counts().index)
    ui.input_checkbox_group(
-      "species", "Species:", 
+      "species", "Species:",
       species, selected = species
    )
 
    islands = list(penguins["island"].value_counts().index)
    ui.input_checkbox_group(
-      "islands", "Islands:", 
+      "islands", "Islands:",
       islands, selected = islands
    )
 
@@ -49,19 +49,19 @@ with ui.column():
       @render.plot
       def depth():
          return sns.displot(
-            filtered_penguins(), x = "bill_depth_mm", 
-            hue = "species", kind = input.dist(), 
+            filtered_penguins(), x = "bill_depth_mm",
+            hue = "species", kind = input.dist(),
             fill = True, rug=input.rug()
          )
 
       @render.plot
       def length():
          return sns.displot(
-            filtered_penguins(), x = "bill_length_mm", 
-            hue = "species", kind = input.dist(), 
+            filtered_penguins(), x = "bill_length_mm",
+            hue = "species", kind = input.dist(),
             fill = True, rug=input.rug()
       )
-      
+
    with ui.row(height = "35%"):
 
       @render.data_frame
