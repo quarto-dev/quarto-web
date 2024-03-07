@@ -30,7 +30,7 @@ ui.input_checkbox_group(
     islands, selected = islands
 ) # <4>
 
-@reactive.Calc # <5>
+@reactive.calc # <5>
 def filtered_penguins():
     data = penguins[penguins["species"].isin(input.species())]
     data = data[data["island"].isin(input.islands())]
@@ -69,7 +69,7 @@ def length():
 
 # Data
 
-```{{python}} 
+```{{python}}
 @render.data_frame
 def dataview():
     return render.DataGrid(filtered_penguins()) # <9>
@@ -84,7 +84,7 @@ def dataview():
 
 4.  These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields of the dataset.
 
-5.  When the user interacts with the checkbox groups this results in a different filtered view of the dataset. The `@reactive.Calc` function recomputes the filtered dataset and makes it available as `filtered_penguins()`.
+5.  When the user interacts with the checkbox groups this results in a different filtered view of the dataset. The `@reactive.calc` function recomputes the filtered dataset and makes it available as `filtered_penguins()`.
 
 6.  These inputs affect the display of plots but not the contents of the filtered dataset.
 
