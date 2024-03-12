@@ -377,7 +377,7 @@ writeProjectTable("open-graph", openGraphOptions);
 const websiteOptions = readDefinitionsId("base-website", {
   "navbar": "Navbar options (see [Navbar](#navbar))",
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
-  "page-footer": "Page footer. Text content or [page footer](#page-footer) definition.",
+  "page-footer": "Page footer. Text content or [page footer](#footer) definition.",
   "open-graph": "Generate Open Graph metadata (see [Open Graph](#open-graph) options)",
   "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) options)",
   "search": "Site search (`true` or `false` to enable/disable, or provide custom [Search Options](#search)"
