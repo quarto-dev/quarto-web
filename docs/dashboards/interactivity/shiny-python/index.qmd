@@ -2,7 +2,7 @@
 title: "Dashboards with Shiny for Python"
 code-annotations: select
 lightbox: auto
-aliases: 
+aliases:
   - /docs/dashboards/interactivity/shiny-python.html
 ---
 
@@ -36,7 +36,7 @@ The first thing to do is add `server: shiny` to the front matter. This tells Qua
 
 Next, we use functions matching the pattern `ui.input_xxx` to create input controls. For example, `ui.input_select()` creates a select box, `ui.input_slider()` creates a slider, and so on. The values returned by these functions are then rendered into HTML and JavaScript by Quarto.
 
-This example only uses two types of inputs, but Shiny has many more. Use the [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/) to see them all, along with code snippets you can copy and paste into your dashboard. 
+This example only uses two types of inputs, but Shiny has many more. Use the [Shiny Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/) to see them all, along with code snippets you can copy and paste into your dashboard.
 
 The example above defined an input with the following code:
 
@@ -108,7 +108,7 @@ This example only contains a single `@render.plot` output, but it's possible for
 In the previous section, we said that the `displot` function would re-run _automatically_ whenever any of the inputs it referred to changed. Shiny is a **reactive programming** framework, meaning it takes care of tracking the relationships between inputs and outputs in your app. When an input changes, only outputs that are affected by that input are re-rendered. This is a powerful feature that makes it easy to create dashboards that respond to user input efficiently.
 
 ::: {.callout-note}
-The `input` object is designed to be tracked by Shiny's reactive framework, 
+The `input` object is designed to be tracked by Shiny's reactive framework,
 
 Shiny specifically tracks changes to _reactivity-aware_ objects like the `input` object, not to just any arbitrary Python variable. You can't just write `x = 100`, then use `x` from the `displot` function, and expect `displot` to automatically rerun whenever `x` changes.
 
@@ -180,11 +180,11 @@ The most obvious place would be to duplicate the code in each of the three rende
 
 Shiny has a solution: **reactive calculations**. A reactive calculation is a reactive-aware function that is re-executed whenever its inputs change, but whose return value is not rendered into the dashboard. Instead, the return value is cached, and can be accessed by rendering functions (or even by other reactive calculations). This allows us to place the filtering logic in a single reactive calculation, and then have the three rendering functions access the filtered dataset from the reactive calculation.
 
-To create a reactive calculation, we use the `@reactive.Calc` decorator. The following code creates a reactive calculation called `filtered_penguins`:
+To create a reactive calculation, we use the `@reactive.calc` decorator. The following code creates a reactive calculation called `filtered_penguins`:
 
 ```` {.python .pymd}
 ```{{python}}
-@reactive.Calc
+@reactive.calc
 def filtered_penguins():
     data = penguins[penguins["species"].isin(input.species())]
     data = data[data["island"].isin(input.islands())]
@@ -212,7 +212,7 @@ Note the `filtered_penguins()` call. To reiterate, this call does not necessaril
 
 To learn more about Shiny for Python interactive documents see the following articles:
 
-[Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/#outputs) enumerates the available Shiny inputs and outputs, along with code snippets you can copy and paste into your dashboard. 
+[Component Browser](https://jcheng.shinyapps.io/shiny-component-browser/#outputs) enumerates the available Shiny inputs and outputs, along with code snippets you can copy and paste into your dashboard.
 
 [Input Layout](/docs/dashboards/inputs.qmd) describes various ways to layout Shiny inputs (sidebars, input panels, attaching inputs directly to cards, etc.)
 
