@@ -9,7 +9,8 @@ server: shiny # <1>
 ```{{python}} # <2>
 #| context: setup
 import seaborn as sns
-from shiny import render, reactive, ui
+from shiny import reactive
+from shiny.express import render, ui
 penguins = sns.load_dataset("penguins")
 ``` # <2>
 
