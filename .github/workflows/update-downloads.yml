@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
+      commit: ${{ steps.auto-commit.outputs.commit_hash }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -34,8 +35,13 @@ jobs:
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
           skip_checkout: true
 
+  # If a new commit has been made with updated downloads, 
+  # then publish the changes using the new commit as ref to checkout
+  # in the reusable publish workflow
   publish-changes:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/publish.yml
+    with:
+      ref: ${{ needs.update-downloads.outputs.commit == 'true' }}
     secrets: inherit
