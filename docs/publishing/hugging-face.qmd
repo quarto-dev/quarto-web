@@ -64,37 +64,41 @@ You can edit these files directly in the Hugging Face UI but we reccommend cloni
 
 {{< include ../prerelease/1.5/_pre-release-feature.qmd >}}
 
-To create and publish a Hugging Face Space using Quarto, use the following steps, explained at length below:
+The `quarto publish huggingface` command facilitates a workflow where you [make and preview edits](#edit-and-preview) locally before [publishing](#publish) to your Hugging Face space. Before using the command you'll need to complete some [Setup](#setup).
 
-1. [Create a new space using Quarto's Docker Template](#create-a-new-space)
+### Setup
 
-1. (Optional) [Create an authorization token if you need or lack one](#create-an-authorization-token)
+To get set up to use `quarto publish huggingface` you should have already:
 
-1. [Clone the repository locally](#clone-the-repository-locally)
+(@) [Created a space using Quarto's Docker Template](#create-a-new-space) as described above. 
 
-1. Use Quarto project
+Then complete the following steps, explained at length below:
 
-1. [Run `quarto publish huggingface`](#run-quarto-publish-huggingface)
+(@) (Optional) [Create an authorization token if you lack one](#create-an-authorization-token)
 
-### Create an authorization token
+(@) [Clone the repository locally](#clone-the-repository-locally)
+
+#### Create an authorization token
 
 In order to publish the results to Hugging Face, `quarto publish` needs access to your credentials. 
-If you haven't created such an authorization token yet, visit [Hugging Face's documentation on user access tokens](https://huggingface.co/docs/hub/security-tokens#how-to-manage-user-access-tokens) and follow the instructions to create a token with the `write` role.
+If you haven't created such an authorization token yet, visit [Hugging Face's documentation on user access tokens](https://huggingface.co/docs/hub/security-tokens#how-to-manage-user-access-tokens) and follow the instructions to create a token with the `write` role. You'll need this token the first time you run the publish command.
 
-### Clone the repository locally
+#### Clone the repository locally
 
-The URL for your space, as well as the URL to clone the repository, is `https://huggingface.co/spaces/<your-hugging-face-username>/<name-of-space-you-just-chose>`.
+The URL for your space, as well as the URL to clone the repository, is `https://huggingface.co/spaces/<your-hugging-face-username>/<name-of-space>`. Use your favorite `git` interface to clone the Hugging Face Space you've just created with the URL above. You can also find instructions in your space under **⋮** > **Clone repository**.  
 
-Use your favorite `git` interface to clone the Hugging Face Space you've just created with the URL above.
+### Edit and Preview 
 
-You can also find instructions in your space under **⋮** > **Clone repository**.  
-
-### Make local edits to your Quarto project
-
-Use Quarto from whichever text editor you prefer to make changes to your repository. 
+Once your repository is set up, use whichever text editor you prefer to make changes to your repository. 
 Quarto's Hugging Face template includes a Quarto website in the `src/` directory of the repository. For information on how to create websites with Quarto, see [our documentation](https://quarto.org/docs/websites/)
 
-### Run `quarto publish huggingface`
+To preview your changes, from the root of your repository, run:
+
+```{.bash filename="Terminal"}
+quarto preview src
+```
+
+### Publish 
 
 When you are happy with the results in the repository, run: 
 
@@ -104,6 +108,8 @@ quarto publish huggingface
 
 Quarto will stage, commit, and push all required changes to Hugging Face, as well as fetching remote content and merging it with your repository's contents first.
 If the repository you're working on hasn't been configured to take in an explicit user name and authorization token, Quarto will prompt you for such information on the command line.
+
+On completion Quarto will open your space in your default browser. 
 
 ## Publishing an Existing Repository
 
