@@ -8,6 +8,7 @@
 | [Posit Cloud](/docs/publishing/posit-cloud.qmd)       | Create data projects and publish results from your web browser. Use Posit Cloud when you want to organize all your static documents and interactive applications in one place.                  |
 | [Netlify](/docs/publishing/netlify.qmd)                 | Professional web publishing platform. Use Netlify when you want support for custom domains, authentication, previewing branches, and other more advanced capabilities.                          | 
 | [Confluence](/docs/publishing/confluence.qmd)         | Publishing platform for supporting team collaboration. Use Confluence to share documents in team Spaces.                                                            |
+| [Hugging Face Spaces](/docs/publishing/hugging-face.qmd)       | Publishing platform specializing in learning models and datasets. Use Hugging Face Spaces when you want to share Quarto documents together with associated machine learning models and/or datasets.                      |
 | [Other Services](/docs/publishing/other.qmd)            | Content rendered with Quarto uses standard formats (HTML, PDFs, MS Word, etc.) that can be published anywhere. Use this if none of the methods above meets your requirements.               |
 
 : {tbl-colwidths="\[30,70\]"}
