@@ -1,0 +1,56 @@
+---
+title: Jupyter Kernel Execution
+format: html
+---
+
+Quarto executes Jupyter notebooks using [`nbclient`](https://github.com/jupyter/nbclient) together with a few additional options
+to support some of Quarto's features. Quarto has built-in support for these features in the `python` and `julia` Jupyter kernels.
+
+In addition, starting in Quarto 1.5, any Jupyter kernel can configure itself to support the features described below.
+
+## Setup and cleanup cells
+
+In order for Quarto notebooks and documents to communicate global options
+with a Jupyter Kernel, Quarto uses special _setup_ and _cleanup_ cells.
+
+Currently, the supported options are:
+
+- `format`: the format that will be used to produce the document,
+- `params`: the parameters that will be used in a [parameterized execution](/computations/parameters.qmd#jupyter),
+- `allow_errors`: if `true`, then the kernel is asked to not stop execution if a cell produces an error
+- `fig_width`: the requested figure width in inches,
+- `fig_height`: the requested figure height in inches,
+- `fig_format`: the requested format for figure output (`png`, `jpg`, etc),
+- `fig_dpi`: the requested resolution for images in dots per inch,
+- `cache`: if `true`, then Jupyter cache will be used
+
+In `python` and `julia` kernels, the setup and cleanup cells are defined by the following files:
+
+- Julia:
+  - [setup](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/jupyter/lang/julia/setup.jl)
+  - [cleanup](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/jupyter/lang/julia/cleanup.jl)
+- Python:
+  - [setup](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/jupyter/lang/python/setup.py)
+  - [cleanup](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/jupyter/lang/python/cleanup.py)
+
+### Adding support to a Jupyter kernel
+
+{{< include /docs/prerelease/1.5/_pre-release-feature.qmd >}}
+
+If a Jupyter kernel wants to execute in awareness of Quarto's context, it should signal its support by adding the following files to the kernelspec directory:
+
+- `quarto_setup_cell`: the source code for a setup cell to be executed by nbclient at the beginning of execution of any Quarto notebook or document. Quarto will create a Jupyter notebook cell with the contents of this file as the `source` field. In addition, Quarto will set Jupyter cell metadata with the configuration options as described above, under the compound key `quarto`/`setup`.
+- `quarto_cleanup_cell`: analogously to above, the source code for a cleanup cell. Metadata is also provided. Note that for the cleanup cell execution, the metadata will appear under the compound key `quarto`/`cleanup` instead.
+
+## Daemonization
+
+Quarto offers built-in support for `julia` and `python` kernels by default, see the docs for more ([Julia](https://quarto.org/docs/computations/julia.html#kernel-daemon), [Python](https://quarto.org/docs/computations/python.html#kernel-daemon)).
+
+### Adding support to a Jupyter kernel
+
+{{< include /docs/prerelease/1.5/_pre-release-feature.qmd >}}
+
+Arbitrary Jupyter kernels can indicate support for daemons. To do so, provide a `quarto_setup_cell` file in the kernelspec directory so that setup cells can be executed, and ensure that the execution of the setup cell returns metadata indicating support for running as a daemon. The supported metadata options are all under the key `quarto`:
+
+- `quarto`/`daemonize`: if a kernel returns `true`, then Quarto will maintain a persistent kernel. The daemon options are the same as in the [documentation above]([Python](https://quarto.org/docs/computations/python.html#kernel-daemon)).
+- `quarto`/`restart_kernel`: if a kernel returns `true`, then Quarto will forcibly restart the kernel. This allows kernels to detect that their configuration has been changed such that it cannot support continued execution in the same process.
