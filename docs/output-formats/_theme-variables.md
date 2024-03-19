@@ -134,7 +134,7 @@ You can also customize the colors of the button which appears for `code-copy: tr
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | Variable                 | Notes                                                                                                                                                              |
 +==========================+====================================================================================================================================================================+
-| `$callout-border-width`  | By default, Quarto does not display a left border on code blocks. Set this variable to a truthy value or a CSS color to enable the left border. Defaults to `5px`. |
+| `$callout-border-width`  | The left border width of callouts. Defaults to `5px`.                                                                                                              |
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `$callout-border-scale`  | The border color of callouts computed by shifting the callout color by this amount. Defaults to `0%`.                                                              |
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
