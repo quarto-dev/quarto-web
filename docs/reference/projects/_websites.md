@@ -169,7 +169,7 @@ website:
 ::: {#table-hypothesis}
 :::
 
-For additional documentation on the Hypothesis options enumerated above, see the [Hypothesis Publisher Config](https://h.readthedocs.io/projects/client/en/latest/publishers/config/) documentation.
+For additional documentation on the Hypothesis options enumerated above, see the [Hypothesis Publisher Config](https://h.readthedocs.io/projects/client/en/latest/publishers/config.html) documentation.
 
 ### Utterances
 
