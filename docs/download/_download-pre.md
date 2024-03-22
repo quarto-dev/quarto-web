@@ -11,7 +11,7 @@
 :::
 
 
-{{< include /docs/prerelease/_highlights.qmd >}}
+{{< include /docs/prerelease/_highlights-prerelease.qmd >}}
 
 :::: {#download-pre-section-news}
 

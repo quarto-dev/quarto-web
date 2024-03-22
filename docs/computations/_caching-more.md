@@ -38,4 +38,4 @@ If you are working within a project and your main concern is the cumulative impa
 
 {{< include ../projects/_freeze-basics.md >}} 
 
-Learn more about using `freeze` with projects in the article on [managing project execution](https://quarto.org/docs/projects/code-execution.html#freeze).
+Learn more about using `freeze` with projects in the article on [managing project execution](/docs/projects/code-execution.qmd#freeze).

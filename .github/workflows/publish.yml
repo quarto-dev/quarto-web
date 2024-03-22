@@ -3,6 +3,11 @@ on:
   push:
     branches: main
   workflow_call:
+    inputs:
+      ref: 
+        required: true
+        description: 'The ref to trigger the workflow on'
+        type: string
 
 name: Quarto Publish
 
@@ -11,7 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4 
+        uses: actions/checkout@v4
+        with:
+          # if called fomr workflow_call event, checkout the ref otherwise use default
+          ref: ${{ inputs.ref || '' }}
 
       - name: Get latest pre-release from github
         id: github-release
