@@ -18,14 +18,14 @@ islands = list(penguins["island"].value_counts().index)
 ```{python}
 from shiny import render, reactive, ui
 ui.input_checkbox_group(
-    "species", "Species:", 
+    "species", "Species:",
     species, selected = species
 )
 ```
 
 ```{python}
 ui.input_checkbox_group(
-    "islands", "Islands:", 
+    "islands", "Islands:",
     islands, selected = islands
 )
 ```
@@ -40,7 +40,7 @@ ui.input_checkbox("rug", "Show rug marks", value = False)
 
 
 ```{python}
-@reactive.Calc
+@reactive.calc
 def filtered_penguins():
     data = penguins[penguins["species"].isin(input.species())]
     data = data[data["island"].isin(input.islands())]
@@ -53,8 +53,8 @@ def filtered_penguins():
 @render.plot
 def depth():
     return sns.displot(
-        filtered_penguins(), x = "bill_depth_mm", 
-        hue = "species", kind = input.dist(), 
+        filtered_penguins(), x = "bill_depth_mm",
+        hue = "species", kind = input.dist(),
         fill = True, rug=input.rug()
     )
 ```
