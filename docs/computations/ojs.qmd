@@ -18,7 +18,7 @@ OJS works in any Quarto document (plain markdown as well as Jupyter and Knitr do
 We'll start with a simple example based on Allison Horst's [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. Here we look at how penguin body mass varies across both sex and species (use the provided inputs to filter the dataset by bill length and island):
 
 ```{ojs}
-filtered = transpose(data).filter(function(penguin) {
+filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length_mm &&
          islands.includes(penguin.island);
 })
@@ -59,7 +59,7 @@ Plot.rectY(filtered,
 
 Let's take a look at the source code for this example. First we create an `{ojs}` cell that reads in some data from a CSV file using a [FileAttachment](https://observablehq.com/@observablehq/file-attachments):
 
-```{{ojs}}
+```{ojs}
 data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
 ```
 
@@ -146,12 +146,11 @@ See the article on [Libraries](/docs/interactive/ojs/libraries.qmd) to learn mor
 
 In our initial example we used a [FileAttachment](https://github.com/observablehq/stdlib#file-attachments) as our data source. File attachments support many formats including CSV, TSV, JSON, Arrow (uncompressed), and SQLite so are a convenient way to read a dataset that has already been prepared for analysis.
 
-Frequently though you'll need to do some pre-processing of your data in Python or R before it's ready for visualization. Within Quarto, you can do this pre-processing during document render then make the results available to OJS.
+Frequently, you'll need pre-process your data in Python or R before it's ready for visualization. Using Quarto, you can do this pre-processing during document render, and then make the results available to OJS.
 
 Use the `ojs_define()` function from Python or R to define variables that you want to use within JavaScript. For example, to reproduce the simple CSV read in Python you might do this:
 
-```{python}
-#| echo: fenced
+```{{python}}
 import pandas as pd
 penguins = pd.read_csv("palmer-penguins.csv")
 ojs_define(data = penguins)
@@ -194,6 +193,8 @@ data = FileAttachment("palmer-penguins.csv").csv({ typed: true })
 ```
 
 To learn about all of the options available, see the article on [OJS Cells](/docs/interactive/ojs/ojs-cells.qmd).
+
+In addition to OJS cells which interupt the flow of markdown, you can also include code inline. Read more about inline code in the [Inline Code](inline-code.qmd) article.
 
 ## Learning More
 

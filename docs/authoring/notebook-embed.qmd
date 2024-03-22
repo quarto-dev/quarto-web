@@ -1,16 +1,16 @@
 ---
-title: Embedding Jupyter Notebook Cells
+title: Embedding from Other Documents
 aliases:
   - /docs/prerelease/1.3/embed.html
 ---
 
-{{< include ../_require-1.3.qmd >}}
+{{< include ../_require-1.4.qmd >}}
 
 ## Overview
 
-You can include the output of an external Jupyter notebook in a Quarto document with the `embed` shortcode. To embed a notebook cell, provide the path to a Jupyter Notebook and a cell identifier. For example, this notebook called `penguins.ipynb` has a cell labelled `fig-bill-scatter`:
+You can include the output of an another Quarto document (`.qmd` or `.ipynb`) with the `embed` shortcode. To embed the output of a code block or notebook cell, provide the path to document and an identifier for the block or cell. For example, this Jupyter notebook called `penguins.ipynb` has a cell labelled `fig-bill-scatter`:
 
-![](images/notebook-simple.png){fig-alt="A screenshot of a Jupyter Notebook with the name 'penguins.ipynb', with a cell highlighted that has the code chunk option label set to fig-bill-scatter. Below the cell is the resulting plot."}
+![](images/notebook-simple.png){fig-alt="A screenshot of a Jupyter Notebook with the name 'penguins.ipynb', with a cell highlighted that has the code chunk option label set to fig-bill-scatter. Below the cell is the resulting plot." width=80%}
 
 You can use the following shortcode to embed the output of this cell:
 
@@ -26,21 +26,50 @@ A link to the source notebook is automatically provided beneath the plot. Follow
 
 ![](images/notebook-view.png){.border fig-alt="A screenshot of webpage with the title 'penguins.ipynb', a large blue button labelled 'Download Notebook', followed by the notebook contents."}
 
+You can embed output to and from both Jupyter Notebooks (`.ipynb`) and Quarto documents (`.qmd`). In this article, we'll refer to the source document generically as a *notebook*.
+
 Beyond this basic usage, you can also:
 
--   Specify cells in multiple ways, see [Specifying Cells](#specifying-cells).
+-   Specify cells or blocks in multiple ways, see [Specifying Cells](#specifying-cells).
 
--   Control the output using code cell options in the source Notebook, including things like figure captions, figure layout, and code display, see [Code Cell Options](#code-cell-options).
+-   Control the output using code cell options in the source notebook, including things like figure captions, figure layout, and code display, see [Code Cell Options](#code-cell-options).
 
--   Include the cell code along with the output by adding an `echo` option to the shortcode, see [Embedding Code](#embedding-code).
+-   Include the code along with the output by adding an `echo` option to the shortcode, see [Embedding Code](#embedding-code).
 
--   Customize or exclude the link to the the source notebooks, see [Links to Source Notebooks](#linked-source-notebooks).
+-   Customize or exclude the link to the the source notebook, see [Links to Source Notebooks](#linked-source-notebooks).
 
 ## Specifying Cells {#specifying-cells}
 
-The `embed` shortcode specifies target notebooks using a relative path followed by a cell identifier (e.g. `penguins.ipynb#fig-bill-scatter`). If the cell identifier is omitted, all of the cells in the notebook will be embedded in the document.
+The `embed` shortcode specifies source notebooks using a relative path followed by a cell or code block identifier (e.g. `penguins.ipynb#fig-bill-scatter`). If the identifier is omitted, all of the cells or code blocks in the notebook will be embedded in the document.
 
-The cell identifier is used to locate the proper cell using the following heuristics:
+### Quarto Documents
+
+When the source is a Quarto document (`.qmd`), use the `label` of the code block as the identifer. For example, if the source document `penguins.qmd` contained the following code block:
+
+````{.markdown filename="penguins.qmd"}
+```{{r}}
+#| label: fig-size-scatter
+ggplot(penguins, aes(body_mass_g, flipper_length_mm)) +
+  geom_point(aes(color = species)) +
+  scale_color_manual(values = colors) +
+  theme_minimal()
+```
+````
+
+You would embed the output of that block with:
+
+```{.markdown shortcodes=false}
+{{< embed penguins.qmd#fig-size-scatter >}}
+```
+
+Which results in the following output:
+
+{{< embed penguins-qmd.qmd#fig-size-scatter >}}
+
+
+### Jupyter Notebooks
+
+When the source is a Jupyter Notebook, the identifier used to locate the proper cell follows these heuristics:
 
 1.  **Cell `id`**\
     First, the cell metadata will be checked for a matching `id`. ([Cell IDs](https://jupyter.org/enhancement-proposals/62-cell-id/cell-id.html) are a newer feature of Jupyter Notebooks that are not yet well supported in Jupyter front ends, but `id` is checked first to allow for future compatibility as they become more common).
@@ -49,11 +78,11 @@ The cell identifier is used to locate the proper cell using the following heuris
 3.  **Tags**\
     If no cell has been found, Quarto will use a cell or cell(s) whose tag matches the cell identifier.
 
-### Cell Tags
+#### Cell Tags
 
 For example, to embed the output of a cell that you have given the tag `bill-ratio` within Jupyter Lab:
 
-![](images/notebook-tag.png){.border fig-alt="Screenshot of a code cell in a Jupyter Notebook with the cell tags open in the cell toolbar and displaying the tag 'bill-ratio'."}
+![](images/notebook-tag.png){.border fig-alt="Screenshot of a code cell in a Jupyter Notebook with the cell tags open in the cell toolbar and displaying the tag 'bill-ratio'." width=80%}
 
 You would use the following embed:
 
@@ -67,7 +96,7 @@ Which results in the following output:
 
 ## Code Cell Options {#code-cell-options}
 
-Code cell options from the source Jupyter Notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, this cell in the Notebook specifies figure options including a caption, sub-caption, alt text and layout:
+Code cell options from the source notebook are propagated to the document in which they are embedded. For instance, you may specify code cell options like `fig-cap`, `fig-alt` and `layout-ncol`, to control aspects of embedded figures. For example, this cell in `penguins.ipynb` specifies figure options including a caption, sub-caption, alt text and layout:
 
 ```{.python filename="penguins.ipynb"}
 #| label: fig-bill-marginal
@@ -104,7 +133,7 @@ The following output is produced:
 
 ## Embedding Code {#embedding-code}
 
-You may include the code from a cell along with the output by using the `echo=true` option. For example, to include the code and the plot from the cell labelled `species-counts` the embed would be:
+You may include the code from a cell or block along with the output by using the `echo=true` option to the `embed` shortcode. For example, to include the code and the plot from the cell labelled `species-counts` in `penguins.ipynb` the embed would be:
 
 ```{.markdown shortcodes=false}
 {{< embed penguins.ipynb#species-counts echo=true >}}
@@ -114,7 +143,7 @@ The result in the document is both the code and output for the cell:
 
 {{< embed penguins.ipynb#species-counts echo=true >}}
 
-Like figure options, options for displaying the code will propagate from the source Jupyter Notebook. For example, to fold the code for this cell, you could add `code-fold: true` to the options for the `species-counts` cell:
+Like figure options, options for displaying the code will propagate from the source notebook. For example, to fold the code for this cell, you could add `code-fold: true` to the options for the `species-counts` cell:
 
 ```{.python filename="penguins.ipynb"}
 #| label: species-counts
@@ -135,7 +164,7 @@ format:
 
 ## Links to Source Notebooks {#linked-source-notebooks}
 
-When you embed the contents of Notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source Notebooks that provided the embedded content. These links will by default appear both inline below the embedded content as well as below the table of contents. For example, the following document embeds content from the notebook `penguins.ipynb`. You can see the links in the rendered HTML document below:
+When you embed the contents of notebooks in a Quarto document and render the document to HTML, Quarto will automatically include links to the source notebooks that provided the embedded content. These links will by default appear both inline below the embedded content, as well as below the table of contents. For example, the following document embeds content from the notebook `penguins.ipynb`. You can see the links in the rendered HTML document below:
 
 ![](images/notebook-links.png){.border fig-alt="Screenshot of a rendered page with an embedded plot. A link to the Source 'penguins.ipynb' is shown directly below the plot. A similar link is shown below the table of contents under the heading 'Notebooks'."}
 
@@ -161,11 +190,11 @@ You can control the placement of the links to source notebooks by specifying the
 
 ### Notebook Views
 
-By default, the link to the source notebook goes to an automatically generated HTML render of the notebook. This makes it easier for users to view the Notebook contents without needing to download and run the Notebook locally. This notebook view displays the contents of the notebook and includes a button to download the notebook.  For example:
+By default, the link to the source notebook goes to an automatically generated HTML render of the notebook. This makes it easier for users to view the notebook contents without needing to download and run the notebook locally. This notebook view displays the contents of the notebook and includes a button to download the notebook.  For example:
 
 ![](images/notebook-view.png){.border fig-alt="A screenshot of webpage with the title 'penguins.ipynb', a large blue button labelled 'Download Notebook', followed by the notebook contents."}
 
-As an example, you can view the [live preview for the \`penguins.ipynb\` notebook](penguins.ipynb.html) used in this document.
+As an example, you can view the live previews for the [`penguins.ipynb` notebook](penguins-preview.html) and [`penguins.qmd` notebook](penguins-qmd.embed-preview.html) used in this document.
 
 ### View Options
 
@@ -184,4 +213,4 @@ will result in links to the source notebook like so:
 
 ![](images/notebook-links-updated.png){.border fig-alt="Screenshot of a rendered page with an embedded plot. A link to the Source 'Plots and Computations' is shown directly below the plot. A similar link is shown below the table of contents under the heading 'Notebooks'."}
 
-To disable the notebook views, and instead link directly to the Jupyter notebook (so the user may download the notebook with no intermediary view), set `notebook-view` to `false`.
+To disable the notebook views, and instead link directly to the notebook (so the user may download the notebook with no intermediary view), set `notebook-view` to `false`.

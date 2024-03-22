@@ -15,7 +15,7 @@ Options that define the top navigation bar for a {{< meta project-type >}} For e
 
 ## Nav Items
 
-Nav items appear in the `left` or `right` key of `navbar` definitions. For example:
+Nav items appear in the `left` or `right` key of `navbar` definitions, or `contents` key of `sidebar` definitions. For example:
 
 ``` yaml
 ---
@@ -91,6 +91,7 @@ Action buttons that appear on the sidebar. For example:
 Search options are specified under the `search` key of `{{< meta project-type >}}`. For example:
 
 ``` yaml
+---
 {{< meta project-type >}}:
   search:
     location: navbar
@@ -168,7 +169,7 @@ website:
 ::: {#table-hypothesis}
 :::
 
-For additional documentation on the Hypothesis options enumerated above, see the [Hypothesis Publisher Config](https://h.readthedocs.io/projects/client/en/latest/publishers/config/) documentation.
+For additional documentation on the Hypothesis options enumerated above, see the [Hypothesis Publisher Config](https://h.readthedocs.io/projects/client/en/latest/publishers/config.html) documentation.
 
 ### Utterances
 

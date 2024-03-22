@@ -1,11 +1,12 @@
 ---
 title: "Bug Reports"
 subtitle: "How to make an actionable bug report for Quarto"
+toc-depth: 3
 ---
 
 We want to hear about Quarto bugs and, we want to fix those bugs! The following guidance will help us be as efficient as we can.
 
-### Rule 0: Please submit your bug report anyway!
+## Rule 0: Please submit your bug report anyway!
 
 We have a better chance to fix your code quickly if you follow the instructions below. Still, we know that this takes work and isn't always possible.
 
@@ -13,39 +14,126 @@ We have a better chance to fix your code quickly if you follow the instructions 
 
 We appreciate bug reports even if you are unable to take any or all of the following steps:
 
-### Small is beautiful: Aim for a single document with \~10 lines
+## Small is beautiful: Aim for a single document with \~10 lines
 
 The most helpful thing you can do to help us is to provide a minimal, self-contained, and reproducible example.
 
--   **minimal**: This will often mean turning your large website project into a project with a single small document, and a single large `.qmd` file into a small (ideally, about 10-20 total lines of code) example. By doing this, you might also be able to learn more specifically what the problem is.
--   **self-contained**: The more software dependencies we need to understand and install, the harder it is to track the bug down. As you reduce the code, remove as many dependencies as possible.
--   **reproducible**: If we cannot run your example, we cannot track the bug down. Please make sure the file you submitted is enough to trigger the bug on its own.
+- **minimal**: This will often mean turning your large website project into a project with a single small document, and a single large `.qmd` file into a small (ideally, about 10-20 total lines of code) example. By doing this, you might also be able to learn more specifically what the problem is.
+- **self-contained**: The more software dependencies we need to understand and install, the harder it is to track the bug down. As you reduce the code, remove as many dependencies as possible.
+- **reproducible**: If we cannot run your example, we cannot track the bug down. Please make sure the file you submitted is enough to trigger the bug on its own.
 
-## Formatting: Make GitHub's markdown work for us
+### Formatting: Make GitHub's markdown work for us {#formatting-make-githubs-markdown-work-for-us}
 
-The easiest way to include a `.qmd` file in a comment is to wrap it in a code block. To make sure that GitHub doesn't format your own `.qmd`, start and end your block with more backticks than you use in your `.qmd` file. In order to show `.qmd` files with three backticks (the most common case), use *four* backticks in your GitHub Issue:
+You can share a **minimal** **self-contained** **reproducible** Quarto document using the following markdown syntax, _i.e._, using more backticks than you have in your document (usually four ` ```` `) to account for code cells.
 
-    ```
-    This is a code block
-    ```
+::: {layout-ncol="2"}
 
-Sometimes you might need more backticks:
+`````md
+````qmd
+---
+title: "Reproducible Quarto Document"
+format: html
+engine: jupyter
+---
 
-    ````
-    This is a four backticks block.
+This is a minimal self-contained reproducible Quarto document using `format: html` and `jupyter` engine.
+It is written in Markdown and contains embedded Python code.
 
-    ```
-    This is a code block
-    ```
-    ````
+```{{python}}
+print("Hello, world!")
+```
 
-### Don't hold back: Tell us anything you think might make a difference
+![Here is an image available to everyone](https://placehold.co/600x400.png)
+
+The end.
+````
+`````
+
+`````md
+````qmd
+---
+title: "Reproducible Quarto Document"
+format: html
+engine: knitr
+---
+
+This is a minimal self-contained reproducible Quarto document using `format: html` and `knitr` engine.
+It is written in Markdown and contains embedded R code.
+
+```{{r}}
+print("Hello, world!")
+```
+
+![Here is an image available to everyone](https://placehold.co/600x400.png)
+
+The end.
+````
+`````
+
+:::
+
+## Don't hold back: Tell us anything you think might make a difference
 
 Although we want the `.qmd` file to be small, we still can use as much information from you as you're willing to share. Tell us all!, including:
 
--   The version of quarto you're running
--   The operating system you're running
--   The IDE you're using, and its version
+- The version of Quarto you're running
+- The operating system you're running
+- The IDE you're using, and its version
+
+### Check
+
+You can provide the output (within a code block) of the following command to help us understand your environment:
+
+```bash
+quarto check
+```
+
+For instance, the markdown code you would provide might look like this:
+
+````md
+```bash
+Quarto 99.9.9
+[✓] Checking versions of quarto binary dependencies...
+      Pandoc version 3.1.11: OK
+      Dart Sass version 1.69.5: OK
+      Deno version 1.37.2: OK
+[✓] Checking versions of quarto dependencies......OK
+[✓] Checking Quarto installation......OK
+      Version: 99.9.9
+      Path: /quarto-cli/package/dist/bin
+
+[✓] Checking tools....................OK
+      TinyTeX: v2024.01
+      Chromium: (not installed)
+
+[✓] Checking LaTeX....................OK
+      Using: TinyTex
+      Path: /Users/username/Library/TinyTeX/bin/universal-darwin
+      Version: 2023
+
+[✓] Checking basic markdown render....OK
+
+[✓] Checking Python 3 installation....OK
+      Version: 3.12.1
+      Path: /.venv/bin/python3
+      Jupyter: 5.7.1
+      Kernels: julia-1.10, python3
+
+[✓] Checking Jupyter engine render....OK
+
+[✓] Checking R installation...........OK
+      Version: 4.3.2
+      Path: /Library/Frameworks/R.framework/Resources
+      LibPaths:
+        - /Users/username/Library/Caches/org.R-project.R/R/renv/sandbox/R-4.3/aarch64-apple-darwin20/ac5c2659
+      knitr: 1.45
+      rmarkdown: 2.25
+
+[✓] Checking Knitr engine render......OK
+```
+````
+
+### Print stack
 
 If you are seeing an error from Quarto, you can also provide additional diagnostic information by defining the `QUARTO_PRINT_STACK` environment variable. 
 

@@ -63,12 +63,15 @@
           if (!window["quarto-download-nonews"]) {
             populateNews(downloadData.prefix, dlData.description);
           } else {
-            const newsSection = window.document.getElementById(
-              `${downloadData.prefix}-section-news`
-            );
-            if (newsSection) {
-              newsSection.remove();
-            }
+            
+            const idsToRemove = [`${downloadData.prefix}-section-news`, `download-section-highlights`, `toc-download-section-highlights`, `toc-${downloadData.prefix}-release-notes`];
+            idsToRemove.forEach((id) => {
+              const el = window.document.getElementById(id);
+              if (el !== null) {
+                el.remove();
+              }
+            })
+
           }
 
           window.tippy("a.checksum[data-tippy-content]", {

@@ -120,7 +120,7 @@ const cellOptions = Object.keys(cellGroups).map(group => {
 // document options
 const documentGroups = groups["document"];
 const documentOptions = Object.keys(documentGroups)
-  .filter(group => !["comments", "crossref"].includes(group))
+  .filter(group => !["comments"].includes(group))
   .map(group => {
 
     const title = documentGroups[group]["title"];
@@ -242,7 +242,7 @@ function readProjectObject(name: string, descriptions?: Record<string, string>) 
   const supers = obj["schema"]["object"]["super"];
   if (supers) {
     (supers as { resolveRef: string }[]).forEach((sup) => {
-      results.push(...readDefinitionsId(sup.resolveRef));
+      results.push(...readDefinitionsId(sup.resolveRef, descriptions));
     })
   }
 
@@ -296,33 +296,58 @@ function readSidebarObject(descriptions?: Record<string, string>) {
 
 // deno-lint-ignore no-explicit-any
 function findVal(object: any, key: string) {
-  let value;
-  Object.keys(object).some(function (k) {
+
+  const keys = Object.keys(object);
+  for (const k of keys) {
     if (k === key) {
-      value = object[k];
-      return true;
+      return object[k];
     }
+  }
+
+  for (const k of keys) {
     if (object[k] && typeof object[k] === 'object') {
-      value = findVal(object[k], key);
-      return value !== undefined;
+      const value = findVal(object[k], key) as any;
+      if (value !== undefined) {
+        return value;
+      }
     }
-  });
-  return value;
+  }
+
+  return undefined;
 }
 
 // Metadata pages
-function writeMetadataTable(name: string, options: Array<Option>) {
+function writeMetadataTable(name: string, title: string, options: Array<Option>) {
   const path = `docs/reference/metadata/${name}.json`;
   const metadata = [{
-    "name": "citation",
-    "title": "Citation",
+    "name": name,
+    "title": title,
     "options": options
   }];
   Deno.writeTextFileSync(path, JSON.stringify(metadata, undefined, 2));
 }
 
 const citationOptions = readDefinitionsId("csl-item");
-writeMetadataTable("citation", citationOptions);
+writeMetadataTable("citation", "Citation", citationOptions);
+
+// Crossref Page
+const crossrefs = readSchema("document-crossref.yml");
+const crossrefOptions = (crossrefs as any[]).find(value => value.name ==  "crossref")["schema"]["anyOf"][1]["object"]["properties"];
+const customCrossrefOptions = findVal(crossrefs, "custom")["arrayOf"]["object"]["properties"];
+
+const crossrefMetadata = [
+{
+  "name": "crossref",
+  "title": "Crossref",
+  "options": readProjectProperties(crossrefOptions)
+},
+{
+  "name": "crossref-custom",
+  "title": "Custom",
+  "description": "Use the `custom` option to `crossref` to define new types of cross reference. For example: \n\n```yaml\n---\ncrossref:\n  custom:\n    - key: vid\n      kind: float\n      reference-prefix: Video\n---\n```\n",
+  "options": readProjectProperties(customCrossrefOptions),
+}];
+Deno.writeTextFileSync(`docs/reference/metadata/crossref.json`, JSON.stringify(crossrefMetadata, undefined, 2));
 
 function writeProjectTable(name: string, options: Array<Option>) {
   const path = `docs/reference/projects/${name}.json`;
@@ -352,7 +377,7 @@ writeProjectTable("open-graph", openGraphOptions);
 const websiteOptions = readDefinitionsId("base-website", {
   "navbar": "Navbar options (see [Navbar](#navbar))",
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
-  "page-footer": "Page footer. Text content or [page footer](#page-footer) definition.",
+  "page-footer": "Page footer. Text content or [page footer](#footer) definition.",
   "open-graph": "Generate Open Graph metadata (see [Open Graph](#open-graph) options)",
   "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) options)",
   "search": "Site search (`true` or `false` to enable/disable, or provide custom [Search Options](#search)"
@@ -363,6 +388,11 @@ writeProjectTable("website", websiteOptions);
 const bookOptions = readProjectObject("book").concat(
   websiteOptions.filter(option => option.name !== "title"));
 writeProjectTable("book", bookOptions);
+
+const manuscriptOptions = readDefinitionsId("manuscript-schema", {
+  "notebooks": "Options for notebooks included under the heading \"Notebooks\". See [Including Notebooks](/docs/manuscripts/components.html#including-notebooks) for more details."
+});
+writeProjectTable("manuscript", manuscriptOptions);
 
 const navitemOptions = readNavigationItem({
   "menu": "Submenu of [navigation items](#nav-items)"
@@ -379,7 +409,7 @@ writeProjectTable("sidebartool", sidebarToolOptions);
 
 const navbarOptions = readDefinitionsObject("navbar", {
   "left": "List of items for the left side of the navbar (see [Nav Items](#nav-items))",
-  "right": "List of items for the left side of the navbar (see [Nav Items](#nav-items))"
+  "right": "List of items for the right side of the navbar (see [Nav Items](#nav-items))"
 });
 writeProjectTable("navbar", navbarOptions);
 
