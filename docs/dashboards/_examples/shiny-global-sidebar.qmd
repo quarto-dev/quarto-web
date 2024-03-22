@@ -21,16 +21,16 @@ islands = list(penguins["island"].value_counts().index)
 from shiny import render, reactive, ui
 
 ui.input_checkbox_group(
-    "species", "Species:", 
+    "species", "Species:",
     species, selected = species
 )
 
 ui.input_checkbox_group(
-    "islands", "Islands:", 
+    "islands", "Islands:",
     islands, selected = islands
 )
 
-@reactive.Calc
+@reactive.calc
 def filtered_penguins():
     data = penguins[penguins["species"].isin(input.species())]
     data = data[data["island"].isin(input.islands())]
@@ -42,7 +42,7 @@ ui.input_select("dist", "Distribution:", choices=["kde", "hist"])
 ui.input_checkbox("rug", "Show rug marks", value = False)
 ```
 
-[Learn more](https://pypi.org/project/palmerpenguins/) about the 
+[Learn more](https://pypi.org/project/palmerpenguins/) about the
 Palmer Penguins dataset.
 
 
@@ -53,8 +53,8 @@ Palmer Penguins dataset.
 @render.plot
 def depth():
     return sns.displot(
-        filtered_penguins(), x = "bill_depth_mm", 
-        hue = "species", kind = input.dist(), 
+        filtered_penguins(), x = "bill_depth_mm",
+        hue = "species", kind = input.dist(),
         fill = True, rug=input.rug()
     )
 ```
@@ -64,8 +64,8 @@ def depth():
 @render.plot
 def length():
     return sns.displot(
-        filtered_penguins(), x = "bill_length_mm", 
-        hue = "species", kind = input.dist(), 
+        filtered_penguins(), x = "bill_length_mm",
+        hue = "species", kind = input.dist(),
         fill = True, rug=input.rug()
     )
 ```
