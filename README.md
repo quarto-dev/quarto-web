@@ -32,6 +32,11 @@ quarto render
 
 ### Installing and managing computation environment
 
+This project will use 
+
+- **renv** for R environment (https://rstudio.github.io/renv/) - it will be installed automatically first time the project is ran with R.
+- **pipenv** for Python environment (https://pipenv.pypa.io/en/latest/) - Please install pipenv manually if you don't have it yet.
+
 #### R environment for Knitr engine
 
 This project uses R 4.3.2 and **renv** to manage its R dependencies. To install the R environment, you can use the following command at the project root:
@@ -51,9 +56,9 @@ If you are adding a new document that may use a new package, follow these steps:
 - Run `renv::snapshot()` to update the `renv.lock` file with the new package and its dependencies.
 - Commit the modified `DESCRIPTION` and `renv.lock` files with your document change (don't forget any change in the `_freeze` folder if needed).
 
+**Note: Python dependencies are not tracked through renv and only using pipenv.** See below
 
-
-#### Python environment for Jupyter engine
+#### Python environment for Jupyter engine and Knitr through reticulate
 
 This project uses **pipenv** (https://pipenv.pypa.io/zh-cn/stable/index.html) to handle the Python dependencies. **pipenv** takes care of managing dependencies and virtual environments for you.
 
@@ -73,3 +78,5 @@ If you are adding a new document that may use a new package, follow these steps:
 - Run `pipenv install <package_name>` to add the new package to the project. It will update the `Pipfile` and `Pipfile.lock` files with the new package and its dependencies. 
   - `Pipfile` could be manually edited but using the command is recommended.
 - Commit the modified `Pipfile` and `Pipfile.lock` files with your document change (don't forget any change in the `_freeze` folder if needed).
+
+For any document running python with Knitr engine,it will go through **reticulate** which will use the python version defined with `pipenv` when a `PipFile` is present. So the same Python version from `.venv` will be used. No specific configuration is needed for **reticulate**. 
