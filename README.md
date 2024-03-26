@@ -68,6 +68,8 @@ To install the Python environment, you can use the following command at the proj
 pipenv sync
 ```
 
+If you are using `pyenv` to manage your python installation, `pipenv` will ask you to install a newer version of python if the one currently used does not match the one from `Pipfile.lock`. Though, the exact match of version isn't required and this should not be a problem to not upgrade your python installation.
+
 The virtual environment will be located in the project directory under `.venv` (following the configuration of `pipenv` set in the `.env` file).
 
 When in the root of the project, you can run `pipenv shell` to activate the virtual environment associated with the project. Any `quarto` command should then use the correct python environment. 
