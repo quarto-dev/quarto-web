@@ -75,6 +75,7 @@ The virtual environment will be located in the project directory under `.venv` (
 When in the root of the project, you can run `pipenv shell` to activate the virtual environment associated with the project. Any `quarto` command should then use the correct python environment. 
 You can also run `pipenv run quarto ...` to run the `quarto` command in the virtual environment without activating it.
 
+Inside VSCODE, The Python extension should find the same Python version (e.g. Python > Select Interpreter) which Quarto Preview uses.
 
 If you are adding a new document that may use a new package, follow these steps:
 
