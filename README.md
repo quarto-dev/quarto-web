@@ -47,7 +47,7 @@ Rscript -e "renv::restore()"
 
 The project library will be located under the `renv` folder.
 
-You don't need to worry about the R environment when you are working on this project. **renv** sets up `.Rprofile` to activate the project library when R is run from the project's root. Just run your R code as usual, and **renv** will be activated automatically, meaning R will correctly use the project's library.
+You don't need to worry about the R environment when you are working on this project. **renv** sets up `.Rprofile` to activate the project library when R is ran from the project's root. Just run your R code as usual, and **renv** will be activated automatically, meaning R will correctly use the project's library.
 
 If you are adding a new document that may use a new package, follow these steps:
 
@@ -82,4 +82,4 @@ If you are adding a new document that may use a new package, follow these steps:
   - `Pipfile` could be manually edited but using the command is recommended.
 - Commit the modified `Pipfile` and `Pipfile.lock` files with your document changes (don't forget any changes in the `_freeze` folder if needed).
 
-Documents running python with the Knitr engine will go through **reticulate**. **reticulate**  will use the python version defined with `pipenv` when a `PipFile` is present. So, it will use the Python version from `.venv` --- no specific configuration is needed. 
+Documents running python with the Knitr engine will go through **reticulate**. **reticulate**  will use the python version defined with `pipenv` when a `PipFile` is present. So, it will use the Python version from `.venv` --- no specific configuration is needed as [reticulate's python discovery mechanism](https://rstudio.github.io/reticulate/articles/versions.html#order-of-discovery) will find it.
