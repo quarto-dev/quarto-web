@@ -98,7 +98,7 @@ This document provides examples of the most commonly used markdown syntax. See t
 | ```                                                          |                                                                                                        |
 +--------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+
 | ``` markdown                                                 | [![Caption](elephant.png "An elephant"){fig-alt="A line drawing of an elephant."}](https://quarto.org) |
-| [![Caption](elephant.png)](https://quarto.org "An elephant") |                                                                                                        |
+| [![Caption](elephant.png "An elephant")](https://quarto.org) |                                                                                                        |
 | ```                                                          |                                                                                                        |
 +--------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+
 | ``` markdown                                                 | [![](elephant.png){fig-alt="A line drawing of an elephant."}](https://quarto.org)                      |
@@ -206,7 +206,55 @@ code
 ```
 ````
 
-If you are creating HTML output there is a wide variety of options available for code block output. See the article on [HTML Code](../output-formats/html-code.qmd) for additional details.
+Equivalent to the short form used in the examples above is a longer form that uses the language as a class (i.e. `.python`) inside braces:
+
+```` markdown
+```{.python}
+1 + 1
+```
+````
+
+The longer form allows you to add attributes to the block in a similar way to [Divs](#sec-divs-and-spans).  Some specific features that use this syntax are [Lines Numbers](/docs/output-formats/html-code.qmd#line-numbers) and [Code Filename](/docs/output-formats/html-code.qmd#code-filename). Here is an example of the latter:
+
+```` markdown
+```{.python filename="run.py"}
+code
+```
+````
+
+If you are creating HTML output there is a wide variety of options available for code block output. See the article on [HTML Code](/docs/output-formats/html-code.qmd) for additional details.
+
+## Raw Content
+
+Raw content can be included directly without Quarto parsing it using [Pandoc's raw attribute](https://pandoc.org/MANUAL.html#extension-raw_attribute). A raw block starts with ` ```{=` followed by a format and closing `}`, e.g. here's a raw HTML block:
+
+```` markdown
+```{=html}
+<iframe src="https://quarto.org/" width="500" height="400"></iframe>
+```
+````
+
+For PDF output use a raw LaTeX block:
+
+```` markdown
+```{=latex}
+\renewcommand*{\labelitemi}{\textgreater}
+```
+````
+
+As another example, if you are using the [Typst format](/docs/output-formats/typst.qmd) you can use a raw block to include Typst syntax:
+
+```` markdown
+```{=typst} 
+#set text(fill: red)
+This text is red.
+```
+````
+
+You can also include raw content inline:
+```markdown
+ Here's some raw inline HTML: `<a>html</a>`{=html}
+```
 
 ## Equations
 
@@ -268,7 +316,7 @@ Videos can refer to video files (e.g. MPEG) or can be links to videos published 
 
 {{< include _pagebreak.qmd >}}
 
-## Divs and Spans
+## Divs and Spans {#sec-divs-and-spans}
 
 You can add classes, attributes, and other identifiers to regions of content using Divs and Spans (you'll see an example of this below in [Callout Blocks]).
 
