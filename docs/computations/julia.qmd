@@ -10,9 +10,13 @@ vscode-screenshot: "![](images/julia-vscode){.border fig-alt='Screen shot of VS 
 
 Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports---the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
 
-Quarto executes Julia code using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel. Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
+Quarto has two available engines for executing Julia code. The older one is using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel and depends on Python to run. The newer engine is using the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks and does not have any additional dependencies beyond a Julia installation.
 
-### Code Blocks
+## Using the `jupyter` engine
+
+Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
+
+#### Code Blocks
 
 Code blocks that use braces around the language name (e.g. ```` ```{julia} ````) are executable, and will be run by Quarto during render. Here is a simple example:
 
@@ -27,7 +31,7 @@ format:
 jupyter: julia-1.8
 ---
 
-## Parametric Plots
+### Parametric Plots
 
 Plot function pair (x(u), y(u)). 
 See @fig-parametric for an example.
@@ -59,7 +63,7 @@ There are many options which control the behavior of code execution and output, 
 
 In addition to code blocks which interupt the flow of markdown, you can also include code inline. Read more about inline code in the [Inline Code](inline-code.qmd) article.
 
-### Multiple Outputs
+#### Multiple Outputs
 
 By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
 
@@ -79,7 +83,7 @@ display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
 {{< include _jupyter-rendering.md >}}
 
 
-## Installation {#installation}
+### Installation {#installation}
 
 In order to render documents with embedded Julia code you'll need to install the following components:
 
@@ -89,7 +93,7 @@ In order to render documents with embedded Julia code you'll need to install the
 
 We'll cover each of these in turn below.
 
-### IJulia {#ijulia}
+#### IJulia {#ijulia}
 
 [IJulia](https://julialang.github.io/IJulia.jl/stable) is a Julia-language execution kernel for Jupyter. You can install IJulia from within the Julia REPL as follows:
 
@@ -104,7 +108,7 @@ The first time you run `notebook()`, it will prompt you for whether it should in
 
 If you choose not to use Conda.jl to install Python and Jupyter you will need to make sure that you have another installation of it on your system (see the section on [Installing Jupyter](#installing-jupyter) if you need help with this).
 
-### Revise.jl
+#### Revise.jl
 
 In addition to IJulia, you'll want to install [Revise.jl](https://timholy.github.io/Revise.jl/stable) and configure it for use with IJulia. Revise.jl is a library that helps you keep your Julia sessions running longer, reducing the need to restart when you make changes to code.
 
@@ -127,7 +131,7 @@ end
 
 You can learn more about Revise.jl at <https://timholy.github.io/Revise.jl/stable>.
 
-### Jupyter Cache
+#### Jupyter Cache
 
 [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
 
@@ -146,7 +150,7 @@ Alternatively, if you are using Jupyter from within any other version of Python 
 
 {{< include _caching-more.md >}}
 
-## Kernel Selection
+### Kernel Selection
 
 You'll note in our first example that we specified the use of the `julia-1.7` kernel explicitly in our document options (shortened for brevity):
 
@@ -168,13 +172,13 @@ quarto check jupyter
 {{< include _jupyter-daemon.md >}}
 
 
-## Installing Jupyter {#installing-jupyter}
+### Installing Jupyter {#installing-jupyter}
 
 You can rely on the minimal version of Python and Jupyter that is installed automatically by **IJulia**, or you can choose to install Python and Jupyter separately. If you need to install another version of Jupyter this section describes how.
 
 {{< include _jupyter-install.md >}}
 
-### Jupyter Cache
+#### Jupyter Cache
 
 [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
 
@@ -197,3 +201,69 @@ To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
 +-----------+--------------------------------------+
 
 To enable the cache for a document, add the `cache` option. For example:
+
+## Using the `julia` engine
+
+### Installation
+
+The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This installation will therefore not interact or conflict with any other Julia environments on your machine. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
+
+### Rendering notebooks
+
+To use the `julia` engine, you have to specify it in your frontmatter:
+
+```` markdown
+---
+title: "A julia engine notebook"
+engine: julia
+---
+
+```{julia}
+1 + 2
+```
+````
+
+Rendering a notebook will start a persistent server process if it hasn't already started. This server process controls a number of worker processes or kernels, each of which is assigned to one notebook (keyed by the absolute path to the notebook). An idle worker process will be kept alive for 5 minutes by default, this can be changed by passing the desired number of seconds to the `daemon` key:
+
+````markdown
+---
+title: "A julia notebook with ten minutes timeout"
+engine: julia
+execute:
+  daemon: 600
+---
+````
+
+Each re-render of a notebook will reuse the worker process with all dependencies already loaded, which reduces latency.
+As far as technically possible, QuartoNotebookRunner.jl will release resources from previous runs to the garbage collector.
+In each run, the code is evaluated into a fresh module so you cannot run into conflicts with variables from previous runs.
+Note, however, that certain state changes like modifications to package runtime settings or the removal or addition of function methods will persist across runs.
+If necessary, you can use the `--execute-daemon-restart` flag to force a restart of a notebook's worker process.
+
+You can also disable the daemon which will use a new process for each render (with higher latency due to package reloads):
+
+```yaml
+execute:
+  daemon: false
+```
+
+The server process itself will time out after five minutes if no more worker processes exist.
+
+### Engine options
+
+Engine options can be passed under the `julia` top-level key:
+
+````markdown
+---
+title: "A julia engine notebook"
+engine: julia
+julia:
+  key: value
+---
+````
+
+The currently available options are:
+
+- `exeflags`: An array of strings which are appended to the `julia` command that starts the worker process. For example, a notebook is run with `--project=@.` by default (the environment in the directory where the notebook is stored) but this could be overridden by setting `exeflags: ["--project=/some/directory/"]`.
+- `env`: An array of strings where each string specifies one environment variable that is passed to the worker process. For example, `env: ["SOMEVAR=SOMEVALUE"]`.
+
