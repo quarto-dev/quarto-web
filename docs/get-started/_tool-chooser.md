@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
    // save in local storage
-  window.localStorage.setItem("tutorialTool", filename);
+  window.localStorage.setItem("tutorialToolGetStarted", filename);
 });
 
 </script>
