@@ -210,6 +210,12 @@ To enable the cache for a document, add the `cache` option. For example:
 
 The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This installation will therefore not interact or conflict with any other Julia environments on your machine. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
 
+#### Using custom versions of `QuartoNotebookRunner`
+
+In special circumstances, you may not want to use the specific `QuartoNotebookRunner` version that Quarto installs for you. For example, you might be developing `QuartoNotebookRunner` itself, or you need to use a fork or an unreleased version with a bugfix. In this case, set the [environment variable](/docs/projects/environment.qmd) `QUARTO_JULIA_PROJECT` to a directory of a julia environment that has `QuartoNotebookRunner` installed. 
+
+As an example, you could install the main branch of `QuartoNotebookRunner` into the directory `/some/dir` by executing `]activate /some/dir` in a julia REPL followed by `]add QuartoNotebookRunner#main`. As long as there is no server currently running, running a command like `QUARTO_JULIA_PROJECT=/some/dir quarto render some_notebook.qmd` in your terminal will ensure the server process is started using the custom `QuartoNotebookRunner`. You can also set `quarto`'s `--execute-debug` flag and check the output to verify that the custom environment is being used.
+
 ### Rendering notebooks
 
 To use the `julia` engine, you have to specify it in your frontmatter:
