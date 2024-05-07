@@ -32,4 +32,12 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
 ## Netlify Configurations
 
 - This repo has a `_redirects` file in the root directory. Otherwise, configuration are made in NETLIFY UI. Quarto website is inside Posit Netlify account. 
-- Automatic builds are turned off for this repo on Netlify because we currently need to render with Quarto CLI in Gihub Action CI before publishing the results.
+- Automatic builds are turned off for this repo on Netlify because we currently need to render with Quarto CLI in Gihub Action CI before publishing the results. 
+  - API deploy is used currently, using npm netlify package through `nwtgck/actions-netlify` github actions. One think to know: Netlify has removed `deploy()` function from its npm package in version 7 and recommends now to use Netlify CLI instead. But we are still using the package for now in CI, but also for `quarto publish netlify`.
+  - Deploy previews are possible with manual deploy using an alias configuration for the deploy command; This allows us to `deploy-preview-<PR number>` and `prerelease` alias to be used for the deploy previews. 
+  - This means our netlify website don't use automatic builds and automatic Branch deploy - Only deploy previews. 
+  - The website uses [Automatic Deploy Subdomains](https://docs.netlify.com/domains-https/custom-domains/automatic-deploy-subdomains/#use-a-new-custom-domain-for-your-automatic-deploy-subdomain) to have `prerelease.quarto.org` or `deploy-preview-<PR number>.quarto.org` working.
+
+## Custom Domain
+
+- `quarto.org` is registered in external registrar, but associated with Netlify DNS allowing use to use [custom domains](https://docs.netlify.com/domains-https/custom-domains/multiple-domains/).
