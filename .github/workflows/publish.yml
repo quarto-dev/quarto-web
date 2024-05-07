@@ -10,6 +10,11 @@ on:
         required: true
         description: 'The ref to trigger the workflow on'
         type: string
+      prerelease:
+        required: true
+        description: 'Whether to deploy prerelease or release site'
+        type: boolean
+        default: false
 
 name: Quarto Publish
 
@@ -39,7 +44,8 @@ jobs:
         uses: quarto-dev/quarto-actions/render@v2
 
       - name: Publish release website
-        if: github.ref == 'refs/heads/main'
+        # Only do this step if the branch is main or workflow is called for release deploy
+        if: ${{ !inputs.prerelease || github.ref == 'refs/heads/main'}}
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
@@ -47,8 +53,8 @@ jobs:
           render: false
 
       - name: Deploy Prerelease website to Netlify
-        # Only do this step if the branch is prerelease
-        if: github.ref == 'refs/heads/prerelease'
+        # Only do this step if the branch is prerelease or workflow is called for prerelease deploy
+        if: ${{ inputs.prerelease || github.ref == 'refs/heads/prerelease' }}
         id: netlify-deploy
         uses: nwtgck/actions-netlify@v3
         env:
