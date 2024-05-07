@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
   push:
-    branches: main
+    branches: [main]
   workflow_call:
     inputs:
       ref: 
@@ -18,7 +18,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          # if called fomr workflow_call event, checkout the ref otherwise use default
+          # if called from workflow_call event, checkout the ref otherwise use default
           ref: ${{ inputs.ref || '' }}
 
       - name: Get latest pre-release from github
@@ -33,8 +33,35 @@ jobs:
         with:
           version: ${{ steps.github-release.outputs.version }}
 
-      - name: Render and Publish 
+      - name: Render 
+        uses: quarto-dev/quarto-actions/render@v2
+
+      - name: Publish release website
+        if: github.ref == 'refs/heads/main'
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          render: false
+
+      - name: Deploy Prerelease website to Netlify
+        # Only do this step if the branch is prerelease
+        if: github.ref == 'refs/heads/prerelease'
+        id: netlify-deploy
+        uses: nwtgck/actions-netlify@v3
+        env:
+          NETLIFY_SITE_ID: 2a3da659-672b-4e5b-8785-e10ebf79a962
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        with:
+          publish-dir: './_site'
+          production-deploy: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: |
+            Deploy from GHA: ${{ format('manual from {0} at commit {1}', github.ref_name, github.sha) }}
+          alias: prerelease
+          # these all default to 'true'
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          enable-commit-status: true
+          overwrites-pull-request-comment: false
+        timeout-minutes: 1
