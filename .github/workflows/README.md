@@ -27,7 +27,10 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
     - For `prerelease` branch, we use `git cherry-pick` the commit from main following previous above step. 
     - Then we trigger the `publish.yml` workflow with `workflow_call` event trigger for each of the branch.
 
-- `upload-index.yml` - This workflow is triggered by a cron schedule. It updates the index for Algolia search engine, which powers the site search. 
+- `upload-index.yml` - This workflow is triggered by a cron schedule. It updates the indexes for Algolia search engine, which powers the sites search. 
+  - `search.json` is built when the website is rendered and then it is deployed to the website.
+  - This index file is retrieved on deployed website to be updated on Algolia.
+  - Both `quarto.org` and `prerelease.quarto.org` indexes are updated in the same run - they each use one specific algolia index
 
 ## Netlify Configurations
 
