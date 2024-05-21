@@ -49,22 +49,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-            if [ "${{ github.event.pull_request.head.ref }}" == "prerelease" ]; then
+            if [ "${{ github.event.pull_request.base.ref }}" == "prerelease" ]; then
               echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
-            elif [ -n "${{ fromJSON(github.event.issue.pull_request) }}" ]; then
+            elif [ -n "${{ github.event.issue.pull_request.url }}" ]; then
               # This will trigger when not pull request event, so a PR comment event. 
               # we need to get the base info from PR number the comment is made in
               base_ref=$(gh -R $GITHUB_REPOSITORY pr view ${{ github.event.issue.number }} --json baseRefName --jq '.baseRefName')
               if [ "$base_ref" == "prerelease" ]; then
                 echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
+              else
+                echo "is_prerelease_docs=false" >> "$GITHUB_OUTPUT"
               fi
+            else
+              echo "is_prerelease_docs=false" >> "$GITHUB_OUTPUT"
             fi
         shell: bash
 
       - name: Render 
         uses: quarto-dev/quarto-actions/render@v2
         env:
-          QUARTO_PROFILE: ${{ fromJSON(steps.prerelease-docs-check.outputs.is_prerelease_docs) && 'prerelease-docs' || '' }}
+          QUARTO_PROFILE: ${{ steps.prerelease-docs-check.outputs.is_prerelease_docs == 'true' && 'prerelease-docs' || '' }}
 
       - name: Deploy Preview to Netlify as preview
         id: netlify-deploy
