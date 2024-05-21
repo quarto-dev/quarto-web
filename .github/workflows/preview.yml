@@ -6,6 +6,12 @@ on:
 
 name: Deploy Preview
 
+concurrency:
+  # Use github.event.pull_request.number on pull requests, so it's unique per pull request
+  # Use github.ref on other branches, so it's unique per branch
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   is-external-pr:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.

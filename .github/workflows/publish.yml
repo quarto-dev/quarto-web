@@ -18,6 +18,10 @@ on:
 
 name: Quarto Publish
 
+concurrency:
+  group: ${{ format('{0} - {1} - {2}', github.workflow, github.ref, inputs.prerelease && 'prerelease' || 'main') }}
+  cancel-in-progress: true
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
