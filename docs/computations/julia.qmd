@@ -235,8 +235,11 @@ Rendering a notebook will start a persistent server process if it hasn't already
 
 #### Notebook environments
 
-By default, QuartoNotebookRunner will activate the directory that a notebook is stored in as its Julia environment. For example, a file `/some/dir/notebook.qmd` will get a Julia worker process with the environment `/some/dir` activated.
-If no environment has previously been set up in this directory (i.e., no `Project.toml` file exists there), Julia will consider this environment empty. This means that only Julia's standard library packages will be available for use in the notebook.
+By default, QuartoNotebookRunner will use the `--project=@.` flag when starting a worker. This makes Julia search for an environment (a `Project.toml` or `JuliaProject.toml` file) starting in the directory where the quarto notebook is stored and walking up the directory tree from there.
+
+For example, for a file `/some/dir/notebook.qmd` it will look at `/some/dir/[Julia]Project.toml`, `/some/[Julia]Project.toml` and so on. You could use this behavior to let all notebooks in a quarto project share the same Julia environment, by placing it at the project's top-level directory.
+
+If no environment has previously been set up in any of these directories, the worker process will start with an empty environment. This means that only Julia's standard library packages will be available for use in the notebook.
 
 ::: {.callout-note}
 Creating a separate environment for each notebook or each set of closely related notebooks is considered best practice.
