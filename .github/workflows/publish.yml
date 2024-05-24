@@ -18,6 +18,10 @@ on:
 
 name: Quarto Publish
 
+concurrency:
+  group: ${{ format('{0} - {1} - {2}', github.workflow, github.ref, inputs.prerelease && 'prerelease' || 'main') }}
+  cancel-in-progress: true
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -42,6 +46,8 @@ jobs:
 
       - name: Render 
         uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PROFILE: ${{ (inputs.prerelease || github.ref == 'refs/heads/prerelease') && 'prerelease-docs' || '' }}
 
       - name: Publish release website
         # Only do this step if the branch is main or workflow is called for release deploy
