@@ -3,25 +3,13 @@ on:
     branches: [main, prerelease]
   issue_comment:
     types: [created]
-  workflow_call:
-    # This should be triggered by port-to-prelease workflow to trigger a preview
-    inputs:
-      pr-number: 
-        required: true
-        description: 'The PR to preview'
-        type: string
-      prerelease: 
-        required: true
-        description: 'Is it for prerelease website ?'
-        type: boolean
-        default: true
 
 name: Deploy Preview
 
 concurrency:
   # Use github.event.pull_request.number on pull requests, so it's unique per pull request
   # Use github.ref on other branches, so it's unique per branch
-  group: ${{ github.workflow }}-${{ inputs.pr-number || github.event.pull_request.number || github.event.issue.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -38,19 +26,29 @@ jobs:
   build-deploy-preview:
     # Deploy a preview only if 
     # - the PR is not from a fork,
-    # - requested by PR comment /deploy-preview
-    # - requested by workflow_call trigger (from sync to prerelease workflow)
-    if: |
-      (inputs.pr-number) ||
-      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true) || 
-      (github.event.issue.pull_request && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') && startsWith(github.event.comment.body, '/deploy-preview')) 
+    # - requested by PR comment /deploy-preview, from a repo user or github action bot (user id 41898282)
+    if: >
+      (
+        github.event_name == 'pull_request' && 
+        github.event.pull_request.head.repo.fork != true
+      ) || 
+      (
+        github.event.issue.pull_request && 
+        (
+          github.event.comment.user.id == '41898282' ||
+          github.event.comment.author_association == 'MEMBER' || 
+          github.event.comment.author_association == 'OWNER' || 
+          github.event.comment.author_association == 'COLLABORATOR'
+        ) && 
+        startsWith(github.event.comment.body, '/deploy-preview')
+      ) 
       
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with: 
-          ref: refs/pull/${{ inputs.pr-number || github.event.pull_request.number || github.event.issue.number }}/merge
+          ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
 
       - name: Get latest pre-release from github
         id: github-release
@@ -69,7 +67,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ "${{ inputs.prerelease }}" == "true" -o "${{ github.event.pull_request.base.ref }}" == "prerelease" ]; then
+          if [ "${{ github.event.pull_request.base.ref }}" == "prerelease" ]; then
             echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
           elif [ -n "${{ github.event.issue.pull_request.url }}" ]; then
             # This will trigger when not pull request event, so a PR comment event. 
@@ -101,8 +99,8 @@ jobs:
           production-deploy: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: |
-            Deploy from GHA: ${{ (inputs.pr-number && format('auto from PR {0}', inputs.pr-number)) || github.event.pull_request.title || format('manual from PR {0}', github.event.issue.number) }}
-          alias: deploy-preview-${{ inputs.pr-number || github.event.pull_request.number || github.event.issue.number }}
+            Deploy from GHA: ${{ github.event.pull_request.title || format('manual from PR {0}', github.event.issue.number) }}
+          alias: deploy-preview-${{ github.event.pull_request.number || github.event.issue.number }}
           # these all default to 'true'
           enable-pull-request-comment: true
           enable-commit-comment: false
