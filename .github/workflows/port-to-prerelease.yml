@@ -79,7 +79,9 @@ jobs:
   # because PR created from bot does not trigger pull_request workflow
   publish-changes-prerelease:
     needs: [ sync-to-prerelease ]
-    if: ${{ needs.sync-to-prerelease.outputs.pr-created == 'true' }}
+    if: > 
+      needs.sync-to-prerelease.result == 'success' &&
+      needs.sync-to-prerelease.outputs.pr-created == 'true'
     uses: ./.github/workflows/preview.yml
     with:
       pr-number: ${{ needs.sync-to-prerelease.outputs.pr-number }}
@@ -89,6 +91,7 @@ jobs:
   # This update the status check on the PR to completed
   update-status:
     needs: [sync-to-prerelease, publish-changes-prerelease]
+    if: needs.publish-changes-prerelease.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: "Create a check run on the new PR"
