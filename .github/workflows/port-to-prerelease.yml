@@ -54,6 +54,8 @@ jobs:
         if: steps.synced-pr.outputs.was_successful == 'true'
         uses: actions/github-script@v7
         with:
+          # special fine-grained token for issue comment trigger
+          github-token: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
           script: |
             await github.rest.issues.createComment({
               owner: context.repo.owner,
