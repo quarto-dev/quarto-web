@@ -2,6 +2,8 @@ name: Port change to prerelease
 on:
   pull_request_target:
     types: [closed]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write # so it can comment
@@ -13,7 +15,17 @@ jobs:
     name: Backport pull request
     runs-on: ubuntu-latest
     # Don't run on closed unmerged pull requests and only PRs to main
-    if: github.event.pull_request.merged && github.event.pull_request.base.ref == 'main'
+    # or on comment made by Github Action Bot
+    if: > 
+      (
+        github.event.pull_request.merged && 
+        github.event.pull_request.base.ref == 'main'
+      ) || (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        github.event.comment.user.id != 41898282 &&
+        startsWith(github.event.comment.body, '/sync-prerelease')
+      )
     outputs:
       pr-created: ${{ steps.synced-pr.outputs.was_successful }}
       pr-number: ${{ steps.synced-pr.outputs.created_pull_numbers }}
