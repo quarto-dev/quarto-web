@@ -26,10 +26,6 @@ jobs:
         github.event.comment.user.id != 41898282 &&
         startsWith(github.event.comment.body, '/sync-prerelease')
       )
-    outputs:
-      pr-created: ${{ steps.synced-pr.outputs.was_successful }}
-      pr-number: ${{ steps.synced-pr.outputs.created_pull_numbers }}
-      pr-sha: ${{ steps.new-pr-info.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -54,57 +50,14 @@ jobs:
           label_pattern: ''
           target_branches: prerelease
 
-      - name: New PR info
-        id: new-pr-info
+      - name: Trigger deploy using a comment
         if: steps.synced-pr.outputs.was_successful == 'true'
-        env: 
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "sha=$(gh api /repos/quarto-dev/quarto-web/pulls/${{ steps.synced-pr.outputs.created_pull_numbers }} -q '.head.sha')" >> "$GITHUB_OUTPUT"
-        shell: bash
-
-      - name: "Create a check run on the new PR"
         uses: actions/github-script@v7
         with:
           script: |
-            await github.rest.checks.create({
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head_sha: "${{ steps.new-pr-info.outputs.sha }}",
-              name: "Deploying preview",
-              status: "in_progress",
-              details_url: "https://github.com/quarto-dev/quarto-web/actions/runs/${{ github.run_id }}"
-            });
-
-  # Trigger the preview workflow if a new PR was created
-  # because PR created from bot does not trigger pull_request workflow
-  publish-changes-prerelease:
-    needs: [ sync-to-prerelease ]
-    if: > 
-      needs.sync-to-prerelease.result == 'success' &&
-      needs.sync-to-prerelease.outputs.pr-created == 'true'
-    uses: ./.github/workflows/preview.yml
-    with:
-      pr-number: ${{ needs.sync-to-prerelease.outputs.pr-number }}
-      prerelease: true
-    secrets: inherit
-
-  # This update the status check on the PR to completed
-  update-status:
-    needs: [sync-to-prerelease, publish-changes-prerelease]
-    if: needs.publish-changes-prerelease.result == 'success'
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Create a check run on the new PR"
-        uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha: "${{ needs.sync-to-prerelease.outputs.pr-sha }}",
-              name: "Deploying preview",
-              status: "completed",
-              conclusion: "${{ needs.publish-changes-prerelease.result }}"
-              details_url: "https://github.com/quarto-dev/quarto-web/actions/runs/${{ github.run_id }}"
+              issue_number: "${{ steps.synced-pr.outputs.created_pull_numbers }}",
+              body: "/deploy-preview",
             });
