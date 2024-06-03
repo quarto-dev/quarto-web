@@ -1,0 +1,65 @@
+name: Port change to prerelease
+on:
+  pull_request_target:
+    types: [closed]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write # so it can comment
+  pull-requests: write # so it can create pull requests
+  checks: write # so it can create a check run
+
+jobs:
+  sync-to-prerelease:
+    name: Backport pull request
+    runs-on: ubuntu-latest
+    # Don't run on closed unmerged pull requests and only PRs to main
+    # or on comment made by Github Action Bot
+    if: > 
+      (
+        github.event.pull_request.merged && 
+        github.event.pull_request.base.ref == 'main'
+      ) || (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        github.event.comment.user.id != 41898282 &&
+        startsWith(github.event.comment.body, '/sync-prerelease')
+      )
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create backport pull requests
+        id: synced-pr
+        # https://github.com/korthout/backport-action/releases/tag/v3.0.0
+        uses: korthout/backport-action@7e7cb1977d64d20339e8fdec12c0a1a065371de7
+        with:
+          cherry_picking: auto
+          branch_name: sync-${pull_number}-to-${target_branch}
+          merge_commits: skip
+          pull_title: '[Sync to ${target_branch}] ${pull_title}'
+          pull_description: |
+            # Description
+            Sync of #${pull_number} to `${target_branch}`.
+
+            ## Original PR
+
+            ### ${pull_title}
+            ${pull_description}
+          # Don't trigger on labels, and always PR to prerelease
+          label_pattern: ''
+          target_branches: prerelease
+
+      - name: Trigger deploy using a comment
+        if: steps.synced-pr.outputs.was_successful == 'true'
+        uses: actions/github-script@v7
+        with:
+          # special fine-grained token for issue comment trigger
+          github-token: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: "${{ steps.synced-pr.outputs.created_pull_numbers }}",
+              body: "/deploy-preview",
+            });
