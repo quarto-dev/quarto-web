@@ -18,6 +18,10 @@ on:
 
 name: Quarto Publish
 
+concurrency:
+  group: ${{ format('{0} - {1} - {2}', github.workflow, github.ref, inputs.prerelease && 'prerelease' || 'main') }}
+  cancel-in-progress: true
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -42,10 +46,12 @@ jobs:
 
       - name: Render 
         uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PROFILE: ${{ (inputs.prerelease || github.ref == 'refs/heads/prerelease') && 'prerelease-docs' || '' }}
 
       - name: Publish release website
         # Only do this step if the branch is main or workflow is called for release deploy
-        if: ${{ !inputs.prerelease || github.ref == 'refs/heads/main'}}
+        if: ${{ inputs.prerelease == 'false' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
@@ -54,7 +60,7 @@ jobs:
 
       - name: Deploy Prerelease website to Netlify
         # Only do this step if the branch is prerelease or workflow is called for prerelease deploy
-        if: ${{ inputs.prerelease || github.ref == 'refs/heads/prerelease' }}
+        if: ${{ inputs.prerelease == 'true' || (github.event_name == 'push' && github.ref == 'refs/heads/prerelease') }}
         id: netlify-deploy
         uses: nwtgck/actions-netlify@v3
         env:
