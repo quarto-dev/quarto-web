@@ -375,7 +375,7 @@ const openGraphOptions = socialMetadataOptions.concat(readDefinitionsObject("ope
 writeProjectTable("open-graph", openGraphOptions);
 
 const websiteOptions = readDefinitionsId("base-website", {
-  "drafts": "A list of input documents that should be treated as drafts. Read more at [Website Drafts](/docs/websites/website-drafts.qmd)",
+  "drafts": "A list of input documents that should be treated as drafts. Read more at [Website Drafts](/docs/websites/website-drafts.qmd).",
   "navbar": "Navbar options (see [Navbar](#navbar))",
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
   "announcement": "An announcement displayed at the top of the page. (see [Announcement](#announcement))",
