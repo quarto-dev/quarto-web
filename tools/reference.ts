@@ -375,8 +375,10 @@ const openGraphOptions = socialMetadataOptions.concat(readDefinitionsObject("ope
 writeProjectTable("open-graph", openGraphOptions);
 
 const websiteOptions = readDefinitionsId("base-website", {
+  "drafts": "A list of input documents that should be treated as drafts. Read more at [Website Drafts](/docs/websites/website-drafts.qmd)",
   "navbar": "Navbar options (see [Navbar](#navbar))",
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
+  "announcement": "An announcement displayed at the top of the page. (see [Announcement](#announcement))",
   "page-footer": "Page footer. Text content or [page footer](#footer) definition.",
   "open-graph": "Generate Open Graph metadata (see [Open Graph](#open-graph) options)",
   "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) options)",
@@ -385,8 +387,12 @@ const websiteOptions = readDefinitionsId("base-website", {
 writeProjectTable("website", websiteOptions);
 
 
-const bookOptions = readProjectObject("book").concat(
-  websiteOptions.filter(option => option.name !== "title"));
+const excludeFromBooks = ['announcement', 'drafts', 'draft-mode', 'title'];
+
+const bookOptions: Option[] = readProjectObject("book").concat(
+  websiteOptions.filter(option => !excludeFromBooks.includes(option.name))
+);
+
 writeProjectTable("book", bookOptions);
 
 const manuscriptOptions = readDefinitionsId("manuscript-schema", {
@@ -425,6 +431,10 @@ const pageFooterOptions = readDefinitionsObject("page-footer", {
   "right": "String, or list of [navigation items](#nav-items) to appear in the right region of the footer"
 });
 writeProjectTable("pagefooter", pageFooterOptions);
+
+const announcementOptions = readDefinitionsObject("announcement", {
+});
+writeProjectTable("announcement", announcementOptions);
 
 const searchOptions = readDefinitionsObject("search", {
   "algolia": "Use an Algolia index for site search (see [Algolia Options](#algolia-options))"

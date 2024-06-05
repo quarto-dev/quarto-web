@@ -65,6 +65,22 @@ Action buttons that appear on the sidebar. For example:
 ::: {#table-sidebartool}
 :::
 
+## Announcement
+
+An announcement that appears at the top of the site. For example:
+
+``` yaml
+---
+{{< meta project-type >}}:
+  announcement: 
+    content: "**New** - this is an announcement" 
+    position: below-navbar 
+---
+```
+
+::: {#table-announcement}
+:::
+
 ## Footer
 
 {{< meta project-type-upper >}} page footer definition. For example:
