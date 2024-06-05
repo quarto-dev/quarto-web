@@ -65,6 +65,8 @@ Action buttons that appear on the sidebar. For example:
 ::: {#table-sidebartool}
 :::
 
+:::: {.content-hidden unless-meta="is_website"}
+
 ## Announcement
 
 An announcement that appears at the top of the site. For example:
@@ -80,6 +82,8 @@ An announcement that appears at the top of the site. For example:
 
 ::: {#table-announcement}
 :::
+
+::::
 
 ## Footer
 
