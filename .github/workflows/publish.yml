@@ -44,8 +44,11 @@ jobs:
         uses: quarto-dev/quarto-actions/render@v2
 
       - name: Publish release website
-        # Only do this step if the branch is main or workflow is called for release deploy (meaning inputs context is defined)
-        if: ${{ (inputs.prerelease != null && inputs.prerelease == false) || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+        # Only do this step if 
+        # - workflow is called for release deploy, with inputs.prerelease being false. It should not trigger if inputs.prerelease is null.
+        #   and in GHA null == false is true. That is why we convert to string and compare.
+        # - workflow is triggered by push event on main branch
+        if: ${{ format('{0}', inputs.prerelease) == 'false' || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
@@ -53,8 +56,11 @@ jobs:
           render: false
 
       - name: Deploy Prerelease website to Netlify
-        # Only do this step if the branch is prerelease or workflow is called for prerelease deploy
-        if: ${{ (inputs.prerelease != null && inputs.prerelease == true) || (github.event_name == 'push' && github.ref == 'refs/heads/prerelease') }}
+        # Only do this step if 
+        # - workflow is called for release deploy with inputs.prerelease being true. It should not trigger if inputs.prerelease is null.
+        #   Though as in GHA null means false, no need to cast to string
+        # - workflow is triggered by push event on main branch
+        if: ${{ inputs.prerelease || (github.event_name == 'push' && github.ref == 'refs/heads/prerelease') }}
         id: netlify-deploy
         uses: nwtgck/actions-netlify@v3
         env:
