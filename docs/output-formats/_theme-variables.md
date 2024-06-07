@@ -159,18 +159,18 @@ You can also customize the colors of the button which appears for `code-copy: tr
 
 ### Value Boxes
 
-Use the `$valuebox-bg-*` variables to override the color of value boxes.
+Use the `$valuebox-bg-{type}` variables to override the background color of value boxes that are set with `color: type`.
 
-| Variable                     | Notes                                                           |
-|------------------------------|-----------------------------------------------------------------|
-| `$valuebox-bg-primary`       |  The background color for value boxes of `color: primary`.      |
-| `$valuebox-bg-secondary`     |  The background color for value boxes of `color: secondary`.    |
-| `$valuebox-bg-success`       |  The background color for value boxes of `color: success`.      |
-| `$valuebox-bg-info`          |  The background color for value boxes of `color: info`.         |
-| `$valuebox-bg-warning`       |  The background color for value boxes of `color: warning`.      |
-| `$valuebox-bg-danger`        |  The background color for value boxes of `color: danger`.       |
-| `$valuebox-bg-light`         |  The background color for value boxes of `color: light`.        |
-| `$valuebox-bg-dark`          |  The background color for value boxes of `color: dark`.         |
+| Variable                     | Type                   |
+|------------------------------|------------------------|
+| `$valuebox-bg-primary`       |  `color: primary`      |
+| `$valuebox-bg-secondary`     |  `color: secondary`    |
+| `$valuebox-bg-success`       |  `color: success`      |
+| `$valuebox-bg-info`          |  `color: info`         |
+| `$valuebox-bg-warning`       |  `color: warning`      |
+| `$valuebox-bg-danger`        |  `color: danger`       |
+| `$valuebox-bg-light`         |  `color: light`        |
+| `$valuebox-bg-dark`          |  `color: dark`         |
 
 ::: 
 
