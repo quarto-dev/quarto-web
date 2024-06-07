@@ -155,4 +155,25 @@ You can also customize the colors of the button which appears for `code-copy: tr
 |                          | | `important` | `$red`    |                                                                                                                                        |
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+::: {.content-hidden unless-meta="is_dashboards"}
+
+### Value Boxes
+
+Use the `$valuebox-bg-<type>` variables to override the background color of value boxes that are set with `color: <type>`.
+
+| Variable                     | Type                   |
+|------------------------------|------------------------|
+| `$valuebox-bg-primary`       |  `color: primary`      |
+| `$valuebox-bg-secondary`     |  `color: secondary`    |
+| `$valuebox-bg-success`       |  `color: success`      |
+| `$valuebox-bg-info`          |  `color: info`         |
+| `$valuebox-bg-warning`       |  `color: warning`      |
+| `$valuebox-bg-danger`        |  `color: danger`       |
+| `$valuebox-bg-light`         |  `color: light`        |
+| `$valuebox-bg-dark`          |  `color: dark`         |
+
+::: 
+
+### Bootstrap Variables
+
 In addition to the above Sass variables, Bootstrap itself supports hundreds of additional variables. You can [learn more about Bootstrap's use of Sass variables](https://getbootstrap.com/docs/5.1/customize/sass/) or review the [raw variables and their default values](https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss).
