@@ -159,7 +159,7 @@ You can also customize the colors of the button which appears for `code-copy: tr
 
 ### Value Boxes
 
-Use the `$valuebox-bg-{type}` variables to override the background color of value boxes that are set with `color: type`.
+Use the `$valuebox-bg-<type>` variables to override the background color of value boxes that are set with `color: <type>`.
 
 | Variable                     | Type                   |
 |------------------------------|------------------------|
