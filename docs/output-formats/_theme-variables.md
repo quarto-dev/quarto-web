@@ -174,4 +174,6 @@ Use the `$valuebox-bg-*` variables to override the color of value boxes.
 
 ::: 
 
+### Bootstrap Variables
+
 In addition to the above Sass variables, Bootstrap itself supports hundreds of additional variables. You can [learn more about Bootstrap's use of Sass variables](https://getbootstrap.com/docs/5.1/customize/sass/) or review the [raw variables and their default values](https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss).
