@@ -18,7 +18,6 @@ Your `custom.scss` file might look something like this:
 /*-- scss:defaults --*/
 $h2-font-size:          1.6rem !default;
 $headings-font-weight:  500 !default;
-$body-color:            $gray-700 !default;
 
 /*-- scss:rules --*/
 h1, h2, h3, h4, h5, h6 {
