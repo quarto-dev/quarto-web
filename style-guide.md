@@ -1,7 +1,5 @@
 ## Terminology
 
-* Prefer "code cell" to "code chunk"
-
 ## Link Recommendations
 
 * Use relative paths for child or sibling documents. E.g. `images/fig-1.png`, `pdf-basics.qmd`. **Avoid** using `http://quarto.org` for internal links.
