@@ -36,16 +36,16 @@ filters:
 ---
 ```
 
-By default, user filters are run before Quarto's built-in filters. For some filters you'll want to modify this behavior. For example, here we arrange to run `spellcheck` before Quarto's filters and `lightbox` after:
+By default, user filters are run before Quarto's built-in filters. For some filters you'll want to modify this behavior. For example, here we arrange to run `spellcheck` before Quarto's filters and `fontawesome` after:
 
 ``` yaml
 filters:
   - spellcheck.lua
   - quarto
-  - lightbox
+  - fontawesome
 ```
 
-You'll notice that one of the extensions (`spellcheck.lua`) has a file extension and the other (`lightbox`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to create filters as extensions.
+You'll notice that one of the extensions (`spellcheck.lua`) has a file extension and the other (`fontawesome`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to create filters as extensions.
 
 
 ## Filter Extensions 
@@ -108,6 +108,17 @@ filters:
 This filter adds formatting to heading text.
 ```
 
+Note that the value provided to `filters` in `example.qmd` should be the name of the extension (`fancy-header`), not the filename of the filter (`fancy-header.lua`). This allows you to bundle more than one filter in your extension:
+
+``` {.yaml filename="_extensions/fancy-header/_extension.yml"}
+contributes:
+  filters:
+    - fancy-header.lua
+    - make-fancier.lua
+```
+
+All of filters in your extension will be applied when a user uses your extension in their document.
+
 To develop your filter, render/preview `example.qmd`, and then make changes to `fancy-header.lua` (the preview will automatically refresh when you change `fancy-header.lua`).
 
 ### Development
@@ -126,7 +137,7 @@ To create a new filter extension, use the `quarto create extension filter` comma
 
 ### Distribution
 
-if your extension source code it located within a GitHub repository, then it can be added to a project by referencing the GitHub organization and repository name. For example:
+If your extension source code is located within a GitHub repository, then it can be added to a project by referencing the GitHub organization and repository name. For example:
 
 ``` {.bash filename="Terminal"}
 # target the current HEAD of the extension
