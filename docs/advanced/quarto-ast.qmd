@@ -1,0 +1,162 @@
+---
+title: Quarto AST 
+summary: Quarto extends Pandoc's AST processing to allow more flexible customization in filters
+---
+
+## Overview
+
+Quarto extends Pandoc's AST processing to allow more flexible customization in filters: 
+
+* [Custom nodes](#custom-nodes): Quarto defines custom AST node types for Quarto specific types of content like Callouts, Tabsets etc. This allows filters to target, modify or create these elements.
+
+* [Custom renderers](#custom-formats-and-custom-renderers): Add custom renderers for Quarto's custom node types to facilitate handling Quarto specific elements in custom formats.
+
+* [Targeting AST Processing Phases](#targeting-of-ast-processing-phases): Apply filters at precise points in the AST processing.
+
+## Custom Nodes
+
+Quarto defines some custom AST nodes for use in Pandoc filters. 
+This allows more flexibility in defining and using Lua filters. 
+For example, by using the `Callout` custom node this filter forces every callout to be of type "caution":
+
+``` lua
+function Callout(callout)
+  -- do something with the callout
+  callout.type = "caution"
+
+  -- note that custom AST nodes are passed by reference. You can
+  -- return the value if you choose, but you do not need to.
+end
+```
+
+Finally, custom AST node constructors are available in the `quarto` object: `quarto.Callout`, `quarto.Tabset`, etc. See the sections below for details.
+
+### Callouts
+
+You can create callout AST nodes in Lua filters with the `quarto.Callout` constructor. The constructor takes a single parameter, a table with entries `type`, `title`, and `content`, as described below. In Lua filters, callouts are represented as a table with the following fields:
+
+- `type`: the type of callout: `note`, `caution`, `warning`, etc (optional in the constructor).
+- `title`: The callout title (if any) (optional in the constructor),
+- `icon`: the callout icon (or `false` if none) (optional in the constructor)
+- `appearance`: `"minimal"`, `"simple"`, or `"default"` (optional in the constructor)
+- `collapse`: whether to render the callout as collapsible (optional in the constructor, default `false`)
+- `content`: the content of the callout (a `pandoc.Blocks` object, or a plain list in the constructor)
+
+### Tabsets
+
+You can create conditional blocks in Lua filters with the `quarto.Tabset` constructor, with parameters `tabs`, `level` and `attr` as described above. In
+addition, you can use `quarto.Tab` to create the tab objects for the `tabs` field. `quarto.Tab` is more lenient with parameter types, converting strings to `Blocks` and `Inlines` as needed. In Lua filters, tabsets are represented as a table with the following fields:
+
+- `tabs`: a table containing the content for each tab. Each entry is a table with two entries: `title` (a `pandoc.Inlines`) and `content` (a `pandoc.Blocks`) (optional in the contructor, default value `{}`)
+- `level`: the level of the tab headings to be used in rendering the tabset (optional in the constructor, default value `2`)
+- `attr`: the `Attr` object for the resulting tabset div (optional in the constructor)
+
+### Conditional Blocks
+
+You can create conditional block AST nodes in Lua filters with the `quarto.ConditionalBlock` constructor. The constructor takes a single parameter, a table with entries `node`, `behavior`, and `condition`, as described below.
+
+In Lua filters, conditional blocks are represented as a table with the following fields:
+
+- `node`: the div containing the content
+- `behavior`: either `content-visible` or `content-hidden`
+- `condition`: a list of 2-element lists, such as `{ { "unless-format", "html" } }` (optional in the constructor, default value `{}`). The first element of each sublist must be one of `when-format`, `unless-format`, `when-profile`, and `unless-profile`. The second element is the relevant format or profile.
+
+### Cross-referenceable Elements
+
+Crossreferenceable elements all have a single generic type, `FloatRefTarget`. 
+This element can be constructed explicitly in a Lua filter.
+It can also be used as the element to be processed in a Lua filter directly.
+
+```{.lua}
+-- A filter targeting FloatRefTarget nodes
+return {
+  FloatRefTarget = function(float)
+    if float.caption_long then
+      float.caption_long.content:insert(pandoc.Str("[This will appear at the beginning of every caption]"))
+      return float
+    end
+  end
+}
+```
+
+`FloatRefTarget` nodes have the following fields:
+
+- `type`: The type of element: `Figure`, `Table`, `Listing`, etc. Quarto v1.4 supports
+  custom node types that can be declared at the document or project level.
+- `content`: The content of the Figure, Table, etc. Quarto v1.4
+  accepts any content in any `FloatRefTarget` type (so if your tables are better displayed
+  as an image, you can use that.).
+- `caption_long`: The caption that appears in the main body of the document
+- `caption_short`: The caption that appears in the element collations (such as a list of tables, 
+  list of figures, etc.)
+- `identifier`, `attributes`, `classes`: these are analogous to `Attr` fields in Pandoc AST elements like spans and divs. 
+  `identifier`, in addition, needs to be the string that is used in a crossref (`fig-cars`, `tbl-votes`, `lst-query`, and so on).
+- `parent_id`: if a `FloatRefTarget` is a subfloat of a parent multiple-element float, then `parent_id` will hold the identifier
+  of the parent float.
+
+## Custom Formats and Custom Renderers
+
+Quarto has support for extensible renderers of quarto AST nodes such as `FloatRefTarget`, `Callout` etc.
+In order to declare a custom renderer, add the following to a Lua filter:
+
+```lua
+local predicate = function(float)
+  -- return true if this renderer should be used;
+  -- typically, this will return true if the custom format is active.
+end
+local renderer = function(float)
+  -- returns a plain Pandoc representation of the rendered figure.
+end
+quarto._quarto.ast.add_renderer(
+  "FloatRefTarget", 
+  predicate, 
+  renderer)
+```
+
+## Targeting of AST Processing Phases
+
+Quarto's AST processing phase is split into three parts: `ast`, `quarto`, and `render`.
+
+- `ast`: normalizes the input syntax from Pandoc, recognizing constructs such as `Callout`, `FloatRefTarget`, and so on.
+- `quarto`: processes the normalized syntax, for example by resolving cross-references.
+- `render`: produces format-specific output from the processed input.
+
+Lua filters can be inserted before or after any of these stages:
+
+```yaml
+filters:
+  - at: pre-ast
+    path: filter1.lua
+  - at: post-quarto
+    path: filter2.lua
+  - at: post-render
+    path: filter3.lua
+```
+
+Any of the stages can be prefixed by `pre-` or `post-`.
+Currently `pre-quarto` and `post-ast` correspond to the same insertion location in the filter chain, as do `post-quarto` and `pre-render`.
+
+You can also use JSON filters with this syntax.
+Either use `type: json` explicitly, or use a path that doesn't end in `.lua`.
+Conversely, `type: lua` will force the file to be treated as a Lua filter.
+
+Prior to Quarto 1.4, Lua filters were either "pre" filters (the default setting), or "post" filters.
+Those filters are specified like this:
+
+```yaml
+# "pre" filters:
+filters:
+  - pre_filter_1.lua
+  - pre_filter_2.lua  
+  # ...
+# "post" filters:
+filters:
+  - quarto
+  - post_filter_1.lua
+  - post_filter_2.lua  
+  # ...
+```
+
+This syntax continues to work.
+"Pre" filters are injected at the `pre-quarto` entry point, and "post" filters are injected at the `post-render` entry point.
+
