@@ -14,11 +14,13 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
 - `publish.yml` - The workflow that publishes the documentation from `main` and `prerelease` branches to netlify. 
   - For stable release version, the doc is deployed from `main`, and published using `quarto publish netlify` command to production website on Netlify.
   - For prerelease version, the doc is deployed from `prerelease`, and published using Github Action `nwtgck/actions-netlify` which use Netlify API to deploy to a non-production website on Netlify.
+    The prerelease website is build using a specific profile at render time, set in action using `QUARTO_PROFILE` environment variable.
 
 - `preview.yml` - The workflow that creates a deploy preview for pull requests. It uses the same action `nwtgck/actions-netlify` to deploy to a non-production website on Netlify. The URL is `deploy-preview-<PR number>.quarto.org`.
   - PR previews are configured for any PR to `main` or`prerelease` branches.
   - They are automically created and updated when the PR is created and updated by a user with Contributor role. 
-  - For external PR, the preview can be trigger by adding a comment `/deploy-preview` on the PR.
+  - For external PR, the preview can be triggered by adding a comment `/deploy-preview` on the PR.
+  - Any rendering to prerelease also uses a specific profile at render time, set in action using `QUARTO_PROFILE` environment variable.
 
 - `update-downloads.yml` - This workflow is triggered by a cron schedule. It retrieves information about latest release and prerelease on `quarto-dev/quarto-cli` repository and updates the download links on the website.
   - If there is a new version detected, it will commit the modified files and trigger a deploy of the website calling `publish.yml` workflow with `workflow_call` event trigger.
@@ -31,6 +33,12 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
   - `search.json` is built when the website is rendered and then it is deployed to the website.
   - This index file is retrieved on deployed website to be updated on Algolia.
   - Both `quarto.org` and `prerelease.quarto.org` indexes are updated in the same run - they each use one specific algolia index
+
+- `port-to-prerelease.yml` - This workflow is used to sync changes made to main for quarto.org to prerelease branch for prerelease.quarto.org. 
+  - It is triggered when a PR is merged in to `main`. It can also be triggered manually by adding a comment `/sync-prerelease` on a merged PR.
+  - This workflow uses [`korthout/backport-action`](https://github.com/korthout/backport-action) to create a PR with the changes merged into `main` branch to be synced to `prerelease` branch.
+  - It will also write a new `/deploy-preview` comment in the new PR to trigger the preview deployment from `preview.yml`.
+  - This is possible because it uses a fine-grained PAT token which allows a workflow to trigger another using usual event (GITHUB_TOKEN does not allow that usually). This is configured in repo secrets.
 
 ## Netlify Configurations
 
