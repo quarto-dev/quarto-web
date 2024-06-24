@@ -63,6 +63,18 @@ The following Sass Variables can be specified within SCSS files (note that these
 | `$code-block-bg-alpha`          | The amount to alter the transparency fo the `progress-bg` color. This is not used if an explicit background color is set. Defaults to `-0.35`.                   |
 +---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+#### Code Annotation
+
+You can customize the colors used to highlight lines when [code annotation](/docs/authoring/code-annotation.qmd) is used:
+
++-----------------------------------+---------------------------------------------------------------------------+
+| Variable                          | Notes                                                                     |
++===================================+===========================================================================+
+| `$code-annotation-higlight-color` | The color used as a border on highlighted lines.                          |
++-----------------------------------+---------------------------------------------------------------------------+
+| `$code-annotation-higlight-bg`    | The color used for the background of highlighted lines.                   |
++-----------------------------------+---------------------------------------------------------------------------+
+
 #### Code Copy
 
 You can also customize the colors of the button which appears for `code-copy: true` with the following variables:
