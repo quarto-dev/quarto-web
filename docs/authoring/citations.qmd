@@ -1,11 +1,12 @@
 ---
-title: Citations & Footnotes
+title: Citations
 format: html
 link-citations: true
-section-title-footnotes: Example Footnotes
+aliases: 
+  - /docs/authoring/footnotes-and-citations.html
 ---
 
-## Citations
+## Overview {#citations}
 
 Quarto will use Pandoc to automatically generate citations and a bibliography in a number of styles. To use this capability, you will need:
 
@@ -15,7 +16,7 @@ Quarto will use Pandoc to automatically generate citations and a bibliography in
 
 -   Optionally, a `CSL` file which specifies the formatting to use when generating the citations and bibliography (when not using `natbib` or `biblatex` to generate the bibliography).
 
-### Bibliography Files
+## Bibliography Files
 
 Quarto supports bibliography files in a wide variety of formats including BibLaTeX and CSL. Add a bibliography to your document using the `bibliography` YAML metadata field. For example:
 
@@ -32,7 +33,7 @@ You can provide more than one bibliography file if you would like by setting the
 
 See the [Pandoc Citations](https://pandoc.org/MANUAL.html#citations) documentation for additional information on bibliography formats.
 
-### Citation Syntax {#sec-citations}
+## Citation Syntax {#sec-citations}
 
 Quarto uses the standard Pandoc markdown representation for citations (e.g. `[@citation]`) --- citations go inside square brackets and are separated by semicolons. Each citation must have a key, composed of '\@' + the citation identifier from the database, and may optionally have a prefix, a locator, and a suffix. The citation key must begin with a letter, digit, or `_`, and may contain alphanumerics, `_`, and internal punctuation characters (`:.#$%&-+?<>~/`). Here are some examples:
 
@@ -62,7 +63,7 @@ You can also write in-text citations, as follows:
 
 See the [Pandoc Citations](https://pandoc.org/MANUAL.html#citations) documentation for additional information on citation syntax.
 
-### Citation Style  {#sec-citations-style}
+## Citation Style  {#sec-citations-style}
 
 
 Quarto uses Pandoc to format citations and bibliographies. By default, Pandoc will use the [Chicago Manual of Style](https://chicagomanualofstyle.org/) author-date format, but you can specify a custom formatting using CSL ([Citation Style Language](https://citationstyles.org)). To provide a custom citation stylesheet, provide a path to a CSL file using the `csl` metadata field in your document, for example:
@@ -79,7 +80,7 @@ You can find CSL files or learn more about using styles at the [CSL Project](htt
 
 `CSL` styling is only available when the `cite-method` is `citeproc` (which it is by default). If you are using another `cite-method`, you can control the formatting of the references using the mechanism provided by that method.
 
-### Bibliography Generation
+## Bibliography Generation
 
 By default, Pandoc will automatically generate a list of works cited and place it in the document if the style calls for it. It will be placed in a div with the id `refs` if one exists:
 
@@ -103,7 +104,7 @@ Here's an example of a generated bibliography:
 ::: {#refs}
 :::
 
-### Including Uncited Items
+## Including Uncited Items
 
 If you want to include items in the bibliography without actually citing them in the body text, you can define a dummy `nocite` metadata field and put the citations there:
 
@@ -123,63 +124,6 @@ It is possible to create a bibliography with all the citations, whether or not t
       @*
     ---
 
-### Using BibLaTeX or natbib {#sec-biblatex}
+## Using BibLaTeX or natbib {#sec-biblatex}
 
 {{< include ../output-formats/_pdf-citations.md >}} 
-
-
-## Footnotes
-
-Pandoc supports numbering and formatting footnotes using the following syntax:
-
-``` markdown
-Here is a footnote reference,[^1] and another.[^longnote]
-
-[^1]: Here is the footnote.
-
-[^longnote]: Here's one with multiple blocks.
-
-    Subsequent paragraphs are indented to show that they
-belong to the previous footnote.
-
-        { some.code }
-
-    The whole paragraph can be indented, or just the first
-    line.  In this way, multi-paragraph footnotes work like
-    multi-paragraph list items.
-
-This paragraph won't be part of the note, because it
-isn't indented.
-```
-
-#### Output
-
-Here is a footnote reference,[^1] and another.[^2]
-
-This paragraph won't be part of the note, because it isn't indented.
-
-In addition, you can also write single paragraph footnotes inline using the following syntax:
-
-``` markdown
-Here is an inline note.^[Inlines notes are easier to write,
-since you don't have to pick an identifier and move down to
-type the note.]
-```
-
-#### Output
-
-Here is an inline note.[^3]
-
-The footnotes that are generated from the above examples are included in the following section. See the [Pandoc Footnotes](https://pandoc.org/MANUAL.html#footnotes) for additional information.
-
-[^1]: Here is the footnote.
-
-[^2]: Here's one with multiple blocks.
-
-    Subsequent paragraphs are indented to show that they belong to the previous footnote.
-
-        { some.code }
-
-    The whole paragraph can be indented, or just the first line. In this way, multi-paragraph footnotes work like multi-paragraph list items.
-
-[^3]: Inlines notes are easier to write, since you don't have to pick an identifier and move down to type the note.
