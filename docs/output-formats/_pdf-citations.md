@@ -8,7 +8,7 @@ format:
 
 The default is to use `citeproc` (Pandoc's built in citation processor).
 
-See the main article on using [Citations](../authoring/footnotes-and-citations.qmd) with Quarto for additional details on citation syntax, available bibliography formats, etc.
+See the main article on using [Citations](../authoring/citations.qmd) with Quarto for additional details on citation syntax, available bibliography formats, etc.
 
 ### Options
 
