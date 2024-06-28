@@ -3,6 +3,9 @@ title: "Typst Basics"
 tbl-colwidths: [35,65]
 aliases: 
   - /docs/prerelease/1.4/typst.html
+# project:
+#   pre-render:
+#     - quarto run ../../tools/snapshot-typst.ts examples/gt-temps.qmd images/typst-tables-gt-temps.png
 ---
 
 {{< include /docs/_require-1.4.qmd >}}
@@ -200,6 +203,62 @@ In the case of glaciers, fluid dynamics principles can be used to understand how
 
 To learn more about `typst` markup, see the tutorial here: <https://typst.app/docs/tutorial/>.
 
+## Typst CSS
+
+To allow similar styling between HTML and Typst, Quarto will translate CSS properties into Typst properties.
+
+You can use CSS properties directly in your Quarto markup, and they will get translated to appropriate Typst elements and properties.
+
+For example, text-related properties `color`, `opacity`, and `background-color` can be applied to spans:
+
+```markdown
+Here is a [span with a green background]{style="background-color:green"}.
+```
+
+`font-family` and `font-size` can be applied to a div or table:
+
+```markdown
+:::{style="font-family: helvetica"}
+This div is rendered in Helvetica.
+:::
+```
+
+See [the Advanced documentation](/docs/advanced/typst/typst-css.qmd#supported-elements-and-properties) for supported elements and properties, and how to add more using Lua filters.
+
+You are most likely to encounter Typst CSS when using libraries that produce HTML tables. 
+The translation of the CSS means your table in Typst should look similar to how it looks in HTML without any intervention on your part.
+
+For example, here is a temperature heatmap using `gt` in R, and Pandas in Python.
+
+::: {.panel-tabset}
+
+#### R - gt
+:::: {layout-ncol=2}
+![](images/typst-tables-gt-temps.png){height=200px}
+
+````r
+```{{r}}
+{{< include examples/gt-temps.R >}}
+```
+````
+::::
+
+#### Python - Pandas
+:::: {layout-ncol=2}
+![](images/typst-tables-pandas-temps.png){height=200px}
+
+````python
+```{{python}}
+{{< include examples/pandas-temps.py >}}
+```
+````
+::::
+
+:::
+
+Note that [named Typst colors](https://typst.app/docs/reference/visualize/color/#predefined-colors) will be preferred over [named CSS colors](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color). If you want exactly the same color in your HTML and Typst output, specify the color using `rgb()` or hexadecimal `#rrggbb` syntax.
+
+Typst does not support opacity as a filter, so opacity is simulated using the alpha channel of the color.
 
 ## Typst File (`.typ`)
 
