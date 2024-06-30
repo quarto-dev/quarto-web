@@ -14,6 +14,9 @@ const dir = getModuleDir(import.meta);
  // todo: use quarto to find _quarto.yml and read outputDir from it
 const projectDir = path.normalize(path.join(dir, '..'));
 const outputDir = '_site';
+// todo: cliffy 
+const verbose = true;
+const dryRun = false;
 
 if(Deno.env.get('QUARTO_IN_SNAPSHOT_TYPST')) {
   console.log('snapshot-typst: already in snapshot-typst, ok')
@@ -45,7 +48,6 @@ if(!destPath.startsWith(projectDir)) {
 }
 
 const relSourcePath = sourcePath.slice(projectDir.length + 1);
-const dryRun = false;
 const qcmd = [
   'render',
   args[0],
@@ -54,6 +56,8 @@ const qcmd = [
   'echo:false',
   '-M',
   'warning:false',
+  '-M',
+  'error:false',
   '-M',
   'title:false'
 ];
@@ -66,6 +70,10 @@ if (!dryRun) {
   if (!output.success) {
       console.log(new TextDecoder().decode(output.stderr));
       Deno.exit(2);
+  }
+  if(verbose) {
+    console.log(new TextDecoder().decode(output.stdout));
+    console.log(new TextDecoder().decode(output.stderr));
   }
 }
 
@@ -96,4 +104,8 @@ if (!dryRun) {
       console.log(new TextDecoder().decode(output.stderr));
       Deno.exit(2);
   }
+  if(verbose) {
+    console.log(new TextDecoder().decode(output.stdout));
+    console.log(new TextDecoder().decode(output.stderr));
+  }  
 }
