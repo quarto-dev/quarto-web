@@ -41,6 +41,7 @@ jobs:
     # Deploy a preview only if 
     # - the PR is not from a fork,
     # - requested by PR comment /deploy-preview, from a repo user or github action bot (user id 41898282)
+    # FIXME: We need to change the way we filter because somehow some MEMBER in API are seen as CONTRIBUTOR in CI
     if: >
       (
         github.event_name == 'pull_request' && 
@@ -50,7 +51,6 @@ jobs:
         github.event.issue.pull_request && 
         (
           github.event.comment.user.id == '41898282' ||
-          # FIXME: We need to change the way we filter because somehow some MEMBER in API are seen as CONTRIBUTOR in CI
           github.event.comment.user.login == 'gordonwoodhull' ||
           github.event.comment.author_association == 'MEMBER' || 
           github.event.comment.author_association == 'OWNER' || 
