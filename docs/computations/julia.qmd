@@ -208,7 +208,7 @@ To enable the cache for a document, add the `cache` option. For example:
 
 ### Installation
 
-The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This installation will therefore not interact or conflict with any other Julia environments on your machine. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
+The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This means you don't have to install anything in your global Julia environment for Quarto to work and Quarto will not interfere with any other Julia environments on your system. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
 
 #### Using custom versions of `QuartoNotebookRunner`
 
@@ -231,7 +231,50 @@ engine: julia
 ```
 ````
 
-Rendering a notebook will start a persistent server process if it hasn't already started. This server process controls a number of worker processes or kernels, each of which is assigned to one notebook (keyed by the absolute path to the notebook). An idle worker process will be kept alive for 5 minutes by default, this can be changed by passing the desired number of seconds to the `daemon` key:
+Rendering a notebook will start a persistent server process if it hasn't already started. This server process first loads QuartoNotebookRunner from Quarto's private environment. QuartoNotebookRunner then spins up a separate Julia worker process for each notebook you want to render.
+
+#### Notebook environments
+
+By default, QuartoNotebookRunner will use the `--project=@.` flag when starting a worker. This makes Julia search for an environment (a `Project.toml` or `JuliaProject.toml` file) starting in the directory where the quarto notebook is stored and walking up the directory tree from there.
+
+For example, for a file `/some/dir/notebook.qmd` it will look at `/some/dir/[Julia]Project.toml`, `/some/[Julia]Project.toml` and so on. You could use this behavior to let all notebooks in a quarto project share the same Julia environment, by placing it at the project's top-level directory.
+
+If no environment has previously been set up in any of these directories, the worker process will start with an empty environment. This means that only Julia's standard library packages will be available for use in the notebook.
+
+::: {.callout-note}
+Creating a separate environment for each notebook or each set of closely related notebooks is considered best practice.
+If too many different notebooks share the same environment (for example the main shared environment that Julia usually loads by default), you're likely to break some of them unintentionally whenever you make a change to the environment.
+:::
+
+You can create a Julia environment in multiple ways, for more information have a look at the [official documentation](https://pkgdocs.julialang.org/v1/environments/). One simple option for adding packages to the default environment of a new quarto notebook is to add some `Pkg` installation commands to the notebook and run it once. Afterwards, those commands can be deleted and a `Project.toml` and `Manifest.toml` file representing the environment should be present in the notebook's directory.
+
+````markdown
+---
+engine: julia
+---
+
+```{{julia}}
+using Pkg
+Pkg.add("DataFrames")
+```
+````
+
+Another option is to start `julia` in a terminal which loads the REPL, and to press `]` to switch to the `Pkg` REPL mode.
+In this mode, you can first activate the desired environment by running `activate /some/dir` and then, for example, install the `DataFrames` package with the command `add DataFrames`.
+
+If you do not want to use the notebook's directory as the environment, you may specify a different directory via the `--project` flag in the `exeflags` frontmatter setting:
+
+````markdown
+---
+engine: julia
+julia:
+  exeflags: ["--project=/some/other/dir"]
+---
+````
+
+#### Worker process reuse
+
+An idle worker process will be kept alive for 5 minutes by default, this can be changed by passing the desired number of seconds to the `daemon` key:
 
 ````markdown
 ---
@@ -244,7 +287,7 @@ execute:
 
 Each re-render of a notebook will reuse the worker process with all dependencies already loaded, which reduces latency.
 As far as technically possible, QuartoNotebookRunner.jl will release resources from previous runs to the garbage collector.
-In each run, the code is evaluated into a fresh module so you cannot run into conflicts with variables from previous runs.
+In each run, the code is evaluated into a fresh module so you cannot run into conflicts with variables defined in previous runs.
 Note, however, that certain state changes like modifications to package runtime settings or the removal or addition of function methods will persist across runs.
 If necessary, you can use the `--execute-daemon-restart` flag to force a restart of a notebook's worker process.
 
