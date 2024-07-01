@@ -56,11 +56,13 @@ Complete documentation for the Pandoc Lua API can be found in the [Lua Filters](
 
 Various utility functions are provided:
 
-| Function                          | Description                                                                                                                                                                                    |
+| Function                                     | Description                                                                                                                                                                                    |
 |-------------------|-----------------------------------------------------|
-| `quarto.version`                | Return the current Quarto version as a `pandoc.Version` object.                                                                                                                                |
-| `quarto.log.output(obj)`          | Dump a text representation of the passed object to stdout.                                                                                                                                     |
-| `quarto.utils.resolve_path(path)` | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
+| `quarto.version`                             | Return the current Quarto version as a `pandoc.Version` object.                                                                                                                                |
+| `quarto.log.output(obj)`                     | Dump a text representation of the passed object to stdout.                                                                                                                                     |
+| `quarto.utils.resolve_path(path)`            | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
+| `quarto.utils.string_to_inlines(path, sep)`  | Converts a string to a list of Pandoc Inlines, processing any Quarto custom syntax in the string.                                                                                              |
+| `quarto.utils.string_to_blocks(path)`        | Converts a string to a list of Pandoc Blocks, processing any Quarto custom syntax in the string.                                                                                               |
 
 Quarto includes the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library, which should be used in preference to the dump function. For example, you can examine an element passed to a filter function as follows:
 
@@ -69,6 +71,61 @@ function Div(el)
   quarto.log.output(el)
 end
 ```
+
+### `require()`
+
+In larger, more complex filters, it becomes useful to structure your Lua code in modules.
+Quarto overwrites the standard LUA `require()` to support the use of relative paths, 
+so that small modules can be easily created and reused.
+
+For example:
+
+```{.lua filename="filter.lua"}
+local utility = require('./utils')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+Using relative paths makes it harder for multiple filters to accidentally
+create conflicting module names (as would eventually happen when using the standard Lua
+`require('utils')` syntax). It's possible to refer to subdirectories and parent directories as well:
+
+```{.lua filename="filter2.lua"}
+local parsing = require('./utils/parsing')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+```{.lua filename="utils/parsing.lua"}
+local utils = require("../utils")
+-- ...
+```
+
+### Document Metadata
+
+Extensions may need to access the path for the input and output files. 
+Quarto makes these variables available:
+
+| Function                 | Description                                      |
+|--------------------------|--------------------------------------------------|
+| `quarto.doc.input_file`  | Full path to input file for the current render.  |
+| `quarto.doc.output_file` | Full path to output file for the current render. |
+
+### Project Metadata
+
+Extensions may need to know about paths relevant to the project.
+Quarto makes these variables available:
+
+
+| Function                          | Description                                                                                                     |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------|        
+| `quarto.project.directory`        | Full path to current project directory (`nil` if no project).                                                   |
+| `quarto.project.output_directory` | Full path to current project output directory (`nil` if no project).                                            |
+| `quarto.project.offset`           | Offset (relative path) from the directory of the current file to the root of the project (`nil` if no project). |
+| `quarto.project.profile`          | List of currently active project profiles.                                                                      |
+
 
 ### Format Detection
 
@@ -135,6 +192,8 @@ Extensions will sometimes want to add external dependencies (for example, a Java
 | `quarto.doc.attach_to_dependency(name, attach)` | Attach a file to an existing dependency. `attach` is a file path relative to the Lua filter or table with \`path\` and \`name\` for renaming the file as its copied.                                                                                      |
 | `quarto.doc.use_latex_package(pkg, opt)`        | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
 | `quarto.doc.add_format_resource(path)`          | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
+| `quarto.doc.add_resource(path)`                 | Add a resource file to the current render, copying that file to the same relative location in the output directory.                                                                                                                                       | 
+| `quarto.doc.add_supporting(path)`               | Add a supporting file to the current render, moving that file file to the same relative location in the output directory.                                                                                                                                 |
 
 For example, here we add a LaTeX package dependency:
 
@@ -223,6 +282,17 @@ quarto.doc.add_html_dependency({
   }
 })
 ```
+
+### Custom Nodes
+
+Quarto adds some custom AST node types. You can read more about them in [Quarto AST](/docs/advanced/quarto-ast.qmd#custom-nodes). You can create them with the following constructors:
+
+| Function                        | Node                                                                                                              |
+|--------------------------------|-----------------------------------------|
+| `quarto.Callout(tbl)`          | Callout: `tbl` is a table with entries `type`, `title`, and `content`.                                    |
+| `quarto.Tabset(tbl)`           | Tabset: `tbl` is a table with entries `tabs`, `level` and `attr`.                                         |
+| `quarto.ConditionalBlock(tbl)` | Conditional block: `tbl` is a table with entries `node`, `behavior`, and `condition`.                     |
+| `quarto.FloatRefTarget(tbl)`   | Cross-referencable element: `tbl` is a table with entries `content`, `caption_long`, and `caption_short`. |
 
 ### JSON Encoding
 
