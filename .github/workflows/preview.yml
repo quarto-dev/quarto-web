@@ -23,6 +23,20 @@ jobs:
           echo "::error title=Manual action required for preview::PR from fork can't be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview manually."
         shell: bash
 
+  role-of-commenter:
+    if: github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if commenter is a member, owner or collaborator
+        id: commenter-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          commenter_role=$(gh api repos/$GITHUB_REPOSITORY/collaborators/${{ github.event.comment.user.login }}/permission --jq '.permission')
+          echo "commenter_role=$commenter_role" >> "$GITHUB_OUTPUT"
+          echo "author_association=${{ github.event.comment.author_association }}" >> "$GITHUB_OUTPUT"
+        shell: bash
+
   build-deploy-preview:
     # Deploy a preview only if 
     # - the PR is not from a fork,
@@ -61,6 +75,8 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: ${{ steps.github-release.outputs.version }}
+
+      - name: Install magick
 
       - name: Is it for prerelease website ?
         id: prerelease-docs-check
