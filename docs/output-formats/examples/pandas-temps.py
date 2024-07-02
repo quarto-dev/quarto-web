@@ -8,7 +8,8 @@ temps = pd.DataFrame({
 }).set_index('year')
 
 def make_pretty(styler):
-    styler.background_gradient(axis=None, vmin=31, vmax=66, cmap="RdYlGn_r")
-    return styler
+  styler.background_gradient(axis=None,
+    vmin=31, vmax=66, cmap="RdYlGn_r")
+  return styler
 
 temps.style.pipe(make_pretty)
