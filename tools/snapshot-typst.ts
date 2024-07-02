@@ -51,7 +51,6 @@ const relSourcePath = sourcePath.slice(projectDir.length + 1);
 const qcmd = [
   'render',
   args[0],
-  '--use-freezer',
   '-M',
   'echo:false',
   '-M',
