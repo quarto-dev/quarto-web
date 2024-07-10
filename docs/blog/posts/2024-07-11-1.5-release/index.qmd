@@ -1,0 +1,94 @@
+---
+title: Quarto 1.5 
+description: |
+  Quarto 1.5 improves Typst support, adds a native Julia engine, has some website enhancements like draft handling and announcement bars, and adds a couple of shortcodes for generating placeholder content. 
+categories:
+  - Quarto 1.5
+  - Releases
+author: Charlotte Wickham
+date: "07/11/2024"
+image: "images/thumbnail.png"
+image-alt: "Quarto 1.5 with a balloon"
+---
+
+Quarto 1.5 is out! You can find the current release on the [download page](/docs/download/index.qmd).
+
+Below, we'll highlight the improved Typst support, the native Julia engine, website enhancements like draft handling and announcement bars, and a couple of shortcodes for generating placeholder content. You can see all the changes in the [Release Notes](/docs/download/index.qmd) on the download page.
+
+## Typst CSS
+
+We've already blogged about one feature that is now available in 1.5: [Beautiful Tables in Typst](/docs/blog/posts/2024-07-02-beautiful-tables-in-typst/). The CSS properties from HTML tables produced in your code are translated to Typst properties, so the tables you lovingly craft for HTML should look just as good in PDFs produced using `format: typst`.
+
+Beyond tables, CSS properties on divs and spans are also translated to Typst properties. So, for example, you could get text with a green background like this:
+
+``` markdown
+Here is a [span with a green background]{style="background-color:green"}.
+```
+
+You can read more about using CSS in Typst at [Typst Basics: Typst CSS](/docs/output-formats/typst.qmd#typst-css).
+
+## Native Julia Engine
+
+Prior to 1.5, Julia code cells were executed through the Jupyter engine. Now you can opt-in to a native Julia engine:
+
+``` yaml
+---
+title: Julia without Jupyter
+engine: julia
+---
+```
+
+Read about the details in [Using the `julia` engine](https://quarto.org/docs/computations/julia.html#using-the-julia-engine).
+
+Part of the reason we are excited about this feature is that it was an external contribution. Thank you [\@jkrumbiegel](https://github.com/jkrumbiegel)!
+
+## Improved Website Draft Support
+
+![A `draft` post with the new draft banner](images/website-drafts-banner.png){.border fig-alt="Screenshot of a post titled 'Post With Code', displaying a banner at the top of the page titled 'Draft'."}
+
+Quarto 1.5 brings improved support for workflows involving draft posts and pages:
+
+-   Adds the `drafts` option to the `website` key offering new ways to specify drafts: directly in `_quarto.yml`, and via metadata includes and profiles.
+
+-   Introduces the `draft-mode` option to the `website` key to control how drafts are rendered. Drafts can be `gone`, `unlinked` or `visible`.
+
+-   Adds a draft banner to draft pages that are rendered.
+
+-   Improves the linking behavior of draft documents. Now, in addition to being excluded from search results, listings, and the sitemap, drafts will not appear in navigation, or be linked from in-text hyperlinks when `draft-mode` is `gone` or `unlinked`.
+
+-   Changes the behavior of `quarto preview` for drafts. Drafts will be `visible` in previews regardless of the `draft-mode` setting. In particular, this allows an easier way to preview the appearance of draft content in navigation and listings.
+
+Read more at [Website Drafts](/docs/websites/website-drafts.qmd).
+
+## Website Announcements
+
+You can now use an `announcement` option to add a customizable banner at the top of your website. You can set an icon, make it dismissable, and include markdown formatted content like bold text:
+
+![An example announcement bar](images/website-announcement.png){fig-alt="Screenshot of the quarto documentation showing a blue bar below the navbar, starting with the text 'Alert:...'."}
+
+Read about your options at [Website Tools: Announcement Bar](/docs/websites/website-tools.qmd#announcement-bar).
+
+## Placeholder Shortcodes
+
+We've also added a couple of shortcodes that add placeholder content: `lipsum` for text, and `placeholder` for images:
+
+``` {.markdown shortcodes="false"}
+{{< placeholder 400 200 format=svg >}}
+{{< lipsum 1 >}}
+```
+
+This example produces the content you can see in the margin: a 400x200 px SVG image, and one paragraph of [Lorem Ipsum](https://en.wikipedia.org/wiki/Lorem_ipsum) text.
+
+::: {.border .p-3 .column-margin}
+{{< placeholder 400 200 format=svg >}}
+
+{{< lipsum 1 >}}
+:::
+
+## Acknowledgements
+
+Finally, we'd like to give a huge high five to everyone who contributed to this release by opening issues and pull requests:
+
+{{< include _contribs.md >}}
+
+The balloon emoji in the [listing and social card image](images/thumbnail.png) for this post comes from [OpenMoji](https://openmoji.org/){.external}– the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#){.external}
