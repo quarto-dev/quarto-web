@@ -276,12 +276,31 @@ The shortcode registration and GitHub metadata could just as well been provided 
 
 ## Raw Arguments
 
-In Quarto >= 1.3 you can also access the raw stream of inlines passed to a shortcode by adding a `raw_args` parameter. For example:
+In Quarto >= 1.3, you can also access the raw stream of inlines passed to a shortcode by adding a `raw_args` parameter. For example:
 
 ```lua
 function shorty(args, kwargs, meta, raw_args)
-
+  -- ...
 end
 ```
 
 {{< include _shortcode-escaping.qmd >}}
+
+## Context Awareness
+
+In Quarto >= 1.5, you can access the context in which the shortcode was invoked as the fifth parameter of the function call. `context` is a string that will be one of `block`, `inline`, or `text`:
+
+- if `context` is `block`, then the shortcode exists in a block by itself
+- if `context` is `inline`, then the shortcode exists as one of many inline nodes
+- if `context` is `text`, then the shortcode exists inside a text field of a Pandoc node. These can be:
+  - the content of `CodeBlock` or `Code` elements
+  - the content of `RawBlock` or `RawInline` elements
+  - the content of attributes of Pandoc elements like `Div`, `Span`, etc.
+  - the URL of a `Link` element
+  - the source of an `Image` element
+
+```lua
+function shorty(args, kwargs, meta, raw_args, context)
+  -- ...
+end
+```
