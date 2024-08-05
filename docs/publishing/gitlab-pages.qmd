@@ -1,0 +1,34 @@
+---
+title: "GitLab Pages"
+---
+
+## Overview
+
+[GitLab Pages](https://pages.github.com/) is a website hosting service that enables you to publish content based on source code managed within a GitLab repository.
+
+There s currently only one way to publish Quarto websites and documents to GitLab Pages:
+
+1.  Use a [GitLab Pipeline] to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever you push a source code change to your repository.
+
+We'll cover each of these methods below, but first an important pre-requisite: you need to have a Git repository on your local machine that is synced to GitLab. The URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.gitlab.io/reponame/`).
+
+You can optionally configure a [custom domain](https://docs.gitlab.com/ee/user/project/pages/custom_domains_ssl_tls_certification/) for a GitLab Pages site, but before exploring that ground you should get your site up and running with the default domain.
+
+### GitLab Pipeline
+
+Before setting up the pipeline, add at least on file that will get rendeded and deployed. Enable the pipeline by adding a `.gitlab-ci.yml` file to your repository:
+
+``` {.yaml filename=".gitlab-ci.yml"}
+image: registry.gitlab.com/quarto-forge/docker/quarto
+
+pages:
+  script:
+    - quarto render --execute --to html --output-dir public
+  artifacts:
+    paths:
+      - public
+```
+
+This pipeline will run whenever you push to your repository. It will also run when you manually trigger the action from the **Build - Pipelines** page of your repository.
+
+The pipeline will render your content and publish it to GitLab Pages using the [Tier 0](https://gitlab.com/quarto-forge/docker#tier-0) Docker image from [Quarto Forge](https://gitlab.com/quarto-forge). Docker images in this tier are the best option to GitLab CI if you are not doing any computation.
