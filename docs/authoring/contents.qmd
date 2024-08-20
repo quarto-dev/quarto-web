@@ -1,5 +1,5 @@
 ---
-title: "`use-cell`: Rearrange content in your documents"
+title: "`contents`: Rearrange content in your documents"
 ---
 
 ## Overview
@@ -7,7 +7,7 @@ title: "`use-cell`: Rearrange content in your documents"
 Sometimes it's useful to define content in your document in an order that is different from
 the order in which you want the document to be presented.
 Although you can develop [Lua filters](/docs/extensions/filters.qmd) that solve this kind of problem, Quarto 1.6 and
-later offers a simpler solution that works in many use cases: the `{{{< use-cell >}}}` shortcode.
+later offers a simpler solution that works in many use cases: the `{{{< contents >}}}` shortcode.
 
 Here's a minimal example of how it can be used:
 
@@ -31,7 +31,7 @@ Here we use the plot, inside a callout:
 
 ## Note the following plot
 
-{{{< use-cell a-cell >}}}
+{{{< contents a-cell >}}}
 
 :::
 ````
@@ -42,7 +42,7 @@ The code above produces the following output:
 
 ## Why
 
-`{{{< use-cell >}}}` increases your freedom in defining the document the most comfortable way you can.
+`{{{< contents >}}}` increases your freedom in defining the document the most comfortable way you can.
 It can simply because you want to write the code in the middle of a different explanation, but you want to result to appear elsewhere.
 
 One particularly important reason is that Jupyter notebooks do not allow code cells to "nest" inside markdown, and many of Quarto's features
@@ -56,18 +56,18 @@ The contents of a fenced div
 :::
 ````
 
-In this case, authoring Quarto documents with `.ipynb` would otherwise be cumbersome. `{{{< use-cell >}}}` allows you to use the contents of a code cell inside a Markdown cell without having to split the Markdown in a way that Jupyter Notebook, Jupyter Lab, and Quarto's JupyterLab extensions don't know how to render.
+In this case, authoring Quarto documents with `.ipynb` would otherwise be cumbersome. `{{{< contents >}}}` allows you to use the contents of a code cell inside a Markdown cell without having to split the Markdown in a way that Jupyter Notebook, Jupyter Lab, and Quarto's JupyterLab extensions don't know how to render.
 
 ## How it works
 
-Quarto takes `{{{< use-cell <cell-id> >}}}` shortcodes to mean "take the content of cell with id `cell-id` from the document and place it here instead". 
+Quarto takes `{{{< contents <id> >}}}` shortcodes to mean "take the contents of cell with id `id` from the document and place it here instead". 
 
-The most natural use case is for code cells, but `{{{< use-cell >}}}` also works with any document divs or spans, and uses the div and span ids.
+The most natural use case is for code cells, but `{{{< contents >}}}` also works with any document divs or spans, and uses the div and span ids.
 
 ::: callout-caution
 
 The id of the following div is `a-div`, and _not_ `#a-div`.
-As a result, refer to it in a `use-cell` shortcode as `{{{< use-cell a-div >}}}`.
+As a result, refer to it in a `contents` shortcode as `{{{< contents a-div >}}}`.
 
 ```
 ::: {#a-div}
@@ -79,7 +79,7 @@ The contents of a fenced div
 
 :::
 
-When using divs and spans with `{{{< use-cell >}}}`, make sure that you're moving them to appropriate locations.
+When using divs and spans with `{{{< contents >}}}`, make sure that you're moving them to appropriate locations.
 Specifically, a div cannot be placed in the middle of a paragraph; that requires a span. As a result, you _cannot_ do the following:
 
 ````
@@ -88,7 +88,7 @@ Specifically, a div cannot be placed in the middle of a paragraph; that requires
 print("some code")
 ```
 
-The output of the code cell is `{{< use-cell a-cell >}}`. Etc.
+The output of the code cell is `{{< contents a-cell >}}`. Etc.
 ````
 
 If this is the style of organization you wish to use, you need to write the code inline, and wrap it in a span:
@@ -96,9 +96,9 @@ If this is the style of organization you wish to use, you need to write the code
 ````markdown
 We will define some values here. [`{python} "some code"`]{#a-span}
 
-The output of that inline code cell is {{< use-cell a-span >}}. Etc.
+The output of that inline code cell is {{< contents a-span >}}. Etc.
 ````
 
 ## Limitations
 
-Currently, `{{{< use-cell >}}}` itself does not work inside code elements. We may lift that limitation in the future.
+Currently, `{{{< contents >}}}` itself does not work inside code elements. We may lift that limitation in the future.
