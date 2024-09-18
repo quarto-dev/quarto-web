@@ -1,3 +1,4 @@
+gem 'algolia', '=2.3.4'
 require 'json'
 require 'algolia'
 require 'open-uri'
