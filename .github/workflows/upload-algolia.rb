@@ -1,4 +1,3 @@
-gem 'algolia', '=2.3.4'
 require 'json'
 require 'algolia'
 require 'open-uri'
@@ -13,7 +12,7 @@ indexUrl = ENV["QUARTO_INDEX_URL"]
 download = URI.open(indexUrl)
 IO.copy_stream(download, indexFile)
 
-client  = Algolia::Search::Client.create(appId, apiKey)
+client  = Algolia::SearchClient.create(appId, apiKey)
 index   = client.init_index(indexName)
 file    = File.read(indexFile)
 records = JSON.parse(file)
