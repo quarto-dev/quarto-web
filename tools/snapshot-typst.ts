@@ -1,5 +1,5 @@
-import * as path from "https://deno.land/std/path/mod.ts";
-import {existsSync} from "https://deno.land/std/fs/mod.ts";
+import * as path from "stdlib/path";
+import {existsSync} from "stdlib/fs";
 
 function getModuleDir(importMeta: ImportMeta): string {
   return path.resolve(path.dirname(path.fromFileUrl(importMeta.url)));
