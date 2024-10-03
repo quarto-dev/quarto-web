@@ -19,5 +19,7 @@ if (xfun::file_ext(image_path) != "png") {
 url <- args[2]
 
 # taking the size from previous image
-infos <- magick::image_read("docs/gallery/dashboards/housing-market-dashboard.png")  |> magick::image_info()
+example <- "docs/gallery/dashboards/housing-market-dashboard.png"
+if (!is.na(args[3])) example <- args[3]
+infos <- magick::image_read(example)  |> magick::image_info()
 webshot2::webshot(url, image_path, vwidth = infos$width, vheight = infos$height)
