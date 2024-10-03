@@ -17,9 +17,12 @@ if (xfun::file_ext(image_path) != "png") {
   stop("First argument must be a .png image path to create.")
 }
 url <- args[2]
+width <-  if (is.na(args[3])) 1440 else as.numeric(args[3])
+height <- if (is.na(args[4])) 900 else as.numeric(args[4])
+message("==> Creating screenshot of ", url, " and saving to ", image_path)
+png <- webshot2::webshot(url, image_path, vwidth = width, vheight = height)
+if (Sys.which("optipng") != "") {
+  message("==> Shrinking image with optipng")
+  webshot2::shrink(png)
+}
 
-# taking the size from previous image
-example <- "docs/gallery/dashboards/housing-market-dashboard.png"
-if (!is.na(args[3])) example <- args[3]
-infos <- magick::image_read(example)  |> magick::image_info()
-webshot2::webshot(url, image_path, vwidth = infos$width, vheight = infos$height)
