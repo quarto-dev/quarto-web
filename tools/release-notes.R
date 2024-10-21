@@ -1,19 +1,52 @@
 library(fs)
 library(stringr)
 library(glue)
-
-# Version numbers
-old_release <- "v1.5.57"
-new_release_major <- "1.6"
-new_prerelease_major <- "1.7"
-
-major_version <- str_extract(old_release, "(\\d+)\\.(\\d+)")
+library(jsonlite)
+library(gh)
 
 downloads <- path("docs", "download")
 
+# Current versions -------------------------------------------------------
+
+# Based on updated download files
+new_release <- read_json(path(downloads, "_download.json"))$version
+new_prerelease <- read_json(path(downloads, "_prerelease.json"))$version
+
+# Old version from Git history -------------------------------------------
+
+# Need version at two commits ago
+previous_commit <- gh("https://api.github.com/repos/:owner/:repo/commits",
+  owner = "quarto-dev", repo = "quarto-web", 
+  path = "docs/download/_download.json",
+  per_page = 2)
+
+previous_commit_ref <- previous_commit[[2]]$sha
+
+previous_contents <- gh("/repos/{owner}/{repo}/contents/{path}", 
+  owner = "quarto-dev", repo = "quarto-web", 
+  path =  "docs/download/_download.json",
+  ref = previous_commit_ref,
+  .accept = "application/vnd.github.raw+json")
+previous_contents_json <- parse_json(previous_contents$message)
+
+old_release <- previous_contents_json$version
+old_release_date <- previous_contents_json$created
+
+# Version numbers
+extract_major <- function(x){
+  str_extract(x, "(\\d+)\\.(\\d+)")
+}
+
+new_release_major <-  extract_major(new_release)
+new_prerelease_major <-  extract_major(new_prerelease)
+major_version <- extract_major(old_release)
+
+cat("Release:", old_release, "->", new_release, "\n")
+cat("Prerelease:", major_version, "->", new_prerelease_major, "\n")
+
 # Create new changelog content -------------------------------------------
 
-changelog_url <- paste0("https://github.com/quarto-dev/quarto-cli/releases/download/", 
+changelog_url <- paste0("https://github.com/quarto-dev/quarto-cli/releases/download/v", 
   old_release, "/changelog.md")
 changelog_dir <- dir_create(path(downloads, "changelog", major_version))
 
