@@ -88,10 +88,10 @@ old_abbr <- str_split(major_version, "\\.")[[1]] |> paste0(collapse = "")
 # Add new item to download-older listing in docs/download/index.qmd
 
 glue('
-- id: version{ old_abbr }
+\n- id: version{ old_abbr }
   title: { old_release }
   date: { format(as.Date(old_release_date), "%Y/%m/%d") }
-  path: https://github.com/quarto-dev/quarto-cli/releases/tag/{ old_release }
+  path: https://github.com/quarto-dev/quarto-cli/releases/tag/v{ old_release }
   changelog: "[Release Notes](changelog/{ major_version }/)"
 ') |> 
   cat(file = path(downloads, "_download-older.yml"), append = TRUE)
