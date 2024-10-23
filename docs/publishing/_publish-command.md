@@ -10,7 +10,7 @@ If you haven't published to {{< meta provider-name >}} before, the publish comma
 
 ### \_publish.yml
 
-The `_publish.yml` file is used to to specify the publishing destination. This file is automatically created (or updated) whenever you execute the `quarto publish` command, and is located within the project or document directory.
+The `_publish.yml` file is used to specify the publishing destination. This file is automatically created (or updated) whenever you execute the `quarto publish` command, and is located within the project or document directory.
 
 The service, id, and URL of the published content is specified in `_publish.yml`. For example:
 

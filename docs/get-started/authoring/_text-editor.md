@@ -214,7 +214,7 @@ Here is what this document looks like when rendered.
 ![](/docs/get-started/authoring/images/citations-render.png){.border width="600" fig-alt="Rendered document with references section at the bottom the content of which reads 'Knuth, Donald E. 1984. Literate Programming. The Computer Journal 27 (2): 97-111.'"}
 
 \
-The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations. See the documentation on [Citations and Footnotes](/docs/authoring/footnotes-and-citations.qmd) to learn more.
+The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations. See the documentation on [Citations](/docs/authoring/citations.qmd) to learn more.
 
 ## Cross References
 

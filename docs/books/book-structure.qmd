@@ -81,7 +81,7 @@ Note that you can change the chapter title to whatever you like, remove `.unnumb
 
 For PDF output, you can create an index using the LaTeX [makeidx](https://ctan.org/pkg/makeidx?lang=en) package along with the `\index` command.
 
-To add an index to the PDF output for a book, add these `include-in-header` and `include-after-body` entries to your `pdf` format configuration in `_quarto.yml`: quart
+To add an index to the PDF output for a book, add these `include-in-header` and `include-after-body` entries to your `pdf` format configuration in `_quarto.yml`:
 
 ``` yaml
 format:
@@ -104,6 +104,29 @@ Then, add `\index{entry}` commands wherever you want an index entry. For example
 Markdown\index{Markdown} allows you to write using
 an easy-to-read, easy-to-write plain text format.
 ```
+
+Alternatively, you can also use the [imakeidx](https://ctan.org/pkg/imakeidx) package.
+This packages offers additional features for formatting the index. For example:
+
+``` yaml
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+    include-in-header: 
+      text: |
+        \usepackage{imakeidx}
+        \makeindex[intoc=true, columns=3, columnseprule=true, options=-s latex/indexstyles.ist]
+    include-after-body: 
+      text: |
+        \printindex
+```
+
+In the above example, `intoc=true` will include an entry for the index into the table of contents,
+`columns=3` will format the index into three columns, and `columnseprule=true` will display a line between index columns.
+Finally, `options=-s latex/indexstyles.ist` will use additional formatting options from an index-style file located at `latex/indexstyles.ist`.
+Many other features are available in the [imakeidx](https://ctan.org/pkg/imakeidx) package. Please refer to its documentation for further details.
 
 Note that `\index` commands are automatically ignored for non-PDF output.
 

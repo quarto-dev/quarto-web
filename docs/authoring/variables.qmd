@@ -24,7 +24,7 @@ The `{{{< meta >}}}` syntax used here is an example of a [shortcode](/docs/exten
 
 If you are using a Quarto project, the `var` shortcode enables you to insert content from a project-level `_variables.yml` file. Create this file alongside your `_quarto.yml` project file, and then include references to those variables within any document in your project.
 
-Variables can be either simple values or can include arbitrary markdown content. To define variables, create a `_variables.yml` file in the root directory of your project. For example:
+Variables can be either simple values or markdown content. To define variables, create a `_variables.yml` file in the root directory of your project. For example:
 
 ``` yaml
 version: 1.2
@@ -38,7 +38,8 @@ engine:
   knitr: "[Knitr](<https://yihui.name/knitr>)"
 ```
 
-Note that the `engine` variable values include markdown for hyperlinks.
+Note that the `engine` variable values include markdown for hyperlinks. 
+Any markdown provided needs to be well-formed, and cannot change the structure of the content around it (e.g. by closing a div opened before the variable inclusion).
 
 To include the value of a variable, use the `{{</* var */>}}` shortcode, for example:
 
@@ -61,10 +62,17 @@ For example, the following shortcode inserts the value of the `title` field from
 {{< meta title >}}
 ```
 
-You can dereference sub-keys using the dot (`.)` delimiter. For example:
+You can dereference sub-keys using the dot (`.`) delimiter. For example:
 
 ``` {.markdown shortcodes="false"}
 {{< meta labels.description >}}
+```
+
+You can also index into an array with the dot (`.`) delimiter. For example, to
+extract the first in the array of authors:
+
+``` {.markdown shortcodes="false"}
+{{< meta author.1 >}}
 ```
 
 ## env {#env}
@@ -74,5 +82,13 @@ The `env` shortcode enables you to read values from environment variables. For e
 ``` {.markdown shortcodes="false"}
 Version {{< env PRODUCT_VERSION >}} is a minor upgrade.
 ```
+
+You can provide a fallback value if the environment variable isn't set by providing a second argument:
+
+``` {.markdown shortcodes="false"}
+Version {{< env PRODUCT_VERSION "*.*" >}} is a minor upgrade.
+```
+
+You can read more about setting environment variables in Quarto projects in  [Environment Variables](/docs/projects/environment.qmd).
 
 {{< include ../extensions/_shortcode-escaping.qmd >}}

@@ -3,6 +3,9 @@ title: "Typst Basics"
 tbl-colwidths: [35,65]
 aliases: 
   - /docs/prerelease/1.4/typst.html
+# project:
+#   pre-render:
+#     - quarto run ../../tools/snapshot-typst.ts examples/gt-temps.qmd images/typst-tables-gt-temps.png
 ---
 
 {{< include /docs/_require-1.4.qmd >}}
@@ -103,7 +106,7 @@ margin:
 
 This sets the margins in the horizontal direction (`x`), i.e. `left` and `right`, as well as the margins in the vertical direction (`y`), i.e. `top` and `bottom` to 1.25 inches.
 
-The values for the margins are specfied using Typst's [length](https://typst.app/docs/reference/layout/length/), (e.g. `5cm`) or  [relative length](https://typst.app/docs/reference/layout/relative/) (e.g. `10%`) types. You can specify a single margin:
+The values for the margins are specified using Typst's [length](https://typst.app/docs/reference/layout/length/), (e.g. `5cm`) or  [relative length](https://typst.app/docs/reference/layout/relative/) (e.g. `10%`) types. You can specify a single margin:
 
 ```yaml
 margin:
@@ -119,6 +122,12 @@ The `columns` option expects a number - the number of columns your body content 
 
 {{< include /docs/output-formats/_document-options-toc.md >}}
 
+The `toc-indent` option controls how far entries are indented in the displayed table of contents. The default is equivalent to:
+
+```{.yaml}
+toc-indent: 1.5em
+```
+
 {{< include /docs/output-formats/_document-options-section-numbering.md >}}
 
 You can also customize the display of the section numbers with the `section-numbering` YAML option. This option expects a string that describes the numbering schema. For example, the following schema describes numbering sections with numerals, subsection with uppercase letters, and subsubsections with lower case letters, using `.` as a separator:
@@ -129,36 +138,13 @@ section-numbering: 1.A.a
 ---
 ```
 
-You can read more about sepcifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
+You can read more about specifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
 
 {{< include /docs/output-formats/_code-annotation.md >}}
 
 ## Bibliography
 
-Typst comes with its [own citation processing system for bibliographies](https://typst.app/docs/reference/model/bibliography/) and using `format: typst` defaults to it. To specify a bibliography style using Typst's system, use the `bibliographystyle` option. Provide a string from [Typst's list of built-in styles](https://typst.app/docs/reference/model/bibliography/#parameters-style), e.g.:
-
-``` yaml
-bibliography: refs.bib
-bibliographystyle: apa
-```
-
-Or alternatively, provide a path to a local CSL file:
-
-``` yaml
-bibliography: refs.bib
-bibliographystyle: my-csl-style.csl
-```
-
-If you prefer to use Pandoc's citation processing, set `citeproc: true` explicitly in YAML header:
-
-``` yaml
-citeproc: true
-bibliography: refs.bib
-csl: https://www.zotero.org/styles/apa-with-abstract
-```
-
-To provide a citation style file to Pandoc's citation processing system use the `csl` option, as described in [Citation Style](/docs/authoring/footnotes-and-citations.qmd#sec-citations-style).
-
+{{< include _typst-citations.md >}}
 
 ## Typst Blocks
 
@@ -194,6 +180,62 @@ In the case of glaciers, fluid dynamics principles can be used to understand how
 
 To learn more about `typst` markup, see the tutorial here: <https://typst.app/docs/tutorial/>.
 
+## Typst CSS
+
+To allow similar styling between HTML and Typst, Quarto will translate CSS properties into Typst properties.
+
+You can use CSS properties directly in your Quarto markup, and they will get translated to appropriate Typst elements and properties.
+
+For example, text-related properties `color`, `opacity`, and `background-color` can be applied to spans:
+
+```markdown
+Here is a [span with a green background]{style="background-color:green"}.
+```
+
+`font-family` and `font-size` can be applied to a div or table:
+
+```markdown
+:::{style="font-family: helvetica"}
+This div is rendered in Helvetica.
+:::
+```
+
+See [the Advanced documentation](/docs/advanced/typst/typst-css.qmd#supported-elements-and-properties) for supported elements and properties, and how to add more using Lua filters.
+
+You are most likely to encounter Typst CSS when using libraries that produce HTML tables. 
+The translation of the CSS means your table in Typst should look similar to how it looks in HTML without any intervention on your part.
+
+For example, here is a temperature heatmap using `gt` in R, and `pandas` in Python.
+
+::: {.panel-tabset}
+
+#### R - gt
+:::: {layout-ncol=2}
+![](images/typst-tables-gt-temps.png){height=200px}
+
+````r
+```{{r}}
+{{< include examples/gt-temps.R >}}
+```
+````
+::::
+
+#### Python - Pandas
+:::: {layout-ncol=2}
+![](images/typst-tables-pandas-temps.png){height=200px}
+
+````python
+```{{python}}
+{{< include examples/pandas-temps.py >}}
+```
+````
+::::
+
+:::
+
+Note that [named Typst colors](https://typst.app/docs/reference/visualize/color/#predefined-colors) will be preferred over [named CSS colors](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color). If you want exactly the same color in your HTML and Typst output, specify the color using `rgb()` or hexadecimal `#rrggbb` syntax.
+
+Typst does not support opacity as a filter, so opacity is simulated using the alpha channel of the color.
 
 ## Typst File (`.typ`)
 
