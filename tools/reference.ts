@@ -1,8 +1,8 @@
 
-import { basename, dirname, join } from "https://deno.land/std/path/mod.ts";
-import { expandGlobSync } from "https://deno.land/std/fs/expand_glob.ts";
-import { parse } from "https://deno.land/std/yaml/mod.ts";
-import { distinct } from "https://deno.land/std/collections/distinct.ts"
+import { basename, dirname, join } from "stdlib/path";
+import { expandGlobSync } from "stdlib/fs";
+import { parse } from "stdlib/yaml";
+import { distinct } from "stdlib/collections";
 
 
 export function asArray<T>(x?: T | Array<T>): Array<T> {
