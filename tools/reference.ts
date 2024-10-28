@@ -330,6 +330,48 @@ function writeMetadataTable(name: string, title: string, options: Array<Option>)
 const citationOptions = readDefinitionsId("csl-item");
 writeMetadataTable("citation", "Citation", citationOptions);
 
+// Brand Page
+
+// Filter `definitions` to items with an id field starting with `brand-`
+const brandDefinitions = definitions.filter(item => item.id.startsWith("brand-"));
+
+const brandOptions = readDefinitionsId("brand",{
+  "meta": "Metadata for a brand, including the brand name and important links. See [Meta](#meta) for more information",
+  "logo": "Provide definitions and defaults for brand's logo in various formats and sizes. See [Logo](#logo) for more information",
+  "color": "The brand's custom color palette and theme. See [Color](#color) for more information",
+  "typography": "Typography definitions for the brand. See [Typography](#typography) for more information",
+  "defaults": "Default settings"
+});
+
+const brandMetadata = [
+  {
+    "name": "brand",
+    "title": "Brand",
+    "options": brandOptions 
+  },
+  {
+    "name": "brand-meta",
+    "title": "Meta",
+    "options": readDefinitionsId("brand-meta")
+  },
+  {
+    "name": "brand-logo",
+    "title": "Logo",
+    "options": readDefinitionsId("brand-logo")
+  },
+  {
+    "name": "brand-color",
+    "title": "Color",
+    "options": readDefinitionsId("brand-color")
+  }, 
+  {
+    "name": "brand-typography",
+    "title": "Typography",
+    "options": readDefinitionsId("brand-typography")
+  }
+]
+Deno.writeTextFileSync(`docs/reference/metadata/brand.json`, JSON.stringify(brandMetadata, undefined, 2));
+
 // Crossref Page
 const crossrefs = readSchema("document-crossref.yml");
 const crossrefOptions = (crossrefs as any[]).find(value => value.name ==  "crossref")["schema"]["anyOf"][1]["object"]["properties"];
