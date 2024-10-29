@@ -267,6 +267,28 @@ function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
   return results;
 }
 
+function readTypographyOptions(id: string, toFollow: Array<string>) {
+  const obj = definitions.find(value => value.id === id) as any;
+
+  const baseObject = (obj["object"] || obj["schema"]["object"]);
+  const props = baseObject["properties"];
+  const descriptions = {};
+
+  for (const [key, prop] of Object.entries(props).filter(([_, {ref}]) => ref)) {
+    if (prop.hidden) {
+      continue;
+    }
+    const shortref = prop.ref.replace(/^brand-typography-options-/, '');
+    descriptions[key] = asDescriptionString(findVal(prop, "description")) +" See [" + shortref + "](#" + shortref + ") for more information.";
+    toFollow.push(prop.ref)
+  }
+
+  const results = [];
+  results.push(...readProjectProperties(props, descriptions));
+
+  return results;
+}
+
 function readNavigationItem(descriptions?: Record<string, string>) {
   const obj = definitions.find(value => value.id === "navigation-item") as any;
   const refId = obj["anyOf"][1]["ref"];
@@ -343,6 +365,19 @@ const brandOptions = readDefinitionsId("brand",{
   "defaults": "Default settings"
 });
 
+const toFollow : Array<string> = []
+
+const typographyOptionDescriptions = {
+  "family": "The font family.",
+  "size": "The font size.",
+  "weight": "The font weight.",
+  "style": "The font style.",
+  "color": "The text color.",
+  "background-color": "The text background color.",
+  "decoration": "The text decoration, i.e. underline",
+  "line-height": "The distance between lines of text.",
+};
+
 const brandMetadata = [
   {
     "name": "brand",
@@ -367,8 +402,22 @@ const brandMetadata = [
   {
     "name": "brand-typography",
     "title": "Typography",
-    "options": readDefinitionsId("brand-typography")
-  }
+    "options": readTypographyOptions("brand-typography", toFollow)
+  },
+  ...toFollow.map(id => {
+    const typography = definitions.find(value => value.id === id);
+    const root = typography?.["anyOf"][1]?.object;
+    if (root?.properties) {
+      return {
+        "name": id,
+        "title": id.replace(/^brand-typography-options-/, ''),
+        "level": 3,
+        "options": readProjectProperties(root.properties, typographyOptionDescriptions)
+      }
+    } else {
+      return null;
+    }
+  }).filter(x => x),
 ]
 Deno.writeTextFileSync(`docs/reference/metadata/brand.json`, JSON.stringify(brandMetadata, undefined, 2));
 
