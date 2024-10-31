@@ -37,36 +37,27 @@ typography:
 When this `_brand.yml` is placed in a project, webpages, presentations, PDF reports, and dashboards will share a common appearance:
 
 ::::::: {.column-body-outset-right layout-ncol="4"}
-<div>
-
+::: {}
 ![Webpage: `html`](images/brand-html.png){.lightbox group="brand-formats" fig-alt="Screenshot of a webpage. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
+:::
 
-</div>
-
-<div>
-
+::: {}
 ![Dashboard `dashboard`](images/brand-dashboard.png){.lightbox group="brand-formats" fig-alt="Screenshot of a dashboard. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
+:::
 
-</div>
-
-<div>
-
+::: {}
 ![Presentation: `revealjs`](images/brand-revealjs.png){.lightbox group="brand-formats" fig-alt="Screenshot of a presentation. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in bottom left of the slide."}
+:::
 
-</div>
-
-<div>
-
+:::{}
 ![PDF: `typst`](images/brand-typst.png){.lightbox group="brand-formats" fig-alt="Screenshot of a PDF document. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in top right of the page."}
+::: 
+:::
 
-</div>
-:::::::
 
-::: {.smaller .muted}
 You can view the source for the above example and the live website at:
 
 *Move these*
-:::
 
 On this page:
 
@@ -108,39 +99,56 @@ color:
   background: blue
 ```
 
-The semantic colors you can set in `color` are:
+The most commonly set colors include `foreground`, `background` and `primary`:
 
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| Name         | Description                                                                                                                   |
-+==============+===============================================================================================================================+
-| `foreground` | The main text color. Typically will be close to black and must have high contrast with the background color.                  |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `background` | The main background color. Tyically will be close to white and must have high contrast with the foreground color.             |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `primary`    | The primary accent color, used for hyperlinks, active states, and primary action buttons.                                     |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `secondary`  | The secondary accent color, often used for lighter text or disabled states.                                                   |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `tertiary`   | The tertiary accent color, used for hover states, accents, and wells.                                                         |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `success`    | The color used for positive or successful actions and information.                                                            |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `info`       | The color used for neutral or informational actions and information.                                                          |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `warning`    | The color used for warning or cautionary actions and information.                                                             |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `danger`     | The color used for errors, dangerous actions, or negative information.                                                        |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `light`      | A bright color, used as a high-contrast foreground color on dark elements or low-contrast background color on light elements. |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
-| `dark`       | A dark color, used as a high-contrast foreground color on light elements or high-contrast background color on light elements. |
-+--------------+-------------------------------------------------------------------------------------------------------------------------------+
+``` {.yaml filename="_brand.yml"}
+color:
+  palette:
+    dark-grey: "#222222"
+    blue: "#ddeaf1"
+  background: blue
+  foreground: dark-grey
+  primary: black
+```
 
 The colors `foreground` and `background` are used consistently across formats to set the color of the main text and color of the page it appears on.
+The color `primary` sets the link color, navbar color (`html` and `dashboard`), and progress bar color (`revealjs`).
 
 For HTML formats that use Bootstrap (`html`, `dashboard`) the remaining semantic colors are mapped directly to their Bootstrap counterparts with the same name.
 
-For `revealjs` the semantic colors are mapped to the following roles: e.g. `primary` controls the color of links and the progress bar. *Worth doing this? What about for Typst?*
+::: {.callout-tip collapse="true"}
+
+## Full list of semantic colors 
+
+The full list of semantic colors you can set in `color` is:
+
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| Name                  | Description                                                                                                                   |
++=======================+===============================================================================================================================+
+| `foreground`          | The main text color. Typically will be close to black and must have high contrast with the background color.                  |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `background`          | The main background color. Tyically will be close to white and must have high contrast with the foreground color.             |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `primary`             | The primary accent color, used for hyperlinks, active states, and primary action buttons.                                     |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `secondary`           | The secondary accent color, often used for lighter text or disabled states.                                                   |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `tertiary`            | The tertiary accent color, used for hover states, accents, and wells.                                                         |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `success`             | The color used for positive or successful actions and information.                                                            |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `info`                | The color used for neutral or informational actions and information.                                                          |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `warning`             | The color used for warning or cautionary actions and information.                                                             |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `danger`              | The color used for errors, dangerous actions, or negative information.                                                        |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `light`               | A bright color, used as a high-contrast foreground color on dark elements or low-contrast background color on light elements. |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `dark`                | A dark color, used as a high-contrast foreground color on light elements or high-contrast background color on light elements. |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+
+:::
 
 You can access both named and semantic colors from your brand in SCSS and using the `brand` shortcode. See [Using `_brand.yml` values](#using-brand-values) for more details.
 
@@ -167,19 +175,19 @@ logo:
 
 You don't need to specify all three—Quarto will use what you provide based on the following preferences:
 
-+----------------+----------------------------------------------+-------------------------------+
-| Format         | Location                                     | Logo Preference (high to low) |
-+================+==============================================+===============================+
-| `html`         | Top navigation bar                           | `small`\> `medium`\>`large`   |
-+----------------+----------------------------------------------+-------------------------------+
-| `html`         | Side navigation                              | `medium`\>`small`\>`large`    |
-+----------------+----------------------------------------------+-------------------------------+
-| `dashboard`    |                                              | Same as website??             |
-+----------------+----------------------------------------------+-------------------------------+
-| `typst`        | Top left, control with `format: typst: logo` | `medium`\>`small`\>`large`    |
-+----------------+----------------------------------------------+-------------------------------+
-| `revealjs`     | Bottom right corner of slides                | `medium`\>`small`\>`large`    |
-+----------------+----------------------------------------------+-------------------------------+
++----------------------+----------------------------------------------+-------------------------------+
+| Format               | Location                                     | Logo Preference (high to low) |
++======================+==============================================+===============================+
+| `html`               | Top navigation bar                           | `small`\> `medium`\>`large`   |
++----------------------+----------------------------------------------+-------------------------------+
+| `html`               | Side navigation                              | `medium`\>`small`\>`large`    |
++----------------------+----------------------------------------------+-------------------------------+
+| `dashboard`          |                                              | Same as website??             |
++----------------------+----------------------------------------------+-------------------------------+
+| `typst`              | Top left, control with `format: typst: logo` | `medium`\>`small`\>`large`    |
++----------------------+----------------------------------------------+-------------------------------+
+| `revealjs`           | Bottom right corner of slides                | `medium`\>`small`\>`large`    |
++----------------------+----------------------------------------------+-------------------------------+
 
 You can also specify named logos under `images` which you can reference in `small`, `medium` and `large`. In particular, this allows you to set alternative text for your logos using `alt`:
 
@@ -192,11 +200,13 @@ logo:
   small: quarto
 ```
 
-::: callout-warning
+::: {.callout-warning}
+
 ## Limitation
 
 The **brand.yml** specification allows you to specify a `light` and `dark` version of your logo, but Quarto currently only uses the `light` version.
-:::
+
+::: 
 
 ### Typography
 
@@ -224,7 +234,22 @@ typography:
   headings: Jura
 ```
 
-The options `base` and `headings` set the typographic style of the main text and headings respectively. The full set of text elements that you can style with `typography` is:
+The options `base` and `headings` set the typographic style of the main text and headings respectively. 
+Use `links` to apply specific styles to links.
+The option `monospace` sets the typographic style of code in general, and `monospace-inline` and `monospace-block` can be further used to style code that appears inline and in blocks respectively.
+
+``` {.yaml filename="_brand.yml"}
+# More comprehensive example
+# inlcude styling code
+```
+
+The fields allowed for each element differ, expand the callout below to see what is supported in each field.
+
+::: {.callout-tip collapse="true"}
+
+## Full set of text elements and supported fields.
+
+The full set of text elements that you can style with `typography` is:
 
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
 | Attribute          | Description                                                                                            | Supported Fields       |
@@ -281,9 +306,7 @@ The supported fields are generally described as follows:
 
 -   `decoration`: The text decoration, typically used for links. Common values include "underline", "none", or "overline".
 
-``` {.yaml filename="\"_brand.yml"}
-# More comphrensive example
-```
+::: 
 
 ### Defaults
 
@@ -291,7 +314,7 @@ The supported fields are generally described as follows:
 
 The `defaults` section of **brand.yml** allows users to set option for specific tools that don't otherwise fit into the **brand.yml** schema. In particular, Quarto supports `defaults: quarto` and `defaults: bootstrap`.
 
-#### Quarto
+#### Quarto 
 
 Quarto merges options you set in `defaults: quarto` with document metadata. For example, you can use this to set format specific options like syntax highlighting for `html`:
 
@@ -342,11 +365,14 @@ meta:
   link: https://www.acmecorp.com
 ```
 
-::: callout-warning
+::: {.callout-warning}
+
 ## Limitation
 
 Quarto does nothing with `meta` values.
-:::
+
+::: 
+
 
 ## Using `_brand.yml` values {#using-brand-values}
 
@@ -355,8 +381,7 @@ Quarto does nothing with `meta` values.
 Values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode.
 
 -   `{{{< brand color COLOR_NAME >}}}` resolves `COLOR_NAME` to the appropriate color value
--   \`{{{< brand logo LOGO_NAME >}}}
--   TBD: what should `{{{< brand typography ... >}}}` resolve to?
+-   `{{{< brand logo LOGO_NAME >}}}`
 
 ### In specific formats
 
@@ -375,4 +400,4 @@ local primary = brand.get_color('primary')
 
 ## Comprehensive Example
 
-TBF. Link to posit-wide documentation?
+TBD
