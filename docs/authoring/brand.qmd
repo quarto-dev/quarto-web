@@ -394,14 +394,43 @@ Quarto does nothing with `meta` values.
 
 ## Using `_brand.yml` values {#using-brand-values}
 
-
+Beyond the automatic application of your brand file, you can also directly access `_brand.yml` values in Quarto documents. In this section, you'll learn how to use the `brand` shortcode, use brand variables in SCSS files, and some format-specific ways to use access brand values.
 
 ### Shortcode - `{{{< brand >}}}`
 
-Values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode.
+Some values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode. In particular, you can access colors and logos by name:
 
--   `{{{< brand color COLOR_NAME >}}}` resolves `COLOR_NAME` to the appropriate color value
--   `{{{< brand logo LOGO_NAME >}}}`
+-   Use `{{{< brand color COLOR_NAME >}}}` to return the brand color named `COLOR_NAME` as a string.
+-   Use `{{{< brand logo LOGO_NAME >}}}` to return the brand logo named `LOGO_NAME` as an image.
+
+For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
+
+````{.markdown filename="dashboard.qmd" shortcodes="false"}
+---
+format: dashboard
+---
+
+## Inputs {.sidebar}
+
+{{< brand logo icon >}}
+
+````
+
+Or, you could use the shortcode to set the background of a revealjs slide to your `primary` brand color:
+
+````{.markdown filename="slides.qmd" shortcodes="false"}
+---
+format: revealjs
+---
+
+## Slide Title {background-color='{{< brand color primary >}}'}
+````
+
+::: {.callout-warning}
+## Limitation
+
+You can't currently access `typography`, `meta`, or `defaults` values using the `brand` shortcode.
+:::
 
 ### In SCSS
 
@@ -418,12 +447,6 @@ This should work:
 ```{.scss filename="custom.scss"}
 /*-- scss:defaults --*/
 $navbar-bg: $brand-blue; 
-```
-
-### Revealjs
-
-```{.markdown shortcodes="false"}
-## Slide Title {background-color='{{< brand color primary >}}'}
 ```
 
 ### Typst
