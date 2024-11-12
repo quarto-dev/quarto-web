@@ -12,54 +12,11 @@ These docs are a work-in-progress and may be incorrect or incomplete. Feedback w
 
 Quarto supports [**brand.yml**](https://posit-dev.github.io/brand-yml/)---a single YAML file that can be used to customize the appearance of your documents across multiple formats. This is particularly useful for organizations that need a unified look across various formats.
 
-As an example, consider the following `_brand.yml` file:
-
-``` {.yaml filename="_brand.yml"}
-color:
-  palette:
-    dark-grey: "#222222"
-    blue: "#ddeaf1"
-  background: blue
-  foreground: dark-grey
-  primary: black
-
-logo: 
-  medium: logo.png
-
-typography:
-  fonts:
-    - family: Jura
-      source: google
-  base: Jura
-  headings: Jura
-```
-
-When this `_brand.yml` is placed in a project, webpages, presentations, PDF reports, and dashboards will share a common appearance:
-
-::::::: {.column-body-outset-right layout-ncol="4"}
-::: {}
-![Webpage: `html`](images/brand-html.png){.lightbox group="brand-formats" fig-alt="Screenshot of a webpage. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
-:::
-
-::: {}
-![Dashboard `dashboard`](images/brand-dashboard.png){.lightbox group="brand-formats" fig-alt="Screenshot of a dashboard. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
-:::
-
-::: {}
-![Presentation: `revealjs`](images/brand-revealjs.png){.lightbox group="brand-formats" fig-alt="Screenshot of a presentation. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in bottom left of the slide."}
-:::
-
-:::{}
-![PDF: `typst`](images/brand-typst.png){.lightbox group="brand-formats" fig-alt="Screenshot of a PDF document. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in top right of the page."}
-::: 
-:::
-
-
-View the example: [Source](https://github.com/cwickham/quarto-examples/tree/brand/brand/brand-simple) | [Live website](https://charlotte.quarto.pub/brand-simple/)
+{{< include _brand-example.qmd >}}
 
 On this page:
 
--   Learn how to add a brand file
+-   Learn how to add a brand file.
 
 -   Learn about the elements of **brand.yml** and how they are used in Quarto.
 
@@ -77,18 +34,23 @@ Currently, the formats that support **brand.yml** are: `html`, `dashboard`, `rev
 
 ## Applying Brand
 
-To specify a brand, create a `_brand.yml` file in the root directory of your project. *Do you need a project? Do we reccommend a project? *
+To specify a brand, create a `_brand.yml` file in the root directory of your project (i.e. alongside `_quarto.yml`).
 Quarto will detect the presence of `_brand.yml` and automatically apply the brand to all documents of the supported formats in the project.
 
-You can also set, or override, brand settings in a document by specifying brand elements under the `brand` option:
+You can create a `_brand.yml` file outside of a Quarto project (e.g. without a `_quarto.yml`).
+In this case, `_brand.yml` will automatically apply to documents in the same directory.
+
+You can also set brand options in a document by specifying brand elements under the `brand` option:
 
 ```{.yaml filename="document.qmd"}
 ---
 brand:
   color:
-    background: "#ffffff"
+    background: "#eeeeee"
 ---
 ```
+
+If you set `brand` in a document header, it will replace the entire brand from `_brand.yml`.
 
 You can disable brand for a document by setting `brand` to `false`:
 
@@ -99,7 +61,7 @@ brand: false
 ```
 
 You can put  `_brand.yml` in a subdirectory of your project, and then use the `brand` key to specify the path to the brand file.
-For example, to the the brand file at `brand/_brand.yml` for a single  document, add `brand` to the header:
+For example, to use the brand file at `brand/_brand.yml` for a single  document, add `brand` to the header:
 
 ```{.yaml filename="document.qmd"}
 ---
@@ -113,15 +75,16 @@ To use the brand file at `brand/_brand.yml` for all documents in the project add
 brand: brand/_brand.yml
 ```
 
-Paths specified in `_brand.yml` are relative to the location of the brand file. (*Is this true?*)
+Paths specified in `_brand.yml` are relative to the location of the brand file.
 
 ## Brand Elements
 
-The elements of **brand.yml** are specified in the specification at <https://posit-dev.github.io/brand-yml/>. In this section, learn how these elements are used in Quarto.
+The elements of **brand.yml** are specified in the documentation for the [**brand.yml** project](https://posit-dev.github.io/brand-yml/){.external}. 
+In this section, learn how these elements are used in Quarto.
 
-### Color
+### Color 
 
-<https://posit-dev.github.io/brand-yml/brand/color.html>
+[Color in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/color.html){.external}
 
 Use `color` to define your brand's color palette and map your palette to the roles colors play, a.k.a semantic colors. A simple example might define the value `background` to a light blue:
 
@@ -139,7 +102,7 @@ color:
   background: blue
 ```
 
-The most commonly set colors include `foreground`, `background` and `primary`:
+The most commonly used colors include `foreground`, `background` and `primary`:
 
 ``` {.yaml filename="_brand.yml"}
 color:
@@ -194,7 +157,7 @@ You can access both named and semantic colors from your brand in SCSS and using 
 
 ### Logo
 
-<https://posit-dev.github.io/brand-yml/brand/logo.html>
+[Logo in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/logo.html){.external}
 
 Use `logo` to specify the logo for your brand:
 
@@ -203,9 +166,9 @@ logo:
   medium: logo.png
 ```
 
-You can specify a local file path, relative to the location of `_brand.yml` or a URL (*is this true?*).
+You can specify a local file path, relative to the location of `_brand.yml`, or a URL (*is this true?*).
 
-A single logo may not work well in all locations so **brand.yml** allows you to set 3 different logos: `small`, `medium` and `large`. For example:
+A single logo may not work well in all locations so **brand.yml** allows you to set three different logos: `small`, `medium` and `large`. For example:
 
 ``` {.yaml filename="_brand.yml"}
 logo: 
@@ -219,11 +182,9 @@ You don't need to specify all three---Quarto will use what you provide based on 
 +----------------------+----------------------------------------------+-------------------------------+
 | Format               | Location                                     | Logo Preference (high to low) |
 +======================+==============================================+===============================+
-| `html`               | Top navigation bar                           | `small`\> `medium`\>`large`   |
+| `html`/`dashboard`   | Top navigation bar                           | `small`\> `medium`\>`large`   |
 +----------------------+----------------------------------------------+-------------------------------+
 | `html`               | Side navigation                              | `medium`\>`small`\>`large`    |
-+----------------------+----------------------------------------------+-------------------------------+
-| `dashboard`          |                                              | Same as website.              |
 +----------------------+----------------------------------------------+-------------------------------+
 | `typst`              | Top left, control with `format: typst: logo` | `medium`\>`small`\>`large`    |
 +----------------------+----------------------------------------------+-------------------------------+
@@ -235,10 +196,10 @@ You can also specify named logos under `images` which you can reference in `smal
 ``` {.yaml filename="_brand.yml"}
 logo: 
   images:
-    quarto: 
+    quarto-logo: 
       path: https://quarto.org/quarto.png
       alt: "Quarto icon"
-  small: quarto
+  small: quarto-logo
 ```
 
 ::: {.callout-warning}
@@ -251,7 +212,7 @@ The **brand.yml** specification allows you to specify a `light` and `dark` versi
 
 ### Typography
 
-<https://posit-dev.github.io/brand-yml/brand/typography.html>
+[Typography in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/typography.html){.external}
 
 The `typography` element allows you to specify fonts and their style. Use `fonts` to specify a list of fonts to use for your brand:
 
@@ -277,12 +238,28 @@ typography:
 
 The options `base` and `headings` set the typographic style of the main text and headings respectively. 
 Use `links` to apply specific styles to links.
-The option `monospace` sets the typographic style of code in general, and `monospace-inline` and `monospace-block` can be further used to style code that appears inline and in blocks respectively.
+The option `monospace` sets the typographic style of code in general, and `monospace-inline` and `monospace-block` can be further used to style code that appears inline and in blocks respectively:
 
 ``` {.yaml filename="_brand.yml"}
-# More comprehensive example
-# inlcude styling code
+typography:
+  fonts:
+    - family: Jura
+      source: google
+    - family: Space Mono
+      source: google
+  base: Jura
+  headings: Jura
+  link:
+    decoration: underline
+  monospace: Space Mono
+  monospace-inline:
+    color: "#222222"
+    background-color: "#ddeaf1" # or use a named color from `color`
+  monospace-block: 
+    background-color: "#eef4f8"
 ```
+
+
 
 The fields allowed for each element differ, expand the callout below to see what is supported in each field.
 
@@ -297,35 +274,35 @@ The full set of text elements that you can style with `typography` is:
 +====================+========================================================================================================+========================+
 | `base`             | Default text, primarily used in the document body.                                                     | -   `family`           |
 |                    |                                                                                                        | -   `size`             |
-|                    |                                                                                                        | -   `line_height`      |
+|                    |                                                                                                        | -   `line-height`      |
 |                    |                                                                                                        | -   `weight`           |
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
 | `headings`         | All heading levels (h1, h2, etc.).                                                                     | -   `family`           |
 |                    |                                                                                                        | -   `weight`           |
 |                    |                                                                                                        | -   `style`            |
-|                    |                                                                                                        | -   `line_height`      |
+|                    |                                                                                                        | -   `line-height`      |
 |                    |                                                                                                        | -   `color`            |
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
 | `monospace`        | General monospaced text, typically used in code blocks and other programming-related content.          | -   `family`           |
 |                    |                                                                                                        | -   `size`             |
 |                    |                                                                                                        | -   `weight`           |
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
-| `monospace_inline` | Inline monospaced text, usually used for code snippets within regular text. Inherits from `monospace`. | -   `family`           |
+| `monospace-inline` | Inline monospaced text, usually used for code snippets within regular text. Inherits from `monospace`. | -   `family`           |
 |                    |                                                                                                        | -   `size`             |
 |                    |                                                                                                        | -   `weight`           |
 |                    |                                                                                                        | -   `color`            |
-|                    |                                                                                                        | -   `background_color` |
+|                    |                                                                                                        | -   `background-color` |
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
-| `monospace_block`  | Block (multi-line) monospaced text, typically used for code blocks. Inherits from `monospace`.         | -   `family`           |
+| `monospace-block`  | Block (multi-line) monospaced text, typically used for code blocks. Inherits from `monospace`.         | -   `family`           |
 |                    |                                                                                                        | -   `size`             |
 |                    |                                                                                                        | -   `weight`           |
-|                    |                                                                                                        | -   `line_height`      |
+|                    |                                                                                                        | -   `line-height`      |
 |                    |                                                                                                        | -   `color`            |
-|                    |                                                                                                        | -   `background_color` |
+|                    |                                                                                                        | -   `background-color` |
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
 | `link`             | Hyperlinks.                                                                                            | -   `weight`           |
 |                    |                                                                                                        | -   `color`            |
-|                    |                                                                                                        | -   `background_color` |
+|                    |                                                                                                        | -   `background-color` |
 |                    |                                                                                                        | -   `decoration`       |
 +--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
 
@@ -339,11 +316,11 @@ The supported fields are generally described as follows:
 
 -   `style`: The font style for the text, typically either "normal" or "italic".
 
--   `line_height`: The line height of the text, which refers to the vertical space between lines. Often expressed as a multiple of the font size or in fixed units.
+-   `line-height`: The line height of the text, which refers to the vertical space between lines. Often expressed as a multiple of the font size or in fixed units.
 
 -   `color`: The color of the text. Can be any CSS-compatible color definition or a reference to a color defined in the brand's color palette.
 
--   `background_color`: The background color for the text element. Can be any CSS-compatible color definition or a reference to a color defined in the brand's color palette.
+-   `background-color`: The background color for the text element. Can be any CSS-compatible color definition or a reference to a color defined in the brand's color palette.
 
 -   `decoration`: The text decoration, typically used for links. Common values include "underline", "none", or "overline".
 
@@ -351,7 +328,7 @@ The supported fields are generally described as follows:
 
 ### Defaults
 
-<https://posit-dev.github.io/brand-yml/brand/defaults.html>
+[Defaults in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/defaults.html){.external}
 
 The `defaults` section of **brand.yml** allows users to set option for specific tools that don't otherwise fit into the **brand.yml** schema. In particular, Quarto supports `defaults: quarto` and `defaults: bootstrap`.
 
@@ -396,7 +373,7 @@ format:
 
 ### Meta
 
-<https://posit-dev.github.io/brand-yml/brand/meta.html>
+[Meta in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/meta.html){.external}
 
 You can set brand metadata using the `meta` key:
 
@@ -417,12 +394,43 @@ Quarto does nothing with `meta` values.
 
 ## Using `_brand.yml` values {#using-brand-values}
 
+Beyond the automatic application of your brand file, you can also directly access `_brand.yml` values in Quarto documents. In this section, you'll learn how to use the `brand` shortcode, use brand variables in SCSS files, and some format-specific ways to use access brand values.
+
 ### Shortcode - `{{{< brand >}}}`
 
-Values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode.
+Some values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode. In particular, you can access colors and logos by name:
 
--   `{{{< brand color COLOR_NAME >}}}` resolves `COLOR_NAME` to the appropriate color value
--   `{{{< brand logo LOGO_NAME >}}}`
+-   Use `{{{< brand color COLOR_NAME >}}}` to return the brand color named `COLOR_NAME` as a string.
+-   Use `{{{< brand logo LOGO_NAME >}}}` to return the brand logo named `LOGO_NAME` as an image.
+
+For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
+
+````{.markdown filename="dashboard.qmd" shortcodes="false"}
+---
+format: dashboard
+---
+
+## Inputs {.sidebar}
+
+{{< brand logo icon >}}
+
+````
+
+Or, you could use the shortcode to set the background of a revealjs slide to your `primary` brand color:
+
+````{.markdown filename="slides.qmd" shortcodes="false"}
+---
+format: revealjs
+---
+
+## Slide Title {background-color='{{< brand color primary >}}'}
+````
+
+::: {.callout-warning}
+## Limitation
+
+You can't currently access `typography`, `meta`, or `defaults` values using the `brand` shortcode.
+:::
 
 ### In SCSS
 
@@ -441,19 +449,22 @@ This should work:
 $navbar-bg: $brand-blue; 
 ```
 
-### Revealjs
-
 ### Typst
 
-Brand colors are available in `brand-color`:
+In Typst documents, brand colors are set in a [dictionary](https://typst.app/docs/reference/foundations/dictionary/) called `brand-color`. 
+You can access them directory in raw Typst blocks using the syntax `brand-color.COLOR_NAME`.
+For example, you could make a rectangle filled with your `primary` brand color:
 
-````markdown
+````{.markdown filename="document.qmd"}
+
 ```{=typst}
-#set text(fill: brand-color.primary)
+#rect(fill: brand-color.primary)
 ```
 ````
 
 ### Lua API
+
+Filters and shortcodes can access brand values using the `brand` Lua module.
 
 ``` lua
 local brand = require('modules/brand/brand')
