@@ -442,7 +442,8 @@ You can't currently access `typography`, `meta`, or `defaults` values using the 
 
 ### In SCSS
 
-If `_brand.yml` defines `color: blue`:
+The colors defined in `palette` are set as SCSS variables of the form `brand-COLOR_NAME`. 
+For example, if `_brand.yml` defines `blue`:
 
 ```{.yaml filename="_brand.yml"}
 color:
@@ -450,11 +451,53 @@ color:
     blue: "#ddeaf1"
 ```
 
-This should work:
+Then the variable `$brand-blue` is will be set to `#ddeaf1` in the `defaults` layer of  [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.html#bootstrap-bootswatch-layering). 
+You can add a custom SCSS file, `styles.scss`, in the usual way:
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [styles.scss]
+```
 
-```{.scss filename="custom.scss"}
+Then `styles.scss` can use these brand variables to make style tweaks. 
+For example, you might want all `h1` elements to be `blue`:
+
+```{.scss filename="styles.scss"}
+/*-- scss:rules --*/
+
+h1 {
+  color: $brand-blue;
+}
+```
+
+When you specify SCSS files without an explicit `brand` element, it is equivalant to listing them after `brand`.
+For instance, the above `theme` is equivalant to:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [brand, styles.scss]
+```
+
+This order doesn't matter when you are setting items in the `/*-- scss:rules --*/` layer, because `rules` are layered on after `defaults`. 
+
+However, if you want to set a [Quarto SASS variable](https://quarto.org/docs/output-formats/html-themes.html#sass-variables) you'll use the `/*-- scss:defaults --*/` layer and the order of items in `theme` will matter.
+
+As an example, consider setting the navigation bar background to the `blue` brand color:
+
+```{.scss filename="nav.scss"}
 /*-- scss:defaults --*/
-$navbar-bg: $brand-blue; 
+
+$navbar-bg: $brand-blue;
+```
+
+Because of the way Quarto layers SCSS, the order for the `defaults` layer is the reverse of what is specified in `theme`. 
+For `nav.scss` to find the `brand-blue` variable, `brand` must come after `nav.scss` in `theme`:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [nav.scss, brand]
 ```
 
 ### Typst
