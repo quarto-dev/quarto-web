@@ -1,4 +1,4 @@
-## Creating Slides
+## Creating Slides {#creating-slides}
 
 In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (`##`)):
 
