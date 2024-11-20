@@ -114,6 +114,8 @@ declared file as the destination of the file list that would have been written i
 
 If you want to create project scripts with TypeScript, `quarto run` enables you to use the [Deno](https://deno.land/) TypeScript interpreter bundled with Quarto. This interpreter also includes much of Deno's [standard library](https://docs.deno.com/runtime/manual/basics/standard_library). For example, to use the Deno YAML parser you would do this:
 
+### Quarto 1.6 breaking changes
+
 ::: callout-warning
 
 Quarto 1.6 includes updates to Deno and Deno's standard library which forced us to make breaking changes to the import syntax. We apologize for the inconvenience.
@@ -127,7 +129,13 @@ import { parse } from "https://deno.land/std/yaml/mod.ts"; // Quarto 1.5 and ear
 const config = parse(Deno.readTextFileSync("_quarto.yml"));
 ```
 
-Although Deno hosts its standard library online, it's important to note that in both Quarto 1.6 and 1.5, the library is *not downloaded from a remote server* (in fact, importing from remote servers is disabled entirely in the Quarto Deno interpreter). Rather, the Deno standard library is shipped with Quarto, making standard library URLs available in an offline cache.
+Although Deno hosts its standard library online, it's important to note that in Quarto 1.5, the library is *not downloaded from a remote server* (in fact, importing from remote servers is disabled entirely in the Quarto Deno interpreter).
+Quarto 1.6 ships with a version of Deno that has an unfortunate interaction between its standard library and the feature that disables downloading the library from the remote servers.
+As a result, Quarto 1.6 might download some files (once, and then cache them) when the standard library is invoked.
+Future versions of Quarto will ship with Deno 2, which does not suffer from this issue.
+
+If you want to enforce the behavior from Quarto 1.5, you can set the [environment variable](/docs/advanced/environment-vars.qmd) `QUARTO_RUN_NO_NETWORK` to `true`.
+Note that this means that the imports from `stdlib/` will not work in general.
 
 You may come across example code that embeds versions directly in Deno library imports. For example:
 
@@ -142,4 +150,24 @@ These version-bound imports **will not work** with Quarto (as its local standard
 import { format } from "stdlib/datetime";
 ```
 
-You may also see examples of Deno code that imports 3rd party libraries directly from URLs. As noted above, this functionality is not available in Quarto Deno scripts. Rather, you should download any external libraries you wish to use, include them with your project source code, and import them using relative file paths.
+You may also see examples of Deno code that imports 3rd party libraries directly from URLs.
+As noted above, this functionality is generally not available in Quarto Deno scripts.
+Rather, you should download any external libraries you wish to use, include them with your project source code, and import them using relative file paths.
+
+### Making `.ts` scripts portable across multiple versions of Quarto
+
+If you need your project or extension to both include TypeScript project scripts and work with Quarto 1.5 and 1.6, use the following technique:
+
+``` typescript
+const multiImport = async (...sources: string[]) => {
+    for (const source of sources) {
+        try {
+            return await import(source);
+        } catch (e) {}
+    }
+}
+const { readLines } = await multiImport(
+  "stdlib/io", // Quarto 1.6 syntax
+  "https://deno.land/std/io/mod.ts", // Quarto 1.5 syntax
+);
+```
