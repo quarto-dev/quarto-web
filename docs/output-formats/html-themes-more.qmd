@@ -44,7 +44,7 @@ From time to time, as the Bootswatch themes are updated, we will update these me
 
 ## Bootstrap / Bootswatch Layering
 
-When using the Quarto HTML format, we allow the user to specify theme information in the document front matter (or project YAML). The theme information consists of a list of one or more of
+When using the Quarto `html` and `dashboard` formats, we allow the user to specify theme information in the document front matter (or project YAML). The theme information consists of a list of one or more of
 
 -   A valid built in Bootswatch theme name
 
@@ -106,3 +106,50 @@ We order the themes according to the order that they are specified in the YAML, 
         Bootstrap
         cosmo           /*-- scss:rules --*/
         custom.scss     /*-- scss:rules --*/
+
+## `revealjs` Layering
+
+The same system applies for `revealjs` and its themes.
+`revealjs` themes shipped with Quarto do not have a uniform variable naming convention, and so different SCSS files are likely to be needed to make effective changes to different themes.
+
+Nevertheless, the following examples illustrate what's possible:
+
+``` yaml
+# In this configuration, `custom.scss` takes precedence
+format:
+  revealjs:
+    theme:
+      - blood
+      - custom.scss
+# In this configuration, the `blood` theme takes precedence
+format:
+  revealjs:
+    theme:
+      - custom.scss
+      - blood
+```
+
+## `_brand.yml` Layering
+
+Quarto 1.6 and later ship with [**brand.yml**](https://posit-dev.github.io/brand-yml/brand/defaults.html) support, see the [guide](/docs/authoring/brand.qmd) for more.
+By default, styling information in `_brand.yml` takes the lowest precedence.
+To change this, use the `"brand"` string in your theme configuration in YAML:
+
+``` yaml
+# In this configuration, the `blood` theme takes precedence
+# over `custom.scss` *and* the information in `_brand.yml`
+format:
+  revealjs:
+    theme:
+      - custom.scss
+      - blood
+# In this configuration, the information in `_brand.yml` takes
+# precedence over the `blood` theme and `custom.scss`, in that
+# order
+format:
+  revealjs:
+    theme:
+      - blood
+      - custom.scss
+      - brand
+```
