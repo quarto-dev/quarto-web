@@ -166,15 +166,7 @@ logo:
   medium: logo.png
 ```
 
-You can specify a local file path, relative to the location of `_brand.yml`, or a URL that starts with `http://` or `https://`.
-
-::: {.callout-warning}
-
-## Limitation
-
-Logos specified as URLs are not currently supported in `format: typst`.
-
-::: 
+You can specify a local file path, relative to the location of `_brand.yml`, or a URL.
 
 A single logo may not work well in all locations so **brand.yml** allows you to set three different logos: `small`, `medium` and `large`. For example:
 
@@ -338,46 +330,40 @@ The supported fields are generally described as follows:
 
 [Defaults in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/defaults.html){.external}
 
-The `defaults` section of **brand.yml** allows users to set option for specific tools that don't otherwise fit into the **brand.yml** schema. In particular, Quarto supports `defaults: quarto` and `defaults: bootstrap`.
-
-#### Quarto 
-
-Quarto merges options you set in `defaults: quarto` with document metadata. For example, you can use this to set format specific options like syntax highlighting for `html`:
-
-``` {.yaml filename="_brand.yml"}
-defaults:
-  quarto:
-    format:
-      html:
-        highlight-style: github
-```
-
-Or, you might change the `logo` options for `typst`:
-
-``` {.yaml filename="_brand.yml"}
-defaults:
-  quarto:
-    format:
-      typst:
-        logo:
-          location: left-bottom
-```
-
-::: callout-note
-## Set all formats in document metadata
-
-Because of the merging behavior of `format`, if you set format specific options in `defaults: quarto`, you'll need to set all the required formats in document metadata:
-
-``` {.yaml filename="document.qmd"}
-format:
-  html: default
-  revealjs: default
-```
-:::
+The `defaults` section of **brand.yml** allows users to set options for specific tools that don't otherwise fit into the **brand.yml** schema. Quarto's implementation currently supports `defaults: bootstrap`.
 
 #### Bootstrap
 
-*How relevant is `defaults: bootstrap`? Example? WHere do you find out what you can put under `bootstrap`?*
+The `bootstrap` section follows [**brand.yml**](https://posit-dev.github.io/brand-yml/brand/defaults.html).
+**brand.yml** specifies the behavior of a `defaults` key inside `bootstrap`, with key-value pairs
+corresponding to SCSS variable name-value pairs.
+In addition to the `defaults` key, Quarto supports `uses`, `functions`, `mixins` and `rules`.
+These keys all take a string value that will be used for the appropriate [layer](/docs/output-formats/html-themes-more.qmd).
+
+Consider the following, building on our working example:
+
+``` {.yaml filename="_brand.yml"}
+## Add this entry to the `_brand.yml` example above
+defaults:
+  bootstrap:
+    defaults: # defaults also supports a string as its value
+      link-decoration: underline
+      navbar-fg: "#fff"
+    # uses: <string>
+    # functions: <string>
+    # mixins: <string>
+    # rules: <string>
+```
+
+::::::: {.column-body-outset-right layout-ncol="2"}
+::: {}
+![Without `defaults: bootstrap` setting](/docs/authoring/images/brand-html.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
+:::
+
+::: {}
+![With `defaults: bootstrap` setting: note the link decoration and the white color for the navbar text](/docs/authoring/images/brand-html-defaults.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. It looks identical to the previous image, except for underlined links and white text on the navbar."}
+:::
+:::::::
 
 ### Meta
 
@@ -442,8 +428,7 @@ You can't currently access `typography`, `meta`, or `defaults` values using the 
 
 ### In SCSS
 
-The colors defined in `palette` are set as SCSS variables of the form `brand-COLOR_NAME`. 
-For example, if `_brand.yml` defines `blue`:
+If `_brand.yml` defines `color: blue`:
 
 ```{.yaml filename="_brand.yml"}
 color:
@@ -451,53 +436,11 @@ color:
     blue: "#ddeaf1"
 ```
 
-Then the variable `$brand-blue` is will be set to `#ddeaf1` in the `defaults` layer of  [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.html#bootstrap-bootswatch-layering). 
-You can add a custom SCSS file, `styles.scss`, in the usual way:
-```{.yaml filename="_quarto.yml"}
-format:
-  html:
-    theme: [styles.scss]
-```
+This should work:
 
-Then `styles.scss` can use these brand variables to make style tweaks. 
-For example, you might want all `h1` elements to be `blue`:
-
-```{.scss filename="styles.scss"}
-/*-- scss:rules --*/
-
-h1 {
-  color: $brand-blue;
-}
-```
-
-When you specify SCSS files without an explicit `brand` element, it is equivalant to listing them after `brand`.
-For instance, the above `theme` is equivalant to:
-
-```{.yaml filename="_quarto.yml"}
-format:
-  html:
-    theme: [brand, styles.scss]
-```
-
-This order doesn't matter when you are setting items in the `/*-- scss:rules --*/` layer, because `rules` are layered on after `defaults`. 
-
-However, if you want to set a [Quarto SASS variable](https://quarto.org/docs/output-formats/html-themes.html#sass-variables) you'll use the `/*-- scss:defaults --*/` layer and the order of items in `theme` will matter.
-
-As an example, consider setting the navigation bar background to the `blue` brand color:
-
-```{.scss filename="nav.scss"}
+```{.scss filename="custom.scss"}
 /*-- scss:defaults --*/
-
-$navbar-bg: $brand-blue;
-```
-
-Because of the way Quarto layers SCSS, the order for the `defaults` layer is the reverse of what is specified in `theme`. 
-For `nav.scss` to find the `brand-blue` variable, `brand` must come after `nav.scss` in `theme`:
-
-```{.yaml filename="_quarto.yml"}
-format:
-  html:
-    theme: [nav.scss, brand]
+$navbar-bg: $brand-blue; 
 ```
 
 ### Typst
@@ -521,7 +464,3 @@ Filters and shortcodes can access brand values using the `brand` Lua module.
 local brand = require('modules/brand/brand')
 local primary = brand.get_color('primary')
 ```
-
-## Comprehensive Example
-
-TBD
