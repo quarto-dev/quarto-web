@@ -102,7 +102,7 @@ color:
   background: blue
 ```
 
-The most commonly used colors include `foreground`, `background` and `primary`:
+The most commonly used semantic colors include `foreground`, `background` and `primary`:
 
 ``` {.yaml filename="_brand.yml"}
 color:
@@ -439,7 +439,8 @@ You can't currently access `typography`, `meta`, or `defaults` values using the 
 
 ### In SCSS
 
-If `_brand.yml` defines `color: blue`:
+The colors defined in `palette` are set as SCSS variables of the form `brand-COLOR_NAME`. 
+For example, if `_brand.yml` defines `blue`:
 
 ```{.yaml filename="_brand.yml"}
 color:
@@ -447,12 +448,44 @@ color:
     blue: "#ddeaf1"
 ```
 
-This should work:
-
-```{.scss filename="custom.scss"}
-/*-- scss:defaults --*/
-$navbar-bg: $brand-blue; 
+Then the variable `$brand-blue` is will be set to `#ddeaf1` in the `defaults` layer of  [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.html#bootstrap-bootswatch-layering). 
+You can add a custom SCSS file, `styles.scss`, in the usual way:
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [styles.scss]
 ```
+
+Then `styles.scss` can use these brand variables to make style tweaks. 
+For example, you might want all `h1` elements to be `blue`:
+
+```{.scss filename="styles.scss"}
+/*-- scss:rules --*/
+
+h1 {
+  color: $brand-blue;
+}
+```
+
+When you specify SCSS files without an explicit `brand` element, it is equivalent to listing them after `brand`.
+For instance, the above `theme` is equivalent to:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [brand, styles.scss]
+```
+
+The order of elements in `theme` controls their priority. 
+For example, you could layer brand and your custom SCSS on top of a built-in theme:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [cosmo, brand, styles.scss]
+```
+
+You can learn more about layering themes in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
 
 ### Typst
 
