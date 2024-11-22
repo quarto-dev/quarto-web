@@ -334,26 +334,22 @@ The `defaults` section of **brand.yml** allows users to set options for specific
 
 #### Bootstrap
 
-The `bootstrap` section follows [**brand.yml**](https://posit-dev.github.io/brand-yml/brand/defaults.html).
-**brand.yml** specifies the behavior of a `defaults` key inside `bootstrap`, with key-value pairs
-corresponding to SCSS variable name-value pairs.
-In addition to the `defaults` key, Quarto supports `uses`, `functions`, `mixins` and `rules`.
-These keys all take a string value that will be used for the appropriate [layer](/docs/output-formats/html-themes-more.qmd).
+The `bootstrap` section of `defaults` follows [**brand.yml**](https://posit-dev.github.io/brand-yml/brand/defaults.html) and applies to the `html` and `dashboard` formats.
+Quarto merges the options set under `defaults: bootstrap` in the appropriate layer of [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.qmd).
 
-Consider the following, building on our working example:
+The `defaults` option inside `bootstrap`, can take a string, or key-value pairs
+corresponding to SCSS variable name-value pairs.
+Building on our initial example, you could use `bootstrap: defaults` to set the SCSS variables `link-decoration` and `navbar-fg`:
 
 ``` {.yaml filename="_brand.yml"}
-## Add this entry to the `_brand.yml` example above
 defaults:
   bootstrap:
     defaults: # defaults also supports a string as its value
       link-decoration: underline
       navbar-fg: "#fff"
-    # uses: <string>
-    # functions: <string>
-    # mixins: <string>
-    # rules: <string>
 ```
+
+The resulting HTML pages will have links that are underlined and use white for text in the navigation bar.
 
 ::::::: {.column-body-outset-right layout-ncol="2"}
 ::: {}
@@ -364,6 +360,21 @@ defaults:
 ![With `defaults: bootstrap` setting: note the link decoration and the white color for the navbar text](/docs/authoring/images/brand-html-defaults.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. It looks identical to the previous image, except for underlined links and white text on the navbar."}
 :::
 :::::::
+
+In addition to the `defaults` option, Quarto supports `uses`, `functions`, `mixins` and `rules`, which all take a string value. 
+For example, you could use `rules` to provide a CSS rule to remove the border below second-level headings:
+
+```{.yaml filename="_brand.yml"}
+defaults:
+  bootstrap:
+    # uses: <string>
+    # functions: <string>
+    # mixins: <string>
+    rules: |
+      h2 {
+        border: none;
+      }
+```
 
 ### Meta
 
