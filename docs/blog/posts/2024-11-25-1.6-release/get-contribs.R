@@ -59,7 +59,10 @@ cli_and_web_users <- bind_rows(quarto_web_issues_tbl, quarto_issues_tbl) |>
   arrange(login) |> 
   distinct() 
 
-cli_and_web_users |> 
-  glue_data("[{login}]({html_url})") |> 
-  write_lines("_contribs.md")
+strings <- cli_and_web_users |> 
+  glue_data("[{login}]({html_url}), ") 
+
+strings[length(strings)] <- str_c(str_sub(strings[length(strings)], 1, -3), ".")
+  
+strings |> write_lines("_contribs.md")
   
