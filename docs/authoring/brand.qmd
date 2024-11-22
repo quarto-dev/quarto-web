@@ -2,12 +2,6 @@
 title: Multiformat branding with `_brand.yml`
 ---
 
-::: callout-caution
-## Work In Progress
-
-These docs are a work-in-progress and may be incorrect or incomplete. Feedback welcome.
-:::
-
 ## Overview
 
 Quarto supports [**brand.yml**](https://posit-dev.github.io/brand-yml/)---a single YAML file that can be used to customize the appearance of your documents across multiple formats. This is particularly useful for organizations that need a unified look across various formats.
@@ -102,7 +96,7 @@ color:
   background: blue
 ```
 
-The most commonly used colors include `foreground`, `background` and `primary`:
+The most commonly used semantic colors include `foreground`, `background` and `primary`:
 
 ``` {.yaml filename="_brand.yml"}
 color:
@@ -166,7 +160,15 @@ logo:
   medium: logo.png
 ```
 
-You can specify a local file path, relative to the location of `_brand.yml`, or a URL (*is this true?*).
+You can specify a local file path, relative to the location of `_brand.yml`, or a URL.
+
+::: {.callout-warning}
+
+ ## Limitation
+
+ Logos specified as URLs are not currently supported in `format: typst`.
+
+ ::: 
 
 A single logo may not work well in all locations so **brand.yml** allows you to set three different logos: `small`, `medium` and `large`. For example:
 
@@ -223,7 +225,7 @@ typography:
       source: google
 ```
 
-The properties you can set for a font under `fonts` depends on the `source`. You can see the other properties available in our [Reference for Brand](docs/reference/metadata/brand.qmd#font-resource-definitions).
+The properties you can set for a font under `fonts` depends on the `source`. You can see the other properties available in our [Reference for Brand](/docs/reference/metadata/brand.qmd#font-resource-definitions).
 
 You can then refer to fonts by `family` in the remaining typography options:
 
@@ -330,50 +332,51 @@ The supported fields are generally described as follows:
 
 [Defaults in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/defaults.html){.external}
 
-The `defaults` section of **brand.yml** allows users to set option for specific tools that don't otherwise fit into the **brand.yml** schema. In particular, Quarto currently supports `defaults: bootstrap`.
-
-::: {.content-hidden}
-
-#### Quarto 
-
-Quarto merges options you set in `defaults: quarto` with document metadata. For example, you can use this to set format specific options like syntax highlighting for `html`:
-
-``` {.yaml filename="_brand.yml"}
-defaults:
-  quarto:
-    format:
-      html:
-        highlight-style: github
-```
-
-Or, you might change the `logo` options for `typst`:
-
-``` {.yaml filename="_brand.yml"}
-defaults:
-  quarto:
-    format:
-      typst:
-        logo:
-          location: left-bottom
-```
-
-::: callout-note
-## Set all formats in document metadata
-
-Because of the merging behavior of `format`, if you set format specific options in `defaults: quarto`, you'll need to set all the required formats in document metadata:
-
-``` {.yaml filename="document.qmd"}
-format:
-  html: default
-  revealjs: default
-```
-:::
-
-::: 
+The `defaults` section of **brand.yml** allows users to set options for specific tools that don't otherwise fit into the **brand.yml** schema. Quarto's implementation currently supports `defaults: bootstrap`.
 
 #### Bootstrap
 
-*How relevant is `defaults: bootstrap`? Example? WHere do you find out what you can put under `bootstrap`?*
+The `bootstrap` section of `defaults` follows [**brand.yml**](https://posit-dev.github.io/brand-yml/brand/defaults.html) and applies to the `html` and `dashboard` formats.
+Quarto merges the options set under `defaults: bootstrap` in the appropriate layer of [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.qmd).
+
+The `defaults` option inside `bootstrap`, can take a string, or key-value pairs
+corresponding to SCSS variable name-value pairs.
+Building on our initial example, you could use `bootstrap: defaults` to set the SCSS variables `link-decoration` and `navbar-fg`:
+
+``` {.yaml filename="_brand.yml"}
+defaults:
+  bootstrap:
+    defaults: # defaults also supports a string as its value
+      link-decoration: underline
+      navbar-fg: "#fff"
+```
+
+The resulting HTML pages will have links that are underlined and use white for text in the navigation bar.
+
+::::::: {.column-body-outset-right layout-ncol="2"}
+::: {}
+![Without `defaults: bootstrap` setting](/docs/authoring/images/brand-html-no-defaults.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
+:::
+
+::: {}
+![With `defaults: bootstrap` setting: note the link decoration and the white color for the navbar text](/docs/authoring/images/brand-html-defaults.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. It looks identical to the previous image, except for underlined links and white text on the navbar."}
+:::
+:::::::
+
+In addition to the `defaults` option, Quarto supports `uses`, `functions`, `mixins` and `rules`, which all take a string value. 
+For example, you could use `rules` to provide a CSS rule to remove the border below second-level headings:
+
+```{.yaml filename="_brand.yml"}
+defaults:
+  bootstrap:
+    # uses: <string>
+    # functions: <string>
+    # mixins: <string>
+    rules: |
+      h2 {
+        border: none;
+      }
+```
 
 ### Meta
 
@@ -438,7 +441,8 @@ You can't currently access `typography`, `meta`, or `defaults` values using the 
 
 ### In SCSS
 
-If `_brand.yml` defines `color: blue`:
+The colors defined in `palette` are set as SCSS variables of the form `brand-COLOR_NAME`. 
+For example, if `_brand.yml` defines `blue`:
 
 ```{.yaml filename="_brand.yml"}
 color:
@@ -446,12 +450,44 @@ color:
     blue: "#ddeaf1"
 ```
 
-This should work:
-
-```{.scss filename="custom.scss"}
-/*-- scss:defaults --*/
-$navbar-bg: $brand-blue; 
+Then the variable `$brand-blue` is will be set to `#ddeaf1` in the `defaults` layer of  [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.html#bootstrap-bootswatch-layering). 
+You can add a custom SCSS file, `styles.scss`, in the usual way:
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [styles.scss]
 ```
+
+Then `styles.scss` can use these brand variables to make style tweaks. 
+For example, you might want all `h1` elements to be `blue`:
+
+```{.scss filename="styles.scss"}
+/*-- scss:rules --*/
+
+h1 {
+  color: $brand-blue;
+}
+```
+
+When you specify SCSS files without an explicit `brand` element, it is equivalent to listing them after `brand`.
+For instance, the above `theme` is equivalent to:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [brand, styles.scss]
+```
+
+The order of elements in `theme` controls their priority. 
+For example, you could layer brand and your custom SCSS on top of a built-in theme:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [cosmo, brand, styles.scss]
+```
+
+You can learn more about layering themes in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
 
 ### Typst
 
@@ -474,7 +510,3 @@ Filters and shortcodes can access brand values using the `brand` Lua module.
 local brand = require('modules/brand/brand')
 local primary = brand.get_color('primary')
 ```
-
-## Comprehensive Example
-
-TBD
