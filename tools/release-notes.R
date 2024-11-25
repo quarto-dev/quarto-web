@@ -42,7 +42,7 @@ new_prerelease_major <-  extract_major(new_prerelease)
 major_version <- extract_major(old_release)
 
 cat("Release:", old_release, "->", new_release, "\n")
-cat("Prerelease:", major_version, "->", new_prerelease_major, "\n")
+cat("Prerelease:", new_release_major, "->", new_prerelease_major, "\n")
 
 # Create new changelog content -------------------------------------------
 
@@ -90,7 +90,7 @@ old_abbr <- str_split(major_version, "\\.")[[1]] |> paste0(collapse = "")
 glue('
 \n- id: version{ old_abbr }
   title: { old_release }
-  date: { format(as.Date(old_release_date), "%Y/%m/%d") }
+  date: { format(as.Date(old_release_date), "%Y-%m-%d") }
   path: https://github.com/quarto-dev/quarto-cli/releases/tag/v{ old_release }
   changelog: "[Release Notes](changelog/{ major_version }/)"
 ') |> 
