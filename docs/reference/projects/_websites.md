@@ -88,7 +88,7 @@ An announcement that appears at the top of the site. For example:
       - text: "About"
         href: about.qmd
       - text: "License"
-        href: license.qmd
+        href: license.md
       - text: "Trademark"
         href: trademark.qmd
 ```
