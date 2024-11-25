@@ -52,7 +52,7 @@ function Pandoc(doc)
     local groups = jsonDecode(refJson)
     for _,group in ipairs(groups) do
       -- title
-      doc.blocks:insert(pandoc.Header(2, markdownToInlines(group.title), pandoc.Attr(autoId(group.title))))
+      doc.blocks:insert(pandoc.Header(group.level or 2, markdownToInlines(group.title), pandoc.Attr(autoId(group.title))))
       -- optionalal description
       if group.description then
         local description = pandoc.read(group.description).blocks
