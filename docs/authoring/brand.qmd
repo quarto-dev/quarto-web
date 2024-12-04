@@ -18,6 +18,8 @@ On this page:
 
 -   See a more comprehensive example.
 
+-   Learn how to migrate projects created without `_brand.yml` to easily support `_brand.yml` features.
+
 ::: callout-warning
 ## Limitation
 
@@ -510,3 +512,48 @@ Filters and shortcodes can access brand values using the `brand` Lua module.
 local brand = require('modules/brand/brand')
 local primary = brand.get_color('primary')
 ```
+
+## Migrating to `_brand.yml`: use the `brand` string in `theme`
+
+::: callout-note
+
+The following information is only necessary if you are migrating projects created with Quarto 1.5 and earlier to use `_brand.yml`.
+
+:::
+
+Migrating existing projects to Quarto 1.6's `_brand.yml` support is a straightforward process.
+The usual way to create themes in Quarto 1.5 and earlier is to use one of the predefined bootswatch themes.
+This is often combined with an additional user-defined `.scss` file.
+In Quarto 1.5, a `_quarto.yml` file usually has an entry like the following:
+
+```yaml
+# Quarto 1.5 syntax
+theme:
+  - cosmo       # a predefined bootswatch theme
+  - tweaks.scss # a user-defined customization
+```
+
+When using this syntax with Quarto 1.6's `_brand.yml` support, keep in mind that `_brand.yml` always takes _lowest_ priority in styles.
+In other words, the configuration above is equivalent to the following:
+
+```yaml
+# Quarto 1.6 syntax
+theme:
+  - brand        # theming derived from `_brand.yml`
+  - cosmo        # a predefined bootswatch theme
+  - tweaks.scss  # a user-defined customization
+```
+
+As a result, values set by `brand` here are potentially overriden by the `cosmo` theme or by `tweaks.scss`.
+This is sometimes useful, but often you will want to make `brand` _more_ important than the theme.
+For these situations, use the following:
+
+```yaml
+# Quarto 1.6 syntax
+theme:
+  - cosmo        # a predefined bootswatch theme
+  - brand        # theming derived from `_brand.yml`
+  - tweaks.scss  # a user-defined customization
+```
+
+Learn more about how Quarto generates styles in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
