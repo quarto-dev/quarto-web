@@ -1,8 +1,8 @@
 
 # Screenshot example for Gallery Image -----------------------------------
 
-## Example: Run this command from root repo
-##     quarto run .\tools\gallery-screenshot.R .\docs\gallery\dashboards\dashing-through-snow.png  https://mine.quarto.pub/dashing-through-snow-py/
+## Example: Run this command from root repo (on Windows)
+##     quarto run ./tools/gallery-screenshot.R ./docs/gallery/dashboards/dashing-through-snow.png  https://mine.quarto.pub/dashing-through-snow-py/
 
 args <- commandArgs(trailingOnly = TRUE)
 
