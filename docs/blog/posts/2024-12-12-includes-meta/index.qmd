@@ -1,0 +1,165 @@
+---
+title: "Use `meta` + `include` to customize reusable content"
+description: |
+  The "Includes" feature in Quarto lets you efficiently reuse content across multiple files. Combined with the "meta" shortcode, it enables you to set precise, file-specific values.
+categories:
+  - Learn
+  - Authoring
+author:
+  - Ashley Henry
+date: "12/12/2024"
+image: "thumbnail.jpg"
+image-alt: "Quarto logo with single source publishing icon."
+---
+
+::: {.callout-tip}
+
+## Re-posted from posit.co
+
+This post was originally published on the [Posit Blog](https://posit.co/blog/quarto-meta-shortcode-variables/). 
+
+The worked example below is also available at: [Source](https://github.com/quarto-dev/quarto-examples/tree/main/websites/quarto-meta-includes) | [Live Website](https://examples.quarto.pub/quarto-meta-includes/)
+
+::: 
+
+There may be times when you would like to single-source content across multiple pages/files to reduce the risk of errors, produce consistent content that is easy to maintain, and ultimately save valuable time. [Quarto](/index.qmd) (an open-source technical publishing system), provides an [Includes](/docs/authoring/includes.html) feature (the equivalent of an R Markdown “child” document) that allows you to reuse content across multiple documents/files/pages. 
+
+To achieve this, simply create chunks of content (text, tables, code, callouts, images, etc.) and then insert it using the Include shortcode: `{{{< include _content.qmd >}}}`.
+
+Typically, you must keep your content general enough so it can be reused in several places. In other words, if you needed to add a name or an image that is specific to that file, you would assume that you wouldn’t be able to use an include, or you would have to use several smaller includes sewn into uniquely written content.
+
+But what if you need your single-sourced content to be more specific? You can use Includes with `meta` shortcode (variables) to add precise values defined at the file level.
+
+## Walkthrough example
+
+Let us walk you through an example of how to achieve this.
+
+Before you begin:
+
+* Quarto version 1.5+ was used for this walkthrough example.
+* This has been tested with both new and existing Website projects.
+* A `var` shortcode enables you to insert content from the project or file level.
+* The `meta` shortcode allows you to insert content from Pandoc metadata (e.g., YAML at the top of the document and/or in `_quarto.yml`).
+* As you preview your site, pages will be rendered and updated. However, if you make changes to global options (e.g. `_quarto.yml` or included files) you need to fully re-render your site to have all of the changes reflected. Consequently, you should always fully `quarto render` your site before deploying it, even if you have already previewed changes to some pages with the preview server.
+
+### Create the content:
+
+Here is an example of a file with content we want to reuse across several pages.
+
+```markdown
+In this document, we cover facts that are unique to the state, like the state's population, its flower, and animal.
+```
+
+This content is general enough to use as each state’s introduction but lacks the facts that are unique to each state. So, we could insert the Include into each state’s file and then add specific content that is unique to the state:
+
+```markdown
+---
+title: New York
+---
+
+{{{< include _snippets/state-intro.qmd >}}}
+
+New York has a geographical size of 54,555, making it the 27th largest state with an estimated population size of 19.8 million.
+
+The state's flower is the Rose, as shown below:
+
+![](images/ny/flower.png)
+```
+
+### Why are we doing this?
+
+Instead of copying and pasting this content into each file, and then updating it with each state’s fact (which introduces a higher risk of making an error), we can use meta variables to insert specific values.
+
+### Let’s execute
+
+First, I create a file within my `_snippets` directory named `facts.qmd`. Throughout the file, I am going to insert a unique `meta` variable for each occurrence that I want the content to be specific to the state: 
+
+```markdown
+{{{< meta state >}}} covers approximately {{{< meta square-miles >}}} making it the {{{< meta size-rank >}}} largest state in the United States. As of 2023, {{{< meta state >}}} has an approximate population of about {{{< meta population >}}}.
+```
+
+I can define each of the `meta` variables within the individual file that I plan on reusing this content. So, in my `ny.qmd` file, I define each variable in the YAML metadata. Then, insert the `facts.qmd` file with the undefined meta shortcodes using an include:
+
+```markdown
+---
+title: New York
+state-abbr: ny
+state: New York
+size-rank: 27th
+square-miles: 54,555
+population: 19.8 million
+---
+
+
+{{{< include _snippets/facts.qmd >}}}
+```
+
+As you can see, the rendered file has the meta shortcodes populated with the definitions that you assigned to each value in the file’s YAML.
+
+![](images/img1.png){fig-align="center" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); border-radius: 5px;"}
+
+
+But, I would also like to add the state’s flower and animal with images of each. You can achieve this by editing the document to add this information and images:
+
+```markdown
+{{{< include _snippets/facts.qmd >}}}
+
+New York's official flower is the Rose:
+
+![](../images/ny/flower.png)
+
+And the official animal is the Beaver:
+
+![](../images/ny/animal.png)
+```
+
+Or, you can get creative and use `meta` shortcodes in your image paths so you can continue to manage all of the content in a single file:
+
+```markdown
+{{{< meta state >}}}'s official flower is the {{{< meta flower >}}}, pictured below:
+
+![The official {{{< meta state >}}} state flower, the {{{< meta flower >}}}](../images/{{{< meta state-abbr >}}}/flower.png)
+
+Lastly, {{{< meta state >}}}'s official animal is the {{{< meta animal >}}}, pictured below:
+
+![The official {{{< meta state >}}} state animal, the {{{< meta animal >}}}](../images/{{{< meta state-abbr >}}}/animal.png)
+```
+
+As you can see, my image paths have `{{{< meta state-abbr >}}}` which is defined in the new-york file as “ny”.
+
+When we render the project, the image path updates to /images/ny/flower.png pointing to the existing flower image in the `ny` directory:
+
+![](images/img2.png){fig-align="center" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); border-radius: 5px;"}
+
+
+In theory, you could do this for each state as long as each directory follows the same naming conventions, i.e., `pa/flower.png` and `vt/flower.png`.
+
+This does require an organized and scalable approach since the images will have to follow the same directory and file-naming conventions, but in doing so, you can create individualized pages and images using a single include.
+
+### The rendered example
+
+Here is New York’s page:
+
+![](images/img3.png){fig-align="center" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); border-radius: 5px;"}
+
+
+Here is Pennsylvania’s page:
+
+![](images/img4.png){fig-align="center" style="box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); border-radius: 5px;"}
+
+Each page was built using a single (shared) file:
+
+```markdown
+{{{< include _snippets/facts.qmd >}}}
+```
+
+## Learn more about Quarto Includes
+
+Quarto's Includes feature allows you to improve your content creation process by reducing redundancy and maintaining consistency across multiple documents. Whether you're managing technical documentation, educational materials, or any other content, this approach can help you save time, reduce errors, and deliver polished results.
+
+Learn more with these resources:
+
+* [Get Started - Quarto](/docs/get-started/)
+* [Quarto - Includes](/docs/authoring/includes.html)
+* [Quarto - meta Variables](/docs/authoring/variables.html#meta)
+* An overview of [Single Source Authoring](https://technicalwriterhq.com/writing/technical-writing/single-source-authoring/){.external}
