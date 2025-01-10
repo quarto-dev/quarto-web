@@ -1,0 +1,559 @@
+---
+title: Multiformat branding with `_brand.yml`
+---
+
+## Overview
+
+Quarto supports [**brand.yml**](https://posit-dev.github.io/brand-yml/)---a single YAML file that can be used to customize the appearance of your documents across multiple formats. This is particularly useful for organizations that need a unified look across various formats.
+
+{{< include _brand-example.qmd >}}
+
+On this page:
+
+-   Learn how to add a brand file.
+
+-   Learn about the elements of **brand.yml** and how they are used in Quarto.
+
+-   Learn how to access brand values outside of the brand file.
+
+-   See a more comprehensive example.
+
+-   Learn how to migrate projects created without `_brand.yml` to easily support `_brand.yml` features.
+
+::: callout-warning
+## Limitation
+
+The **brand.yml** specification is an active area of work at Posit. Quarto's support for **brand.yml** is not yet complete. For now, we've highlighted places where Quarto doesn't yet support the full spec with special **Limitation** callouts, like this one.
+
+Currently, the formats that support **brand.yml** are: `html`, `dashboard`, `revealjs` and `typst`.
+:::
+
+## Applying Brand
+
+To specify a brand, create a `_brand.yml` file in the root directory of your project (i.e. alongside `_quarto.yml`).
+Quarto will detect the presence of `_brand.yml` and automatically apply the brand to all documents of the supported formats in the project.
+
+You can create a `_brand.yml` file outside of a Quarto project (e.g. without a `_quarto.yml`).
+In this case, `_brand.yml` will automatically apply to documents in the same directory.
+
+You can also set brand options in a document by specifying brand elements under the `brand` option:
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  color:
+    background: "#eeeeee"
+---
+```
+
+If you set `brand` in a document header, it will replace the entire brand from `_brand.yml`.
+
+You can disable brand for a document by setting `brand` to `false`:
+
+```{.yaml filename="document.qmd"}
+---
+brand: false
+---
+```
+
+You can put  `_brand.yml` in a subdirectory of your project, and then use the `brand` key to specify the path to the brand file.
+For example, to use the brand file at `brand/_brand.yml` for a single  document, add `brand` to the header:
+
+```{.yaml filename="document.qmd"}
+---
+brand: brand/_brand.yml
+---
+```
+
+To use the brand file at `brand/_brand.yml` for all documents in the project add `brand` to `_quarto.yml`:
+
+```{.yaml filename="_quarto.yml"}
+brand: brand/_brand.yml
+```
+
+Paths specified in `_brand.yml` are relative to the location of the brand file.
+
+## Brand Elements
+
+The elements of **brand.yml** are specified in the documentation for the [**brand.yml** project](https://posit-dev.github.io/brand-yml/){.external}. 
+In this section, learn how these elements are used in Quarto.
+
+### Color 
+
+[Color in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/color.html){.external}
+
+Use `color` to define your brand's color palette and map your palette to the roles colors play, a.k.a semantic colors. A simple example might define the value `background` to a light blue:
+
+``` {.yaml filename="_brand.yml"}
+color:
+  background: "#ddeaf1"
+```
+
+Use the `palette` key to define a set of named colors that can be referenced elsewhere in the `_brand.yml`. For example, you might define `blue` and set it as the `background`:
+
+``` {.yaml filename="_brand.yml"}
+color:
+  palette:
+    blue: "#ddeaf1"
+  background: blue
+```
+
+The most commonly used semantic colors include `foreground`, `background` and `primary`:
+
+``` {.yaml filename="_brand.yml"}
+color:
+  palette:
+    dark-grey: "#222222"
+    blue: "#ddeaf1"
+  background: blue
+  foreground: dark-grey
+  primary: black
+```
+
+The colors `foreground` and `background` are used consistently across formats to set the color of the main text and color of the page it appears on.
+The color `primary` sets the link color, navbar color (`html` and `dashboard`), and progress bar color (`revealjs`).
+
+For HTML formats that use Bootstrap (`html`, `dashboard`) the remaining semantic colors are mapped directly to their Bootstrap counterparts with the same name.
+
+::: {.callout-tip collapse="true"}
+
+## Full list of semantic colors 
+
+The full list of semantic colors you can set in `color` is:
+
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| Name                  | Description                                                                                                                   |
++=======================+===============================================================================================================================+
+| `foreground`          | The main text color. Typically will be close to black and must have high contrast with the background color.                  |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `background`          | The main background color. Tyically will be close to white and must have high contrast with the foreground color.             |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `primary`             | The primary accent color, used for hyperlinks, active states, and primary action buttons.                                     |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `secondary`           | The secondary accent color, often used for lighter text or disabled states.                                                   |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `tertiary`            | The tertiary accent color, used for hover states, accents, and wells.                                                         |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `success`             | The color used for positive or successful actions and information.                                                            |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `info`                | The color used for neutral or informational actions and information.                                                          |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `warning`             | The color used for warning or cautionary actions and information.                                                             |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `danger`              | The color used for errors, dangerous actions, or negative information.                                                        |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `light`               | A bright color, used as a high-contrast foreground color on dark elements or low-contrast background color on light elements. |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+| `dark`                | A dark color, used as a high-contrast foreground color on light elements or high-contrast background color on light elements. |
++-----------------------+-------------------------------------------------------------------------------------------------------------------------------+
+
+:::
+
+You can access both named and semantic colors from your brand in SCSS and using the `brand` shortcode. See [Using `_brand.yml` values](#using-brand-values) for more details.
+
+### Logo
+
+[Logo in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/logo.html){.external}
+
+Use `logo` to specify the logo for your brand:
+
+``` {.yaml filename="_brand.yml"}
+logo: 
+  medium: logo.png
+```
+
+You can specify a local file path, relative to the location of `_brand.yml`, or a URL.
+
+::: {.callout-warning}
+
+## Limitation
+
+Logos specified as URLs are not currently supported in `format: typst`.
+
+::: 
+
+A single logo may not work well in all locations so **brand.yml** allows you to set three different logos: `small`, `medium` and `large`. For example:
+
+``` {.yaml filename="_brand.yml"}
+logo: 
+  small: logo-small.png
+  medium: logo.png
+  large: logo-large.png
+```
+
+You don't need to specify all three---Quarto will use what you provide based on the following preferences:
+
++----------------------+----------------------------------------------+-------------------------------+
+| Format               | Location                                     | Logo Preference (high to low) |
++======================+==============================================+===============================+
+| `html`/`dashboard`   | Top navigation bar                           | `small`\> `medium`\>`large`   |
++----------------------+----------------------------------------------+-------------------------------+
+| `html`               | Side navigation                              | `medium`\>`small`\>`large`    |
++----------------------+----------------------------------------------+-------------------------------+
+| `typst`              | Top left, control with `format: typst: logo` | `medium`\>`small`\>`large`    |
++----------------------+----------------------------------------------+-------------------------------+
+| `revealjs`           | Bottom right corner of slides                | `medium`\>`small`\>`large`    |
++----------------------+----------------------------------------------+-------------------------------+
+
+You can also specify named logos under `images` which you can reference in `small`, `medium` and `large`. In particular, this allows you to set alternative text for your logos using `alt`:
+
+``` {.yaml filename="_brand.yml"}
+logo: 
+  images:
+    quarto-logo: 
+      path: https://quarto.org/quarto.png
+      alt: "Quarto icon"
+  small: quarto-logo
+```
+
+::: {.callout-warning}
+
+## Limitation
+
+The **brand.yml** specification allows you to specify a `light` and `dark` version of your logo, but Quarto currently only uses the `light` version.
+
+::: 
+
+### Typography
+
+[Typography in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/typography.html){.external}
+
+The `typography` element allows you to specify fonts and their style. Use `fonts` to specify a list of fonts to use for your brand:
+
+``` {.yaml filename="_brand.yml"}
+typography:
+  fonts:
+    - family: Jura
+      source: google
+```
+
+The properties you can set for a font under `fonts` depends on the `source`. You can see the other properties available in our [Reference for Brand](/docs/reference/metadata/brand.qmd#font-resource-definitions).
+
+You can then refer to fonts by `family` in the remaining typography options:
+
+``` {.yaml filename="_brand.yml"}
+typography:
+  fonts:
+    - family: Jura
+      source: google
+  base: Jura
+  headings: Jura
+```
+
+The options `base` and `headings` set the typographic style of the main text and headings respectively. 
+Use `links` to apply specific styles to links.
+The option `monospace` sets the typographic style of code in general, and `monospace-inline` and `monospace-block` can be further used to style code that appears inline and in blocks respectively:
+
+``` {.yaml filename="_brand.yml"}
+typography:
+  fonts:
+    - family: Jura
+      source: google
+    - family: Space Mono
+      source: google
+  base: Jura
+  headings: Jura
+  link:
+    decoration: underline
+  monospace: Space Mono
+  monospace-inline:
+    color: "#222222"
+    background-color: "#ddeaf1" # or use a named color from `color`
+  monospace-block: 
+    background-color: "#eef4f8"
+```
+
+
+
+The fields allowed for each element differ, expand the callout below to see what is supported in each field.
+
+::: {.callout-tip collapse="true"}
+
+## Full set of text elements and supported fields.
+
+The full set of text elements that you can style with `typography` is:
+
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+| Attribute          | Description                                                                                            | Supported Fields       |
++====================+========================================================================================================+========================+
+| `base`             | Default text, primarily used in the document body.                                                     | -   `family`           |
+|                    |                                                                                                        | -   `size`             |
+|                    |                                                                                                        | -   `line-height`      |
+|                    |                                                                                                        | -   `weight`           |
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+| `headings`         | All heading levels (h1, h2, etc.).                                                                     | -   `family`           |
+|                    |                                                                                                        | -   `weight`           |
+|                    |                                                                                                        | -   `style`            |
+|                    |                                                                                                        | -   `line-height`      |
+|                    |                                                                                                        | -   `color`            |
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+| `monospace`        | General monospaced text, typically used in code blocks and other programming-related content.          | -   `family`           |
+|                    |                                                                                                        | -   `size`             |
+|                    |                                                                                                        | -   `weight`           |
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+| `monospace-inline` | Inline monospaced text, usually used for code snippets within regular text. Inherits from `monospace`. | -   `family`           |
+|                    |                                                                                                        | -   `size`             |
+|                    |                                                                                                        | -   `weight`           |
+|                    |                                                                                                        | -   `color`            |
+|                    |                                                                                                        | -   `background-color` |
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+| `monospace-block`  | Block (multi-line) monospaced text, typically used for code blocks. Inherits from `monospace`.         | -   `family`           |
+|                    |                                                                                                        | -   `size`             |
+|                    |                                                                                                        | -   `weight`           |
+|                    |                                                                                                        | -   `line-height`      |
+|                    |                                                                                                        | -   `color`            |
+|                    |                                                                                                        | -   `background-color` |
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+| `link`             | Hyperlinks.                                                                                            | -   `weight`           |
+|                    |                                                                                                        | -   `color`            |
+|                    |                                                                                                        | -   `background-color` |
+|                    |                                                                                                        | -   `decoration`       |
++--------------------+--------------------------------------------------------------------------------------------------------+------------------------+
+
+The supported fields are generally described as follows:
+
+-   `family`: The font family to be used for a typographic element. This should match a font resource declared in `typography.fonts`.
+
+-   `size`: The font size for a typographic element. Should be specified using a CSS length unit (e.g., "14px", "1em", "0.9rem").
+
+-   `weight`: The font weight (or boldness) of the text. Can be a numeric value between 100 and 900, or a string like "normal" or "bold".
+
+-   `style`: The font style for the text, typically either "normal" or "italic".
+
+-   `line-height`: The line height of the text, which refers to the vertical space between lines. Often expressed as a multiple of the font size or in fixed units.
+
+-   `color`: The color of the text. Can be any CSS-compatible color definition or a reference to a color defined in the brand's color palette.
+
+-   `background-color`: The background color for the text element. Can be any CSS-compatible color definition or a reference to a color defined in the brand's color palette.
+
+-   `decoration`: The text decoration, typically used for links. Common values include "underline", "none", or "overline".
+
+::: 
+
+### Defaults
+
+[Defaults in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/defaults.html){.external}
+
+The `defaults` section of **brand.yml** allows users to set options for specific tools that don't otherwise fit into the **brand.yml** schema. Quarto's implementation currently supports `defaults: bootstrap`.
+
+#### Bootstrap
+
+The `bootstrap` section of `defaults` follows [**brand.yml**](https://posit-dev.github.io/brand-yml/brand/defaults.html) and applies to the `html` and `dashboard` formats.
+Quarto merges the options set under `defaults: bootstrap` in the appropriate layer of [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.qmd).
+
+The `defaults` option inside `bootstrap`, can take a string, or key-value pairs
+corresponding to SCSS variable name-value pairs.
+Building on our initial example, you could use `bootstrap: defaults` to set the SCSS variables `link-decoration` and `navbar-fg`:
+
+``` {.yaml filename="_brand.yml"}
+defaults:
+  bootstrap:
+    defaults: # defaults also supports a string as its value
+      link-decoration: underline
+      navbar-fg: "#fff"
+```
+
+The resulting HTML pages will have links that are underlined and use white for text in the navigation bar.
+
+::::::: {.column-body-outset-right layout-ncol="2"}
+::: {}
+![Without `defaults: bootstrap` setting](/docs/authoring/images/brand-html-no-defaults.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. The text is dark grey on a light blue background, using a rounded sans-serif typeface, a logo appears in the navbar."}
+:::
+
+::: {}
+![With `defaults: bootstrap` setting: note the link decoration and the white color for the navbar text](/docs/authoring/images/brand-html-defaults.png){.lightbox group="brand-bootstrap-defaults" fig-alt="Screenshot of a webpage. It looks identical to the previous image, except for underlined links and white text on the navbar."}
+:::
+:::::::
+
+In addition to the `defaults` option, Quarto supports `uses`, `functions`, `mixins` and `rules`, which all take a string value. 
+For example, you could use `rules` to provide a CSS rule to remove the border below second-level headings:
+
+```{.yaml filename="_brand.yml"}
+defaults:
+  bootstrap:
+    # uses: <string>
+    # functions: <string>
+    # mixins: <string>
+    rules: |
+      h2 {
+        border: none;
+      }
+```
+
+### Meta
+
+[Meta in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/meta.html){.external}
+
+You can set brand metadata using the `meta` key:
+
+``` {.yaml filename="_brand.yml"}
+meta:
+  name: Acme Corporation
+  link: https://www.acmecorp.com
+```
+
+::: {.callout-warning}
+
+## Limitation
+
+Quarto does nothing with `meta` values.
+
+::: 
+
+
+## Using `_brand.yml` values {#using-brand-values}
+
+Beyond the automatic application of your brand file, you can also directly access `_brand.yml` values in Quarto documents. In this section, you'll learn how to use the `brand` shortcode, use brand variables in SCSS files, and some format-specific ways to use access brand values.
+
+### Shortcode - `{{{< brand >}}}`
+
+Some values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode. In particular, you can access colors and logos by name:
+
+-   Use `{{{< brand color COLOR_NAME >}}}` to return the brand color named `COLOR_NAME` as a string.
+-   Use `{{{< brand logo LOGO_NAME >}}}` to return the brand logo named `LOGO_NAME` as an image.
+
+For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
+
+````{.markdown filename="dashboard.qmd" shortcodes="false"}
+---
+format: dashboard
+---
+
+## Inputs {.sidebar}
+
+{{< brand logo icon >}}
+
+````
+
+Or, you could use the shortcode to set the background of a revealjs slide to your `primary` brand color:
+
+````{.markdown filename="slides.qmd" shortcodes="false"}
+---
+format: revealjs
+---
+
+## Slide Title {background-color='{{< brand color primary >}}'}
+````
+
+::: {.callout-warning}
+## Limitation
+
+You can't currently access `typography`, `meta`, or `defaults` values using the `brand` shortcode.
+:::
+
+### In SCSS
+
+The colors defined in `palette` are set as SCSS variables of the form `brand-COLOR_NAME`. 
+For example, if `_brand.yml` defines `blue`:
+
+```{.yaml filename="_brand.yml"}
+color:
+  palette:
+    blue: "#ddeaf1"
+```
+
+Then the variable `$brand-blue` is will be set to `#ddeaf1` in the `defaults` layer of  [Quarto's SCSS layering system](/docs/output-formats/html-themes-more.html#bootstrap-bootswatch-layering). 
+You can add a custom SCSS file, `styles.scss`, in the usual way:
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [styles.scss]
+```
+
+Then `styles.scss` can use these brand variables to make style tweaks. 
+For example, you might want all `h1` elements to be `blue`:
+
+```{.scss filename="styles.scss"}
+/*-- scss:rules --*/
+
+h1 {
+  color: $brand-blue;
+}
+```
+
+When you specify SCSS files without an explicit `brand` element, it is equivalent to listing them after `brand`.
+For instance, the above `theme` is equivalent to:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [brand, styles.scss]
+```
+
+The order of elements in `theme` controls their priority. 
+For example, you could layer brand and your custom SCSS on top of a built-in theme:
+
+```{.yaml filename="_quarto.yml"}
+format:
+  html:
+    theme: [cosmo, brand, styles.scss]
+```
+
+You can learn more about layering themes in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
+
+### Typst
+
+In Typst documents, brand colors are set in a [dictionary](https://typst.app/docs/reference/foundations/dictionary/) called `brand-color`. 
+You can access them directory in raw Typst blocks using the syntax `brand-color.COLOR_NAME`.
+For example, you could make a rectangle filled with your `primary` brand color:
+
+````{.markdown filename="document.qmd"}
+
+```{=typst}
+#rect(fill: brand-color.primary)
+```
+````
+
+### Lua API
+
+Filters and shortcodes can access brand values using the `brand` Lua module.
+
+``` lua
+local brand = require('modules/brand/brand')
+local primary = brand.get_color('primary')
+```
+
+## Migrating to `_brand.yml`: use the `brand` string in `theme`
+
+::: callout-note
+
+The following information is only necessary if you are migrating projects created with Quarto 1.5 and earlier to use `_brand.yml`.
+
+:::
+
+Migrating existing projects to Quarto 1.6's `_brand.yml` support is a straightforward process.
+The usual way to create themes in Quarto 1.5 and earlier is to use one of the predefined bootswatch themes.
+This is often combined with an additional user-defined `.scss` file.
+In Quarto 1.5, a `_quarto.yml` file usually has an entry like the following:
+
+```yaml
+# Quarto 1.5 syntax
+theme:
+  - cosmo       # a predefined bootswatch theme
+  - tweaks.scss # a user-defined customization
+```
+
+When using this syntax with Quarto 1.6's `_brand.yml` support, keep in mind that `_brand.yml` always takes _lowest_ priority in styles.
+In other words, the configuration above is equivalent to the following:
+
+```yaml
+# Quarto 1.6 syntax
+theme:
+  - brand        # theming derived from `_brand.yml`
+  - cosmo        # a predefined bootswatch theme
+  - tweaks.scss  # a user-defined customization
+```
+
+As a result, values set by `brand` here are potentially overriden by the `cosmo` theme or by `tweaks.scss`.
+This is sometimes useful, but often you will want to make `brand` _more_ important than the theme.
+For these situations, use the following:
+
+```yaml
+# Quarto 1.6 syntax
+theme:
+  - cosmo        # a predefined bootswatch theme
+  - brand        # theming derived from `_brand.yml`
+  - tweaks.scss  # a user-defined customization
+```
+
+Learn more about how Quarto generates styles in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
