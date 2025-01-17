@@ -1,0 +1,344 @@
+---
+author:
+  - name: "Mickaël CANOUIL, _Ph.D._"
+    orcid: "0000-0002-3396-4549"
+    url: "https://mickael.canouil.fr"
+title: "Quarto: Publishing to GitHub Pages"
+description: |
+  In this guide, we'll explore various methods to publish your Quarto projects to GitHub Pages.
+  We'll cover both manual and automated approaches to help you choose the best fit for your workflow.
+date: "2024-12-30"
+categories: [Quarto, "GitHub Pages", Publishing, Deployment, "GitHub Actions"]
+image: featured.png
+image-alt: |
+  Quarto icon and text logo above GitHub Pages logo.
+toc-depth: 5
+link-external-icon: true
+---
+
+![](featured.png){fig-alt="Quarto icon and text logo above GitHub Pages logo." fig-align="center" width="50%"}
+
+[Originally published on [mickael.canouil.fr](https://mickael.canouil.fr/posts/2024-12-30-quarto-github-pages/).]{style="font-style: italic; opacity: 0.8;"}
+
+Publishing Quarto projects to GitHub Pages can seem daunting, but with the right approach, it's a breeze.  
+This blog post will walk you through various methods to deploy your Quarto creations, from simple manual steps to automated workflows using GitHub Actions.  
+By the end, you'll have the know-how to share your dynamic documents, books, and websites seamlessly with the world.
+
+Let's dive into the essentials of making your Quarto project live on GitHub Pages.
+
+## Prerequisites
+
+::: {.callout-important}
+Before proceeding, ensure you have enabled and configured GitHub Pages for your repository (*i.e.*, `https://github.com/<username>/<repository>/settings/pages`), see [GitHub Pages documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) for more details.
+:::
+
+The following methods mostly assume your GitHub repository is public.
+If your repository is private, you may need to adjust the settings to allow GitHub Pages to access the repository using a personal access token.
+
+You can use the Quarto project created with the `quarto create project website` command as a demo project to try out the methods described in this guide.
+This will provide a practical example to follow along with.
+
+## Manual Approach
+
+### Using Quarto CLI
+
+The manual method involves using the Quarto Command Line Interface (CLI) to publish your project.
+This method is straightforward and requires minimal setup.
+
+```sh
+quarto publish gh-pages
+```
+
+Check out the Quarto CLI help for more details on the `publish` command.
+
+```sh
+quarto publish --help
+```
+
+::: {.callout-note}
+The `gh-pages` branch is used to publish to GitHub Pages.
+
+`quarto publish gh-pages` setups the `gh-pages` branch, renders your project, and pushes the output to the branch.  
+You can use the `--no-render` flag to skip rendering and only push a previously rendered project.
+:::
+
+## Automated Approach
+
+Automation can streamline the publishing process and reduce the risk of errors.
+Here are two automated methods using GitHub Actions.
+
+::: {.callout-important}
+Ensure you have the necessary permissions to create and manage GitHub Actions workflows in your repository (*i.e.*, `https://github.com/<username>/<repository>/settings/actions`), see [GitHub Actions documentation](https://docs.github.com/en/actions) for more details.
+:::
+
+### Quarto Publish GitHub Action
+
+Quarto provides an official GitHub Action that simplifies the publishing process.
+This action takes care of the entire workflow but **requires** to use `quarto publish gh-pages` locally at least once to set up the `gh-pages` branch.
+
+```{.yaml filename=".github/workflows/deploy.yml"}
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: write
+      pages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+      # Add any additional steps as needed, such as installing dependencies
+      - name: Build and Deploy
+        uses: quarto-dev/quarto-actions/publish@v2
+        with:
+          target: gh-pages
+```
+
+::: {.callout-note}
+The `quarto-dev/quarto-actions` GitHub Actions are maintained by the Quarto team.  
+You can find more information about these actions in the [Quarto Actions repository](https://github.com/quarto-dev/quarto-actions).
+:::
+
+### Custom GitHub Actions Workflow
+
+For more control over the publishing process, you can set up a custom GitHub Actions workflow.
+We'll discuss two scenarios:
+
+- [**Deploy from a branch**](#deploy-from-a-branch) ([Deploy from a branch - GitHub](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch))  
+  *Classic Pages experience, where the content is published from a specific branch root or `/docs` folder.*
+
+- [**GitHub Actions**](#github-actions) ([GitHub Actions - GitHub](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow))  
+  *Best for using frameworks and customizing your build process.*
+
+#### Deploy From a Branch
+
+You can configure a workflow to publish your Quarto project whenever changes are pushed to a specific branch (*e.g.*, `main`) and deploy the output to GitHub Pages from a specific folder/branch.
+
+::: {.callout-note}
+The GitHub Action workflow described in [Quarto Publish GitHub Action](#quarto-publish-github-action) uses `gh-pages` root as the source for GitHub Pages.
+:::
+
+##### Deploying From the `docs` Folder (*e.g.*, `main` Branch)
+
+Using the `docs` folder as the source for GitHub Pages. Be sure to use a Quarto project (*i.e.*, `_quarto.yml`) to be able to set `output-dir`.
+
+```{.yaml filename=".github/workflows/deploy.yml"}
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+      # Add any additional steps as needed, such as installing dependencies
+      - name: Build
+        shell: bash
+        run: |
+          [ ! -f _quarto.yml ] && echo -e "project:\n  output-dir: docs" > _quarto.yml
+          if grep -q "output-dir: docs" _quarto.yml; then
+            quarto render
+          else
+            quarto render --output-dir docs
+          fi
+      - name: Deploy
+        shell: bash
+        run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs || echo "No changes."
+          git commit -m "ci: quarto render" || echo "No changes."
+          git push origin || echo "No changes."
+```
+
+##### Deploying From the Root (*e.g.*, `gh-pages` Branch)
+
+Using the root of the `gh-pages` branch as the source for GitHub Pages.
+
+::: {.callout-tip}
+This method offers an advantage over `quarto publish gh-pages` as it does not necessitate a local run to create the `gh-pages` branch beforehand.  
+Additionally, it provides some insight into the processes that occur behind the scenes when using `quarto publish gh-pages`, thus when using the [Quarto Publish GitHub Action](#quarto-publish-github-action).
+:::
+
+```{.yaml filename=".github/workflows/deploy.yml"}
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+      # Add any additional steps as needed, such as installing dependencies
+      - name: Build
+        shell: bash
+        run: |
+          [ ! -f _quarto.yml ] && echo -e "project:\n  output-dir: _site" > _quarto.yml
+          if grep -q "output-dir: _site" _quarto.yml; then
+            quarto render
+          else
+            quarto render --output-dir _site
+          fi
+      - name: Deploy
+        shell: bash
+        env:
+          GH_PAGES: gh-pages
+        run: |
+          git config --local user.name github-actions[bot]
+          git config --local user.email 41898282+github-actions[bot]@users.noreply.github.com
+          BUILD_DIR=$(mktemp -d)
+          mv _site "${BUILD_DIR}/quarto-output"
+          if git ls-remote --exit-code origin "${GH_PAGES}"; then
+            git fetch origin "${GH_PAGES}"
+            git checkout origin/"${GH_PAGES}"
+          else
+            git checkout --orphan "${GH_PAGES}"
+            git rm -rf .
+          fi
+          mv ${BUILD_DIR}/quarto-output/* .
+          git add . || echo "No changes."
+          git commit --allow-empty -m "ci: quarto render" || echo "No changes."
+          git push origin "${GH_PAGES}" || echo "No changes."
+```
+
+#### GitHub Actions
+
+For more sophisticated workflows, you have the option to customise the build process, thus eliminating the need to set up the `gh-pages` or `docs` folder.
+This approach is particularly advantageous as it ensures that the source repository remains uncluttered, maintaining a clear separation between the source code and the build/deploy process and environment.
+
+```{.yaml filename=".github/workflows/deploy.yml"}
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: pre-release
+      - name: Build
+        shell: bash
+        run: |
+          [ ! -f _quarto.yml ] && echo -e "project:\n  output-dir: _site" > _quarto.yml
+          if grep -q "output-dir: _site" _quarto.yml; then
+            quarto render
+          else
+            quarto render --output-dir _site
+          fi
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+::: {.callout-note}
+The workflow above utilises `_site` as the output directory, which is the default output directory for Quarto website projects. You can modify the output directory as necessary, provided it aligns with the `Upload Pages Artifact` step.
+:::
+
+### Keeping Your GitHub Actions Workflow Up-to-Date
+
+GitHub Actions workflows are versioned, and new versions are released periodically.
+To ensure your workflows are up-to-date, you can use Dependabot to automatically create pull requests when new versions of your dependencies are available.
+
+```{.yaml filename=".github/dependabot.yml"}
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+````
+
+This configuration file instructs Dependabot to check for updates to GitHub Actions workflows weekly.
+
+For more information on Dependabot, see the [Dependabot documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates).
+
+## Conclusion
+
+By following these methods, you'll be able to publish your Quarto projects to GitHub Pages efficiently.  
+Choose the approach that best suits your needs and workflow.
+
+Happy publishing!
