@@ -37,8 +37,22 @@ format:
       - title-slide.html
 ```
 
-Here is the source code for the [default title slide template partial](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-slide.html). Customize this template as required, then save the results to `title-slide.html` alongside your presentation. 
+Quarto natively supports a title slide which improves the handling of authors and affiliations. While it is backward compatible with `author` and `institute`, we now recommend that you use standard [author metadata](/docs/authoring/front-matter.qmd#authors-and-affiliations). To provide your own partial for `title-slide.html`, you can start from the source code for this [fancier title slide template](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-fancy/title-slide.html). Customize this template as required, then save the results to `title-slide.html` alongside your presentation. 
 
+If you prefer pandoc's default title slide you can opt-in using `title-slide-style: pandoc` in your YAML --- this uses this [simpler title slide template partial](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-slide.html). However, this simpler partial does not leverage our improved handling for [Authors & Affiliations](/docs/journals/authors.qmd), so we recommend using the fancy one as a starter for custom title slides. 
+
+### Centering {#sec-revealjs-title-center}
+
+By default, the title slide is centered while all slides are top aligned (i.e. `center: false`). You can prevent the title slide centering by setting `center-title-slide` options: 
+
+```yaml
+title: My Slide Show
+format:
+  revealjs:
+    center-title-slide: false
+```
+
+If `center: true` is set, `center-title-slide` will be ignored. There is currently no way to have content slide centered and title slides top aligned. For slide content centering, see @sec-revealjs-slide-center.
 
 ## Slide Transitions
 
@@ -186,7 +200,7 @@ Big Text
 :::
 ```
 
-### Center
+### Center {#sec-revealjs-slide-center}
 
 The `center` class when applied to a slide, will vertically center the slide content by adding the appropriate spacing at the top of the slide. Vertical distances between elements will not be modified. For example:
 
@@ -195,6 +209,8 @@ The `center` class when applied to a slide, will vertically center the slide con
 
 This text is moved as well
 ```
+
+For controlling title slide centering, see @sec-revealjs-title-center.
 
 ### Stretch
 
@@ -448,6 +464,33 @@ Appears second
 :::
 ```
 
+### Custom Fragments
+
+Custom effects can be created by specifying CSS styles for `.fragment.effectname` and `.fragment.effectname.visible`. The `visible` class is applied to each fragment as they are navigated through during the presentation. A `custom` class can be added to each fragment to tell reveal.js to avoid applying its default fade-in fragment styles.
+
+For example, the following defines a fragment style where elements are initially blurred but become focused when stepped through.
+
+``` {.markdown .reveal-demo code-preview="demo/mini/fragments-custom.qmd"}
+::: {.fragment .custom .blur}
+First item to be unblurred
+:::
+
+::: {.fragment .custom .blur}
+Second one to be revealed
+:::
+```
+
+with this CSS for the style associated with `blur` class.
+````css
+.reveal .slides section .fragment.blur {
+  filter: blur(5px);
+}
+
+.reveal .slides section .fragment.blur.visible {
+  filter: none
+}
+````
+
 ## Parallax Background
 
 If you want to use a parallax scrolling background, add the `parallax-background-image` and `parallax-background-size` options. For example:
@@ -530,7 +573,7 @@ If your content benefits from vertical orientation (e.g. you have optional drill
 
 ## Touch Navigation
 
-You can swipe to navigate through a presentation on any touch-enabled device. Horizontal swipes change between horizontal slides, vertical swipes change between vertical slides.
+You can swipe to navigate through a presentation on any touch-enabled device. 
 
 If you wish to disable this you can set the `touch` option to `false`:
 

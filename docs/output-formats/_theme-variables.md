@@ -63,6 +63,18 @@ The following Sass Variables can be specified within SCSS files (note that these
 | `$code-block-bg-alpha`          | The amount to alter the transparency fo the `progress-bg` color. This is not used if an explicit background color is set. Defaults to `-0.35`.                   |
 +---------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+#### Code Annotation
+
+You can customize the colors used to highlight lines when [code annotation](/docs/authoring/code-annotation.qmd) is used:
+
++-----------------------------------+---------------------------------------------------------------------------+
+| Variable                          | Notes                                                                     |
++===================================+===========================================================================+
+| `$code-annotation-higlight-color` | The color used as a border on highlighted lines.                          |
++-----------------------------------+---------------------------------------------------------------------------+
+| `$code-annotation-higlight-bg`    | The color used for the background of highlighted lines.                   |
++-----------------------------------+---------------------------------------------------------------------------+
+
 #### Code Copy
 
 You can also customize the colors of the button which appears for `code-copy: true` with the following variables:
@@ -154,5 +166,26 @@ You can also customize the colors of the button which appears for `code-copy: tr
 |                          | | `warning`   | `$yellow` |                                                                                                                                        |
 |                          | | `important` | `$red`    |                                                                                                                                        |
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+::: {.content-hidden unless-meta="is_dashboards"}
+
+### Value Boxes
+
+Use the `$valuebox-bg-<type>` variables to override the background color of value boxes that are set with `color: <type>`.
+
+| Variable                     | Type                   |
+|------------------------------|------------------------|
+| `$valuebox-bg-primary`       |  `color: primary`      |
+| `$valuebox-bg-secondary`     |  `color: secondary`    |
+| `$valuebox-bg-success`       |  `color: success`      |
+| `$valuebox-bg-info`          |  `color: info`         |
+| `$valuebox-bg-warning`       |  `color: warning`      |
+| `$valuebox-bg-danger`        |  `color: danger`       |
+| `$valuebox-bg-light`         |  `color: light`        |
+| `$valuebox-bg-dark`          |  `color: dark`         |
+
+::: 
+
+### Bootstrap Variables
 
 In addition to the above Sass variables, Bootstrap itself supports hundreds of additional variables. You can [learn more about Bootstrap's use of Sass variables](https://getbootstrap.com/docs/5.1/customize/sass/) or review the [raw variables and their default values](https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss).

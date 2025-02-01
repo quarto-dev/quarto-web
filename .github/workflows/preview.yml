@@ -1,10 +1,17 @@
 on:
   pull_request:
-    branches: [main, v1.4]
+    branches: [main, prerelease]
   issue_comment:
     types: [created]
 
 name: Deploy Preview
+
+concurrency:
+  # Use github.event.pull_request.number on pull requests, so it's unique per pull request
+  # Use github.event.issue.number on issue comments, so it's unique per comment
+  # Use github.ref on other branches, so it's unique per branch
+  group: ${{ github.workflow }}-${{ (github.event.pull_request && format('PR-{0}', github.event.pull_request.number)) || ( github.event.issue && format('comment-{0}', github.event.issue.number) ) || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   is-external-pr:
@@ -17,13 +24,41 @@ jobs:
           echo "::error title=Manual action required for preview::PR from fork can't be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview manually."
         shell: bash
 
+  role-of-commenter:
+    if: github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if commenter is a member, owner or collaborator
+        id: commenter-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          commenter_role=$(gh api repos/$GITHUB_REPOSITORY/collaborators/${{ github.event.comment.user.login }}/permission --jq '.permission')
+          echo "commenter_role=$commenter_role" >> "$GITHUB_OUTPUT"
+          echo "author_association=${{ github.event.comment.author_association }}" >> "$GITHUB_OUTPUT"
+        shell: bash
+
   build-deploy-preview:
     # Deploy a preview only if 
     # - the PR is not from a fork,
-    # - requested by PR comment /deploy-preview
-    if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork != true) || 
-      (github.event.issue.pull_request && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') && startsWith(github.event.comment.body, '/deploy-preview')) 
+    # - requested by PR comment /deploy-preview, from a repo user or github action bot (user id 41898282)
+    # FIXME: We need to change the way we filter because somehow some MEMBER in API are seen as CONTRIBUTOR in CI
+    if: >
+      (
+        github.event_name == 'pull_request' && 
+        github.event.pull_request.head.repo.fork != true
+      ) || 
+      (
+        github.event.issue.pull_request && 
+        (
+          github.event.comment.user.id == '41898282' ||
+          github.event.comment.user.login == 'gordonwoodhull' ||
+          github.event.comment.author_association == 'MEMBER' || 
+          github.event.comment.author_association == 'OWNER' || 
+          github.event.comment.author_association == 'COLLABORATOR'
+        ) && 
+        startsWith(github.event.comment.body, '/deploy-preview')
+      ) 
       
     runs-on: ubuntu-latest
     steps:
@@ -44,12 +79,35 @@ jobs:
         with:
           version: ${{ steps.github-release.outputs.version }}
 
+      - name: Is it for prerelease website ?
+        id: prerelease-docs-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ "${{ github.event.pull_request.base.ref }}" == "prerelease" ]; then
+            echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ github.event.issue.pull_request.url }}" ]; then
+            # This will trigger when not pull request event, so a PR comment event. 
+            # we need to get the base info from PR number the comment is made in
+            base_ref=$(gh -R $GITHUB_REPOSITORY pr view ${{ github.event.issue.number }} --json baseRefName --jq '.baseRefName')
+            if [ "$base_ref" == "prerelease" ]; then
+              echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "is_prerelease_docs=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "is_prerelease_docs=false" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
       - name: Render 
         uses: quarto-dev/quarto-actions/render@v2
+        env:
+          QUARTO_PROFILE: ${{ steps.prerelease-docs-check.outputs.is_prerelease_docs == 'true' && 'prerelease-docs' || '' }}
 
       - name: Deploy Preview to Netlify as preview
         id: netlify-deploy
-        uses: nwtgck/actions-netlify@v2
+        uses: nwtgck/actions-netlify@v3
         env:
           NETLIFY_SITE_ID: 2a3da659-672b-4e5b-8785-e10ebf79a962
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

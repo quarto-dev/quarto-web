@@ -2,14 +2,14 @@
 
 Use the `page-footer` option to provide a common footer for all of the pages in a {{< meta project-type >}}. The simplest footer just provides text that will be centered and displayed in a lighter typeface:
 
-``` yaml
+```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   page-footer: "Copyright 2021, Norah Jones" 
 ```
 
 You can alternatively target the `left`, `right`, and `center` regions of the footer individually:
 
-``` yaml
+```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   page-footer: 
     left: "Copyright 2021, Norah Jones" 
@@ -24,7 +24,7 @@ Note for the `right` region of the footer we included navigational items for Git
 
 You can use the `background`, `foreground`, and `border` options to further control the appearance of the footer. By default, the footer has no background color and a top border. To eliminate the border you would do this:
 
-``` yaml
+```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   page-footer:
     border: false
@@ -32,7 +32,7 @@ You can use the `background`, `foreground`, and `border` options to further cont
 
 To use a light background (e.g. to match a navigation bar) you would do this:
 
-``` yaml
+```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   page-footer:
     background: light

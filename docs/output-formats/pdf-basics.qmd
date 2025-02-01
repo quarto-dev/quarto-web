@@ -87,13 +87,134 @@ format:
       - top=30mm
       - left=20mm
       - heightrounded
-    fontfamily: libertinus
+    mainfont: Times New Roman
     colorlinks: true
 ---
 ```
 
 See the Pandoc documentation on metadata [variables for LaTeX](https://pandoc.org/MANUAL.html#variables-for-latex) for documentation on all available options.
 
+## Fonts
+
+Using `xelatex`, the default engine, or the `lualatex` engine, you can specify fonts with the YAML options:
+
+| Option         | Document Element         |
+|----------------|--------------------------|
+| `sansfont`     | Headings                 |
+| `mainfont`     | Main body text           |
+| `monofont`     | Code                     |
+| `mathfont`     | Math                     |
+| `CJKmainfont`  | The CJK main font family |
+
+Values for these options should be the family name of system installed fonts. For example:
+
+```{.yaml}
+---
+format: 
+  pdf:
+    mainfont: "Times New Roman"
+---
+```
+
+Fonts are set using the [`fontspec`](https://ctan.org/pkg/fontspec) package.
+You can set additional font features using the corresponding `<fontoption>options` key.
+For example, you could set headings to the color `#39729E`:
+
+```{.yaml}
+---
+format: 
+  pdf:
+    sansfont: "Open Sans"
+    sansfontoptions: 
+      - Color=39729E
+---
+```
+
+### `pdflatex` 
+
+If you use the `pdflatex` engine, use the `fontfamily` option to specify a font from the [The LaTeX Font Catalogue](https://tug.org/FontCatalogue/). For example:
+
+``` yaml
+---
+title: pdflatex fonts
+format:
+  pdf:
+    pdf-engine: pdflatex
+    fontfamily: anttor
+---
+```
+
+## Unicode Characters
+
+By default, Quarto uses the `xelatex` engine to produce PDFs from LaTeX. `xelatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
+
+``` {.bash filename="Terminal"}
+fc-list :lang=<lang> family
+```
+
+Where `<lang>` is a [ISO 639 language code](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes). For example, to see a list of fonts that support Japanese characters, use:
+
+``` {.bash filename="Terminal"}
+fc-list :lang=ja family
+```
+
+Select a font name from the list and use that as the document's main font:
+
+``` markdown
+---
+title: Unicode test
+format: pdf
+mainfont: "Hiragino Sans GB"
+---
+
+## Test Document
+
+青黑體簡體中文,ヒラギノ角
+```
+
+Another common example of Unicode characters are documents that include Greek symbols:
+
+````{.markdown filename="greek.qmd"}
+---
+format: pdf
+---
+
+## α
+
+```r
+α <- 3
+```
+
+α is a great constant.
+```
+````
+
+Follow the same process as above to discover fonts that support Greek:
+
+``` {.bash filename="Terminal"}
+fc-list :lang=el family
+```
+
+Then set the appropriate font options:
+
+````{.markdown filename="greek.qmd"}
+---
+format: 
+  pdf:
+    mainfont: "EB Garamond"
+    sansfont: "Open Sans"
+    monofont: "Roboto Mono"
+---
+````
+
+*(These particular fonts are available from [Google Fonts](https://fonts.google.com).)*
+
+With fonts with appropriate support, Greek symbols render correctly in headings, the main text and code cells:
+
+![Greek symbols in a rendered PDF](images/pdf-unicode-greek.png){.border fig-alt="Screenshot of at PDF displaying the Greek symbol alpha in a heading, main text and code cell."}
+
+
+ 
 ## Citations
 
 {{< include _pdf-citations.md >}}
@@ -141,7 +262,7 @@ Any packages specified using includes that you don't already have installed loca
 
 ## LaTeX Output
 
-If you want Quarto to produce a LaTeX file (.tex) rather than a PDF (for example, if you want to do your own processing of the PDF) there are two ways to accomplish this:
+If you want Quarto to produce a LaTeX file (`.tex`) rather than a PDF (for example, if you want to do your own processing of the PDF) there are two ways to accomplish this:
 
 1.  Use the `latex` format rather than the `pdf` format. For example:
 
@@ -165,11 +286,13 @@ If you want Quarto to produce a LaTeX file (.tex) rather than a PDF (for example
         keep-tex: true
     ```
 
-    This technique will produce a PDF file for preview, but will also create a .tex file alongside it that you can do subsequent processing on.
+    This technique will produce a PDF file for preview, but will also create a `.tex` file alongside it that you can do subsequent processing on.
+
+Both techniques will also produce all LaTeX temporary files, including `.bbl` files and so on, that might be required by a publisher that wants LaTeX sources.
 
 ## Unicode Characters
 
-By default, Quarto uses the `xelatex` engine to produce PDFs from LaTeX. `xelatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
+By default, Quarto uses the `xelatex` engine to produce PDFs from LaTeX. `xelatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you are using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
 
 ```{.bash filename="Terminal"}
 fc-list :lang=<lang>

@@ -1,11 +1,9 @@
 Options that define the type, render targets, and output of a project. Project options are specified under the `project` key. For example:
 
-``` yaml
----
+```{.yaml filename="_quarto.yml"}
 project:
   type: {{< meta project-type >}}
   output-dir: {{< meta project-output-dir >}}
----
 ```
 
 ::: {#table-project}
@@ -15,15 +13,13 @@ project:
 
 Specify options that control the behavior of `quarto preview` within the `preview` key. For example:
 
-``` yaml
----
+```{.yaml filename="_quarto.yml"}
 project:
   type: {{< meta project-type >}}
   output-dir: {{< meta project-output-dir >}}
   preview:
     port: 4200
     browser: false
----
 ```
 
 Available `preview` options include:
@@ -34,6 +30,17 @@ Available `preview` options include:
 ### Serve
 
 If you are creating a project extension for another publishing system that includes its own preview server (for example, [Hugo](../../output-formats/hugo.qmd) or [Docusaurus](../../output-formats/docusaurus.qmd)) then use the `preview: serve` options to customize the behavior of the preview server.
+
+```{.yaml filename="_quarto.yml"}
+project:
+  type: {{< meta project-type >}}
+    preview:
+      serve:
+        cmd: "hugo serve --port {port} --bind {host} --navigateToChanged"
+        env:
+          HUGO_RELATIVEURLS: "true"
+        ready: "Web Server is available at"
+```
 
 ::: {#table-serve}
 :::

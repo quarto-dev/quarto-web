@@ -1,0 +1,82 @@
+---
+title: Quarto Inspect
+summary: Project and document information in a machine-readable format
+format: html
+---
+
+## Overview
+
+The `quarto inspect` command produces a JSON object with information about the configuration of a Quarto project or document.
+This information is particularly useful for authors of downstream tools and libraries which analyze Quarto content.
+
+Whenever possible, we recommend using `quarto inspect` instead of direct inspection of documents or projects.
+
+## Information available
+
+`quarto inspect` provides information for Quarto projects, for individual documents outside of projects, and for documents within a project.
+
+### Document-level information
+
+Document-level information is obtained by calling `quarto inspect <DOCUMENT>`.
+If no additional parameters are given, the output is produced on standard output.
+If an additional parameter is given, the output is written to the specified path.
+
+- `quarto`: an object describing the quarto version
+- `engines`: the engine used in the document, as a singleton array (for simplicity of the schema, in compatibility with the project-wide information below)
+- `formats`: an object whose keys are the document format name, and values are metadata associated with the document.
+- `resources`: an array of paths describing additional resources required for the document to be rendered.
+- `fileInformation`: an object whose keys are file names, and values are objects describing:
+  - `includeMap`: an array of `source` and `target` paths describing the use of `include` shortcodes
+  - `codeCells`: an array of objects describing the code cells in the document (including those referenced to from an include). The object has:
+    - `start`: the line where the code cell starts
+    - `end`: the line where the code cell ends
+    - `file`: the path of the file where the code cell resides (this can be different from the original file because of includes)
+    - `source`: the content of the code cell
+    - `language`: the language of the code cell
+    - `metadata`: the cell-level metadata for the code cell
+- `project`: If the document is part of a project, then this contains the output that would be produced by `quarto inspect` on the project
+
+### Project-level information
+
+Project-level information is obtained by calling `quarto inspect` within a project, or explicitly passing a path, `quarto inspect <PATH_TO_PROJECT>`.
+If no additional parameters are given, the output is produced on standard output.
+If an additional parameter is given, the output is written to the specified path.
+
+- `quarto`: an object describing the quarto version
+- `dir`: the path to the directory where the project resides
+- `engines`: an array of strings listing the engines used in the project.
+- `config`: the project configuration metadata in JSON format
+- `files`: information about the project files in an object. The object has:
+  - `input`: an array of paths listing the input files
+  - `resources`: an array of paths describing additional resources required for the project to be rendered.
+  - `config`: the YAML configuration files that make up this project's configuration
+  - `configResources`: an array of paths describing resources that are implied by the project configuration.
+- `fileInformation`: an object containing information about each of the documents to be rendered by the project. 
+  The keys of this object are the document paths, and the values are themselves objects with the following keys:
+  - `includeMap`: an array of `source` and `target` paths describing the use of `include` shortcodes
+  - `codeCells`: an array of objects describing the code cells in the document (including those referenced to from an include). The object has:
+    - `start`: the line where the code cell starts
+    - `end`: the line where the code cell ends
+    - `file`: the path of the file where the code cell resides (this can be different from the original file because of includes)
+    - `source`: the content of the code cell
+    - `language`: the language of the code cell
+    - `metadata`: the cell-level metadata for the code cell
+
+## JSON Schemas
+
+### Project data
+
+This schema is also available as a [standalone file](./quarto-inspect-project-json-schema.json).
+
+```json
+{{< include quarto-inspect-project-json-schema.json >}}
+```
+
+### Document data
+
+This schema is also available as a [standalone file](./quarto-inspect-document-json-schema.json).
+
+```json
+{{< include quarto-inspect-document-json-schema.json >}}
+```
+

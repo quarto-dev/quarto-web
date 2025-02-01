@@ -1,12 +1,15 @@
 # quarto-web
 
-This is the repo for the documentation hosted at [quarto.org](https://quarto.org/).
+This is the repo for the documentation hosted at:
+
+* **Current release:** [quarto.org](https://quarto.org/)
+* **Pre-release:** [prerelease.quarto.org](https://prerelease.quarto.org/)
 
 ## Reporting Issues
 
 Please report issues on quarto.org by opening a "Documentation Issue" in the `quarto-dev/quarto-cli` repository: [New Issue](https://github.com/quarto-dev/quarto-cli/issues/new/choose)
 
-## Contributing
+## Rendering `quarto-web` locally
 
 This section discusses how to contribute to the documentation by rendering a document locally.
 
@@ -20,6 +23,8 @@ What is the impact if you modify (or add) a document:
 - If you modify a document that uses `engine: knitr` or `engine: jupyter`, you need to render the document locally and commit the changes in the `_freeze` folder as well. See [incremental render](https://quarto.org/docs/projects/code-execution.html#incremental-render).
 
 ### Rendering the whole website
+
+When you render `quarto-web`, you should use the current [Pre-release of Quarto](https://quarto.org/docs/download/prerelease.html).
 
 To render the whole website locally, you can use the following command:
 
@@ -84,3 +89,22 @@ If you are adding a new document that may use a new package, follow these steps:
 - Commit the modified `Pipfile` and `Pipfile.lock` files with your document changes (don't forget any changes in the `_freeze` folder if needed).
 
 Documents running python with the Knitr engine will go through **reticulate**. **reticulate**  will use the python version defined with `pipenv` when a `PipFile` is present. So, it will use the Python version from `.venv` --- no specific configuration is needed as [reticulate's python discovery mechanism](https://rstudio.github.io/reticulate/articles/versions.html#order-of-discovery) will find it.
+
+
+## Reference pages are automatically generated
+
+The tablular data on options listed in the [Reference section](https://quarto.org/docs/reference/) are generated automatically by running:
+
+```
+quarto run tools/reference.ts
+```
+
+This builds the `.json` files in `docs/references` based on the [Quarto CLI schema](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/schema). The script assumes you have `quarto-cli/` at the same level in your directory structure as `quarto-web/`.
+
+## GitHub Action Workflows
+
+Our GitHub Action workflows are documented in [`.github/workflows/README.md`](.github/workflows/README.md)
+
+## Style Guide
+
+You can find some style guidance in [style-guide.md](style-guide.md).

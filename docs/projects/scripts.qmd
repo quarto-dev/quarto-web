@@ -1,5 +1,7 @@
 ---
 title: "Project Scripts"
+aliases: 
+  - /docs/prerelease/1.5/pre-render.html
 ---
 
 ## Overview
@@ -52,12 +54,18 @@ Pre and post render scripts are run with the main project directory.
 
 The following environment variables are passed to pre and post-render scripts (note that all paths are *relative* to the main project directory):
 
-| Variable                      | Description                                                                                                                                                                |
+| Variable                      | Description                                                                                                                                                                   |
 |-----------------|-------------------------------------------------------|
-| `QUARTO_PROJECT_RENDER_ALL`   | Set to "1" if this is a render of all files in the project (as opposed to an incremental render or a render for preview). This unset if Quarto is not rendering all files. |
-| `QUARTO_PROJECT_OUTPUT_DIR`   | Output directory                                                                                                                                                           |
-| `QUARTO_PROJECT_INPUT_FILES`  | Newline separated list of all input files being rendered (passed only to `pre-render`)                                                                                     |
-| `QUARTO_PROJECT_OUTPUT_FILES` | Newline separated list of all output files rendered (passed only to `post-render`).                                                                                        |
+| `QUARTO_PROJECT_RENDER_ALL`   | Set to "1" if this is a render of all files in the project (as opposed to an incremental render or a render for preview). This is unset if Quarto is not rendering all files. |
+| `QUARTO_PROJECT_OUTPUT_DIR`   | Output directory                                                                                                                                                              |
+| `QUARTO_PROJECT_INPUT_FILES`  | Newline separated list of all input files being rendered (passed only to `pre-render`)                                                                                        |
+| `QUARTO_PROJECT_OUTPUT_FILES` | Newline separated list of all output files rendered (passed only to `post-render`).                                                                                           |
+
+The project metadata and render list will be re-computed after any pre-render scripts have executed, allowing them to modify this project data.
+For example, a pre-render script might generate additional `qmd` files or `ipynb` files that should be rendered.
+
+Note that pre-render scripts cannot modify the project directory, the output directory, or the project type. 
+If a pre-render script modifies any of these values, an error will be returned and the render will fail.
 
 If you have a `pre-render` step that is expensive, you may want only run it when the entire project is being rendered. Here's how you would do this in the various supported script languages:
 
@@ -95,28 +103,71 @@ end
 ```
 :::
 
+### Advanced: large input and output file lists
+
+In some execution environments, the maximum size of an environment might be limited. In this case, a pre- or post-render script invocation might fail when Quarto attempts to build the appropriate environment variables.
+
+In such scenarios, you can declare the environment variable `QUARTO_USE_FILE_FOR_PROJECT_INPUT_FILES` (respectively, `QUARTO_USE_FILE_FOR_PROJECT_OUTPUT_FILES`) to direct Quarto to use the
+declared file as the destination of the file list that would have been written in `QUARTO_PROJECT_INPUT_FILES` (respectively, `QUARTO_PROJECT_OUTPUT_FILES`).
+
 ## Deno Scripts {#deno-scripts}
 
-If you want to create project scripts with TypeScript, `quarto run` enables you to use the [Deno](https://deno.land/) TypeScript interpreter bundled with Quarto. This interpreter also includes the complete Deno [standard library](https://docs.deno.com/runtime/manual/basics/standard_library). For example, to use the Deno YAML parser you would do this:
+If you want to create project scripts with TypeScript, `quarto run` enables you to use the [Deno](https://deno.land/) TypeScript interpreter bundled with Quarto. This interpreter also includes much of Deno's [standard library](https://docs.deno.com/runtime/manual/basics/standard_library). For example, to use the Deno YAML parser you would do this:
+
+### Quarto 1.6 breaking changes
+
+::: callout-warning
+
+Quarto 1.6 includes updates to Deno and Deno's standard library which forced us to make breaking changes to the import syntax. We apologize for the inconvenience.
+
+:::
 
 ``` typescript
-import { parse } from "https://deno.land/std/yaml/mod.ts";
+import { parse } from "stdlib/yaml"; // Quarto 1.6 syntax
+import { parse } from "https://deno.land/std/yaml/mod.ts"; // Quarto 1.5 and earlier syntax
 
 const config = parse(Deno.readTextFileSync("_quarto.yml"));
 ```
 
-The reference to the Deno `encoding` library above uses a URL: it's important to note that in spite of this the library is *not downloaded from a remote server* (in fact, importing from remote servers is disabled entirely in the Quarto Deno interpreter). Rather, the Deno standard library is shipped with Quarto, making standard library URLs available in an offline cache.
+Although Deno hosts its standard library online, it's important to note that in Quarto 1.5, the library is *not downloaded from a remote server* (in fact, importing from remote servers is disabled entirely in the Quarto Deno interpreter).
+Quarto 1.6 ships with a version of Deno that has an unfortunate interaction between its standard library and the feature that disables downloading the library from the remote servers.
+As a result, Quarto 1.6 might download some files (once, and then cache them) when the standard library is invoked.
+Future versions of Quarto will ship with Deno 2, which does not suffer from this issue.
+
+If you want to enforce the behavior from Quarto 1.5, you can set the [environment variable](/docs/advanced/environment-vars.qmd) `QUARTO_RUN_NO_NETWORK` to `true`.
+Note that this means that the imports from `stdlib/` will not work in general.
 
 You may come across example code that embeds versions directly in Deno library imports. For example:
 
 ``` typescript
 import { format } from "https://deno.land/std@0.119.0/datetime/mod.ts";
+import { format } from "jsr:@std/datetime@^0.224.0"
 ```
 
 These version-bound imports **will not work** with Quarto (as its local standard library cache is populated with unversioned URLs). The correct form of the above import is thus:
 
 ``` typescript
-import { format } from "https://deno.land/std/datetime/mod.ts";
+import { format } from "stdlib/datetime";
 ```
 
-You may also see examples of Deno code that imports 3rd party libraries directly from URLs. As noted above, this functionality is not available in Quarto Deno scripts. Rather, you should download any external libraries you wish to use, include them with your project source code, and import them using relative file paths.
+You may also see examples of Deno code that imports 3rd party libraries directly from URLs.
+As noted above, this functionality is generally not available in Quarto Deno scripts.
+Rather, you should download any external libraries you wish to use, include them with your project source code, and import them using relative file paths.
+
+### Making `.ts` scripts portable across multiple versions of Quarto
+
+If you need your project or extension to both include TypeScript project scripts and work with Quarto 1.5 and 1.6, use the following technique:
+
+``` typescript
+const multiImport = async (...sources: string[]) => {
+    for (const source of sources) {
+        try {
+            return await import(source);
+        } catch (e) {}
+    }
+}
+const { readLines } = await multiImport(
+  "stdlib/io", // Quarto 1.6 syntax
+  "https://deno.land/std/io/mod.ts", // Quarto 1.5 syntax
+);
+```

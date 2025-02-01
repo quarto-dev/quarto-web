@@ -1,0 +1,120 @@
+---
+title: Quarto 1.6
+description: |
+  Quarto 1.6 supports unified branding across formats, updates to RevealJS, a new shortcode to reorder content, a landscape page block, and more. There are also a couple of breaking changes that will affect a small number of users.
+categories:
+  - Quarto 1.6
+  - Releases
+author: Charlotte Wickham
+date: "11/25/2024"
+image: "thumbnail.png"
+image-alt: "Quarto 1.6 with a palette."
+---
+
+Quarto 1.6 has been officially released! You can get the current release from the [download page](/docs/download/index.qmd).
+
+We are particularly excited about:
+
+-   Support for **brand.yml**---a single file that defines your organization's branding and style preferences across formats.
+
+-   RevealJS updates, including the new navigation features: scroll mode and jump to slide.
+
+-   The `contents` shortcode for reordering your content.
+
+-   `landscape` blocks for placing content on a landscape page.
+
+-   Improvements in how you can specify subpanels of cross-references from code blocks.
+
+You can read about these new features and a couple of breaking changes in the sections below. You can find all the changes in this version in the [Release Notes](/docs/download/changelog/1.6/).
+
+## Cross-format theming with **brand.yml**
+
+[**brand.yml**](https://posit-dev.github.io/brand-yml/) is a Posit project outside Quarto that defines brand information using a simple YAML file. Quarto is a flagship adopter of **brand.yml** and supports brand-themed output for `html`, `dashboard`, `typst` and `revealjs` formats.
+
+{{< include /docs/authoring/_brand-example.qmd >}}
+
+Get started by reading the Quarto [Guide to Brand](/docs/authoring/brand.qmd).
+
+## RevealJS update
+
+Quarto v1.6 updates RevealJS to v5.1.0. With the update comes two notable features:
+
+[**Jump to Slide**](/docs/presentations/revealjs/presenting.qmd#jump-to-slide): Quickly navigate to a slide. Press {{< kbd G >}} to activate, type a slide number or ID, and hit Enter/Return.
+
+[**Scroll Mode**](/docs/presentations/revealjs/presenting.qmd#scroll-view): Scroll rather than click to advance slides. Press {{< kbd R >}}, add `?view=scroll` to your URL, or use the Navigation menu to activate. Automatically activated on small screens.
+
+## Contents shortcode
+
+The `contents` shortcode lets you compose content in one location in your document and then display it in another. For example, you might use a code cell to generate a plot:
+
+```` markdown
+```{{python}}
+#| echo: false
+#| label: a-cell
+import matplotlib.pyplot as plt
+plt.plot([1,2,3])
+```
+````
+
+Then use the `contents` shortcode to display that plot in a callout by referencing its label, `a-cell`:
+
+``` {.markdown shortcodes="false"}
+::: callout-note
+## Note the following plot
+
+{{< contents a-cell >}}
+
+:::
+```
+
+Find all the details on our guide page on the [contents shortcode](/docs/authoring/contents.qmd).
+
+## Landscape mode
+
+In `pdf`, `docx,` and `typst` formats, you can now put content on a landscape page by placing it inside a [`landscape` block](/docs/authoring/article-layout.html#landscape-mode):
+
+``` markdown
+::: {.landscape}
+
+This will appear in landscape.
+
+:::
+```
+
+## Cross-reference improvements
+
+It should now be easier to get Quarto to recognize subfloats (subtables, subfigures, etc) when they're emitted by code cells. If the `subcap` attribute of a code cell has as many entries as the number of outputs from your code cell, Quarto knows to accept those as subfloats. See [#10328](https://github.com/quarto-dev/quarto-cli/issues/10328){.external} for details.
+
+Minimal example:
+
+```{{{r}}}
+#| label: tbl-example
+#| tbl-cap: I want these images to be interpreted as Tables.
+#| tbl-subcap:
+#|   - This is the subcaption for the first subtable
+#|   - This is the subcaption for the second subtable
+plot(1:10)
+plot(11:20)
+```
+
+![The result of executing the above code cell in HTML format](./subcells-and-subfloats.png){.border fig-alt="Screenshot of a document showing two plots with an overall caption labelled 'Table 1', and each plot with a caption starting '(a)' and '(b)' respectively."}
+
+## Breaking Changes
+
+We try very hard to keep Quarto backward compatible. However, in this release, there are a couple of breaking changes due to upstream dependencies. You may be affected if:
+
+-   **You have TypeScript files (`*.ts`) that you use either with pre- or post-render scripts, or with `quarto run`, that import Deno standard libraries.**
+
+    The import syntax has changed. Please see [Deno Scripts](/docs/projects/scripts.html#deno-scripts) for the necessary changes.
+
+-   **You override the LaTeX `graphics.tex` partial, or you have a completely custom LaTeX template that doesn't use the `graphics.tex` partial.**
+
+    A Pandoc change means some images are now wrapped in `\pandocbounded`. Consequently, your `graphics.tex` partial, or your template, needs to define `\pandocbounded`. You can look at our [source code for `graphics.tex`](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/pdf/pandoc/graphics.tex){.external} to see the necessary changes and read more about the upstream change in [Pandoc commit 26b25a4](https://github.com/jgm/pandoc/commit/26b25a4428815b04c255e33e95ee86ca7b6ee30e){.external}.
+
+## Acknowledgments
+
+We want to say a huge thank you to everyone who contributed to this release by opening issues and pull requests:
+
+{{< include _contribs.md >}}
+
+The palette emoji in the [listing and social card image](images/thumbnail.png) for this post comes from [OpenMoji](https://openmoji.org/){.external}– the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#){.external}

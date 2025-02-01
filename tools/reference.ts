@@ -1,8 +1,8 @@
 
-import { basename, dirname, join } from "https://deno.land/std/path/mod.ts";
-import { expandGlobSync } from "https://deno.land/std/fs/expand_glob.ts";
-import { parse } from "https://deno.land/std/yaml/mod.ts";
-import { distinct } from "https://deno.land/std/collections/distinct.ts"
+import { basename, dirname, join } from "stdlib/path";
+import { expandGlobSync } from "stdlib/fs";
+import { parse } from "stdlib/yaml";
+import { distinct } from "stdlib/collections";
 
 
 export function asArray<T>(x?: T | Array<T>): Array<T> {
@@ -261,9 +261,50 @@ function readDefinitionsId(id: string, descriptions?: Record<string, string>) {
   const supers = obj["super"];
   if (supers) {
     (supers as { resolveRef: string }[]).forEach((sup) => {
+      console.log('super!');
       results.push(...readDefinitionsId(sup.resolveRef));
     })
   }
+  return results;
+}
+
+function readDefinitionsIdSuper(id: string, descriptions?: Record<string, string>) {
+  const obj = definitions.find(value => value.id === id) as any;
+
+  const baseObject = (obj["object"] || obj["schema"]["object"]);
+  const props = baseObject["properties"];
+
+  const results = [];
+  results.push(...readProjectProperties(props, descriptions));
+
+  const _super = baseObject["super"];
+  if (_super) {
+    results.push(...readDefinitionsIdSuper(_super.resolveRef));
+  }
+  return results;
+}
+
+function readTypographyOptions(id: string, toFollow: Array<string>) {
+  const obj = definitions.find(value => value.id === id) as any;
+
+  const baseObject = (obj["object"] || obj["schema"]["object"]);
+  const props = baseObject["properties"];
+  const descriptions = {
+    "fonts": asDescriptionString(findVal(props.fonts, "description")) +" See [Font resource definitions](#font-resource-definitions) for more information."
+  };
+
+  for (const [key, prop] of Object.entries(props).filter(([_, {ref}]) => ref)) {
+    if (prop.hidden) {
+      continue;
+    }
+    const shortref = prop.ref.replace(/^brand-typography-options-/, '');
+    descriptions[key] = asDescriptionString(findVal(prop, "description")) +" See [" + shortref + "](#" + shortref + ") for more information.";
+    toFollow.push(prop.ref)
+  }
+
+  const results = [];
+  results.push(...readProjectProperties(props, descriptions));
+
   return results;
 }
 
@@ -330,6 +371,91 @@ function writeMetadataTable(name: string, title: string, options: Array<Option>)
 const citationOptions = readDefinitionsId("csl-item");
 writeMetadataTable("citation", "Citation", citationOptions);
 
+// Brand Page
+
+// Filter `definitions` to items with an id field starting with `brand-`
+const brandDefinitions = definitions.filter(item => item.id.startsWith("brand-"));
+
+const brandOptions = readDefinitionsId("brand",{
+  "meta": "Metadata for a brand, including the brand name and important links. See [Meta](#meta) for more information.",
+  "logo": "Provide definitions and defaults for brand's logo in various formats and sizes. See [Logo](#logo) for more information.",
+  "color": "The brand's custom color palette and theme. See [Color](#color) for more information.",
+  "typography": "Typography definitions for the brand. See [Typography](#typography) for more information.",
+  "defaults": "Default settings"
+});
+
+const toFollow : Array<string> = []
+
+const typographyOptionDescriptions = {
+  "family": "The font family.",
+  "size": "The font size.",
+  "weight": "The font weight.",
+  "style": "The font style.",
+  "color": "The text color.",
+  "background-color": "The text background color.",
+  "decoration": "The text decoration, i.e. underline",
+  "line-height": "The distance between lines of text.",
+};
+
+const fontResourceDefinitions = definitions.find(value => value.id === "brand-font").anyOf;
+
+const brandMetadata = [
+  {
+    "name": "brand",
+    "title": "Brand",
+    "options": brandOptions 
+  },
+  {
+    "name": "brand-meta",
+    "title": "Meta",
+    "options": readDefinitionsId("brand-meta")
+  },
+  {
+    "name": "brand-logo",
+    "title": "Logo",
+    "options": readDefinitionsId("brand-logo")
+  },
+  {
+    "name": "brand-color",
+    "title": "Color",
+    "options": readDefinitionsId("brand-color")
+  }, 
+  {
+    "name": "brand-typography",
+    "title": "Typography",
+    "options": readTypographyOptions("brand-typography", toFollow)
+  },
+  {
+    "name": "font-resource-definitions",
+    "title": "Font resource definitions",
+    "level": 3,
+    "options": []
+  },
+  ...fontResourceDefinitions.map(({ref}) => {
+    if (!ref) return null;
+    const source = ref.replace(/^brand-font-/, "");
+    const descriptions = {"source": '\`"' + source + '"\`'}
+    return {
+      "name": ref,
+      "title": source,
+      "level": 4,
+      "options": readDefinitionsIdSuper(ref, descriptions)
+    }
+  }).filter(x => x),
+  ...toFollow.map(id => {
+    const typography = definitions.find(value => value.id === id);
+    const root = typography?.["anyOf"][1]?.object;
+    if (!root?.properties) return null;
+    return {
+      "name": id,
+      "title": id.replace(/^brand-typography-options-/, ""),
+      "level": 3,
+      "options": readProjectProperties(root.properties, typographyOptionDescriptions)
+    }
+  }).filter(x => x),
+]
+Deno.writeTextFileSync(`docs/reference/metadata/brand.json`, JSON.stringify(brandMetadata, undefined, 2));
+
 // Crossref Page
 const crossrefs = readSchema("document-crossref.yml");
 const crossrefOptions = (crossrefs as any[]).find(value => value.name ==  "crossref")["schema"]["anyOf"][1]["object"]["properties"];
@@ -375,8 +501,10 @@ const openGraphOptions = socialMetadataOptions.concat(readDefinitionsObject("ope
 writeProjectTable("open-graph", openGraphOptions);
 
 const websiteOptions = readDefinitionsId("base-website", {
+  "drafts": "A list of input documents that should be treated as drafts. Read more at [Website Drafts](/docs/websites/website-drafts.qmd).",
   "navbar": "Navbar options (see [Navbar](#navbar))",
   "sidebar": "Sidebar options (see [Sidebar](#sidebar))",
+  "announcement": "An announcement displayed at the top of the page. (see [Announcement](#announcement))",
   "page-footer": "Page footer. Text content or [page footer](#footer) definition.",
   "open-graph": "Generate Open Graph metadata (see [Open Graph](#open-graph) options)",
   "twitter-card": "Generate Twitter Card metadata (see [Twitter Card](#twitter-card) options)",
@@ -385,8 +513,12 @@ const websiteOptions = readDefinitionsId("base-website", {
 writeProjectTable("website", websiteOptions);
 
 
-const bookOptions = readProjectObject("book").concat(
-  websiteOptions.filter(option => option.name !== "title"));
+const excludeFromBooks = ['announcement', 'drafts', 'draft-mode', 'title'];
+
+const bookOptions: Option[] = readProjectObject("book").concat(
+  websiteOptions.filter(option => !excludeFromBooks.includes(option.name))
+);
+
 writeProjectTable("book", bookOptions);
 
 const manuscriptOptions = readDefinitionsId("manuscript-schema", {
@@ -425,6 +557,10 @@ const pageFooterOptions = readDefinitionsObject("page-footer", {
   "right": "String, or list of [navigation items](#nav-items) to appear in the right region of the footer"
 });
 writeProjectTable("pagefooter", pageFooterOptions);
+
+const announcementOptions = readDefinitionsObject("announcement", {
+});
+writeProjectTable("announcement", announcementOptions);
 
 const searchOptions = readDefinitionsObject("search", {
   "algolia": "Use an Algolia index for site search (see [Algolia Options](#algolia-options))"

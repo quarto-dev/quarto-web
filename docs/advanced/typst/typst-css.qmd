@@ -1,0 +1,97 @@
+---
+title: Typst CSS
+summary: Quarto's translation of CSS properties to Typst properties
+---
+
+## Overview
+
+The Typst CSS feature translates CSS properties into Typst properties, to allow similar styling between the HTML formats and the Typst format.
+
+It is tuned for two use-cases:
+
+- HTML Tables styled by table packages
+- HTML `<pre>` tags representing console output with spans decorated with colors, e.g. from ANSI.
+
+This document is designed for: 
+
+* package developers who want to produce `table` or `pre` output which can be translated to Typst
+* extension developers who want to improve the translation of CSS properties, or add other CSS properties
+
+It describes how Typst CSS works, how to enable and disable this feature and the related `pre` tag processing, troubleshooting, and adding or changing the translation filters. 
+
+## How Typst CSS works
+
+Unless [table processing is disabled](/docs/authoring/tables.qmd#disabling-quarto-table-processing), tables in HTML raw blocks will be parsed into the Pandoc AST and then written by the output format. 
+
+When the output format is Typst, Quarto will [`juice`](https://github.com/Automattic/juice) the HTML input, annotating the HTML elements with CSS properties from the rules in any style sheets included in the HTML raw block.
+A Quarto post-processing filter translates the HTML attributes and CSS properties into attributes of the form `typst:property` or `typst:text:property`, and the Typst writer in Pandoc writes the output appropriately.
+
+You can opt-in to have `pre` tags processed in the same way: see [`pre` tag processing](#pre-tags).
+
+## Supported Elements and Properties
+
+Typst CSS works for the specific combinations of HTML elements and CSS properties below:
+
+|                  | span | div | table | td  |
+|------------------|------|-----|-------|-----|
+| background-color |   ✓  |  ✓  |       |  ✓  |
+| border[^1]       |      |     |       |  ✓  |
+| color            |   ✓  |  ✓  |       |  ✓  |
+| font-family      |      |  ✓  |   ✓   |     |
+| font-size        |      |  ✓  |   ✓   |     |
+| opacity          |   ✓  |     |       |  ✓  |
+| align[^2]        |      |     |       |  ✓  |
+
+
+[^1]: `border`, `border-left` etc, `border-width`, `border-style`, `border-color`, `border-left-width` etc
+
+[^2]: `text-align`, `vertical-align`
+
+
+## Disabling Typst CSS
+
+The CSS-to-Typst Lua filter operates over the entire AST (not just tables and pre-tags). For troubleshooting purposes, the filter can be disabled with:
+
+``` yaml
+format:
+  typst:
+    css-property-processing: none
+```
+    
+
+## `pre` tag processing {#pre-tags}
+
+`pre`-tag processing is intended for automatic translation of ANSI to Typst via HTML. Quarto does not currently capture ANSI output from execution, but this feature is available for packages and extensions.
+
+`pre` tag processing is opt-in with `html-pre-tag-processing="parse"` on a div directly enclosing the HTML raw block:
+
+```` markdown
+::: {html-pre-tag-processing="parse"}
+
+```{=html}
+<pre>...</pre>
+```
+:::
+````
+
+## Troubleshooting
+
+To make sure that a package is outputting HTML tables that can be translated with Typst CSS, render the document with `keep-md: true`. Then check the `.typst.md` file for HTML Raw Blocks like 
+
+````html
+```{=html}
+<table>
+</table>
+```
+````
+The raw block must contain an HTML `<table>` tag, which may be preceded by stylesheets (`<style>`).
+
+Similarly, a raw block intended for `pre` tag processing must contain a `<pre>` tag, which may be preceded by stylesheets.
+
+## Modifying the translation
+
+You can add your own Lua filters to add or change the translation of CSS properties into Typst properties.
+
+Consult the Pandoc documentation for [Typst property output](https://pandoc.org/typst-property-output.html) and the source of the [Lua filter which translates CSS properties to Typst](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/filters/quarto-post/typst-css-to-props.lua).
+
+You can override the Typst CSS Lua filter's behavior by running your filter before it and removing CSS properties (untested). You can add support for other CSS properties by running your filter before or after the Typst CSS Lua filter.
