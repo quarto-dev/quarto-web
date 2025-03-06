@@ -19,4 +19,4 @@ file    = File.read(indexFile)
 records = JSON.parse(file)
 
 # The API client automatically batches your records
-index.replace_all_objects(records, {})
+index.replace_all_objects(records, { safe: true })
