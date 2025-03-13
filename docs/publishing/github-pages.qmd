@@ -15,11 +15,11 @@ There are three ways to publish Quarto websites and documents to GitHub Pages:
 
 2.  Use the `quarto publish` command to publish content rendered on your local machine.
 
-3.  Use a [GitHub Action] to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever you push a source code change to your repository.
+3.  Use a [GitHub Action](#github-action) to automatically render your files (a single Quarto document or a Quarto project) and publish the resulting content whenever you push a source code change to your repository.
 
 We'll cover each of these methods below, but first an important pre-requisite: you need to have a Git repository on your local machine that is synced to GitHub. The URL of the published website will be derived from the combination of your username and the repository name (e.g. `https://username.github.io/reponame/`).
 
-You can optionally configure a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) for a GitHub Pages site, but before exploring that ground you should get your site up and running with the default domain.
+You can optionally configure a [custom domain](#custom-domain) for a GitHub Pages site, but before exploring that, get your site up and running with the default domain.
 
 ## Render to `docs` {#render-to-docs}
 
@@ -282,6 +282,40 @@ By default, `quarto publish` will re-render your project before publishing it. H
 ```
 
 See the full definition of the Quarto [publish action](https://github.com/quarto-dev/quarto-actions/blob/main/publish/action.yml) to learn about other more advanced options.
+
+## Custom Domain {#custom-domain}
+
+A custom domain allows you to use your own domain name instead of the default `username.github.io` domain for your GitHub Pages site.
+To use a custom domain you need to complete two steps:
+
+1. Add your domain to your GitHub repository settings
+2. Configure a record with your DNS provider
+
+For the first step, the [GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) describes adding your domain to your repository in the  **Settings** pane. 
+However, this creates a `CNAME` file in the location of your rendered site, 
+which will be overwritten whenever you render your site.
+Instead, create a `CNAME` file manually in your project root directory (i.e. alongside `_quarto.yml`):
+
+::: {layout-ncol="2"}
+
+```{.default filename="website/"}
+├── _site/
+├── _quarto.yml
+├── CNAME
+├── about.qmd
+└── index.qmd
+```
+
+```{.default filename="CNAME"}
+blog.example.com
+```
+::::
+
+Quarto recognizes the `CNAME` file as a [site resource](/docs/websites/website-tools.qmd#site-resources) and will copy it your site output directory when you render.
+Commit `CNAME` (and `docs/CNAME`, if you are publishing from `docs/`), 
+and push to GitHub before completing the second step. 
+
+Learn more about the second step, and troubleshooting tips in the [GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages).
 
 ## User Site
 
