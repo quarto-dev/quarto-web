@@ -218,7 +218,9 @@ As an example, you could install the main branch of `QuartoNotebookRunner` into 
 
 ### Rendering notebooks
 
-To use the `julia` engine, you have to specify it in your frontmatter:
+To use the `julia` engine, you have to specifically enable it. For that, you have two options.
+
+Either specify the engine in your frontmatter:
 
 ```` markdown
 ---
@@ -230,6 +232,12 @@ engine: julia
 1 + 2
 ```
 ````
+
+Or, starting with Quarto 1.7, you can prioritize the julia engine project-wide by adding `julia` to the `engines` array in your project file, giving it priority over all unlisted engines (more under [Engine prioritization](#engine-prioritization)). Note that the project file approach is the only option in order to use the native Julia engine with percent-script files.
+
+```{.yaml filename="_quarto.yml"}
+engines: ['julia']
+```
 
 Rendering a notebook will start a persistent server process if it hasn't already started. This server process first loads QuartoNotebookRunner from Quarto's private environment. QuartoNotebookRunner then spins up a separate Julia worker process for each notebook you want to render.
 
