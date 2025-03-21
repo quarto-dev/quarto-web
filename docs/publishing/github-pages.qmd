@@ -289,12 +289,11 @@ A custom domain allows you to use your own domain name instead of the default `u
 To use a custom domain you need to complete two steps:
 
 1. Add your domain to your GitHub repository settings
-2. Configure a record with your DNS provider
+2. Configure records with your DNS provider
 
-For the first step, the [GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site) describes adding your domain to your repository in the  **Settings** pane. 
-However, this creates a `CNAME` file in the location of your rendered site, 
-which will be overwritten whenever you render your site.
-Instead, create a `CNAME` file manually in your project root directory (i.e. alongside `_quarto.yml`):
+### 1. Add your domain to your GitHub repository settings 
+
+Add a `CNAME` file to your project root directory (i.e., alongside `_quarto.yml`) that contains your custom domain:
 
 ::: {layout-ncol="2"}
 
@@ -311,11 +310,26 @@ blog.example.com
 ```
 ::::
 
-Quarto recognizes the `CNAME` file as a [site resource](/docs/websites/website-tools.qmd#site-resources) and will copy it your site output directory when you render.
-Commit `CNAME` (and `docs/CNAME`, if you are publishing from `docs/`), 
-and push to GitHub before completing the second step. 
+Quarto will recognize the `CNAME` file as a [site resource](/docs/websites/website-tools.qmd#site-resources) and will copy it your site output directory when you render.
 
-Learn more about the second step, and troubleshooting tips in the [GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages).
+Re-render and publish your site to ensure `CNAME` is available to GitHub Pages. 
+
+::: {.callout-note}
+
+The GitHub Pages documentation describes adding your domain to your repository in the  **Settings** pane. 
+However, this creates a `CNAME` file in the location of your rendered site, 
+which will be overwritten whenever you render your site with Quarto.
+
+:::
+
+
+### 2. Configure records with your DNS provider
+
+The records you need to configure with your DNS provider depend on whether you are using an apex domain (e.g., `example.com`) or a subdomain (e.g., `www.example.com` or `blog.example.com`). 
+
+Apex domains require an `ALIAS`, `ANAME`, or `A` record, whereas subdomains require a `CNAME` record. 
+Find the appropriate values from the [DNS records summary table in the GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#dns-records-for-your-custom-domain).
+For apex domains, pay particular attention to the DNS record values, you may need to overwrite addresses your DNS provider has added by default.
 
 ## User Site
 
