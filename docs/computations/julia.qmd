@@ -318,6 +318,147 @@ The currently available options are:
 - `exeflags`: An array of strings which are appended to the `julia` command that starts the worker process. For example, a notebook is run with `--project=@.` by default (the environment in the directory where the notebook is stored) but this could be overridden by setting `exeflags: ["--project=/some/directory/"]`.
 - `env`: An array of strings where each string specifies one environment variable that is passed to the worker process. For example, `env: ["SOMEVAR=SOMEVALUE"]`.
 
-### Limitations
+### `quarto call engine julia` commands
 
-Currently, the `engine: julia` option must be specified in each `.qmd` file. Setting the engine project-wide via `_quarto.yml` [is not yet supported](https://github.com/quarto-dev/quarto-cli/issues/3157).
+Starting with Quarto 1.7, The julia engine offers a couple CLI commands for configuration and monitoring via the `quarto call engine julia` entrypoint.
+
+#### `status`
+
+The `status` command prints out information about the currently running server process as well as potential worker processes. The output looks something like this:
+
+```
+$ quarto call engine julia status
+QuartoNotebookRunner server status:
+  started at: 9:44:31 (47 seconds ago)
+  runner version: 0.15.0
+  environment: /Users/username/Library/Caches/quarto/julia/
+  pid: 42008
+  port: 8000
+  julia version: 1.11.4
+  timeout: 5 minutes
+  workers active: 1
+    worker 1:
+      path: /Users/username/notebook.qmd
+      run started: 9:44:38 (40 seconds ago)
+      run finished: -
+      timeout: 5 minutes
+      pid: 42026
+      exe: `julia`
+      exeflags: ["--color=yes"]
+      env: ["JULIA_PROJECT=@."]
+```
+
+#### `close`
+
+The `close` command allows shutting down notebook worker processes.
+By default, only closing of idle worker processes is allowed.
+A worker process is idle when its `run finished` status is populated. In this case, we can call `close` on it:
+
+```
+$ quarto call engine julia status
+QuartoNotebookRunner server status:
+  started at: 9:44:31 (5 minutes 41 seconds ago)
+  runner version: 0.15.0
+  environment: /Users/username/Library/Caches/quarto/julia/
+  pid: 42008
+  port: 8000
+  julia version: 1.11.4
+  timeout: 5 minutes
+  workers active: 1
+    worker 1:
+      path: /Users/username/notebook.qmd
+      run started: 9:44:38 (5 minutes 34 seconds ago)
+      run finished: 9:46:21 (took 1 minute 43 seconds)
+      timeout: 5 minutes (1 minute 9 seconds left)
+      pid: 42026
+      exe: `julia`
+      exeflags: ["--color=yes"]
+      env: ["JULIA_PROJECT=@."]
+
+$ quarto call engine julia close /Users/username/notebook.qmd
+Worker closed successfully.
+```
+
+To force a busy worker to close, for example if it's stuck in an endless loop or because a computation is taking too long, the `--force` flag can be added.
+Using this flag means losing all the work that the worker process has done so far.
+At the next run, the worker process will have to be started from scratch and all packages loaded again:
+
+```
+$ quarto call engine julia status                                                     
+QuartoNotebookRunner server status:
+  started at: 11:2:40 (16 seconds ago)
+  runner version: 0.15.0
+  environment: /Users/username/Library/Caches/quarto/julia/
+  pid: 50642
+  port: 8000
+  julia version: 1.11.4
+  timeout: 5 minutes
+  workers active: 1
+    worker 1:
+      path: /Users/username/notebook.qmd
+      run started: 11:2:47 (9 seconds ago)
+      run finished: -
+      timeout: 5 minutes
+      pid: 50650
+      exe: `julia`
+      exeflags: ["--color=yes"]
+      env: ["JULIA_PROJECT=@."]
+
+$ quarto call engine julia close /Users/username/notebook.qmd
+ERROR: Julia server returned error after receiving "close" command:
+
+Failed to close notebook: /Users/username/notebook.qmd
+
+The underlying Julia error was:
+
+Tried to close file "/Users/username/notebook.qmd" but the corresponding worker is busy.
+
+Stack trace:
+  [omitted for brevity]
+
+$ quarto call engine julia close --force /Users/username/notebook.qmd
+Worker force-closed successfully.
+
+$ quarto call engine julia status                                                     
+QuartoNotebookRunner server status:
+  started at: 11:2:40 (46 seconds ago)
+  runner version: 0.15.0
+  environment: /Users/username/Library/Caches/quarto/julia/
+  pid: 50642
+  port: 8000
+  julia version: 1.11.4
+  timeout: 5 minutes (4 minutes 56 seconds left)
+  workers active: 0
+```
+
+#### `stop`
+
+The `stop` command shuts down the server process gracefully, it will error if any workers are currently busy:
+
+```
+$ quarto call engine julia status
+QuartoNotebookRunner server status:
+  started at: 11:2:40 (3 minutes 43 seconds ago)
+  runner version: 0.15.0
+  environment: /Users/username/Library/Caches/quarto/julia/
+  pid: 50642
+  port: 8000
+  julia version: 1.11.4
+  timeout: 5 minutes (1 minute 59 seconds left)
+  workers active: 0
+
+$ quarto call engine julia stop 
+Server stopped.
+
+$ quarto call engine julia status
+Julia control server is not running.
+```
+
+#### `kill`
+
+The `kill` command shuts the server process down forcefully. This command is intended as a last resort when the server is in a bad state and unresponsive. Note that all worker processes will be killed as well, so you will lose all progress.
+
+#### `log`
+
+The `log` command prints the output of the internal log file of the server process. If the server process fails to start or unexpectedly quits, this log file might contain useful information.
+
