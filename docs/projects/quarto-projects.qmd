@@ -195,6 +195,19 @@ quarto_render()
 
 {{< include _render-targets.md >}}
 
+### Engine prioritization
+
+Quarto supports different engines to execute code. Historically, the R, Python and Julia languages were only supported by one engine, each, so there was no need to choose an execution engine. With the addition of the native Julia engine, this changed.
+
+When determining which execution engine to use for a given notebook, Quarto checks the available engines in a predefined order, which means that the Jupyter engine is always preferred for Julia over the native engine.
+
+Starting with Quarto 1.7, instead of specifying `engine: julia` in the frontmatter of every notebook in a project, you can set a different prioritization order in your project file using the `engines` key.
+
+All the engines you list there will be checked first in the order you provide. The remaining engines will be checked by Quarto in the usual predefined order. To enable the native Julia engine project-wide, it is therefore enough to add this line to your project file:
+
+```{.yaml filename="_quarto.yml"}
+engines: ['julia']
+```
 
 ## Learning More
 
