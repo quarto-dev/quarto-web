@@ -12,6 +12,13 @@ Quarto supports executable Julia code blocks within markdown. This allows you to
 
 Quarto has two available engines for executing Julia code. The older one is using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel and depends on Python to run. The newer engine is using the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks and does not have any additional dependencies beyond a Julia installation.
 
+Using either of these engines will require manually installing Julia if
+you have not done so already. You can download it from
+https://julialang.org/downloads/. There are two options for installation: the
+Juliaup installation manager, or the "manual" installation approach. Unless
+you know that you need to use the "manual" approach, use
+Juliaup since it allows you to manage multiple Julia versions on your system.
+
 ## Using the `jupyter` engine
 
 Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
@@ -462,3 +469,144 @@ The `kill` command shuts the server process down forcefully. This command is int
 
 The `log` command prints the output of the internal log file of the server process. If the server process fails to start or unexpectedly quits, this log file might contain useful information.
 
+### `juliaup` integration
+
+[`juliaup`](https://github.com/JuliaLang/juliaup) is the recommended way to
+install and manage Julia versions. The `julia` engine supports using
+`juliaup`'s `+` channel specifier to select the Julia version that a notebook
+uses. This allow users to run several notebooks concurrently with different
+Julia versions on the same machine without the need for customizing their
+`PATH` in any way.
+
+To use this feature, ensure that you have used `juliaup` to install the channels
+that you wish to use in your notebooks. Then add the channel specifier to the notebook
+frontmatter in the `julia.exeflags` option:
+
+````markdown
+---
+title: "A Julia 1.11 notebook"
+engine: julia
+julia:
+  exeflags: ["+1.11"]
+---
+
+```{{julia}}
+VERSION
+```
+````
+
+`QuartoNotebookRunner` currently supports running Julia versions from 1.6
+onwards. Support for earlier versions is not planned.
+
+### Revise.jl integration
+
+[Revise](https://github.com/timholy/Revise.jl) allows for automatically
+updating function definitions in Julia sessions. It is an essential tool in the
+Julia ecosystem for any user that wishes to develop their own packages or large
+projects. The `julia` engine supports using `Revise` within notebook processes
+by simply importing the package into a cell at the start of a notebook. Once
+imported `Revise` will automatically update functions imported from locally
+developed packages in the same way as it behaves in a Julia REPL.
+
+Ensure that `Revise` is installed in the project environment that the notebook
+is using, since the global environment is not included in the load path
+provided to Julia, unlike the behaviour of a Julia REPL session.
+
+### Caching {#caching-julia}
+
+The engine has built-in support for caching notebook results. This feature is disabled by
+default but can be enabled by setting the `execute.cache` option to `true` in a notebook's
+frontmatter:
+
+````markdown
+---
+title: "A caching example"
+engine: julia
+execute:
+  cache: true
+---
+
+```{{julia}}
+rand()
+```
+````
+
+Notebook caches are invalidated based on the following criteria:
+
+- Using a different Julia version to run the notebook.
+- Changes to the `Manifest.toml` of the environment the notebook is run in. Adding, removing, or changing package versions will invalidate the cache.
+- Changing any contents in the notebook's frontmatter.
+- Changing any contents of any executable Julia cells, including cell options.
+
+Changes that do not invalidate a cache:
+
+- Editing markdown content outside of executable Julia cells.
+
+Caches are saved to file in a `.cache` directory alongside the notebook file.
+This directory is safe to remove if you want to invalidate all caches. The
+contents of the individual cache files is an internal implementation detail and
+should not be relied upon.
+
+These caches are safe to save in CI via such tools as GitHub Actions
+`action/cache` to help improve the render time of long-running notebooks that
+do not often change.
+
+### R and Python support
+
+`{{r}}` and `{{python}}` executable code blocks are supported in the `julia`
+engine via integrations with the
+[RCall](https://github.com/JuliaInterop/RCall.jl) and
+[PythonCall](https://github.com/JuliaPy/PythonCall.jl) packages respectively.
+Using this feature requires the notebook author to explicitly `import` those
+packages into their notebooks in a `{{julia}}` cell afterwhich they can use
+`{{r}}` and `{{python}}` cells.
+
+````markdown
+---
+title: "Multi-language notebooks"
+engine: julia
+---
+
+```{{julia}}
+import PythonCall
+import RCall
+```
+
+Create some data in Julia:
+
+```{{julia}}
+data = sin.(0:0.1:4pi)
+```
+
+Then plot it in R by interpolating the `data` variable from Julia into `R` via
+the `$` syntax:
+
+```{{r}}
+plot($data)
+```
+
+The same `$` syntax can be used to interpolate Julia variables into Python code as well:
+
+```{{python}}
+len($data)
+```
+````
+
+### Engine "extensions"
+
+The implementation of `QuartoNotebookRunner` allows for extending the behaviour
+of notebooks via external Julia packages.
+
+One example of this is the
+[QuartoTools.jl](https://pumasai.github.io/QuartoTools.jl) package, which
+enables fine-grained function call caching, support for serializing data
+between notebook processes and normal `julia` processes, and "expandable" cell
+outputs that allow for programatic creating of cell inputs and outputs within
+notebooks. See the linked documentation for more thorough discussion of that
+package's features.
+
+The same approach used by that package can be applied to other third-party
+packages that wish to extend the functionality of notebooks in other ways.
+Please direct questions and requests regarding this functionality to the
+[QuartoNotebookRunner](https://github.com/PumasAI/QuartoNotebookRunner.jl)
+repository.
