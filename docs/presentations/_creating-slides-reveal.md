@@ -20,7 +20,7 @@ format: {{< meta slide-format >}}
 - Count sheep
 ```
 
-You can also divide slide shows into sections with title slides using a level 1 header (`#`). For example:
+You can also divide slide shows into sections with title slides using a level 1 heading (`#`). For example:
 
 ``` {.markdown code-preview="examples/creating-slides-2.qmd"}
 ---
