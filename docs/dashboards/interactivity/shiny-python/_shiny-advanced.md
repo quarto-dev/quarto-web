@@ -81,7 +81,7 @@ def dataview():
 
 2.  The `context: setup` cell option indicates that this code cell should run when the application starts (as opposed to when each new client session starts). Expensive initialization code (e.g. loading data) should be placed in `context: setup`.
 
-3.  Create global sidebars by adding the `.sidebar` class to a level 1 header. Sidebars can include code cells as well as images, narrative, and links.
+3.  Create global sidebars by adding the `.sidebar` class to a level 1 heading. Sidebars can include code cells as well as images, narrative, and links.
 
 4.  These checkbox input groups have their contents dynamically driven from the available categories in the `species` and `islands` fields of the dataset.
 
