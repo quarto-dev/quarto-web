@@ -73,6 +73,44 @@ brand: brand/_brand.yml
 
 Paths specified in `_brand.yml` are relative to the location of the brand file.
 
+### Dark Brand
+
+As with [Themes](/docs/output-formats/html-themes.qmd#dark-mode), you can specify both light and dark brands, making both a light and a dark version of your output available:
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  light: light-brand.yml
+  dark: dark-brand.yml
+---
+```
+
+This also works with brands specified directly in the document:
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  light:
+    color:
+      background: "#ffffff"
+      foreground: "#333333"
+  dark:
+    color:
+      background: "#333333"
+      foreground: "#ffffff"
+---
+```
+
+Light and dark brands can also be specifieds in a project:
+
+```{.yaml filename="_quarto.yml"}
+---
+brand:
+  light: light-brand.yml
+  dark: dark-brand.yml
+---
+```
+
 ## Brand Elements
 
 The elements of **brand.yml** are specified in the documentation for the [**brand.yml** project](https://posit-dev.github.io/brand-yml/){.external}. 
@@ -411,7 +449,7 @@ Beyond the automatic application of your brand file, you can also directly acces
 
 Some values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode. In particular, you can access colors and logos by name:
 
--   Use `{{{< brand color COLOR_NAME >}}}` to return the brand color named `COLOR_NAME` as a string.
+-   Use `{{{< brand color COLOR_NAME BRAND_MODE >}}}` to return the brand color named `COLOR_NAME` as a string. Provide `dark` for `BRAND_MODE` in order to return the color from the [dark brand](#dark-brand); otherwise the light brand will be used.
 -   Use `{{{< brand logo LOGO_NAME >}}}` to return the brand logo named `LOGO_NAME` as an image.
 
 For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
@@ -556,6 +594,19 @@ theme:
   - cosmo        # a predefined bootswatch theme
   - brand        # theming derived from `_brand.yml`
   - tweaks.scss  # a user-defined customization
+```
+
+The analogous syntax also works for combining light and dark brands with light and dark themes:
+
+```yaml
+# Quarto 1.7 syntax
+theme:
+  light:
+    - cosmo
+    - brand
+  dark:
+    - slate
+    - brand
 ```
 
 Learn more about how Quarto generates styles in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
