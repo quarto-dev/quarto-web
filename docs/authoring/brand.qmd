@@ -244,6 +244,63 @@ The **brand.yml** specification allows you to specify a `light` and `dark` versi
 
 ::: 
 
+#### Document logo customization
+
+The document `logo` option allows extra customization of the logo.
+
+To choose a brand logo resource:
+```{.yaml filename="document.qmd"}
+---
+logo: large
+---
+```
+
+To choose a brand logo resource and change the alt text:
+
+```{.yaml filename="document.qmd"}
+---
+logo:
+  path: large
+  alt: Alternate alternate text
+---
+```
+
+::: {.callout-warning}
+
+## Limitation
+
+It is [not currently possible](https://github.com/quarto-dev/quarto-cli/issues/11309) to customize the logo for a specific page within a website. Only the project's `_brand.yml` is applied.
+
+::: 
+
+The Typst implementation allows customization of the logo position at the document level:
+
+```{.yaml filename="document.qmd"}
+---
+logo:
+  width: 1in
+  location: right-top
+  padding-right: 0.5in
+  padding-top: 0.25in
+  alt: Alternate alternate text
+---
+```
+
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| Option                   | Description                                                                                                                                    |
++==========================+================================================================================================================================================+
+| `width`                  | Width in CSS units. Default `1.5in`.                                                                                                           |    
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| `location`               | Location on the page in `X-Y`, where `X` is `left`, `center`, or `right` and Y is `top`, `middle`, or `bottom`.                                |
+|                          | Applied as Typst [`align`](https://typst.app/docs/reference/layout/align/).                                                                    |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| `padding`, `padding-top`,| Amount of padding to add to each side of the logo, using CSS [`padding`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) conventions.| 
+| `padding-right`,         | Padding options are applied in alphabetical order.                                                                                             |
+| `padding-bottom`,        | Applied as Typst [`block.inset`](https://typst.app/docs/reference/layout/block/#parameters-inset).                                             |
+| `padding-left`           | Default `padding: 0.75in`.                                                                                                                     |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 ### Typography
 
 [Typography in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/typography.html){.external}
@@ -359,6 +416,11 @@ The supported fields are generally described as follows:
 -   `decoration`: The text decoration, typically used for links. Common values include "underline", "none", or "overline".
 
 ::: 
+
+#### Typst
+
+See [the Advanced documentation](/docs/advanced/typst/brand-yaml.qmd#typography) for more details on the Typst implementation, and troubleshooting tips for fonts.
+
 
 ### Defaults
 
@@ -523,14 +585,6 @@ You can learn more about layering themes in [More About Quarto Themes](/docs/out
 
 ### Typst
 
-If the document has [both light and dark brands](#dark-brand), use `brand-mode: dark` to produce a dark-background PDF that matches the dark brand of your website.
-
-``` yaml
-format:
-  typst:
-    brand-mode: dark
-```
-
 In Typst documents, brand colors are set in a [dictionary](https://typst.app/docs/reference/foundations/dictionary/) called `brand-color`. 
 You can access them directory in raw Typst blocks using the syntax `brand-color.COLOR_NAME`.
 For example, you could make a rectangle filled with your `primary` brand color:
@@ -608,3 +662,14 @@ theme:
 ```
 
 Learn more about how Quarto generates styles in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).
+
+## Choosing light or dark brand in Typst
+
+If the document has [both light and dark brands](#dark-brand), use `brand-mode: dark` to produce a dark-background PDF that matches the dark brand of your website.
+
+``` yaml
+format:
+  typst:
+    brand-mode: dark
+```
+
