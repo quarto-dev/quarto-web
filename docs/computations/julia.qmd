@@ -19,196 +19,6 @@ Juliaup installation manager, or the "manual" installation approach. Unless
 you know that you need to use the "manual" approach, use
 Juliaup since it allows you to manage multiple Julia versions on your system.
 
-# Using the `jupyter` engine
-
-Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
-
-#### Code Blocks
-
-Code blocks that use braces around the language name (e.g. ```` ```{julia} ````) are executable, and will be run by Quarto during render. Here is a simple example:
-
-```` markdown
----
-title: "Plots Demo"
-author: "Norah Jones"
-date: "5/22/2021"
-format:
-  html:
-    code-fold: true
-jupyter: julia-1.8
----
-
-### Parametric Plots
-
-Plot function pair (x(u), y(u)). 
-See @fig-parametric for an example.
-
-```{{julia}}
-#| label: fig-parametric
-#| fig-cap: "Parametric Plots"
-
-using Plots
-
-plot(sin, 
-     x->sin(2x), 
-     0, 
-     2π, 
-     leg=false, 
-     fill=(0,:lavender))
-```
-````
-
-You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](/docs/authoring/cross-references.qmd).
-
-This document would result in the following rendered output:
-
-![](/images/hello-julia.png){.border fig-alt="Example Plots Demo output with title, author, date published and main section on Parametric plots which contains text, a toggleable code field, and the output of the plot, with the caption Figure 1 Parametric Plots."}
-
-You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
-
-There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
-
-In addition to code blocks which interrupt the flow of markdown, you can also include code inline. Read more about inline code in the [Inline Code](inline-code.qmd) article.
-
-#### Multiple Outputs
-
-By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
-
-```{{julia}}
-#| label: fig-plots
-#| fig-cap: "Multiple Plots"
-#| fig-subcap:
-#|   - "Plot 1"
-#|   - "Plot 2"
-#| layout-ncol: 2
-
-using Plots
-display(plot(sin, x -> sin(2x), 0, 2))
-display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
-```
-
-{{< include _jupyter-rendering.md >}}
-
-
-### Installation {#installation}
-
-In order to render documents with embedded Julia code you'll need to install the following components:
-
-1)  IJulia
-2)  Revise.jl
-3)  Optionally, Jupyter Cache
-
-We'll cover each of these in turn below.
-
-#### IJulia {#ijulia}
-
-[IJulia](https://julialang.github.io/IJulia.jl/stable) is a Julia-language execution kernel for Jupyter. You can install IJulia from within the Julia REPL as follows:
-
-``` julia
-using Pkg
-Pkg.add("IJulia")
-using IJulia
-notebook()
-```
-
-The first time you run `notebook()`, it will prompt you for whether it should install Jupyter. Hit enter to have it use the [Conda.jl](https://github.com/Luthaf/Conda.jl) package to install a minimal Python+Jupyter distribution (via [Miniconda](https://docs.conda.io/projects/conda/en/stable/user-guide/install/index.html)) that is private to Julia (not in your `PATH`). On Linux, it defaults to looking for `jupyter` in your `PATH` first, and only asks to installs the Conda Jupyter if that fails.
-
-If you choose not to use Conda.jl to install Python and Jupyter you will need to make sure that you have another installation of it on your system (see the section on [Installing Jupyter](#installing-jupyter) if you need help with this).
-
-#### Revise.jl
-
-In addition to IJulia, you'll want to install [Revise.jl](https://timholy.github.io/Revise.jl/stable) and configure it for use with IJulia. Revise.jl is a library that helps you keep your Julia sessions running longer, reducing the need to restart when you make changes to code.
-
-Quarto maintains a persistent [kernel daemon](#kernel-daemon) for each document to mitigate Jupyter start up time during iterative work. Revise.jl will make this persistent process robust in the face of package updates, git branch checkouts, etc. Install Revise.jl with:
-
-``` julia
-using Pkg
-Pkg.add("Revise")
-```
-
-To configure Revise to launch automatically within IJulia, create a `.julia/config/startup_ijulia.jl` file with the contents:
-
-``` default
-try
-  @eval using Revise
-catch e
-  @warn "Revise init" exception=(e, catch_backtrace())
-end
-```
-
-You can learn more about Revise.jl at <https://timholy.github.io/Revise.jl/stable>.
-
-#### Jupyter Cache
-
-[Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
-
-If you are using the integrated version of Jupyter installed by `IJulia.notebook()`, then you will need to add `jupyter-cache` to the Python environment managed by IJulia. You can do that as follows:
-
-``` julia
-using Conda
-Conda.add("jupyter-cache")
-```
-
-Alternatively, if you are using Jupyter from within any other version of Python not managed by IJulia, see the instructions below on [Installing Jupyter](#installing-jupyter) for details on installing `jupyter cache`,
-
-{{< include _jupyter-authoring-tools.md >}}
-
-{{< include _jupyter-cache.md >}}
-
-{{< include _caching-more.md >}}
-
-### Kernel Selection
-
-You'll note in our first example that we specified the use of the `julia-1.8` kernel explicitly in our document options (shortened for brevity):
-
-``` markdown
----
-title: "StatsPlots Demo"
-jupyter: julia-1.8
----
-```
-
-If no `jupyter` kernel is explicitly specified, then Quarto will attempt to automatically discover a kernel on the system that supports Julia.
-
-You can discover the available Jupyter kernels on your system using the `quarto check` command:
-
-``` {.bash filename="Terminal"}
-quarto check jupyter
-```
-
-{{< include _jupyter-daemon.md >}}
-
-
-### Installing Jupyter {#installing-jupyter}
-
-You can rely on the minimal version of Python and Jupyter that is installed automatically by **IJulia**, or you can choose to install Python and Jupyter separately. If you need to install another version of Jupyter this section describes how.
-
-{{< include _jupyter-install.md >}}
-
-#### Jupyter Cache
-
-[Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
-
-To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
-
-+-----------+--------------------------------------+
-| Platform  | Command                              |
-+===========+======================================+
-| Mac/Linux | ```{.bash filename="Terminal"}       |
-|           | python3 -m pip install jupyter-cache |
-|           | ```                                  |
-+-----------+--------------------------------------+
-| Windows   | ```{.powershell filename="Terminal"} |
-|           | py -m pip install jupyter-cache      |
-|           | ```                                  |
-+-----------+--------------------------------------+
-| Conda     | ```{.bash filename="Terminal"}       |
-|           | conda install jupyter-cache          |
-|           | ```                                  |
-+-----------+--------------------------------------+
-
-To enable the cache for a document, add the `cache` option. For example:
-
 # Using the `julia` engine
 
 {{< include /docs/prerelease/1.5/_pre-release-feature.qmd >}}
@@ -618,3 +428,194 @@ packages that wish to extend the functionality of notebooks in other ways.
 Please direct questions and requests regarding this functionality to the
 [QuartoNotebookRunner](https://github.com/PumasAI/QuartoNotebookRunner.jl)
 repository.
+
+# Using the `jupyter` engine
+
+Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
+
+#### Code Blocks
+
+Code blocks that use braces around the language name (e.g. ```` ```{julia} ````) are executable, and will be run by Quarto during render. Here is a simple example:
+
+```` markdown
+---
+title: "Plots Demo"
+author: "Norah Jones"
+date: "5/22/2021"
+format:
+  html:
+    code-fold: true
+jupyter: julia-1.8
+---
+
+### Parametric Plots
+
+Plot function pair (x(u), y(u)). 
+See @fig-parametric for an example.
+
+```{{julia}}
+#| label: fig-parametric
+#| fig-cap: "Parametric Plots"
+
+using Plots
+
+plot(sin, 
+     x->sin(2x), 
+     0, 
+     2π, 
+     leg=false, 
+     fill=(0,:lavender))
+```
+````
+
+You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](/docs/authoring/cross-references.qmd).
+
+This document would result in the following rendered output:
+
+![](/images/hello-julia.png){.border fig-alt="Example Plots Demo output with title, author, date published and main section on Parametric plots which contains text, a toggleable code field, and the output of the plot, with the caption Figure 1 Parametric Plots."}
+
+You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
+
+There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
+
+In addition to code blocks which interrupt the flow of markdown, you can also include code inline. Read more about inline code in the [Inline Code](inline-code.qmd) article.
+
+#### Multiple Outputs
+
+By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
+
+```{{julia}}
+#| label: fig-plots
+#| fig-cap: "Multiple Plots"
+#| fig-subcap:
+#|   - "Plot 1"
+#|   - "Plot 2"
+#| layout-ncol: 2
+
+using Plots
+display(plot(sin, x -> sin(2x), 0, 2))
+display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
+```
+
+{{< include _jupyter-rendering.md >}}
+
+
+### Installation {#installation}
+
+In order to render documents with embedded Julia code you'll need to install the following components:
+
+1)  IJulia
+2)  Revise.jl
+3)  Optionally, Jupyter Cache
+
+We'll cover each of these in turn below.
+
+#### IJulia {#ijulia}
+
+[IJulia](https://julialang.github.io/IJulia.jl/stable) is a Julia-language execution kernel for Jupyter. You can install IJulia from within the Julia REPL as follows:
+
+``` julia
+using Pkg
+Pkg.add("IJulia")
+using IJulia
+notebook()
+```
+
+The first time you run `notebook()`, it will prompt you for whether it should install Jupyter. Hit enter to have it use the [Conda.jl](https://github.com/Luthaf/Conda.jl) package to install a minimal Python+Jupyter distribution (via [Miniconda](https://docs.conda.io/projects/conda/en/stable/user-guide/install/index.html)) that is private to Julia (not in your `PATH`). On Linux, it defaults to looking for `jupyter` in your `PATH` first, and only asks to installs the Conda Jupyter if that fails.
+
+If you choose not to use Conda.jl to install Python and Jupyter you will need to make sure that you have another installation of it on your system (see the section on [Installing Jupyter](#installing-jupyter) if you need help with this).
+
+#### Revise.jl
+
+In addition to IJulia, you'll want to install [Revise.jl](https://timholy.github.io/Revise.jl/stable) and configure it for use with IJulia. Revise.jl is a library that helps you keep your Julia sessions running longer, reducing the need to restart when you make changes to code.
+
+Quarto maintains a persistent [kernel daemon](#kernel-daemon) for each document to mitigate Jupyter start up time during iterative work. Revise.jl will make this persistent process robust in the face of package updates, git branch checkouts, etc. Install Revise.jl with:
+
+``` julia
+using Pkg
+Pkg.add("Revise")
+```
+
+To configure Revise to launch automatically within IJulia, create a `.julia/config/startup_ijulia.jl` file with the contents:
+
+``` default
+try
+  @eval using Revise
+catch e
+  @warn "Revise init" exception=(e, catch_backtrace())
+end
+```
+
+You can learn more about Revise.jl at <https://timholy.github.io/Revise.jl/stable>.
+
+#### Jupyter Cache
+
+[Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
+
+If you are using the integrated version of Jupyter installed by `IJulia.notebook()`, then you will need to add `jupyter-cache` to the Python environment managed by IJulia. You can do that as follows:
+
+``` julia
+using Conda
+Conda.add("jupyter-cache")
+```
+
+Alternatively, if you are using Jupyter from within any other version of Python not managed by IJulia, see the instructions below on [Installing Jupyter](#installing-jupyter) for details on installing `jupyter cache`,
+
+{{< include _jupyter-authoring-tools.md >}}
+
+{{< include _jupyter-cache.md >}}
+
+{{< include _caching-more.md >}}
+
+### Kernel Selection
+
+You'll note in our first example that we specified the use of the `julia-1.8` kernel explicitly in our document options (shortened for brevity):
+
+``` markdown
+---
+title: "StatsPlots Demo"
+jupyter: julia-1.8
+---
+```
+
+If no `jupyter` kernel is explicitly specified, then Quarto will attempt to automatically discover a kernel on the system that supports Julia.
+
+You can discover the available Jupyter kernels on your system using the `quarto check` command:
+
+``` {.bash filename="Terminal"}
+quarto check jupyter
+```
+
+{{< include _jupyter-daemon.md >}}
+
+
+### Installing Jupyter {#installing-jupyter}
+
+You can rely on the minimal version of Python and Jupyter that is installed automatically by **IJulia**, or you can choose to install Python and Jupyter separately. If you need to install another version of Jupyter this section describes how.
+
+{{< include _jupyter-install.md >}}
+
+#### Jupyter Cache
+
+[Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
+
+To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
+
++-----------+--------------------------------------+
+| Platform  | Command                              |
++===========+======================================+
+| Mac/Linux | ```{.bash filename="Terminal"}       |
+|           | python3 -m pip install jupyter-cache |
+|           | ```                                  |
++-----------+--------------------------------------+
+| Windows   | ```{.powershell filename="Terminal"} |
+|           | py -m pip install jupyter-cache      |
+|           | ```                                  |
++-----------+--------------------------------------+
+| Conda     | ```{.bash filename="Terminal"}       |
+|           | conda install jupyter-cache          |
+|           | ```                                  |
++-----------+--------------------------------------+
+
+To enable the cache for a document, add the `cache` option. For example:
+
