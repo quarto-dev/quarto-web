@@ -6,7 +6,7 @@ vscode-extension: "[Julia Extension](https://www.julia-vscode.org/docs)"
 vscode-screenshot: "![](images/julia-vscode){.border fig-alt='Screen shot of VS Code with quarto document containing Julia code on the left, the output of a plot from the Julia code on the right, and the Quarto Help pane at the bottom.'}"
 ---
 
-## Overview
+# Overview
 
 Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports---the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
 
@@ -19,11 +19,81 @@ Juliaup installation manager, or the "manual" installation approach. Unless
 you know that you need to use the "manual" approach, use
 Juliaup since it allows you to manage multiple Julia versions on your system.
 
+first we'll cover the basics of creating and rendering documents with Julia code blocks.
+
+### Code Blocks
+
+Code blocks that use braces around the language name (e.g. ```` ```{julia} ````) are executable, and will be run by Quarto during render. Here is a simple example:
+
+```` markdown
+---
+title: "Plots Demo"
+author: "Norah Jones"
+date: "5/22/2021"
+format:
+  html:
+    code-fold: true
+jupyter: julia-1.8
+---
+
+### Parametric Plots
+
+Plot function pair (x(u), y(u)). 
+See @fig-parametric for an example.
+
+```{{julia}}
+#| label: fig-parametric
+#| fig-cap: "Parametric Plots"
+
+using Plots
+
+plot(sin, 
+     x->sin(2x), 
+     0, 
+     2π, 
+     leg=false, 
+     fill=(0,:lavender))
+```
+````
+
+You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](/docs/authoring/cross-references.qmd).
+
+This document would result in the following rendered output:
+
+![](/images/hello-julia.png){.border fig-alt="Example Plots Demo output with title, author, date published and main section on Parametric plots which contains text, a toggleable code field, and the output of the plot, with the caption Figure 1 Parametric Plots."}
+
+You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
+
+There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
+
+In addition to code blocks which interrupt the flow of markdown, you can also include code inline. Read more about inline code in the [Inline Code](inline-code.qmd) article.
+
+#### Multiple Outputs
+
+By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
+
+```{{julia}}
+#| label: fig-plots
+#| fig-cap: "Multiple Plots"
+#| fig-subcap:
+#|   - "Plot 1"
+#|   - "Plot 2"
+#| layout-ncol: 2
+
+using Plots
+display(plot(sin, x -> sin(2x), 0, 2))
+display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
+```
+
+{{< include _jupyter-rendering.md >}}
+
+{{< include _jupyter-authoring-tools.md >}}
+
 # Using the `julia` engine
 
 {{< include /docs/prerelease/1.5/_pre-release-feature.qmd >}}
 
-## Installation
+## Installation {#installation-native}
 
 The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This means you don't have to install anything in your global Julia environment for Quarto to work and Quarto will not interfere with any other Julia environments on your system. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
 
@@ -431,75 +501,6 @@ repository.
 
 # Using the `jupyter` engine
 
-Below we'll describe how to [install](#installation) IJulia and related requirements but first we'll cover the basics of creating and rendering documents with Julia code blocks.
-
-#### Code Blocks
-
-Code blocks that use braces around the language name (e.g. ```` ```{julia} ````) are executable, and will be run by Quarto during render. Here is a simple example:
-
-```` markdown
----
-title: "Plots Demo"
-author: "Norah Jones"
-date: "5/22/2021"
-format:
-  html:
-    code-fold: true
-jupyter: julia-1.8
----
-
-### Parametric Plots
-
-Plot function pair (x(u), y(u)). 
-See @fig-parametric for an example.
-
-```{{julia}}
-#| label: fig-parametric
-#| fig-cap: "Parametric Plots"
-
-using Plots
-
-plot(sin, 
-     x->sin(2x), 
-     0, 
-     2π, 
-     leg=false, 
-     fill=(0,:lavender))
-```
-````
-
-You'll note that there are some special comments at the top of the code block. These are cell level options that make the figure [cross-referenceable](/docs/authoring/cross-references.qmd).
-
-This document would result in the following rendered output:
-
-![](/images/hello-julia.png){.border fig-alt="Example Plots Demo output with title, author, date published and main section on Parametric plots which contains text, a toggleable code field, and the output of the plot, with the caption Figure 1 Parametric Plots."}
-
-You can produce a wide variety of output types from executable code blocks, including plots, tabular output from data frames, and plain text output (e.g. printing the results of statistical summaries).
-
-There are many options which control the behavior of code execution and output, you can read more about them in the article on [Execution Options](execution-options.qmd).
-
-In addition to code blocks which interrupt the flow of markdown, you can also include code inline. Read more about inline code in the [Inline Code](inline-code.qmd) article.
-
-#### Multiple Outputs
-
-By default Julia cells will automatically print the value of their last statement (as with the example above where the call to `plot()` resulted in plot output). If you want to display multiple plots (or other types of output) from a single cell you should call the `display()` function explicitly. For example, here we output two plots side-by-side with sub-captions:
-
-```{{julia}}
-#| label: fig-plots
-#| fig-cap: "Multiple Plots"
-#| fig-subcap:
-#|   - "Plot 1"
-#|   - "Plot 2"
-#| layout-ncol: 2
-
-using Plots
-display(plot(sin, x -> sin(2x), 0, 2))
-display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
-```
-
-{{< include _jupyter-rendering.md >}}
-
-
 ### Installation {#installation}
 
 In order to render documents with embedded Julia code you'll need to install the following components:
@@ -560,8 +561,6 @@ Conda.add("jupyter-cache")
 ```
 
 Alternatively, if you are using Jupyter from within any other version of Python not managed by IJulia, see the instructions below on [Installing Jupyter](#installing-jupyter) for details on installing `jupyter cache`,
-
-{{< include _jupyter-authoring-tools.md >}}
 
 {{< include _jupyter-cache.md >}}
 
