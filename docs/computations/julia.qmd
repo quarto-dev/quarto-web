@@ -10,16 +10,41 @@ vscode-screenshot: "![](images/julia-vscode){.border fig-alt='Screen shot of VS 
 
 Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports---the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
 
-Quarto has two available engines for executing Julia code. The older one is using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel and depends on Python to run. The newer engine is using the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks and does not have any additional dependencies beyond a Julia installation.
+Quarto has two available engines for executing Julia code, the newer [native engine](#using-the-julia-engine) is using the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks, the older [jupyter engine](#using-the-jupyter-engine) is using the [IJulia](https://github.com/JuliaLang/IJulia.jl) Jupyter kernel.
 
-Using either of these engines will require manually installing Julia if
-you have not done so already. You can download it from
-https://julialang.org/downloads/. There are two options for installation: the
-Juliaup installation manager, or the "manual" installation approach. Unless
-you know that you need to use the "manual" approach, use
-Juliaup since it allows you to manage multiple Julia versions on your system.
+This table lists some of the reasons why the native engine was created:
 
-first we'll cover the basics of creating and rendering documents with Julia code blocks.
++--------------------------------------------------------------------------+---------------+----------------+
+|                                                                          | Native Engine | Jupyter Engine |
++==========================================================================+===============+================+
+| Execute Julia code blocks                                                | ✅            | ✅              |
++--------------------------------------------------------------------------+---------------+----------------+
+| Keep sessions alive for fast reruns                                      | ✅            | ✅              |
++--------------------------------------------------------------------------+---------------+----------------+
+| No Python installation required                                          | ✅            | ❌              |
++--------------------------------------------------------------------------+---------------+----------------+
+| No global package installation needed                                    | ✅            | ❌              |
++--------------------------------------------------------------------------+---------------+----------------+
+| Automatic integration with juliaup (no kernel installation)              | ✅            | ❌              |
++--------------------------------------------------------------------------+---------------+----------------+
+| Python & R Codeblocks                                                    | ✅            | ❌              |
+| (via PythonCall.jl and RCall.jl)                                         |               |                |
++--------------------------------------------------------------------------+---------------+----------------+
+| "Expandable cells" or programmatic document generation                   | ✅            | ❌              |
+| (via [QuartoTools.jl](https://pumasai.github.io/QuartoTools.jl/stable/)) |               |                |
++--------------------------------------------------------------------------+---------------+----------------+
+
+::: {.callout-note}
+For most users, the native engine should offer the best experience.
+However, for backwards compatibility the Jupyter engine remains the default engine for Julia code.
+The native engine has to be [specifically enabled either in the frontmatter or the project file](#enabling-the-native-engine).
+:::
+
+Using either of the two engines will require manually installing Julia if
+you have not done so already. Installation via `juliaup` is recommended, for further
+information check the [official Julia website](https://julialang.org/install/).
+
+Now, we will cover the basics of creating and rendering documents with Julia code blocks.
 
 ### Code Blocks
 
@@ -103,7 +128,7 @@ In special circumstances, you may not want to use the specific `QuartoNotebookRu
 
 As an example, you could install the main branch of `QuartoNotebookRunner` into the directory `/some/dir` by executing `]activate /some/dir` in a julia REPL followed by `]add QuartoNotebookRunner#main`. As long as there is no server currently running, running a command like `QUARTO_JULIA_PROJECT=/some/dir quarto render some_notebook.qmd` in your terminal will ensure the server process is started using the custom `QuartoNotebookRunner`. You can also set `quarto`'s `--execute-debug` flag and check the output to verify that the custom environment is being used.
 
-## Rendering notebooks
+## Enabling the native engine
 
 To use the `julia` engine, you have to specifically enable it. For that, you have two options.
 
@@ -125,6 +150,8 @@ Or, starting with Quarto 1.7, you can prioritize the julia engine project-wide b
 ```{.yaml filename="_quarto.yml"}
 engines: ['julia']
 ```
+
+## Rendering notebooks
 
 Rendering a notebook will start a persistent server process if it hasn't already started. This server process first loads QuartoNotebookRunner from Quarto's private environment. QuartoNotebookRunner then spins up a separate Julia worker process for each notebook you want to render.
 
