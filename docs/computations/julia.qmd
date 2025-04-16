@@ -24,7 +24,7 @@ This table lists some of the reasons why the `julia` engine was created:
 | Python & R Codeblocks (via PythonCall.jl and RCall.jl)                                                                          | ✅           | ❌              |
 | "Expandable cells" or programmatic document generation (via [QuartoTools.jl](https://pumasai.github.io/QuartoTools.jl/stable/)) | ✅           | ❌              |
 
-::: {..-note}
+::: {.callout-note}
 For most users, the `julia` engine should offer the best experience.
 However, for backwards compatibility the `jupyter` engine remains the default engine for Julia code.
 The `julia` engine has to be [specifically enabled either in the frontmatter or the project file](#enabling-the-julia-engine).
@@ -146,7 +146,29 @@ engines: ['julia']
 
 ## Rendering notebooks
 
-Rendering a notebook will start a persistent server process if it hasn't already started. This server process first loads QuartoNotebookRunner from Quarto's private environment. QuartoNotebookRunner then spins up a separate Julia worker process for each notebook you want to render.
+Requesting the first render of a notebook which contains Julia code blocks and has the `julia` engine enabled will start a persistent server process that loads QuartoNotebookRunner.jl.
+This package is installed automatically in an environment private to Quarto.
+
+The server spins up a separate Julia worker process for each notebook you want to render.
+Every purple node in the following graph represents a separate Julia process which runs independently from each short-lived `quarto` process that communicates with the server.
+
+```{mermaid}
+flowchart LR
+    A[<b>quarto render ...</b>] <-.-> B[<b>Server Process</b><br/>QuartoNotebookRunner.jl]
+    B <--> C[<b>Worker Process 1</b><br/>notebook_A.qmd]
+    B <--> D[<b>Worker Process 2</b><br/>notebook_B.qmd]
+    B <--> E[<b>Worker Process 3</b><br/>notebook_C.qmd]
+
+    style A color:#333
+    style B fill:#cb9be0,color:#333
+    style C fill:#e7d0f2,color:#333
+    style D fill:#e7d0f2,color:#333
+    style E fill:#e7d0f2,color:#333
+```
+
+You can check the status of the server, request it to shut down, and more using the [`call julia engine` commands](#quarto-call-engine-julia-commands).
+The server will stay alive for five minutes after the last worker process has exited, unless it's closed manually.
+Changes to environment variables that influence the server process will only be picked up once the next new server process is started.
 
 ### Notebook environments
 
