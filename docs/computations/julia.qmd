@@ -24,7 +24,7 @@ This table lists some of the reasons why the `julia` engine was created:
 | Python & R Codeblocks (via PythonCall.jl and RCall.jl)                                                                          | ✅           | ❌              |
 | "Expandable cells" or programmatic document generation (via [QuartoTools.jl](https://pumasai.github.io/QuartoTools.jl/stable/)) | ✅           | ❌              |
 
-::: {.callout-note}
+::: {..-note}
 For most users, the `julia` engine should offer the best experience.
 However, for backwards compatibility the `jupyter` engine remains the default engine for Julia code.
 The `julia` engine has to be [specifically enabled either in the frontmatter or the project file](#enabling-the-julia-engine).
@@ -112,11 +112,14 @@ display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
 
 The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This means you don't have to install anything in your global Julia environment for Quarto to work and Quarto will not interfere with any other Julia environments on your system. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
 
-### Using custom versions of `QuartoNotebookRunner`
+:::{.callout-note}
+
+## Using custom versions of `QuartoNotebookRunner`
 
 In special circumstances, you may not want to use the specific `QuartoNotebookRunner` version that Quarto installs for you. For example, you might be developing `QuartoNotebookRunner` itself, or you need to use a fork or an unreleased version with a bugfix. In this case, set the [environment variable](/docs/projects/environment.qmd) `QUARTO_JULIA_PROJECT` to a directory of a julia environment that has `QuartoNotebookRunner` installed. 
 
 As an example, you could install the main branch of `QuartoNotebookRunner` into the directory `/some/dir` by executing `]activate /some/dir` in a julia REPL followed by `]add QuartoNotebookRunner#main`. As long as there is no server currently running, running a command like `QUARTO_JULIA_PROJECT=/some/dir quarto render some_notebook.qmd` in your terminal will ensure the server process is started using the custom `QuartoNotebookRunner`. You can also set `quarto`'s `--execute-debug` flag and check the output to verify that the custom environment is being used.
+:::
 
 ## Enabling the `julia` engine
 
