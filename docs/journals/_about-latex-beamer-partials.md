@@ -27,12 +27,14 @@ common.latex
 
 :    Contains mostly declarations related to Pandoc features for LaTeX (like `linestretch`, `indent`, `verbatim-in-note`, `listings`, ...). Quarto modifies this template from Pandoc to use more specific partials by splitting content between `common.latex` and `pandoc.tex`. You can either replace this partial entirely or a more specific one from `pandoc.tex`. In general, the `common.latex` and `pandoc.tex` partials must always be included within your custom template.
 
+::: {style="margin-left: 2em;"}
+
 pandoc.tex
 
 :   This includes configuration for most Pandoc features like text highlighting, tables, graphics, tight lists, citations, and header includes. In general, this partial must always be included within your custom template. In some circumstances, you may know that certain capabilities will not be needed, so this partial is further composed of the following partials, which could be used if sensible:
 
 
-::: {style="margin-left: 2em;"}
+::: {style="margin-left: 4em;"}
 
 tables.tex
 
@@ -57,6 +59,8 @@ tightlist.tex
 biblio-config.tex
 
 :    Provides natbib or biblatex configurations. To opt-out of these configurations (e.g. for a custom format where a specific documentclass handles it already), rather than provide an empty partial, use `biblio-config: false` for your document configuration.
+
+:::
 
 :::
 
