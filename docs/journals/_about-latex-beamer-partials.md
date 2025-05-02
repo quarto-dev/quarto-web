@@ -100,4 +100,4 @@ after-body.tex
 
 :   Provides a placeholder to attach content at the end of the body, right before `\end{document}`
 
-A copy of some of Pandoc's original files are also kept in Quarto's source as a reference. These files are: `latex.template`, the main template used as `template.tex` containing all the partials; and `latex.common` the original version of `common.latex`,  which is tweaked to support Quarto's more specific partials.
+A copy of some of Pandoc's original files are also kept in Quarto's source as a reference. These files are: `latex.template`/`beamer.template`, the main template used as `template.tex` containing all the partials; and `latex.common` the original version of `common.latex`,  which is tweaked to support Quarto's more specific partials.
