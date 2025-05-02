@@ -3,8 +3,6 @@ Starting with Quarto 1.7, which provides Pandoc 3.6.3, there are two sets of par
 - partials with `.latex` extension that are inherited from Pandoc, 
 - partials with `.tex` extension that are provided by Quarto directly for more granular customization.
 
-A copy of some of Pandoc's original files are also kept in Quarto's source as a reference. These files are: `latex.template`, the main template used as `template.tex` containing all the partials; and `latex.common` the original version of `common.latex`,  which is tweaked to support Quarto's more specific partials.
-
 template.tex
 
 :   The core LaTeX template which includes the basic document skeleton plus the following partials. This can't be replaced as a `template-partial`, instead use the `template` option to provide your own template.
@@ -97,3 +95,5 @@ biblio.tex
 after-body.tex
 
 :   Provides a placeholder to attach content at the end of the body, right before `\end{document}`
+
+A copy of some of Pandoc's original files are also kept in Quarto's source as a reference. These files are: `latex.template`, the main template used as `template.tex` containing all the partials; and `latex.common` the original version of `common.latex`,  which is tweaked to support Quarto's more specific partials.
