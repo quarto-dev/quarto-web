@@ -77,9 +77,9 @@ For markdown shortcuts, if you didn't intend to use a shortcut and want to rever
 You can also use the catch-all <kbd>⌘ /</kbd> shortcut to insert just about anything. Just execute the shortcut then type what you want to insert. For example:
 
 ::: {layout-ncol="2"}
-![](../images/visual-editing-omni-list.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/lis'. There is a drop-down menu underneath this with options for 'Bullet List', 'Numbered List', and 'Definition List' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
+![](/docs/visual-editor/images/visual-editing-omni-list.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/lis'. There is a drop-down menu underneath this with options for 'Bullet List', 'Numbered List', and 'Definition List' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
 
-![](../images/visual-editing-omni-math.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/ma'. There is a drop-down menu underneath this with options for 'Inline Math', 'Display Math', and 'Image...' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
+![](/docs/visual-editor/images/visual-editing-omni-math.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/ma'. There is a drop-down menu underneath this with options for 'Inline Math', 'Display Math', and 'Image...' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
 :::
 
 If you are at the beginning of a line (as displayed above), you can also enter plain `/` to invoke the shortcut.
@@ -94,7 +94,7 @@ Additional commands are available on the **Format**, **Insert**, and **Table** m
 
 | Format                                                                                                            | Insert                                                                                                            | Table                                                                                                           |
 |------------------------|------------------------|------------------------|
-| ![](../images/vscode-visual-editor-format-menu.png){.border fig-alt="The contents of the Format drop down menu."} | ![](../images/vscode-visual-editor-insert-menu.png){.border fig-alt="The contents of the Insert drop down menu."} | ![](../images/vscode-visual-editor-table-menu.png){.border fig-alt="The contents of the Table drop down menu."} |
+| ![](/docs/visual-editor/images/vscode-visual-editor-format-menu.png){.border fig-alt="The contents of the Format drop down menu."} | ![](/docs/visual-editor/images/vscode-visual-editor-insert-menu.png){.border fig-alt="The contents of the Insert drop down menu."} | ![](/docs/visual-editor/images/vscode-visual-editor-table-menu.png){.border fig-alt="The contents of the Table drop down menu."} |
 
 ## Editor Options
 
