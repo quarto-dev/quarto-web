@@ -4,7 +4,7 @@ In addition to editing Quarto documents as plain-text `.qmd` files, you can also
 
 The basic workflow for editing notebooks for use with Quarto is identical to the workflow for `.qmd` files. Edit the file and then execute the **Quarto: Preview** command (you can alternatively use the <kbd>Ctrl+Shift+K</kbd> keyboard shortcut). You'll see a preview of the published page side by side with the notebook:
 
-![]({{< meta tool.image-prefix >}}-notebook.png){.border}
+![](images/{{< meta tool.prefix >}}-notebook.png){.border}
 
 After you've done an initial **Quarto: Preview**, the preview will automatically update every time you save the notebook.
 

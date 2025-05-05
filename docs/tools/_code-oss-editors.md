@@ -15,11 +15,11 @@ We'll cover the source code editor below, however you might also want to consult
 The Quarto VS Code extension includes commands and keyboard shortcuts for rendering Quarto documents (both standalone and within websites or books). After rendering, `quarto preview` is used behind the scenes to provide a [preview pane]{
   .content-hidden unless-meta="tool.is_vscode"}[preview in the Viewer Pane]{.content-hidden unless-meta="tool.is_positron"} within {{< meta tool.name >}} alongside your document:
 
-![]({{< meta tool.image-prefix >}}-render.png){.border fig-alt='Two windows arranged side by side. The window on the left is a qmd file opened in {{< meta tool.name >}}. The contents of this document are the same as the first part of the Getting Started: Welcome section of this website. The contents of this document are rendered by Quarto in the window on the right.'}
+![](images/{{< meta tool.prefix >}}-render.png){.border fig-alt='Two windows arranged side by side. The window on the left is a qmd file opened in {{< meta tool.name >}}. The contents of this document are the same as the first part of the Getting Started: Welcome section of this website. The contents of this document are rendered by Quarto in the window on the right.'}
 
 To render and preview, execute the **Quarto: Preview** command. You can alternatively use the <kbd>Ctrl+Shift+K</kbd> keyboard shortcut, or the **Preview** button (![](images/vscode-preview-icon.svg){fig-alt="Preview icon"}) at the top right of the editor:
 
-![]({{< meta tool.image-prefix >}}-preview-button.png){.border fig-alt='The top of the {{< meta tool.name >}} editor. The right side of the editor tab area includes a Preview button.'}
+![](images/{{< meta tool.prefix >}}-preview-button.png){.border fig-alt='The top of the {{< meta tool.name >}} editor. The right side of the editor tab area includes a Preview button.'}
 
 ::: {.callout-note appearance="simple"}
 Note that on the Mac you should use `Cmd` rather than `Ctrl` as the prefix for all Quarto keyboard shortcuts.
@@ -74,13 +74,13 @@ If you prefer to use an external browser for preview (or have no preview trigger
 
 There are a variety of tools that make it easier to edit and execute code cells. Editing tools include syntax highlighting, code folding, code completion, and signature tips:
 
-![](images/vscode-code-cell.png){.border fig-alt='A Quarto document in {{< meta tool.name >}} with a python code cell. There is a code completion helper active in the python cell.'}
+![](images/{{< meta tool.prefix >}}-code-cell.png){.border fig-alt='A Quarto document in {{< meta tool.name >}} with a python code cell. There is a code completion helper active in the python cell.'}
 
 For Python, R, and Julia cells, commands are available to execute the current cell, previous cells, or the currently selected line(s). 
 [Cell output is shown side by side in the Jupyter interactive console:]{.content-hidden unless-meta="tool.is_vscode"}
 [R and Python cells are executed in the appropriate Console, and output is shown in the pane:]{.content-hidden unless-meta="tool.is_vscode"}
 
-![](images/vscode-execute-cell.png){.border fig-alt='{{< meta tool.name >}} with two panes open, vscode.qmd source code on the right, and the interactive output of that code shown in a second pane on the left.'}
+![](images/{{< meta tool.prefix >}}-execute-cell.png){.border fig-alt='{{< meta tool.name >}} with two panes open, vscode.qmd source code on the right, and the interactive output of that code shown in a second pane on the left.'}
 
 Here are all of the commands and keyboard shortcuts available for executing cells:
 
@@ -140,7 +140,13 @@ Execute the **Quarto: Show Assist Panel** command to show a panel in the sidebar
 
 For example, below help on the matplotlib `plot()` function is shown automatically when the cursor is located on the function:
 
+::: {.content-hidden unless-meta="tool.is_vscode"}
 ![](/docs/computations/images/python-vscode.png){.border fig-alt='Screenshot of {{< meta tool.name >}} editor with three vertical sections. The leftmost includes the file explorer, and quarto help. The second pane is the source code for a quarto file with python code. The third is interactive with Python running and output of the code cells shown.'}
+:::
+
+::: {.content-hidden unless-meta="tool.is_positron"}
+![](images/positron-python.png){.border .preview-image fig-alt="Screen shot of Positron editor with three vertical sections. The leftmost includes the file explorer, and quarto help. The second pane is the source code for a quarto file with python code, and the active Python Console. The third shows the Environment and Plots for the active console populated with the output of the code cells."}
+:::
 
 ## Live Preview
 
@@ -194,6 +200,6 @@ Use the **Go to File** command <kbd>Ctrl+P</kbd> to navigate to other files and 
 
 Besides the traditional source editor described above, you can also use one of the following other editors depending on your preferences and task at hand:
 
-1. The [Visual Editor](/docs/visual-editor/vscode/index.qmd) for WYSIWYG editing of `.qmd` documents.
+1. The [Visual Editor](/docs/visual-editor/{{< meta tool.prefix >}}/index.qmd) for WYSIWYG editing of `.qmd` documents.
 
-2. The [Notebook Editor](/docs/tools/vscode-notebook.qmd) for editing `.ipynb` notebooks.
+2. The [Notebook Editor](/docs/tools/{{< meta tool.prefix >}}-notebook.qmd) for editing `.ipynb` notebooks.
