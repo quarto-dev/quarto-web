@@ -29,11 +29,11 @@ Note that on the Mac you should use `Cmd` rather than `Ctrl` as the prefix for a
 
 The **Quarto: Preview** command renders the default format of the currently active document. If you want to preview a different format, use the **Quarto: Preview Format** command:
 
-![](/docs/tools/images/vscode-preview-format-menu.png){.border fig-alt="The top of the Visual Studio code editor. The editor title menu is expanded and the Preview Format command is available on the menu."}
+![](/docs/tools/images/vscode-preview-format-menu.png){.border fig-alt='The top of the {{< meta tool.name >}} editor. The editor title menu is expanded and the Preview Format command is available on the menu.'}
 
 When you execute **Preview Format**, you'll see a quick pick list of formats to choose from (any formats declared in the document as well as some standard formats like PDF and MS Word):
 
-![](/docs/tools/images/vscode-preview-format.png){.border fig-alt="The top of the Visual Studio code editor. The command pallette shows a quick pick list of available formats to preview."}
+![](/docs/tools/images/vscode-preview-format.png){.border fig-alt='The top of the {{< meta tool.name >}} editor. The command pallette shows a quick pick list of available formats to preview.'}
 
 After previewing a different format, the **Quarto: Preview** command and <kbd>Ctrl+Shift+K</kbd> keyboard shortcut will be automatically rebound to the newly selected format for the duration of the current preview. To switch back to previewing the original format, use  **Quarto: Preview Format** command again.
 
@@ -45,7 +45,7 @@ Embedded preview is currently supported for HTML and PDF based formats (includin
 
 The **Quarto: Preview** command is what you will most commonly use while authoring documents. If you have a single format (e.g. HTML or PDF) then previewing also renders your document so it's ready for distribution once you are happy with the output. However, if you have multiple formats will need to explicitly render them (as preview only renders a single format at a time). You can do this with the **Quarto: Render Document** command:
 
-![](/docs/tools/images/vscode-render-command.png){.border fig-alt="The top of the Visual Studio code editor. The command pallette shows a quick pick list of available formats to render."}
+![](/docs/tools/images/vscode-render-command.png){.border fig-alt='The top of the {{< meta tool.name >}} editor. The command palette shows a quick pick list of available formats to render.'}
 
 If you have multiple declared formats you can render all of them. You can also selectively render any of the declared formats or other standard formats like PDF and MS Word.
 
@@ -158,7 +158,7 @@ Here we see a preview of the currently edited LaTeX equation displayed in the Qu
 
 Here we see a Graphviz diagram preview automatically updated as we edit:
 
-![](/docs/authoring/images/vscode-graphviz.gif){.border fig-alt="A Quarto document being edited in Visual Studio Code, with a live preview of the currently edited diagram shown in a pane to the right"}
+![](/docs/authoring/images/vscode-graphviz.gif){.border fig-alt='A Quarto document being edited in {{< meta tool.name >}}, with a live preview of the currently edited diagram shown in a pane to the right'}
 
 ## YAML Intelligence
 

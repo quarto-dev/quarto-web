@@ -11,7 +11,7 @@ After you've done an initial **Quarto: Preview**, the preview will automatically
 
 The first cell of your notebook should be a **Raw** cell that contains the document title, author, and any other options you need to specify. Note that you can switch the type of a cell to **Raw** using the cell type menu at the bottom right of the cell:
 
-![](/docs/tools/images/vscode-raw.png){.border fig-alt="The top section of an ipynb file open in VSCode. There is a Raw cell containing yaml front matter."}
+![](/docs/tools/images/vscode-raw.png){.border fig-alt='The top section of an ipynb file open in {{< meta tool.name >}}. There is a Raw cell containing yaml front matter.'}
 
 In this example we specify that we want code to appear collapsed by default. There are YAML options to control many other aspects of document rendering. See the documentation on [Authoring](/docs/authoring/markdown-basics.qmd) and [Output Formats](/docs/output-formats/html-basics.qmd) for additional details.
 
