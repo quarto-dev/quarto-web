@@ -115,27 +115,66 @@ Quarto will automatically select the appropriate light or dark version of the te
 
 As of Quarto 1.7, `respect-user-color-scheme` requires JavaScript support: users with JavaScript disabled will see the author-preferred (first) brand or theme.
 
+### Mode-specific content
+
+To display content only in light mode, use the `.light-content` CSS class; to display content only in dark mode, use the `.dark-content` class.
+
+Usually you should provide light and dark content in the same place and at the same size, so that page layout is unaffected when switching between modes.
+
+For example, the paragraph produced by the following code will contain different text in light and dark mode:
+
+````
+::: {.light-content}
+This text will be shown in light mode.
+:::
+
+::: {.dark-content}
+This text will be shown in dark mode.
+:::
+````
+
+::: {.light-content}
+This text will be shown in light mode.
+:::
+
+::: {.dark-content}
+This text will be shown in dark mode.
+:::
+
+
+::: {.callout-tip collapse="true"}
+## How this works
+
+The document `body` element has the `.quarto-light` class when it is in light mode, and the `.quarto-dark` class when it is in dark mode.
+
+CSS rules hide all elements with the `.light-content` class when the body has `.quarto-dark`, and all elements with the `.dark-content` class when the body has `.quarto-light`.
+:::
+
+
+The [cell renderings](../computations/execution-options.qmd#cell-renderings) feature applies the `.light-content` and `.dark-content` CSS classes to computational output such as plots and tables.
+
+
 ### Customizing Themes
 
 As when providing a single theme, you may provide a custom theme for dark and light mode, or a list of `scss` files to customize the light and dark appearance. This website, for example uses the following to use a light `cosmo` theme and then customizes the `cosmo` theme with additional Sass variables when in dark mode:
 
 ``` yaml
 theme:
-  light: cosmo
+  light: [cosmo, theme.scss]
   dark: [cosmo, theme-dark.scss]
 ```
 
-The contents of `theme-dark.scss` which is customizing the cosmo document appearance is:
+Below are some of the lines of `theme-dark.scss` which turn the light cosmo theme dark:
 
 ``` css
 /*-- scss:defaults --*/
 // Base document colors
 $body-bg: #181818;
-$body-color: white;
+$body-color: #ccc;
 $link-color: #75AADB;
 
 // Code blocks
-$code-block-bg-alpha: -.8;
+$code-block-bg-alpha: -.9;
 ```
 
 For more information about available Sass variables, see [HTML Customization Using Sass Variables](html-themes-more.qmd).
