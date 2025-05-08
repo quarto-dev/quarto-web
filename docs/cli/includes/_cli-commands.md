@@ -1,24 +1,98 @@
-|name         |description                                                                |
-|:------------|:--------------------------------------------------------------------------|
-|[render](render.qmd)|Render files or projects to various document types.                        |
-|[preview](preview.qmd)|Render and preview a document or website project.                          |
-|[serve](serve.qmd)|Serve a Shiny interactive document.                                        |
-|[create](create.qmd)|Create a Quarto project or extension                                       |
-|[use](use.qmd)|Automate document or project setup tasks.                                  |
-|[add](add.qmd)|Add an extension to this folder or project                                 |
-|[update](update.qmd)|Updates an extension or global dependency.                                 |
-|[remove](remove.qmd)|Removes an extension.                                                      |
-|[convert](convert.qmd)|Convert documents to alternate representations.                            |
-|[pandoc](pandoc.qmd)|Run the version of Pandoc embedded within Quarto.                          |
-|[typst](typst.qmd)|Run the version of Typst embedded within Quarto.                           |
-|[run](run.qmd)|Run a TypeScript, R, Python, or Lua script.                                |
-|[list](list.qmd)|Lists an extension or global dependency.                                   |
-|[install](install.qmd)|Installs a global dependency (TinyTex or Chromium).                        |
-|[uninstall](uninstall.qmd)|Removes an extension.                                                      |
-|[tools](tools.qmd)|Display the status of Quarto installed dependencies                        |
-|[publish](publish.qmd)|Publish a document or project to a provider.                               |
-|[capabilities](capabilities.qmd)|Query for current capabilities (formats, engines, kernels etc.)            |
-|[inspect](inspect.qmd)|Inspect a Quarto project or input path.                                    |
-|[check](check.qmd)|Verify correct functioning of Quarto installation.                         |
-|[call](call.qmd)|Access functions of Quarto subsystems such as its rendering engines.       |
-|[dev-call](dev-call.qmd)|Access internals of Quarto - this command is not intended for general use. |
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> name </th>
+   <th style="text-align:left;"> description </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> [render](render.qmd) </td>
+   <td style="text-align:left;"> Render files or projects to various document types. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [preview](preview.qmd) </td>
+   <td style="text-align:left;"> Render and preview a document or website project. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [serve](serve.qmd) </td>
+   <td style="text-align:left;"> Serve a Shiny interactive document. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [create](create.qmd) </td>
+   <td style="text-align:left;"> Create a Quarto project or extension </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [use](use.qmd) </td>
+   <td style="text-align:left;"> Automate document or project setup tasks. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [add](add.qmd) </td>
+   <td style="text-align:left;"> Add an extension to this folder or project </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [update](update.qmd) </td>
+   <td style="text-align:left;"> Updates an extension or global dependency. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [remove](remove.qmd) </td>
+   <td style="text-align:left;"> Removes an extension. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [convert](convert.qmd) </td>
+   <td style="text-align:left;"> Convert documents to alternate representations. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [pandoc](pandoc.qmd) </td>
+   <td style="text-align:left;"> Run the version of Pandoc embedded within Quarto. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [typst](typst.qmd) </td>
+   <td style="text-align:left;"> Run the version of Typst embedded within Quarto. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [run](run.qmd) </td>
+   <td style="text-align:left;"> Run a TypeScript, R, Python, or Lua script. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [list](list.qmd) </td>
+   <td style="text-align:left;"> Lists an extension or global dependency. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [install](install.qmd) </td>
+   <td style="text-align:left;"> Installs a global dependency (TinyTex or Chromium). </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [uninstall](uninstall.qmd) </td>
+   <td style="text-align:left;"> Removes an extension. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [tools](tools.qmd) </td>
+   <td style="text-align:left;"> Display the status of Quarto installed dependencies </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [publish](publish.qmd) </td>
+   <td style="text-align:left;"> Publish a document or project to a provider. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [capabilities](capabilities.qmd) </td>
+   <td style="text-align:left;"> Query for current capabilities (formats, engines, kernels etc.) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [inspect](inspect.qmd) </td>
+   <td style="text-align:left;"> Inspect a Quarto project or input path. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [check](check.qmd) </td>
+   <td style="text-align:left;"> Verify correct functioning of Quarto installation. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [call](call.qmd) </td>
+   <td style="text-align:left;"> Access functions of Quarto subsystems such as its rendering engines. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> [dev-call](dev-call.qmd) </td>
+   <td style="text-align:left;"> Access internals of Quarto - this command is not intended for general use. </td>
+  </tr>
+</tbody>
+</table>

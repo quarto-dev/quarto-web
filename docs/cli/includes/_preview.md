@@ -17,30 +17,114 @@ quarto preview [file:string] [...args:string]
 
 ## Options
 
-|Flags               |Arguments         |Description                                                                                                                                                          |
-|:-------------------|:-----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|`-h`, `--help`      |                  |Show this help.                                                                                                                                                      |
-|`--port`            |`[port:number]`   |Suggested port to listen on (defaults to random value between 3000 and 8000).
-If the port is not available then a random port between 3000 and 8000 will be selected. |
-|`--host`            |`[host:string]`   |Hostname to bind to (defaults to 127.0.0.1)                                                                                                                          |
-|`--render`          |`[format:string]` |Render to the specified format(s) before previewing                                                                                                                  |
-|`--no-serve`        |                  |Don't run a local preview web server (just monitor and re-render input files)                                                                                        |
-|`--no-navigate`     |                  |Don't navigate the browser automatically when outputs are updated.                                                                                                   |
-|`--no-browser`      |                  |Don't open a browser to preview the site.                                                                                                                            |
-|`--no-watch-inputs` |                  |Do not re-render input files when they change.                                                                                                                       |
-|`--timeout`         |                  |Time (in seconds) after which to exit if there are no active clients.                                                                                                |
-|`--log`             |`<file>`          |Path to log file                                                                                                                                                     |
-|`--log-level`       |`<level>`         |Log level (info, warning, error, critical)                                                                                                                           |
-|`--log-format`      |`<format>`        |Log format (plain, json-stream)                                                                                                                                      |
-|`--quiet`           |                  |Suppress console output.                                                                                                                                             |
-|`--profile`         |                  |Active project profile(s)                                                                                                                                            |
+
+```{=html}
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Flags </th>
+   <th style="text-align:left;"> Arguments </th>
+   <th style="text-align:left;"> Description </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> <code>-h</code>, <code>--help</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Show this help. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--port</code> </td>
+   <td style="text-align:left;"> <code>[port:number]</code> </td>
+   <td style="text-align:left;"> Suggested port to listen on (defaults to random value between 3000 and 8000).
+If the port is not available then a random port between 3000 and 8000 will be selected. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--host</code> </td>
+   <td style="text-align:left;"> <code>[host:string]</code> </td>
+   <td style="text-align:left;"> Hostname to bind to (defaults to 127.0.0.1) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--render</code> </td>
+   <td style="text-align:left;"> <code>[format:string]</code> </td>
+   <td style="text-align:left;"> Render to the specified format(s) before previewing </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--no-serve</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Don't run a local preview web server (just monitor and re-render input files) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--no-navigate</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Don't navigate the browser automatically when outputs are updated. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--no-browser</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Don't open a browser to preview the site. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--no-watch-inputs</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Do not re-render input files when they change. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--timeout</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Time (in seconds) after which to exit if there are no active clients. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--log</code> </td>
+   <td style="text-align:left;"> <code><file></code> </td>
+   <td style="text-align:left;"> Path to log file </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--log-level</code> </td>
+   <td style="text-align:left;"> <code><level></code> </td>
+   <td style="text-align:left;"> Log level (info, warning, error, critical) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--log-format</code> </td>
+   <td style="text-align:left;"> <code><format></code> </td>
+   <td style="text-align:left;"> Log format (plain, json-stream) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--quiet</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Suppress console output. </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> <code>--profile</code> </td>
+   <td style="text-align:left;">  </td>
+   <td style="text-align:left;"> Active project profile(s) </td>
+  </tr>
+</tbody>
+</table>
+```
+
 
 
 ## Commands
 
-|Command |Description                                  |
-|:-------|:--------------------------------------------|
-|`help`  |Show this help or the help of a sub-command. |
+
+```{=html}
+<table>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Command </th>
+   <th style="text-align:left;"> Description </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
+  </tr>
+</tbody>
+</table>
+```
+
 
 
 ## Examples

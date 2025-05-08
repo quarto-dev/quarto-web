@@ -9,6 +9,8 @@ library(knitr)
 library(here)
 library(tidyverse)
 
+options(knitr.table.format = "html")
+
 # Helper Functions -------------------------------------------------------
 
 heading <- function(text, level = 2) {
@@ -23,23 +25,30 @@ process_usage <- function(name, usage) {
     paste(collapse = "\n")
 }
 
+make_code <- function(x) {
+  paste0("<code>", x, "</code>")
+}
+
 process_options <- function(options) {
-  tibble(options = options) |>
+  options_table <- tibble(options = options) |>
     unnest_wider(options) |>
     select(flags, typeDefinition, description) |>
     rowwise() |>
     mutate(
-      flags = paste0("`", flags, "`", collapse = ", "),
+      flags = paste0(make_code(flags), collapse = ", "),
       typeDefinition = ifelse(
         typeDefinition == "",
         "",
-        paste0("`", typeDefinition, "`")
+        paste0(make_code(typeDefinition))
       )
     ) |>
     knitr::kable(
       col.names = c("Flags", "Arguments", "Description"),
+      escape = FALSE
     ) |>
     paste(collapse = "\n")
+
+  options_table |> raw_html()
 }
 
 process_commands <- function(commands) {
@@ -48,13 +57,13 @@ process_commands <- function(commands) {
   }
   commands_table <- tibble(commands = commands) |>
     unnest_wider(commands) |>
-    mutate(name = paste0("`", name, "`")) |>
+    mutate(name = make_code(name)) |>
     select(name, description) |>
     knitr::kable(
       col.names = c("Command", "Description"),
     ) |>
     paste(collapse = "\n")
-  paste(heading("Commands", 2), commands_table, sep = "\n")
+  paste(heading("Commands", 2), raw_html(commands_table), sep = "\n")
 }
 
 process_examples <- function(examples) {
