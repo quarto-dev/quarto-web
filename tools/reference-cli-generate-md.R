@@ -1,6 +1,8 @@
 # Generates .md files in docs/cli/includes/ from `cli-info.json` in docs/cli/
-# Run with:
-# quarto run tools/generate-md.R
+# 1. Update JSON:
+# quarto dev-call cli-info > docs/cli/cli-info.json
+# 2. Generate .md with:
+# quarto run tools/reference-cli-generate-md.R
 
 library(jsonlite)
 library(knitr)
@@ -146,3 +148,15 @@ commands_content <- commands_tbl |>
 
 commands_content |>
   group_walk(~ with(.x, writeLines(content, filename)))
+
+
+# Table for landing ------------------------------------------------------
+
+commands_tbl |>
+  select(name, description) |>
+  mutate(
+    name = paste("[", name, "](", name, ".qmd)", sep = ""),
+    description = stringr::str_extract(description, "^[^\\n]+")
+  ) |>
+  knitr::kable() |>
+  writeLines(here("docs", "cli", "includes", "_cli-commands.md"))
