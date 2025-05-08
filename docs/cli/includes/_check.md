@@ -1,4 +1,6 @@
-Verify correct functioning of Quarto installation.Check specific functionality with argument install, jupyter, knitr, or all.
+Verify correct functioning of Quarto installation.
+
+Check specific functionality with argument install, jupyter, knitr, or all.
 
 ``` {.bash}
 quarto check [target:string]

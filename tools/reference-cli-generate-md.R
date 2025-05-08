@@ -98,7 +98,7 @@ md_content <- function(name, description, usage, options, commands, examples) {
   examples_text <- process_examples(examples)
 
   paste(
-    strip_ctl(description),
+    description,
     usage_text,
     "\n",
     heading("Options"),

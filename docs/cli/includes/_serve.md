@@ -1,4 +1,6 @@
-Serve a Shiny interactive document.By default, the document will be rendered first and then served. If you have previously rendered the document, pass --no-render to skip the rendering step.
+Serve a Shiny interactive document.
+
+By default, the document will be rendered first and then served. If you have previously rendered the document, pass --no-render to skip the rendering step.
 
 ``` {.bash}
 quarto serve [input:string]

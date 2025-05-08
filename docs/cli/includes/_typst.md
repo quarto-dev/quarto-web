@@ -1,4 +1,7 @@
-Run the version of Typst embedded within Quarto.You can pass arbitrary command line arguments to quarto typst (they willbe passed through unmodified to Typst)
+Run the version of Typst embedded within Quarto.
+
+You can pass arbitrary command line arguments to quarto typst (they will
+be passed through unmodified to Typst)
 
 ``` {.bash}
 quarto typst [...args]

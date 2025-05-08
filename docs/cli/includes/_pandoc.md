@@ -1,4 +1,7 @@
-Run the version of Pandoc embedded within Quarto.You can pass arbitrary command line arguments to quarto pandoc (they willbe passed through unmodified to Pandoc)
+Run the version of Pandoc embedded within Quarto.
+
+You can pass arbitrary command line arguments to quarto pandoc (they will
+be passed through unmodified to Pandoc)
 
 ``` {.bash}
 quarto pandoc [...args]
