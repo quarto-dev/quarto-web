@@ -153,7 +153,7 @@ tibble(commands = commands) |>
     name = paste("[", name, "](", name, ".qmd)", sep = ""),
     description = stringr::str_extract(description, "^[^\\n]+")
   ) |>
-  knitr::kable() |>
+  knitr::kable(col.names = c("Command", "Description"), format = "pipe") |>
   writeLines(here("docs", "cli", "includes", "_cli-commands.md"))
 
 
