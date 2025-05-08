@@ -1,7 +1,4 @@
-Run the version of Typst embedded within Quarto.
-
-You can pass arbitrary command line arguments to quarto typst (they will
-be passed through unmodified to Typst)
+Run the version of Typst embedded within Quarto.You can pass arbitrary command line arguments to quarto typst (they willbe passed through unmodified to Typst)
 
 ``` {.bash}
 quarto typst [...args]
@@ -70,7 +67,7 @@ quarto typst [...args]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
 </tbody>

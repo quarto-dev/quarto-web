@@ -42,11 +42,11 @@ quarto use <type:string> [target:string]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;template&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>template</code> </td>
    <td style="text-align:left;"> Use a Quarto template for this directory or project. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;binder&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>binder</code> </td>
    <td style="text-align:left;"> Configure the current project with Binder support. </td>
   </tr>
 </tbody>

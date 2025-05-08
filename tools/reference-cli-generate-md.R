@@ -61,6 +61,7 @@ process_commands <- function(commands) {
     select(name, description) |>
     knitr::kable(
       col.names = c("Command", "Description"),
+      escape = FALSE
     ) |>
     paste(collapse = "\n")
   paste(heading("Commands", 2), raw_html(commands_table), sep = "\n")

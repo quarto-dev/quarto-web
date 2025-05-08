@@ -157,7 +157,7 @@ quarto render [input:string] [...args]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
 </tbody>

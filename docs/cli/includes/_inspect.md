@@ -1,9 +1,4 @@
-Inspect a Quarto project or input path.
-
-Inspecting a project returns its config and engines.
-Inspecting an input path return its formats, engine, and dependent resources.
-
-Emits results of inspection as JSON to output (or stdout if not provided).
+Inspect a Quarto project or input path.Inspecting a project returns its config and engines.Inspecting an input path return its formats, engine, and dependent resources.Emits results of inspection as JSON to output (or stdout if not provided).
 
 ``` {.bash}
 quarto inspect [path] [output]
@@ -72,7 +67,7 @@ quarto inspect [path] [output]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
 </tbody>

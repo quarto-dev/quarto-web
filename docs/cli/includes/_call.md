@@ -42,11 +42,11 @@ quarto call
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;engine&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>engine</code> </td>
    <td style="text-align:left;"> Access functionality specific to quarto's different rendering engines. </td>
   </tr>
 </tbody>

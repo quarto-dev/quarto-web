@@ -1,17 +1,4 @@
-Publish a document or project to a provider.
-
-Available providers include:
-
- - Quarto Pub (quarto-pub)
- - GitHub Pages (gh-pages)
- - Posit Connect (connect)
- - Posit Cloud (posit-cloud)
- - Netlify (netlify)
- - Confluence (confluence)
- - Hugging Face Spaces (huggingface)
-
-Accounts are configured interactively during publishing.
-Manage/remove accounts with: quarto publish accounts
+Publish a document or project to a provider.Available providers include: - Quarto Pub (quarto-pub) - GitHub Pages (gh-pages) - Posit Connect (connect) - Posit Cloud (posit-cloud) - Netlify (netlify) - Confluence (confluence) - Hugging Face Spaces (huggingface)Accounts are configured interactively during publishing.Manage/remove accounts with: quarto publish accounts
 
 ``` {.bash}
 quarto publish [provider] [path]
@@ -110,7 +97,7 @@ quarto publish [provider] [path]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
 </tbody>

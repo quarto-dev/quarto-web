@@ -1,6 +1,4 @@
-Verify correct functioning of Quarto installation.
-
-Check specific functionality with argument install, jupyter, knitr, or all.
+Verify correct functioning of Quarto installation.Check specific functionality with argument install, jupyter, knitr, or all.
 
 ``` {.bash}
 quarto check [target:string]
@@ -79,7 +77,7 @@ quarto check [target:string]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
 </tbody>

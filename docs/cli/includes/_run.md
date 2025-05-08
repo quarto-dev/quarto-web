@@ -1,7 +1,4 @@
-Run a TypeScript, R, Python, or Lua script.
-
-Run a utility script written in a variety of languages. For details, see:
-https://quarto.org/docs/projects/scripts.html#periodic-scripts
+Run a TypeScript, R, Python, or Lua script.Run a utility script written in a variety of languages. For details, see:https://quarto.org/docs/projects/scripts.html#periodic-scripts
 
 ``` {.bash}
 quarto run [script:string] [...args]
@@ -70,7 +67,7 @@ quarto run [script:string] [...args]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
 </tbody>

@@ -67,11 +67,11 @@ quarto call engine
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;julia&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>julia</code> </td>
    <td style="text-align:left;"> Access functionality specific to the julia rendering engine. </td>
   </tr>
 </tbody>

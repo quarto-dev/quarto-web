@@ -67,27 +67,27 @@ quarto call engine julia
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;help&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;status&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>status</code> </td>
    <td style="text-align:left;"> Get status information on the currently running Julia server process. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;kill&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>kill</code> </td>
    <td style="text-align:left;"> Kill the control server if it is currently running. This will also kill all notebook worker processes. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;log&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>log</code> </td>
    <td style="text-align:left;"> Print the content of the julia server log file if it exists which can be used to diagnose problems. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;close&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>close</code> </td>
    <td style="text-align:left;"> Close the worker for a given notebook. If it is currently running, it will not be interrupted. </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> &lt;code&gt;stop&lt;/code&gt; </td>
+   <td style="text-align:left;"> <code>stop</code> </td>
    <td style="text-align:left;"> Send a message to the server that it should close all notebooks and exit. This will fail if any notebooks are not idle. </td>
   </tr>
 </tbody>
