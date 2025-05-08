@@ -6,9 +6,8 @@
 
 library(jsonlite)
 library(knitr)
-library(dplyr)
-library(tidyr)
 library(here)
+library(tidyverse)
 
 # Helper Functions -------------------------------------------------------
 
@@ -110,25 +109,54 @@ cat("cli-info.json version: ", cli_json$version, "\n")
 commands <- cli_json$commands
 
 exclude <- c("create-project", "editor-support")
+commands <- commands[!map_chr(commands, "name") %in% exclude]
 
-commands_tbl <- tibble(commands) |>
+# Recursively extract commands and subcommands
+extract_commands <- function(commands, prefix = NULL) {
+  result <- list()
+
+  for (cmd in commands) {
+    # Create full command name
+    full_name <- str_c(prefix, cmd$name, sep = " ")
+
+    # Add current command to results
+    cmd$name <- full_name
+    result[[length(result) + 1]] <- cmd
+
+    # Recursively process nested commands if they exist
+    if (!is.null(cmd$commands) && length(cmd$commands) > 0) {
+      nested_commands <- extract_commands(cmd$commands, prefix = full_name)
+      result <- c(result, nested_commands)
+    }
+  }
+
+  return(result)
+}
+
+# Table for landing ------------------------------------------------------
+
+tibble(commands = commands) |>
   unnest_wider(commands) |>
-  filter(!(name %in% exclude)) |>
+  select(name, description) |>
+  mutate(
+    name = paste("[", name, "](", name, ".qmd)", sep = ""),
+    description = stringr::str_extract(description, "^[^\\n]+")
+  ) |>
+  knitr::kable() |>
+  writeLines(here("docs", "cli", "includes", "_cli-commands.md"))
+
+
+# Individual commands ----------------------------------------------------
+
+all_commands <- extract_commands(commands)
+
+commands_tbl <-
+  tibble(commands = all_commands) |>
+  unnest_wider(commands) |>
+  filter(str_detect(name, "help", negate = TRUE)) |>
   rowwise()
 
-# Expand subcommands that arent "help"
-subcommands <-
-  commands_tbl |>
-  filter(!(length(commands) == 1 & commands[[1]]["name"] == "help")) |>
-  unnest(commands) |>
-  unnest_wider(commands, names_sep = "_") |>
-  filter(commands_name != "help") |>
-  mutate(commands_name = paste(name, commands_name)) |>
-  select(starts_with("commands_")) |>
-  rename_with(~ gsub("commands_", "", .x))
-
 commands_content <- commands_tbl |>
-  bind_rows(subcommands) |>
   mutate(
     filename = here(
       "docs",
@@ -148,15 +176,3 @@ commands_content <- commands_tbl |>
 
 commands_content |>
   group_walk(~ with(.x, writeLines(content, filename)))
-
-
-# Table for landing ------------------------------------------------------
-
-commands_tbl |>
-  select(name, description) |>
-  mutate(
-    name = paste("[", name, "](", name, ".qmd)", sep = ""),
-    description = stringr::str_extract(description, "^[^\\n]+")
-  ) |>
-  knitr::kable() |>
-  writeLines(here("docs", "cli", "includes", "_cli-commands.md"))
