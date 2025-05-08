@@ -1,14 +1,4 @@
-Render and preview a document or website project.
-
-Automatically reloads the browser when input files or document resources (e.g. CSS) change.
-
-For website preview, the most recent execution results of computational documents are used to render
-the site (this is to optimize startup time). If you want to perform a full render prior to
-previewing pass the --render option with "all" or a comma-separated list of formats to render.
-
-For document preview, input file changes will result in a re-render (pass --no-watch to prevent).
-
-You can also include arbitrary command line arguments to be forwarded to [1mquarto render[22m.
+Render and preview a document or website project.Automatically reloads the browser when input files or document resources (e.g. CSS) change.For website preview, the most recent execution results of computational documents are used to renderthe site (this is to optimize startup time). If you want to perform a full render prior topreviewing pass the --render option with "all" or a comma-separated list of formats to render.For document preview, input file changes will result in a re-render (pass --no-watch to prevent).You can also include arbitrary command line arguments to be forwarded to quarto render.
 
 ``` {.bash}
 quarto preview [file:string] [...args:string]

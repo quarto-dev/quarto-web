@@ -8,6 +8,7 @@ library(jsonlite)
 library(knitr)
 library(here)
 library(tidyverse)
+library(fansi)
 
 options(knitr.table.format = "html")
 
@@ -97,7 +98,7 @@ md_content <- function(name, description, usage, options, commands, examples) {
   examples_text <- process_examples(examples)
 
   paste(
-    description,
+    strip_ctl(description),
     usage_text,
     "\n",
     heading("Options"),
