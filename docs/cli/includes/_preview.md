@@ -8,7 +8,7 @@ previewing pass the --render option with "all" or a comma-separated list of form
 
 For document preview, input file changes will result in a re-render (pass --no-watch to prevent).
 
-You can also include arbitrary command line arguments to be forwarded to [1mquarto render[22m.
+You can also include arbitrary command line arguments to be forwarded to quarto render.
 
 ``` {.bash}
 quarto preview [file:string] [...args:string]
