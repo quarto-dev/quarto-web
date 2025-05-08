@@ -1,10 +1,10 @@
-Run the version of Typst embedded within Quarto.
+Run the version of Pandoc embedded within Quarto.
 
-You can pass arbitrary command line arguments to quarto typst (they will
-be passed through unmodified to Typst)
+You can pass arbitrary command line arguments to quarto pandoc (they will
+be passed through unmodified to Pandoc)
 
 ``` {.bash}
-quarto typst [...args]
+quarto pandoc [...args]
 ```
 
 
@@ -18,6 +18,8 @@ quarto typst [...args]
 |`--log-format` |`<format>` |Log format (plain, json-stream)            |
 |`--quiet`      |           |Suppress console output.                   |
 |`--profile`    |           |Active project profile(s)                  |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -26,15 +28,15 @@ quarto typst [...args]
 
 
 ## Examples
-### Compile Typst to PDF
+### Render markdown to HTML
 
 ``` {.bash filename='Terminal'}
-quarto typst compile document.typ
+quarto pandoc document.md --to html --output document.html
 ```
-## Examples
-### List all discovered fonts in system and custom font paths
+
+### List Pandoc output formats
 
 ``` {.bash filename='Terminal'}
-quarto typst fonts
+quarto pandoc --list-output-formats
 ```
 

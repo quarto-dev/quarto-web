@@ -34,6 +34,8 @@ quarto publish [provider] [path]
 |`--log-format` |`<format>`        |Log format (plain, json-stream)                    |
 |`--quiet`      |                  |Suppress console output.                           |
 |`--profile`    |                  |Active project profile(s)                          |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -47,73 +49,73 @@ quarto publish [provider] [path]
 ``` {.bash filename='Terminal'}
 quarto publish
 ```
-## Examples
+
 ### Publish document (prompt for provider)
 
 ``` {.bash filename='Terminal'}
 quarto publish document.qmd
 ```
-## Examples
+
 ### Publish project to Hugging Face Spaces
 
 ``` {.bash filename='Terminal'}
 quarto publish huggingface
 ```
-## Examples
+
 ### Publish project to Netlify
 
 ``` {.bash filename='Terminal'}
 quarto publish netlify
 ```
-## Examples
+
 ### Publish with explicit target
 
 ``` {.bash filename='Terminal'}
 quarto publish netlify --id DA36416-F950-4647-815C-01A24233E294
 ```
-## Examples
+
 ### Publish project to GitHub Pages
 
 ``` {.bash filename='Terminal'}
 quarto publish gh-pages
 ```
-## Examples
+
 ### Publish project to Posit Connect
 
 ``` {.bash filename='Terminal'}
 quarto publish connect
 ```
-## Examples
+
 ### Publish with explicit credentials
 
 ``` {.bash filename='Terminal'}
 quarto publish connect --server example.com --token 01A24233E294
 ```
-## Examples
+
 ### Publish project to Posit Cloud
 
 ``` {.bash filename='Terminal'}
 quarto publish posit-cloud
 ```
-## Examples
+
 ### Publish without confirmation prompt
 
 ``` {.bash filename='Terminal'}
 quarto publish --no-prompt
 ```
-## Examples
+
 ### Publish without rendering
 
 ``` {.bash filename='Terminal'}
 quarto publish --no-render
 ```
-## Examples
+
 ### Publish without opening browser
 
 ``` {.bash filename='Terminal'}
 quarto publish --no-browser
 ```
-## Examples
+
 ### Manage/remove publishing accounts
 
 ``` {.bash filename='Terminal'}

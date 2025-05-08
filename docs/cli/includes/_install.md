@@ -17,6 +17,8 @@ quarto install [target...]
 |`--log-format`  |`<format>` |Log format (plain, json-stream)             |
 |`--quiet`       |           |Suppress console output.                    |
 |`--profile`     |           |Active project profile(s)                   |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -30,13 +32,13 @@ quarto install [target...]
 ``` {.bash filename='Terminal'}
 quarto install tinytex
 ```
-## Examples
+
 ### Install Chromium
 
 ``` {.bash filename='Terminal'}
 quarto install chromium
 ```
-## Examples
+
 ### Choose tool to install
 
 ``` {.bash filename='Terminal'}

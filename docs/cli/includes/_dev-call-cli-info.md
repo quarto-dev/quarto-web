@@ -1,10 +1,7 @@
-Run the version of Pandoc embedded within Quarto.
-
-You can pass arbitrary command line arguments to quarto pandoc (they will
-be passed through unmodified to Pandoc)
+Generate JSON information about the Quarto CLI.
 
 ``` {.bash}
-quarto pandoc [...args]
+quarto dev-call cli-info 
 ```
 
 
@@ -17,7 +14,8 @@ quarto pandoc [...args]
 |`--log-level`  |`<level>`  |Log level (info, warning, error, critical) |
 |`--log-format` |`<format>` |Log format (plain, json-stream)            |
 |`--quiet`      |           |Suppress console output.                   |
-|`--profile`    |           |Active project profile(s)                  |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -25,16 +23,4 @@ quarto pandoc [...args]
 |`help`  |Show this help or the help of a sub-command. |
 
 
-## Examples
-### Render markdown to HTML
-
-``` {.bash filename='Terminal'}
-quarto pandoc document.md --to html --output document.html
-```
-## Examples
-### List Pandoc output formats
-
-``` {.bash filename='Terminal'}
-quarto pandoc --list-output-formats
-```
 

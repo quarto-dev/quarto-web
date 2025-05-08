@@ -1,7 +1,7 @@
-Add an extension to this folder or project
+Updates an extension or global dependency.
 
 ``` {.bash}
-quarto add <extension:string>
+quarto update [target...]
 ```
 
 
@@ -17,6 +17,8 @@ quarto add <extension:string>
 |`--log-format` |`<format>`      |Log format (plain, json-stream)                                                 |
 |`--quiet`      |                |Suppress console output.                                                        |
 |`--profile`    |                |Active project profile(s)                                                       |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -25,21 +27,39 @@ quarto add <extension:string>
 
 
 ## Examples
-### Install extension (Github)
+### Update extension (Github)
 
 ``` {.bash filename='Terminal'}
-quarto add <gh-org>/<gh-repo>
+quarto update extension <gh-org>/<gh-repo>
 ```
-## Examples
-### Install extension (file)
+
+### Update extension (file)
 
 ``` {.bash filename='Terminal'}
-quarto add <path-to-zip>
+quarto update extension <path-to-zip>
 ```
-## Examples
-### Install extension (url)
+
+### Update extension (url)
 
 ``` {.bash filename='Terminal'}
-quarto add <url>
+quarto update extension <url>
+```
+
+### Update TinyTeX
+
+``` {.bash filename='Terminal'}
+quarto update tool tinytex
+```
+
+### Update Chromium
+
+``` {.bash filename='Terminal'}
+quarto update tool chromium
+```
+
+### Choose tool to update
+
+``` {.bash filename='Terminal'}
+quarto update tool
 ```
 

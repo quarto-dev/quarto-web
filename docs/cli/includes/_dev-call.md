@@ -10,6 +10,8 @@ quarto dev-call
 |Flags          |Arguments |Description     |
 |:--------------|:---------|:---------------|
 |`-h`, `--help` |          |Show this help. |
+
+
 ## Commands
 
 |Command    |Description                                     |

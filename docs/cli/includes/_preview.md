@@ -34,6 +34,8 @@ If the port is not available then a random port between 3000 and 8000 will be se
 |`--log-format`      |`<format>`        |Log format (plain, json-stream)                                                                                                                                      |
 |`--quiet`           |                  |Suppress console output.                                                                                                                                             |
 |`--profile`         |                  |Active project profile(s)                                                                                                                                            |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -47,43 +49,43 @@ If the port is not available then a random port between 3000 and 8000 will be se
 ``` {.bash filename='Terminal'}
 quarto preview doc.qmd
 ```
-## Examples
+
 ### Preview document with render command line args
 
 ``` {.bash filename='Terminal'}
 quarto preview doc.qmd --toc
 ```
-## Examples
+
 ### Preview document (don't watch for input changes)
 
 ``` {.bash filename='Terminal'}
 quarto preview doc.qmd --no-watch-inputs
 ```
-## Examples
+
 ### Preview website with most recent execution results
 
 ``` {.bash filename='Terminal'}
 quarto preview
 ```
-## Examples
+
 ### Previewing website using a specific port
 
 ``` {.bash filename='Terminal'}
 quarto preview --port 4444
 ```
-## Examples
+
 ### Preview website (don't open a browser)
 
 ``` {.bash filename='Terminal'}
 quarto preview --no-browser
 ```
-## Examples
+
 ### Fully render all website/book formats then preview
 
 ``` {.bash filename='Terminal'}
 quarto preview --render all
 ```
-## Examples
+
 ### Fully render the html format then preview
 
 ``` {.bash filename='Terminal'}

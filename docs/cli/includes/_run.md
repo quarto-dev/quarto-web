@@ -1,12 +1,10 @@
-Inspect a Quarto project or input path.
+Run a TypeScript, R, Python, or Lua script.
 
-Inspecting a project returns its config and engines.
-Inspecting an input path return its formats, engine, and dependent resources.
-
-Emits results of inspection as JSON to output (or stdout if not provided).
+Run a utility script written in a variety of languages. For details, see:
+https://quarto.org/docs/projects/scripts.html#periodic-scripts
 
 ``` {.bash}
-quarto inspect [path] [output]
+quarto run [script:string] [...args]
 ```
 
 
@@ -20,6 +18,8 @@ quarto inspect [path] [output]
 |`--log-format` |`<format>` |Log format (plain, json-stream)            |
 |`--quiet`      |           |Suppress console output.                   |
 |`--profile`    |           |Active project profile(s)                  |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -27,28 +27,4 @@ quarto inspect [path] [output]
 |`help`  |Show this help or the help of a sub-command. |
 
 
-## Examples
-### Inspect project in current directory
-
-``` {.bash filename='Terminal'}
-quarto inspect
-```
-## Examples
-### Inspect project in directory
-
-``` {.bash filename='Terminal'}
-quarto inspect myproject
-```
-## Examples
-### Inspect input path
-
-``` {.bash filename='Terminal'}
-quarto inspect document.md
-```
-## Examples
-### Inspect input path and write to file
-
-``` {.bash filename='Terminal'}
-quarto inspect document.md output.json
-```
 

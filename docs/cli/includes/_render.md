@@ -33,6 +33,8 @@ quarto render [input:string] [...args]
 |`--log-format`             |`<format>` |Log format (plain, json-stream)                                  |
 |`--quiet`                  |           |Suppress console output.                                         |
 |`--profile`                |           |Active project profile(s)                                        |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -48,7 +50,7 @@ quarto render document.qmd
 quarto render document.qmd --to html
 quarto render document.qmd --to pdf --toc
 ```
-## Examples
+
 ### Render Notebook
 
 ``` {.bash filename='Terminal'}
@@ -56,21 +58,21 @@ quarto render notebook.ipynb
 quarto render notebook.ipynb --to docx
 quarto render notebook.ipynb --to pdf --toc
 ```
-## Examples
+
 ### Render Project
 
 ``` {.bash filename='Terminal'}
 quarto render
 quarto render projdir
 ```
-## Examples
+
 ### Render w/ Metadata
 
 ``` {.bash filename='Terminal'}
 quarto render document.qmd -M echo:false
 quarto render document.qmd -M code-fold:true
 ```
-## Examples
+
 ### Render to Stdout
 
 ``` {.bash filename='Terminal'}

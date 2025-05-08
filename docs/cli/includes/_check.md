@@ -19,6 +19,8 @@ quarto check [target:string]
 |`--log-format` |`<format>` |Log format (plain, json-stream)                                      |
 |`--quiet`      |           |Suppress console output.                                             |
 |`--profile`    |           |Active project profile(s)                                            |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -32,19 +34,19 @@ quarto check [target:string]
 ``` {.bash filename='Terminal'}
 quarto check install
 ```
-## Examples
+
 ### Check Jupyter engine
 
 ``` {.bash filename='Terminal'}
 quarto check jupyter
 ```
-## Examples
+
 ### Check Knitr engine
 
 ``` {.bash filename='Terminal'}
 quarto check knitr
 ```
-## Examples
+
 ### Check installation and all engines
 
 ``` {.bash filename='Terminal'}

@@ -18,6 +18,8 @@ quarto create [type] [commands...]
 |`--log-format` |`<format>`        |Log format (plain, json-stream)                              |
 |`--quiet`      |                  |Suppress console output.                                     |
 |`--profile`    |                  |Active project profile(s)                                    |
+
+
 ## Commands
 
 |Command |Description                                  |

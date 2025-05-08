@@ -10,6 +10,8 @@ quarto use <type:string> [target:string]
 |Flags         |Arguments |Description                      |
 |:-------------|:---------|:--------------------------------|
 |`--no-prompt` |          |Do not prompt to confirm actions |
+
+
 ## Commands
 
 |Command    |Description                                          |

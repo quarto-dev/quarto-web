@@ -21,6 +21,8 @@ quarto serve [input:string]
 |`--log-format` |`<format>`      |Log format (plain, json-stream)                     |
 |`--quiet`      |                |Suppress console output.                            |
 |`--profile`    |                |Active project profile(s)                           |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -34,7 +36,7 @@ quarto serve [input:string]
 ``` {.bash filename='Terminal'}
 quarto serve dashboard.qmd
 ```
-## Examples
+
 ### Serve a document without rendering
 
 ``` {.bash filename='Terminal'}

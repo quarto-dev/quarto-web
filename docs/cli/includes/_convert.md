@@ -17,6 +17,8 @@ quarto convert <input:string>
 |`--log-format`   |`<format>`      |Log format (plain, json-stream)            |
 |`--quiet`        |                |Suppress console output.                   |
 |`--profile`      |                |Active project profile(s)                  |
+
+
 ## Commands
 
 |Command |Description                                  |
@@ -30,13 +32,13 @@ quarto convert <input:string>
 ``` {.bash filename='Terminal'}
 quarto convert mydocument.ipynb 
 ```
-## Examples
+
 ### Convert markdown to notebook
 
 ``` {.bash filename='Terminal'}
 quarto convert mydocument.qmd
 ```
-## Examples
+
 ### Convert notebook to markdown, writing to file
 
 ``` {.bash filename='Terminal'}

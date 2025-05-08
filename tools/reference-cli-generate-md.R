@@ -1,7 +1,14 @@
+# Generates .md files in docs/cli/includes/ from `cli-info.json` in docs/cli/
+# Run with:
+# quarto run tools/generate-md.R
+
 library(jsonlite)
 library(knitr)
 library(dplyr)
 library(tidyr)
+library(here)
+
+# Helper Functions -------------------------------------------------------
 
 heading <- function(text, level = 2) {
   paste0(strrep("#", level), " ", text, "\n")
@@ -35,7 +42,10 @@ process_options <- function(options) {
 }
 
 process_commands <- function(commands) {
-  tibble(commands = commands) |>
+  if (length(commands) == 0) {
+    return("")
+  }
+  commands_table <- tibble(commands = commands) |>
     unnest_wider(commands) |>
     mutate(name = paste0("`", name, "`")) |>
     select(name, description) |>
@@ -43,6 +53,7 @@ process_commands <- function(commands) {
       col.names = c("Command", "Description"),
     ) |>
     paste(collapse = "\n")
+  paste(heading("Commands", 2), commands_table, sep = "\n")
 }
 
 process_examples <- function(examples) {
@@ -63,7 +74,8 @@ process_examples <- function(examples) {
       name = heading(name, 3),
       text = paste0(name, description)
     ) |>
-    pull(text)
+    pull(text) |>
+    paste(collapse = "\n")
   paste0(heading("Examples", 2), example_text, collapse = "")
 }
 
@@ -79,7 +91,7 @@ md_content <- function(name, description, usage, options, commands, examples) {
     "\n",
     heading("Options"),
     options_table,
-    heading("Commands"),
+    "\n",
     commands_table,
     "\n",
     examples_text,
@@ -88,14 +100,40 @@ md_content <- function(name, description, usage, options, commands, examples) {
   )
 }
 
-cli_json <- read_json("cli-info.json")
+
+# Read and process JSON --------------------------------------------------
+
+cli_json <- read_json(here("docs", "cli", "cli-info.json"))
+cat("cli-info.json version: ", cli_json$version, "\n")
 commands <- cli_json$commands
 
-commands_content <- tibble(commands) |>
+exclude <- c("create-project", "editor-support")
+
+commands_tbl <- tibble(commands) |>
   unnest_wider(commands) |>
-  rowwise() |>
+  filter(!(name %in% exclude)) |>
+  rowwise()
+
+# Expand subcommands that arent "help"
+subcommands <-
+  commands_tbl |>
+  filter(!(length(commands) == 1 & commands[[1]]["name"] == "help")) |>
+  unnest(commands) |>
+  unnest_wider(commands, names_sep = "_") |>
+  filter(commands_name != "help") |>
+  mutate(commands_name = paste(name, commands_name)) |>
+  select(starts_with("commands_")) |>
+  rename_with(~ gsub("commands_", "", .x))
+
+commands_content <- commands_tbl |>
+  bind_rows(subcommands) |>
   mutate(
-    filename = paste0("_", name, ".md"),
+    filename = here(
+      "docs",
+      "cli",
+      "includes",
+      paste0("_", gsub(" ", "-", name), ".md")
+    ),
     content = md_content(
       name,
       description,
