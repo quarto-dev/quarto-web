@@ -138,14 +138,19 @@ Execute the **Quarto: Show Assist Panel** command to show a panel in the sidebar
 2)  A realtime preview of equations is shown when editing LaTeX math
 3)  Thumbnail previews are shown when your cursor is located on a markdown image.
 
+::: {.content-hidden unless-meta="tool.is_vscode"}
 For example, below help on the matplotlib `plot()` function is shown automatically when the cursor is located on the function:
 
-::: {.content-hidden unless-meta="tool.is_vscode"}
 ![](/docs/computations/images/python-vscode.png){.border fig-alt='Screenshot of {{< meta tool.name >}} editor with three vertical sections. The leftmost includes the file explorer, and quarto help. The second pane is the source code for a quarto file with python code. The third is interactive with Python running and output of the code cells shown.'}
 :::
 
 ::: {.content-hidden unless-meta="tool.is_positron"}
-![](/docs/tools/images/positron-python.png){.border .preview-image fig-alt="Screen shot of Positron editor with three vertical sections. The leftmost includes the file explorer, and quarto help. The second pane is the source code for a quarto file with python code, and the active Python Console. The third shows the Environment and Plots for the active console populated with the output of the code cells."}
+For example, below an image preview is shown automatically when the cursor is located in the image path in the markdown:
+
+![](/docs/tools/images/positron-python.png){.border .preview-image .light-content fig-alt="Screen shot of Positron editor with three vertical sections. The leftmost includes the file explorer, and quarto assist pane. The second pane is the source code for a quarto file with python code, and the active Python Console. The third shows the Environment and Plots for the active console populated with the output of the code cells."}
+
+![](/docs/tools/images/positron-python-dark.png){.border .dark-content .preview-image fig-alt="Screen shot of Positron editor with three vertical sections. The leftmost includes the file explorer, and quarto assist pane. The second pane is the source code for a quarto file with python code, and the active Python Console. The third shows the Environment and Plots for the active console populated with the output of the code cells."}
+
 :::
 
 ## Live Preview
