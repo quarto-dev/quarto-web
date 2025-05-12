@@ -17,7 +17,7 @@ The Quarto VS Code extension includes commands and keyboard shortcuts for render
 
 ![](/docs/tools/images/{{< meta tool.prefix >}}-render.png){.border fig-alt='Two windows arranged side by side. The window on the left is a qmd file opened in {{< meta tool.name >}}. The contents of this document are the same as the first part of the Getting Started: Welcome section of this website. The contents of this document are rendered by Quarto in the window on the right.'}
 
-To render and preview, execute the **Quarto: Preview** command. You can alternatively use the <kbd>Ctrl+Shift+K</kbd> keyboard shortcut, or the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){fig-alt="Preview icon"}) at the top right of the editor:
+To render and preview, execute the **Quarto: Preview** command. You can alternatively use the <kbd>Ctrl+Shift+K</kbd> keyboard shortcut, or the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){.light-content fig-alt="Preview icon"}![](/docs/tools/images/vscode-preview-icon-white.svg){.dark-content fig-alt="Preview icon"}) at the top right of the editor:
 
 ![](/docs/tools/images/{{< meta tool.prefix >}}-preview-button.png){.border fig-alt='The top of the {{< meta tool.name >}} editor. The right side of the editor tab area includes a Preview button.'}
 
