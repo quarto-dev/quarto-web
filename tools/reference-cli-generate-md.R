@@ -119,9 +119,6 @@ cli_json <- read_json(here("docs", "cli", "cli-info.json"))
 cat("cli-info.json version: ", cli_json$version, "\n")
 commands <- cli_json$commands
 
-exclude <- c("create-project", "editor-support")
-commands <- commands[!map_chr(commands, "name") %in% exclude]
-
 # Recursively extract commands and subcommands
 extract_commands <- function(commands, prefix = NULL) {
   result <- list()
@@ -148,6 +145,7 @@ extract_commands <- function(commands, prefix = NULL) {
 
 tibble(commands = commands) |>
   unnest_wider(commands) |>
+  filter(!hidden) |>
   select(name, description) |>
   mutate(
     name = paste("[", name, "](", name, ".qmd)", sep = ""),
@@ -159,11 +157,15 @@ tibble(commands = commands) |>
 
 # Individual commands ----------------------------------------------------
 
-all_commands <- extract_commands(commands)
+hidden <- commands |>
+  map_lgl("hidden")
+
+all_commands <- extract_commands(commands[!hidden])
 
 commands_tbl <-
   tibble(commands = all_commands) |>
   unnest_wider(commands) |>
+  filter(!hidden) |>
   filter(str_detect(name, "help", negate = TRUE)) |>
   rowwise()
 
