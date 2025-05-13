@@ -1,8 +1,11 @@
 ## Overview
 
-The [Quarto VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) includes a visual markdown editor that supports all of Quarto's markdown syntax including tables, citations, cross-references, footnotes, divs/spans, definition lists, attributes, raw HTML/TeX, and more:
+The [Quarto VS Code Extension](https://open-vsx.org/extension/quarto/quarto) includes a visual markdown editor that supports all of Quarto's markdown syntax including tables, citations, cross-references, footnotes, divs/spans, definition lists, attributes, raw HTML/TeX, and more:
 
-![](/docs/visual-editor/images/vscode-visual-editor.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor.png){.border .light-content fig-alt='{{< meta tool.name >}} with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
+
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-dark.png){.border .dark-content fig-alt='Positron with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
+
 
 You can switch between visual and source mode at any time and can even edit documents concurrently in both modes. To switch between visual and source mode:
 
@@ -10,19 +13,37 @@ You can switch between visual and source mode at any time and can even edit docu
 
 2.  Use the context menu from anywhere in a document:
 
-    ![](/docs/visual-editor/images/vscode-visual-editor-context-menu.png){.border width="609"}
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-context-menu.png){.border .light-content fig-alt='The context menu in with the Edit in Visual Mode command highlighted.' width="609"}
+
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-context-menu-dark.png){.border .dark-content fig-alt='The context menu in with the Edit in Visual Mode command highlighted.' width="609"}
 
 3.  Use the **Edit in Visual Mode** and **Edit in Source Mode** commands:
 
-    ![](/docs/visual-editor/images/vscode-visual-mode-command.png){.border width="609"}
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-command.png){.border .light-content fig-alt='The command palette with the Edit in Visual Mode command highlighted.' width="609"}
+
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-command-dark.png){.border .dark-content fig-alt='The command palette with the Edit in Visual Mode command highlighted.' width="609"}
 
 4.  Use the editor menu:
 
-    ![](/docs/visual-editor/images/vscode-visual-mode-menu.png){.border width="609"}
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-menu.png){.border .light-content width="609" fig-alt='The editor menu with the Edit in Visual Mode command highlighted.'}
+
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-menu-dark.png){.border .dark-content width="609" fig-alt='The editor menu with the Edit in Visual Mode command highlighted.'}
+    
+
+:::{.content-hidden unless-meta="tool.is_positron"}
+5.  Using the **Source**/**Visual** buttons in the toolbar:
+
+    ![](/docs/tools/images/positron-visual-editor-toolbar-toggle.png){.border .light-content fig-alt="The toolbar in Positron with the Source and Visual buttons highlighted." width="609"}
+
+    ![](/docs/tools/images/positron-visual-editor-toolbar-toggle-dark.png){.border .dark-content fig-alt="The toolbar in Positron with the Source and Visual buttons highlighted." width="609"}
+:::
 
 You can also right click a `.qmd` document in the file explorer and select the **Open With...** command, which will prompt you for the editor to open the file with:
 
-![](/docs/visual-editor/images/vscode-visual-editor-default-mode.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode.png){.border .light-content width="609"}
+
+
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode-dark.png){.border .dark-content width="609"}
 
 Note that this menu also provides an option to configure the default editor for `.qmd` files: use this if you want to primarily edit in visual mode and occasionally switch to source mode.
 
@@ -88,19 +109,19 @@ If you are at the beginning of a line (as displayed above), you can also enter p
 
 The editor toolbar includes buttons for the most commonly used formatting commands:
 
-![](/docs/visual-editor/images/vscode-visual-editor-toolbar.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-toolbar.png){.border width="609"}
 
 Additional commands are available on the **Format**, **Insert**, and **Table** menus:
 
 | Format                                                                                                            | Insert                                                                                                            | Table                                                                                                           |
 |------------------------|------------------------|------------------------|
-| ![](/docs/visual-editor/images/vscode-visual-editor-format-menu.png){.border fig-alt="The contents of the Format drop down menu."} | ![](/docs/visual-editor/images/vscode-visual-editor-insert-menu.png){.border fig-alt="The contents of the Insert drop down menu."} | ![](/docs/visual-editor/images/vscode-visual-editor-table-menu.png){.border fig-alt="The contents of the Table drop down menu."} |
+| ![](/docs/tools/images/vscode-visual-editor-format-menu.png){.border fig-alt="The contents of the Format drop down menu."} | ![](/docs/tools/images/vscode-visual-editor-insert-menu.png){.border fig-alt="The contents of the Insert drop down menu."} | ![](/docs/tools/images/vscode-visual-editor-table-menu.png){.border fig-alt="The contents of the Table drop down menu."} |
 
 ## Editor Options
 
 There are a variety of {{< meta tool.name >}} options available to configure the behavior of the visual editor. You can locate these options by filtering on `quarto.visualEditor` in the settings pane:
 
-![](/docs/visual-editor/images/vscode-visual-editor-options.png){.border width="609"}
+![](/docs/tools/images/vscode-visual-editor-options.png){.border width="609"}
 
 Options enable configuration of appearance (font size, content width, etc.), markdown output (e.g. column wrapping), spell checking, and default spacing for lists.
 
