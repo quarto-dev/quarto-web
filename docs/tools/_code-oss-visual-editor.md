@@ -1,12 +1,11 @@
----
-title: "Visual Editing in VS Code"
----
-
 ## Overview
 
-The [Quarto VS Code Extension](https://marketplace.visualstudio.com/items?itemName=quarto.quarto) includes a visual markdown editor that supports all of Quarto's markdown syntax including tables, citations, cross-references, footnotes, divs/spans, definition lists, attributes, raw HTML/TeX, and more:
+The [Quarto VS Code Extension](https://open-vsx.org/extension/quarto/quarto) includes a visual markdown editor that supports all of Quarto's markdown syntax including tables, citations, cross-references, footnotes, divs/spans, definition lists, attributes, raw HTML/TeX, and more:
 
-![](/docs/visual-editor/images/vscode-visual-editor.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor.png){.border .light-content fig-alt='{{< meta tool.name >}} with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
+
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-dark.png){.border .dark-content fig-alt='Positron with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
+
 
 You can switch between visual and source mode at any time and can even edit documents concurrently in both modes. To switch between visual and source mode:
 
@@ -14,19 +13,37 @@ You can switch between visual and source mode at any time and can even edit docu
 
 2.  Use the context menu from anywhere in a document:
 
-    ![](/docs/visual-editor/images/vscode-visual-editor-context-menu.png){.border width="609"}
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-context-menu.png){.border .light-content fig-alt='The context menu in with the Edit in Visual Mode command highlighted.' width="609"}
+
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-context-menu-dark.png){.border .dark-content fig-alt='The context menu in with the Edit in Visual Mode command highlighted.' width="609"}
 
 3.  Use the **Edit in Visual Mode** and **Edit in Source Mode** commands:
 
-    ![](/docs/visual-editor/images/vscode-visual-mode-command.png){.border width="609"}
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-command.png){.border .light-content fig-alt='The command palette with the Edit in Visual Mode command highlighted.' width="609"}
+
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-command-dark.png){.border .dark-content fig-alt='The command palette with the Edit in Visual Mode command highlighted.' width="609"}
 
 4.  Use the editor menu:
 
-    ![](/docs/visual-editor/images/vscode-visual-mode-menu.png){.border width="609"}
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-menu.png){.border .light-content width="609" fig-alt='The editor menu with the Edit in Visual Mode command highlighted.'}
+
+    ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-menu-dark.png){.border .dark-content width="609" fig-alt='The editor menu with the Edit in Visual Mode command highlighted.'}
+    
+
+:::{.content-hidden unless-meta="tool.is_positron"}
+5.  Using the **Source**/**Visual** buttons in the toolbar:
+
+    ![](/docs/tools/images/positron-visual-editor-toolbar-toggle.png){.border .light-content fig-alt="The toolbar in Positron with the Source and Visual buttons highlighted." width="609"}
+
+    ![](/docs/tools/images/positron-visual-editor-toolbar-toggle-dark.png){.border .dark-content fig-alt="The toolbar in Positron with the Source and Visual buttons highlighted." width="609"}
+:::
 
 You can also right click a `.qmd` document in the file explorer and select the **Open With...** command, which will prompt you for the editor to open the file with:
 
-![](/docs/visual-editor/images/vscode-visual-editor-default-mode.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode.png){.border .light-content width="609"}
+
+
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode-dark.png){.border .dark-content width="609"}
 
 Note that this menu also provides an option to configure the default editor for `.qmd` files: use this if you want to primarily edit in visual mode and occasionally switch to source mode.
 
@@ -81,9 +98,9 @@ For markdown shortcuts, if you didn't intend to use a shortcut and want to rever
 You can also use the catch-all <kbd>⌘ /</kbd> shortcut to insert just about anything. Just execute the shortcut then type what you want to insert. For example:
 
 ::: {layout-ncol="2"}
-![](../images/visual-editing-omni-list.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/lis'. There is a drop-down menu underneath this with options for 'Bullet List', 'Numbered List', and 'Definition List' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
+![](/docs/visual-editor/images/visual-editing-omni-list.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/lis'. There is a drop-down menu underneath this with options for 'Bullet List', 'Numbered List', and 'Definition List' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
 
-![](../images/visual-editing-omni-math.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/ma'. There is a drop-down menu underneath this with options for 'Inline Math', 'Display Math', and 'Image...' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
+![](/docs/visual-editor/images/visual-editing-omni-math.png){fig-alt="There is a line of text (with a cursor at the end) where someone has typed '/ma'. There is a drop-down menu underneath this with options for 'Inline Math', 'Display Math', and 'Image...' arranged vertically. The title of each item is bolded, has a small icon to the left, and a small description in lighter gray text underneath it." width="400"}
 :::
 
 If you are at the beginning of a line (as displayed above), you can also enter plain `/` to invoke the shortcut.
@@ -92,19 +109,19 @@ If you are at the beginning of a line (as displayed above), you can also enter p
 
 The editor toolbar includes buttons for the most commonly used formatting commands:
 
-![](/docs/visual-editor/images/vscode-visual-editor-toolbar.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-toolbar.png){.border width="609"}
 
 Additional commands are available on the **Format**, **Insert**, and **Table** menus:
 
 | Format                                                                                                            | Insert                                                                                                            | Table                                                                                                           |
 |------------------------|------------------------|------------------------|
-| ![](../images/vscode-visual-editor-format-menu.png){.border fig-alt="The contents of the Format drop down menu."} | ![](../images/vscode-visual-editor-insert-menu.png){.border fig-alt="The contents of the Insert drop down menu."} | ![](../images/vscode-visual-editor-table-menu.png){.border fig-alt="The contents of the Table drop down menu."} |
+| ![](/docs/tools/images/vscode-visual-editor-format-menu.png){.border fig-alt="The contents of the Format drop down menu."} | ![](/docs/tools/images/vscode-visual-editor-insert-menu.png){.border fig-alt="The contents of the Insert drop down menu."} | ![](/docs/tools/images/vscode-visual-editor-table-menu.png){.border fig-alt="The contents of the Table drop down menu."} |
 
 ## Editor Options
 
-There are a variety of VS Code options available to configure the behavior of the visual editor. You can locate these options by filtering on `quarto.visualEditor` in the settings pane:
+There are a variety of {{< meta tool.name >}} options available to configure the behavior of the visual editor. You can locate these options by filtering on `quarto.visualEditor` in the settings pane:
 
-![](/docs/visual-editor/images/vscode-visual-editor-options.png){.border width="609"}
+![](/docs/tools/images/vscode-visual-editor-options.png){.border width="609"}
 
 Options enable configuration of appearance (font size, content width, etc.), markdown output (e.g. column wrapping), spell checking, and default spacing for lists.
 
@@ -120,7 +137,7 @@ Zotero references will also show up automatically in visual editor completions:
 
 Items from Zotero will appear alongside items from your bibliography with a small "Z" logo juxtaposed over them. If you insert a citation from Zotero that isn't already in your bibliography then it will be automatically added to the bibliography.
 
-If you are running both VS Code and Zotero on your desktop, then no additional configuration is required for connecting to your Zotero library. If however you using VS Code in a web browser and/or want to access your Zotero library over the web, then a few more steps are required (see the [Zotero Web API](#zotero-web-api) section for details).
+If you are running both {{< meta tool.name >}} and Zotero on your desktop, then no additional configuration is required for connecting to your Zotero library. If however you [are using VS Code in a web browser and/or]{.content-hidden unless-meta="tool.is_vscode"} want to access your Zotero library over the web, then a few more steps are required (see the [Zotero Web API](#zotero-web-api) section for details).
 
 ### Group Libraries {#group-libraries}
 
@@ -132,10 +149,10 @@ After you've added a group library to the list, a sync will be performed and you
 
 ### Zotero Web API {#zotero-web-api}
 
-If you are using VS Code in a web browser and/or don't have Zotero installed locally, you can still access your Zotero library using the Zotero Web API (assuming you have a Zotero web account and have synced your libraries to your account).
+If you [are using VS Code in a web browser and/or]{.content-hidden unless-meta="tool.is_vscode"} don't have Zotero installed locally, you can still access your Zotero library using the Zotero Web API (assuming you have a Zotero web account and have synced your libraries to your account).
 
 ::: {.callout-tip appearance="simple"}
-If you are running VS Code on your desktop it's generally easier to also run Zotero on your desktop and access your library locally. That said, it is possible to access Zotero web libraries from VS Code on the desktop if you prefer that configuration.
+If you are running {{< meta tool.name >}} on your desktop it's generally easier to also run Zotero on your desktop and access your library locally. That said, it is possible to access Zotero web libraries from {{< meta tool.name >}} on the desktop if you prefer that configuration.
 :::
 
 #### API Access Key
@@ -200,13 +217,13 @@ Some aspects of markdown output can be customized via global, project, or file-l
 
 You can specify these options in one of two ways:
 
-1.  As a global or per-workspace VS Code option (you can find the options that affect markdown output by filtering on `quarto.visualEditor.markdown`).
+1.  As a global or per-workspace {{< meta tool.name >}} option (you can find the options that affect markdown output by filtering on `quarto.visualEditor.markdown`).
 
 2.  Specifying them within document or project level YAML (described below).
 
 #### Line Wrapping
 
-By default, the visual editor writes Markdown with no line wrapping (paragraphs all occupy a single line). However, if you prefer to insert line breaks at a particular column (e.g. 72 or 80), or to insert a line break after each sentence, you can use the `quarto.visualEditor.markdownWrap` and `quarto.visualEditor.markdownWrapColumn` options accessible from the settings editor in VS Code.
+By default, the visual editor writes Markdown with no line wrapping (paragraphs all occupy a single line). However, if you prefer to insert line breaks at a particular column (e.g. 72 or 80), or to insert a line break after each sentence, you can use the `quarto.visualEditor.markdownWrap` and `quarto.visualEditor.markdownWrapColumn` options accessible from the settings editor in {{< meta tool.name >}}.
 
 You can also set this behavior on a per-document or per-project basis via the `wrap` option. For example, to wrap lines after 72 characters you would use this:
 
@@ -236,7 +253,7 @@ If you have enabled a global line wrapping option and want to turn off wrapping 
 
 #### References
 
-By default, references (footnotes and reference links) are written at the end of the block where their corresponding footnote appears. You can override this behavior using the `quarto.visualEditor.markdownReferences` VS Code setting or by using the `references` option within document or project YAML.
+By default, references (footnotes and reference links) are written at the end of the block where their corresponding footnote appears. You can override this behavior using the `quarto.visualEditor.markdownReferences` {{< meta tool.name >}} setting or by using the `references` option within document or project YAML.
 
 For example, to write references at the end of sections rather than blocks you would use:
 
@@ -286,7 +303,7 @@ editor:
 ---
 ```
 
-You can alternatively enable reference links using the VS Code `quarto.visualEditor.markdownReferenceLinks` option.
+You can alternatively enable reference links using the {{< meta tool.name >}} `quarto.visualEditor.markdownReferenceLinks` option.
 
 ### Known Limitations
 
@@ -303,4 +320,4 @@ There are a handful of Pandoc markdown extensions not currently supported by vis
 
 The visual editor is unable to parse non-YAML title blocks (e.g. old-style % titles or MultiMarkdown titles) and also unable to parse non top-level YAML metadata blocks. If these forms of metadata are encountered, visual mode will fail to load with a warning.
 
-Note that support for reference links can be enabled via the `editor: markdown: references: links` option in document or project YAML, or the VS Code `quarto.visualEditor.markdownReferenceLinks` option. Reference links will be written according the reference location option (either the `block` or `section` in which they appear, or alternatively at the end of the `document`).
+Note that support for reference links can be enabled via the `editor: markdown: references: links` option in document or project YAML, or the {{< meta tool.name >}} `quarto.visualEditor.markdownReferenceLinks` option. Reference links will be written according the reference location option (either the `block` or `section` in which they appear, or alternatively at the end of the `document`).
