@@ -78,64 +78,110 @@ By doing nothing more than clicking that one link, participants create or resume
 
 If you're considering using Codespaces with Quarto CLI for your next workshop or teaching module, here's how to get started:
 
-### Fork the `quarto-codespaces` Repository
-
 Leverage the example provided by the [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) or [create your own Codespaces using the default](https://github.com/codespaces/new/).
-This repository includes the Dev Container configuration file (*i.e.*, `devcontainer.json`) that instruct Codespaces on how to set up an environment complete with Quarto CLI and other essential tools.
 
-### Configure the Development Container
+### Use an Existing Docker Image {#sec-use-existing-docker-image}
 
-Inside the repository, the `.devcontainer/devcontainer.json` file serves as the blueprint for your Codespace.
-This configuration ensures that every instance of your Codespace is identical, capturing everything from the Quarto CLI version to additional libraries or extensions you might need.
+The easiest way to get started is to use an existing Docker image that has Quarto CLI and all the dependencies you need.
+There are several pre-built images available with or without the Quarto CLI:
+
+- Official Docker images:
+  - [`ghcr.io/quarto-dev/quarto`](https://github.com/quarto-dev/quarto-cli/pkgs/container/quarto)
+  - [`ghcr.io/quarto-dev/quarto-full`](https://github.com/quarto-dev/quarto-cli/pkgs/container/quarto-full)
+- Community Docker images:
+  - [`ghcr.io/mcanouil/quarto-codespaces`](https://github.com/mcanouil/quarto-codespaces/pkgs/container/quarto-codespaces)
+- Default Codespaces image:
+  - [`mcr.microsoft.com/devcontainers/universal`](https://github.com/devcontainers/images/tree/main/src/universal)
+
+You can use any of these images as a base for your Codespace.
+Inside the `.devcontainer/devcontainer.json` file, you can specify the image you want to use.
+The `.devcontainer/devcontainer.json` file serves as the blueprint for your Codespace.
 
 ```json
 {
-	"name": "Quarto",
-	// "image": "buildpack-deps:jammy-curl", // <1>
-	"build": {
-		"dockerfile": "./Dockerfile",
-		"context": ".",
-		"args": {
-			"VARIANT": "jammy"
-		}
-	},
-	"remoteUser": "vscode",
-	"features": { // <2>
-		"./quarto-computing-dependencies": { // <3>
-			"rDeps": "rmarkdown,languageserver,nx10/httpgd@v2.0.3,prompt,lintr",
-			"pythonDeps": "jupyter,papermill",
-			"juliaDeps": "IJulia"
-		},
-		"./uv": { // <4>
-			"version": "latest"
-		},
-		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": { // <5>
-			"version": "release",
-			"installTinyTex": "true",
-			"installChromium": "false"
-		}
-	},
-	"customizations": { // <6>
-		"vscode": {
-			"extensions": [
-				"quarto.quarto",
-				"mcanouil.quarto-wizard",
-				"REditorSupport.r",
-				"Posit.air-vscode"
-			],
-			"settings": {
-				"r.rterm.option": [
-					"--no-save",
-					"--no-restore-data",
-					"--quiet"
-				],
-				"[r]": {
-					"editor.defaultFormatter": "Posit.air-vscode",
-					"editor.formatOnSave": true
-				}
-			}
-		}
-	}
+  "name": "My Workshop Setup",
+  "image": "ghcr.io/mcanouil/quarto-codespaces:latest", // <1>
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "quarto.quarto", // <2>
+        "mcanouil.quarto-wizard" // <3>
+      ]
+    },
+    "codespaces": {
+      "openFiles": [ // <4>
+        "exercises/intro-to-quarto.qmd",
+        "exercises/computation.qmd"
+      ]
+    }
+  }
+}
+```
+
+1. The Docker image is specified in the `image` field.
+   It's built using a Dev Container specification that you can find in [`.github/.devcontainer`](https://github.com/mcanouil/quarto-codespaces/tree/main/.github/.devcontainer).
+2. The [`quarto` extension](https://github.com/quarto-dev/quarto) for Visual Studio Code / Positron to provide support for Quarto documents.
+3. The [`quarto-wizard` extension](https://github.com/mcanouil/quarto-wizard) for Visual Studio Code / Positron to provide assistance in managing Quarto extensions
+4. The `openFiles` field specifies the files to open when the Codespace is created.
+   This is useful for guiding participants to the right files or folders.
+   See the [Codespaces documentation](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/configuring-dev-containers/automatically-opening-files-in-the-codespaces-for-a-repository) for more information.
+
+### Configure the Development Container
+
+You can fork the [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) as a starting point for your own Codespaces.
+This repository includes the Dev Container configuration file (*i.e.*, `.devcontainer/devcontainer.json`) that instruct Codespaces on how to set up an environment complete with Quarto CLI and other essential tools.
+The `.devcontainer/devcontainer.json` configuration file ensures that every instance of your Codespace is identical, capturing everything from the Quarto CLI version to additional libraries or extensions you might need.
+The [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) is a great starting point as it provides a prebuilt Docker image with the latest Quarto CLI, Python, R, and Julia installed (*i.e.*, [`ghcr.io/mcanouil/quarto-codespaces`](https://github.com/mcanouil/quarto-codespaces/pkgs/container/quarto-codespaces) using [`.github/.devcontainer/devcontainer.json`](https://github.com/mcanouil/quarto-codespaces/tree/main/.github/.devcontainer)).
+
+```json
+{
+  "name": "Quarto",
+  // "image": "buildpack-deps:jammy-curl", // <1>
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": ".",
+    "args": {
+      "VARIANT": "jammy"
+    }
+  },
+  "remoteUser": "vscode",
+  "features": { // <2>
+    "./quarto-computing-dependencies": { // <3>
+      "rDeps": "rmarkdown,languageserver,nx10/httpgd@v2.0.3,prompt,lintr",
+      "pythonDeps": "jupyter,papermill",
+      "juliaDeps": "IJulia"
+    },
+    "./uv": { // <4>
+      "version": "latest"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": { // <5>
+      "version": "release",
+      "installTinyTex": "true",
+      "installChromium": "false"
+    }
+  },
+  "customizations": { // <6>
+    "vscode": {
+      "extensions": [
+        "quarto.quarto",
+        "mcanouil.quarto-wizard",
+        "REditorSupport.r",
+        "Posit.air-vscode"
+      ],
+      "settings": {
+        "r.rterm.option": [
+          "--no-save",
+          "--no-restore-data",
+          "--quiet"
+        ],
+        "[r]": {
+          "editor.defaultFormatter": "Posit.air-vscode",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  }
 }
 ```
 
@@ -151,29 +197,32 @@ This configuration ensures that every instance of your Codespace is identical, c
    You can see the code for this feature in the source repository: <https://github.com/rocker-org/devcontainer-features/tree/main/src/quarto-cli>.
 6. The `customizations` section allows you to specify settings and extensions for Visual Studio Code.
 
-The `quarto-codespaces` repository is a great starting point as it provides a prebuilt Docker image with the latest Quarto CLI, Python, R, and Julia installed.
-You can also add additional features to the `.devcontainer/devcontainer.json` to suit your needs or start directly using the image as is in your `.devcontainer/devcontainer.json` file.
+You can also add additional features to the `devcontainer.json` to suit your needs or start directly using the image as is as shown in @sec-use-existing-docker-image.
+For example, you might want to add additional R packages or Python libraries.
+You can do this by using the `quarto-computing-dependencies` custom feature and chaning the `rDeps`, `pythonDeps`, and `juliaDeps` fields to include the packages you want to install globally, or by using the `postStartCommand` field to run a script that installs the packages you need.
 
 ```json
 {
-	"name": "My Workshop Setup",
-	"image": "ghcr.io/mcanouil/quarto-codespaces:latest", // <1>
-	"remoteUser": "vscode",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"quarto.quarto", // <2>
-				"mcanouil.quarto-wizard" // <3>
-			]
-		}
-	}
+  "name": "My Workshop Setup",
+  "image": "ghcr.io/mcanouil/quarto-codespaces:latest",
+  "remoteUser": "vscode",
+  "postStartCommand": "uv venv && source .venv/bin/activate && uv pip install -r requirements.txt"
 }
 ```
 
-1. The Docker image is specified in the `image` field.
-   It's built using a Dev Container specification that you can find in [`.github/.devcontainer`](https://github.com/mcanouil/quarto-codespaces/tree/main/.github/.devcontainer).
-2. The [`quarto` extension](https://github.com/quarto-dev/quarto) for Visual Studio Code / Positron to provide support for Quarto documents.
-3. The [`quarto-wizard` extension](https://github.com/mcanouil/quarto-wizard) for Visual Studio Code / Positron to provide assistance in managing Quarto extensions
+You can also use the `postStartCommand` field to run a script that installs the packages you need.
+
+```json
+{
+  "name": "My Workshop Setup",
+  "image": "ghcr.io/mcanouil/quarto-codespaces:latest",
+  "remoteUser": "vscode",
+  "postStartCommand": "bash ./init-env.sh --what all --force" // <1>
+}
+```
+
+1. The `postStartCommand` field specifies a command to run after the Codespace is started.
+   In this case, it runs the [`init-env.sh` script](https://github.com/mcanouil/quarto-codespaces/blob/main/init-env.sh) from [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) with the `--what all` and `--force` options.
 
 ## Benefits for Workshops and Teaching
 
