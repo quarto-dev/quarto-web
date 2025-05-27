@@ -119,8 +119,55 @@ jobs:
             Deploy from GHA: ${{ github.event.pull_request.title || format('manual from PR {0}', github.event.issue.number) }}
           alias: deploy-preview-${{ github.event.pull_request.number || github.event.issue.number }}
           # these all default to 'true'
-          enable-pull-request-comment: true
+          enable-pull-request-comment: false
           enable-commit-comment: false
           enable-commit-status: true
           overwrites-pull-request-comment: false
         timeout-minutes: 1
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v46.0.5
+        with:
+          files: |
+            # don't consider modifications on file used for includes for now.
+            docs/**/[^_]*.qmd
+            docs/**/[^_]*.md
+          json: true
+          escape_json: false
+      
+      - name: Create custom PR comment
+        if: github.event.pull_request || github.event.issue.pull_request
+        uses: actions/github-script@v7
+        env:
+          DEPLOY_URL: ${{ steps.netlify-deploy.outputs.deploy-url }}
+          CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
+            const deployUrl = process.env.DEPLOY_URL;
+            const changedFiles = JSON.parse(process.env.CHANGED_FILES);
+            
+            let commentBody = `## 📝 Preview Deployment\n\n`;
+            commentBody += `🔍 Full site preview: [${deployUrl}](${deployUrl})\n\n`;
+            
+            if (changedFiles.length > 0) {
+              commentBody += `### 🔄 Modified Documents\n\n`;
+              changedFiles.forEach(file => {
+                if (file.endsWith('.qmd') || file.endsWith('.md')) {
+                  // Convert path to URL (removing file extension and adding appropriate path)
+                  const fileUrlPath = file
+                    .replace(/\.(qmd|md)$/, '.html');
+                  const fileUrl = `${deployUrl}/${fileUrlPath}`;
+                  commentBody += `- [${file}](${fileUrl})\n`;
+                }
+              });
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            });
