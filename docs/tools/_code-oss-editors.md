@@ -76,6 +76,16 @@ editor:
   render-on-save: true
 ```
 
+::: {.content-hidden unless-meta="tool.is_positron"}
+
+You can also enable this setting using the checkbox in the Editor toolbar:
+
+![](/docs/tools/images/positron-render-on-save.png){.border .light-content fig-alt='The Editor toolbar showing the Render on Save option checked.'}
+
+![](/docs/tools/images/positron-render-on-save-dark.png){.border .dark-content fig-alt='The Editor toolbar showing the Render on Save option checked.'}
+
+:::
+
 ## External Preview
 
 If you prefer to use an external browser for preview (or have no preview triggered at all by rendering) you can use the **Preview Type** option to specify an alternate behavior:
