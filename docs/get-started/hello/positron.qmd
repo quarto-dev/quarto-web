@@ -1,0 +1,155 @@
+---
+title: "Tutorial: Hello, Quarto"
+editor_options:
+  markdown:
+    wrap: sentence
+    canonical: true
+---
+
+{{< include ../_tool-chooser.md >}}
+
+:::{.callout-tip}
+
+# R or Python?
+
+You can work through this tutorial using R or Python code examples. 
+Select your preferred language:
+
+::: {.panel-tabset group="language"} 
+
+## R
+
+## Python
+
+:::
+
+:::
+
+## Overview
+
+## Setup
+
+If you would like to follow along with this tutorial in your own environment, follow the steps outlined below.
+
+::: {.panel-tabset group="language"} 
+
+## R
+
+1.  Be sure that you have installed the `tidyverse` and `palmerpenguins` packages:
+
+    ``` r
+    install.packages("tidyverse")
+    install.packages("palmerpenguins")
+    ```
+
+2.  Download the Quarto document (`.qmd`) below, open it in Positron.
+
+    ::: {.callout appearance="minimal"}
+    <i class="bi bi-download"></i> [Download hello.qmd](positron-r/_hello.qmd){download="hello.qmd"}
+    :::
+
+
+## Python
+
+1. Be sure that you have installed the `jupyter`, `plotnine` and `palmerpenguins` packages:
+
+    ``` python
+    pip install jupyter plotnine palmerpenguins
+    ```
+
+2.  Download the Quarto document (`.qmd`) below, open it in Positron.
+
+    ::: {.callout appearance="minimal"}
+    <i class="bi bi-download"></i> [Download hello.qmd](positron-python/_hello.qmd){download="hello.qmd"}
+    :::
+
+:::
+
+## Rendering
+
+Use the **Preview** button in the Editor toolbar to render the file and preview the output with a single click or keyboard shortcut (⇧⌘K).
+
+![](images/rstudio-render.png){.border fig-alt="Top of the text editor in RStudio with the Render button highlighted with a purple box." fig-align="center"}
+
+If you prefer to automatically render whenever you save, you can check the Render on Save option on the editor toolbar.
+The preview will update whenever you re-render the document.
+Side-by-side preview works for both HTML and PDF outputs.
+
+![](images/rstudio-render-on-save.png){.border fig-alt="Top of the text editor in RStudio with the Render on Save checkbox checked and highlighted with a purple box." fig-align="center"}
+
+When rendering, Quarto generates a new file that contains selected text, code, and results from the .qmd file.
+The new file can be an [HTML](/docs/output-formats/all-formats.qmd), [PDF](/docs/output-formats/pdf-basics.qmd), [MS Word](/docs/output-formats/ms-word.qmd) document, [presentation](/docs/presentations/index.qmd), [website](/docs/websites/website-basics.qmd), [book](/docs/books/book-basics.qmd), [interactive document](/docs/interactive/index.qmd), or [other format](/docs/output-formats/all-formats.qmd).
+
+## Authoring
+
+In the image below, we can see the same document in the two modes of the RStudio editor: visual (on the left) and source (on the right).
+RStudio's [visual editor](/docs/visual-editor/index.qmd) offers a [WYSIWYM](https://en.wikipedia.org/wiki/WYSIWYM) authoring experience for markdown.
+For formatting (e.g., bolding text), you can use the toolbar, a keyboard shortcut (⌘B), or the markdown construct (`**bold**`).
+The plain text source code underlying the document is written for you, and you can view/edit it at any point by switching to source mode for editing.
+You can toggle back and forth between these two modes by clicking on **Source** and **Visual** in the editor toolbar (or using the keyboard shortcut ⌘⇧ F4).
+
+![](images/rstudio-source-visual.png){.column-page-right fig-alt="On the left: Document in the visual editor. On the right: Same document in the source editor. The visual/source editor toggle is highlighted in both documents marking their current state. The document shown is the \"Hello Quarto\" document from a previous image on the page." fig-align="center"}
+
+Next, let's turn our attention to the contents of our Quarto document.
+The file contains three types of content: a YAML header, code chunks, and markdown text.
+
+### YAML header
+
+An (optional) YAML header demarcated by three dashes (`---`) on either end.
+
+``` yaml
+---
+title: "Hello, Quarto"
+format: html
+editor: visual
+---
+```
+
+When rendered, the `title`, `"Hello, Quarto"`, will appear at the top of the rendered document with a larger font size than the rest of the document.
+The other two YAML fields denote that the output should be in `html` `format` and the document should open in the `visual` `editor` by default.
+
+The basic syntax of YAML uses key-value pairs in the format `key: value`.
+Other YAML fields commonly found in headers of documents include metadata like `author`, `subtitle`, `date` as well as customization options like `theme`, `fontcolor`, `fig-width`, etc.
+You can find out about all available YAML fields for HTML documents [here](/docs/reference/formats/html.qmd).
+The available YAML fields vary based on document format, e.g., see [here](/docs/reference/formats/pdf.qmd) for YAML fields for PDF documents and [here](/docs/reference/formats/docx.qmd) for MS Word.
+
+### Code chunks
+
+R code chunks identified with `{r}` with (optional) chunk options, in YAML style, identified by `#|` at the beginning of the line.
+
+```` markdown
+```{{r}}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(palmerpenguins)
+```
+````
+
+In this case, the `label` of the code chunk is `load-packages`, and we set `include` to `false` to indicate that we don't want the chunk itself or any of its outputs in the rendered documents.
+
+In addition to rendering the complete document to view the results of code chunks, you can also run each code chunk interactively in the RStudio editor by clicking the ![](https://d33wubrfki0l68.cloudfront.net/18153fb9953057ee5cff086122bd26f9cee8fe93/3aba9/images/notebook-run-chunk.png) icon or keyboard shortcut (⇧⌘⏎).
+RStudio executes the code and displays the results either inline within your file or in the Console, depending on your preference.
+
+![](images/rstudio-inline-output.png){fig-alt="In the background, the code chunk labeled plot-penguins from hello.qmd. The chunk is partially covered by its output, a scatterplot showing the relationship between bill length and flipper length of penguins, colors by species. The button for running the code chunk is highlighted, and an arrow extends to the plot, showing that clicking the button results in the plot being generated." fig-align="center"}
+
+### Markdown text
+
+Text with formatting, including section headings, hyperlinks, an embedded image, and an inline code chunk.
+
+![](images/rstudio-text.png){.border fig-alt="Text portion of the of the linked example document titled \"Penguins, meet Quarto!\", with an annotation that reads \"Text\"." fig-align="center"}
+
+Quarto uses markdown syntax for text.
+If using the visual editor, you won't need to learn much markdown syntax for authoring your document, as you can use the menus and shortcuts to add a heading, bold text, insert a table, etc.
+If using the source editor, you can achieve these with markdown expressions like `##`, `**bold**`, etc.
+
+## How it works
+
+When you render a Quarto document, first [knitr](http://yihui.name/knitr/) executes all of the code chunks and creates a new markdown (.md) document, which includes the code and its output.
+The markdown file generated is then processed by [pandoc](http://pandoc.org/), which creates the finished format.
+The Render button encapsulates these actions and executes them in the right order for you.
+
+![](images/rstudio-qmd-how-it-works.png){.border fig-alt="Workflow diagram starting with a qmd file, then knitr, then md, then pandoc, then PDF, MS Word, or HTML." fig-align="center"}
+
+{{< include _footer.md >}}
