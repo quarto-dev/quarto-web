@@ -8,8 +8,7 @@ In addition to the 3 built in types of listings, you can also build a completely
 
 ## Listing Templates
 
-To build a custom listing display, you create an [EJS template](https://ejs.co) that will be used to generate the HTML for a set of items that are passed to the template. EJS templates allow you to generate HTML using plain javascript, making it easy to loop through items and output their values in your custom HTML.
-
+To build a custom listing display, you create an [EJS template](https://ejs.co) that will be used to generate the HTML for a set of items that are passed to the template. EJS templates allow you to generate HTML using plain JavaScript, making it easy to loop through items and output their values in your custom HTML.
 
 To use a custom template, pass it in the `template` option for a listing:
 
@@ -26,21 +25,39 @@ listing:
   template: gallery.ejs
 ```
 
-A simple template for outputing a list of documents might look like:
+A simple template for outputting a list of documents might look like:
 
-``` html
+````markdown
+```{=html}
 <ul>
 <% for (const item of items) { %>
   <li><a href="<%- item.path %>"><%= item.title %></a></li>
 <% } %>
 </ul>
 ```
+````
 
 which produces simple HTML output like:
 
 ![](images/listing-custom-output.png){.border}
 
 When rendered, the above template will receive an array of listing items called `items`. When the contents of a listing are loaded from a list of documents, each of those items will be populated with the fields described in [Listing Fields](website-listings.qmd#listing-fields). In addition, any other fields included in a documents metadata will be passed as a property of the item, making it possible to use custom metadata in your documents and the listing display.
+
+Because the EJS templates are processed by Quarto, the templates are intrinsically Markdown documents.
+For example, if you want your listing `title` (*e.g.*, `My **bold** title`) to support Markdown formatting, you need to change the above simple template into:
+
+````markdown
+```{=html}
+<ul>
+<% for (const item of items) { %>
+  <li><a href="<%- item.path %>">
+```
+<%= item.title %>
+```{=html}</a></li>
+<% } %>
+</ul>
+```
+````
 
 ::: {.callout-note}
 
@@ -71,7 +88,7 @@ listing:
 
 could be rendered using:
 
-```` html
+````markdown
 ```{=html}
 <ul>
 <% for (const item of items) { %>
@@ -134,7 +151,8 @@ By default, sorting, filtering, and pagination are disabled for custom listings 
 
 For example, we can modify the above `custom.ejs` template as follows:
 
-``` html
+````markdown
+```{=html}
 <ul class="list">
 <% for (const item of items) { %>
   <li <%= metadataAttrs(item) %>>
@@ -144,6 +162,7 @@ For example, we can modify the above `custom.ejs` template as follows:
 <% } %>
 </ul>
 ```
+````
 
 Once you have included these items in your template, you can then enable the options in your listing:
 
@@ -218,8 +237,10 @@ listing:
 
 Template parameters can then be accessed in your template using `<%= templateParams.param1 %>`. For example, we can modify the above `custom.ejs` template as follows:
 
-``` html
-<h3><%= templateParams.param1 %></h3>
+````markdown
+### <%= templateParams.param1 %>
+
+```{=html}
 <ul class="pub-list list">
   <% for (const item of items) { %>
       <li <%= metadataAttrs(item) %>>
@@ -228,3 +249,4 @@ Template parameters can then be accessed in your template using `<%= templatePar
   <% } %>
 </ul>
 ```
+````
