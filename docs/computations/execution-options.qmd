@@ -30,21 +30,23 @@ Code block options are included in a special comment at the top of the block (li
 
 Options available for customizing output include:
 
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option    | Description                                                                                                                                                                                       |
-+===========+===================================================================================================================================================================================================+
-| `eval`    | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                                                                        |
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `echo`    | Include the source code in output                                                                                                                                                                 |
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `output`  | Include the results of executing the code in the output (`true`, `false`, or `asis` to indicate that the output is raw markdown and should not have any of Quarto's standard enclosing markdown). |
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `warning` | Include warnings in the output.                                                                                                                                                                   |
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `error`   | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                                                                        |
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `include` | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block).                                                      |
-+-----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Option       | Description                                                                                                                                                                                       |
++==============+===================================================================================================================================================================================================+
+| `eval`       | Evaluate the code chunk (if `false`, just echos the code into the output).                                                                                                                        |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `echo`       | Include the source code in output                                                                                                                                                                 |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `output`     | Include the results of executing the code in the output (`true`, `false`, or `asis` to indicate that the output is raw markdown and should not have any of Quarto's standard enclosing markdown). |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `warning`    | Include warnings in the output.                                                                                                                                                                   |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `error`      | Include errors in the output (note that this implies that errors executing code will not halt processing of the document).                                                                        |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `include`    | Catch all for preventing any output (code or results) from being included (e.g. `include: false` suppresses all output from the code block).                                                      |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `renderings` | Specify rendering names for the plot or table outputs of the cell, e.g. `[light, dark]`                                                                                                           |
++--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Here's a Knitr example with some of these additional options included:
 
@@ -68,6 +70,76 @@ ggplot(airquality, aes(Temp, Ozone)) +
 summary(airquality)
 ```
 ````
+
+### Cell Renderings
+
+Here is an example of using `renderings` to provide light and dark versions of a plot. Note that the number of cell outputs must match the number of renderings.
+
+````
+---
+title: "Dark mode"
+format: 
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+---
+
+```{{r}}
+#| renderings: [light, dark]
+par(bg = "#FFFFFF", fg = "#000000")
+plot(1:10) # Shown in `light` mode
+
+par(bg = "#000000", fg = "#FFFFFF", col.axis = "#FFFFFF")
+plot(1:10) # Shown in `dark` mode
+```
+````
+
+::: {layout-ncol=2}
+
+![light rendering](images/renderings-light-mode.png)
+
+![dark rendering](images/renderings-dark-mode.png)
+
+:::
+
+The `renderings` cell option does not currently work correctly with cell cross-reference options (`label` starting with `fig-`, `tbl-`, etc.) or cell caption options (`fig-cap`, `tbl-cap`, etc.).
+
+
+To combine `renderings` with crossrefs and/or captions, use the fenced div syntax:
+
+
+````
+---
+title: "Dark mode"
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+---
+
+::: {#fig-caption-crossref}
+
+```{{r}}
+#| label: caption-crossref
+#| renderings: [light, dark]
+par(bg = "#FFFFFF", fg = "#000000")
+plot(1:10) # Shown in `light` mode
+
+
+par(bg = "#000000", fg = "#FFFFFF", col.axis = "#FFFFFF")
+plot(1:10) # Shown in `dark` mode
+```
+
+Light and dark renderings with a caption and crossref
+
+:::
+````
+
+Note the use of a `label` that is not a cross-reference, i.e. that does not start with one of the [cross reference types](../authoring/cross-references.qmd#overview). It is a good practice to have named cells with `label`, for debuggability and stable resource names. However, cross-reference labels that start with `fig-`, `tbl-`, etc., will not work with `renderings`.
+
+
 
 ::: callout-tip
 When using the Knitr engine, you can also use any of the available native options (e.g. `collapse`, `tidy`, `comment`, etc.). See the [Knitr options documentation](https://yihui.org/knitr/options/) for additional details. You can include these native options in option comment blocks as shown above, or on the same line as the `{r}` as shown in the Knitr documentation.
