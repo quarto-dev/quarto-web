@@ -73,6 +73,65 @@ brand: brand/_brand.yml
 
 Paths specified in `_brand.yml` are relative to the location of the brand file.
 
+### Dark Brand
+
+As with [Themes](/docs/output-formats/html-themes.qmd#dark-mode), you can specify both light and dark brands, making both a light and a dark version of your output available:
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  light: light-brand.yml
+  dark: dark-brand.yml
+---
+```
+
+This also works with brands specified directly in the document:
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  light:
+    color:
+      background: "#ffffff"
+      foreground: "#333333"
+  dark:
+    color:
+      background: "#333333"
+      foreground: "#ffffff"
+---
+```
+
+Light and dark brands can also be specified at the project-level:
+
+```{.yaml filename="_quarto.yml"}
+brand:
+  light: light-brand.yml
+  dark: dark-brand.yml
+```
+
+
+::: {.callout-warning}
+
+## Limitation
+
+The `revealjs` format does not support switching between light and dark modes.
+
+:::
+
+
+#### Typst
+
+To choose a dark brand in Typst output use `brand-mode: dark`:
+
+```{.yaml filename="document.qmd"}
+---
+format:
+  typst:
+    brand-mode: dark
+---
+```
+
+
 ## Brand Elements
 
 The elements of **brand.yml** are specified in the documentation for the [**brand.yml** project](https://posit-dev.github.io/brand-yml/){.external}. 
@@ -164,14 +223,6 @@ logo:
 
 You can specify a local file path, relative to the location of `_brand.yml`, or a URL.
 
-::: {.callout-warning}
-
-## Limitation
-
-Logos specified as URLs are not currently supported in `format: typst`.
-
-::: 
-
 A single logo may not work well in all locations so **brand.yml** allows you to set three different logos: `small`, `medium` and `large`. For example:
 
 ``` {.yaml filename="_brand.yml"}
@@ -183,17 +234,19 @@ logo:
 
 You don't need to specify all three---Quarto will use what you provide based on the following preferences:
 
-+----------------------+----------------------------------------------+-------------------------------+
-| Format               | Location                                     | Logo Preference (high to low) |
-+======================+==============================================+===============================+
-| `html`/`dashboard`   | Top navigation bar                           | `small`\> `medium`\>`large`   |
-+----------------------+----------------------------------------------+-------------------------------+
-| `html`               | Side navigation                              | `medium`\>`small`\>`large`    |
-+----------------------+----------------------------------------------+-------------------------------+
-| `typst`              | Top left, control with `format: typst: logo` | `medium`\>`small`\>`large`    |
-+----------------------+----------------------------------------------+-------------------------------+
-| `revealjs`           | Bottom right corner of slides                | `medium`\>`small`\>`large`    |
-+----------------------+----------------------------------------------+-------------------------------+
++---------------------------+----------------------------------------------+-------------------------------+
+| Format                    | Location                                     | Logo Preference (high to low) |
++===========================+==============================================+===============================+
+| `html`/`dashboard`        | Top navigation bar                           | `small`\> `medium`\>`large`   |
++---------------------------+----------------------------------------------+-------------------------------+
+| `html`                    | Side navigation                              | `medium`\>`small`\>`large`    |
++---------------------------+----------------------------------------------+-------------------------------+
+| `typst`                   | Top left, control with `format: typst: logo` | `medium`\>`small`\>`large`    |
++---------------------------+----------------------------------------------+-------------------------------+
+| `revealjs`                | Bottom right corner of slides                | `medium`\>`small`\>`large`    |
++---------------------------+----------------------------------------------+-------------------------------+
+| `website`/`book` project  | `favicon` shown in browser tab               | `small`                       |
++---------------------------+----------------------------------------------+-------------------------------+
 
 You can also specify named logos under `images` which you can reference in `small`, `medium` and `large`. In particular, this allows you to set alternative text for your logos using `alt`:
 
@@ -214,6 +267,65 @@ The **brand.yml** specification allows you to specify a `light` and `dark` versi
 
 ::: 
 
+#### Document logo customization
+
+You can further customize the logo at the document level with the `logo` option.
+
+For example, you can specify a particular brand logo resource:
+```{.yaml filename="document.qmd"}
+---
+logo: large
+---
+```
+
+Or, specify a brand logo and change the alt text:
+
+```{.yaml filename="document.qmd"}
+---
+logo:
+  path: large
+  alt: Alternate alternate text
+---
+```
+
+::: {.callout-warning}
+
+## Limitation
+
+It is [not currently possible](https://github.com/quarto-dev/quarto-cli/issues/11309) to customize the logo for a specific page within a website. Only the project's `_brand.yml` is applied.
+
+::: 
+
+The Typst implementation allows customization of the logo position at the document level:
+
+```{.yaml filename="document.qmd"}
+---
+format:
+  typst:
+    logo:
+      width: 1in
+      location: right-top
+      padding-right: 0.5in
+      padding-top: 0.25in
+      alt: Alternate alternate text
+---
+```
+
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| Option                   | Description                                                                                                                                    |
++==========================+================================================================================================================================================+
+| `width`                  | Width in CSS units. Default `1.5in`.                                                                                                           |    
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| `location`               | Location on the page in `X-Y`, where `X` is `left`, `center`, or `right` and Y is `top`, `middle`, or `bottom`.                                |
+|                          | Applied as Typst [`align`](https://typst.app/docs/reference/layout/align/).                                                                    |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| `padding`, `padding-top`,| Amount of padding to add to each side of the logo, using CSS [`padding`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) conventions.| 
+| `padding-right`,         | Padding options are applied in alphabetical order.                                                                                             |
+| `padding-bottom`,        | Applied as Typst [`block.inset`](https://typst.app/docs/reference/layout/block/#parameters-inset).                                             |
+| `padding-left`           | Default `padding: 0.75in`.                                                                                                                     |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
 ### Typography
 
 [Typography in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/typography.html){.external}
@@ -228,6 +340,14 @@ typography:
 ```
 
 The properties you can set for a font under `fonts` depends on the `source`. You can see the other properties available in our [Reference for Brand](/docs/reference/metadata/brand.qmd#font-resource-definitions).
+
+
+::: {.callout-warning}
+## Limitation
+
+HTML formats do not currently support `source: file`.
+:::
+
 
 You can then refer to fonts by `family` in the remaining typography options:
 
@@ -330,6 +450,11 @@ The supported fields are generally described as follows:
 
 ::: 
 
+#### Typst
+
+See [the Advanced documentation](/docs/advanced/typst/brand-yaml.qmd#typography) for more details on the Typst implementation, and troubleshooting tips for fonts.
+
+
 ### Defaults
 
 [Defaults in the **brand.yml** docs](https://posit-dev.github.io/brand-yml/brand/defaults.html){.external}
@@ -409,8 +534,10 @@ Beyond the automatic application of your brand file, you can also directly acces
 
 Some values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode. In particular, you can access colors and logos by name:
 
--   Use `{{{< brand color COLOR_NAME >}}}` to return the brand color named `COLOR_NAME` as a string.
--   Use `{{{< brand logo LOGO_NAME >}}}` to return the brand logo named `LOGO_NAME` as an image.
+-   Use `{{{< brand color COLOR_NAME BRAND_MODE >}}}` to return the brand color named `COLOR_NAME` as a string.
+-   Use `{{{< brand logo LOGO_NAME BRAND_MODE >}}}` to return the brand logo named `LOGO_NAME` as an image.
+
+The `BRAND_MODE` is optional and defaults to `light`. To return the color from the [dark brand](#dark-brand) use `dark`.
 
 For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
 
@@ -434,6 +561,7 @@ format: revealjs
 
 ## Slide Title {background-color='{{< brand color primary >}}'}
 ````
+
 
 ::: {.callout-warning}
 ## Limitation
@@ -554,6 +682,19 @@ theme:
   - cosmo        # a predefined bootswatch theme
   - brand        # theming derived from `_brand.yml`
   - tweaks.scss  # a user-defined customization
+```
+
+The analogous syntax also works for combining light and dark brands with light and dark themes:
+
+```yaml
+# Quarto 1.7 syntax
+theme:
+  light:
+    - cosmo
+    - brand
+  dark:
+    - slate
+    - brand
 ```
 
 Learn more about how Quarto generates styles in [More About Quarto Themes](/docs/output-formats/html-themes-more.qmd).

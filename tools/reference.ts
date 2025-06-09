@@ -513,7 +513,7 @@ const websiteOptions = readDefinitionsId("base-website", {
 writeProjectTable("website", websiteOptions);
 
 
-const excludeFromBooks = ['announcement', 'drafts', 'draft-mode', 'title'];
+const excludeFromBooks = ['announcement', 'description', 'drafts', 'draft-mode', 'title'];
 
 const bookOptions: Option[] = readProjectObject("book").concat(
   websiteOptions.filter(option => !excludeFromBooks.includes(option.name))
