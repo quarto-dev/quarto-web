@@ -2,6 +2,11 @@
 <ul id="choose-your-tool" class="nav nav-tabs" role="tablist">
   <h3 class="no-anchor">Choose your tool</h3>
   <li class="nav-item" role="presentation">
+    <a class="nav-link" href="positron.html">
+      <img src="../images/positron-logo.svg">Positron
+    </a>
+  </li>
+  <li class="nav-item" role="presentation">
     <a class="nav-link" href="vscode.html">
       <img src="../images/vscode-logo.png">VS Code
     </a>
