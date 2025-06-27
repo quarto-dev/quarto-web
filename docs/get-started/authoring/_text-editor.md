@@ -200,24 +200,38 @@ To cite other works within a Quarto document. First create a bibliography file i
 
 Here's a document that includes a bibliography and single citation.
 
+
 ```` markdown
 ---
 title: Quarto Basics
 format: html
 bibliography: references.bib
-jupyter: python3
 ---
 
 ## Overview
 
 Knuth says always be literate [@knuth1984].
 
-```{{python}}
-1 + 1
-```
-
 ## References
 ````
+
+::: {.callout-tip collapse="true"}
+
+## Contents of `references.bib`
+
+```{bibtex filename="references.bib"}
+@article{knuth1984,
+  title={Literate programming},
+  author={Knuth, Donald E.},
+  journal={The Computer Journal},
+  volume={27},
+  number={2},
+  pages={97--111},
+  year={1984},
+  publisher={British Computer Society}
+}
+```
+::: 
 
 Note that items within the bibliography are cited using the `@citeid` syntax.
 
