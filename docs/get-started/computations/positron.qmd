@@ -1,0 +1,598 @@
+---
+title: "Tutorial: Computations"
+css: ../positron.css
+---
+
+{{< include ../_tool-chooser.md >}}
+
+{{< include ../_language-chooser.md >}}
+
+## Overview
+
+Quarto supports executable code blocks within markdown.
+This allows you to create fully reproducible documents and reports---the code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
+
+In this tutorial, we'll show you how to author fully reproducible computational documents with Quarto in Positron.
+
+You'll learn how to:
+
+-   Run code cells interactively in the Console
+
+-   Control code output, including hiding code
+
+-   Control figure output, including captions and layout
+
+-   Use values from your code cells in markdown text
+
+-   Add new code cells, and get help with code cell options
+
+
+## Setup 
+
+::: {.panel-tabset group="language"} 
+
+## R
+
+1.  Be sure that you have installed the `tidyverse` package:
+
+    ``` r
+    install.packages("tidyverse")
+    ```
+
+2.  Download `computations.qmd` below and open it in Positron.
+
+    ::: {.callout appearance="minimal"}
+    <i class="bi bi-download"></i> [Download computations.qmd](_positron/r/computations.qmd){download="computations.qmd"}
+    :::
+
+3.  Run the **Quarto: Preview** command, use the keyboard shortcut {{< kbd mac=Command-Shift-K win=Ctrl+Shift+K linux=Ctrl+Shift+K >}}, or use the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){.light-content fig-alt="Preview icon"}![](/docs/tools/images/vscode-preview-icon-white.svg){.dark-content fig-alt="Preview icon"}) in the editor toolbar, to render and preview the document.
+
+    ![](images/positron-setup-r.png){.column-page-right fig-alt="Positron with `computations.qmd` open in the Editor. The document is being previewed in the Viewer."}
+
+## Python
+
+1.  Install the `jupyter` and `plotnine` packages using your preferred method. For example, with `pip`:
+
+    ``` bash 
+    pip install jupyter plotnine
+    ```
+
+2.  Download `computations.qmd` below and open it in Positron.
+
+    ::: {.callout appearance="minimal"}
+    <i class="bi bi-download"></i> [Download computations.qmd](_positron/python/computations.qmd){download="computations.qmd"}
+    :::
+
+3.  Run the **Quarto: Preview** command, use the keyboard shortcut {{< kbd mac=Command-Shift-K win=Ctrl+Shift+K linux=Ctrl+Shift+K >}}, or use the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){.light-content fig-alt="Preview icon"}![](/docs/tools/images/vscode-preview-icon-white.svg){.dark-content fig-alt="Preview icon"}) in the editor toolbar, to render and preview the document.
+
+    ![](images/positron-setup-python.png){.column-page-right fig-alt="Positron with `computations.qmd` open in the Editor. The document is being previewed in the Viewer."}
+
+:::
+
+## Cell Execution
+
+As you author a document you may want to execute one or more code cells without re-rendering the entire document.
+You can do this using the **Run Cell** button above the code cell.
+Click that button to execute the cell in the Console:
+
+:::{.panel-tabset group="language"}
+
+## R
+
+![](images/positron-run-cell-r.png){.border fig-alt="Positron with `computations.qmd` open in Editor centered on a code cell with the label `load-packages`. The Console is open, showing the output of running the code in the code cell."}
+
+## Python 
+
+![](images/positron-run-cell-python.png){.border fig-alt="Positron with `computations.qmd` open in Editor centered on a code cell with the label `load-packages`. The Console is open, showing the output of running the code in the code cell."}
+
+:::
+
+There are a variety of commands and keyboard shortcuts available for executing cells:
+
+| Quarto Command       | Keyboard Shortcut |
+|----------------------|-------------------|
+| Run Current Cell     | {{< kbd mac=Cmd-Shift-Enter win=Ctrl+Shift+Enter linux=Ctrl+Shift+Enter >}} |
+| Run Current Code     | {{< kbd mac=Cmd-Enter win=Ctrl+Enter linux=Ctrl+Enter >}} |
+| Run Next Cell        | {{< kbd mac=Cmd-Option-N win=Ctrl+Alt+N linux=Ctrl+Alt+N >}} |
+| Run Previous Cell    | {{< kbd mac=Cmd-Option-P win=Ctrl+Alt+P linux=Ctrl+Alt+P >}} |
+| Run Cells Above      | {{< kbd mac=Cmd-Option-Shift-P win=Ctrl+Alt+Shift+P linux=Ctrl+Alt+Shift+P >}} |
+| Run Cells Below      | {{< kbd mac=Cmd-Option-Shift-N win=Ctrl+Alt+Shift+N linux=Ctrl+Alt+Shift+N >}} |
+| Run All Cells        | {{< kbd mac=Cmd-Option-R win=Ctrl+Alt+R linux=Ctrl+Alt+R >}} |
+
+## Cell Output
+
+By default, the code and its output are displayed within the rendered document.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+![](images/positron-code-echo-true-r.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, code and a visualization."}
+
+## Python
+
+![](images/positron-code-echo-true-python.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, code and a visualization."}
+
+:::
+
+
+However, for some documents, you may want to hide all of the code and just show the output.
+To do so, specify `echo: false` in document header.
+
+``` yaml
+---
+title: "Quarto Computations"
+echo: false
+---
+```
+
+If you checked **Render on Save** earlier, just save the document after making this change for a live preview.
+Otherwise run **Quarto: Preview** again to see your updates reflected.
+The result will look like the following.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+![](images/positron-code-echo-false-r.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, and a visualization. No code is shown."}
+
+## Python
+
+![](images/positron-code-echo-false-python.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, and a visualization. No code is shown."}
+
+:::
+
+
+You might want to selectively enable code `echo` for some cells.
+To do this add the `echo: true` option to a code cell.
+Try this with the chunk labelled `scatterplot`.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+``` r
+#| label: scatterplot
+#| echo: true
+
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_bw()
+```
+
+## Python 
+
+``` python
+#| label: scatterplot
+#| echo: true
+
+(
+    ggplot(mpg, aes(x="hwy", y="cty", color="cyl"))
+    + geom_point(alpha=0.5, size=2)
+    + scale_color_continuous()
+    + theme_bw()
+)
+```
+:::
+
+
+
+Save the document again and note that the code is now included for the `scatterplot` chunk.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+![](images/positron-code-echo-cell-r.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, and a visualization. Code is shown for plot, but not package loading."}
+
+## Python
+
+![](images/positron-code-echo-cell-python.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, and a visualization. Code is shown for plot, but not package loading."}
+
+:::
+
+There are a large number of other options available for cell output, for example `warning` for showing/hiding warnings (which can be especially helpful for package loading messages), `include` as a catch all for preventing any output (code or results) from being included in output, and `error` to prevent errors in code execution from halting the rendering of the document (and print the error in the rendered document).
+
+::: {.panel-tabset group="language"}
+
+## R
+
+See the [Knitr Cell Options](/docs/reference/cells/cells-knitr.qmd) documentation for additional details.
+
+## Python 
+
+See the [Jupyter Cell Options](/docs/reference/cells/cells-jupyter.qmd) documentation for additional details.
+
+:::
+
+## Code Folding
+
+Rather than hiding code entirely, you might want to fold it and allow readers to view it at their discretion.
+You can do this via the `code-fold` option.
+Remove the `echo` option we previously added and add the `code-fold` HTML format option.
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+---
+```
+
+Save the document again and note that new Code widgets are now included for each code chunk.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+![](images/positron-code-fold-r.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations. The title is followed by some text, which is followed by a Code widget that would expand if clicked on, which is followed by some more text, another code widget, and finally the plot. The Code widgets are folded, so the code is not visible in the rendered document."}
+
+## Python
+
+![](images/positron-code-fold-python.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that .  is followed by some text, which is followed by a Code widget that would expand if clicked on, which is followed by some more text, another code widget, and finally the plot. The Code widgets are folded, so the code is not visible in the rendered document."}
+
+:::
+
+You can also provide global control over code folding.
+Try adding `code-tools: true` to the HTML format options.
+
+``` yaml
+---
+title: "Quarto Computations"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+---
+```
+
+Save the document and you'll see that a code menu appears at the top right of the rendered document that provides global control over showing and hiding all code.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+![](images/positron-code-tools-r.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, and a visualization. A new code widget appears on top right of the document. The screenshot shows that the widget is clicked on, which reveals a drop down menu with three choices: Show All Code, Hide All Code, and View Source. In the background is the rendered document."}
+
+## Python
+
+![](images/positron-code-tools-python.png){.border  fig-alt="Positron Viewer pane with a document titled Quarto Computations that contains some text, and a visualization. A new code widget appears on top right of the document. The screenshot shows that the widget is clicked on, which reveals a drop down menu with three choices: Show All Code, Hide All Code, and View Source. In the background is the rendered document."}
+
+:::
+
+## Figures
+
+Figures produced by code cells are automatically included in the rendered output.
+Code cell options provide additional control over how figures are displayed. 
+For example, we can add a caption with `fig-cap`, and improve accessability by adding [alternative text](https://medium.com/nightingale/writing-alt-text-for-data-visualization-2a218ef43f81) with `fig-alt` to the scatterplot code cell:
+
+```yml
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-alt: "Scatterplot of city vs. highway mileage for cars, where points are colored by the number of cylinders. The plot displays a positive, linear, and strong relationship between city and highway mileage, and mileage increases as the number of cylinders decreases."
+```
+
+To [cross-reference](/docs/authoring/cross-references.qmd#computations) a figure use a `label` that starts with `fig-`:
+
+```yml
+#| label: fig-scatterplot
+```
+
+Then you can update the narrative to refer to the figure using its label:
+
+``` markdown
+@fig-scatterplot shows a positive, strong, and linear relationship between the city and highway mileage of these cars.
+```
+
+Preview the document to see the updated plot.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+![](images/positron-figure-r.png){.border .column-page-right fig-alt="Positron with `computations.qmd` open. On the right is the Editor. Compared to earlier images on the page, the code chunk shows the added fig-cap and fig-alt options. On the right is the rendered version of the document. Below the figure is a caption."}
+
+## Python
+
+![](images/positron-figure-python.png){.border .column-page-right fig-alt="Positron with `computations.qmd` open. On the right is the Editor. Compared to earlier images on the page, the code chunk shows the added fig-cap and fig-alt options. On the right is the rendered version of the document. Below the figure is a caption."}
+
+::: 
+
+You can also control the size of all the figures in the document by setting `fig-width` and `fig-height`, in inches, in the document header:
+
+``` yaml
+---
+title: "Quarto Computations"
+fig-height: 3.5
+fig-width: 6
+---
+```
+
+::: {.panel-tabset group="language"}
+
+## R
+
+To set individual figure sizes, use the `fig-width` and `fig-height` options as code cell options:
+
+```r
+#| label: fig-scatterplot
+#| fig-width: 6
+#| fig-height: 3.5
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_bw()
+```
+
+## Python 
+
+To set individual figure sizes, specify the plot size in your code. For example, in `plotnine` you can use `figure_size` argument to `theme()`:
+
+```python
+(
+    ggplot(mpg, aes(x="hwy", y="cty", color="cyl"))
+    + geom_point(alpha=0.5, size=2)
+    + scale_color_continuous()
+    + theme_bw() 
+    + theme(figure_size=(6, 3.5))
+)
+```
+
+:::
+
+## Multiple Figures
+
+Let's add another plot to our chunk---a scatterplot where the points are colored by engine displacement, using a different color scale.
+Our goal is to display these plots side-by-side (i.e., in two columns), with a descriptive subcaption for each plot.
+Since this will produce a wider visualization we'll also use the `column` option to lay it out across the entire page rather than being constrained to the body text column.
+
+There are quite a few changes to this chunk.
+To follow along, copy and paste the options outlined below into your Quarto document.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+``` r
+#| label: fig-scatterplot
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+#| layout-ncol: 2
+#| column: page
+
+ggplot(mpg, aes(x = hwy, y = cty, color = cyl)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c() +
+  theme_minimal()
+
+ggplot(mpg, aes(x = hwy, y = cty, color = displ)) +
+  geom_point(alpha = 0.5, size = 2) +
+  scale_color_viridis_c(option = "E") +
+  theme_minimal()
+```
+## Python
+
+```python
+#| label: fig-scatterplot
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+#| layout-ncol: 2
+#| column: page
+
+cyl_plot = (
+    ggplot(mpg, aes(x="hwy", y="cty", color="cyl"))
+    + geom_point(alpha=0.5, size=2)
+    + scale_color_continuous()
+    + theme_bw()
+)
+
+cty_plot = (
+    ggplot(mpg, aes(x="hwy", y="cty", color="displ"))
+    + geom_point(alpha=0.5, size=2)
+    + scale_color_continuous(cmap_name="cividis")
+    + theme_bw()
+)
+
+cyl_plot.show()
+cty_plot.show() 
+```
+
+:::
+
+Additionally, replace the existing text that describes the visualization with the following.
+
+``` markdown
+The plots in @fig-scatterplot show the relationship between city and highway mileage for 38 popular models of cars.
+In @fig-scatterplot-1 the points are colored by the number of cylinders while in @fig-scatterplot the points are colored by engine displacement.
+```
+
+Then, save the document and preview the output, which should look like the following.
+
+![](images/positron-multiple-figures.png){.border .column-page-right fig-alt="Rendered version of the computations.qmd document with a new plot. The document contains a title (Quarto Computations), text, code chunks, and figure include two side-by-side subfigures, each scatterplots. The text shows clickable cross reference links to Figure 1, Figure 1a, and Figure 1b."}
+
+::: {.callout-tip}
+
+## Layout is responsive to screen size
+
+The layout in Quarto HTML documents is responsive.
+If you are viewing the document on a narrow screen, the figures will stack vertically rather than being displayed side-by-side.
+
+:::
+
+Let's discuss some of the new options used here.
+You've seen `fig-cap` before but we've now added a `fig-subcap` option.
+
+``` r
+#| fig-cap: "City and highway mileage for 38 popular models of cars."
+#| fig-subcap:
+#|   - "Color by number of cylinders"
+#|   - "Color by engine displacement, in liters"
+```
+
+For code cells with multiple outputs adding the `fig-subcap` option enables us to treat them as subfigures.
+
+We also added an option to control how multiple figures are laid out---in this case we specified side-by-side in two columns.
+
+``` r
+#| layout-ncol: 2
+```
+
+If you have 3, 4, or more figures in a panel there are many options available for customizing their layout.
+See the article [Figure Layout](/docs/authoring/figures.qmd#figure-panels) for details.
+
+Finally, we added an option to control the span of the page that our figures occupy.
+
+``` r
+#| column: page
+```
+
+This allows our figure display to span out beyond the normal body text column.
+See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) to learn about all of the available layout options.
+
+## Using Code in Markdown Text
+
+::: {.panel-tabset group="language"}
+
+## R
+
+To include executable expressions within markdown, enclose the expression in `` `{r} ` ``^[Quarto also supports the Knitr syntax `` `r ` ``, read more in [Inline Code](/docs/computations/inline-code.qmd)].
+
+## Python
+
+To include executable expressions within markdown, enclose the expression in `` `{python} ` ``.
+
+::: 
+
+For example, we can use inline code to state the number of observations in our data.
+Try adding the following markdown text to your Quarto document.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+````markdown
+There are `{r} nrow(mpg)` observations in our data.
+````
+
+## Python
+
+````markdown
+There are `{python} len(mpg)` observations in our data.
+````
+
+::: 
+
+Save your document and preview the rendered output.
+The expression inside the backticks has been executed and the sentence includes the actual number of observations.
+
+::: {.border .p-3}
+There are 234 observations in our data.
+:::
+
+If the expression you want to inline is more complex, involving many functions or a pipeline, we recommend including it in a code chunk (with `echo: false`) and assigning the result to an object.
+Then, you can call that object in your inline code.
+
+For example, say you want to state the average city and highway mileage in your data.
+First, compute these values in a code chunk.
+
+:::{.panel-tabset group="language"}
+
+## R
+
+````markdown
+```{{r}}
+#| echo: false
+
+mean_cty <- round(mean(mpg$cty), 2)
+mean_hwy <- round(mean(mpg$hwy), 2)
+```
+````
+
+## Python
+
+```` markdown
+```{{python}}
+#| echo: false
+
+mean_cty = round(mpg['cty'].mean(), 2)
+mean_hwy = round(mpg['hwy'].mean(), 2)
+```
+````
+
+:::
+
+Then, add the following markdown text to your Quarto document.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+```markdown
+The average city mileage of the cars in our data is `{r} mean_cty` and the average highway mileage is `{r} mean_hwy`. 
+```
+
+## Python
+
+```markdown
+The average city mileage of the cars in our data is `{python} f"{mean_cty:.2f}"` and the average highway mileage is `{python} f"{mean_hwy:.2f}"`. 
+```
+
+:::
+
+Save your document and preview output.
+You should see the average city and highway mileage included in the text.
+
+::: {.border .p-3}
+The average city mileage of the cars in our data is 16.86 and the average highway mileage is 23.44.
+:::
+
+For additional details on inline code expressions, please visit the [Inline Code](/docs/computations/inline-code.qmd) documentation.
+
+::: {.callout-tip}
+
+## Format options vs. code cell options
+
+:::
+
+::: {.callout-tip}
+
+## Code block vs. cell
+
+:::
+
+::: {.callout-tip}
+
+## Adding a new code cell
+
+:::
+
+
+## Wrapping Up
+
+If you followed along step-by-step with this tutorial, you should now have a Quarto document that implements everything we covered.
+Otherwise, you can download a completed version of `computations.qmd` below.
+
+::: {.panel-tabset group="language"}
+
+## R
+
+::: {.callout-note appearance="minimal"}
+`<i class="bi bi-download"></i>`{=html} [Download `computations-complete.qmd`](_positron/r/computations-complete.qmd){download="computations-complete.qmd"}
+:::
+
+## Python
+
+::: {.callout-note appearance="minimal"}
+`<i class="bi bi-download"></i>`{=html} [Download computations-complete.qmd](_positron/python/`computations-complete.qmd`){download="computations-complete.qmd"}
+:::
+
+:::
+
+
+
+{{< include _footer.md >}}
