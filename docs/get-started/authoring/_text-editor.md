@@ -8,7 +8,17 @@ Quarto supports rendering notebooks to dozens of different [output formats](/doc
 
 ### Format Options
 
-Let's create a new file (`authoring.qmd`) and define various formats for it to be rendered to, adding some options to each of the formats. As a reminder, document options are specified in YAML at the beginning of the source file.
+::: {.content-visible when-meta="tool.is_positron"}
+Let's create a new file (`authoring.qmd`) and define various formats for it to be rendered to, adding some options to each of the formats.
+To create a new Quarto document, run the **Quarto: New Document** command, or use the **File > New File ...** menu and select **Quarto Document**.
+
+Save the file as `authoring.qmd` and edit the YAML header to:
+:::
+
+::: {.content-visible unless-meta="tool.is_positron"}
+Let's create a new file (`authoring.qmd`) and define various formats for it to be rendered to, adding some options to each of the formats. 
+As a reminder, document options are specified in YAML at the beginning of the source file.
+:::
 
 ``` yaml
 ---
@@ -32,6 +42,8 @@ format:
     number-sections: true
 ---
 ```
+
+{{< include _install-tinytex.md >}}
 
 ### Multiple Formats
 
@@ -89,6 +101,11 @@ The `html` and `pdf` formats each provide an option or two. For example, for the
 
 ## Rendering
 
+::: {.content-visible when-meta="tool.is_positron"}
+{{< include _positron-render.md >}}
+:::
+
+::: {.content-visible unless-meta="tool.is_positron"}
 The formats specified within document options define what is rendered by default. If we render the document with all the options given above using the following.
 
 ``` {.bash filename="Terminal"}
@@ -117,6 +134,7 @@ quarto render authoring.qmd --to odt
 ```
 
 Since the `odt` format isn't included within document options, the default options for the format will be used.
+:::
 
 ## Sections
 
