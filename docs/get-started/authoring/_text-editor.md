@@ -219,7 +219,7 @@ Knuth says always be literate [@knuth1984].
 
 ## Contents of `references.bib`
 
-```{bibtex filename="references.bib"}
+```{.bibtex filename="references.bib"}
 @article{knuth1984,
   title={Literate programming},
   author={Knuth, Donald E.},
@@ -254,6 +254,7 @@ Cross-references make it easier for readers to navigate your document by providi
 
 This example illustrates cross-referencing various types of entities.
 
+::: {.content-visible unless-meta="tool.is_positron"}
 ```` markdown
 ---
 title: Quarto Crossrefs
@@ -283,6 +284,76 @@ $$
 s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
 $$ {#eq-stddev}
 ````
+:::
+
+
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.panel-tabset group="language"}
+## R
+
+```` markdown
+---
+title: Quarto Crossrefs
+format: html
+---
+
+## Overview
+
+See @fig-simple in @sec-plot for a demonstration of a simple plot. 
+
+See @eq-stddev to better understand standard deviation.
+
+## Plot {#sec-plot}
+
+```{{r}}
+#| label: fig-simple
+#| fig-cap: "Simple Plot"
+plot(c(1, 23, 2, 4), type = "l", ann = FALSE)
+```
+
+## Equation {#sec-equation}
+
+$$
+s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
+$$ {#eq-stddev}
+````
+
+## Python
+
+```` markdown
+---
+title: Quarto Crossrefs
+format: html
+---
+
+## Overview
+
+See @fig-simple in @sec-plot for a demonstration of a simple plot. 
+
+See @eq-stddev to better understand standard deviation.
+
+## Plot {#sec-plot}
+
+```{{python}}
+#| label: fig-simple
+#| fig-cap: "Simple Plot"
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+
+## Equation {#sec-equation}
+
+$$
+s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
+$$ {#eq-stddev}
+````
+
+::: 
+
+:::
+
 
 We cross-referenced sections, figures, and equations. The table below shows how we expressed each of these.
 
@@ -313,7 +384,24 @@ We cross-referenced sections, figures, and equations. The table below shows how 
 
 And finally, here is what this document looks like when rendered.
 
+::: {.content-visible unless-meta="tool.is_positron"}
 ![](/docs/get-started/authoring/images/crossref-render.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+::: 
+
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.panel-tabset group="language"}
+## R
+
+![](/docs/get-started/authoring/images/positron-crossref-render-r.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+
+## Python
+
+![](/docs/get-started/authoring/images/positron-crossref-render-python.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+::: 
+
+:::
+
 
 See the article on [Cross References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
 
@@ -346,6 +434,7 @@ In this example, we use the `reference-location` option to indicate that we woul
 
 We also use the `column: screen-inset` cell option to indicate we would like our figure to occupy the full width of the screen, with a small inset.
 
+::: {.content-visible unless-meta="tool.is_positron"}
 ```` markdown
 ---
 title: Quarto Layout
@@ -385,6 +474,74 @@ plt.show()
 Here is what this document looks like when rendered.
 
 ![](images/layout-render.png){.border fig-alt="Document with Quarto Layout title at the top followed by Placing Colorbars header with text below it. Next to the text is a footnote in the page margin. Below the text is a toggleable code widget to hide/reveal the code followed by four plots displayed in two rows and two columns."}
+::: 
+
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.panel-tabset group="language"}
+
+## R
+
+````markdown
+---
+title: Quarto Layout
+format: html
+reference-location: margin
+---
+
+## Heatmaps
+
+A 2d density estimate of the waiting and eruptions variables from the dataset `faithful`^[See the [documentation](https://rdrr.io/r/datasets/faithful.html) for more details on `faithful` data].
+
+```{{r}}
+#| code-fold: true
+#| column: screen-inset
+#| fig-width: 10
+#| fig-height: 4
+library(ggplot2)
+
+ggplot(faithfuld, aes(x = waiting, y = eruptions, fill = density)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  theme_bw()
+```
+````
+
+## Python
+
+````markdown
+---
+title: Quarto Layout
+format: html
+reference-location: margin
+---
+
+## Heatmaps
+
+A 2d density estimate of the waiting and eruptions variables from the dataset `faithful`^[See the [documentation](https://rdrr.io/r/datasets/faithful.html) for more details on `faithful` data].
+
+```{{python}}
+#| code-fold: true
+#| column: screen-inset
+from plotnine import *
+from plotnine.data import faithfuld
+
+(
+  ggplot(faithfuld, aes(x='waiting', y='eruptions', fill='density'))
+  + geom_tile()
+  + theme_bw()
+  + theme(figure_size=(10, 4))
+) 
+```
+````
+
+::: 
+
+Here is what this document looks like when rendered.
+
+![](images/positron-layout-render.png){.border fig-alt="Document with Quarto Layout title at the top followed by Heatmaps header with text below it. Next to the text is a footnote in the page margin. Below the text is a toggleable code widget to hide/reveal the code followed a wide plot that extends into the right margin."}
+
+::: 
 
 You can locate citations, footnotes, and [asides](/docs/authoring/article-layout.html#asides) in the margin. You can also define custom column spans for figures, tables, or other content. See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.
 
