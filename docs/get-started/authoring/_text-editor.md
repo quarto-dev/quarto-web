@@ -57,13 +57,13 @@ toc: true
 number-sections: true
 highlight-style: pygments
 format: 
-  html: 
-    code-fold: true
-    html-math-method: katex
   pdf: 
     geometry: 
       - top=30mm
       - left=20mm
+  html: 
+    code-fold: true
+    html-math-method: katex
   docx: default
 ---
 ```
@@ -87,17 +87,17 @@ Next, we have the `format` option, where we provide format-specific options.
 
 ``` yaml
 format:
-  html: 
-    code-fold: true
-    html-math-method: katex
   pdf:
     geometry: 
       - top=30mm
       - left=20mm
+  html: 
+    code-fold: true
+    html-math-method: katex
   docx: default
 ```
 
-The `html` and `pdf` formats each provide an option or two. For example, for the HTML output we want the user to have control over whether to show or hide the code (`code-fold: true`) and use `katex` for math text. For PDF we define some margins. The `docx` format is a bit different---it specifies `docx: default`. This means just use all of the default options for the format.
+The `pdf` and `html` formats each provide an option or two. For example, for the HTML output we want the user to have control over whether to show or hide the code (`code-fold: true`) and use `katex` for math text. For PDF we define some margins. The `docx` format is a bit different---it specifies `docx: default`. This means just use all of the default options for the format.
 
 ## Rendering
 
@@ -114,8 +114,8 @@ quarto render authoring.qmd
 
 Then the following files would be created.
 
--   `authoring.html`
 -   `authoring.pdf`
+-   `authoring.html`
 -   `authoring.docx`
 
 We can select one or more formats using the `--to` option.
