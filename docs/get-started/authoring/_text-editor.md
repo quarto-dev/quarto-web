@@ -2,6 +2,21 @@
 
 In this tutorial we'll explore more of Quarto's authoring features. We'll cover rendering documents in multiple formats and show you how to add components like table of contents, equations, citations, cross-references, and more.
 
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.callout-tip}
+## Other Authoring Experiences
+
+This tutorial focuses on editing the source of a `.qmd` document.
+Positron supports two other methods of authoring:
+
+* The [Visual Editor](/docs/tools/positron/visual-editor.qmd) allows you to create and edit `.qmd`  documents using a WYSIWYG interface. This is particularly useful for users who prefer a more visual approach to document creation without needing to write markdown directly.
+
+* The [Notebook Editor](/docs/tools/positron/notebook.qmd) for editing `.ipynb` notebooks. This editor is designed for users who are accustomed to working with Jupyter notebooks and want to leverage the features of Quarto within that environment.
+
+::: 
+:::
+
 ## Output Formats
 
 Quarto supports rendering notebooks to dozens of different [output formats](/docs/output-formats/all-formats.qmd). By default, the `html` format is used, but you can specify an alternate format (or formats) within document options.
