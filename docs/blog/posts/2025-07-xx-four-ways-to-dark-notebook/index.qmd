@@ -1,0 +1,83 @@
+---
+title: Four Ways to Dark Notebook
+author: Gordon Woodhull
+draft: true
+---
+
+Quarto 1.7 introduced a new cell option called [renderings](https://quarto.org/docs/computations/execution-options.html#cell-renderings), which allows you to emit both a light and a dark rendering of your plot or table in a code cell, and Quarto will make the light rendering visible in light mode, and the dark rendering visible in dark mode.
+
+I wanted to see how well this feature plays with Jupyter Notebooks rendered in Quarto, to produce HTML versions of notebooks with dark mode enabled. But there's a big catch that makes this interesting. 
+
+Usually in a Quarto markdown document you will specify cross-references, subfigures and related options such as `fig-cap` and `fig-alt` as cell options like this:
+
+````
+```{{python}}
+{{< include polar-axis.py >}}
+```
+````
+
+```{python}
+#| echo: false
+{{< include polar-axis.py >}}
+```
+
+These are equivalent to code cells in a Jupyter notebook, and normally you can put the same options at the top of the cell:
+
+![jupyter cell](jupyter-cell-light.png){.light-content}
+![jupyter cell](jupyter-cell-dark.png){.dark-content}
+
+
+However, none of the cross-reference or caption cell options are compatible with `renderings`, at least for now. Instead, in a Quarto markdown document you need to use the fenced div syntax to add cross-references and captions:
+
+````
+::: {#fig-polar-axis-light-dark}
+
+```{{python}}
+#| echo: false
+{{< include polar-axis-renderings.py >}}
+```
+
+Polar axis plot with light and dark renderings.
+
+:::
+````
+
+::: {#fig-polar-axis-light-dark}
+
+```{python}
+#| echo: false
+{{< include polar-axis-renderings.py >}}
+```
+
+Polar axis plot with light and dark renderings.
+
+:::
+
+But how do we do this in a Jupyter notebook? As we'll see, there are two low-level ways and two high-level ways. This blog post will describe the ways from the lowest to highest level:
+
+0. Image tags with hard-coded paths and light & dark classes (a level below `renderings`)
+1. Fenced divs in Jupyter markdown cells around light & dark cell `renderings`
+2. Light and dark renderings placed in fenced divs in Jupyter markdown cells
+3. Light and dark renderings embedded in fenced divs in Jupyter markdown cells
+
+If you only want to see the simplest way to get light and dark notebook output from your Jupyter notebook in Quarto, feel free to skip to [Option 2](#option-2).
+
+If you want to learn how to add static light and dark images to your Quarto document, see Option 0 below.
+
+Then, if you want to learn how Quarto documents are isomorphic to Jupyter notebooks (except without outputs), and the lowest-level way to combine Quarto's fenced divs with Jupyter code cells, continue to option 1.
+
+## Option 0: Image tags with hard-coded paths and light & dark classes
+
+This is so low-level it's just Markdown 
+
+*why does this move up and down slightly? i've tried removing line breaks, using fenced divs.*
+
+````
+![an elephant](elephant.png){.light-content}
+![an elephant](elephant-dark.png){.dark-content}
+````
+
+![an elephant](elephant.png){.light-content}
+![an elephant](elephant-dark.png){.dark-content}
+
+And if you were not using Quarto
