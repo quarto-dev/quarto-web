@@ -155,10 +155,26 @@ jobs:
             if (changedFiles.length > 0) {
               commentBody += `### 🔄 Modified Documents\n\n`;
               changedFiles.forEach(file => {
-                if (file.endsWith('.qmd') || file.endsWith('.md')) {
+                let fileUrlPath;
+
+                // Define a mapping for special files to their corresponding URLs
+                const specialFileMapping = {
+                  'docs/extensions/listings/shortcodes-and-filters.yml': 'docs/extensions/index.html',
+                  'docs/extensions/listings/journal-articles.yml': 'docs/extensions/index.html',
+                  'docs/extensions/listings/custom-formats.yml': 'docs/extensions/index.html',
+                  'docs/extensions/listings/revealjs-formats.yml': 'docs/extensions/index.html',
+                  'docs/extensions/listings/revealjs.yml': 'docs/extensions/index.html'
+                };
+
+                // Check if the file is in the special mapping
+                if (specialFileMapping[file]) {
+                  fileUrlPath = specialFileMapping[file];
+                } else if (file.endsWith('.qmd') || file.endsWith('.md')) {
                   // Convert path to URL (removing file extension and adding appropriate path)
-                  const fileUrlPath = file
-                    .replace(/\.(qmd|md)$/, '.html');
+                  fileUrlPath = file.replace(/\.(qmd|md)$/, '.html');
+                }
+
+                if (fileUrlPath) {
                   const fileUrl = `${deployUrl}/${fileUrlPath}`;
                   commentBody += `- [${file}](${fileUrl})\n`;
                 }
