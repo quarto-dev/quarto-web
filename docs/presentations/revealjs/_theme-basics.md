@@ -17,6 +17,7 @@ Here is the full list of available themes:
 -   `blood`
 -   `dark`
 -   `default`
+-   `dracula`
 -   `league`
 -   `moon`
 -   `night`
