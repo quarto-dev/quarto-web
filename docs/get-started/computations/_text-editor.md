@@ -1,13 +1,3 @@
----
-title: "Tutorial: Computations"
-editor_options:
-  markdown:
-    wrap: sentence
-    canonical: true
-tool:
-  name: vscode
----
-
 {{< include ../_tool-chooser.md >}}
 
 ## Overview
@@ -85,38 +75,13 @@ fig.show()
 ```
 ````
 
-Then, execute the **Quarto: Preview** command.
-You can alternatively use the <kbd>Ctrl+Shift+K</kbd> keyboard shortcut, or the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){fig-alt="Preview icon"}) at the top right of the editor:
+Now, open a Terminal and run `quarto preview`, then position your editor side-by-side with the browser showing the preview.
 
-![](/docs/tools/images/vscode-preview-button.png){.border fig-alt="The top of the Visual Studio code editor. The right side of the editor tab area includes a Preview button."}
+``` {.bash filename="Terminal"}
+quarto preview computations.qmd
+```
 
-::: {.callout-note appearance="simple"}
-Note that on the Mac you should use `Cmd` rather than `Ctrl` as the prefix for all Quarto keyboard shortcuts.
-:::
-
-Here is what you should see within VS Code:
-
-![](images/vscode-computations-preview.png){.border .column-page-outset-right fig-alt="Side-by-side preview of text editor on the left and live preview in the browser on the right."}
-
-## Cell Execution
-
-As you author a document you may want to execute one or more cells without re-rendering the entire document.
-You can do this using the **Run Cell** button above the code cell.
-Click that button to execute the cell (output is shown side by side in the Jupyter interactive console):
-
-![](/docs/tools/images/vscode-execute-cell.png){.border fig-alt="VS Code with two panes open, vscode.qmd source code on the right, and the interactive output of that code shown in a second pane on the left."}
-
-There are a variety of commands and keyboard shortcuts available for executing cells:
-
-| Quarto Command       | Keyboard Shortcut   |
-|----------------------|---------------------|
-| Run Current Cell     | <kbd>⇧⌘ Enter</kbd> |
-| Run Selected Line(s) | <kbd>⌘ Enter</kbd>  |
-| Run Next Cell        | <kbd>⌥⌘ N</kbd>     |
-| Run Previous Cell    | <kbd>⌥⌘ P</kbd>     |
-| Run All Cells        | <kbd>⌥⌘ R</kbd>     |
-| Run Cells Above      | <kbd>⇧⌥⌘ P</kbd>    |
-| Run Cells Below      | <kbd>⇧⌥⌘ N</kbd>    |
+![](images/text-editor-computations-preview.png){.border .column-page-outset-right fig-alt="Side-by-side preview of text editor on the left and live preview in the browser on the right."}
 
 ## Cell Output
 
@@ -133,7 +98,8 @@ jupyter: python3
 ---
 ```
 
-Re-render the document and the preview will update to show the output with no code (remember that you do not need to save the file before rendering, as this happens automatically when you render).
+Save the file after making this change.
+The preview will update to show the output with no code.
 
 ![](images/exec-echo-false-preview.png){.border fig-alt="Output of computations.qmd with 'echo: false' set, shows Title, resulting array in NumPy section, line chart in Matplotlib section, and interactive bubble chart in Plotly section."}
 
@@ -151,7 +117,7 @@ a
 ```
 ````
 
-Re-render note that the code is now included for the NumPy cell.
+Save the file and note that the code is now included for the NumPy cell.
 
 ![](images/exec-echo-true-preview.png){.border fig-alt="Rendered NumPy section of computations.qmd which shows the code and the resulting array."}
 
@@ -175,7 +141,7 @@ jupyter: python3
 ---
 ```
 
-Render the document.
+Save the file.
 Now a "Code" widget is available above the output of each cell.
 
 ![](images/code-fold-preview.png){.border fig-alt="Rendered NumPy section of computations.qmd which shows a toggleable section that is labelled 'Code' and the resulting array."}
@@ -188,13 +154,13 @@ Try adding `code-tools: true` to the HTML format options.
 title: Quarto Computations
 format:
   html:
-    code-fold: true
-    code-tools: true
+   code-fold: true
+   code-tools: true
 jupyter: python3
 ---
 ```
 
-Render the document and you'll see that a code menu appears at the top right of the document that provides global control over showing and hiding code.
+Save the file and you'll see that a code menu appears at the top right of the document that provides global control over showing and hiding code.
 
 ![](images/text-editor-code-tools-preview.png){.border fig-alt="Rendered version of the computations.qmd document. A new code widget appears on top right of the document. The screenshot shows that the widget is clicked on, which reveals a drop down menu with three choices: Show All Code, Hide All Code, and View Source. In the background is the rendered document. The title is followed by some text, which is followed by a Code widget that would expand if clicked on, which is followed by the output of the code. The Code widgets are folded, so the code is not visible in the rendered document."}
 
@@ -217,7 +183,7 @@ fig.set_size_inches(12, 7)
 ```
 ````
 
-After re-rendering the document you'll see the updated plot:
+Save the file to re-render and see the updated plot:
 
 ![](images/figure-options-preview.png){.border fig-alt="Rendered Matplotlib section of computations.qmd which includes a toggleable code-folding widget, the figure, and a caption under the figure that reads 'Figure 1: Errorbar limit selection.'"}
 
@@ -255,7 +221,7 @@ gapminder_plot(1957)
 gapminder_plot(2007)
 ```
 
-Render the document and the preview will update as follows:
+Save the file, the preview will update as follows:
 
 ![](images/plotly-preview.png){.border fig-alt="Output of Plotly section which shows two charts side-by-side. The first has a caption below that reads '(a) Gapminder: 1957', the second's caption reads '(b) Gapminder 2007'. Below both figures, there's a caption that reads 'Figure 1: Life Expectancy and GDP (Data from World Bank via gapminder.org).'"}
 
