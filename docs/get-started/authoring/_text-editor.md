@@ -211,7 +211,7 @@ Inline equations are delimited with `$…$`. To create equations in a new line (
 
 ## Citations
 
-To cite other works within a Quarto document. First create a bibliography file in a supported format (BibTeX or CSL). Then, link the bibliography to your document using the `bibliography` YAML metadata option.
+To cite other works within a Quarto document, first create a bibliography file in a supported format (BibTeX or CSL). Then, link the bibliography to your document using the `bibliography` YAML metadata option.
 
 Here's a document that includes a bibliography and single citation.
 
@@ -263,7 +263,7 @@ Here is what this document looks like when rendered.
 \
 The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations. See the documentation on [Citations](/docs/authoring/citations.qmd) to learn more.
 
-## Cross References
+## Cross-References
 
 Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to figures, tables, equations, and sections. Cross-reference-able entities generally require a label (unique identifier) and a caption.
 
@@ -400,7 +400,7 @@ We cross-referenced sections, figures, and equations. The table below shows how 
 And finally, here is what this document looks like when rendered.
 
 ::: {.content-visible unless-meta="tool.is_positron"}
-![](/docs/get-started/authoring/images/crossref-render.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+![](/docs/get-started/authoring/images/crossref-render.png){.border width="600" fig-alt="Rendered page with linked cross-references to figures and equations."}
 ::: 
 
 ::: {.content-visible when-meta="tool.is_positron"}
@@ -408,17 +408,17 @@ And finally, here is what this document looks like when rendered.
 ::: {.panel-tabset group="language"}
 ## R
 
-![](/docs/get-started/authoring/images/positron-crossref-render-r.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+![](/docs/get-started/authoring/images/positron-crossref-render-r.png){.border width="600" fig-alt="Rendered page with linked cross-references to figures and equations."}
 
 ## Python
 
-![](/docs/get-started/authoring/images/positron-crossref-render-python.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+![](/docs/get-started/authoring/images/positron-crossref-render-python.png){.border width="600" fig-alt="Rendered page with linked cross-references to figures and equations."}
 ::: 
 
 :::
 
 
-See the article on [Cross References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
+See the article on [Cross-References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
 
 ## Callouts
 
