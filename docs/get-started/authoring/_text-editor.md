@@ -12,7 +12,7 @@ Positron supports two other methods of authoring:
 
 * The [Visual Editor](/docs/tools/positron/visual-editor.qmd) allows you to create and edit `.qmd`  documents using a WYSIWYG interface. This is particularly useful for users who prefer a more visual approach to document creation without needing to write markdown directly.
 
-* The [Notebook Editor](/docs/tools/positron/notebook.qmd) for editing `.ipynb` notebooks. This editor is designed for users who are accustomed to working with Jupyter notebooks and want to leverage the features of Quarto within that environment.
+* The [Notebook Editor](/docs/tools/positron/notebook.qmd) is for editing `.ipynb` notebooks. This editor is designed for users who are accustomed to working with Jupyter notebooks and want to leverage the features of Quarto within that environment.
 
 ::: 
 :::

@@ -1,4 +1,4 @@
-When you preview a document with the **Quarto: Preview** command, the Preview button in the toolbar, or the keyboard shortcut {{< kbd mac=Command-Shift-K win=Ctrl+Shift+K linux=Ctrl+Shift+K >}}
+When you preview a document with the **Quarto: Preview** command, the Preview button in the toolbar, or the keyboard shortcut {{< kbd mac=Command-Shift-K win=Ctrl+Shift+K linux=Ctrl+Shift+K >}},
 the first format specified in the document header is rendered and previewed.
 In this case, the file `authoring.pdf` will be created, and opened in the Viewer pane.
 
