@@ -17,7 +17,7 @@
 
 3.  Run the **Quarto: Preview** command, use the keyboard shortcut {{< kbd mac=Command-Shift-K win=Ctrl+Shift+K linux=Ctrl+Shift+K >}}, or use the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){.light-content fig-alt="Preview icon"}![](/docs/tools/images/vscode-preview-icon-white.svg){.dark-content fig-alt="Preview icon"}) in the editor toolbar, to render and preview the document.
 
-    ![](/docs/get-started/computations/images/positron-setup-r.png){.column-page-right fig-alt="Positron with `computations.qmd` open in the Editor. The document is being previewed in the Viewer."}
+    ![](/docs/get-started/computations/images/positron-setup-r.png){.include-dark .column-page-right fig-alt="Positron with `computations.qmd` open in the Editor. The document is being previewed in the Viewer."}
 
 ## Python
 
@@ -35,6 +35,6 @@
 
 3.  Run the **Quarto: Preview** command, use the keyboard shortcut {{< kbd mac=Command-Shift-K win=Ctrl+Shift+K linux=Ctrl+Shift+K >}}, or use the **Preview** button (![](/docs/tools/images/vscode-preview-icon.svg){.light-content fig-alt="Preview icon"}![](/docs/tools/images/vscode-preview-icon-white.svg){.dark-content fig-alt="Preview icon"}) in the editor toolbar, to render and preview the document.
 
-    ![](/docs/get-started/computations/images/positron-setup-python.png){.column-page-right fig-alt="Positron with `computations.qmd` open in the Editor. The document is being previewed in the Viewer."}
+    ![](/docs/get-started/computations/images/positron-setup-python.png){.include-dark .column-page-right fig-alt="Positron with `computations.qmd` open in the Editor. The document is being previewed in the Viewer."}
 
 :::
