@@ -1,0 +1,33 @@
+---
+title: Hello, Quarto
+format: html
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+library(tidyverse)
+library(palmerpenguins)
+```
+
+## Meet the penguins
+
+The `penguins` data from the [**palmerpenguins**](https://allisonhorst.github.io/palmerpenguins) package contains size measurements for `{r} nrow(penguins)` penguins from three species observed on three islands in the Palmer Archipelago, Antarctica.
+
+@fig-plot-penguins shows the relationship between flipper and bill lengths of these penguins.
+
+```{r}
+#| label: fig-plot-penguins
+#| fig-cap: Flipper and bill length for penguins at Palmer Station LTER
+#| warning: false
+#| echo: false
+ggplot(penguins, 
+       aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point(aes(color = species, shape = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(
+    x = "Flipper length (mm)", y = "Bill length (mm)",
+    color = "Penguin species", shape = "Penguin species"
+  ) +
+  theme_minimal()
+```

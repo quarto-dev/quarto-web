@@ -2,13 +2,38 @@
 
 In this tutorial we'll explore more of Quarto's authoring features. We'll cover rendering documents in multiple formats and show you how to add components like table of contents, equations, citations, cross-references, and more.
 
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.callout-tip}
+## Other Authoring Experiences
+
+This tutorial focuses on editing the source of a `.qmd` document.
+Positron supports two other methods of authoring:
+
+* The [Visual Editor](/docs/tools/positron/visual-editor.qmd) allows you to create and edit `.qmd`  documents using a WYSIWYG interface. This is particularly useful for users who prefer a more visual approach to document creation without needing to write markdown directly.
+
+* The [Notebook Editor](/docs/tools/positron/notebook.qmd) is for editing `.ipynb` notebooks. This editor is designed for users who are accustomed to working with Jupyter notebooks and want to leverage the features of Quarto within that environment.
+
+::: 
+:::
+
 ## Output Formats
 
 Quarto supports rendering notebooks to dozens of different [output formats](/docs/output-formats/all-formats.qmd). By default, the `html` format is used, but you can specify an alternate format (or formats) within document options.
 
 ### Format Options
 
-Let's create a new file (`authoring.qmd`) and define various formats for it to be rendered to, adding some options to each of the formats. As a reminder, document options are specified in YAML at the beginning of the source file.
+::: {.content-visible when-meta="tool.is_positron"}
+Let's create a new file (`authoring.qmd`) and define various formats for it to be rendered to, adding some options to each of the formats.
+To create a new Quarto document, run the **Quarto: New Document** command, or use the **File > New File ...** menu and select **Quarto Document**.
+
+Save the file as `authoring.qmd` and edit the YAML header to:
+:::
+
+::: {.content-visible unless-meta="tool.is_positron"}
+Let's create a new file (`authoring.qmd`) and define various formats for it to be rendered to, adding some options to each of the formats. 
+As a reminder, document options are specified in YAML at the beginning of the source file.
+:::
 
 ``` yaml
 ---
@@ -33,6 +58,8 @@ format:
 ---
 ```
 
+{{< include _install-tinytex.md >}}
+
 ### Multiple Formats
 
 Some documents you create will have only a single output format, however in many cases it will be desirable to support multiple formats. Let's add the `html` and `docx` formats to our document.
@@ -45,13 +72,13 @@ toc: true
 number-sections: true
 highlight-style: pygments
 format: 
-  html: 
-    code-fold: true
-    html-math-method: katex
   pdf: 
     geometry: 
       - top=30mm
       - left=20mm
+  html: 
+    code-fold: true
+    html-math-method: katex
   docx: default
 ---
 ```
@@ -75,20 +102,25 @@ Next, we have the `format` option, where we provide format-specific options.
 
 ``` yaml
 format:
-  html: 
-    code-fold: true
-    html-math-method: katex
   pdf:
     geometry: 
       - top=30mm
       - left=20mm
+  html: 
+    code-fold: true
+    html-math-method: katex
   docx: default
 ```
 
-The `html` and `pdf` formats each provide an option or two. For example, for the HTML output we want the user to have control over whether to show or hide the code (`code-fold: true`) and use `katex` for math text. For PDF we define some margins. The `docx` format is a bit different---it specifies `docx: default`. This means just use all of the default options for the format.
+The `pdf` and `html` formats each provide an option or two. For example, for the HTML output we want the user to have control over whether to show or hide the code (`code-fold: true`) and use `katex` for math text. For PDF we define some margins. The `docx` format is a bit different---it specifies `docx: default`. This means just use all of the default options for the format.
 
 ## Rendering
 
+::: {.content-visible when-meta="tool.is_positron"}
+{{< include _positron-render.md >}}
+:::
+
+::: {.content-visible unless-meta="tool.is_positron"}
 The formats specified within document options define what is rendered by default. If we render the document with all the options given above using the following.
 
 ``` {.bash filename="Terminal"}
@@ -97,8 +129,8 @@ quarto render authoring.qmd
 
 Then the following files would be created.
 
--   `authoring.html`
 -   `authoring.pdf`
+-   `authoring.html`
 -   `authoring.docx`
 
 We can select one or more formats using the `--to` option.
@@ -117,6 +149,7 @@ quarto render authoring.qmd --to odt
 ```
 
 Since the `odt` format isn't included within document options, the default options for the format will be used.
+:::
 
 ## Sections
 
@@ -178,28 +211,42 @@ Inline equations are delimited with `$…$`. To create equations in a new line (
 
 ## Citations
 
-To cite other works within a Quarto document. First create a bibliography file in a supported format (BibTeX or CSL). Then, link the bibliography to your document using the `bibliography` YAML metadata option.
+To cite other works within a Quarto document, first create a bibliography file in a supported format (BibTeX or CSL). Then, link the bibliography to your document using the `bibliography` YAML metadata option.
 
 Here's a document that includes a bibliography and single citation.
+
 
 ```` markdown
 ---
 title: Quarto Basics
 format: html
 bibliography: references.bib
-jupyter: python3
 ---
 
 ## Overview
 
 Knuth says always be literate [@knuth1984].
 
-```{{python}}
-1 + 1
-```
-
 ## References
 ````
+
+::: {.callout-tip collapse="true"}
+
+## Contents of `references.bib`
+
+```{.bibtex filename="references.bib"}
+@article{knuth1984,
+  title={Literate programming},
+  author={Knuth, Donald E.},
+  journal={The Computer Journal},
+  volume={27},
+  number={2},
+  pages={97--111},
+  year={1984},
+  publisher={British Computer Society}
+}
+```
+::: 
 
 Note that items within the bibliography are cited using the `@citeid` syntax.
 
@@ -216,12 +263,13 @@ Here is what this document looks like when rendered.
 \
 The `@` citation syntax is very flexible and includes support for prefixes, suffixes, locators, and in-text citations. See the documentation on [Citations](/docs/authoring/citations.qmd) to learn more.
 
-## Cross References
+## Cross-References
 
 Cross-references make it easier for readers to navigate your document by providing numbered references and hyperlinks to figures, tables, equations, and sections. Cross-reference-able entities generally require a label (unique identifier) and a caption.
 
 This example illustrates cross-referencing various types of entities.
 
+::: {.content-visible unless-meta="tool.is_positron"}
 ```` markdown
 ---
 title: Quarto Crossrefs
@@ -251,6 +299,76 @@ $$
 s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
 $$ {#eq-stddev}
 ````
+:::
+
+
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.panel-tabset group="language"}
+## R
+
+```` markdown
+---
+title: Quarto Crossrefs
+format: html
+---
+
+## Overview
+
+See @fig-simple in @sec-plot for a demonstration of a simple plot. 
+
+See @eq-stddev to better understand standard deviation.
+
+## Plot {#sec-plot}
+
+```{{r}}
+#| label: fig-simple
+#| fig-cap: "Simple Plot"
+plot(c(1, 23, 2, 4), type = "l", ann = FALSE)
+```
+
+## Equation {#sec-equation}
+
+$$
+s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
+$$ {#eq-stddev}
+````
+
+## Python
+
+```` markdown
+---
+title: Quarto Crossrefs
+format: html
+---
+
+## Overview
+
+See @fig-simple in @sec-plot for a demonstration of a simple plot. 
+
+See @eq-stddev to better understand standard deviation.
+
+## Plot {#sec-plot}
+
+```{{python}}
+#| label: fig-simple
+#| fig-cap: "Simple Plot"
+import matplotlib.pyplot as plt
+plt.plot([1,23,2,4])
+plt.show()
+```
+
+## Equation {#sec-equation}
+
+$$
+s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i - \overline{x})^2}
+$$ {#eq-stddev}
+````
+
+::: 
+
+:::
+
 
 We cross-referenced sections, figures, and equations. The table below shows how we expressed each of these.
 
@@ -281,9 +399,26 @@ We cross-referenced sections, figures, and equations. The table below shows how 
 
 And finally, here is what this document looks like when rendered.
 
-![](/docs/get-started/authoring/images/crossref-render.png){.border width="600" fig-alt="Rendered page with linked cross references to figures and equations."}
+::: {.content-visible unless-meta="tool.is_positron"}
+![](/docs/get-started/authoring/images/crossref-render.png){.border width="600" fig-alt="Rendered page with linked cross-references to figures and equations."}
+::: 
 
-See the article on [Cross References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.panel-tabset group="language"}
+## R
+
+![](/docs/get-started/authoring/images/positron-crossref-render-r.png){.border width="600" fig-alt="Rendered page with linked cross-references to figures and equations."}
+
+## Python
+
+![](/docs/get-started/authoring/images/positron-crossref-render-python.png){.border width="600" fig-alt="Rendered page with linked cross-references to figures and equations."}
+::: 
+
+:::
+
+
+See the article on [Cross-References](/docs/authoring/cross-references.qmd) to learn more, including how to customize caption and reference text (e.g. use "Fig." rather than "Figure").
 
 ## Callouts
 
@@ -314,6 +449,7 @@ In this example, we use the `reference-location` option to indicate that we woul
 
 We also use the `column: screen-inset` cell option to indicate we would like our figure to occupy the full width of the screen, with a small inset.
 
+::: {.content-visible unless-meta="tool.is_positron"}
 ```` markdown
 ---
 title: Quarto Layout
@@ -353,6 +489,74 @@ plt.show()
 Here is what this document looks like when rendered.
 
 ![](images/layout-render.png){.border fig-alt="Document with Quarto Layout title at the top followed by Placing Colorbars header with text below it. Next to the text is a footnote in the page margin. Below the text is a toggleable code widget to hide/reveal the code followed by four plots displayed in two rows and two columns."}
+::: 
+
+::: {.content-visible when-meta="tool.is_positron"}
+
+::: {.panel-tabset group="language"}
+
+## R
+
+````markdown
+---
+title: Quarto Layout
+format: html
+reference-location: margin
+---
+
+## Heatmaps
+
+A 2d density estimate of the waiting and eruptions variables from the dataset `faithful`^[See the [documentation](https://rdrr.io/r/datasets/faithful.html) for more details on `faithful` data].
+
+```{{r}}
+#| code-fold: true
+#| column: screen-inset
+#| fig-width: 10
+#| fig-height: 4
+library(ggplot2)
+
+ggplot(faithfuld, aes(x = waiting, y = eruptions, fill = density)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  theme_bw()
+```
+````
+
+## Python
+
+````markdown
+---
+title: Quarto Layout
+format: html
+reference-location: margin
+---
+
+## Heatmaps
+
+A 2d density estimate of the waiting and eruptions variables from the dataset `faithful`^[See the [documentation](https://rdrr.io/r/datasets/faithful.html) for more details on `faithful` data].
+
+```{{python}}
+#| code-fold: true
+#| column: screen-inset
+from plotnine import *
+from plotnine.data import faithfuld
+
+(
+  ggplot(faithfuld, aes(x='waiting', y='eruptions', fill='density'))
+  + geom_tile()
+  + theme_bw()
+  + theme(figure_size=(10, 4))
+) 
+```
+````
+
+::: 
+
+Here is what this document looks like when rendered.
+
+![](images/positron-layout-render.png){.border fig-alt="Document with Quarto Layout title at the top followed by Heatmaps header with text below it. Next to the text is a footnote in the page margin. Below the text is a toggleable code widget to hide/reveal the code followed a wide plot that extends into the right margin."}
+
+::: 
 
 You can locate citations, footnotes, and [asides](/docs/authoring/article-layout.html#asides) in the margin. You can also define custom column spans for figures, tables, or other content. See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) for additional details.
 

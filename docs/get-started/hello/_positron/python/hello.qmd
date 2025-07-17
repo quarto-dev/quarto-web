@@ -1,0 +1,36 @@
+---
+title: Hello, Quarto
+format: html
+---
+
+```{python}
+#| label: load-packages
+#| include: false
+from plotnine import *
+from plotnine.data import penguins
+```
+
+## Meet the penguins
+
+The `penguins` data from the [plotnine](https://plotnine.org/reference/penguins.html) package contains size measurements for `{python} len(penguins)` penguins from three species observed on three islands in the Palmer Archipelago, Antarctica.
+
+@fig-plot-penguins shows the relationship between flipper and bill lengths of these penguins.
+
+```{python}
+#| label: fig-plot-penguins
+#| fig-cap: Flipper and bill length for penguins at Palmer Station LTER
+#| warning: false
+#| echo: false
+(
+    ggplot(penguins, aes(x="flipper_length_mm", y="bill_length_mm"))
+    + geom_point(aes(color="species", shape="species"))
+    + scale_color_manual(values=["#FF8C00", "#A020F0", "#008B8B"])
+    + labs(
+        x="Flipper length (mm)",
+        y="Bill length (mm)",
+        color="Penguin species",
+        shape="Penguin species",
+    )
+    + theme_minimal()
+)
+```
