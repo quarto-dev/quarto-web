@@ -1,4 +1,5 @@
 #| renderings: [light, dark]
+#| echo: false
 
 import numpy as np
 import matplotlib.pyplot as plt

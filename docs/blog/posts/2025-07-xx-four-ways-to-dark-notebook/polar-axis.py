@@ -1,6 +1,7 @@
 #| label: fig-polar-axis
 #| fig-cap: "Polar axis plot"
 #| fig-alt: "A line plot on a polar axis"
+#| echo: false
 
 import numpy as np
 import matplotlib.pyplot as plt
