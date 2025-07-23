@@ -144,39 +144,7 @@ In Jupyter, you can add this tag through the cell toolbar:
 
 ![](corvallis-add-tag.png){fig-alt="Screenshot of a Jupyter notebook cell with a tag 'parameters' added to it."}
 
-::: {.callout-tip}
-
-## `jupyter` vs `knitr` 
-
-Setting parameters differs based on the engine you are using in Quarto.
-With a Jupyter notebook (`.ipynb`), or a plain text Quarto document (`.qmd`) with only Python code cells, Quarto will default to the `jupyter` engine.
-As described above, the `jupyter` engine uses cell tags to identify parameters. 
-
-If you are working in a `.ipynb` file, your IDE will likely provide a way to add these tags through the cell toolbar.
-If you are working in a `.qmd` file, you can add the tags as code cell options:
-
-````markdown
-```{{python}}
-#| tags: [parameters]
-city = "Corvallis"
-```
-````
-
-If you are working in a Quarto document (`.qmd`) with R code cells, Quarto will default to the  `knitr` engine.
-With the `knitr` engine, you set parameters in the document header under `params`:
-
-```yaml
----
-params:
-  city: "Corvallis"
----
-```
-
-In `knitr`, parameters are accessed as elements of `params`, e.g. `params$city`, rather than as global variables like `city`.
-
-::: 
-
-You can see the updated notebook (now a parameterized report), [`climate.ipynb`, on GitHub](https://github.com/cwickham/one-notebook-many-reports/blob/main/03-many-reports/climate.ipynb).
+You can see the updated notebook, now a parameterized notebook, on GitHub: [`climate.ipynb`](hhttps://github.com/cwickham/one-notebook-many-reports/blob/main/02-one-parameterized-report/climate.ipynb).
 
 ### 3. Render with different parameter values
 
@@ -204,7 +172,7 @@ To generate all 50 reports, we need to run `quarto render` 50 times, each time w
 You could automate this in many ways, but let's use a Python script.
 For example, you might have a dataset of cities and their corresponding output filenames:
 
-```python
+```{.python filename="gen-reports.py"}
 cities = pl.DataFrame({
     "city": ["Portland", "Cottage Grove", "St. Helens", "Eugene"],
     "output_file": ["portland.pdf", "cottage_grove.pdf", "st_helens.pdf", "eugene.pdf"]
@@ -214,7 +182,7 @@ cities = pl.DataFrame({
 I've generated a small example above, but in reality you would likely read `cities` in from a file.
 Then you could iterate over the rows of this dataset, rendering the notebook for each city:
 
-```python
+```{.python filename="gen-reports.py"}
 from quarto import render
 for row in cities.iter_rows(named=True):
     render(
@@ -225,6 +193,8 @@ for row in cities.iter_rows(named=True):
 ```
 
 Run this script once, and you'll get all 50 custom reports!
+
+You can find the complete working example on GitHub: [cwickham/one-notebook-many-reports/03-many-reports](https://github.com/cwickham/one-notebook-many-reports/tree/main/03-many-reports).
 
 ## Pretty Reports: Brand and Typst
 
@@ -268,8 +238,43 @@ As an example, you could add a header with the city name and a map of the locati
 
 You can see the source for this example at [cwickham/one-notebook-many-reports/05-pretty-reports](https://github.com/cwickham/one-notebook-many-reports/tree/main/05-pretty-reports).
 
+## `jupyter` vs `knitr` 
+
+The steps for creating a parameterized report above are specific to documents that use the `jupyter` engine. 
+With a Jupyter notebook (`.ipynb`), 
+or a plain text Quarto document (`.qmd`) with only Python code cells, 
+Quarto will default to the `jupyter` engine.
+As described above, the `jupyter` engine uses cell tags to identify parameters. 
+
+If you are working in a `.ipynb` file, your IDE will likely provide a way to add these tags through the cell toolbar.
+If you are working in a `.qmd` file, you can add tags as a code cell option:
+
+````markdown
+```{{python}}
+#| tags: [parameters]
+city = "Corvallis"
+```
+````
+
+With the `jupyter` engine, parameters can then be accessed directly as variables, e.g. `city`, in later code cells.
+
+If you are working in a Quarto document (`.qmd`) with R code cells, Quarto will default to the  `knitr` engine.
+With the `knitr` engine, you set parameters in the document header under `params`:
+
+```yaml
+---
+params:
+  city: "Corvallis"
+---
+```
+
+In `knitr`, parameters are accessed as elements of `params`, e.g. `params$city`.  
+
+You can read more about setting and using parameters in [Guide > Computations > Parameters](/docs/computations/parameters.html).
+
 ## Wrapping Up
 
 Parameterized reports turn one notebook into many customized outputs. 
 You've seen the process of going from a notebook with a hardcoded value to a parameterized report that can be rendered with different values.
 You can then automate the rendering in any way you choose to generate dozens of reports at once.
+
