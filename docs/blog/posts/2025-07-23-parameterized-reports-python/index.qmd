@@ -19,20 +19,20 @@ lightbox: true
 
 ## Based on a talk at SciPy 2025
 
-This post is based on the talk "From One Notebook to Many Reports: Automating with Quarto" delivered at [SciPy 2025](https://www.scipy2025.scipy.org), July 2025 by Charlotte Wickham. 
+This post is based on the talk "From One Notebook to Many Reports: Automating with Quarto" delivered at [SciPy 2025](https://www.scipy2025.scipy.org) by Charlotte Wickham. 
 You can find the slides at [cwickham.github.io/one-notebook-many-reports](https://cwickham.github.io/one-notebook-many-reports/) and example code at [github.com/cwickham/one-notebook-many-reports](https://github.com/cwickham/one-notebook-many-reports).
 
 :::
 
 ## The Problem: Repetitive Reporting
 
-Would you rather read a generic "Climate summary" or a "Climate summary for _exactly where you live_"? Reports that are personalized to a specific situation increase understanding, engagement, and connection. But producing many customized reports manually is tedious and error-prone.
+Would you rather read a generic "Climate summary" or a "Climate summary for _exactly where you live_"? Reports that are personalized to a specific situation increase engagement and connection. But producing many customized reports manually is tedious and error-prone.
 
-Quarto solves this with parameterized reports—-you create a single document template, then render it multiple times with different parameter values to generate customized outputs automatically.
+Quarto solves this with parameterized reports---you create a single document template, then render it multiple times with different parameter values to generate customized outputs automatically.
 
 A great example is the customized soil health reports from Washington Soil Health Initiative's [State of the Soils Assessment](https://washingtonsoilhealthinitiative.com/state-of-the-soils/), presented at posit::conf(2023) by [Jadey Ryan](https://jadeyryan.com) (watch on [YouTube](https://youtu.be/lbE5uOqfT70?si=C-d5U5Q2VXo1wlDs)). Jadey demonstrated this approach using R and plain text Quarto files (`.qmd`).
 
-This post shows you how to apply the same principles using Python: I'll walk through converting a Jupyter notebook (`.ipynb`) into a parameterized report, then automating the generation of multiple customized outputs. Then I'll show you how to make those reports look professionally polished.
+This post shows you how to apply the same principles using Python: we'll walk through converting a Jupyter notebook (`.ipynb`) into a parameterized report, then automating the generation of multiple customized outputs. Then I'll give you some tips for making your reports look polished.
 
 ## The Solution: Parameterized Reports
 
@@ -48,7 +48,7 @@ You can see the full notebook, [`corvallis.ipynb`, on GitHub](https://github.com
 
 -   The document options specify `echo: false` so no code appears in the final output, and `format: typst` so the output is a PDF produced via [Typst](https://typst.app), a modern alternative to LaTeX.
 
-This single notebook can be rendered:
+This single notebook can be rendered with Quarto:
 
 ```{.bash filename="Terminal"}
 quarto render corvallis.ipynb 
@@ -62,7 +62,7 @@ Now, imagine we want to create this report for the 50 largest cities in Oregon.
 Here's the steps we'll take: 
 
 1. Turn hardcoded values into variables
-2. Make those variables parameters by tagging the cell
+2. Declare those variables parameters
 3. Render the notebook with different parameter values
 4. Automate rendering with many parameter values 
 
@@ -135,10 +135,10 @@ We can also use an f-string here to include the `city` variable:
 Now, we should be able to test our changes by explicitly setting the `city` variable to something other than "Corvallis" and re-running the cells.
 Since our report is no longer specific to Corvallis, we can rename it `climate.ipynb`.
 
-### 2. Make variables into parameters
+### 2. Declare those variables parameters
 
 Now we have a variable that represents the parameter, we need to let Quarto know it's a parameter.
-Quarto's parameterized reports are implemented using [Papermill](https://papermill.readthedocs.io/en/latest/), and inherits Papermill's approach: tag the cell containing the parameter with `parameters`.
+Quarto's parameterized reports are implemented using [Papermill](https://papermill.readthedocs.io/en/latest/), and inherit Papermill's approach: tag the cell defining the parameter with `parameters`.
 
 In Jupyter, you can add this tag through the cell toolbar:
 
@@ -172,19 +172,21 @@ params:
 ---
 ```
 
+In `knitr`, parameters are accessed as elements of `params`, e.g. `params$city`, rather than as global variables like `city`.
+
 ::: 
 
 You can see the updated notebook (now a parameterized report), [`climate.ipynb`, on GitHub](https://github.com/cwickham/one-notebook-many-reports/blob/main/03-many-reports/climate.ipynb).
 
 ### 3. Render with different parameter values
 
-If we render the notebook now, it will still produce the same report for Corvallis, because we haven't changed the parameter value:
+If we render `climate.ipynb`, it will still produce the same report for Corvallis, because we haven't changed the parameter value:
 
 ```{.bash filename="Terminal"}
 quarto render climate.ipynb
 ```
 
-But we can now pass parameter values to Quarto when we render with the `-P` flag:
+But we can now pass parameter values to Quarto with the `-P` flag:
 
 ```{.bash filename="Terminal"}
 # Generate report for Portland
@@ -199,7 +201,7 @@ We've also added `--output-file` to ensure each report gets its own filename.
 ### 4. Automate rendering with many parameter values 
 
 To generate all 50 reports, we need to run `quarto render` 50 times, each time with a different city as the parameter value.
-You could automate this in many ways, but let use a Python script.
+You could automate this in many ways, but let's use a Python script.
 For example, you might have a dataset of cities and their corresponding output filenames:
 
 ```python
@@ -209,7 +211,7 @@ cities = pl.DataFrame({
 })
 ```
 
-I've generated a small example above, but in reality you would likely read `cities` in from a CSV file.
+I've generated a small example above, but in reality you would likely read `cities` in from a file.
 Then you could iterate over the rows of this dataset, rendering the notebook for each city:
 
 ```python
@@ -231,7 +233,7 @@ However, if you are targeting `typst` you can take advantage of additional featu
 
 ### Brand.yml
 
-Quarto supports [brand files](https://posit-dev.github.io/brand-yml/) that automatically apply your organization's colors, fonts, and logos across your reports:
+Quarto supports [brand.yml](https://posit-dev.github.io/brand-yml/) a way to specify colors, fonts, and logos:
 
 ```{.yaml filename="_brand.yml"}
 color:
@@ -250,8 +252,10 @@ logo:
   medium: logo.png
 ```
 
-Place this file in your project, and Quarto automatically applies your branding to all generated reports.
-You can see a full example of using `_brand.yml` with `climate.ipynb` at [cwickham/one-notebook-many-reports/04-branded-reports](https://github.com/cwickham/scipy-talk/tree/main/04-branded-reports).
+Quarto will detect the `_brand.yml` file and apply the colors, fonts and logo to your report.
+Colors and fonts in your figures will need to be customized in your code, but that is made much easier with the [brand-yml](https://posit-dev.github.io/brand-yml/pkg/py/) Python package which imports your values from `_brand.yml`.
+
+You can see a full example of using `_brand.yml` with `climate.ipynb` at [cwickham/one-notebook-many-reports/04-branded-reports](https://github.com/cwickham/scipy-talk/tree/main/04-branded-reports), and learn more about Quarto's support for brand in the [Brand guide](https://quarto.org/docs/authoring/brand.html).
 
 
 ### Typst
