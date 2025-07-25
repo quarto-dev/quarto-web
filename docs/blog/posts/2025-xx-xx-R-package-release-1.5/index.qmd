@@ -33,28 +33,31 @@ Major features in this release include:
 
 ## Pass R Values to Quarto Metadata
 
-Set metadata dynamically based on R computations with `write_yaml_metadata_block()`:
+Set metadata dynamically based on R computations with `write_yaml_metadata_block()`. For example, you could check a parameter value, and conditionally include content based on it:
 
-```{r}
-#| eval: false
-#| echo: fenced
+```r
 #| output: asis
-# Compute values dynamically
-debug_mode <- Sys.getenv("DEBUG") == "TRUE"
 
-# Write metadata block
 write_yaml_metadata_block(
-  debug_mode = debug_mode,
-  generated_at = Sys.Date()
+  is_france = params$country == "france"
 )
 ```
+
+This will write the following (e.g., when `quarto render report.qmd -P country:france`):
+````yaml
+---
+is_france: true
+---
+````
 
 Then use Quarto's conditional features:
 
 ```markdown
-::: {.content-visible when-meta="debug_mode"}
-## Debug Information
-This section only appears when debug mode is enabled.
+::: {.content-visible when-meta="is_france"}
+## Fun fact about France
+
+In 2025, France is the most visited country in the world, attracting over 89 million tourists annually!
+
 :::
 ```
 
