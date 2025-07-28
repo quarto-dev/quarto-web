@@ -74,7 +74,7 @@ write_yaml_metadata_block(
 
 Without the automatic quoting, these values would be interpreted as decimal numbers (888 and 999) in YAML 1.2, losing the leading zeros. This could break code that expects string values like file permissions or ID codes that must preserve leading zeros.
 
-This change applies to internal function that writes YAML from R objects list, and so this improvement is particularly important when using `execute_params` with `quarto_render()`, where parameter values might include such edge cases:
+This change applies to internal functions that write YAML from R object lists, and so this improvement is particularly important when using `execute_params` with `quarto_render()`, where parameter values might include such edge cases:
 
 ```r
 # Parameters with octal-like codes are now handled correctly
@@ -173,6 +173,7 @@ data_file <- project_path("data", "analysis.csv")
 root <- find_project_root()
 ```
 `project_path()` <a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='https://img.shields.io/badge/lifecycle-experimental-orange.svg' alt='Experimental lifecycle'></a> intelligently handles different execution contexts:
+
 - During `quarto render`, it uses `QUARTO_PROJECT_ROOT` or `QUARTO_PROJECT_DIR` environment variables
 - In interactive sessions, it automatically detects the project root by searching for `_quarto.yml`.
 - Falls back to the current working directory with a warning if no project is found.
@@ -184,7 +185,7 @@ This ensures your paths work consistently without hardcoding or manual adjustmen
 results <- read.csv(project_path("data", "results.csv"))
 ```
 
-For more explicit control, consider using `here::i_am()` and `here::here()` as an alternative approach. Follow https://github.com/r-lib/here/issues/128 for improved support in next versions of `here`.
+For more explicit control, consider using `here::i_am()` and `here::here()` as an alternative approach. Follow [r-lib/usethis Issue #128](https://github.com/r-lib/here/issues/128) for improved support in next versions of `here`.
 
 ## Automate Quarto CLI from R {#automate-quarto-cli}
 
@@ -247,6 +248,7 @@ detect_bookdown_crossrefs("my-bookdown-project/")
 ```
 
 The function prints detailed guidance to the console, showing:
+
 - Which cross-reference patterns need manual conversion
 - Which patterns can be automatically converted
 - Specific examples from your files
@@ -371,6 +373,7 @@ Explore the new features and improvements:
 - Report issues: <https://github.com/quarto-dev/quarto-r/issues>
 
 For detailed examples and workflows, check out the new vignettes:
+
 - [Dynamic metadata](https://quarto-dev.github.io/quarto-r/articles/dynamic-metadata.html)
 - [Markdown in HTML tables](https://quarto-dev.github.io/quarto-r/articles/markdown-html-tables.html)
 - [Working with R scripts](https://quarto-dev.github.io/quarto-r/articles/r-scripts.html)
