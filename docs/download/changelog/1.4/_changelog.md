@@ -80,7 +80,7 @@
 - ([#3473](https://github.com/quarto-dev/quarto-cli/issues/3473)): Add support for `body-right` and `body-left` layouts for Website Table of Contents.
 - ([#3895](https://github.com/quarto-dev/quarto-cli/discussions/3895)): Other format links can appear on the left (ensure that they follow the `toc-location` whether or not a toc is visible).
 - ([#4840](https://github.com/quarto-dev/quarto-cli/issues/4840)): Add support for specifying a custom Hypothesis client url using `client-url`
-- ([#4882](https://github.com/quarto-dev/quarto-cli/issues/4882)): Add support for `canonical-url`, which when provided will include a link tag with rel='canonical' which will use an explictly provided or automatically generated canonical url for the document.
+- ([#4882](https://github.com/quarto-dev/quarto-cli/issues/4882)): Add support for `canonical-url`, which when provided will include a link tag with rel='canonical' which will use an explicitly provided or automatically generated canonical url for the document.
 - ([#5189](https://github.com/quarto-dev/quarto-cli/issues/5189)): Ensure appendix shows even when `page-layout` is custom.
 - ([#5196](https://github.com/quarto-dev/quarto-cli/discussions/5196)): Properly support `title-prefix` for HTML output
 - ([#5210](https://github.com/quarto-dev/quarto-cli/issues/5210)): Update to Bootstrap 5.2.2
@@ -197,7 +197,7 @@
 - ([#6268](https://github.com/quarto-dev/quarto-cli/issues/6268)): Enable listings even when `theme: none`
 - ([#6407](https://github.com/quarto-dev/quarto-cli/issues/6407)): Add supporting for the field `word-count` for listing items. It is not displayed by default.
 - ([#6408](https://github.com/quarto-dev/quarto-cli/issues/6408)): Fix error on Windows when using yaml to create a listing with an external (e.g. `path: https://www.quarto.org`)
-- ([#6447](https://github.com/quarto-dev/quarto-cli/issues/6447)): Fix image placholder for pages with more than one listing (or a single listing passed as an array item in yaml)
+- ([#6447](https://github.com/quarto-dev/quarto-cli/issues/6447)): Fix image placeholder for pages with more than one listing (or a single listing passed as an array item in yaml)
 - ([#6777](https://github.com/quarto-dev/quarto-cli/issues/6777)): Add support for complex fields like `citation.container-title` when includes custom fields in listings.
 - ([#6903](https://github.com/quarto-dev/quarto-cli/issues/6903)): Don't display the `path` field for external paths provided in metadata files.
 - ([#6904](https://github.com/quarto-dev/quarto-cli/issues/6904)): Within feeds, remove `index.html` from urls which shouldn't include it.
@@ -213,11 +213,11 @@
 ## Websites
 
 - Add support for `navbar > toggle-position` to control whether the responsive navbar toggle appears on the right or the left.
-- Add support for setting `page-navigation: true|false` in either a page or in `_metadata.yml`. This allows individual pages or sections of a website to control whether `page-navigaation` appears.
+- Add support for setting `page-navigation: true|false` in either a page or in `_metadata.yml`. This allows individual pages or sections of a website to control whether `page-navigation` appears.
 - Add support for `bread-crumbs: true|false` to control whether bread crumbs are displayed. Add support for display of breadcrumbs on full width (non-mobile) pages when `bread-crumbs` is true. Default value is true.
 - Add support for `show-item-context` key within the `search` key to control whether page parents are display next to items in search results. Pass `tree`, `parent`, `root`, or boolean (if you pass true, `tree` is the default).
 - ([#3493](https://github.com/quarto-dev/quarto-cli/issues/3493)): Fix issue with website about pages complaining about missing citation when using an `@` in hrefs.
-- ([#4668](https://github.com/quarto-dev/quarto-cli/issues/4668)): Allow per page metadata (front matter or a `_metadata.yml` file) to overide the `repo-url` for a page by providing a `repo-url`
+- ([#4668](https://github.com/quarto-dev/quarto-cli/issues/4668)): Allow per page metadata (front matter or a `_metadata.yml` file) to override the `repo-url` for a page by providing a `repo-url`
 - ([#4739](https://github.com/quarto-dev/quarto-cli/issues/4739)): Improve handling of reader mode at mobile responsive sizes
 - ([#5204](https://github.com/quarto-dev/quarto-cli/issues/5204)): About pages rely upon TOC being positioned right, so force that to be true
 - ([#5212](https://github.com/quarto-dev/quarto-cli/issues/5212)): Ensure navbar search button respects `collapse-below` and remains aligned properly
