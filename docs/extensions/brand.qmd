@@ -6,7 +6,7 @@ Brand extensions are Quarto extensions that provide a [brand.yml](../authoring/b
 
 ::: callout-important
 
-Currently, brand extensions merge project-level metadata, so they can only be used with a `_quarto.yml` [project](../projects/quarto-projects.qmd) present in the place where they are installed. This limitation may be lifted in the future.
+Currently, brand extensions merge project-level metadata, so they can only be used with a [`_quarto.yml` project](../projects/quarto-projects.qmd) present where they are installed. This limitation may be lifted in the future.
 
 :::
 
@@ -21,11 +21,11 @@ $ quarto create extension brand
  ? Extension Name › my-brand
 ```
 
-As shown above, you'll be prompted for an extension name. Type `my-brand` and press Enter---the brand extension is then created:
+As shown above, you'll be prompted for an extension name. Type the name of your brand extension and press Enter---the brand extension is then created. We'll use `my-brand` in these docs.
 
 ```bash
 ? Extension Name › my-brand
-Creating extension at /{...}/my-brand:
+Creating extension at .../my-brand:
   - Created _quarto.yml
   - Created README.md
   - Created _extensions/my-brand/brand.yml
@@ -49,14 +49,14 @@ Here's what the contents of the files in `_extensions/my-brand/` look like:
 title: My-brand
 author: Gordon Woodhull
 version: 1.0.0
-quarto-required: ">=99.9.0"
+quarto-required: ">=1.8.20"
 contributes:
   metadata:
     project:
       brand: brand.yml
 ```
 
-``` {.yaml filename="_extensions/mybrand/brand.yml"}
+``` {.yaml filename="_extensions/my-brand/brand.yml"}
 # minimal brand.yml enabling dark mode
 # replace with your brand colors, logos, and typography!
 color:
@@ -80,18 +80,18 @@ Note that this example, and brand extensions in general, require a `_quarto.yml`
 
 We've provided the most basic Quarto project for this example:
 
-``` {.yaml filename="_quarto.yml`}
+``` {.yaml filename="_quarto.yml"}
 project:
   type: default
 ```
 
 ::: {.callout-note}
 
-The example brand.yml is using the unified light and dark brand feature. Documentation for this feature is on the way.
+The example `brand.yml` is using the new _unified light and dark brand_ syntax. Documentation for this feature is on the way.
 
 Any color in the color or typography sections of [brand.yml](https://posit-dev.github.io/brand-yml/) can be specified with `light` and `dark` components or as a string. If a string, the value is used for both light and dark modes.
 
-This works for colors only.
+This works only for the color properties. There is a similar syntax for logos.
 
 :::
 
@@ -99,8 +99,10 @@ This works for colors only.
 
 The path to the brand file will be resolved relative to the `_quarto.yml` project.
 
-In turn, any assets such as logos or fonts will be resolved relative to the brand file.
+Any assets, such as logos or fonts, will be resolved relative to the brand file.
 
-This way, when the extension is installed in a Quarto project, all paths will eventually be resolved relative to the project.
+This way, when the extension is installed in a Quarto project, all paths are finally resolved relative to the project.
 
-The brand is resolved via the `project.brand` key, which is why brand extensions require a `_quarto.yml` project in the place they are installed. The project can be any type. This limitation may be lifted in the future.
+The brand is resolved via the `project.brand` key, which takes a path to a unified light and dark brand.yml file. Because it is resolved through the `project` key, brand extensions require a `_quarto.yml` project where they are installed. The project can be any type. 
+
+This limitation may be lifted in the future.
