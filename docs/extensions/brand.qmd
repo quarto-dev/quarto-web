@@ -1,0 +1,104 @@
+---
+title: "Brand Extensions"
+---
+
+Brand extensions are Quarto extensions that provide a [brand.yml](../authoring/brand.qmd) file and its assets.
+
+::: callout-important
+
+Currently, brand extensions merge project-level metadata, so they can only be used with a `_quarto.yml` [project](../projects/quarto-projects.qmd) present in the place where they are installed. This limitation may be lifted in the future.
+
+:::
+
+### Quick Start
+
+Here we'll describe how to create a simple brand extension. We'll use the `quarto create` command to do this. If you are using VS Code, Positron, or RStudio you should execute `quarto create` within their respective integrated Terminal panes. 
+
+To get started, execute `quarto create extension brand` within the parent directory where you'd like the brand extension to be created:
+
+```{.bash filename="Terminal"}
+$ quarto create extension brand
+ ? Extension Name › my-brand
+```
+
+As shown above, you'll be prompted for an extension name. Type `my-brand` and press Enter---the brand extension is then created:
+
+```bash
+? Extension Name › my-brand
+Creating extension at /{...}/my-brand:
+  - Created _quarto.yml
+  - Created README.md
+  - Created _extensions/my-brand/brand.yml
+  - Created _extensions/my-brand/_extension.yml
+  - Created .gitignore
+  - Created example.qmd
+? Open With
+❯ positron
+  vscode
+  rstudio
+  (don't open)
+```
+
+If you are running within VS Code, Positron, or RStudio a new window will open with the brand project. 
+
+## Contents of Brand Extensions
+
+Here's what the contents of the files in `_extensions/my-brand/` look like:
+
+``` {.yaml filename="_extensions/my-brand/_extension.yml"}
+title: My-brand
+author: Gordon Woodhull
+version: 1.0.0
+quarto-required: ">=99.9.0"
+contributes:
+  metadata:
+    project:
+      brand: brand.yml
+```
+
+``` {.yaml filename="_extensions/mybrand/brand.yml"}
+# minimal brand.yml enabling dark mode
+# replace with your brand colors, logos, and typography!
+color:
+  background:
+    light: "#fff"
+    dark: "#000"
+  foreground:
+    light: "#000"
+    dark: "#fff"
+```
+
+This is just enough `brand.yml` to enable dark mode. If you preview the `example.qmd` provided in the root of your brand extension
+
+```bash
+quarto preview example.qmd
+```
+
+you should see the dark mode toggle in the upper right corner, and if you click it you'll see white text on a black background. 
+
+Note that this example, and brand extensions in general, require a `_quarto.yml` project to be present where they are installed. This is because the metadata will be merged via the `project` key.
+
+We've provided the most basic Quarto project for this example:
+
+``` {.yaml filename="_quarto.yml`}
+project:
+  type: default
+```
+
+::: {.callout-note}
+
+The example brand.yml is using the unified light and dark brand feature. Documentation for this feature is on the way.
+
+Any color in the color or typography sections of [brand.yml](https://posit-dev.github.io/brand-yml/) can be specified with `light` and `dark` components or as a string. If a string, the value is used for both light and dark modes.
+
+:::
+
+## How Brand Extensions Work
+
+The path to the brand file will be resolved relative to the `_quarto.yml` project.
+
+In turn, any assets such as logos or fonts will be resolved relative to the brand file.
+
+This way, when the extension is installed in a Quarto project, all paths will eventually be resolved relative to the project.
+
+The brand is resolved via the `project.brand` key, which is why brand extensions require a `_quarto.yml` project in the place they are installed. The project can be any type. This limitation may be lifted in the future.
