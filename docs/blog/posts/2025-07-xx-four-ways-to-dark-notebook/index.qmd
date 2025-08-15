@@ -3,11 +3,12 @@ title: Four Ways to Dark Notebook
 author: Gordon Woodhull
 draft: false
 demo-site: https://gordonwoodhull.github.io/jupyter-notebook-renderings
+reference-location: margin
 ---
 
 ### Introduction
 
-Quarto 1.7 introduced a new cell option called [renderings](https://quarto.org/docs/computations/execution-options.html#cell-renderings), which allows you to emit both a light and a dark rendering of your plot or table in a code cell, and Quarto will make the light rendering visible in light mode, and the dark rendering visible in dark mode.
+Quarto 1.7 introduced a new cell option called [renderings](https://quarto.org/docs/computations/execution-options.html#cell-renderings), which allows you to emit both a light and a dark rendering of your plot or table in a code cell. Quarto will make the light rendering visible in light mode, and the dark rendering visible in dark mode.
 
 I wanted to see how well this feature plays with Jupyter Notebooks rendered in Quarto, to produce HTML versions of notebooks with dark mode enabled. It works great! But there's a big catch that makes this interesting.
 
@@ -112,112 +113,121 @@ Quarto documents and Jupyter notebooks are isomorphic: you can transform a Quart
 
 If you `quarto convert` a Quarto document into a Jupyter notebook, code blocks turn into Jupyter code cells, and the rest of the Markdown turns into Markdown cells around and between the code cells. Likewise if you `quarto convert` a Jupyter notebook to a Quarto document, the Jupyter code cells become Quarto code blocks, and Markdown cells become the body of the Quarto Markdown document, around the code blocks.
 
-When Quarto renders a Jupyter notebook, it's not converted to a Quarto document, but it produces an intermediate Pandoc markdown document with all of the computational results included. This Pandoc markdown document observes the same transformations: the Jupyter code cells become Pandoc code blocks, this time with results, and the Markdown cells become the body of the Pandoc markdown around the code blocks and results.
+When Quarto renders a Jupyter notebook, it's not converted to a Quarto document, but it produces an intermediate Pandoc markdown document with all of the computational results included. This Pandoc markdown document observes the same transformations: the Jupyter code cells become Pandoc code blocks, this time with results, and the Markdown cells become the body of the Pandoc markdown, around the code blocks and results.
 
-So we can build our fenced divs around the code cells, as shown in the [matplotlib markdown example]({{< meta demo-site >}}/matplotlib-markdown.html). 
+Returning to our first example, we can add a cross-reference by building a fenced div with caption in two markdown cells around the code cell:
 
-*Need a simple example here.*
+![matplotlib with markdown fenced div](matplotlib-markdown-light.png){.light-content}
+![matplotlib with markdown fenced div](matplotlib-markdown-dark.png){.dark-content}
 
-Here's a more complex example, combining `renderings` with subfigures:
+You can see this example live at [matplotlib markdown example]({{< meta demo-site >}}/matplotlib-markdown.html). 
+
+Now let's dive into a Plotnine Gapminder example, which we'll use for the rest of the post. We'll display the Gapminder 1957 and Gapminder 2007 plots as subfigures with both light and dark renderings.
 
 ![fenced divs in Jupyter raw cells](raw-cell-subfigures-light.png){.light-content}
 ![fenced divs in Jupyter raw cells](raw-cell-subfigures-dark.png){.dark-content}
 
-Here we build two levels of fenced divs in order to combine the plots as subfigures in two columns, inside a figure, with cross-references for each of the subfigures as well as the parent figure.
+You can see this example live, along with the rest of the code, at [plotnine markdown example]({{< meta demo-site >}}/plotnine-markdown.html). 
 
-So we start by opening two fenced divs in a raw cell, `#fig-gapminder` and `#fig-gapminder-1957`, figure and subfigure.
+The notebook uses theme helper functions from the main branch of the [quarto-python](https://github.com/quarto-dev/quarto-python) package, to be released later this year.
+
+Here we build two levels of fenced divs in order to combine the plots in a figure with the subfigures in two columns, with cross-references for each of the subfigures as well as the parent figure.
+
+We start by opening two fenced divs in a raw cell, `#fig-gapminder` and `#fig-gapminder-1957`, figure and subfigure.
 
 Then a code cell with `renderings: [light, dark]` outputs the 1957 plot in light and dark themes.
 
+The `gapminder_plot(year)` function, not shown here, takes the year and data provided in the notebook to display the bubble plot with Plotnine.
+
 Then another raw cell adds the caption for the 1957 plot, closes the subfigure, and opens the `#fig-gapminder-2007` subfigure.
 
-Then a code cells outputs the 2007 plot in light and dark themes.
+Then a code cell outputs the 2007 plot in light and dark themes.
 
 And a final raw cell adds captions and closes the subfigure and figure fenced divs.
+
+Phew! If you've read this far and think this is great, please go forth and use this. It totally works, and it's neat that Jupyter notebooks are isomorphic to Quarto notebooks.
+
+However, we generally don't recommend this. Even if you get it, it's going to be confusing to your colleagues and coworkers. We present it here to show how Jupyter notebooks are deeply equivalent to Quarto markdown documents.
+
+So let's look at the `contents` shortcode, the nice way to build fenced divs around your results in a Jupyter notebook.
 
 ::: {.callout-tip}
 ## Jupyter raw cells
 
-In all the example notebooks for this blog post, I'm using Jupyter's Raw cells instead of Markdown cells. These have the same effect as Markdown cells, except that when they are rendered in the notebook interface, the raw Quarto markdown will be displayed instead of an HTML representation. 
+In the example notebooks for this blog post, I'm using Jupyter's Raw cells instead of Markdown cells. These have the same effect as Markdown cells, except that when they are rendered in the notebook interface, the raw Quarto markdown will be displayed instead of an HTML representation. 
 
 I find it more helpful to see the Quarto markdown, since we're building structure around the code cells.  Although the jupyterlab-quarto extension and the Quarto extension for VSCode improve the rendering of Quarto-specific markdown, I prefer to see the code rather than a rendering of half a fenced div.
 
-If you `quarto convert` a Quarto document to a Jupyter notebook, it will use Markdown cells, not raw cells. So this is something that doesn't round-trip to the same notebook.
+If you `quarto convert` a Quarto document to a Jupyter notebook, it will use Markdown cells, not raw cells. So this is something that doesn't round-trip from a Jupyter notebook to a Quarto document and back.
 :::
-
-If you've read this far and think this is great, please go forth and use this. It totally works, and it's neat that Jupyter notebooks are isomorphic to Quarto notebooks.
-
-However, we generally don't recommend this. Even if you get it, it's going to be confusing to your colleagues and coworkers. We mainly present it here to show how Jupyter notebooks are deeply equivalent to Quarto markdown.
-
-So let's look at the `contents` shortcode, the nice way to build fenced divs around your results in a Jupyter notebook.
 
 ## Way 2: Light and dark renderings placed in fenced divs in Jupyter markdown cells via the `contents` shortcode{#way-2}
 
-In the last section, we saw how Jupyter notebooks are sort of inside-out from Quarto notebooks. The markdown cells in a Jupyter notebook become the body of the markdown when you render a Jupyter notebook with Quarto, and the Jupyter code cells are enclosed as Quarto / Pandoc code blocks.
+We don't have to build our prose around our code, and beyond exploratory notebooks, we probably shouldn't.
 
-In our Jupyter notebook, when we want to present our results using Quarto, while keeping all the code and reproducibility, we probably want a different organization from how we would do this in Quarto markdown.
+It's better to consolidate our Markdown in one cell or a few cells of our notebook, and then display the results from computational cells in the Markdown using the `contents` shortcode. 
 
-We probably want only a small number of Markdown cells, perhaps one at the beginning of each phase of the code, or perhaps just one big Markdown cell at the beginning or end of the notebook with the whole writeup.
+It causes the output of a code cell (or any cell) from the same notebook to be removed from its original location and placed at the location of the shortcode.
 
-And then we want to "grab" the outputs from the code cells, and cut and paste those outputs into our Markdown.
-
-And this is what the `contents` shortcode is for. It causes the output of a code cell from the same notebook to be displayed in a different place.
-
-Here's how to put the outputs of two cells as subfigures in another figure:
+Here's how we implement the Gapminder subfigure example using the `contents` shortcode:
 
 ![contents shortcode](contents-shortcode-light){.light-content}
 ![contents shortcode](contents-shortcode-dark){.dark-content}
 
-It's finding them by their identifiers `#gapminder-1957`, `#gapminder-2007`. 
+It's finding the outputs by their identifiers of the code cells `#gapminder-1957`, `#gapminder-2007`. 
 
-Let's look at one of these cells:
+Notice this is not a cross-reference identifier because it does not start with `#fig-`, `#tbl-`, or any of the prefixes that cause a cross-reference.
+
+One of the cells:
 
 ![contents source cell](contents-source-cell-light){.light-content}
 ![contents source cell](contents-source-cell-dark){.dark-content}
 
-Wait a minute! Aren't cross-references incompatible with `renderings`, the entire point of this post?
+::: {.callout-tip}
 
-Yes, that's still true, but this is not a cross-reference. This cell's identifier does not start with `#fig-`, `#tbl-`, or any of the prefixes that cause a cross-reference.
+## `label` has multiple purposes
 
-`label` has multiple purposes:
 * to provide an identifier that can be used with the `contents` shortcode (or `embed` shortcode, as we'll see).
+* to create an HTML fragment identifer that can be linked to with `#id`.  
 * to provide a base for output filenames, so that artifacts like plot images have readable filenames instead of just numbers.
-* to create a cross-reference if one of the reserved prefixes [Cross References](https://quarto.org/docs/authoring/cross-references.html){.aside} is used.
+* to create a cross-reference if one of the reserved prefixes is used. ([docs](https://quarto.org/docs/authoring/cross-references.html))
+:::
 
-### A little digression on narrative flow
+
+### Digression on narrative flow
 
 The `contents` shortcode is interesting because it changes the way time, or at least narrative, works in a notebook. 
 
-You still have the linear execution timeline of your code cells. We haven't changed that.[Marimo has!]{.aside}
+We still have the linear execution timeline of code cells. 
 
-But now the prose does not have to follow the same order as the code. All of the composition of the output in Quarto and Pandoc happens after all the code has executed, and you can refer to results from anywhere in the notebook.
+But now the prose does not have to follow the same order as the code. 
 
-(In fact, by default when Quarto renders a Jupyter notebook, it assumes that all the cells have been run and the output saved. So there is no execution, only rendering.)
+The composition of the output in Quarto and Pandoc happens after all the code has executed, and you can refer to results from anywhere in the notebook. (In fact, by default when Quarto renders a Jupyter notebook, it assumes that all the cells have been run and the output saved. So there is no execution, only rendering.)
 
-Of course, the `contents` shortcode also works in Quarto markdown, allowing the same consolidation of prose.
+Of course, the `contents` shortcode also works in Quarto markdown, allowing the same consolidation of prose and reordering of output.
 
-Quarto comes from a heritage of decades of programmers trying to find the best way to do Literate Programming. We want code in the same place as the prose of our documentation or our report, but in any system for this purpose, it gets messy quickly.
+Literate Programming always has the problem of two stories being told at the same time: the prose and the code.
 
 We don't necessarily want to explain the code in the same order that it needs to run, and we'll often lose our readers if we try to explain all the code.
 
-But all code should be there, with the prose.
+But all the code should be there, with the prose.
 
 ::: {.callout-note}
 
-# Quarto doesn't run Jupyter notebooks?
+# Quarto doesn't execute Jupyter notebooks?
 
 By default, Quarto does not run Jupyter cells when rendering a Jupyter notebook.
 
 After all, you're still running your notebook in Jupyter, so you probably don't want us also running your code when we render. Just save the results in the notebook, and we'll pick them up.
 
-You can use `quarto render --execute` if you want to run the code in Quarto instead, and for reasons which become apparent with a little thought, you need to run your notebook that way if you are using [inline code](https://quarto.org/docs/computations/inline-code.html).
+You can use `quarto render --execute` if you want to run the code in Quarto instead, and you need to run your notebook that way if you are using [inline code](https://quarto.org/docs/computations/inline-code.html).
 
 :::
 
 ## Way 3: Light and dark renderings embedded in fenced divs in Jupyter markdown cells via the `embed` shortcode {#way-3}
 
-For a medium sized, self-contained experiment, a single notebook with one prose narrative and another execution narrative is often enough.
+To completely separate the prose from the code while retaining reproducibility, use the `embed` shortcode, which includes content from another Jupyter notebook or Quarto document.
 
-But when you want to have your prose notebook separate from the computational notebook, or you want to display results from multiple computational notebooks in your notebook, you can use the `embed` shortcode.
+The `embed` shortcode causes the other notebook or document to be rendered separately and given its own page in your website. It inserts the embedded content and a link to the notebook, and it also causes a link to the notebook to be put at the top of the page.
 
-This causes the other notebook to be rendered as its own page, and provides links from the 
+Now our prose narrative is 
