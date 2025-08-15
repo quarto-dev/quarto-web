@@ -771,7 +771,7 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
     walk(tocEl, 0);
   }
 
-  // Throttle the scroll event and walk peridiocally
+  // Throttle the scroll event and walk periodically
   window.document.addEventListener(
     "scroll",
     throttle(() => {

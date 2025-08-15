@@ -20,7 +20,7 @@ See the following documentation for information on deploying Shiny applications 
 | [shinyapps.io](https://docs.posit.co/shinyapps.io/getting-started.html#working-with-shiny-for-python) | Cloud hosting service             |
 | [Hugging Face](https://huggingface.co/docs/hub/spaces-sdks-docker-shiny#shiny-for-python)             | Cloud hosting service             |
 | [Shiny Server](https://shiny.posit.co/py/docs/deploy.html#deploy-to-shiny-server-open-source)         | Open source application server    |
-| [Posit Connect](https://shiny.posit.co/py/docs/deploy.html#deploy-to-posit-connect-commercial)        | Commerical publishing platform    |
+| [Posit Connect](https://shiny.posit.co/py/docs/deploy.html#deploy-to-posit-connect-commercial)        | Commercial publishing platform    |
 | [Other Services](https://shiny.posit.co/py/docs/deploy.html#other-hosting-options)                    | Custom server/hosting environment |
 
 : {tbl-colwidths="\[30,70\]"}

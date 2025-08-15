@@ -11,7 +11,7 @@
 - Fix error when publishing a document in a subfolder ([quarto-dev/quarto#183](https://github.com/quarto-dev/quarto/issues/183)).
 - Fix error when publishing a document in a subfolder ([#5330](https://github.com/quarto-dev/quarto-cli/issues/5330)).
 - Fix duplicate bibliography when users enable `citeproc` directly. ([#5588](https://github.com/quarto-dev/quarto-cli/issues/5588)).
-- Fix issue where specificying `search: false` on an individual page would not exclude that page from the website search index.
+- Fix issue where specifying `search: false` on an individual page would not exclude that page from the website search index.
 - Fix error when rendering document with HTML Widgets after updating to Knitr 1.43. ([#5702](https://github.com/quarto-dev/quarto-cli/issues/5702)).
 - Properly position margin elements ([#5289](https://github.com/quarto-dev/quarto-cli/issues/5289)).
 - Improve chrome detection for MacOS ([#2214](https://github.com/quarto-dev/quarto-cli/issues/2214)).
@@ -62,12 +62,12 @@
 - Fix support for parquet files in OJS code cells ([#3630](https://github.com/quarto-dev/quarto-cli/issues/3630)).
 - Forward bootstrap table classes from caption to table element ([#4036](https://github.com/quarto-dev/quarto-cli/issues/4036)).
 - Render code listings with names and captions correctly ([#2195](https://github.com/quarto-dev/quarto-cli/issues/2195)).
-- Fix issue with interactivity of elements in mobile size dispay when `toc-left` is being used. ([#4244](https://github.com/quarto-dev/quarto-cli/issues/4244)).
+- Fix issue with interactivity of elements in mobile size display when `toc-left` is being used. ([#4244](https://github.com/quarto-dev/quarto-cli/issues/4244)).
 - Allow control of the 'cite as' appendix in HTML documents using `appendix-cite-as` (pass `false`, `display`, or `bibtex`). ([#2625](https://github.com/quarto-dev/quarto-cli/issues/2625))
 - Properly anchor custom appendix sections ([#3112](https://github.com/quarto-dev/quarto-cli/issues/3112)).
 - Don't display custom appendix sections in the TOC ([#3113](https://github.com/quarto-dev/quarto-cli/issues/3113)).
 - Use custom `styles.html` template partial to better support checkbox alignment ([#4556](https://github.com/quarto-dev/quarto-cli/issues/4556)).
-- Improve ergonomics of text-highting in HTML output, not emitting difficult overwrite styles and better supporting theme -> CSS conversion. ([#4334](https://github.com/quarto-dev/quarto-cli/issues/4334)).
+- Improve ergonomics of text-highlighting in HTML output, not emitting difficult overwrite styles and better supporting theme -> CSS conversion. ([#4334](https://github.com/quarto-dev/quarto-cli/issues/4334)).
 - Improve CSS of nested tight and loose lists ([#4560](https://github.com/quarto-dev/quarto-cli/discussions/4650)).
 - Resolve Bootstrap responsive classes in tables ([#2997](https://github.com/quarto-dev/quarto-cli/issues/2997)).
 - Fine tuning of the appearance of computational and markdown table and more uniformly apply such styling.
