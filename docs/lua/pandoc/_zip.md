@@ -17,6 +17,11 @@ function pandoc.zip.Archive(bytestring_or_entries: string|pandoc.zip.Entry[])
   -> pandoc.zip.Archive
 ```
 
+Reads an *Archive* structure from a raw zip archive or a list of
+Entry items; throws an error if the given string cannot be decoded
+into an archive.
+
+
 
 ## `bytestring`
 

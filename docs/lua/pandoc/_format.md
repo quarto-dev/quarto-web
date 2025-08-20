@@ -14,6 +14,12 @@ function pandoc.format.all_extensions(format: string)
   -> table<string, boolean>
 ```
 
+Returns the list of all valid extensions for a format. No
+distinction is made between input and output; an extension can
+have an effect when reading a format but not when writing it, or
+*vice versa*.
+
+
 
 ## `default_extensions`
 
