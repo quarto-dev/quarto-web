@@ -96,7 +96,7 @@ See the Pandoc documentation on metadata [variables for LaTeX](https://pandoc.or
 
 ## Fonts
 
-Using `xelatex`, the default engine, or the `lualatex` engine, you can specify fonts with the YAML options:
+Using `lualatex`, the default engine, or the `xelatex` engine, you can specify fonts with the YAML options:
 
 | Option         | Document Element         |
 |----------------|--------------------------|
@@ -146,7 +146,7 @@ format:
 
 ## Unicode Characters
 
-By default, Quarto uses the `xelatex` engine to produce PDFs from LaTeX. `xelatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
+By default, Quarto uses the `lualatex` engine to produce PDFs from LaTeX. `lualatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
 
 ``` {.bash filename="Terminal"}
 fc-list :lang=<lang> family
@@ -222,9 +222,11 @@ With fonts with appropriate support, Greek symbols render correctly in headings,
 
 ## Raw LaTeX
 
-When creating a PDF document, Pandoc allows the use of [raw LaTeX](https://pandoc.org/MANUAL.html#extension-raw_tex) directives intermixed with markdown. For example:
+When creating a PDF document, Pandoc allows the use of [raw LaTeX](https://pandoc.org/MANUAL.html#extension-raw_tex) directives intermixed with markdown.
+Although Pandoc allows LaTeX to appear unescaped in Markdown, we instead recommend to wrap the content in a raw block. For example:
 
-``` tex
+```` markdown
+```{=latex}
 \begin{tabular}{|l|l|}\hline
 Age & Frequency \\ \hline
 18--25  & 15 \\
@@ -232,7 +234,9 @@ Age & Frequency \\ \hline
 36--45  & 22 \\ \hline
 \end{tabular}
 ```
+````
 
+Raw LaTeX can be specified as a block element (as shown above), or as an inline element, such as `` `\textrm{hello}`{=latex} ``.
 Raw LaTeX commands will be preserved and passed unchanged to the LaTeX writer.
 
 ::: callout-warning
@@ -289,31 +293,3 @@ If you want Quarto to produce a LaTeX file (`.tex`) rather than a PDF (for examp
     This technique will produce a PDF file for preview, but will also create a `.tex` file alongside it that you can do subsequent processing on.
 
 Both techniques will also produce all LaTeX temporary files, including `.bbl` files and so on, that might be required by a publisher that wants LaTeX sources.
-
-## Unicode Characters
-
-By default, Quarto uses the `xelatex` engine to produce PDFs from LaTeX. `xelatex` has native support for unicode characters, but it is possible some customization will be required in order to properly typeset specific unicode characters. In particular, it is important that you use a font that supports the characters that you are using in your document. To identify fonts on your system that support specific language characters, you can use the following command:
-
-```{.bash filename="Terminal"}
-fc-list :lang=<lang>
-```
-
-For example, to see a list of fonts that support Japanese characters, use:
-
-```{.bash filename="Terminal"}
-fc-list :lang=ja
-```
-
-Select a font name from the list and use that as the document's main font, like:
-
-``` markdown
----
-title: Unicode test
-format: pdf
-mainfont: "Hiragino Sans GB"
----
-
-## Test Document
-
-青黑體簡體中文,ヒラギノ角
-```

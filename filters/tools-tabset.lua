@@ -1,6 +1,7 @@
 
 
 local kTabsetIcons = {
+  ["Positron"] = "positron-logo.svg",
   ["VS Code"] = "vscode-logo.png",
   ["RStudio"] = "rstudio-logo.png",
   ["Terminal"] = "text-editor-logo.png"
