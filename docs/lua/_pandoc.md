@@ -49,10 +49,6 @@ Table cells right-aligned.
 
 ## `Attr`
 
-```
-pandoc.Attr
-```
-
 A set of element attributes. Values of this type can be created
 with the [`pandoc.Attr`](file:///Users/cscheid/repos/github/quarto-dev/quarto-cli/src/resources/lua-types/pandoc/%23pandoc.attr) constructor. For
 convenience, it is usually not necessary to construct the value
@@ -73,6 +69,10 @@ Haskell.
 
 
 ## `Attr`
+
+```
+pandoc.Attr
+```
 
 A set of element attributes. Values of this type can be created
 with the [`pandoc.Attr`](file:///Users/cscheid/repos/github/quarto-dev/quarto-cli/src/resources/lua-types/pandoc/%23pandoc.attr) constructor. For
@@ -144,15 +144,15 @@ Apply a Lua filter
 
 ## `BlockQuote`
 
+```
+pandoc.BlockQuote
+```
+
 A block quote element
 
 
 
 ## `BlockQuote`
-
-```
-pandoc.BlockQuote
-```
 
 A block quote element
 
@@ -182,16 +182,16 @@ Apply a Lua filter
 
 ## `Blocks`
 
+```
+pandoc.Blocks
+```
+
 List of `Block` elements, with the same methods as a generic
 `List`, but also supporting a `walk` method.
 
 
 
 ## `Blocks`
-
-```
-pandoc.Blocks
-```
 
 List of `Block` elements, with the same methods as a generic
 `List`, but also supporting a `walk` method.
@@ -338,6 +338,10 @@ contains the fields `title` ([Inlines][]), `number` (string|nil),
 
 ## `Citation`
 
+```
+pandoc.Citation
+```
+
 Single citation entry
 
 Citation values are equal in Lua if and only if they are equal in
@@ -346,10 +350,6 @@ Haskell.
 
 
 ## `Citation`
-
-```
-pandoc.Citation
-```
 
 Single citation entry
 
@@ -371,15 +371,15 @@ Make a clone
 
 ## `Cite`
 
-```
-pandoc.Cite
-```
-
 Citation
 
 
 
 ## `Cite`
+
+```
+pandoc.Cite
+```
 
 Citation
 
@@ -398,15 +398,15 @@ Make a clone
 
 ## `Code`
 
+```
+pandoc.Code
+```
+
 Inline code
 
 
 
 ## `Code`
-
-```
-pandoc.Code
-```
 
 Inline code
 
@@ -425,15 +425,15 @@ Make a clone
 
 ## `CodeBlock`
 
+```
+pandoc.CodeBlock
+```
+
 Block of code
 
 
 
 ## `CodeBlock`
-
-```
-pandoc.CodeBlock
-```
 
 Block of code
 
@@ -565,15 +565,15 @@ Apply a Lua filter
 
 ## `Div`
 
+```
+pandoc.Div
+```
+
 Generic block container with attributes.
 
 
 
 ## `Div`
-
-```
-pandoc.Div
-```
 
 Generic block container with attributes.
 
@@ -747,15 +747,15 @@ Apply a Lua filter
 
 ## `Image`
 
+```
+pandoc.Image
+```
+
 Image: alt text (list of inlines), target
 
 
 
 ## `Image`
-
-```
-pandoc.Image
-```
 
 Image: alt text (list of inlines), target
 
@@ -791,6 +791,13 @@ Make a clone
 
 ## `Inlines`
 
+List of `Inline` elements, with the same methods as a generic
+`List`, but also supporting a `walk` method.
+
+
+
+## `Inlines`
+
 ```
 pandoc.Inlines
 ```
@@ -800,10 +807,9 @@ List of `Inline` elements, with the same methods as a generic
 
 
 
-## `Inlines`
+## `LineBlock`
 
-List of `Inline` elements, with the same methods as a generic
-`List`, but also supporting a `walk` method.
+A line block, i.e. a list of lines, each separated from the next by a newline.
 
 
 
@@ -812,12 +818,6 @@ List of `Inline` elements, with the same methods as a generic
 ```
 pandoc.LineBlock
 ```
-
-A line block, i.e. a list of lines, each separated from the next by a newline.
-
-
-
-## `LineBlock`
 
 A line block, i.e. a list of lines, each separated from the next by a newline.
 
@@ -874,15 +874,15 @@ Make a clone
 
 ## `Link`
 
+```
+pandoc.Link
+```
+
 Hyperlink: alt text (list of inlines), target
 
 
 
 ## `Link`
-
-```
-pandoc.Link
-```
 
 Hyperlink: alt text (list of inlines), target
 
@@ -1101,15 +1101,15 @@ Usage:
 
 ## `ListAttributes`
 
-```
-pandoc.ListAttributes
-```
-
 List attributes
 
 
 
 ## `ListAttributes`
+
+```
+pandoc.ListAttributes
+```
 
 List attributes
 
@@ -1128,15 +1128,15 @@ Make a clone
 
 ## `LogMessage`
 
+```
+pandoc.LogMessage
+```
+
 A pandoc log message. Objects have no fields, but can be converted to a string via `tostring`.
 
 
 
 ## `LogMessage`
-
-```
-pandoc.LogMessage
-```
 
 A pandoc log message. Objects have no fields, but can be converted to a string via `tostring`.
 
@@ -1191,17 +1191,17 @@ Make a clone
 
 ## `Meta`
 
-Meta information on a document; string-indexed collection of meta values.
-Meta values are equal in Lua if and only if they are equal in Haskell.
-
-
-
-## `Meta`
-
 ```
 function pandoc.Meta(meta_table: table<string, boolean|string|number|pandoc.List|table<number, pandoc.MetaValue>...(+1)>)
   -> table<string, boolean|string|number|pandoc.List|table<number, pandoc.MetaValue>...(+1)>
 ```
+
+
+## `Meta`
+
+Meta information on a document; string-indexed collection of meta values.
+Meta values are equal in Lua if and only if they are equal in Haskell.
+
 
 
 ## `MetaBlocks`
@@ -1238,6 +1238,9 @@ completeness.
 
 ## `MetaInlines`
 
+
+## `MetaInlines`
+
 ```
 function pandoc.MetaInlines(inlines: pandoc.Inlines)
   -> pandoc.List
@@ -1247,12 +1250,6 @@ Creates a value to be used as a MetaInlines value in meta
 data; creates a copy of the input list via `pandoc.Inlines`,
 discarding all non-list keys.
 
-
-
-## `MetaInlines`
-
-
-## `MetaList`
 
 
 ## `MetaList`
@@ -1268,6 +1265,12 @@ discarding all non-list keys.
 
 
 
+## `MetaList`
+
+
+## `MetaMap`
+
+
 ## `MetaMap`
 
 ```
@@ -1279,9 +1282,6 @@ function pandoc.MetaMap(key_value_map: table<string, boolean|string|number|pando
 -- a copy of the input table, keeping only pairs with string
 -- keys and discards all other keys.
 
-
-
-## `MetaMap`
 
 
 ## `MetaString`
@@ -1396,6 +1396,10 @@ Apply a Lua filter
 
 ## `Pandoc`
 
+```
+pandoc.Pandoc
+```
+
 Pandoc document
 
 Values of this type can be created with the`pandoc.Pandoc` constructor. Pandoc values are
@@ -1404,10 +1408,6 @@ equal in Lua if and only if they are equal in Haskell.
 
 
 ## `Pandoc`
-
-```
-pandoc.Pandoc
-```
 
 Pandoc document
 
@@ -1452,15 +1452,15 @@ Usage:
 
 ## `Para`
 
-```
-pandoc.Para
-```
-
 A paragraph
 
 
 
 ## `Para`
+
+```
+pandoc.Para
+```
 
 A paragraph
 
@@ -1500,15 +1500,15 @@ List numbers are delimited by a period.
 
 ## `Plain`
 
+```
+pandoc.Plain
+```
+
 Plain text, not a paragarph
 
 
 
 ## `Plain`
-
-```
-pandoc.Plain
-```
 
 Plain text, not a paragarph
 
@@ -1565,15 +1565,15 @@ Make a clone
 
 ## `RawBlock`
 
-```
-pandoc.RawBlock
-```
-
 Raw content of a specified format
 
 
 
 ## `RawBlock`
+
+```
+pandoc.RawBlock
+```
 
 Raw content of a specified format
 
@@ -1773,15 +1773,15 @@ Make a clone
 
 ## `Space`
 
+```
+pandoc.Space
+```
+
 Inter-word space
 
 
 
 ## `Space`
-
-```
-pandoc.Space
-```
 
 Inter-word space
 
@@ -1827,15 +1827,15 @@ Make a clone
 
 ## `Str`
 
+```
+pandoc.Str
+```
+
 Text
 
 
 
 ## `Str`
-
-```
-pandoc.Str
-```
 
 Text
 
@@ -1881,15 +1881,15 @@ Make a clone
 
 ## `Strong`
 
+```
+pandoc.Strong
+```
+
 Strongly emphasized text
 
 
 
 ## `Strong`
-
-```
-pandoc.Strong
-```
 
 Strongly emphasized text
 
@@ -2022,16 +2022,16 @@ Apply a Lua filter
 
 ## `TableBody`
 
-```
-pandoc.TableBody
-```
-
 A body of a table, with an intermediate head and the specified
 number of row header columns.
 
 
 
 ## `TableBody`
+
+```
+pandoc.TableBody
+```
 
 A body of a table, with an intermediate head and the specified
 number of row header columns.
@@ -2051,15 +2051,15 @@ Make a clone
 
 ## `TableFoot`
 
+```
+pandoc.TableFoot
+```
+
 The foot of a table
 
 
 
 ## `TableFoot`
-
-```
-pandoc.TableFoot
-```
 
 The foot of a table
 
@@ -2078,15 +2078,15 @@ Make a clone
 
 ## `TableHead`
 
-```
-pandoc.TableHead
-```
-
 The head of a table
 
 
 
 ## `TableHead`
+
+```
+pandoc.TableHead
+```
 
 The head of a table
 
@@ -2131,15 +2131,15 @@ List numbers are delimited by a double parentheses.
 
 ## `Underline`
 
+```
+pandoc.Underline
+```
+
 Underlined text
 
 
 
 ## `Underline`
-
-```
-pandoc.Underline
-```
 
 Underlined text
 
@@ -2227,6 +2227,12 @@ does nothing if actual is equal to or newer than the expected version.
 
 ## `WriterOptions`
 
+Table of the options that will be passed to the writer. While the object can be modified, the changes will not be picked up by pandoc.
+
+
+
+## `WriterOptions`
+
 ```
 function pandoc.WriterOptions(opts: pandoc.WriterOptions|table<string, any>)
   -> pandoc.WriterOptions
@@ -2241,12 +2247,6 @@ Usage:
 
     -- default writer options, but DPI set to 300.
     local short_colums_opts = pandoc.WriterOptions {dpi = 300}
-
-
-
-## `WriterOptions`
-
-Table of the options that will be passed to the writer. While the object can be modified, the changes will not be picked up by pandoc.
 
 
 

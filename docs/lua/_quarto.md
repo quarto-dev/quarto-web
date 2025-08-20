@@ -84,6 +84,13 @@ table
 ```
 
 
+## `metadata`
+
+```
+table
+```
+
+
 ## `paths`
 
 ```
@@ -106,6 +113,13 @@ table
 
 
 ## `utils`
+
+```
+table
+```
+
+
+## `variables`
 
 ```
 table

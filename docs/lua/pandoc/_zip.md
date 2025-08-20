@@ -51,6 +51,9 @@ subdirectory `dir`.
 
 ## `Entry`
 
+
+## `Entry`
+
 ```
 function pandoc.zip.Entry(path: string, contents: string, modtime?: integer)
   -> pandoc.zip.Entry
@@ -59,9 +62,6 @@ function pandoc.zip.Entry(path: string, contents: string, modtime?: integer)
 Generates a zip Entry from a filepath, the file's uncompressed
 content, and the file's modification time.
 
-
-
-## `Entry`
 
 
 ## `contents`
