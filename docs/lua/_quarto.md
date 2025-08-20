@@ -22,6 +22,9 @@ Create a Callout AST node, represented as an "opaque pointer" in a RawInline. Al
 
 ## `Tabset`
 
+
+## `Tabset`
+
 ```
 function quarto.Tabset(params: { level: number|nil, tabs: quarto.Tab[]|nil, attr: pandoc.Attr|nil })
   -> pandoc.RawInline
@@ -30,9 +33,6 @@ function quarto.Tabset(params: { level: number|nil, tabs: quarto.Tab[]|nil, attr
 
 Create a Tabset AST node, represented as an "opaque pointer" in a RawInline. Also returns the resolved table object
 
-
-
-## `Tabset`
 
 
 ## `base64`
