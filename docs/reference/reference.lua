@@ -53,7 +53,7 @@ function Pandoc(doc)
     for _,group in ipairs(groups) do
       -- title
       doc.blocks:insert(pandoc.Header(group.level or 2, markdownToInlines(group.title), pandoc.Attr(autoId(group.title))))
-      -- optionalal description
+      -- optional description
       if group.description then
         local description = pandoc.read(group.description).blocks
         for _,blk in ipairs(description) do
