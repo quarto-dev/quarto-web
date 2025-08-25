@@ -198,7 +198,7 @@
 - Don't discard the first chapter header when a chapter title is declared using YAML.
 - Support for rendering to Asciidoc
 - Support for rendering to LaTeX
-- Properly support localized appendex name in book website navigation ([#4578](https://github.com/quarto-dev/quarto-cli/issues/4578))
+- Properly support localized appendix name in book website navigation ([#4578](https://github.com/quarto-dev/quarto-cli/issues/4578))
 - Don't emit duplicate bibliography heading when LaTeX/PDF books are rendering using `natbib` or `biblatex` ([#2770](https://github.com/quarto-dev/quarto-cli/issues/2770))
 
 ## Preview
