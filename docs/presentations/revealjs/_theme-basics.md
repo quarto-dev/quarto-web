@@ -1,4 +1,4 @@
-There are 11 built-in themes provided for Reveal presentations (you can also create your own themes). The `default` and `dark` themes use fairly classic typography and color schemes and are a good place to start.
+There are 12 built-in themes provided for Reveal presentations (you can also create your own themes). The `default` and `dark` themes use fairly classic typography and color schemes and are a good place to start.
 
 The `default` theme is used automatically --- use the `theme` option to switch to an alternate theme. For example
 
