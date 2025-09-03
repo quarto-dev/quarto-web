@@ -260,7 +260,7 @@
 - ([#9727](https://github.com/quarto-dev/quarto-cli/issues/9727)): `lightbox`: do not overwrite `window.onload` events.
 - ([#9792](https://github.com/quarto-dev/quarto-cli/issues/9798)): Fix a 1.5 regression where `freeze` would be accidentally triggered in single-file renders.
 - ([#10003](https://github.com/quarto-dev/quarto-cli/issues/10003)): fix Giscus light/dark theme YAML example in schema where `theme` is missing.
-- Add support for `{{< lipsum >}}` shortcode, which is useful for emitting placeholder text. Provide a specific number of paragraphs (`{{< lipsum 3 >}}`).
+- Add support for `{{{< lipsum >}}}` shortcode, which is useful for emitting placeholder text. Provide a specific number of paragraphs (`{{{< lipsum 3 >}}}`).
 - Resolve data URIs in Pandoc's mediabag when rendering documents.
 - Increase v8's max heap size by default, to avoid out-of-memory errors when rendering large documents (also cf. https://github.com/denoland/deno/issues/18935).
 - When running `quarto check` from a development build (from a git repository), show the git commit hash in addition to the version string.

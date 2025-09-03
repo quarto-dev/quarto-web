@@ -49,10 +49,16 @@ cat("Prerelease:", new_release_major, "->", new_prerelease_major, "\n")
 changelog_url <- paste0("https://github.com/quarto-dev/quarto-cli/releases/download/v", 
   old_release, "/changelog.md")
 changelog_dir <- dir_create(path(downloads, "changelog", major_version))
+changelog_file <- path(changelog_dir, "_changelog", ext = "md")
 
-download_status <- download.file(changelog_url, path(changelog_dir, 
-  "_changelog", ext = "md"))
+download_status <- download.file(changelog_url, changelog_file)
 stopifnot(!download_status)
+
+# escape shortcodes on changelog files as we don't want them processed on website
+# changelog.md is not supposed to have shortcodes that are meant to be resolved as they 
+# are not .qmd files, but regular markdown files.
+# # Pattern that matches {{< >}} but NOT {{{< >}}} (already escaped): "(?<!\\{)(\\{\\{<[^>]*>\\}\\})(?!\\})"
+xfun::gsub_file(changelog_file, pattern = "(?<!\\{)(\\{\\{<[^>]*>\\}\\})(?!\\})", replacement = "{\\1}", perl = TRUE)
 
 glue("
 ---
