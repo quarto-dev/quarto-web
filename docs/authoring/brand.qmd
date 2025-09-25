@@ -36,6 +36,12 @@ Quarto will detect the presence of `_brand.yml` and automatically apply the bran
 You can create a `_brand.yml` file outside of a Quarto project (e.g. without a `_quarto.yml`).
 In this case, `_brand.yml` will automatically apply to documents in the same directory.
 
+```{.yaml filename="_brand.yml"}
+color:
+  background: "#eeeeee"
+```
+
+
 You can also set brand options in a document by specifying brand elements under the `brand` option:
 
 ```{.yaml filename="document.qmd"}
@@ -73,9 +79,59 @@ brand: brand/_brand.yml
 
 Paths specified in `_brand.yml` are relative to the location of the brand file.
 
-### Dark Brand
+### Light and Dark Colors
 
-As with [Themes](/docs/output-formats/html-themes.qmd#dark-mode), you can specify both light and dark brands, making both a light and a dark version of your output available:
+To specify colors for both light and dark modes using a single brand.yml file, specify any color in `color` or `typography` with an object containing the `light` and `dark` colors:
+
+```{.yaml filename="_brand.yml"}
+color:
+  background:
+    light: "#ffffff"
+    dark: "#333333"
+  foreground:
+    light: "#333333"
+    dark: "#ffffff"
+typography:
+  headings:
+    color:
+      light: "#111144"
+      dark: "#d0d0ff"
+```
+
+This also works with the brand specified directly in the document metadata:
+
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  color:
+    background:
+      light: "#ffffff"
+      dark: "#333333"
+    foreground:
+      light: "#333333"
+      dark: "#ffffff"
+  typography:
+    headings:
+      color:
+        light: "#111144"
+        dark: "#d0d0ff"
+---
+```
+
+
+::: {.callout-warning}
+
+## Limitation
+
+Colors in [the `palette`](#color) cannot currently be specified with `light` and `dark` variants.
+
+::: 
+
+
+### Light and Dark Brands
+
+If you prefer to author separate light and dark brands for light and dark mode, or you need to customize non-color properties, you can separate the brands into their own files, and specify `light` and `dark` brand files:
 
 ```{.yaml filename="document.qmd"}
 ---
@@ -84,6 +140,8 @@ brand:
   dark: dark-brand.yml
 ---
 ```
+
+This is similar to how [Themes](/docs/output-formats/html-themes.qmd#dark-mode) work.
 
 This also works with brands specified directly in the document:
 
@@ -109,24 +167,38 @@ brand:
   dark: dark-brand.yml
 ```
 
-
 ::: {.callout-warning}
 
 ## Limitation
 
-The `revealjs` format does not support switching between light and dark modes.
+Brand metadata cannot currently be specified directly in `_quarto.yml`, only via the file syntax.
 
-:::
+::: 
 
 
-#### Typst
 
-To choose a dark brand in Typst output use `brand-mode: dark`:
+### Brand Mode
+
+The Typst and revealjs formats do not produce outputs which can toggle between light and dark mode dynamically. 
+
+Setting `brand-mode: dark` will cause either format to render using the dark brand. 
+
+Typst:
 
 ```{.yaml filename="document.qmd"}
 ---
 format:
   typst:
+    brand-mode: dark
+---
+```
+
+Revealjs:
+
+```{.yaml filename="document.qmd"}
+---
+format:
+  revealjs:
     brand-mode: dark
 ---
 ```
@@ -257,15 +329,7 @@ logo:
       path: https://quarto.org/quarto.png
       alt: "Quarto icon"
   small: quarto-logo
-```
-
-::: {.callout-warning}
-
-## Limitation
-
-The **brand.yml** specification allows you to specify a `light` and `dark` version of your logo, but Quarto currently only uses the `light` version.
-
-::: 
+``` 
 
 #### Document logo customization
 
@@ -278,7 +342,15 @@ logo: large
 ---
 ```
 
-Or, specify a brand logo and change the alt text:
+Or override the brand logo for this document with a logo from a file:
+
+```{.yaml filename="document.qmd"}
+---
+logo: logo.png
+---
+```
+
+Or specify a brand logo resource and change the alt text:
 
 ```{.yaml filename="document.qmd"}
 ---
@@ -288,6 +360,21 @@ logo:
 ---
 ```
 
+You can also individually customize light and dark logos, with any of the variations shown above:
+
+```{.yaml filename="document.qmd"}
+---
+logo:
+  light:
+    path: large
+    alt: Alternate alternate text
+  dark:
+    path: dark-logo.png
+    alt: Alternate text for dark logo
+---
+```
+
+
 ::: {.callout-warning}
 
 ## Limitation
@@ -296,35 +383,7 @@ It is [not currently possible](https://github.com/quarto-dev/quarto-cli/issues/1
 
 ::: 
 
-The Typst implementation allows customization of the logo position at the document level:
-
-```{.yaml filename="document.qmd"}
----
-format:
-  typst:
-    logo:
-      width: 1in
-      location: right-top
-      padding-right: 0.5in
-      padding-top: 0.25in
-      alt: Alternate alternate text
----
-```
-
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option                   | Description                                                                                                                                    |
-+==========================+================================================================================================================================================+
-| `width`                  | Width in CSS units. Default `1.5in`.                                                                                                           |    
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-| `location`               | Location on the page in `X-Y`, where `X` is `left`, `center`, or `right` and Y is `top`, `middle`, or `bottom`.                                |
-|                          | Applied as Typst [`align`](https://typst.app/docs/reference/layout/align/).                                                                    |
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-| `padding`, `padding-top`,| Amount of padding to add to each side of the logo, using CSS [`padding`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) conventions.| 
-| `padding-right`,         | Padding options are applied in alphabetical order.                                                                                             |
-| `padding-bottom`,        | Applied as Typst [`block.inset`](https://typst.app/docs/reference/layout/block/#parameters-inset).                                             |
-| `padding-left`           | Default `padding: 0.75in`.                                                                                                                     |
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-
+The Typst implementation allows [customization of the logo position](../output-formats/typst.qmd#logo-position).
 
 ### Typography
 
@@ -340,13 +399,6 @@ typography:
 ```
 
 The properties you can set for a font under `fonts` depends on the `source`. You can see the other properties available in our [Reference for Brand](/docs/reference/metadata/brand.qmd#font-resource-definitions).
-
-
-::: {.callout-warning}
-## Limitation
-
-HTML formats do not currently support `source: file`.
-:::
 
 
 You can then refer to fonts by `family` in the remaining typography options:
