@@ -376,7 +376,7 @@ writeMetadataTable("citation", "Citation", citationOptions);
 // Filter `definitions` to items with an id field starting with `brand-`
 const brandDefinitions = definitions.filter(item => item.id.startsWith("brand-"));
 
-const brandOptions = readDefinitionsId("brand",{
+const brandOptions = readDefinitionsId("brand-unified",{
   "meta": "Metadata for a brand, including the brand name and important links. See [Meta](#meta) for more information.",
   "logo": "Provide definitions and defaults for brand's logo in various formats and sizes. See [Logo](#logo) for more information.",
   "color": "The brand's custom color palette and theme. See [Color](#color) for more information.",
@@ -413,17 +413,17 @@ const brandMetadata = [
   {
     "name": "brand-logo",
     "title": "Logo",
-    "options": readDefinitionsId("brand-logo")
+    "options": readDefinitionsId("brand-logo-unified")
   },
   {
     "name": "brand-color",
     "title": "Color",
-    "options": readDefinitionsId("brand-color")
+    "options": readDefinitionsId("brand-color-unified")
   }, 
   {
     "name": "brand-typography",
     "title": "Typography",
-    "options": readTypographyOptions("brand-typography", toFollow)
+    "options": readTypographyOptions("brand-typography-unified", toFollow)
   },
   {
     "name": "font-resource-definitions",
@@ -578,7 +578,7 @@ writeProjectTable("algolia-index-fields", algoliaIndexFieldsOptions);
 const utterancesOptions = readProjectProperties(findVal(definitions, "utterances")!["object"]["properties"]);
 writeProjectTable("utterances", utterancesOptions);
 
-const giscussOptions = readProjectProperties(findVal(definitions, "giscus")!["object"]["properties"]);
+const giscussOptions = readDefinitionsId("giscus-configuration");
 writeProjectTable("giscus", giscussOptions);
 
 const hypothesisSchema = findVal(definitions, "hypothesis")!["anyOf"][1]["object"]["properties"];
