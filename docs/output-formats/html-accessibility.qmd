@@ -1,0 +1,88 @@
+---
+title: "HTML Accessibility Checks"
+---
+
+::: callout-note
+This feature was introduced in Quarto 1.8.
+:::
+
+Quarto includes integrated support for [`axe-core`](https://github.com/dequelabs/axe-core), a broadly-supported, open source, industry standard tool for accessibility checks in HTML documents.
+
+## Accessibility checks with `axe-core`
+
+To enable the simplest form of accessibility checks in Quarto 1.8, add the `axe` YAML metadata configuration to HTML `format`s (`html`, `dashboard`, and `revealjs`):
+
+``` yaml
+format:
+  html:
+    axe: true
+```
+
+In this situation, if your webpage has accessibility violations that `axe-core` can catch, Quarto will produce console messages that are visible by opening your browser's development tools.
+
+### Customization
+
+Quarto supports two additional output formats for the accessibility checks, available through `output` option.
+
+-   `output: document`: embedded reports
+
+    ``` yaml
+    format:
+      html:
+        axe:
+          output: document 
+    ```
+
+    With this option, Quarto will generate a visible report of `axe-core` violations on the webpage itself. This is useful for visual inspection of a page. Note that with this setting, Quarto will always produce a report.
+
+    If you wish to use this feature, we recommend adding it to a "debug" [project profile](/docs/projects/profiles.qmd) to reduce the chance you will accidentally publish a website to production with these reports.
+
+-   `output: json`: JSON-formatted console output
+
+    ``` yaml
+    format:
+      html:
+        axe:
+          output: json
+    ```
+
+    This option is useful if you're comfortable with browser automation tools such as [Puppeteer](https://pptr.dev/) and [Playwright](https://playwright.dev/), since it produces output to the console in a format that can be easily consumed.
+
+    Specifically, the JSON object produced is the result of running `axe-core`'s `run` method on the webpage. We defer to `axe-core`'s [documentation for full information on that object](https://github.com/dequelabs/axe-core).
+
+-   `output: console`
+
+    ``` yaml
+    format:
+      html:
+        axe:
+          output: console
+    ```
+
+    This option is equivalent to `axe: true`.
+
+## Example: insufficient contrast
+
+As a minimal example of how this works in Quarto, consider this simple document:
+
+``` qmd
+---
+title: Testing Quarto's accessibility checker
+format:
+  html: 
+    axe:
+      output: document
+---
+
+This violates contrast rules: [insufficient contrast.]{style="color: #eee"}.
+```
+
+This is the produced result visible on the page:
+
+![The rendered webpage with an accessibility violation warning](images/axe-violation.png)
+
+## Planned work: automated checks before publishing
+
+Currently, this feature requires users to open the webpage in a [local preview](/docs/websites/index.html#website-preview), and it uses a CDN to load the `axe-core` library itself.
+
+In the future, we envision a mode where every page of a website can be checked at the time of `quarto render` or `quarto publish` in order to reduce the amount of required manual intervention.
