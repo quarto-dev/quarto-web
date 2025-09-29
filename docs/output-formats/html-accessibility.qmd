@@ -1,5 +1,7 @@
 ---
 title: "HTML Accessibility Checks"
+css:
+  - autodark.css
 ---
 
 ::: callout-note
@@ -22,9 +24,9 @@ In this situation, if your webpage has accessibility violations that `axe-core` 
 
 ### Customization
 
-Quarto supports two additional output formats for the accessibility checks, available through `output` option.
+Quarto supports two additional output formats for the accessibility checks, available through the `output` option.
 
--   `output: document`: embedded reports
+-   `document`: embedded reports
 
     ``` yaml
     format:
@@ -37,7 +39,7 @@ Quarto supports two additional output formats for the accessibility checks, avai
 
     If you wish to use this feature, we recommend adding it to a "debug" [project profile](/docs/projects/profiles.qmd) to reduce the chance you will accidentally publish a website to production with these reports.
 
--   `output: json`: JSON-formatted console output
+-   `json`: JSON-formatted console output
 
     ``` yaml
     format:
@@ -50,7 +52,7 @@ Quarto supports two additional output formats for the accessibility checks, avai
 
     Specifically, the JSON object produced is the result of running `axe-core`'s `run` method on the webpage. We defer to `axe-core`'s [documentation for full information on that object](https://github.com/dequelabs/axe-core).
 
--   `output: console`
+-   `console`
 
     ``` yaml
     format:
@@ -65,6 +67,8 @@ Quarto supports two additional output formats for the accessibility checks, avai
 
 As a minimal example of how this works in Quarto, consider this simple document:
 
+::: light-content
+
 ``` qmd
 ---
 title: Testing Quarto's accessibility checker
@@ -77,9 +81,34 @@ format:
 This violates contrast rules: [insufficient contrast.]{style="color: #eee"}.
 ```
 
+:::
+
+::: dark-content
+
+``` qmd
+---
+title: Testing Quarto's accessibility checker
+format:
+  html: 
+    axe:
+      output: document
+---
+
+This violates contrast rules: [insufficient contrast.]{style="color: #111"}.
+```
+
+::: 
+
+
 This is the produced result visible on the page:
 
+::: {.light-content}
 ![The rendered webpage with an accessibility violation warning](images/axe-violation.png)
+:::
+
+::: {.dark-content}
+![The rendered webpage with an accessibility violation warning](images/axe-violation.png){.autodark}
+:::
 
 ## Planned work: automated checks before publishing
 
