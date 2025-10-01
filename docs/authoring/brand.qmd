@@ -593,7 +593,14 @@ Some values from the `_brand.yml` configuration file can be accessed via the `br
 `VARIANT` is optional:
 
 - For the `brand color` shortcode, the default is `light`. To return the color from the [dark brand](#dark-brand) use `dark`.
-- For the `brand logo` shortcode, the default is `both`, which will add both light and dark logos with appropriate classes
+- For the `brand logo` shortcode, the default is `both`, which will expand to both light and dark logos with the appropriate [classes for mode-specific content](../output-formats/html-themes.qmd#mode-specific-content) so that the light logo shows in light mode and the dark logo shows in dark mode.
+
+::: {.callout-note}
+
+If the `VARIANT` is `light` or `dark`, the `brand logo` shortcode will not add a mode-specific class.
+
+:::
+
 
 For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
 
@@ -697,11 +704,26 @@ local brand = require('modules/brand/brand')
 local primary = brand.get_color('primary')
 ```
 
-## Migrating to `_brand.yml`: use the `brand` string in `theme`
+## Sharing brands across projects
 
 ::: callout-note
 
-The following information is only necessary if you are migrating projects created with Quarto 1.5 and earlier to use `_brand.yml`.
+Note that Quarto requires all assets, including logos and font files, to live in a single directory tree with `_quarto.yml` at the root. Using a path to a `brand.yml` file outside of that directory tree will not work correctly.
+
+:::
+
+Quarto 1.8 introduces the [brand extension](../extensions/brand.qmd), a Quarto-specific way to distribute brand metadata and assets using a Git repository.
+
+Quarto extensions install to the `_extensions/` subdirectory of your project. You will have a copy of the brand metadata and assets in each project; use [`quarto update`](../extensions/managing.qmd#updating) to update the brand extension from its repository.
+
+Quarto 1.9 will introduce `quarto use brand` for a simpler way to share brands. Watch [this page on the prerelease documentation](https://prerelease.quarto.org/docs/authoring/brand.html#sharing-brands-across-projects) for availability.
+
+
+## Combining brands and themes
+
+::: callout-note
+
+The following information is only necessary if you want to combine bootswatch themes with `_brand.yml`.
 
 :::
 
