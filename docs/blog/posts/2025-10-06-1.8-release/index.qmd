@@ -1,20 +1,21 @@
 ---
 title: Quarto 1.8 
 description: |
-  Quarto 1.8 ...
+  Quarto 1.8 improves brand support, introduces brand extensions, adds HTML accessibility checks, and gives access to execution context.
 categories:
   - Quarto 1.8
   - Releases
 author: Charlotte Wickham
 date: "2025-10-06"
 draft: false
-image: thumbnail-1.8.jpeg
-image-alt: ""
+image: thumbnail.png
+image-alt: "Quarto 1.8 with a lightbulb emoji"
+css: /docs/output-formats/autodark.css
 ---
 
 Quarto 1.8 is available! You can get the current release from the [download page](/docs/download/index.qmd).
 
-Quarto 1.8 has improvements 
+Quarto 1.8 improves support for light and dark brand colors and logos, brand extensions for sharing brands across Quarto projects, HTML accessibility checks powered by Axe-core, and access to more information about execution context from your code cells.
 You can read about these improvements and some other highlights below. You can find all the changes in this version in the [Release Notes](/docs/download/changelog/1.8/).
 
 ## Dark and light colors and logos in brand
@@ -58,7 +59,61 @@ Read more in the [Extensions > Brand](/docs/extensions/brand.qmd), and keep an e
 
 ## Accessibility checks for HTML
 
+You can add accessibility checks using the [Axe-core engine](https://github.com/dequelabs/axe-core) to HTML documents (`format`: `html`, `revealjs` and `dashboard`) with the new `axe` option.
+
+For example, you can get a summary of violations right in your document preview:
+
+::: {.light-content}
+![A rendered webpage with an accessibility violation warning](/docs/output-formats/images/axe-violation.png){.border fig-alt="A webpage with a box in the bottom left that warns 'Serious: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds'."}
+:::
+
+::: {.dark-content}
+![A rendered webpage with an accessibility violation warning](/docs/output-formats/images/axe-violation.png){.border .autodark fig-alt="A webpage with a box in the bottom left that warns 'Serious: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds'."}
+:::
+
+Read about your options in [HTML Accessibility Checks](/docs/output-formats/html-accessibility.qmd)
+
+We know accessability is a big concern for many of our users, and more improvements will be coming in future releases. 
+
 ## Accessing execution information
+
+Quarto sets the `QUARTO_EXECUTE_INFO` environment variable, which allows you to access information about execution context from code cells.
+
+Read the JSON file located at `QUARTO_EXECUTE_INFO` and access properties such as `document-path`, `format`, `metadata` and more:
+
+::: {.panel-tabset}
+
+## R
+
+```{.r}
+library(jsonlite)
+execute_info <- read_json(Sys.getenv("QUARTO_EXECUTE_INFO"))
+execute_info$`document-path`
+```
+
+## Python
+
+```{.python}
+import json
+import os
+
+with open(os.getenv("QUARTO_EXECUTE_INFO")) as f:
+    execute_info = json.load(f)
+execute_info["document-path"]
+```
+
+## Julia
+
+```{.julia}
+using JSON
+
+execute_info = JSON.parsefile(ENV["QUARTO_EXECUTE_INFO"])
+execute_info["document-path"]
+```
+
+:::
+
+
 
 ## Other Highlights
 
@@ -77,3 +132,5 @@ Dependency updates:
 We'd like to say a huge thank you to everyone who contributed to this release by opening issues and pull requests:
 
 {{< include _contribs.md >}}
+
+The lightbulb emoji in the [listing and social card image](thumbnail.png) for this post comes from [OpenMoji](https://openmoji.org/){.external}– the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#){.external}
