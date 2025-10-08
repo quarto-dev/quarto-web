@@ -148,14 +148,14 @@ import json
 with open(os.environ["QUARTO_EXECUTE_INFO"]) as f:
     info = json.load(f)
 
-target_format = info["format"]["identifier"]["target-format"]
+base_format = info["format"]["identifier"]["base-format"]
 
-if target_format == "html":
+if base_format == "html":
     # Use interactive visualization
     import plotly.express as px
     fig = px.scatter(df, x="x", y="y")
     fig.show()
-elif target_format in ["pdf", "latex"]:
+else:
     # Use static plot
     import matplotlib.pyplot as plt
     plt.scatter(df["x"], df["y"])
