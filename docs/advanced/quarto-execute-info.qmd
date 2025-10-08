@@ -1,0 +1,226 @@
+---
+title: "Execution Context Information"
+summary: Access execution context metadata via QUARTO_EXECUTE_INFO
+format: html
+---
+
+## Overview
+
+When Quarto executes code cells in a document, it provides detailed execution context information through the `QUARTO_EXECUTE_INFO` environment variable. This variable contains the path to a JSON file with metadata about the document being rendered and the format being used.
+
+## Accessing Execution Information
+
+The `QUARTO_EXECUTE_INFO` environment variable contains a file path pointing to a JSON file with execution metadata. You can read this file in your code to access information about the current execution context.
+
+::: panel-tabset
+## Python
+
+``` python
+import os
+import json
+
+with open(os.environ["QUARTO_EXECUTE_INFO"]) as f:
+    info = json.load(f)
+
+# Access document path
+print(info["document-path"])
+
+# Access format information
+print(info["format"]["identifier"]["target-format"])
+```
+
+## R
+
+``` r
+library(jsonlite)
+
+info_file <- Sys.getenv("QUARTO_EXECUTE_INFO")
+info <- fromJSON(info_file)
+
+# Access document path
+print(info$`document-path`)
+
+# Access format information
+print(info$format$identifier$`target-format`)
+```
+
+## Julia
+
+``` julia
+using JSON
+
+info = JSON.parsefile(ENV["QUARTO_EXECUTE_INFO"])
+
+# Access document path
+println(info["document-path"])
+
+# Access format information
+println(info["format"]["identifier"]["target-format"])
+```
+:::
+
+## JSON Structure
+
+The JSON object contains the following top-level fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `document-path` | string | Absolute path to the source document being rendered |
+| `format` | object | Complete format configuration including execution, rendering, and pandoc settings |
+
+### Format Object
+
+The `format` object contains comprehensive configuration information organized into several sections:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `identifier` | object | Format identification including `display-name`, `target-format`, and `base-format` |
+| `execute` | object | Execution options such as `fig-width`, `fig-height`, `echo`, `eval`, `warning`, etc. |
+| `render` | object | Rendering options including `keep-tex`, `code-fold`, `fig-align`, output extensions, etc. |
+| `pandoc` | object | Pandoc-specific settings like `standalone`, `to`, and `default-image-extension` |
+| `language` | object | Localized text for UI elements, section titles, callouts, and other interface strings |
+| `metadata` | object | Document metadata including title and format-specific options |
+
+### Format Identifier
+
+The `identifier` object provides format classification:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `display-name` | string | Human-readable format name (e.g., "Github (GFM)", "HTML") |
+| `target-format` | string | The target output format identifier (e.g., "gfm", "html") |
+| `base-format` | string | The base format that the target inherits from |
+
+### Execute Options
+
+The `execute` object contains code execution settings. Common fields include:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `eval` | boolean | Whether to evaluate code cells |
+| `echo` | boolean | Whether to include code in output |
+| `output` | boolean | Whether to include code output |
+| `warning` | boolean | Whether to include warnings |
+| `error` | boolean | Whether to include errors |
+| `include` | boolean | Whether to include the cell in the output |
+| `cache` | boolean \| null | Whether to cache execution results |
+| `freeze` | boolean | Whether to freeze execution |
+| `fig-width` | number | Default figure width in inches |
+| `fig-height` | number | Default figure height in inches |
+| `fig-format` | string | Default figure format (e.g., "png", "svg") |
+| `fig-dpi` | number | Default figure DPI resolution |
+
+### Render Options
+
+The `render` object contains rendering configuration. Common fields include:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `keep-tex` | boolean | Whether to keep intermediate TeX files |
+| `keep-typ` | boolean | Whether to keep intermediate Typst files |
+| `keep-source` | boolean | Whether to keep source files |
+| `output-ext` | string | Output file extension (e.g., "md", "html") |
+| `fig-align` | string | Default figure alignment |
+| `code-fold` | string | Code folding behavior ("none", "show", "hide") |
+| `code-overflow` | string | How to handle code overflow ("scroll", "wrap") |
+| `code-line-numbers` | boolean | Whether to show line numbers |
+| `tbl-colwidths` | boolean | Whether to use table column widths |
+
+### Pandoc Options
+
+The `pandoc` object contains pandoc-specific settings:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `to` | string | Pandoc output format |
+| `standalone` | boolean | Whether to produce standalone output |
+| `default-image-extension` | string | Default file extension for images |
+
+## Use Cases
+
+### Conditional Execution Based on Format
+
+You can adapt your code's behavior based on the output format:
+
+::: panel-tabset
+## Python
+
+``` python
+import os
+import json
+
+with open(os.environ["QUARTO_EXECUTE_INFO"]) as f:
+    info = json.load(f)
+
+target_format = info["format"]["identifier"]["target-format"]
+
+if target_format == "html":
+    # Use interactive visualization
+    import plotly.express as px
+    fig = px.scatter(df, x="x", y="y")
+    fig.show()
+elif target_format in ["pdf", "latex"]:
+    # Use static plot
+    import matplotlib.pyplot as plt
+    plt.scatter(df["x"], df["y"])
+    plt.show()
+```
+
+## R
+
+``` r
+library(jsonlite)
+
+info <- fromJSON(Sys.getenv("QUARTO_EXECUTE_INFO"))
+target_format <- info$format$identifier$`target-format`
+
+if (target_format == "html") {
+  # Use interactive visualization
+  library(plotly)
+  plot_ly(df, x = ~x, y = ~y, type = "scatter")
+} else if (target_format %in% c("pdf", "latex")) {
+  # Use static plot
+  plot(df$x, df$y)
+}
+```
+:::
+
+### Format-Aware Resource Paths
+
+Access the document path to construct relative paths to resources:
+
+``` python
+import os
+import json
+from pathlib import Path
+
+with open(os.environ["QUARTO_EXECUTE_INFO"]) as f:
+    info = json.load(f)
+
+doc_path = Path(info["document-path"])
+doc_dir = doc_path.parent
+
+# Load data relative to document
+data_file = doc_dir / "data" / "input.csv"
+```
+
+### Adapting Output Based on Figure Settings
+
+Use execution settings to adapt visualization parameters:
+
+``` python
+import os
+import json
+import matplotlib.pyplot as plt
+
+with open(os.environ["QUARTO_EXECUTE_INFO"]) as f:
+    info = json.load(f)
+
+fig_width = info["format"]["execute"]["fig-width"]
+fig_height = info["format"]["execute"]["fig-height"]
+fig_dpi = info["format"]["execute"]["fig-dpi"]
+
+plt.figure(figsize=(fig_width, fig_height), dpi=fig_dpi)
+plt.plot(x, y)
+plt.show()
+```
