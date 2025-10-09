@@ -8,17 +8,24 @@ In this tutorial we'll take a `.qmd` file that has some numeric output and plots
 This tutorial will make use of the `matplotlib` and `plotly` Python packages.
 The commands you can use to install them are given in the table below.
 
-+-----------+---------------------------------------------------------+
-| Platform  | Commands                                                |
-+===========+=========================================================+
-| Mac/Linux | ```{.bash filename="Terminal"}                          |
-|           | python3 -m pip install jupyter matplotlib plotly pandas |
-|           | ```                                                     |
-+-----------+---------------------------------------------------------+
-| Windows   | ```{.powershell filename="Terminal"}                    |
-|           | py -m pip install jupyter matplotlib plotly pandas      |
-|           | ```                                                     |
-+-----------+---------------------------------------------------------+
+::: {.list-table header-rows="1" widths="0.16666666666667,0.80555555555556"}
+
+* * Platform
+  * Commands
+
+* * Mac/Linux
+  
+  * ```bash {.bash filename="Terminal"}
+    python3 -m pip install jupyter matplotlib plotly pandas
+    ```
+
+* * Windows
+  
+  * ```powershell {.powershell filename="Terminal"}
+    py -m pip install jupyter matplotlib plotly pandas
+    ```
+
+:::
 
 If you want to follow along step-by-step in your own environment, create a `computations.qmd` file and copy the following content into it.
 

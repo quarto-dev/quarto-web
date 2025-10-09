@@ -372,30 +372,44 @@ $$ {#eq-stddev}
 
 We cross-referenced sections, figures, and equations. The table below shows how we expressed each of these.
 
-+----------+---------------+----------------------------------+
-| Entity   | Reference     | Label / Caption                  |
-+==========+===============+==================================+
-| Section  | `@sec-plot`   | ID added to heading:             |
-|          |               |                                  |
-|          |               | ``` {.default code-copy="false"} |
-|          |               | # Plot {#sec-plot}               |
-|          |               | ```                              |
-+----------+---------------+----------------------------------+
-| Figure   | `@fig-simple` | YAML options in code cell:       |
-|          |               |                                  |
-|          |               | ``` {.default code-copy="false"} |
-|          |               | #| label: fig-simple             |
-|          |               | #| fig-cap: "Simple Plot"        |
-|          |               | ```                              |
-+----------+---------------+----------------------------------+
-| Equation | `@eq-stddev`  | At end of display equation:      |
-|          |               |                                  |
-|          |               | ``` default                      |
-|          |               | $$ {#eq-stddev}                  |
-|          |               | ```                              |
-+----------+---------------+----------------------------------+
+::: {.list-table header-rows="1" widths="0.2,0.3,0.5"}
 
-: {tbl-colwidths=\[20,30,50\]}
+* * Entity
+  * Reference
+  * Label / Caption
+
+* * Section
+  
+  * `@sec-plot`
+  
+  * ID added to heading:
+    
+    ```default {.default code-copy="false"}
+    # Plot {#sec-plot}
+    ```
+
+* * Figure
+  
+  * `@fig-simple`
+  
+  * YAML options in code cell:
+    
+    ```default {.default code-copy="false"}
+    #| label: fig-simple
+    #| fig-cap: "Simple Plot"
+    ```
+
+* * Equation
+  
+  * `@eq-stddev`
+  
+  * At end of display equation:
+    
+    ```default
+    $$ {#eq-stddev}
+    ```
+
+:::
 
 And finally, here is what this document looks like when rendered.
 
