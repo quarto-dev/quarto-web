@@ -167,7 +167,34 @@ website:
       analytics-events: true
 ```
 
-You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger). Note that the click and conversion events use cookies to maintain an anonymous user identifier---if [cookie consent](website-tools.qmd#cookie-consent) is enabled, search events will only be enabled if cookie consent has been granted.
+You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger).
+
+#### Cookie Consent and User Tracking
+
+Algolia Insights uses user tokens to track click and conversion events. By default, Quarto uses a **privacy-first approach** that does not store cookies:
+
+- **Default behavior (no cookies)**: A random session token is generated for each browser session. This allows tracking of search interactions during a single visit without storing persistent cookies. This default is compliant with privacy regulations like GDPR.
+
+- **Persistent tracking (with cookies)**: To track users across multiple sessions, you must enable [cookie consent](website-tools.qmd#cookie-consent). When cookie consent is enabled, Algolia will only use cookies after the user grants "tracking" consent:
+
+``` yaml
+website:
+  cookie-consent: true
+  search:
+    algolia:
+      index-name: <my-index-name>
+      application-id: <my-application-id>
+      search-only-api-key: <my-search-only-api-key>
+      analytics-events: true
+```
+
+With this configuration, the Algolia Insights API will use cookies to maintain an anonymous user identifier across sessions, but only after the user has explicitly granted consent.
+
+::: {.callout-note}
+## Privacy and Compliance
+
+The default session-only tracking provides meaningful analytics about search usage patterns while respecting user privacy. Enabling persistent cookie tracking may require compliance with privacy regulations in your jurisdiction, which is why Quarto requires explicit configuration of cookie consent.
+:::
 
 ### Advanced Configuration
 
