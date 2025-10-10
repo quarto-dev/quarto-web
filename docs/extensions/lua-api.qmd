@@ -266,3 +266,114 @@ Quarto offers the following helper functions for shortcode developers, to be typ
 |----------|-------------|
 | `quarto.shortcode.read_arg(args, [n])` | Returns the `n`-th argument of the shortcode invocation |
 | `quarto.shortcode.error_output(name, message_or_args, context)` | Creates output to be used by shortcodes to depict an execution error, consistently with how Quarto shows such outputs |
+
+### Metadata Access
+
+Quarto provides programmatic access to document and project metadata from Lua filters and scripts. This is useful when you need to access metadata values within filter logic rather than in shortcode contexts.
+
+| Function | Description |
+|---------------------|---------------------------------------------------|
+| `quarto.metadata.get(key)` | Return the value of a metadata entry as a `pandoc.MetaValue`, or `nil` if the key is missing. This is the Lua equivalent of the `{{{< meta key >}}}` shortcode. |
+
+The `key` parameter can reference top-level metadata or use dot notation to access nested values. For example:
+
+``` lua
+function Meta(meta)
+  -- Get a simple metadata value
+  local title = quarto.metadata.get("title")
+
+  -- Check if a value exists before using it
+  local customField = quarto.metadata.get("custom-field")
+  if customField then
+    -- Process the metadata value
+    local value = pandoc.utils.stringify(customField)
+  end
+
+  return meta
+end
+```
+
+The function returns a `pandoc.MetaValue`, which may be a `MetaString`, `MetaInlines`, `MetaList`, `MetaMap`, or other [Pandoc metadata types](https://pandoc.org/lua-filters.html#type-metavalue). You can use `pandoc.utils.stringify()` to convert these to strings when needed:
+
+``` lua
+function Pandoc(doc)
+  -- Get metadata as MetaValue
+  local metaValue = quarto.metadata.get("description")
+
+  -- Convert to string for processing
+  local description = pandoc.utils.stringify(metaValue)
+
+  -- Handle complex metadata structures
+  local keywords = quarto.metadata.get("keywords")
+  if type(keywords) == "table" then
+    -- Process as a list or map
+    for k, v in pairs(keywords) do
+      quarto.log.output(pandoc.utils.stringify(v))
+    end
+  end
+
+  return doc
+end
+```
+
+### Variables Access
+
+Quarto projects can define variables in `_variables.yml` files. These variables can be accessed programmatically from Lua using the `quarto.variables.get()` function.
+
+| Function | Description |
+|---------------------|---------------------------------------------------|
+| `quarto.variables.get(name)` | Return the value of a variable from `_variables.yml` as a string, or `nil` if the variable is not defined. This is the Lua equivalent of the `{{{< var name >}}}` shortcode. |
+
+For example, if your `_variables.yml` contains:
+
+```yaml
+site-url: https://example.com
+api-version: v2.1
+feature-enabled: true
+```
+
+You can access these values in your Lua filter:
+
+``` lua
+function Pandoc(doc)
+  -- Get a variable value
+  local siteUrl = quarto.variables.get("site-url")
+
+  -- Use in conditional logic
+  local apiVersion = quarto.variables.get("api-version")
+  if apiVersion == "v2.1" then
+    -- Add version-specific content
+  end
+
+  -- Check if a variable exists
+  local featureFlag = quarto.variables.get("feature-enabled")
+  if featureFlag then
+    quarto.log.output("Feature flag: " .. featureFlag)
+  end
+
+  return doc
+end
+```
+
+Variables are always returned as strings (or `nil` if not found), so you may need to perform type conversions when working with numeric or boolean values:
+
+``` lua
+function Pandoc(doc)
+  -- Get a numeric variable
+  local maxItems = quarto.variables.get("max-items")
+  if maxItems then
+    local count = tonumber(maxItems)
+    if count and count > 10 then
+      -- Process with numeric value
+    end
+  end
+
+  -- Get a boolean variable
+  local enabled = quarto.variables.get("feature-enabled")
+  if enabled == "true" then
+    -- Feature is enabled
+  end
+
+  return meta
+end
+```
