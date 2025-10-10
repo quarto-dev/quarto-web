@@ -4,17 +4,24 @@
 
 To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
 
-+------------------+-----------------------------------------------+
-| Platform         | Command                                       |
-+==================+===============================================+
-| Mac/Linux        | ``` {.bash filename="Terminal"}               |
-|                  | python3 -m pip install jupyter-cache          |
-|                  | ```                                           |
-+------------------+-----------------------------------------------+
-| Windows          | ``` {.powershell filename="Terminal"}         |
-|                  | py -m pip install jupyter-cache               |
-|                  | ```                                           |
-+------------------+-----------------------------------------------+
+::: {.list-table widths="0.26388888888889,0.66666666666667" header-rows="1"}
+
+* * Platform
+  * Command
+
+* * Mac/Linux
+  
+  * ```bash {.bash filename="Terminal"}
+    python3 -m pip install jupyter-cache
+    ```
+
+* * Windows
+  
+  * ```powershell {.powershell filename="Terminal"}
+    py -m pip install jupyter-cache
+    ```
+
+:::
 
 To enable the cache for a document, add the `cache` option. For example:
 

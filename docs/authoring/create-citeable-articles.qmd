@@ -48,15 +48,18 @@ When this metadata is available, a citation appendix is automatically added to t
 
 By default both the `bibtex` and formatted representations are displayed. You can use the `appendix-cite-as` option to control this behavior:
 
-+-----------------------------+------------------------------------------------+
-| `appendix-cite-as: false`   | Do not include any citations in the appendix.  |
-+-----------------------------+------------------------------------------------+
-| `appendix-cite-as: bibtex`  | Show only the BibTeX version of the citation.  |
-+-----------------------------+------------------------------------------------+
-| `appendix-cite-as: display` | Show only the display version of the citation. |
-+-----------------------------+------------------------------------------------+
+::: {.list-table widths="0.5,0.5"}
 
-: {tbl-colwidths="\[50,50\]"}
+* * `appendix-cite-as: false`
+  * Do not include any citations in the appendix.
+
+* * `appendix-cite-as: bibtex`
+  * Show only the BibTeX version of the citation.
+
+* * `appendix-cite-as: display`
+  * Show only the display version of the citation.
+
+:::
 
 ## Journal Articles
 
@@ -133,106 +136,218 @@ In the addition to the citation metadata from this document described above, Qua
 
 Quarto's approach to emitting scholarly metadata is to take the standard CSL fields and make them into the corresponding Google Scholar / Zotero / Highwire metadata tags as appropriate. The following fields, when specified under the `citation` key of the document metadata, will generate scholarly meta tags in the rendered HTML document as described. These fields comprise the required Google Scholar fields as well as additional, optional fields that may also be included.
 
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| Document Yaml                                                                                                                                 | Metadata Tag                                                                            |
-+===============================================================================================================================================+=========================================================================================+
-| `title`\                                                                                                                                      | `citation_title`                                                                        |
-| <sub>Document `title` will be used if not provided.</sub>                                                                                     |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `author`\                                                                                                                                     | `citation_author`                                                                       |
-| <sub>One or more authors[^1]. Document `author` will be used if not provided as a citation subkey.</sub>                                      |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `editor`\                                                                                                                                     | `citation_editor`                                                                       |
-| <sub>One or more editors[^2].</sub>                                                                                                           |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `abstract`\                                                                                                                                   | `citation_abstract`                                                                     |
-| <sub>Document `abstract` will be used if not provided.</sub>                                                                                  |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `keyword`[^3]\                                                                                                                                | `citation_keywords`                                                                     |
-| <sub>Document `keywords` will be used if not provided.</sub>                                                                                  |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `issued`\                                                                                                                                     | `citation_publication_date`                                                             |
-| <sub>Document `date` will be used if not provided.</sub>                                                                                      |                                                                                         |
-|                                                                                                                                               | <sub>In addition, the issued date will be used to populate the following fields:</sub>\ |
-|                                                                                                                                               | \                                                                                       |
-|                                                                                                                                               | `citation_cover_date`\                                                                  |
-|                                                                                                                                               | `citation_year`                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `available-date`\                                                                                                                             | `citation_online_date`                                                                  |
-| <sub>Document `date` will be used if not provided.</sub>                                                                                      |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `url`\                                                                                                                                        | `citation_fulltext_html_url`                                                            |
-| <sub>`url` will be synthesized for current document if a [`site-url`](/docs/websites/website-tools.qmd#preview-images) has been specified.</sub> |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `pdf-url`                                                                                                                                     | `citation_pdf_url`                                                                      |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `language`\                                                                                                                                   | `citation_language`                                                                     |
-| <sub>Document `lang` will be used if not provided.</sub>                                                                                      |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `type`\                                                                                                                                       | `<none>`                                                                                |
-| <sub>A valid CSL type. See <https://docs.citationstyles.org/en/stable/specification.html#appendix-iii-types></sub>.                           |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `doi`\                                                                                                                                        | `citation_doi`                                                                          |
-| <sub>Document `doi` will be used if not provided.</sub>                                                                                       |                                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `isbn`                                                                                                                                        | `citation_isbn`                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `issn`                                                                                                                                        | `citation_issn`                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `eissn`                                                                                                                                       | `citation_eissn`                                                                        |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `pmid`                                                                                                                                        | `citation_pmid`                                                                         |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `issue`                                                                                                                                       | `citation_issue`                                                                        |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `volume`                                                                                                                                      | `citation_volume`                                                                       |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `page`\                                                                                                                                       | `citation_firstpage`                                                                    |
-| <sub>Will be split on `-` to create appropriate page metadata.</sub>                                                                          |                                                                                         |
-|                                                                                                                                               | `citation_lastpage`                                                                     |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `page-first`                                                                                                                                  | `citation_firstpage`                                                                    |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `page-last`                                                                                                                                   | `citation_lastpage`                                                                     |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `abstract-url`                                                                                                                                | `citation_abstract_html_url`                                                            |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `container-title`                                                                                                                             | `citation_journal_title`                                                                |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | <small> For specific types, other meta tags will be produced:                           |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | -   type: paper-conference\                                                             |
-|                                                                                                                                               |     `citation_conference_title`                                                         |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | -   type: book\                                                                         |
-|                                                                                                                                               |     `citation_book_title`                                                               |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | -   type: chapter\                                                                      |
-|                                                                                                                                               |     `citation_inbook_title` </small>                                                    |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `number`                                                                                                                                      | `citation_technical_report_number`                                                      |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | <sub>`citation_technical_report_number` will be created if the type is report.</sub>    |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `publisher`                                                                                                                                   | `citation_publisher`                                                                    |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | <small>For specific types, other meta tags will be produced:                            |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | -   type: paper-conference\                                                             |
-|                                                                                                                                               |     `citation_conference`                                                               |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | -   type: thesis\                                                                       |
-|                                                                                                                                               |     `citation_dissertation_institution`                                                 |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | -   type:report\                                                                        |
-|                                                                                                                                               |     `citation_technical_report_institution`                                             |
-|                                                                                                                                               |                                                                                         |
-|                                                                                                                                               | </small>                                                                                |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `container-title-short`                                                                                                                       | `citation_journal_abbrev`                                                               |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
-| `collection-title`                                                                                                                            | `citation_series_title`                                                                 |
-+-----------------------------------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------+
+::: {.list-table widths="0.60504201680672,0.3781512605042,0.012605042016807"}
+
+* * # []{rowspan="2"}Document Yaml {#document-yaml}
+    
+    `title`\
+    `<sub>`{=html}Document `title` will be used if not provided.`</sub>`{=html}
+  
+  * # []{rowspan="2"}Metadata Tag {#metadata-tag}
+    
+    `citation_title`
+  
+  * 
+
+* * 
+
+* * `author`\
+    `<sub>`{=html}One or more authors[^1]. Document `author` will be used if not provided as a citation subkey.`</sub>`{=html}
+  
+  * `citation_author`
+  
+  * 
+
+* * `editor`\
+    `<sub>`{=html}One or more editors[^2].`</sub>`{=html}
+  
+  * `citation_editor`
+  
+  * 
+
+* * `abstract`\
+    `<sub>`{=html}Document `abstract` will be used if not provided.`</sub>`{=html}
+  
+  * `citation_abstract`
+  
+  * 
+
+* * `keyword`[^3]\
+    `<sub>`{=html}Document `keywords` will be used if not provided.`</sub>`{=html}
+  
+  * `citation_keywords`
+  
+  * 
+
+* * `issued`\
+    `<sub>`{=html}Document `date` will be used if not provided.`</sub>`{=html}
+  
+  * `citation_publication_date`
+    
+    `<sub>`{=html}In addition, the issued date will be used to populate the following fields:`</sub>`{=html}\
+    \
+    `citation_cover_date`\
+    `citation_year`
+  
+  * 
+
+* * `available-date`\
+    `<sub>`{=html}Document `date` will be used if not provided.`</sub>`{=html}
+  
+  * `citation_online_date`
+  
+  * 
+
+* * []{colspan="3"}`url`  | `citation_fulltext_html_url` |
+    `<sub>`{=html}`url` will be synthesized for current document if a [`site-url`](/docs/websites/website-tools.qmd#preview-images) has been specified.`</sub>`{=html} |
+
+* * `pdf-url`
+  
+  * `citation_pdf_url`
+  
+  * 
+
+* * `language`\
+    `<sub>`{=html}Document `lang` will be used if not provided.`</sub>`{=html}
+  
+  * `citation_language`
+  
+  * 
+
+* * `type`\
+    `<sub>`{=html}A valid CSL type. See [https://docs.citationstyles.org/en/stable/specification.html\#appendix-iii-types](https://docs.citationstyles.org/en/stable/specification.html#appendix-iii-types){.uri}`</sub>`{=html}.
+  
+  * `<none>`
+  
+  * 
+
+* * `doi`\
+    `<sub>`{=html}Document `doi` will be used if not provided.`</sub>`{=html}
+  
+  * `citation_doi`
+  
+  * 
+
+* * `isbn`
+  
+  * `citation_isbn`
+  
+  * 
+
+* * `issn`
+  
+  * `citation_issn`
+  
+  * 
+
+* * `eissn`
+  
+  * `citation_eissn`
+  
+  * 
+
+* * `pmid`
+  
+  * `citation_pmid`
+  
+  * 
+
+* * `issue`
+  
+  * `citation_issue`
+  
+  * 
+
+* * `volume`
+  
+  * `citation_volume`
+  
+  * 
+
+* * `page`\
+    `<sub>`{=html}Will be split on `-` to create appropriate page metadata.`</sub>`{=html}
+  
+  * `citation_firstpage`
+    
+    `citation_lastpage`
+  
+  * 
+
+* * `page-first`
+  
+  * `citation_firstpage`
+  
+  * 
+
+* * `page-last`
+  
+  * `citation_lastpage`
+  
+  * 
+
+* * `abstract-url`
+  
+  * `citation_abstract_html_url`
+  
+  * 
+
+* * `container-title`
+  
+  * `citation_journal_title`
+    
+    `<small>`{=html} For specific types, other meta tags will be produced:
+    
+    * type: paper-conference\
+      `citation_conference_title`
+    
+    * type: book\
+      `citation_book_title`
+    
+    * type: chapter\
+      `citation_inbook_title` `</small>`{=html}
+  
+  * 
+
+* * `number`
+  
+  * `citation_technical_report_number`
+    
+    `<sub>`{=html}`citation_technical_report_number` will be created if the type is report.`</sub>`{=html}
+  
+  * 
+
+* * `publisher`
+  
+  * `citation_publisher`
+    
+    `<small>`{=html}For specific types, other meta tags will be produced:
+    
+    * type: paper-conference\
+      `citation_conference`
+    
+    * type: thesis\
+      `citation_dissertation_institution`
+    
+    * type:report\
+      `citation_technical_report_institution`
+    
+    `</small>`{=html}
+  
+  * 
+
+* * `container-title-short`
+  
+  * `citation_journal_abbrev`
+  
+  * 
+
+* * `collection-title`
+  
+  * `citation_series_title`
+  
+  * 
+
+:::
 
 [^1]: Specify one or more authors using one of the following:
 

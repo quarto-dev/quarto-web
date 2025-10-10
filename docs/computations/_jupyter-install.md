@@ -2,21 +2,32 @@ If you don't yet have Python 3 on your system, we recommend you install a versio
 
 If you are in a fresh Python 3 environment, installing the `jupyter` package will provide everything required to execute Jupyter kernels with Quarto:
 
-+--------------+--------------------------------------+
-| Pkg. Manager | Command                              |
-+==============+======================================+
-| Pip\         | ```{.bash filename="Terminal"}       |
-| (Mac/Linux)  | python3 -m pip install jupyter       |
-|              | ```                                  |
-+--------------+--------------------------------------+
-| Pip\         | ```{.powershell filename="Terminal"} |
-| (Windows)    | py -m pip install jupyter            |
-|              | ```                                  |
-+--------------+--------------------------------------+
-| Conda        | ```{.bash filename="Terminal"}       |
-|              | conda install jupyter                |
-|              | ```                                  |
-+--------------+--------------------------------------+
+::: {.list-table header-rows="1" widths="0.20833333333333,0.54166666666667"}
+
+* * Pkg. Manager
+  * Command
+
+* * Pip\
+    (Mac/Linux)
+  
+  * ```bash {.bash filename="Terminal"}
+    python3 -m pip install jupyter
+    ```
+
+* * Pip\
+    (Windows)
+  
+  * ```powershell {.powershell filename="Terminal"}
+    py -m pip install jupyter
+    ```
+
+* * Conda
+  
+  * ```bash {.bash filename="Terminal"}
+    conda install jupyter
+    ```
+
+:::
 
 You can verify that Quarto is configured correctly for Jupyter with:
 
