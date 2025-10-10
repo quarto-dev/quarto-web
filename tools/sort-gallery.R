@@ -22,4 +22,4 @@ xfun::file_string(yaml_file) |>
 
 ## TODO: make a TS or Python script for a new parser / writer
 ## Then run this at each PR of a YAML file for gallery
-rlang::warn("Please do check source control from reformatting problem (like newlines `\n` and quotes `\"` not removed.")
+rlang::warn("Please do check source control from reformatting problem (like newlines `\\n` and quotes `\"` not removed.")
