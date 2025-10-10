@@ -211,6 +211,53 @@ image: false
 ---
 ```
 
+## Plausible Analytics
+
+[Plausible Analytics](https://plausible.io/) is a lightweight, open-source, and privacy-friendly alternative to Google Analytics. Plausible is designed with privacy as a core principle: it doesn't use cookies, is GDPR compliant by default, and all data is processed anonymously.
+
+To add Plausible Analytics to your Quarto website:
+
+1. Sign up at [plausible.io](https://plausible.io/) and add your website to your account.
+2. In your Plausible dashboard, navigate to your site's settings.
+3. Go to the "Site Installation" section and click "Review Installation" to get your unique tracking snippet.
+4. Copy the complete script snippet provided by Plausible from your dashboard.
+5. Add it to your `_quarto.yml` configuration file under the `plausible-analytics` key:
+
+For example, it could look like this, where `pa-XXXXXX.js` would be your own custom script provided by Plausible:
+
+``` yaml
+website:
+  plausible-analytics: |
+    <script async src="https://plausible.io/js/pa-XXXXXX.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+```
+
+The script will automatically be included in the `<head>` of every page on your website. **Important:** Make sure to copy and paste the complete snippet exactly as provided by Plausible - the example above shows the typical structure, but your actual snippet will have a unique tracking code instead of `XXXXXX`.
+
+::: {.callout-tip}
+The snippet from your Plausible dashboard may include multiple `<script>` tags and initialization code. Copy the entire snippet as-is - don't modify or simplify it.
+:::
+
+### Optional Enhanced Measurements
+
+Plausible offers optional enhanced measurements that you can enable directly in your site settings dashboard (such as outbound link tracking, file downloads, etc.). When you enable these features in Plausible, your tracking snippet will be automatically updated in your dashboard. Simply copy the updated snippet and replace it in your `_quarto.yml` configuration.
+
+For more information about available enhanced measurements and configuration options, see the [Plausible script documentation](https://plausible.io/docs/plausible-script).
+
+### Privacy Benefits
+
+Unlike traditional analytics solutions, Plausible Analytics:
+
+- **No cookies**: Plausible doesn't use cookies or generate any persistent identifiers, so no cookie consent banners are needed
+- **GDPR compliant**: All visitor data is anonymized and processed in the EU
+- **Lightweight**: The script is under 1 KB, significantly smaller than Google Analytics
+- **No cross-site tracking**: Plausible doesn't track users across different websites
+
+Because Plausible is privacy-friendly by default, you typically don't need to implement [Cookie Consent] when using it (though you should verify this with your own privacy requirements).
+
 ## Google Analytics
 
 You can add [Google Analytics](https://analytics.google.com/) to your website by adding a `google-analytics` key to your `_quarto.yml` file. In its simplest form, you can just pass your Google Analytics tracking Id (e.g. `UA-xxxxxxx`) or Google Tag measurement Id (e.g. `G-xxxxxxx`) like:
