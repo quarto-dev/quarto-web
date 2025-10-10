@@ -353,7 +353,15 @@ tibble::tribble(
 
 ## Grid Tables
 
-Grid tables are a more advanced type of markdown tables that allow arbitrary block elements (multiple paragraphs, code blocks, lists, etc.). For example:
+Grid tables are a more advanced type of markdown tables that allow arbitrary block elements (multiple paragraphs, code blocks, lists, etc.).
+
+::: {.callout-tip}
+## Consider List Tables
+
+While grid tables are fully supported, [List Tables](#list-tables) provide an easier-to-maintain alternative with the same capabilities. List tables are easier to edit in plain text and produce cleaner diffs in version control.
+:::
+
+For example:
 
 
 ``` markdown
@@ -426,6 +434,348 @@ Note that grid tables are quite awkward to write with a plain text editor (becau
 -   Emacs' [table-mode](https://www.gnu.org/software/emacs/manual/html_node/emacs/Text-Based-Tables.html) (`M-x table-insert`)
 -   Quarto [Visual Editor](/docs/visual-editor/content.qmd#editing-tables)
 -   Tables Generator's [Plain Text mode](https://www.tablesgenerator.com/text_tables) with `Use reStructuredText syntax` enabled
+
+## List Tables
+
+List tables provide an easier-to-maintain alternative to grid tables, using a ReStructuredText-inspired syntax based on nested lists. They support the same advanced features as grid tables (arbitrary block elements, multiple paragraphs, code blocks, lists, etc.) while being much easier to edit in a plain text editor.
+
+::: {.callout-note}
+List table syntax was originally developed by [Martin Fischer](https://github.com/pushshift) with contributions from [Albert Krewinkel](https://github.com/tarleb) and [William Lupton](https://github.com/wlupton).
+:::
+
+### Basic Syntax
+
+List tables use a fenced div with the `.list-table` class. Each list item represents a row, and nested list items within represent cells:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+``` markdown
+::: {.list-table}
+
+* - Row 1, Col 1
+  - Row 1, Col 2
+  - Row 1, Col 3
+
+* - Row 2, Col 1
+  - Row 2, Col 2
+  - Row 2, Col 3
+
+:::
+```
+
+::::
+
+:::: {}
+
+::: {.list-table}
+
+* - Row 1, Col 1
+  - Row 1, Col 2
+  - Row 1, Col 3
+
+* - Row 2, Col 1
+  - Row 2, Col 2
+  - Row 2, Col 3
+
+:::
+
+::::
+
+:::
+
+### Captions
+
+To add a caption to your list table, include text at the beginning of the div, before the list:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+``` markdown
+::: {.list-table}
+
+Sample list table.
+
+* - Fruit
+  - Price
+
+* - Apple
+  - $1.50
+
+* - Orange
+  - $2.00
+
+:::
+```
+
+::::
+
+:::: {}
+
+::: {.list-table}
+
+Sample list table.
+
+* - Fruit
+  - Price
+
+* - Apple
+  - $1.50
+
+* - Orange
+  - $2.00
+
+:::
+
+::::
+
+:::
+
+### Column Configuration
+
+You can configure column alignment, widths, and headers using attributes:
+
+#### Column Alignments
+
+Use the `aligns` attribute to specify alignment for each column. Values are: `l` (left), `c` (center), `r` (right), or `d` (default):
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+``` markdown
+::: {.list-table aligns="l,r,c"}
+
+* - Left
+  - Right
+  - Center
+
+* - Text
+  - 123
+  - More
+
+:::
+```
+
+::::
+
+:::: {}
+
+::: {.list-table aligns="l,r,c"}
+
+* - Left
+  - Right
+  - Center
+
+* - Text
+  - 123
+  - More
+
+:::
+
+::::
+
+:::
+
+#### Column Widths
+
+Use the `widths` attribute to specify relative column widths:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+``` markdown
+::: {.list-table widths="0.7,0.3"}
+
+* - Wide column
+  - Narrow
+
+* - More content here
+  - Less
+
+:::
+```
+
+::::
+
+:::: {}
+
+::: {.list-table widths="0.7,0.3"}
+
+* - Wide column
+  - Narrow
+
+* - More content here
+  - Less
+
+:::
+
+::::
+
+:::
+
+#### Header Rows and Columns
+
+Use `header-rows` and `header-cols` to specify how many rows/columns should be treated as headers:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+``` markdown
+::: {.list-table header-rows="1"}
+
+* - Name
+  - Value
+
+* - Item 1
+  - 100
+
+* - Item 2
+  - 200
+
+:::
+```
+
+::::
+
+:::: {}
+
+::: {.list-table header-rows="1"}
+
+* - Name
+  - Value
+
+* - Item 1
+  - 100
+
+* - Item 2
+  - 200
+
+:::
+
+::::
+
+:::
+
+### Advanced Features
+
+List tables support the same advanced features as grid tables:
+
+#### Multiple Paragraphs and Lists
+
+Cells can contain multiple paragraphs, lists, and other block elements:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+::: {.list-table header-rows="1"}
+
+Example of complex content in cells.
+
+* - Feature
+  - Description
+
+* - Multi-paragraph
+
+  - First paragraph of content.
+
+    Second paragraph of content.
+
+* - Lists
+
+  - Features:
+
+    - Easy to read
+    - Easy to maintain
+    - Flexible syntax
+
+:::
+
+::::
+
+:::: {}
+
+````markdown
+::: {.list-table header-rows="1"}
+
+Example of complex content in cells.
+
+* - Feature
+  - Description
+
+* - Multi-paragraph
+
+  - First paragraph of content.
+
+    Second paragraph of content.
+
+* - Lists
+
+  - Features:
+
+    - Easy to read
+    - Easy to maintain
+    - Flexible syntax
+
+:::
+````
+
+::::
+
+:::
+
+#### Cell Spanning
+
+Use `colspan` and `rowspan` attributes on empty list items to merge cells:
+
+::: {layout-ncol="2"}
+
+::: {}
+
+::: {.list-table header-rows="1"}
+
+* - Name
+  - Details
+  - Notes
+
+* - Product A
+  - []{colspan="2"} This cell spans two columns
+
+* - Product B
+  - Info
+  - More info
+
+:::
+
+:::
+
+::: {}
+
+````markdown
+::: {.list-table header-rows="1"}
+
+* - Name
+  - Details
+  - Notes
+
+* - Product A
+  - []{colspan="2"} This cell spans two columns
+
+* - Product B
+  - Info
+  - More info
+
+:::
+````
+
+:::
+
+:::
 
 ## HTML Tables
 
