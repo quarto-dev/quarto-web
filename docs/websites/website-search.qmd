@@ -59,23 +59,33 @@ website:
 
 You can use the following `search` options to customize how search results are displayed:
 
-+--------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option             | Description                                                                                                                                                                                                                       |
-+====================+===================================================================================================================================================================================================================================+
-| `limit`            | The number of results to display in the search results. Defaults to 20.                                                                                                                                                           |
-+--------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `collapse-after`   | The number of sections matching a document to show before hiding additional sections behind a 'more matches' link. Defaults to 2.                                                                                                 |
-|                    |                                                                                                                                                                                                                                   |
-|                    | ![](images/collapse-after.png){.border fig-alt="Part of a search result that shows a matching result for the search term, and at the bottom reads '3 more matches in this document'"}                                             |
-+--------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `copy-button`      | If true, the search textbox will include a small icon that when clicked will copy a url to the search results to the clipboard (this is useful if users would like to share a particular search with results). Defaults to false. |
-|                    |                                                                                                                                                                                                                                   |
-|                    | ![](images/copy-button.png){.border fig-alt="search box with clickable clipboard icon on the right hand side that, if clicked, will copy the resulting url."}                                                                     |
-+--------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `show-item-context`| Control whether page parents are displayed next to items in search results. Use `tree`, `parent`, `root`, or boolean (if true, `tree` is the default). E.g. `tree` results in "Guide \> Authoring \> Figures":                    |
-|                    |                                                                                                                                                                                                                                   |
-|                    | ![](images/search-item-context.png){.border fig-alt="search box with navigational context shown above the title of the first result." width="260"}                                                                                |
-+--------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+::: {.list-table widths="0.08433734939759,0.91566265060241" header-rows="1"}
+
+* * Option
+  * Description
+
+* * `limit`
+  * The number of results to display in the search results. Defaults to 20.
+
+* * `collapse-after`
+  
+  * The number of sections matching a document to show before hiding additional sections behind a 'more matches' link. Defaults to 2.
+    
+    ![](images/collapse-after.png){.border fig-alt="Part of a search result that shows a matching result for the search term, and at the bottom reads '3 more matches in this document'"}
+
+* * `copy-button`
+  
+  * If true, the search textbox will include a small icon that when clicked will copy a url to the search results to the clipboard (this is useful if users would like to share a particular search with results). Defaults to false.
+    
+    ![](images/copy-button.png){.border fig-alt="search box with clickable clipboard icon on the right hand side that, if clicked, will copy the resulting url."}
+
+* * `show-item-context`
+  
+  * Control whether page parents are displayed next to items in search results. Use `tree`, `parent`, `root`, or boolean (if true, `tree` is the default). E.g. `tree` results in "Guide \> Authoring \> Figures":
+    
+    ![](images/search-item-context.png){.border width="260" fig-alt="search box with navigational context shown above the title of the first result."}
+
+:::
 
 ## Using Algolia
 
@@ -85,21 +95,31 @@ In addition to the built-in search capability, Quarto websites can also be confi
 
 In order for Quarto to connect to your Algolia index, you need to provide basic connection information in your Quarto project file. You can find this connection information for your Algolia index in the Dashboard in the [API Keys](https://www.algolia.com/doc/guides/security/api-keys/) section. The following basic connection information is required:
 
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option                | Description                                                                                                                                                                                      |
-+=======================+==================================================================================================================================================================================================+
-| `index-name`          | The name of the index to use when performing a search.                                                                                                                                           |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `application-id`      | The unique ID used by Algolia to identify your application.                                                                                                                                      |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `search-only-api-key` | The Search-Only API key to use to connect to Algolia.                                                                                                                                            |
-|                       |                                                                                                                                                                                                  |
-|                       | ::: callout-important                                                                                                                                                                            |
-|                       | Be sure to use the **Search Only** API key, which provides read only access to your index and is safe to include in project files. Never use your Admin API key in a Quarto document or project. |
-|                       | :::                                                                                                                                                                                              |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `show-logo`           | Displays a 'search by Algolia' logo in the footer of search results.                                                                                                                             |
-+-----------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+::: {.list-table widths="0.10958904109589,0.89041095890411" header-rows="1"}
+
+* * Option
+  * Description
+
+* * `index-name`
+  * The name of the index to use when performing a search.
+
+* * `application-id`
+  * The unique ID used by Algolia to identify your application.
+
+* * `search-only-api-key`
+  
+  * The Search-Only API key to use to connect to Algolia.
+    
+    ::: {.callout-important}
+    
+    Be sure to use the **Search Only** API key, which provides read only access to your index and is safe to include in project files. Never use your Admin API key in a Quarto document or project.
+    
+    :::
+
+* * `show-logo`
+  * Displays a 'search by Algolia' logo in the footer of search results.
+
+:::
 
 For example:
 
@@ -118,25 +138,36 @@ If you are simply using the `search.json` file generated by Quarto as your Algol
 
 However, if you are generating an index in some other fashion, you may need to provide additional information to specify which fields Quarto should use when searching. You do this by including an `index-fields` key under `algolia` which specifies the names of specific fields in your index.
 
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option    | Description                                                                                                                                                                                                                |
-+===========+============================================================================================================================================================================================================================+
-| `href`    | The field to use to read the URL to this index entry. The user will be navigated to this URL when they select the matching search result. Note that Quarto groups results by URL (not including the anchor when grouping). |
-|           |                                                                                                                                                                                                                            |
-|           | This field is required (either as an existing field in your index or with a mapped field name).                                                                                                                            |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `title`   | The field to use to read the title of the index entry.                                                                                                                                                                     |
-|           |                                                                                                                                                                                                                            |
-|           | This field is required (either as an existing field in your index or with a mapped field name).                                                                                                                            |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `text`    | The field to use to read the text of the index entry.                                                                                                                                                                      |
-|           |                                                                                                                                                                                                                            |
-|           | This field is required (either as an existing field in your index or with a mapped field name).                                                                                                                            |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| `section` | The field to use to read the section of the index entry. Quarto groups results by URL and uses the section information (if present) to show matching subsections of the same document.                                     |
-|           |                                                                                                                                                                                                                            |
-|           | This field is optional.                                                                                                                                                                                                    |
-+-----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+::: {.list-table widths="0.051502145922747,0.94849785407725" header-rows="1"}
+
+* * Option
+  * Description
+
+* * `href`
+  
+  * The field to use to read the URL to this index entry. The user will be navigated to this URL when they select the matching search result. Note that Quarto groups results by URL (not including the anchor when grouping).
+    
+    This field is required (either as an existing field in your index or with a mapped field name).
+
+* * `title`
+  
+  * The field to use to read the title of the index entry.
+    
+    This field is required (either as an existing field in your index or with a mapped field name).
+
+* * `text`
+  
+  * The field to use to read the text of the index entry.
+    
+    This field is required (either as an existing field in your index or with a mapped field name).
+
+* * `section`
+  
+  * The field to use to read the section of the index entry. Quarto groups results by URL and uses the section information (if present) to show matching subsections of the same document.
+    
+    This field is optional.
+
+:::
 
 Any or all of the above may be specified in your Quarto project file. For example:
 
