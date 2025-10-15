@@ -167,7 +167,36 @@ website:
       analytics-events: true
 ```
 
-You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger). Note that the click and conversion events use cookies to maintain an anonymous user identifier---if [cookie consent](website-tools.qmd#cookie-consent) is enabled, search events will only be enabled if cookie consent has been granted.
+You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger).
+
+#### Cookie Consent and User Tracking
+
+Algolia Insights uses user tokens to track click and conversion events. Quarto uses a **privacy-first approach** for handling cookies:
+
+- **Without cookie consent enabled**: A random session token is generated for each browser session. This allows tracking of search interactions during a single visit without storing persistent cookies. This privacy-first approach avoids persistent cookies entirely.
+
+- **With cookie consent enabled**: When you enable [cookie consent](website-tools.qmd#cookie-consent), cookies are blocked by default until the user expressly grants consent. After the user grants "tracking" consent, Algolia will use cookies to maintain an anonymous user identifier across sessions:
+
+``` yaml
+website:
+  cookie-consent: true
+  search:
+    algolia:
+      index-name: <my-index-name>
+      application-id: <my-application-id>
+      search-only-api-key: <my-search-only-api-key>
+      analytics-events: true
+```
+
+With this configuration, the Algolia Insights API will use cookies to maintain an anonymous user identifier across sessions, but only after the user has explicitly granted consent.
+
+::: {.callout-important}
+## Privacy Regulations
+
+The default session-only tracking (without cookie consent) provides meaningful analytics about search usage patterns without using persistent cookies. When cookie consent is enabled, Quarto uses an opt-in approach (express consent) by default, blocking cookies until the user explicitly agrees.
+
+While these features are designed with privacy regulations in mind, website owners should consult with legal counsel to ensure their specific implementation meets applicable privacy laws and regulations in their jurisdiction.
+:::
 
 ### Advanced Configuration
 

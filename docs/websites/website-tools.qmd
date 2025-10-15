@@ -321,7 +321,7 @@ If you choose `none` for storage, this will have the following effects:
 
 Quarto includes the ability to request cookie consent before enabling scripts that set cookies, using [Cookie Consent](https://www.cookieconsent.com).
 
-The user's cookie preferences will automatically control [Google Analytics] (if enabled) and can be used to control custom scripts you add as well (see [Custom Scripts and Cookie Consent]). You can enable the default request for cookie consent using the following:
+The user's cookie preferences will automatically control [Google Analytics] and [Algolia search analytics](/docs/websites/website-search.qmd#algolia-insights) (if enabled) and can be used to control custom scripts you add as well (see [Custom Scripts and Cookie Consent]). You can enable the default request for cookie consent using the following:
 
 ``` yaml
 website:
@@ -335,9 +335,9 @@ You can further customize the appearance and behavior of the consent using the f
 +==============+======================================================================================================================================================================================+
 | `type`       | The type of consent that should be requested, using one of these two values:                                                                                                         |
 |              |                                                                                                                                                                                      |
-|              | **implied -** (default) This will notify the user that the site uses cookies and permit them to change preferences, but not block cookies unless the user changes their preferences. |
+|              | **express -** (default) This will block cookies until the user expressly agrees to allow them (or continue blocking them if the user doesn't agree).                                 |
 |              |                                                                                                                                                                                      |
-|              | **express -** This will block cookies until the user expressly agrees to allow them (or continue blocking them if the user doesn't agree).                                           |
+|              | **implied -** This will notify the user that the site uses cookies and permit them to change preferences, but not block cookies unless the user changes their preferences.           |
 +--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `style`      | The style of the consent banner that is displayed:                                                                                                                                   |
 |              |                                                                                                                                                                                      |
@@ -376,7 +376,15 @@ website:
   google-analytics:
     tracking-id: "G-XXXXXXX"
     anonymize-ip: true
+  search:
+    algolia:
+      index-name: <my-index-name>
+      application-id: <my-application-id>
+      search-only-api-key: <my-search-only-api-key>
+      analytics-events: true
 ```
+
+When cookie consent is enabled, Google Analytics and Algolia search analytics will use cookies based on user preference: for `type: express`, the default, they will not use cookies unless a user opts-in; for `type: implied`, they will use cookies unless a user opts-out. Without cookie consent enabled, Algolia will use session-only tracking without cookies. See [Algolia Insights](/docs/websites/website-search.qmd#algolia-insights) for more details.
 
 ### Cookie Preferences
 
