@@ -16,8 +16,8 @@ You can alternatively target the `left`, `right`, and `center` regions of the fo
     right: 
       - icon: github
         href: https://github.com/
-      - icon: twitter 
-        href: https://twitter.com/ 
+      - icon: bluesky 
+        href: https://bsky.app/ 
 ```
 
 Note for the `right` region of the footer we included navigational items for GitHub and Twitter rather than text. You can include navigational items in any region of the footer.
