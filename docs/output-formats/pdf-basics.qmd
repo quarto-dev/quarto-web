@@ -229,10 +229,42 @@ You can learn more about installing `librsvg`{spellcheck="false"} (which provide
     scoop install rsvg-convert
     ````
 
-::: callout-note
+### Alternative: Using Inkscape
+
+If you prefer to use Inkscape instead of `rsvg-convert`, you can disable the default conversion by setting `use-rsvg-convert: false`. This will use the [SVG LaTeX package](https://ctan.org/pkg/svg) to include the svg using `\includesvg{}` which uses Inkscape to convert to PDF. This requires some configuration to opt-in:
+
+```yaml
+format:
+  pdf:
+    use-rsvg-convert: false
+    pdf-engine-opts: ["-shell-escape"]
+```
+
+Note that this configuration requires:
+
+- Inkscape to be installed and available on your system PATH
+- The `-shell-escape` option for your LaTeX engine to allow execution of external programs
+- The SVG LaTeX package (automatically included by Quarto)
+
+### Platform Considerations
+
+The availability and ease of installation for SVG conversion tools varies by platform:
+
+- **Linux/macOS:** `rsvg-convert` is typically available through package managers (`librsvg` package). This is the recommended approach for these platforms.
+- **Windows:** Installing `rsvg-convert` is more challenging. While it can be installed via Scoop (as shown above), most Windows users should consider using PNG format for diagrams rather than SVG.
+- **Inkscape:** Available cross-platform but requires the `-shell-escape` configuration. Consider using this only when you specifically need Inkscape's rendering capabilities.
+
+For diagram formats, PNG is generally recommended for best compatibility and ease of use. See the @nt-svg-diagram below for more details.
+
+::: {#nte-svg-diagram .callout-note}
 ## SVG Format for Diagrams
 
-When using Mermaid or Graphviz diagrams in PDF documents, the default PNG format is recommended. While SVG output is possible with `mermaid-format: svg`, it requires `rsvg-convert` and may have rendering issues such as text clipping in diagrams with multi-line labels. See [Diagrams](/docs/authoring/diagrams.qmd#mermaid-formats) for more information.
+When using Mermaid or Graphviz diagrams in PDF documents, the default PNG format is recommended. While SVG output is possible with `mermaid-format: svg`, it requires external tooling:
+
+- `rsvg-convert` (default) - See [installation instructions](#svg-images) above
+- Inkscape (alternative) - Requires `use-rsvg-convert: false` and `-shell-escape` configuration
+
+SVG format may also have rendering issues such as text clipping in diagrams with multi-line labels. For most users, PNG format provides better compatibility and ease of use. See [Diagrams](/docs/authoring/diagrams.qmd#mermaid-formats) for more information.
 :::
 
 ## Remote Images
