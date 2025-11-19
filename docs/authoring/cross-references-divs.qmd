@@ -6,9 +6,21 @@ title: Cross-Reference Div Syntax
 
 ## Overview
 
-Cross-referenceable [figures](#figures), [tables](#tables) and [code listings](#code-listings) are known as *float* cross-references. Floats can appear in the rendered document at locations other than where they are defined, i.e. they float, and usually have captions. 
+Cross-referenceable [figures](#figures), [tables](#tables) and [code listings](#listings) are known as *float* cross-references.
+Floats can appear in the rendered document at locations other than where they are defined, i.e. they float, and usually have captions. 
 
-Along with compact syntax for the most common uses of cross-references, Quarto also provides a more general div syntax for declaring floats that can be cross-referenced. To declare a cross-referenceable float, place the content inside a fenced div with the reference identifier as an attribute. The last paragraph inside the fenced div will be treated as the caption. For example:
+Along with compact syntax for the most common uses of cross-references, Quarto also provides a more general div syntax for declaring floats that can be cross-referenced.
+To declare a cross-referenceable float, place the content inside a fenced div with the reference identifier as an attribute.
+The last paragraph inside the fenced div will be treated as the caption.
+
+::: callout-warning
+
+Quarto currently only supports this alternative syntax for **floats**, as described above.
+Some cross-referenceable elements like theorems, proofs, etc naturally use this div syntax, but note that Quarto does not support the use of the div syntax for block-level equations.
+
+:::
+
+As a minimal example, consider the following QMD snippet:
 
 ````{.markdown}
 ::: {#fig-example}
@@ -19,6 +31,18 @@ Caption
 
 :::
 ````
+
+This produces the following (admittedly silly) figure:
+
+::: {#fig-example}
+
+CONTENT
+
+Caption
+
+:::
+
+Now, this figure can be cross-referenced with `@fig-example`, see @fig-example.
 
 To be recognized as a cross-reference the identifier must begin with one of the built-in float reference types (Figures (`fig-`), Tables (`tbl-`) and Listings (`lst-`)), or be defined as a [custom float cross-reference](cross-references-custom.qmd) type.
 

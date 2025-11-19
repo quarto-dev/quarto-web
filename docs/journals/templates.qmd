@@ -64,7 +64,9 @@ format:
 
 When Quarto renders a document with a partial, it will use the built in template but replace a portion of the template with the provided partial. In the above case, the LaTeX title will be replaced with the implementation provided as the partial, while the rest of the built in template will be used.
 
-Note that the name of the partial files is important. You choose which portion of the template to replace by providing a partial with that name. You can see the list of partials available in [HTML Partials] and [LaTeX Partials] below.
+The name of the partial file is important. You choose which portion of the template to replace by providing a partial with that name. Providing an empty file as a partial is a way to opt out of some features without modifying the whole main template.
+
+You can see the list of partials available for each format below: [LaTeX Partials](#latex-partials), [Beamer Partials](#beamer-partials), [Typst Partials](#typst-partials), [HTML Partials](#html-partials) and [Revealjs Partials](#revealjs-partials).
 
 ### Including Partials {#including-partials}
 
@@ -78,7 +80,7 @@ $body$
 \end{document}
 ```
 
-This modular approach means that is easier to implement templates that:
+This modular approach means that it is easier to implement templates that:
 
 -   Include required elements of Pandoc templates
 
@@ -86,72 +88,71 @@ This modular approach means that is easier to implement templates that:
 
 -   Provide only the minimal LaTeX or HTML rather than being required to provide all of it
 
-## LaTeX Partials
+## LaTeX Partials {#latex-partials}
 
-View the Quarto LaTeX template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/pdf/pandoc). Note that latex.template is a copy of the complete Pandoc template that the Quarto template and partials is based upon.
+::: {.callout-note}
 
-template.tex
+For `format: beamer`, see [Beamer Partials](#beamer-partials)
 
-:   The core LaTeX template which includes the basic document skeleton plus the following partials. This can't be replaced as a `partial`, instead use the `template` option to provide your own template.
-
-doc-class.tex
-
-:   Contains the document class declaration and options. By default we provide the identical document class that Pandoc provides, implementing many features. If you override this (which will be common), you will need to either implement support for the document class options or be aware that those options (e.g. font-size, paper-size, classoption, etc...) will not be supported in your output.
-
-before-title.tex
-
-:   Appears in the document premable just before the title block. By default, this partial is empty.
-
-title.tex
-
-:   Provides configuration of document metadata for writing the title block. Note that in addition to these templates and partials, Quarto will also make normalized authors and affiliations data available to the template, making is easy to write custom title blocks against a standard schema.
-
-before-body.tex
-
-:   Implements the frontmatter, title page, and abstract.
-
-after-body.tex
-
-:   Provides a placeholder to attach content at the end of the body.
-
-toc.tex
-
-:   Creates the table of contents, list of figures, and list of tables.
-
-before-bib.tex
-
-:   Placed after the content of the document, but before the bibliography. By default contains nothing.
-
-biblio.tex
-
-:   Creates the bibliography.
-
-pandoc.tex
-
-:   This includes configuration for text highlighting, tables, graphics, tight lists, citations, and header includes. In general, this partial must always be included within your custom template. In some circumstances, you may know that certain capabilities will not be needed, so you this partial is further composed of the following partials, which could be used if sensible:
-
-::: {style="margin-left: 2em;"}
-
-tightlist.tex
-
-:   Provides the tight list command.
-
-tables.tex
-
-:   Provides configuration for the output of tables, table captioning, and footnotes within tables.
-
-graphics.tex
-
-:   Provides image scaling and placement configuration.
-
-citations.tex
-
-:   When using CSL references, provides configuration and commands for outputting the bibliography.
 :::
+
+View the Quarto LaTeX template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/pdf/pandoc).
+
+{{< include /docs/journals/_about-latex-beamer-partials.md >}}
+
+A copy of some of Pandoc's original files are also kept in Quarto's source as a reference. These files are: `latex.template`, the main template used as `template.tex` containing all the partials; and `latex.common` the original version of `common.latex`,  which is tweaked to support Quarto's more specific partials.
 
 See the [full source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/pdf/pandoc/template.tex) for the Quarto LaTeX template to see how these partials are invoked by default.
 
-## HTML Partials
+## Beamer Partials {#beamer-partials}
+
+::: {.callout-note}
+
+New from Quarto 1.7: `format: beamer` now uses its own template and partials.
+
+:::
+
+View the Quarto Beamer template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/beamer/pandoc).
+
+{{< include /docs/journals/_about-latex-beamer-partials.md >}}
+
+A copy of some of Pandoc's original files are also kept in Quarto's source as a reference. These files are: `beamer.template`, the main template used as `template.tex` containing all the partials; and `latex.common` the original version of `common.latex`,  which is tweaked to support Quarto's more specific partials.
+
+See the [full source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/beamer/pandoc/template.tex) for the Quarto Beamer template to see how these partials are invoked by default.
+
+## Typst Partials {#typst-partials}
+
+View the Quarto Typst template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/typst/pandoc/quarto). 
+
+template.typ
+
+:   The core Typst template file which includes the basic document skeleton plus the following partials. This can't be replaced as a `partial`, instead use the `template` option to provide your own template.
+
+definitions.typ
+
+:   Definitions for Pandoc and Quarto features like block quotes, callouts, subfloats etc. In general, this partial must always be included within your custom template.
+
+typst-template.typ
+
+:   The definition of the Typst template function that will be called on the entire document contents. In the default template this function is called `article()` and generates a title block and author list, followed by the document content, optionally laid out in columns.
+
+page.typ
+
+:   Sets properties of the page such as size, margin, numbering, and background logo.
+
+typst-show.typ
+
+:   A show rule for the entire document that captures document metadata and passes it to the function defined in `typst-template.typ`.
+
+notes.typ
+
+:   Creates footnotes.
+
+biblio.typ
+
+:   Creates the bibliography.
+
+## HTML Partials {#html-partials}
 
 View the Quarto html template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/html/pandoc). Note that `html.template` is a copy of the complete Pandoc template that the Quarto template and partials is based upon.
 
@@ -173,7 +174,7 @@ toc.html
 
 :   Provide the table of contents target for the document
 
-## Revealjs Partials
+## Revealjs Partials {#revealjs-partials}
 
 View the Quarto Revealjs template and partials [source code here](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/formats/revealjs/pandoc). Note that `revealjs.template` is a copy of the complete Pandoc template that the Quarto template and partials is based upon.
 
@@ -183,7 +184,7 @@ template.html
 
 title-slide.html
 
-:   HTML used for the presentation title slide.
+:   HTML used for the presentation title slide. By default, Quarto uses a fancy `title-slide.html` partial that leverages [Authors & Affiliations](/docs/journals/authors.qmd) handling. Use the `title-slide.html` [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/revealjs/pandoc/title-fancy/title-slide.html) as a starter if you want to tweak this partial.
 
 toc-slide.html
 

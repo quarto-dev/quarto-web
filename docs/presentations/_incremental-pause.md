@@ -9,3 +9,5 @@ content before the pause
 
 content after the pause
 ```
+
+Note this only works below headings that are creating slides (see [Creating slides](#creating-slides)).

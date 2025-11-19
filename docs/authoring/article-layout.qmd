@@ -15,6 +15,7 @@ Quarto supports a variety of page layout options that enable you to author conte
 -   Overflows the content region
 -   Spans the entire page
 -   Occupies the document margin
+-   Uses landscape mode in paginated formats
 
 Quarto uses the concept of columns to describe page layout (e.g. the "body" column, the "margin" column, etc.). Below we'll describe how to arrange content into these columns. If you need to adjust the widths of the columns, see [Page Layout - Grid Customization](/docs/output-formats/page-layout.qmd#grid-customization).
 
@@ -417,7 +418,8 @@ Here are all of the available column specifiers:
 |              |     column: body-outset-left    |     .column-body-outset-left    |
 |              |     column: body-outset-right   |     .column-body-outset-right   |
 +--------------+---------------------------------+---------------------------------+
-| Page Inset   |     column: page-inset-left     |     .column-page-inset-left     |
+| Page Inset   |     column: page-inset          |     .column-page-inset          |
+|              |     column: page-inset-left     |     .column-page-inset-left     |
 |              |     column: page-inset-right    |     .column-page-inset-right    |
 +--------------+---------------------------------+---------------------------------+
 | Page         |     column: page                |     .column-page                |
@@ -480,5 +482,30 @@ When rendering a PDF that uses the margins for content, Quarto automatically adj
 This enables non-breaking code to overflow into the margin without cosmetic issues created by the code block background (which does not overflow into the margin region).
 
 You can disable this treatment by setting the following `code-block-border-left: false` in your document front matter.
+
+## Landscape mode
+
+In `docx`, `pdf` and `typst` formats, you can set portions of the document to landscape mode by wrapping the content around a fenced div with class `landscape`:
+
+````markdown
+---
+format:
+  docx: default
+  typst: default
+  pdf: default
+---
+
+This will appear in portrait mode.
+
+::: {.landscape}
+
+This will appear in landscape.
+
+:::
+
+This will appear in portrait mode again.
+````
+
+
 
 [^1]: You can also position references in other location (such as the bottom of the block, section, or document).

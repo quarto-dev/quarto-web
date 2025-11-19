@@ -1,4 +1,31 @@
 ---
 title: All revealjs examples
+format:
+  revealjs: 
+    slide-level: 0
+    slide-number: c/t
 # listing: default
 ---
+
+````{r}
+#| echo: false
+#| output: asis
+files <- fs::dir_ls('.', regexp = '^[^_].*[.]qmd$', all = TRUE)
+files <- files[!files %in% c("index.qmd")]
+links <- glue::glue("* [{fs::path_ext_remove(files)}]({files})")
+
+bucket_size <- 5
+buckets <- split(links, ceiling(seq_along(links) / bucket_size))
+
+# Add new slides after each bucket except last
+for (i in 1:(length(buckets)-1)) {
+  buckets[[i]] <- c(buckets[[i]], "", "----", "")
+}
+
+purrr::map(buckets, \(x) {
+  glue::glue("
+{glue::glue_collapse(x, sep = '\n')}
+")
+}) |> unlist() |> cat(sep = "\n")
+
+````

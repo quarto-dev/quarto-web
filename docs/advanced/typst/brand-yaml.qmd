@@ -1,0 +1,93 @@
+---
+title: Typst Brand YAML
+summary: Technical details on support for Brand YAML in Typst and Quarto
+---
+
+## Overview
+
+Brand YAML allows consistent colors, fonts, and typography across formats and applications.
+
+This document describes some details of the Typst implementation of Brand YAML for Quarto, and provides troubleshooting tips.
+
+In general, Brand YAML properties use CSS conventions, so this feature relies on [Typst CSS](typst-css.qmd) functionality.
+
+## Color
+
+Brand YAML palette and theme colors are available in Typst `brand-color`, e.g. `brand-color.lime` or `brand-color.primary`.
+
+Lighter versions of the colors, suitable as background colors, are available in `brand-background-color`, e.g. `brand-background-color.success`.
+
+## Typography
+
+Brand YAML is specified for the following elements and Brand YAML properties. Combinations that are not supported are marked NA.
+
+
+|                  | base | headings | title[^1] | subtitle | monospace-inline | monospace-block | link  |
+|------------------|------|----------|-----------|----------|------------------|-----------------|-------|
+| family           |   ✓  |    ✓     |     ✓     |    ✓     |        ✓         |        ✓        |   NA  |
+| size             |   ✓  |    NA    |     NA    |    NA    |        ✓         |        ✓        |   NA  |
+| weight           |   ✓  |    ✓     |     ✓     |    ✓     |        ✓         |        ✓        |   ✓   |
+| style            |  NA  |    ✓     |     ✓     |    ✓     |        NA        |        NA       |   NA  |
+| color            |   ✓  |    ✓     |     ✓     |    ✓     |        ✓         |        ✓        |   ✓   |
+| background-color |  NA  |    NA    |     NA    |    NA    |        ✓         |        ✓        |   ✓   |
+| decoration       |  NA  |    NA    |     NA    |    NA    |        NA        |        NA       |   ✓   |
+| line-height      |   ✓  |    ✓     |     ✓     |    ✓     |        NA        |        ✓        |   NA  |
+
+[^1]: While being styled as headings, title and subtitle have a separate implementation.
+
+The Quarto Typst and HTML implementations of Brand YAML implement all combinations (except size in revealjs).
+
+Many of the NA combinations are possible in Typst, but were removed for compatibility with the spec in [1bd7a48](https://github.com/quarto-dev/quarto-cli/commit/1bd7a48a41fe683abf6437b55b3d4f4370ef347b). If any of those are desired, they can be implemented via a Typst raw block or `include-in-header`; consult that commit for details.
+
+### Missing fonts in Typst
+
+When Typst is unable to find the requested font, it will fall back to a default font. In Typst 0.13, shipped with Quarto 1.7, the default is Libertinus Serif.
+
+Typst will warn `unknown font family` in this case.
+
+To tell Typst to not fall back (and not to display fonts it can't find), you can add
+
+```typst
+#set text(fallback: false)
+```
+
+to your document.
+
+Typst Brand YAML will automatically download fonts from Google Fonts and cache them in `.quarto/typst-font-cache`
+
+Then it tells Typst to use this font directory, in addition to any system fonts available to Typst.
+
+In rare cases, there may be ambiguities about a font's name that will cause Typst not to find the font. To see if a font is available to Typst, run
+
+```
+quarto typst fonts --ignore-system-fonts --font-path .quarto/typst-font-cache/
+```
+
+to list only the fonts downloaded by Quarto. (Adding ``--variants`` can be helpful for more detail.)
+
+If the font is listed but it still isn't working, check for variation in the font name. For example, the Sono font can be downloaded from Google Fonts as Sono, but Typst will only accept Sono Extralight Monospace.
+
+### "Big number" bug
+
+![](big-number-bug.png)
+
+If you encounter issue [#11683](https://github.com/quarto-dev/quarto-cli/issues/11683), with numbers displaying larger than surrounding text in table output, this is happening because none of the text fonts requested by your table package are available, but some of the emoji fonts are.
+
+Please specify an available font to your table package. In the future, Quarto may implement "font stacks" like `system-ui` and `sans-serif` in Typst CSS to fix this bug, but currently these are passed through verbatim, and Typst won't recognize font stacks.
+
+### Typography Test coverage
+
+Which kitchen sink test files contain unique tests for a feature/element combination?
+
+For non-unique tests, first file index is listed.
+
+|                  | base | headings |   title   | subtitle | monospace-inline | monospace-block | link  |
+|------------------|------|----------|-----------|----------|------------------|-----------------|-------|
+| family           |   1  |    1     |     1     |    1     |        1         |        1        |   R   |
+| size             |   1  |    NA    |     NA    |    NA    |        1         |        1        |   R   |
+| weight           |   1  |    1     |     1     |    1     |        1         |        2        |   2   |
+| style            |   R  |    1     |     1     |    1     |        R         |        R        |   R   |
+| color            |   1  |    1     |     1     |    1     |        1         |        1        |   1   |
+| background-color |   R  |    R     |     R     |    R     |        1         |        1        |   1   |
+| decoration       |   R  |    R     |     R     |    R     |        R         |        R        |   1   |
+| line-height      |   1  |    1     |     1     |    1     |        NA        |        1        |   NA  |

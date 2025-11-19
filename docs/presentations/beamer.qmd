@@ -13,13 +13,51 @@ See the Beamer [format reference](/docs/reference/formats/presentations/beamer.q
 
 {{< include _creating-slides.md >}}
 
+In Beamer, headings below `slide-level` will place content inside a `block` environment:
+
+``` markdown
+---
+title: "Habits"
+author: "John Doe"
+format: 
+  beamer:
+    slide-level: 2
+---
+
+## Slide
+
+### Simple block
+
+Content
+```
+
+Add the `.alert` or `.example` class to place content inside an `alertblock` or `exampleblock` environment respectively:
+
+``` markdown
+---
+title: "Habits"
+author: "John Doe"
+format: 
+  beamer:
+    slide-level: 2
+---
+
+## Slide
+
+### Alert block {.alert}
+
+Content
+
+### Example block {.example}
+
+Content
+```
+
 {{< include _incremental-lists.md >}}
 
 {{< include _incremental-pause.md >}}
 
 {{< include _columns.md >}}
-
-
 
 The div containers with classes `columns` and `column` can optionally have an `align` attribute. The class `columns` can optionally have a `totalwidth` attribute or an `onlytextwidth` class.
 
@@ -59,51 +97,14 @@ The class `onlytextwidth` sets the `totalwidth` to `\textwidth`.
 
 See Section 12.7 of the [Beamer User's Guide](http://mirrors.ctan.org/macros/latex/contrib/beamer/doc/beameruserguide.pdf) for more details.
 
+### Panel Layout
+
+In addition to using the presentation-native `columns`/`column` syntax described above, you can also use Quarto's [panel layout](/docs/authoring/figures.qmd#complex-layouts) features using divs with the `layout` class.
+Quarto will convert those to Beamer columns as if they were written with the above syntax.
+
 ## Beamer Options
 
-These variables change the appearance of PDF slides using `beamer`.
-
-**`aspectratio`**
-
-:   slide aspect ratio (`43` for 4:3 \[default\], `169` for 16:9, `1610` for 16:10, `149` for 14:9, `141` for 1.41:1, `54` for 5:4, `32` for 3:2)
-
-**`beamerarticle`**
-
-:   produce an article from Beamer slides
-
-**`beameroption`**
-
-:   add extra beamer option with `\setbeameroption{}`
-
-**`institute`**
-
-:   author affiliations: can be a list when there are multiple authors
-
-**`logo`**
-
-:   logo image for slides
-
-**`navigation`**
-
-:   controls navigation symbols (default is `empty` for no navigation symbols; other valid values are `frame`, `vertical`, and `horizontal`)
-
-**`section-titles`**
-
-:   enables "title pages" for new sections (default is true)
-
-**`theme`, `colortheme`, `fonttheme`, `innertheme`, `outertheme`**
-
-:   beamer themes
-
-**`themeoptions`**
-
-:   options for LaTeX beamer themes (a list).
-
-**`titlegraphic`**
-
-:   image for title slide
-
-For example, here we use several of these options:
+Set additional options to change the appearance of PDF slides using `beamer`:
 
 ``` yaml
 ---
@@ -116,6 +117,21 @@ format:
     colortheme: lily
 ---
 ```
+
+The options available are:
+
+| Option | Description |
+|------------------------|------------------------------------------------|
+| `aspectratio` | Slide aspect ratio: `43` for 4:3 \[default\], `169` for 16:9, `1610` for 16:10, `149` for 14:9, `141` for 1.41:1, `54` for 5:4, `32` for 3:2 |
+| `beamerarticle` | Produce an article from Beamer slides |
+| `beameroption` | Extra beamer options provided to `\setbeameroption{}` |
+| `institute` | Author affiliations: can be a list when there are multiple authors |
+| `logo` | Logo image for slides |
+| `navigation` | Controls navigation symbols (default is `empty` for no navigation symbols; other valid values are `frame`, `vertical`, and `horizontal`) |
+| `section-titles` | Enables "title pages" for new sections (default is true) |
+| `theme, colortheme, fonttheme, innertheme, outertheme` | Beamer themes |
+| `themeoptions` | Options for LaTeX beamer themes (a list) |
+| `titlegraphic` | Image for title slide |
 
 ## Frame Attributes
 
@@ -136,5 +152,5 @@ To provide a common background image for all slides in a Beamer presentation, us
 format:
   beamer:
     background-image: background.png
-    
+---    
 ```

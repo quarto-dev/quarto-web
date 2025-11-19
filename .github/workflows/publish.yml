@@ -18,6 +18,10 @@ on:
 
 name: Quarto Publish
 
+concurrency:
+  group: ${{ format('{0} - {1} - {2}', github.workflow, github.ref, inputs.prerelease && 'prerelease' || 'main') }}
+  cancel-in-progress: true
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -43,14 +47,16 @@ jobs:
       - name: Render 
         uses: quarto-dev/quarto-actions/render@v2
         env:
-          QUARTO_PROFILE: ${{ (inputs.prerelease == 'true' || (contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/prerelease')) && 'prerelease-docs' || '' }}
+          QUARTO_PROFILE: ${{ (inputs.prerelease || (contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/prerelease')) && 'prerelease-docs' || '' }}
 
       - name: Publish release website
         # Only do this step if 
         # - workflow is called for release deploy, with inputs.prerelease being false. It should not trigger if inputs.prerelease is null.
         #   and in GHA null == false is true. That is why we convert to string and compare.
         # - workflow is triggered by push event on main branch
-        if: ${{ format('{0}', inputs.prerelease) == 'false' || (contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/main') }}
+        # - workflow is triggered by workflow_dispatch event 
+        #   (we need to protect also from workflow_dispatch inherited from workflow_call event - where inputs.prerelease is defined)
+        if: ${{ format('{0}', inputs.prerelease) == 'false' || (!inputs.prerelease && contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/main') }}
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: netlify
@@ -62,7 +68,9 @@ jobs:
         # - workflow is called for release deploy with inputs.prerelease being true. It should not trigger if inputs.prerelease is null.
         #   Though as in GHA null means false, no need to cast to string
         # - workflow is triggered by push event on main branch
-        if: ${{ inputs.prerelease || (contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/prerelease') }}
+        # - workflow is triggered by workflow_dispatch event 
+        #   (we need to protect also from workflow_dispatch inherited from workflow_call event - where inputs.prerelease is defined)
+        if: ${{ inputs.prerelease || (format('{0}', inputs.prerelease) != 'false' && contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/prerelease') }}
         id: netlify-deploy
         uses: nwtgck/actions-netlify@v3
         env:

@@ -1,39 +1,16 @@
 ---
 title: "Creating Shortcodes"
-aliases: 
-  - /docs/authoring/shortcodes.html
 ---
 
 {{< include _extension-version.qmd >}}
 
-## Overview
-
-Shortcodes are special markdown directives that generate various types of content. Quarto shortcodes are similar in form and function to [Hugo shortcodes](https://gohugo.io/content-management/shortcodes/) and [WordPress shortcodes](https://codex.wordpress.org/Shortcode).
-
-For example, the following shortcode prints the `title` from document metadata:
-
-``` {.markdown shortcodes="false"}
-{{< meta title >}}
-```
-
-Quarto supports several shortcodes natively:
-
-| Shortcode                                                 | Description                            |
-|-------------------------------------|-----------------------------------|
-| [var](/docs/authoring/variables.qmd#var)                     | Print value from `_variables.yml` file |
-| [meta](/docs/authoring/variables.qmd#meta)                   | Print value from document metadata     |
-| [env](/docs/authoring/variables.qmd#url)                     | Print system environment variable      |
-| [pagebreak](/docs/authoring/markdown-basics.qmd#page-breaks) | Insert a native page-break             |
-| [kbd](/docs/authoring/markdown-basics.qmd#keyboard-shortcuts) | Describe keyboard shortcuts            |
-| [video](/docs/authoring/videos.qmd)                       | Embed a video in a document            |
-| [include](/docs/authoring/includes.qmd)                      | Include contents of another qmd        |
-| [embed](/docs/authoring/notebook-embed.qmd)                  | Embed cells from a Jupyter Notebook    |
-
 This article describes how to create your own shortcodes.
+
+{{< include /docs/authoring/_shortcodes.qmd >}}
 
 ## Quick Start
 
-Here we'll describe how to create a simple shortcode extension. We'll use the `quarto create` command to do this. If you are using VS Code or RStudio, you should execute `quarto create` within their respective integrated terminal panes. 
+Here we'll describe how to create a simple shortcode extension. We'll use the `quarto create` command to do this. If you are using VS Code, Positron, or RStudio, you should execute `quarto create` within their respective integrated terminal panes. 
 
 To get started, execute `quarto create extension shortcode` within the parent directory where you'd like the shortcode extension to be created:
 
@@ -53,7 +30,7 @@ Creating extension at /Users/jjallaire/extensions/shorty/shorty:
   - Created example.qmd
 ```
 
-If you are running within VS Code or RStudio, a new window will open with the extension project. 
+If you are running within VS Code, Positron, or RStudio, a new window will open with the extension project. 
 
 Here's what the contents of the files in `_extensions/shorty/` look like:
 
@@ -93,7 +70,7 @@ Shortcodes are created using Lua. If you aren't familar with Lua (or with Pandoc
 
 - [Lua Development](lua.qmd) (Lua is the language used to create shortcodes).
 
-- [Lua API Reference](lua-api.qmd), which describes the Lua extension API for Quarto.
+- [Lua API Reference](lua-api.qmd), which describes the Lua extension API for Quarto. Specifically, consider consulting the `quarto.shortcode.*` entry points.
 
 Shortcodes are implemented as Lua functions that take one or more arguments and return a Pandoc AST node (or list of nodes).
 
@@ -299,11 +276,30 @@ The shortcode registration and GitHub metadata could just as well been provided 
 
 ## Raw Arguments
 
-In Quarto >= 1.3 you can also access the raw stream of inlines passed to a shortcode by adding a `raw_args` parameter. For example:
+In Quarto >= 1.3, you can also access the raw stream of inlines passed to a shortcode by adding a `raw_args` parameter. For example:
 
 ```lua
 function shorty(args, kwargs, meta, raw_args)
+  -- ...
+end
+```
 
+## Context Awareness
+
+In Quarto >= 1.5, you can access the context in which the shortcode was invoked as the fifth parameter of the function call. `context` is a string that will be one of `block`, `inline`, or `text`:
+
+- if `context` is `block`, then the shortcode exists in a block by itself
+- if `context` is `inline`, then the shortcode exists as one of many inline nodes
+- if `context` is `text`, then the shortcode exists inside a text field of a Pandoc node. These can be:
+  - the content of `CodeBlock` or `Code` elements
+  - the content of `RawBlock` or `RawInline` elements
+  - the content of attributes of Pandoc elements like `Div`, `Span`, etc.
+  - the URL of a `Link` element
+  - the source of an `Image` element
+
+```lua
+function shorty(args, kwargs, meta, raw_args, context)
+  -- ...
 end
 ```
 

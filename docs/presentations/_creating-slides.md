@@ -1,6 +1,6 @@
-## Creating Slides
+## Creating Slides {#creating-slides}
 
-In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (`##`):
+In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (`##`)):
 
 ``` markdown
 ---
@@ -20,7 +20,7 @@ format: {{< meta slide-format >}}
 - Count sheep
 ```
 
-You can also divide slide shows into sections with title slides using a level 1 header (`#`). For example:
+You can also divide slide shows into sections with title slides using a level 1 heading (`#`). For example:
 
 
 ``` markdown
@@ -74,4 +74,4 @@ format: {{< meta slide-format >}}
 
 ```
 
-The examples above all use level 2 headings for slides and level 1 headings for sections/title slides. You can customize this using the `slide-level` option (See the Pandoc documentation on [structuring the slide show](https://pandoc.org/MANUAL.html#structuring-the-slide-show) for additional details.
+The examples above all use level 2 headings for slides and level 1 headings for sections/title slides. You can customize this using the `slide-level` option (See the Pandoc documentation on [structuring the slide show](https://pandoc.org/MANUAL.html#structuring-the-slide-show) for additional details).

@@ -1,0 +1,115 @@
+---
+title: Website Drafts
+aliases: 
+  - /docs/prerelease/1.5/website-drafts.html
+---
+
+## Overview
+
+Use drafts to preview and plan content before it is ready to publish. By default, draft pages will be blank in your rendered site, and will not appear in navigation, listings, search results, or the sitemap. On this page, learn how to specify pages as drafts, control how drafts appear in rendered sites and how drafts appear in site previews.
+
+## Specifying Drafts
+
+To specify a page or post is a draft, you can add `draft: true` to the document YAML:
+
+``` {.yaml filename="posts/post-with-code/index.qmd"}
+---
+title: "Post with Code"
+draft: true
+---
+```
+
+To specify all documents in directory are drafts set `draft: true` in the [directory metadata](/docs/projects/quarto-projects.html#directory-metadata): 
+
+``` {.yaml filename="posts/_metadata.yml"}
+draft: true
+```
+
+As an alternative to the `draft` document option, you can also specify the website option `drafts` in `_quarto.yml`:
+
+``` {.yaml filename="_quarto.yml"}
+website:
+  title: "Cool Website."
+  drafts:
+    - posts/post-with-code/index.qmd
+```
+
+If you would like to specify a list of paths in a separate file, use a [metadata include](/docs/projects/quarto-projects.html#metadata-includes). For example, you could specify your drafts in `drafts.yml`:
+
+``` {.yaml filename="drafts.yml"}
+website:
+  drafts:
+    - posts/post-with-code/index.qmd
+```
+
+Then, provide this file to `metadata-files`:
+
+``` {.yaml filename="_quarto.yml"}
+website:
+  title: "Cool Website."
+
+metadata-files:
+  - drafts.yml
+```
+
+You can also set the website `drafts` option using [project profiles](/docs/projects/profiles.html).
+
+## Appearance of Drafts
+
+You can use the `draft-mode` option to control the content and linking of draft documents in the rendered website. 
+The values for `draft-mode` are:
+
+-   `gone`(default)---Empty and unlinked
+-   `unlinked`---Rendered and unlinked
+-   `visible`---Rendered and linked
+
+A URL will exist for an empty page but the page itself will be blank. Drafts that are rendered will additionally include a draft banner:
+
+![A rendered draft document will include a "Draft" banner](images/website-drafts-banner.png){.border fig-alt="Screenshot of a post titled 'Post With Code', displaying a banner at the top of the page titled 'Draft'."}
+
+When a draft is unlinked it will not appear in search results, listings, the sitemap, or navigation (sidebars, navbars, and footers).  If another page links to an unlinked draft document, the link will be omitted leaving the content of the link without the hyperlink itself.
+
+As a complete example, consider the following website configuration:
+
+:::{#lst-example}
+
+```{.yaml filename="_quarto.yml"}
+project:
+  type: website
+
+website:
+  title: "Cool Website."
+  navbar:
+    left:
+      - stuff/item1.qmd
+      - stuff/item2.qmd
+  drafts:                   # <1>
+    - stuff/item2.qmd       # <1>
+  draft-mode: unlinked      # <2>
+```
+
+1. The project is providing a simple list of draft documents. The same thing could be specified using `draft: true` in `stuff/item2.qmd`'s front matter.
+
+2. The draft mode is set to `unlinked`, so drafts are rendered but not linked to. 
+
+A complete `_quarto.yml` example
+
+:::
+
+When rendered the navbar in the above site will omit the item for `stuff/item2.qmd`:
+
+![](images/website-drafts-nav.png){.border fig-alt="Navigation bar for a site with title 'Cool Website.' showing a single navigation item 'Item 1'."}
+
+However, `stuff/item2.qmd` is still available at `stuff/item2.html` and shows the draft banner:
+
+![](images/website-drafts-item2.png){.border fig-alt="Screenshot of a webpage with title 'Item 2'. The navigation bar shows a single navigation item 'Item 1'. Above the navigation bar is a banner with the text 'Draft'."}
+
+## Previewing Drafts
+
+Regardless of the `draft-mode` setting, when you preview a site with `quarto preview` drafts will be `visible`. 
+Draft pages will be rendered and display a draft banner, and any links or navigation items pointing at the draft pages will be visible and active. 
+For example, when the site described in @lst-example, is previewed a link to `stuff/item2.html` appears in the navigation:
+
+![](images/website-drafts-preview.png){.border fig-alt="Screenshot of a webpage with title 'Item 2'. The navigation bar shows two navigation items 'Item 1' and 'Item 2'. Above the navigation bar is a banner with the text 'Draft'."}
+
+This preview behaviour includes previews generated with the **Render** button in RStudio, and the **Preview** button in Positron or VS Code.
