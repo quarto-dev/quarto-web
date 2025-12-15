@@ -1,0 +1,112 @@
+---
+title: "Engine Extensions"
+---
+
+Engine extensions are Quarto extensions that provide an execution engine for running code blocks and capturing their output in Quarto documents.
+
+::: callout-important
+
+Currently there is one execution engine per Quarto document, so you can't have some code blocks executed by an engine extension and other code blocks executed by e.g. `jupyter` or `knitr`.
+
+Engine extensions do not allow control over the cell language handlers for [diagrams](/docs/authoring/diagrams.qmd) like `mermaid` and `dot`.
+
+This is likely to improve in the future.
+:::
+
+### Quick Start
+
+Here we'll describe how to create a basic engine extension. We'll use the `quarto create` command to do this. If you are using VS Code, Positron, or RStudio you should execute `quarto create` within their respective integrated Terminal panes. 
+
+To get started, execute `quarto create extension engine` within the parent directory where you'd like the engine extension to be created:
+
+```{.bash filename="Terminal"}
+$ quarto create extension engine
+? Extension Name › my-language-engine
+? Default cell language name (my-language-engine) › my-language
+```
+
+As shown above, you'll be prompted for an engine name and a cell language name for cells, e.g.
+
+````markdown
+```{my-language}
+x = 42
+```
+````
+
+The language name will default to the engine name. Type each name and press Enter---the engine extension is then created:
+
+```bash
+? Extension Name › my-prerender-scripts
+Creating extension at /Users/gordon/src/my-language-engine:
+  - Created example.qmd
+  - Created README.md
+  - Created _extensions/my-language-engine/_extension.yml
+  - Created .gitignore
+  - Created src/my-language-engine.ts
+? Open With
+❯ positron
+  vscode
+  rstudio
+  (don't open)
+```
+
+If you are running within VS Code, Positron, or RStudio a new window will open with the extension project. 
+
+## Contents of Engine Extensions
+
+The `quarto create extension engine` command has created an `_extensions` directory, which is what gets installed for users of your extension, and a `src` directory containing the TypeScript source.
+
+The `_extensions/my-language-engine/` directory will contain a Quarto extension configuration like this:
+
+``` {.yaml filename="_extensions/my-language-engine/_extension.yml"}
+title: My-language-engine
+author: Gordon Woodhull
+version: 1.0.0
+quarto-required: ">=1.9.0"
+contributes:
+  engines:
+    - path: my-language-engine.js
+```
+
+To generate the JavaScript bundle this points to, run
+
+```bash
+quarto call build-ts-extension
+```
+
+This builds the TypeScript source `src/my-language-engine.ts` against the types and import map distributed with Quarto, and outputs `_extensions/my-language-engine/my-language-engine.js`.
+
+## How Engine Extensions Work
+
+The `ExecutionEngineDiscovery` interface specifies
+
+* an `init` method providing the **Quarto API**[The **Quarto API** is not documented yet. See the Typescript types in [quarto-types](https://github.com/quarto-dev/quarto-cli/tree/main/packages/quarto-types)]{.aside} to the engine
+* methods used in determining which engine to use
+* a `launch` method which takes the `EngineProjectContext` and provides methods for executing cells and capturing output, and returns an `ExecutionEngineInstance`.
+
+The `ExecutionEngineInstance.execute` method processes the entire markdown of the document after includes and embeds, and before cell language handlers and Pandoc.
+
+For the languages that it claims, it should replace each code block with:
+
+1.  If `options.format.execute.echo` is true, the same code block in non-executable syntax. 
+
+    E.g. if the input is
+
+    ````markdown
+    ```{{python}}
+    ```
+    ````
+
+    Then the output should be
+
+    ````markdown
+    ``` {.python}
+    ```
+    ````
+
+    adding other classes and attributes as appropriate.
+
+    If `echo` is false, the code should not be output.
+2.  Any outputs from executing the code block, depending on `options.format.execute.output`
+
+See [Execution Options](/docs/computations/execution-options.qmd) for more information on execution options.
