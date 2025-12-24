@@ -1,5 +1,7 @@
 # quarto-web
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/quarto-dev/quarto-web)
+
 This is the repo for the documentation hosted at:
 
 * **Current release:** [quarto.org](https://quarto.org/)
