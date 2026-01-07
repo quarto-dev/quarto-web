@@ -1,5 +1,9 @@
 # quarto-web
 
+[![Quarto Release](https://img.shields.io/github/v/release/quarto-dev/quarto-cli?label=quarto%20release)](https://github.com/quarto-dev/quarto-cli/releases/latest)
+[![Quarto Pre-Release](https://img.shields.io/github/v/release/quarto-dev/quarto-cli?include_prereleases&label=quarto%20prerelease)](https://github.com/quarto-dev/quarto-cli/releases/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/quarto-dev/quarto-web)
+
 This is the repo for the documentation hosted at:
 
 * **Current release:** [quarto.org](https://quarto.org/)
