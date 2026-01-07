@@ -1,7 +1,7 @@
 Access functionality specific to quarto's different rendering engines.
 
 ``` {.bash}
-quarto call engine 
+quarto call engine <engine-name:string> [args...:string]
 ```
 
 
@@ -31,7 +31,7 @@ quarto call engine
   <tr>
    <td style="text-align:left;"> <code>--log-level</code> </td>
    <td style="text-align:left;"> <code><level></code> </td>
-   <td style="text-align:left;"> Log level (info, warning, error, critical) </td>
+   <td style="text-align:left;"> Log level (debug, info, warning, error, critical) </td>
   </tr>
   <tr>
    <td style="text-align:left;"> <code>--log-format</code> </td>
@@ -42,11 +42,6 @@ quarto call engine
    <td style="text-align:left;"> <code>--quiet</code> </td>
    <td style="text-align:left;">  </td>
    <td style="text-align:left;"> Suppress console output. </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> <code>--profile</code> </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Active project profile(s) </td>
   </tr>
 </tbody>
 </table>
@@ -69,10 +64,6 @@ quarto call engine
   <tr>
    <td style="text-align:left;"> <code>help</code> </td>
    <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> <code>julia</code> </td>
-   <td style="text-align:left;"> Access functionality specific to the julia rendering engine. </td>
   </tr>
 </tbody>
 </table>

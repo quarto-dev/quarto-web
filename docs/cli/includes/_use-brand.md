@@ -1,7 +1,7 @@
-Create a Quarto project or extension
+Use a brand for this project.
 
 ``` {.bash}
-quarto create [type] [commands...]
+quarto use brand <target:string>
 ```
 
 
@@ -19,24 +19,14 @@ quarto create [type] [commands...]
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> <code>-h</code>, <code>--help</code> </td>
+   <td style="text-align:left;"> <code>--force</code> </td>
    <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Show this help. </td>
+   <td style="text-align:left;"> Skip all prompts and confirmations </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> <code>--open</code> </td>
-   <td style="text-align:left;"> <code>[editor:string]</code> </td>
-   <td style="text-align:left;"> Open new artifact in this editor (positron, vscode, rstudio) </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> <code>--no-open</code> </td>
+   <td style="text-align:left;"> <code>--dry-run</code> </td>
    <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Do not open in an editor </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> <code>--no-prompt</code> </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Do not prompt to confirm actions </td>
+   <td style="text-align:left;"> Show what would happen without making changes </td>
   </tr>
   <tr>
    <td style="text-align:left;"> <code>--log</code> </td>
@@ -69,26 +59,13 @@ quarto create [type] [commands...]
 
 
 
-## Commands
 
 
-```{=html}
-<table>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Command </th>
-   <th style="text-align:left;"> Description </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> <code>help</code> </td>
-   <td style="text-align:left;"> Show this help or the help of a sub-command. </td>
-  </tr>
-</tbody>
-</table>
+
+## Examples
+### Use a brand from Github
+
+``` {.bash filename='Terminal'}
+quarto use brand <gh-org>/<gh-repo>
 ```
-
-
-
 

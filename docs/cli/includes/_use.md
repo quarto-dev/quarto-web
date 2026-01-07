@@ -49,6 +49,10 @@ quarto use <type:string> [target:string]
    <td style="text-align:left;"> <code>binder</code> </td>
    <td style="text-align:left;"> Configure the current project with Binder support. </td>
   </tr>
+  <tr>
+   <td style="text-align:left;"> <code>brand</code> </td>
+   <td style="text-align:left;"> Use a brand for this project. </td>
+  </tr>
 </tbody>
 </table>
 ```

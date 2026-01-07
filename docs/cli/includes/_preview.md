@@ -82,7 +82,7 @@ If the port is not available then a random port between 3000 and 8000 will be se
   <tr>
    <td style="text-align:left;"> <code>--log-level</code> </td>
    <td style="text-align:left;"> <code><level></code> </td>
-   <td style="text-align:left;"> Log level (info, warning, error, critical) </td>
+   <td style="text-align:left;"> Log level (debug, info, warning, error, critical) </td>
   </tr>
   <tr>
    <td style="text-align:left;"> <code>--log-format</code> </td>

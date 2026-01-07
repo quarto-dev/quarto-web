@@ -5,7 +5,6 @@ Available providers include:
  - Quarto Pub (quarto-pub)
  - GitHub Pages (gh-pages)
  - Posit Connect (connect)
- - Posit Cloud (posit-cloud)
  - Netlify (netlify)
  - Confluence (confluence)
  - Hugging Face Spaces (huggingface)
@@ -74,7 +73,7 @@ quarto publish [provider] [path]
   <tr>
    <td style="text-align:left;"> <code>--log-level</code> </td>
    <td style="text-align:left;"> <code><level></code> </td>
-   <td style="text-align:left;"> Log level (info, warning, error, critical) </td>
+   <td style="text-align:left;"> Log level (debug, info, warning, error, critical) </td>
   </tr>
   <tr>
    <td style="text-align:left;"> <code>--log-format</code> </td>
@@ -166,12 +165,6 @@ quarto publish connect
 
 ``` {.bash filename='Terminal'}
 quarto publish connect --server example.com --token 01A24233E294
-```
-
-### Publish project to Posit Cloud
-
-``` {.bash filename='Terminal'}
-quarto publish posit-cloud
 ```
 
 ### Publish without confirmation prompt

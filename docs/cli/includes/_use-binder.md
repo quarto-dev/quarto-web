@@ -31,7 +31,7 @@ quarto use binder
   <tr>
    <td style="text-align:left;"> <code>--log-level</code> </td>
    <td style="text-align:left;"> <code><level></code> </td>
-   <td style="text-align:left;"> Log level (info, warning, error, critical) </td>
+   <td style="text-align:left;"> Log level (debug, info, warning, error, critical) </td>
   </tr>
   <tr>
    <td style="text-align:left;"> <code>--log-format</code> </td>
@@ -42,11 +42,6 @@ quarto use binder
    <td style="text-align:left;"> <code>--quiet</code> </td>
    <td style="text-align:left;">  </td>
    <td style="text-align:left;"> Suppress console output. </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> <code>--profile</code> </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Active project profile(s) </td>
   </tr>
 </tbody>
 </table>
