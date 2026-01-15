@@ -1,7 +1,7 @@
 Run a TypeScript, R, Python, or Lua script.
 
 Run a utility script written in a variety of languages. For details, see:
-https://quarto.org/docs/projects/scripts.html#periodic-scripts
+<https://quarto.org/docs/projects/scripts.html#periodic-scripts>
 
 ``` {.bash}
 quarto run [script:string] [...args]

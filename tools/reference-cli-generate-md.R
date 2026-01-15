@@ -30,6 +30,10 @@ make_code <- function(x) {
   paste0("<code>", x, "</code>")
 }
 
+wrap_urls <- function(text) {
+  gsub("(https?://\\S+)", "<\\1>", text)
+}
+
 process_options <- function(options) {
   options_table <- tibble(options = options) |>
     unnest_wider(options) |>
@@ -98,7 +102,7 @@ md_content <- function(name, description, usage, options, commands, examples) {
   examples_text <- process_examples(examples)
 
   paste(
-    strip_ctl(description, ctl = "sgr"),
+    strip_ctl(description, ctl = "sgr") |> wrap_urls(),
     usage_text,
     "\n",
     heading("Options"),
