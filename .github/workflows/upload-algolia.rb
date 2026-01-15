@@ -20,3 +20,19 @@ records = JSON.parse(file)
 
 # The API client automatically batches your records
 index.replace_all_objects(records, {})
+
+# Apply settings from config file
+configFile = File.read('.github/workflows/algolia-config.json')
+config = JSON.parse(configFile)
+
+index.set_settings(config['settings'])
+
+# Apply synonyms if present
+if config['synonyms'] && !config['synonyms'].empty?
+  index.save_synonyms(config['synonyms'], { replaceExistingSynonyms: true })
+end
+
+# Apply rules if present
+if config['rules'] && !config['rules'].empty?
+  index.save_rules(config['rules'], { clearExistingRules: true })
+end
