@@ -1,0 +1,26 @@
+# Test workflow for Algolia upload - uses test_QUARTO index only
+name: Test Algolia Upload
+on:
+  workflow_dispatch:
+jobs:
+  test-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.2
+      - name: Install Algolia API Dependencies
+        run: |
+          gem install algolia -v 2.3.4
+      - name: Upload Index to test_QUARTO
+        run: |
+          ruby .github/workflows/upload-algolia.rb
+        env:
+          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+          ALGOLIA_APP_ID: ZPJB5I1QN7
+          ALGOLIA_INDEX: test_QUARTO
+          QUARTO_INDEX_PATH: search.json
+          QUARTO_INDEX_URL: https://quarto.org/search.json
