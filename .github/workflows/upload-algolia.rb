@@ -1,4 +1,3 @@
-gem 'algolia', '=2.3.4'
 require 'json'
 require 'algolia'
 require 'open-uri'
@@ -13,26 +12,25 @@ indexUrl = ENV["QUARTO_INDEX_URL"]
 download = URI.open(indexUrl)
 IO.copy_stream(download, indexFile)
 
-client  = Algolia::Search::Client.create(appId, apiKey)
-index   = client.init_index(indexName)
+client = Algolia::SearchClient.create(appId, apiKey)
 file    = File.read(indexFile)
 records = JSON.parse(file)
 
 # The API client automatically batches your records
-index.replace_all_objects(records, {})
+client.replace_all_objects(indexName, records)
 
 # Apply settings from config file
 configFile = File.read('.github/workflows/algolia-config.json')
 config = JSON.parse(configFile)
 
-index.set_settings(config['settings'])
+client.set_settings(indexName, config['settings'])
 
 # Apply synonyms if present
 if config['synonyms'] && !config['synonyms'].empty?
-  index.save_synonyms(config['synonyms'], { replaceExistingSynonyms: true })
+  client.save_synonyms(indexName, config['synonyms'], nil, true)
 end
 
 # Apply rules if present
 if config['rules'] && !config['rules'].empty?
-  index.save_rules(config['rules'], { clearExistingRules: true })
+  client.save_rules(indexName, config['rules'], nil, true)
 end
