@@ -8,6 +8,8 @@ By default, all valid Quarto input files (.qmd, .ipynb, .md, .Rmd) in the projec
 
 3.  Files named `README.md` or `README.qmd` (which are typically not actual render targets but rather informational content about the source code to be viewed in the version control web UI).
 
+4.  AI assistant configuration files (`CLAUDE.md`, `AGENTS.md`) which provide instructions for AI coding assistants and are not intended as rendered content.
+
 If you don't want to render all of the target documents in a project, or you wish to control the order of rendering more precisely, you can add a `project: render: [files]` entry to your project metadata. For example:
 
 ``` yaml
