@@ -53,8 +53,6 @@ Since Typst is under active development, there are still some limitations to Qua
 
 -   The default size of images may not reflect the behavior you are used to in other output formats. This is a problem that Typst, pandoc and Quarto are actively working to fix. In the meantime, you can manually [specify image widths](/docs/authoring/figures.qmd#figure-sizing).
 
--   Advanced page layout (e.g. using the `.column-*` classes as explained in [Article Layout](/docs/authoring/article-layout.qmd)) is not implemented.
-
 -   Various other small things might not yet be implemented. Please [let us know](https://github.com/quarto-dev/quarto-cli/issues/new/choose) if you see things that could use improvement!
 
 ## Page Layout
@@ -141,6 +139,66 @@ section-numbering: 1.A.a
 You can read more about specifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
 
 {{< include /docs/output-formats/_code-annotation.md >}}
+
+## Article Layout {#article-layout}
+
+Quarto's Typst format supports Tufte-style article layouts with margin content, full-width figures, and sidenotes, via the [Marginalia](https://typst.app/universe/package/marginalia) package. See [Article Layout](/docs/authoring/article-layout.qmd) for the complete guide to column classes and margin content.
+
+### Grid Customization
+
+You can customize the width of the margin and body columns using the `grid` option:
+
+``` yaml
+format:
+  typst:
+    grid:
+      margin-width: 2in
+      body-width: 4in
+      gutter-width: 0.25in
+```
+
+| Option         | Description                                      |
+|----------------|--------------------------------------------------|
+| `margin-width` | Width of the margin note column                  |
+| `body-width`   | Width of the main text column                    |
+| `gutter-width` | Gap between body text and margin                 |
+
+: Grid options for Typst {tbl-colwidths="[30,70]"}
+
+Note: `sidebar-width` does not apply to Typst output (there is no sidebar in PDF documents).
+
+For HTML grid customization, see [Page Layout - Grid Customization](/docs/output-formats/page-layout.qmd#grid-customization).
+
+### Margin Geometry
+
+For fine-grained control over margin layout, use the `margin-geometry` option. This directly configures the underlying [Marginalia](https://typst.app/universe/package/marginalia) package.
+
+``` yaml
+format:
+  typst:
+    margin-geometry:
+      outer:
+        far: 5mm
+        width: 2in
+        separation: 0.25in
+      inner:
+        far: 5mm
+        width: 0in
+        separation: 0in
+      clearance: 8pt
+```
+
+| Option             | Description                                                |
+|--------------------|------------------------------------------------------------|
+| `outer.far`        | Distance from outer page edge to wideblock boundary        |
+| `outer.width`      | Width of the outer margin note column                      |
+| `outer.separation` | Gap between outer margin and body text                     |
+| `inner.*`          | Same options for inner margin (left side on recto pages)   |
+| `clearance`        | Minimum vertical spacing between margin notes (default 12pt)|
+
+: Margin geometry options {tbl-colwidths="[30,70]"}
+
+Quarto computes margin geometry based on `papersize`, using proportions from [Marginalia's](https://typst.app/universe/package/marginalia) A4 example.
 
 ## Bibliography
 
