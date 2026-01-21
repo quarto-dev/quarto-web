@@ -95,6 +95,37 @@ If your templates use `@local` packages, configure their paths in the `[local]` 
 my-utils = "/path/to/my-utils"
 ```
 
+## Package Staging
+
+When rendering a Typst document, Quarto automatically stages packages before calling `typst compile`:
+
+1. **Built-in packages** from Quarto's resources are staged first (e.g., Marginalia for article layouts)
+2. **Extension packages** from `_extensions/<ext>/typst/packages/` are merged in, overriding any built-in packages with the same name
+
+Packages are staged to `.quarto/typst/packages/` in the project directory, then passed to Typst via:
+
+- `--package-path` for `@local` packages
+- `--package-cache-path` for `@preview` packages
+
+### Package Directory Structure
+
+The staged directory follows Typst's package layout:
+
+```
+.quarto/typst/packages/
+├── preview/
+│   └── marginalia/
+│       └── 0.3.1/
+│           ├── lib.typ
+│           └── typst.toml
+└── local/
+    └── my-pkg/
+        └── 0.1.0/
+            └── ...
+```
+
+This means bundled packages work offline without requiring network access during rendering.
+
 ## Workflow
 
 A typical workflow for bundling packages:
