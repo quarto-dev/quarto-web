@@ -78,3 +78,17 @@ contributes:
 Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/typst/pandoc/quarto/template.typ) of the default template as a starting point for your `template.typ`. Note that you can call all of the template partials provided by Quarto (e.g. `biblio.typ()` or `notes.typ()`) from within your custom template implementation.
 
 The [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams) format provides an example of redefining the main template (in that case, it is to prevent automatic bibliography processing by Quarto in deference to the built-in handling of the Typst AMS template).
+
+## Bundling Typst Packages
+
+If your custom format uses packages from the Typst preview namespace (e.g., `@preview/cetz`), you can bundle them with your extension for offline use. The `quarto call typst-gather` command scans your template files for `@preview` imports and downloads the packages.
+
+From your extension directory, run:
+
+``` {.bash filename="Terminal"}
+quarto call typst-gather
+```
+
+The command auto-detects your `.typ` files from `_extension.yml` and downloads packages into your extension directory (e.g., `_extensions/myformat/typst/packages/`).
+
+For configuration options and advanced usage, see [Gathering Typst Packages](/docs/advanced/typst/typst-gather.qmd).

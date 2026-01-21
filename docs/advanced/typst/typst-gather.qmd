@@ -1,0 +1,107 @@
+---
+title: "Gathering Typst Packages"
+---
+
+When developing a custom Typst format that uses packages from the Typst preview namespace (e.g., `@preview/marginalia`), you can bundle those packages with your extension for offline use. The `quarto call typst-gather` command automates this process.
+
+## Basic Usage
+
+From your extension directory, run:
+
+``` {.bash filename="Terminal"}
+quarto call typst-gather
+```
+
+The command:
+
+1. Detects your extension's `.typ` files from `_extension.yml`
+2. Scans them for `@preview` package imports
+3. Downloads packages into your extension directory at `typst/packages/` (e.g., `_extensions/myformat/typst/packages/`)
+
+## Auto-Detection
+
+When run without a configuration file, `typst-gather` reads your `_extension.yml` to find Typst files:
+
+``` {.yaml filename="_extension.yml"}
+contributes:
+  formats:
+    typst:
+      template: template.typ
+      template-partials:
+        - typst-template.typ
+        - typst-show.typ
+```
+
+The `template` and `template-partials` files are scanned for imports like:
+
+```typ
+#import "@preview/marginalia:0.3.1": note, wideblock
+```
+
+## Configuration File
+
+For more control, create a `typst-gather.toml` configuration file:
+
+``` {.bash filename="Terminal"}
+quarto call typst-gather --init-config
+```
+
+This generates a starter configuration based on your extension:
+
+``` {.toml filename="typst-gather.toml"}
+# typst-gather configuration
+# Run: quarto call typst-gather
+
+rootdir = "_extensions/myformat"
+destination = "typst/packages"
+
+discover = ["typst-template.typ", "typst-show.typ"]
+
+# Preview packages are auto-discovered from imports.
+# Uncomment to pin specific versions:
+# [preview]
+# marginalia = "0.3.1"
+# cetz = "0.4.1"
+
+# Local packages (@local namespace) must be configured manually.
+# [local]
+# my-pkg = "/path/to/my-pkg"
+```
+
+### Configuration Options
+
+| Option | Description |
+|--------|-------------|
+| `rootdir` | Extension directory (e.g., `_extensions/myformat`) |
+| `destination` | Where to download packages, relative to `rootdir` (default: `typst/packages`) |
+| `discover` | `.typ` files to scan for imports, relative to `rootdir` |
+
+### Pinning Versions
+
+By default, packages are discovered from your import statements. To pin specific versions, add a `[preview]` section:
+
+``` {.toml filename="typst-gather.toml"}
+[preview]
+marginalia = "0.3.1"
+cetz = "0.4.1"
+```
+
+### Local Packages
+
+If your templates use `@local` packages, configure their paths in the `[local]` section:
+
+``` {.toml filename="typst-gather.toml"}
+[local]
+my-utils = "/path/to/my-utils"
+```
+
+## Workflow
+
+A typical workflow for bundling packages:
+
+1. Develop your custom format using Typst packages
+2. Run `quarto call typst-gather` to download dependencies
+3. Commit the `typst/packages/` directory with your extension
+4. Users installing your extension get the bundled packages
+
+This ensures your extension works offline and with consistent package versions.
