@@ -106,6 +106,11 @@ When `pdf-standard` is set, Quarto can validate your output against PDF/A and PD
 quarto install verapdf
 ```
 
+::: {.callout-note}
+## Java required
+veraPDF requires a stable version of Java: 8, 11, 17, or 21.
+:::
+
 Alternatively, set the `QUARTO_VERAPDF` environment variable to your veraPDF command or path, or have veraPDF available in your   {{< kbd win="%PATH%" mac="$PATH" linux="$PATH" >}}.
 
 Once installed, validation runs automatically after rendering. Any compliance issues appear as warnings in your render output, helping you identify accessibility or archival problems in your documents.
