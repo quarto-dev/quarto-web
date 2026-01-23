@@ -62,6 +62,11 @@ You can specify one or more standards. Quarto checks that the standards are supp
 | `2.0`            |                                          |                    |
 +------------------+------------------------------------------+--------------------+
 
+::: {.callout-warning}
+## Quote numeric-only versions
+When specifying only a PDF version like `1.7` or `2.0`, use quotes so YAML treats it as a string: `pdf-standard: "1.7"`.
+:::
+
 ### Combining Standards
 
 It's common to combine PDF/A (archival) with PDF/UA (accessibility) for documents that need both long-term preservation and screen reader support:
