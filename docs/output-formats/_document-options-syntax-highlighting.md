@@ -27,7 +27,7 @@ syntax-highlighting: github
 In addition to theme names, `syntax-highlighting` accepts two special values:
 
 - `none` --- disables syntax highlighting entirely.
-- `idiomatic` --- delegates highlighting to the output format's native system instead of Pandoc's built-in Skylighting engine. For LaTeX, this uses the `listings` package; for Typst, this uses Typst's built-in code highlighting. See each format's documentation for details.
+- `idiomatic` --- delegates highlighting to the output format's native system instead of Pandoc's built-in Skylighting engine.
 
 ::: {.content-visible when-meta="doc-type.pdf"}
 For LaTeX/PDF output, `syntax-highlighting: idiomatic` uses the LaTeX `listings` package for code highlighting instead of Pandoc's default approach (which uses `fancyvrb` with `\Shaded`/`\Highlighting` environments). This may be preferred when working with LaTeX templates or publishers that expect `listings`-based code blocks.
@@ -43,7 +43,7 @@ Starting with Quarto 1.9, Typst output uses Pandoc's Skylighting engine for synt
 To restore the previous behavior, set `syntax-highlighting: idiomatic`.
 :::
 
-Setting `syntax-highlighting: idiomatic` delegates highlighting to Typst's built-in code highlighting. In this mode, Typst receives plain fenced code blocks and applies its own styling. This may be preferred when using custom Typst templates that style code blocks.
+For Typst, setting `syntax-highlighting: idiomatic` delegates highlighting to Typst's built-in code highlighting. In this mode, Typst receives plain fenced code blocks and applies its [own styling](https://typst.app/docs/reference/text/raw/#styling). This may be preferred when using custom Typst templates that style code blocks.
 :::::
 
 Highlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color's darkness. You may always opt to specify the full name (e.g. `atom-one-dark`) to bypass this automatic behavior.
