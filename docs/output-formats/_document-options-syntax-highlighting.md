@@ -10,13 +10,18 @@ Pandoc will automatically highlight syntax in [fenced code blocks](https://pando
 
 Pandoc can provide syntax highlighting for over 140 different languages (see the output of `quarto pandoc --list-highlight-languages` for a list of all of them). If you want to provide the appearance of a highlighted code block for a language not supported, just use `default` as the language name.
 
-You can specify the code highlighting style using `highlight-style` and specifying one of the supported themes. Supported themes include: arrow, pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock, atom-one, ayu, breeze, dracula, github, gruvbox, monokai, nord, oblivion, printing, radical, solarized, and vim.
+You can specify the code highlighting style using `syntax-highlighting` and specifying one of the supported themes. Supported themes include: arrow, pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock, atom-one, ayu, breeze, dracula, github, gruvbox, monokai, nord, oblivion, printing, radical, solarized, and vim.
 
 For example:
 
 ``` yaml
-highlight-style: github
+syntax-highlighting: github
 ```
+
+In addition to theme names, `syntax-highlighting` accepts two special values:
+
+- `none` --- disables syntax highlighting entirely.
+- `idiomatic` --- delegates highlighting to the output format's native system instead of Pandoc's built-in Skylighting engine. For LaTeX, this uses the `listings` package; for Typst, this uses Typst's built-in code highlighting. See each format's documentation for details.
 
 Highlighting themes can provide either a single highlighting definition or two definitions, one optimized for a light colored background and another optimized for a dark color background. When available, Quarto will automatically select the appropriate style based upon the code chunk background color's darkness. You may always opt to specify the full name (e.g. `atom-one-dark`) to bypass this automatic behavior.
 
