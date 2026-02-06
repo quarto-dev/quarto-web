@@ -1,5 +1,11 @@
 ## Syntax Highlighting
 
+::: {.content-visible when-meta="doc-type.typst"}
+
+{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
+
+:::
+
 Pandoc will automatically highlight syntax in [fenced code blocks](https://pandoc.org/MANUAL.html#fenced-code-blocks) that are marked with a language name. For example:
 
 ````
@@ -28,8 +34,6 @@ For LaTeX/PDF output, `syntax-highlighting: idiomatic` uses the LaTeX `listings`
 :::
 
 ::::: {.content-visible when-meta="doc-type.typst"}
-
-{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
 
 ::: callout-important
 ## Changed Default for Typst
