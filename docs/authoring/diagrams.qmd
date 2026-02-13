@@ -23,7 +23,7 @@ As illustrated above, Mermaid diagrams are embedded using `{mermaid}` executable
 
 
 ::: callout-note
-For print output formats like `pdf` or `docx`, diagram rendering makes use of the Chrome or Edge web browser to create a high-quality PNG. Quarto can automatically use an existing version of Chrome or Edge on your system, or alternatively if you don't have either installed, can use a lighter-weight library version of Chrome (see [Chrome Install](#chrome-install) below for details).
+For print output formats like `pdf` or `docx`, diagram rendering makes use of the Chrome or Edge web browser to create a high-quality PNG. Quarto can automatically use an existing version of Chrome or Edge on your system, or alternatively if you don't have either installed, you can install a lighter-weight version called Chrome Headless Shell (see [Chrome Install](#chrome-install) below for details).
 :::
 
 ## Mermaid
@@ -236,12 +236,16 @@ To include code for `{dot}`, add `//| echo: true` to the top of the cell. For ex
 
 For printing to output formats like `pdf` or `docx`, diagram rendering makes use of the Chrome or Edge web browser to create a high-quality PNG.
 
-Quarto can automatically use an existing version of Chrome or Edge on your system for rendering. Alternatively, if you don't have either, you can install a minimal version of Chrome for use by Quarto with the following command:
+Quarto can automatically use an existing version of Chrome or Edge on your system for rendering. Alternatively, if you don't have either installed, you can install Chrome Headless Shell for use by Quarto:
 
 ``` {.bash filename="Terminal"}
-quarto install chromium
+quarto install chrome-headless-shell
 ```
 
+[Chrome Headless Shell](https://developer.chrome.com/blog/chrome-headless-shell) is a lightweight, headless-only browser from Google's [Chrome for Testing](https://developer.chrome.com/blog/chrome-for-testing) infrastructure. It has fewer system dependencies than full Chromium, making it a good fit for Docker containers and WSL environments.
+
 ::: callout-note
-Quarto installs headless Chromium via Puppeteer. The bundled Chromium that Puppeteer installs may not work on Docker containers; please check [the Puppeteer documentation](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker) as well as [this article](https://pptr.dev/next/troubleshooting#running-puppeteer-on-wsl-windows-subsystem-for-linux) if you are attempting to install within Windows Subsystem for Linux (WSL).
+## Legacy Chromium
+
+The older `quarto install chromium` command (which installs Chromium via Puppeteer) is still available but no longer recommended. If you use it, note that the Puppeteer-bundled Chromium may not work in Docker or WSL — see [Puppeteer troubleshooting](https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md#running-puppeteer-in-docker) for details.
 :::
