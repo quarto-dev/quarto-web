@@ -1,0 +1,135 @@
+---
+title: "Posit Connect Cloud"
+editor: visual
+heading-pad: '#'
+---
+
+{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
+
+## Overview
+
+[Posit Connect Cloud](https://connect.posit.cloud) is an online platform
+from Posit for deploying and sharing data applications and documents.
+Use Connect Cloud when you want a hosted service for publishing Quarto
+documents and websites without managing your own infrastructure.
+
+There are several ways to publish Quarto content to Connect Cloud:
+
+1.  Use the `quarto publish` command to publish static content rendered
+    on your local machine.
+
+2.  Publish source content from a [GitHub repository][gh-publish] for
+    server-side rendering with automatic redeployment on push.
+
+3.  Publish source content from an [IDE][ide-publish] (Positron, VS Code,
+    or RStudio).
+
+Each of these options is covered below. If you are just getting started,
+we recommend using `quarto publish` (the first approach).
+
+[gh-publish]: https://docs.posit.co/connect-cloud/user/publish/github.html
+[ide-publish]: https://docs.posit.co/connect-cloud/user/publish/ide.html
+
+## Publish Command
+
+The `quarto publish` command is the easiest way to publish locally rendered
+content. From the directory where your project is located, execute:
+
+```{.bash filename="Terminal"}
+quarto publish posit-connect-cloud
+```
+
+If you haven't previously published to Connect Cloud, a browser will open
+to authenticate using your Posit account:
+
+```{.bash filename="Terminal"}
+$ quarto publish posit-connect-cloud
+ ? Open a browser to authenticate (Y/n) ›
+```
+
+After authenticating, your content will be rendered and deployed, and a
+browser will open to view your published content on Connect Cloud.
+
+A record of your previous publishes will be stored in a `_publish.yml`
+file within the project or document directory. For example:
+
+``` yaml
+- source: project
+  posit-connect-cloud:
+    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
+      url: "https://connect.posit.cloud/content/..."
+```
+
+Account information is not stored in this file, so it is suitable for
+checking in to version control and being shared by multiple publishers.
+
+You can customize the behavior of `quarto publish` by providing the
+following command line options:
+
+{{< include _cli-options.md >}}
+
+To publish a document rather than a website or book, provide the path
+to the document:
+
+```{.bash filename="Terminal"}
+quarto publish posit-connect-cloud document.qmd
+```
+
+### Multiple Accounts
+
+If you have multiple Posit accounts, you'll be prompted to choose which
+account to publish with. You can manage stored accounts using:
+
+```{.bash filename="Terminal"}
+quarto publish accounts
+```
+
+## Publishing Source Content
+
+The `quarto publish` command publishes pre-rendered content (static HTML).
+To publish source content for server-side rendering on Connect Cloud, use
+one of the following methods.
+
+### GitHub
+
+Connect Cloud can publish directly from a GitHub repository. When you push
+changes to the connected branch, Connect Cloud automatically re-renders and
+redeploys your content. This is ideal for scheduled reports and collaborative
+projects.
+
+See the Connect Cloud documentation on [Publishing from GitHub][gh-publish]
+for setup instructions and details.
+
+### IDE
+
+You can publish source content directly from your editor using:
+
+-   **Posit Publisher** --- A VS Code / Positron extension for deploying
+    content to Connect Cloud. Pre-installed in Positron; available from the
+    VS Code Marketplace for VS Code.
+
+-   **rsconnect** --- The rsconnect R package can deploy R content
+    programmatically from RStudio or any R session.
+
+See the Connect Cloud documentation on [Publishing from an IDE][ide-publish]
+for setup instructions and details.
+
+## Continuous Integration
+
+You can publish to Connect Cloud from a CI service by scripting the
+`quarto publish` command with environment variables for authentication:
+
+| Variable                              | Description                                       |
+|---------------------------------------|---------------------------------------------------|
+| `POSIT_CONNECT_CLOUD_ACCESS_TOKEN`    | OAuth access token for authentication (required). |
+| `POSIT_CONNECT_CLOUD_REFRESH_TOKEN`   | OAuth refresh token (required).                   |
+| `POSIT_CONNECT_CLOUD_ACCOUNT_ID`      | Account ID to publish with (optional, auto-selects if only one account). |
+
+```{.bash filename="Terminal"}
+export POSIT_CONNECT_CLOUD_ACCESS_TOKEN="..."
+export POSIT_CONNECT_CLOUD_REFRESH_TOKEN="..."
+quarto publish posit-connect-cloud --no-prompt --no-browser
+```
+
+See the article on [Publishing with CI](ci.qmd) for additional details
+on non-interactive use of `quarto publish`.

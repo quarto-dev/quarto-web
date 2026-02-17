@@ -54,6 +54,12 @@ If you are publishing a source code version of your content to Posit Connect it'
 
 To learn more about this, see the documentation on [Git Backed Content](https://docs.rstudio.com/connect/user/git-backed/) for Posit Connect.
 
+## Posit Connect Cloud
+
+[Posit Connect Cloud](posit-connect-cloud.qmd) can publish directly from a GitHub repository, automatically re-rendering and redeploying your content when you push changes. This is the recommended approach for continuous deployment to Connect Cloud.
+
+See the Connect Cloud documentation on [Publishing from GitHub](https://docs.posit.co/connect-cloud/user/publish/github.html) for setup instructions. For other CI environments, you can use `quarto publish` with environment variables as described in the [Shell Commands] section below.
+
 ## Shell Commands
 
 This section covers using the `quarto publish` command on a server where no user interaction is possible. This involves the following steps:
@@ -133,6 +139,7 @@ You can specify publishing credentials either using environment variables or via
 | Netlify         | `NETLIFY_AUTH_TOKEN`                                                      |
 | Posit Connect   | `CONNECT_SERVER` and `CONNECT_API_KEY`                                    |
 | Confluence      | `CONFLUENCE_AUTH_TOKEN`, `CONFLUENCE_USER_EMAIL`, and `CONFLUENCE_DOMAIN` |
+| Posit Connect Cloud | `POSIT_CONNECT_CLOUD_ACCESS_TOKEN`, `POSIT_CONNECT_CLOUD_REFRESH_TOKEN`, and `POSIT_CONNECT_CLOUD_ACCOUNT_ID` |
 
 Set these environment variables within your script before calling `quarto publish`. For example:
 
@@ -191,4 +198,11 @@ export CONFLUENCE_AUTH_TOKEN=7C0947A852D8
 export CONFLUENCE_USER_EMAIL=email@domain.com
 export CONFLUENCE_DOMAIN=https://domain.atlassian.net/
 quarto publish confluence --no-browser --no-prompt
+```
+
+```{.bash filename="Terminal"}
+# render and publish to Posit Connect Cloud based on _publish.yml
+export POSIT_CONNECT_CLOUD_ACCESS_TOKEN="..."
+export POSIT_CONNECT_CLOUD_REFRESH_TOKEN="..."
+quarto publish posit-connect-cloud
 ```
