@@ -13,7 +13,7 @@
 
 : {tbl-colwidths="\[30,70\]"}
 
-If you don't know which to choose, try [Quarto Pub](/docs/publishing/quarto-pub.qmd) which is a free service for publicly available content. If you are publishing to a destination not listed above, choose [Other Services](/docs/publishing/other.qmd).
+If you don't know which to choose, try [Posit Connect Cloud](/docs/publishing/posit-connect-cloud.qmd) which is a free hosted service, or [GitHub Pages](/docs/publishing/github-pages.qmd) if your source code is on GitHub. If you are publishing to a destination not listed above, choose [Other Services](/docs/publishing/other.qmd).
 
 These articles cover both straightforward direct publishing as well as Continuous Integration (CI) publishing with GitHub Actions. If you want to publish using CI and aren't using GitHub Actions, the article on [Publishing with CI](/docs/publishing/ci.qmd) provides additional details and documentation.
 
