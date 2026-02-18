@@ -10,7 +10,7 @@ Prior to attempting to publish with a GitHub Action, you should have completed a
 - source: project
   {{< meta provider >}}:
     - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
-      url: "{{< meta provider-publish-url >}}"
+      url: "{{< meta provider.publish-url >}}"
 ```
 
 You can also manually create a `_publish.yml` file that looks like the example above, but with the appropriate `id` and `url` values for your site.
