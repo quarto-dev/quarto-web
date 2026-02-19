@@ -1,4 +1,4 @@
-Removes an extension.
+Uninstalls a global dependency (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF).
 
 ``` {.bash}
 quarto uninstall [tool]
@@ -87,9 +87,21 @@ quarto uninstall [tool]
 
 
 ## Examples
-### Remove extension using name
+### Uninstall TinyTeX
 
 ``` {.bash filename='Terminal'}
-quarto remove <extension-name>
+quarto uninstall tinytex
+```
+
+### Uninstall Chrome Headless Shell
+
+``` {.bash filename='Terminal'}
+quarto uninstall chrome-headless-shell
+```
+
+### Uninstall Chromium (legacy)
+
+``` {.bash filename='Terminal'}
+quarto uninstall chromium
 ```
 

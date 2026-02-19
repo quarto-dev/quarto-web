@@ -1,5 +1,5 @@
 {
-  "version": "1.9.16",
+  "version": "1.9.22",
   "commands": [
     {
       "name": "render",
@@ -1532,7 +1532,7 @@
     {
       "name": "update",
       "hidden": false,
-      "description": "Updates an extension or global dependency.",
+      "description": "Updates an extension or global dependency (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF).",
       "options": [
         {
           "standalone": true,
@@ -1682,7 +1682,11 @@
           "description": "quarto update tool tinytex"
         },
         {
-          "name": "Update Chromium",
+          "name": "Update Chrome Headless Shell",
+          "description": "quarto update tool chrome-headless-shell"
+        },
+        {
+          "name": "Update Chromium (legacy)",
           "description": "quarto update tool chromium"
         },
         {
@@ -2981,7 +2985,7 @@
     {
       "name": "install",
       "hidden": false,
-      "description": "Installs a global dependency (TinyTex or Chromium).",
+      "description": "Installs a global dependency (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF).",
       "options": [
         {
           "standalone": true,
@@ -3110,7 +3114,11 @@
           "description": "quarto install tinytex"
         },
         {
-          "name": "Install Chromium",
+          "name": "Install Chrome Headless Shell",
+          "description": "quarto install chrome-headless-shell"
+        },
+        {
+          "name": "Install Chromium (legacy)",
           "description": "quarto install chromium"
         },
         {
@@ -3151,7 +3159,7 @@
     {
       "name": "uninstall",
       "hidden": false,
-      "description": "Removes an extension.",
+      "description": "Uninstalls a global dependency (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF).",
       "options": [
         {
           "standalone": true,
@@ -3276,8 +3284,16 @@
       "usage": "[tool]",
       "examples": [
         {
-          "name": "Remove extension using name",
-          "description": "quarto remove <extension-name>"
+          "name": "Uninstall TinyTeX",
+          "description": "quarto uninstall tinytex"
+        },
+        {
+          "name": "Uninstall Chrome Headless Shell",
+          "description": "quarto uninstall chrome-headless-shell"
+        },
+        {
+          "name": "Uninstall Chromium (legacy)",
+          "description": "quarto uninstall chromium"
         }
       ],
       "commands": [
@@ -3373,7 +3389,7 @@
     {
       "name": "publish",
       "hidden": false,
-      "description": "Publish a document or project to a provider.\n\nAvailable providers include:\n\n - Quarto Pub (quarto-pub)\n - GitHub Pages (gh-pages)\n - Posit Connect (connect)\n - Netlify (netlify)\n - Confluence (confluence)\n - Hugging Face Spaces (huggingface)\n\nAccounts are configured interactively during publishing.\nManage/remove accounts with: quarto publish accounts",
+      "description": "Publish a document or project to a provider.\n\nAvailable providers include:\n\n - Quarto Pub (quarto-pub)\n - GitHub Pages (gh-pages)\n - Posit Connect (connect)\n - Posit Connect Cloud (posit-connect-cloud)\n - Netlify (netlify)\n - Confluence (confluence)\n - Hugging Face Spaces (huggingface)\n\nAccounts are configured interactively during publishing.\nManage/remove accounts with: quarto publish accounts",
       "options": [
         {
           "standalone": true,
@@ -3595,6 +3611,10 @@
         {
           "name": "Publish with explicit credentials",
           "description": "quarto publish connect --server example.com --token 01A24233E294"
+        },
+        {
+          "name": "Publish project to Posit Connect Cloud",
+          "description": "quarto publish posit-connect-cloud"
         },
         {
           "name": "Publish without confirmation prompt",
@@ -4628,6 +4648,142 @@
               ],
               "equalsSign": false,
               "typeDefinition": ""
+            }
+          ],
+          "usage": "[entry-point:string]",
+          "examples": [],
+          "commands": [
+            {
+              "name": "help",
+              "hidden": false,
+              "description": "Show this help or the help of a sub-command.",
+              "options": [
+                {
+                  "standalone": true,
+                  "global": true,
+                  "prepend": true,
+                  "name": "help",
+                  "description": "Show this help.",
+                  "args": [],
+                  "flags": [
+                    "-h",
+                    "--help"
+                  ],
+                  "equalsSign": false,
+                  "typeDefinition": "",
+                  "aliases": [
+                    "h"
+                  ]
+                }
+              ],
+              "usage": "[command:command]",
+              "examples": [],
+              "commands": []
+            }
+          ]
+        },
+        {
+          "name": "typst-gather",
+          "hidden": false,
+          "description": "Gather Typst packages for a format extension.\n\nThis command scans Typst files for @preview imports and downloads the packages to a local directory for offline use.\n\nConfiguration is determined by:\n  1. typst-gather.toml in current directory (if present)\n  2. Auto-detection from _extension.yml (template and template-partials)",
+          "options": [
+            {
+              "standalone": true,
+              "global": true,
+              "prepend": true,
+              "name": "help",
+              "description": "Show this help.",
+              "args": [],
+              "flags": [
+                "-h",
+                "--help"
+              ],
+              "equalsSign": false,
+              "typeDefinition": "",
+              "aliases": [
+                "h"
+              ]
+            },
+            {
+              "name": "init-config",
+              "description": "Generate a starter typst-gather.toml in current directory",
+              "args": [],
+              "flags": [
+                "--init-config"
+              ],
+              "equalsSign": false,
+              "typeDefinition": ""
+            },
+            {
+              "global": true,
+              "name": "log",
+              "description": "Path to log file",
+              "args": [
+                {
+                  "optional": false,
+                  "name": "file",
+                  "action": "string",
+                  "variadic": false,
+                  "list": false,
+                  "type": "string"
+                }
+              ],
+              "flags": [
+                "--log"
+              ],
+              "equalsSign": false,
+              "typeDefinition": "<file>"
+            },
+            {
+              "global": true,
+              "name": "log-level",
+              "description": "Log level (debug, info, warning, error, critical)",
+              "args": [
+                {
+                  "optional": false,
+                  "name": "level",
+                  "action": "string",
+                  "variadic": false,
+                  "list": false,
+                  "type": "string"
+                }
+              ],
+              "flags": [
+                "--log-level"
+              ],
+              "equalsSign": false,
+              "typeDefinition": "<level>"
+            },
+            {
+              "global": true,
+              "name": "log-format",
+              "description": "Log format (plain, json-stream)",
+              "args": [
+                {
+                  "optional": false,
+                  "name": "format",
+                  "action": "string",
+                  "variadic": false,
+                  "list": false,
+                  "type": "string"
+                }
+              ],
+              "flags": [
+                "--log-format"
+              ],
+              "equalsSign": false,
+              "typeDefinition": "<format>"
+            },
+            {
+              "global": true,
+              "name": "quiet",
+              "description": "Suppress console output.",
+              "args": [],
+              "flags": [
+                "--quiet"
+              ],
+              "equalsSign": false,
+              "typeDefinition": ""
             },
             {
               "global": true,
@@ -4641,7 +4797,7 @@
               "typeDefinition": ""
             }
           ],
-          "usage": "[entry-point:string]",
+          "usage": "",
           "examples": [],
           "commands": [
             {
