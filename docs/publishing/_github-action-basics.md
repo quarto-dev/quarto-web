@@ -1,4 +1,4 @@
-Using the `quarto publish {{< meta provider >}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
+Using the `quarto publish {{< meta provider.id >}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
 
 There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion on [Rendering for CI](ci.qmd#rendering-for-ci).
 
@@ -8,7 +8,7 @@ Prior to attempting to publish with a GitHub Action, you should have completed a
 
 ``` yaml
 - source: project
-  {{< meta provider >}}:
+  {{< meta provider.id >}}:
     - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
       url: "{{< meta provider.publish-url >}}"
 ```
