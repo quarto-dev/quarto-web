@@ -1,7 +1,17 @@
 ---
 title: "Posit Connect Cloud"
-editor: visual
-heading-pad: '#'
+provider:
+  id: posit-connect-cloud
+  name: Posit Connect Cloud
+  publish-url: "https://connect.posit.cloud/content/5f3abafe-68f9-4c1d-835b-9d668b892001"
+  authorization:
+    enabled: true
+    description: "A browser will open to authenticate using your Posit account:"
+    prompt: |
+      ? Authorize (Y/n) ›
+      ❯ In order to publish to Posit Connect Cloud you need to authorize your account.
+        Please be sure you are logged into the correct Posit Connect Cloud account in your
+        default web browser, then press Enter or 'Y' to authorize.
 ---
 
 {{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
@@ -12,6 +22,7 @@ heading-pad: '#'
 from Posit for deploying and sharing data applications and documents.
 Use Posit Connect Cloud when you want a hosted service for publishing Quarto
 documents and websites without managing your own infrastructure.
+Posit Connect Cloud includes a free tier that allows unlimited publishing of static documents.
 
 ::: {.callout-note}
 Looking for self-hosted deployment within your organization? See [Posit Connect](rstudio-connect.qmd).
@@ -19,64 +30,23 @@ Looking for self-hosted deployment within your organization? See [Posit Connect]
 
 There are several ways to publish Quarto content to Posit Connect Cloud:
 
-1.  Use the `quarto publish` command to publish locally rendered content.
+1.  Use the `quarto publish` command to publish locally rendered static content.
 
-2.  Publish source content from a [GitHub repository][gh-publish] for
-    server-side rendering with automatic redeployment on push.
+2.  Publish source content from a [GitHub repository][gh-publish]. 
+    The source is rendered by Posit Connect Cloud, and redeployed automatically when content is pushed to the repository.
 
 3.  Publish source content from an [IDE][ide-publish] (Positron, VS Code,
     or RStudio).
 
+4.  Script the `quarto publish` command to publish from a Continuous Integration (CI) service.
+
 Each of these options is covered below. If you are just getting started,
-we recommend using `quarto publish` (the first approach).
+we recommend using the first approach, `quarto publish`.
 
 [gh-publish]: https://docs.posit.co/connect-cloud/user/publish/github.html
 [ide-publish]: https://docs.posit.co/connect-cloud/user/publish/ide.html
 
-## Publish Command
-
-The `quarto publish` command is the easiest way to publish locally rendered
-content. From the directory where your project is located, execute:
-
-```{.bash filename="Terminal"}
-quarto publish posit-connect-cloud
-```
-
-If you haven't previously published to Posit Connect Cloud, a browser will open
-to authenticate using your Posit account:
-
-```{.bash filename="Terminal"}
-$ quarto publish posit-connect-cloud
- ? Open a browser to authenticate (Y/n) ›
-```
-
-After authenticating, your content will be rendered and deployed, and a
-browser will open to view your published content on Posit Connect Cloud.
-
-A record of your previous publishes will be stored in a `_publish.yml`
-file within the project or document directory. For example:
-
-``` yaml
-- source: project
-  posit-connect-cloud:
-    - id: "5f3abafe-68f9-4c1d-835b-9d668b892001"
-      url: "https://connect.posit.cloud/content/..."
-```
-
-Account information is not stored in this file, so it is suitable for
-checking in to version control and being shared by multiple publishers.
-
-You can customize the behavior of `quarto publish` by providing the
-following command line options:
-
-{{< include _cli-options.md >}}
-
-To publish a document rather than a website or book, provide the path
-to the document:
-
-```{.bash filename="Terminal"}
-quarto publish posit-connect-cloud document.qmd
-```
+{{< include _publish-command.md >}}
 
 ### Multiple Accounts
 
@@ -87,13 +57,7 @@ account to publish with. You can manage stored accounts using:
 quarto publish accounts
 ```
 
-## Publishing Source Content
-
-The `quarto publish` command publishes locally rendered content.
-To publish source content for server-side rendering on Posit Connect Cloud, use
-one of the following methods.
-
-### GitHub
+## Publish from GitHub
 
 Posit Connect Cloud can publish directly from a GitHub repository. When you push
 changes to the connected branch, Posit Connect Cloud automatically re-renders and
@@ -103,7 +67,7 @@ projects.
 See the Posit Connect Cloud documentation on [Publishing from GitHub][gh-publish]
 for setup instructions and details.
 
-### IDE
+## Publish from your IDE
 
 You can publish source content directly from your editor using:
 

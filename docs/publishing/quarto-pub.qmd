@@ -1,8 +1,9 @@
 ---
 title: "Quarto Pub"
-provider: quarto-pub
-provider-name: Quarto Pub
-provider-publish-url: "https://njones.quarto.pub/blog"
+provider:
+  id: quarto-pub
+  name: Quarto Pub
+  publish-url: "https://njones.quarto.pub/blog"
 ---
 
 ## Overview
@@ -132,7 +133,7 @@ jobs:
       - name: Render and Publish 
         uses: quarto-dev/quarto-actions/publish@v2
         with:
-          target: {{< meta provider >}}
+          target: {{< meta provider.id >}}
           QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
 ```
 
@@ -156,13 +157,13 @@ The final step is to configure your GitHub Action with the credentials required 
 
 ### Commit to Publish
 
-Once you've specified your publishing action and {{< meta provider-name >}} credentials, and pushed your updated repository (including the `_freeze` directory) to GitHub, your action will run with this and subsequent commits, automatically rendering and publishing to {{< meta provider-name >}}.
+Once you've specified your publishing action and {{< meta provider.name >}} credentials, and pushed your updated repository (including the `_freeze` directory) to GitHub, your action will run with this and subsequent commits, automatically rendering and publishing to {{< meta provider.name >}}.
 
 {{< include _github-action-executing-code.md >}}
 
 #### Example: Jupyter with venv
 
-Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to {{< meta provider-name >}}:
+Here is a complete example of a GitHub Action that installs Python, Jupyter, and package dependencies from `requirements.txt`, then executes code and renders output to {{< meta provider.name >}}:
 
 ``` {.yaml filename=".github/workflows/publish.yml"}
 on:
@@ -193,13 +194,13 @@ jobs:
       - name: Render and Publish 
         uses: quarto-dev/quarto-actions/publish@v2
         with:
-          target: {{< meta provider >}}
+          target: {{< meta provider.id >}}
           QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
 ```
 
 #### Example: Knitr with renv
 
-Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to {{< meta provider-name >}}:
+Here is a complete example of a GitHub Action that installs R and package dependencies from `renv.lock`, then executes code and renders output to {{< meta provider.name >}}:
 
 ``` {.yaml filename=".github/workflows/publish.yml"}
 on:
@@ -232,7 +233,7 @@ jobs:
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
-          target: {{< meta provider >}}
+          target: {{< meta provider.id >}}
           QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
 ```
 
@@ -244,7 +245,7 @@ It's possible to have a Quarto project in a larger GitHub repository, where the 
 - name: Render and Publish
   uses: quarto-dev/quarto-actions/publish@v2
   with:
-    target: {{< meta provider >}}
+    target: {{< meta provider.id >}}
     path: subdirectory-to-use
     QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
 ```
@@ -255,7 +256,7 @@ By default, `quarto publish` will re-render your project before publishing it. H
 - name: Render and Publish
   uses: quarto-dev/quarto-actions/publish@v2
   with:
-    target: {{< meta provider >}}
+    target: {{< meta provider.id >}}
     render: false
     QUARTO_PUB_AUTH_TOKEN: ${{ secrets.QUARTO_PUB_AUTH_TOKEN }}
 ```
