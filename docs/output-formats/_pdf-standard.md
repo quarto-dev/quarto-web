@@ -93,7 +93,7 @@ You can only specify one standard from each family (one PDF/A variant, one PDF/U
 
 Although Quarto can't on its own guarantee accessibility requirements are met, many are satisfied through the Markdown structure of the document:
 
-- **Alt text propagation**: Alt text from markdown image captions and `fig-alt` attributes is passed through to the PDF for screen readers. See [Figures](/docs/authoring/figures.qmd) for details on specifying alt text.
+- **Alt text propagation**: Alt text from markdown image captions and `fig-alt` attributes is passed through to the PDF for screen readers. See [Figures](/docs/authoring/figures.qmd#alt-text) for details on specifying alt text.
 - **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Typst always has PDF tagging enabled, and Quarto enables PDF tagging for LaTeX when you specify a standard that requires it. [PDF/UA standards and PDF/A "a" variants like `a-2a`]{.aside}
 
 Use validation (described below) to identify accessibility issues in your documents that may require manual attention.
