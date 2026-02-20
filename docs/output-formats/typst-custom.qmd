@@ -22,10 +22,11 @@ You can create highly customized output with Typst by defining a new format base
 | [Letter](https://github.com/quarto-ext/typst-templates/tree/main/letter)       | `quarto use template quarto-ext/typst-templates/letter`    |
 | [Fiction](https://github.com/quarto-ext/typst-templates/tree/main/fiction)     | `quarto use template quarto-ext/typst-templates/fiction`   |
 | [Dept News](https://github.com/quarto-ext/typst-templates/tree/main/dept-news) | `quarto use template quarto-ext/typst-templates/dept-news` |
+| [orange-book](https://github.com/quarto-ext/orange-book)                       | Bundled; default for book projects                         |
 
 : {tbl-colwidths=\[20,80\]}
 
-The source code for these formats is available at <https://github.com/quarto-ext/typst-templates>.
+The source code for these formats is available at <https://github.com/quarto-ext/typst-templates> and <https://github.com/quarto-ext/orange-book>.
 
 ## Create a Format
 
@@ -50,6 +51,20 @@ Additional resources you might find useful when creating custom formats include:
 -   The official Typst tutorial on [Making a Template](https://typst.app/docs/tutorial/making-a-template/)
 
 -   List of third party templates from the [Awesome Quarto](https://github.com/qjcg/awesome-typst#templates--libraries) repo.
+
+## Book Format Extensions
+
+{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
+
+A Typst book format extension includes template partials that configure the underlying Typst package, and a Lua filter that transforms Quarto's book structure into package-specific commands. The core partials are:
+
+-   `typst-show.typ` — imports the Typst package and applies its template with Quarto metadata
+-   `numbering.typ` — defines chapter-based numbering for equations, figures, callouts, and theorems, with appendix-aware transitions
+-   `page.typ` — configures page geometry
+
+The Lua filter uses `quarto.doc.file_metadata()` to detect book item types (parts, chapters, appendices) and emit the appropriate Typst code for each. Extensions can also integrate with the [marginalia](https://typst.app/universe/package/marginalia) package for margin notes with recto/verso page awareness.
+
+The bundled [orange-book extension](https://github.com/quarto-ext/orange-book) provides a complete example of this structure.
 
 ## Advanced Customization
 

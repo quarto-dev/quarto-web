@@ -70,7 +70,7 @@ title: "Quarto Document"
 author: "Norah Jones"
 toc: true
 number-sections: true
-highlight-style: pygments
+syntax-highlighting: pygments
 format: 
   pdf: 
     geometry: 
@@ -95,7 +95,7 @@ The next three lines are document format options that *apply to all formats*. wh
 ``` yaml
 toc: true
 number-sections: true
-highlight-style: pygments
+syntax-highlighting: pygments
 ```
 
 Next, we have the `format` option, where we provide format-specific options.

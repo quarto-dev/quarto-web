@@ -1,8 +1,11 @@
 ---
 title: "Typst Basics"
 tbl-colwidths: [35,65]
-aliases: 
+aliases:
   - /docs/prerelease/1.4/typst.html
+pdf-standard-typst-examples: true
+doc-type:
+  typst: true
 # project:
 #   pre-render:
 #     - quarto run ../../tools/snapshot-typst.ts examples/gt-temps.qmd images/typst-tables-gt-temps.png
@@ -46,6 +49,8 @@ One of the highlights of Typst is the ease of creating highly customized templat
 :::
 
  Learn more about how to use them, and how to create your own in [Custom Formats](typst-custom.qmd).
+
+Typst is also supported for [book projects](/docs/books/book-output.qmd#typst-output).
 
 ## Known Limitations
 
@@ -118,27 +123,7 @@ Then, any unspecified margins will inherit from the default margins.
 The `columns` option expects a number - the number of columns your body content should have. The default template sets `columns` to `1`. 
 
 
-{{< include /docs/output-formats/_document-options-toc.md >}}
-
-The `toc-indent` option controls how far entries are indented in the displayed table of contents. The default is equivalent to:
-
-```{.yaml}
-toc-indent: 1.5em
-```
-
-{{< include /docs/output-formats/_document-options-section-numbering.md >}}
-
-You can also customize the display of the section numbers with the `section-numbering` YAML option. This option expects a string that describes the numbering schema. For example, the following schema describes numbering sections with numerals, subsection with uppercase letters, and subsubsections with lower case letters, using `.` as a separator:
-
-```yaml
----
-section-numbering: 1.A.a
----
-```
-
-You can read more about specifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
-
-{{< include /docs/output-formats/_code-annotation.md >}}
+{{< include /docs/output-formats/_document-options-begin.md >}}
 
 ## Article Layout {#article-layout}
 
@@ -223,6 +208,27 @@ This gets compiled to
 [This is a block with gray background and slightly rounded corners.])
 ````
 
+## Theorems
+
+{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
+
+Quarto uses the [theorion](https://typst.app/universe/package/theorion) package for theorems in Typst output. You can control the appearance of theorems, lemmas, proofs, and related blocks using the `theorem-appearance` option:
+
+``` yaml
+format:
+  typst:
+    theorem-appearance: fancy
+```
+
+| Appearance | Description |
+|------------|-------------|
+| `simple`   | Classic LaTeX-style theorems (default) |
+| `fancy`    | Colored boxes using brand colors |
+| `clouds`   | Rounded backgrounds |
+| `rainbow`  | Colored left border with colored title |
+
+The `fancy` appearance integrates with [`_brand.yml`](/docs/authoring/brand.qmd), using your brand colors for theorem boxes.
+
 ## Raw Typst 
 
 If you want to use raw `typst` markup, use a raw `typst` block. For example:
@@ -295,12 +301,20 @@ Note that [named Typst colors](https://typst.app/docs/reference/visualize/color/
 
 Typst does not support opacity as a filter, so opacity is simulated using the alpha channel of the color.
 
-## Accessibility
+{{< include _pdf-standard.md >}}
+
+::: callout-tip
+Typst also validates documents against the requested standard and will fail to produce a PDF if it detects non-compliance. Its validation is thorough but not as complete as veraPDF.
+:::
+
+### Image Alt Text
+
+Quarto passes alt text from markdown image captions and `fig-alt` attributes to Typst's `image()` function, making images accessible to screen readers. See [Figures](/docs/authoring/figures.qmd) for details on specifying alt text.
 
 ### Equation Alt Text {#equation-alt-text}
 
 Equations in Typst can include alternative text for screen readers.
-Use the `alt` attribute in the equation label:
+Alt text is supported for cross-referenced equations using the `alt` attribute in the equation label:
 
 ```markdown
 $$

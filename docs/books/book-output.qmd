@@ -13,19 +13,19 @@ If you want to specify rendering options (including format-specific options), yo
 Here's an example configuration:
 
 ``` yaml
-highlight-style: pygments
+syntax-highlighting: pygments
 
 format:
   html:
     theme: cosmo
     code-copy: true
   pdf: default
-    
+
 bibliography: references.bib
 csl: citestyle.csl
 ```
 
-Note that in the above configuration the `highlight-style` option applies to all formats whereas the `html` options apply to only HTML output. The bibliography related options naturally also apply to all formats.
+Note that in the above configuration the `syntax-highlighting` option applies to all formats whereas the `html` options apply to only HTML output. The bibliography related options naturally also apply to all formats.
 
 ## Reader Tools
 
@@ -153,9 +153,42 @@ In some cases you'll want to do customization of the LaTeX output before creatin
 quarto render --to latex
 ```
 
-The complete LaTeX source code of your book will be output into the `_book/book-latex` directory.  
+The complete LaTeX source code of your book will be output into the `_book/book-latex` directory.
 
 At this point you should probably make a copy or git branch of the `_book` directory to perform your final LaTeX modifications within (since the modifications you make to LaTeX will not be preserved in your markdown source, and will therefore be overwritten the next time you render).
+
+## Typst Output
+
+{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
+
+Quarto books can be rendered to PDF using [Typst](https://typst.app). When you specify `format: typst` for a book project, Quarto automatically uses the bundled [orange-book](https://typst.app/universe/package/orange-book) format extension, which provides textbook styling.
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: book
+
+book:
+  title: "My Book"
+  author: "Jane Doe"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+
+format: typst
+```
+
+The orange-book format provides:
+
+-   Chapter and section styling with decorative headers
+-   Support for book parts and appendices
+-   Chapter-based numbering for figures, tables, equations, and cross-references
+-   A styled table of contents
+-   Integration with [`_brand.yml`](/docs/authoring/brand.qmd) for color and logo
+
+### Customizing Typst Books
+
+You can create your own Typst book format extension. See [Custom Typst Formats](/docs/output-formats/typst-custom.qmd) for details on creating format extensions.
 
 ## HTML Styles
 
