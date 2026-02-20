@@ -1,5 +1,5 @@
 ---
-title: llms.txt Output
+title: Output for LLMs
 ---
 
 ## Overview
@@ -18,11 +18,11 @@ website:
 
 ## Generated Output
 
-When you render your site, Quarto generates two types of files:
+When you render your site, Quarto creates files in the output directory (typically `_site/`).
 
 ### `llms.txt` Index
 
-An `llms.txt` file is created at the root of your site. This index lists all pages with their titles, using your site's title and description from the website configuration.
+An `llms.txt` file is created at the root of your site. This index lists all pages with their titles, using your site's title and description from the website configuration in `_quarto.yml`.
 
 ### Markdown Files
 
@@ -30,7 +30,27 @@ For each HTML page, a corresponding `.llms.md` file is created alongside it (e.g
 
 ## Content Conversion
 
-HTML content is converted to markdown using Pandoc. Navigation elements, sidebars, footers, and scripts are removed. Tables, code blocks, callouts, and images are converted to standard markdown formats. Internal links are automatically rewritten from `.html` to `.llms.md` extensions.
+HTML content is converted to markdown using Pandoc. Navigation elements, sidebars, breadcrumbs, footers, and scripts are removed. Tables, code blocks, callouts, tabsets, and images are converted to standard markdown formats. Internal links are automatically rewritten from `.html` to `.llms.md` extensions, including links with anchors.
+
+## Conditional Content
+
+To include content only in the `.llms.md` output, use the `llms-txt` format with [conditional content](/docs/authoring/conditional.qmd) classes.
+
+For example, to include content only in `document.llms.md`:
+
+```{.markdown filename="document.qmd"}
+::: {.content-visible when-format="llms-txt"}
+This content appears only in the `.llms.md` output.
+:::
+```
+
+To exclude content from `document.llms.md`:
+
+```{.markdown filename="document.qmd"}
+::: {.content-hidden when-format="llms-txt"}
+This content appears in HTML but not in `.llms.md` output.
+:::
+```
 
 ## Draft Handling
 
