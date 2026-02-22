@@ -32,35 +32,55 @@ format:
 
 You can specify one or more standards. Quarto checks that the standards are supported by your output format and infers a compatible PDF version (some standards have maximum version requirements).
 
-+------------------+------------------------------------------+--------------------+
-| Standard         | Description                              | Format Support     |
-+==================+==========================================+====================+
-| `ua-1`           | PDF/UA-1 for screen reader accessibility | Typst only         |
-+------------------+------------------------------------------+--------------------+
-| `ua-2`           | PDF/UA-2 (newer accessibility standard)  | LaTeX only         |
-+------------------+------------------------------------------+--------------------+
-| `a-1a`, `a-1b`   | PDF/A-1 for long-term archival           | Typst (`a-1a`),    |
-|                  |                                          | both (`a-1b`)      |
-+------------------+------------------------------------------+--------------------+
-| `a-2a`, `a-2b`,  | PDF/A-2 archival with newer features     | Both formats       |
-| `a-2u`           |                                          |                    |
-+------------------+------------------------------------------+--------------------+
-| `a-3a`, `a-3b`,  | PDF/A-3 archival allowing embedded files | Both formats       |
-| `a-3u`           |                                          |                    |
-+------------------+------------------------------------------+--------------------+
-| `a-4`, `a-4f`    | PDF/A-4 (based on PDF 2.0)               | Both formats       |
-+------------------+------------------------------------------+--------------------+
-| `a-4e`           | PDF/A-4e (engineering variant)           | Typst only         |
-+------------------+------------------------------------------+--------------------+
-| `x-4`, `x-4p`,   | PDF/X for print production               | LaTeX only         |
-| `x-5g`, `x-5n`,  |                                          |                    |
-| `x-5pg`, `x-6`,  |                                          |                    |
-| `x-6n`, `x-6p`   |                                          |                    |
-+------------------+------------------------------------------+--------------------+
-| `1.4`, `1.5`,    | Explicit PDF version                     | Both formats       |
-| `1.6`, `1.7`,    |                                          |                    |
-| `2.0`            |                                          |                    |
-+------------------+------------------------------------------+--------------------+
+::: {.content-visible when-meta="pdf-standard-typst-examples"}
++------------------+------------------------------------------+
+| Standard         | Description                              |
++==================+==========================================+
+| `ua-1`           | PDF/UA-1 for screen reader accessibility |
++------------------+------------------------------------------+
+| `a-1a`, `a-1b`   | PDF/A-1 for long-term archival           |
++------------------+------------------------------------------+
+| `a-2a`, `a-2b`,  | PDF/A-2 archival with newer features     |
+| `a-2u`           |                                          |
++------------------+------------------------------------------+
+| `a-3a`, `a-3b`,  | PDF/A-3 archival allowing embedded files |
+| `a-3u`           |                                          |
++------------------+------------------------------------------+
+| `a-4`, `a-4e`,   | PDF/A-4 (based on PDF 2.0)               |
+| `a-4f`           |                                          |
++------------------+------------------------------------------+
+| `1.4`, `1.5`,    | Explicit PDF version                     |
+| `1.6`, `1.7`,    |                                          |
+| `2.0`            |                                          |
++------------------+------------------------------------------+
+:::
+
+::: {.content-visible when-meta="pdf-standard-latex-examples"}
++------------------+------------------------------------------+
+| Standard         | Description                              |
++==================+==========================================+
+| `ua-2`           | PDF/UA-2 for screen reader accessibility |
++------------------+------------------------------------------+
+| `a-1b`           | PDF/A-1 for long-term archival           |
++------------------+------------------------------------------+
+| `a-2a`, `a-2b`,  | PDF/A-2 archival with newer features     |
+| `a-2u`           |                                          |
++------------------+------------------------------------------+
+| `a-3a`, `a-3b`,  | PDF/A-3 archival allowing embedded files |
+| `a-3u`           |                                          |
++------------------+------------------------------------------+
+| `a-4`, `a-4f`    | PDF/A-4 (based on PDF 2.0)               |
++------------------+------------------------------------------+
+| `x-4`, `x-4p`,   | PDF/X for print production               |
+| `x-5g`, `x-5n`,  |                                          |
+| `x-5pg`, `x-6`,  |                                          |
+| `x-6n`, `x-6p`   |                                          |
++------------------+------------------------------------------+
+| `1.4`, `1.5`,    | Explicit PDF version                     |
+| `1.6`, `1.7`,    |                                          |
+| `2.0`            |                                          |
++------------------+------------------------------------------+
+:::
 
 ::: {.callout-warning}
 ## Quote numeric-only versions
@@ -93,8 +113,17 @@ You can only specify one standard from each family (one PDF/A variant, one PDF/U
 
 Although Quarto can't on its own guarantee accessibility requirements are met, many are satisfied through the Markdown structure of the document:
 
+- **Document metadata**: YAML fields like `title`, `author`, `date`, and `lang` are propagated into the PDF document metadata, fulfilling metadata requirements for accessibility and archival standards.
+
+::: {.content-visible when-meta="pdf-standard-typst-examples"}
+- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Typst always has PDF tagging enabled.
+:::
+
+::: {.content-visible when-meta="pdf-standard-latex-examples"}
+- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Pandoc enables PDF tagging for LaTeX when you specify a standard that requires it. [PDF/UA standards and PDF/A "a" variants like `a-2a`]{.aside}
+:::
+
 - **Alt text propagation**: Alt text from markdown image captions and `fig-alt` attributes is passed through to the PDF for screen readers. See [Figures](/docs/authoring/figures.qmd) for details on specifying alt text.
-- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Typst always has PDF tagging enabled, and Quarto enables PDF tagging for LaTeX when you specify a standard that requires it. [PDF/UA standards and PDF/A "a" variants like `a-2a`]{.aside}
 
 Use validation (described below) to identify accessibility issues in your documents that may require manual attention.
 
