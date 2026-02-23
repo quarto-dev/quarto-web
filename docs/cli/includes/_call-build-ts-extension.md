@@ -3,6 +3,7 @@ Build TypeScript execution engine extensions.
 This command type-checks and bundles TypeScript extensions into single JavaScript files using Quarto's bundled deno bundle.
 
 The entry point is determined by:
+
   1. [entry-point] command-line argument (if specified)
   2. bundle.entryPoint in deno.json (if specified)
   3. Single .ts file in src/ directory
@@ -60,11 +61,6 @@ quarto call build-ts-extension [entry-point:string]
    <td style="text-align:left;"> <code>--quiet</code> </td>
    <td style="text-align:left;">  </td>
    <td style="text-align:left;"> Suppress console output. </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> <code>--profile</code> </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Active project profile(s) </td>
   </tr>
 </tbody>
 </table>

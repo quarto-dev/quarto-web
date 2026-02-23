@@ -248,10 +248,6 @@
         "description": "The paper size for the document.\n"
       },
       {
-        "name": "grid",
-        "description": "Properties of the grid system used to layout Quarto HTML pages."
-      },
-      {
         "name": "margin-left",
         "description": "For HTML output, sets the `margin-left` property on the Body element.\n\nFor LaTeX output, sets the left margin if `geometry` is not \nused (otherwise `geometry` overrides this value)\n\nFor ConTeXt output, sets the left margin if `layout` is not used, \notherwise `layout` overrides these.\n\nFor `wkhtmltopdf` sets the left page margin.\n"
       },
@@ -306,8 +302,8 @@
         "description": "Specifies to apply a background color on code blocks. Provide a hex color to specify that the background color is\nenabled as well as the color of the background.\n"
       },
       {
-        "name": "highlight-style",
-        "description": "Specifies the coloring style to be used in highlighted source code.\n\nInstead of a *STYLE* name, a JSON file with extension\n` .theme` may be supplied.  This will be parsed as a KDE\nsyntax highlighting theme and (if valid) used as the\nhighlighting style.\n"
+        "name": "syntax-highlighting",
+        "description": "Specifies the coloring style to be used in highlighted source code.\n\nValid values:\n\n- `none`: Disables syntax highlighting for code blocks.\n- `idiomatic`: Uses the format's native syntax highlighter\n  (e.g., Typst's built-in highlighting, LaTeX `listings` package,\n  or reveal.js highlight.js plugin).\n- A style name (e.g., `pygments`, `tango`, `github`): Uses\n  Pandoc's skylighting with the specified theme.\n- A path to a `.theme` file: Uses a custom KDE syntax\n  highlighting theme.\n\nFor adaptive light/dark themes, specify an object with `light`\nand `dark` properties pointing to theme files.\n"
       },
       {
         "name": "syntax-definitions",
@@ -527,6 +523,10 @@
         "description": "YAML file containing custom language translations"
       },
       {
+        "name": "shorthands",
+        "description": "Enable babel language-specific shorthands in LaTeX output. When `true`,\nbabel's language shortcuts are enabled (e.g., French `<<`/`>>` for guillemets,\nGerman `\"` shortcuts, proper spacing around French punctuation).\n\nDefault is `false` because language shorthands can interfere with code blocks\nand other content. Only enable if you need specific typographic features\nfor your language.\n"
+      },
+      {
         "name": "dir",
         "description": "The base script direction for the document (`rtl` or `ltr`).\n\nFor bidirectional documents, native pandoc `span`s and\n`div`s with the `dir` attribute can\nbe used to override the base direction in some output\nformats.  This may not always be necessary if the final\nrenderer (e.g. the browser, when generating HTML) supports\nthe [Unicode Bidirectional Algorithm].\n\nWhen using LaTeX for bidirectional documents, only the\n`xelatex` engine is fully supported (use\n`--pdf-engine=xelatex`).\n"
       }
@@ -713,6 +713,16 @@
       {
         "name": "latex-input-paths",
         "description": "Array of paths LaTeX should search for inputs."
+      }
+    ]
+  },
+  {
+    "name": "pdfa",
+    "title": "PDF/A",
+    "options": [
+      {
+        "name": "pdf-standard",
+        "description": "Specifies PDF conformance standards and/or version for the output.\n\nAccepts a single value or array of values:\n\n**PDF versions** (both Typst and LaTeX):\n`1.4`, `1.5`, `1.6`, `1.7`, `2.0`\n\n**PDF/A standards** (both engines):\n`a-1b`, `a-2a`, `a-2b`, `a-2u`, `a-3a`, `a-3b`, `a-3u`, `a-4`, `a-4f`\n\n**PDF/A standards** (Typst only):\n`a-1a`, `a-4e`\n\n**PDF/UA standards**:\n`ua-1` (Typst), `ua-2` (LaTeX)\n\n**PDF/X standards** (LaTeX only):\n`x-4`, `x-4p`, `x-5g`, `x-5n`, `x-5pg`, `x-6`, `x-6n`, `x-6p`\n\nExample: `pdf-standard: [a-2b, ua-2]` for accessible archival PDF.\n"
       }
     ]
   },
