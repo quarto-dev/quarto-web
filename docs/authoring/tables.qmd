@@ -489,9 +489,11 @@ When rendered, this results in the following output for HTML and PDF formats:
 
 :::
 
-In addition, Quarto supports the specification of embedded  Markdown content in tables.
-This is done by providing a data attribute `qmd` or `qmd-base64` in an embedded `span` or `div` node.
-These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._ 
+In addition, Quarto supports the specification of embedded Markdown content in raw table markup. This allows Quarto features like cross-references, shortcodes, and markdown formatting to be used inside tables produced by libraries that emit raw HTML or LaTeX.
+
+#### HTML Raw Blocks
+
+For HTML raw blocks, this is done by providing a data attribute `qmd` or `qmd-base64` in an embedded `span` or `div` node. These nodes can appear anywhere that such content is allowed: table headers, footers, cells, captions, _etc._
 
 For example, the following table includes a cross reference, markdown formatting and a shortcode:
 
@@ -550,6 +552,39 @@ Which renders as follows:
 :::
 
 ::::
+
+#### LaTeX Raw Blocks
+
+For LaTeX raw blocks (used in PDF output), the equivalent syntax is `\QuartoMarkdownBase64{<<base64-encoded-content>>}`. When Quarto detects this command, it decodes the base64 content, processes it as Quarto markdown (including cross-references, shortcodes, and user filters), and inserts the result back into the LaTeX output.
+
+For example, the following LaTeX raw block uses cross-references and markdown formatting inside a table:
+
+```` markdown
+## LaTeX Tables Example {#sec-latex-tables}
+
+```{=latex}
+\begin{tabular}{ll}
+  % X0hlYWRlciAxXw== is base64 for "_Header 1_"
+  \QuartoMarkdownBase64{X0hlYWRlciAxXw==} &
+  % X0hlYWRlciAyXw== is base64 for "_Header 2_"
+  \QuartoMarkdownBase64{X0hlYWRlciAyXw==} \\
+  % U2VlIEBzZWMtbGF0ZXgtdGFibGVzLg== is base64 for
+  % "See @sec-latex-tables."
+  \QuartoMarkdownBase64{U2VlIEBzZWMtbGF0ZXgtdGFibGVzLg==} &
+  Regular output \\
+\end{tabular}
+```
+````
+
+When rendered to PDF, this table would display with italic headers (*Header 1* and *Header 2*), and the cross-reference `@sec-latex-tables` would be resolved to a clickable section link.
+
+::: {.callout-note}
+Unlike the HTML feature, only base64-encoded content is supported for LaTeX raw blocks (there is no plain-text equivalent of `data-qmd`). This feature cannot be disabled, but this should not be necessary since `\QuartoMarkdownBase64` is unlikely to conflict with existing LaTeX commands.
+:::
+
+::: {.callout-warning}
+Citations do not currently work inside `\QuartoMarkdownBase64`. See [GitHub issue #9342](https://github.com/quarto-dev/quarto-cli/issues/9342) for details.
+:::
 
 ### Colspans and Rowspans
 
