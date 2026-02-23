@@ -120,7 +120,7 @@ Although Quarto can't on its own guarantee accessibility requirements are met, m
 :::
 
 ::: {.content-visible when-meta="pdf-standard-latex-examples"}
-- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Pandoc enables PDF tagging for LaTeX when you specify a standard that requires it. [PDF/UA standards and PDF/A "a" variants like `a-2a`]{.aside}
+- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Pandoc enables PDF tagging for LaTeX when you specify a standard that requires it (PDF/UA standards and PDF/A "a" variants like `a-2a`).
 :::
 
 - **Alt text propagation**: Alt text from markdown image captions and `fig-alt` attributes is passed through to the PDF for screen readers. See [Figures](/docs/authoring/figures.qmd) for details on specifying alt text.
