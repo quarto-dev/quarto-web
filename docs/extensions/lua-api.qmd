@@ -285,14 +285,47 @@ quarto.doc.add_html_dependency({
 
 ### Custom Nodes
 
-Quarto adds some custom AST node types. You can read more about them in [Quarto AST](/docs/advanced/quarto-ast.qmd#custom-nodes). You can create them with the following constructors:
+Quarto defines custom AST node types that you can create programmatically in Lua filters. For details on the node types themselves (fields available when processing nodes in filters), see [Quarto AST: Custom Nodes](/docs/advanced/quarto-ast.qmd#custom-nodes).
 
-| Function                        | Node                                                                                                              |
-|--------------------------------|-----------------------------------------|
-| `quarto.Callout(tbl)`          | Callout: `tbl` is a table with entries `type`, `title`, and `content`.                                    |
-| `quarto.Tabset(tbl)`           | Tabset: `tbl` is a table with entries `tabs`, `level` and `attr`.                                         |
-| `quarto.ConditionalBlock(tbl)` | Conditional block: `tbl` is a table with entries `node`, `behavior`, and `condition`.                     |
-| `quarto.FloatRefTarget(tbl)`   | Cross-referencable element: `tbl` is a table with entries `content`, `caption_long`, and `caption_short`. |
+The constructors below accept the same fields as documented for each node type, with some additional flexibility:
+
+:::{.list-table}
+- - Constructor
+  - Description
+  - `tbl` fields
+  - Notes
+
+- - `quarto.Callout(tbl)`
+  - Creates a [Callout](/docs/advanced/quarto-ast.qmd#callouts).
+  - Optional: `type`, `title`, `content`, `appearance`, `collapse`, `icon`, `attr`
+  - `title` and `content` accept strings. `attr` sets div attributes.
+
+- - `quarto.Tabset(tbl)`
+  - Creates a [Tabset](/docs/advanced/quarto-ast.qmd#tabsets).
+  - Optional: `tabs`, `level`, `attr`
+  - Use `quarto.Tab()` to create entries for `tabs`.
+
+- - `quarto.Tab(tbl)`
+  - Creates a Tab for use in a Tabset.
+  - Required: `title`
+
+    Optional: `content`, `active`
+  - `title` and `content` accept strings.
+
+- - `quarto.ConditionalBlock(tbl)`
+  - Creates a [Conditional Block](/docs/advanced/quarto-ast.qmd#conditional-blocks).
+  - Required: `node`, `behavior`
+
+    Optional: `condition`
+  -
+
+- - `quarto.FloatRefTarget(tbl)`
+  - Creates a [cross-referenceable float](/docs/advanced/quarto-ast.qmd#cross-referenceable-elements).
+  - Required: `type`, `content`
+
+    Optional: `caption_long`, `caption_short`, `identifier`, `classes`, `attributes`, `attr`, `parent_id`
+  - `attr` is an alternative to separate `identifier`, `classes`, `attributes` fields.
+:::
 
 ### JSON Encoding
 
