@@ -1,0 +1,42 @@
+---
+title: PDF Accessibility and Standards
+---
+
+2025 was a big year for PDF accessibility. LaTeX and Typst both released support for PDF tagging and accessibility standards, just in time for new regulations in the EU (June 2025) and US (April 2026)
+
+The UA-1 standard supported by Typst, and the UA-2 standard supported by LaTeX, [Typst is likely to have UA-2 support later in 2026]{.aside} both instruct the PDF renderer to provide screen readers:
+
+* The semantic structure of the text (title, heading, paragraph, figure, etc)
+* The natural reading order
+* Spatial coordinates for highlighting and assistive navigation
+* Required metadata such as title and language
+
+In Quarto 1.9, specify a PDF standard for your document or project with `pdf-standard`
+
+::: panel-tabset
+## PDF (LaTeX)
+
+```yaml
+format:
+  pdf:
+    pdf-standard: ua-2
+```
+
+## Typst
+
+```yaml
+format:
+  typst:
+    pdf-standard: ua-1
+```
+:::
+
+`pdf-standard` takes a single standard name or list of standard names.[PDF version is used if provided in the list, but otherwise inferred from the standard]{.aside}
+
+If you specify a PDF standard, Quarto first instructs LaTeX or Typst to use the standard when producing the PDF, and then validates the output PDF against the standard using veraPDF, an open-source PDF validation tool. 
+
+Typst validates many accessibility rules during rendering, and can fail earlier.
+
+It's too soon to say, but we don't expect Quarto users to see many errors when enabling a PDF standard. [need to test this further]{.content-hidden}
+
+The metadata and Markdown structure of your Quarto document satisfy the main requirement, semantic tagging. Quarto Alt text propagation, recently implemented in Pandoc and Quarto, with a fallback to the caption
