@@ -2,7 +2,11 @@
 title: PDF Accessibility and Standards
 ---
 
-2025 was a big year for PDF accessibility. LaTeX and Typst both released support for PDF tagging and accessibility standards, just in time for new regulations in the EU (June 2025) and US (April 2026).  Quarto 1.9 brings this support to you as a Quarto user.
+2025 was a big year for PDF accessibility. LaTeX and Typst both released support for PDF tagging and accessibility standards, just in time for new regulations in the [EU](https://en.wikipedia.org/wiki/European_Accessibility_Act) (June 2025) and [US](https://accessible.org/ada-title-ii-web-accessibility/) (April 2026).  
+
+Quarto 1.9 brings this support to you as a Quarto user.
+
+## What PDF Standards Do
 
 Currently LaTeX supports the newer UA-2 standard, and Typst supports the older UA-1 standard. Typst is likely to have UA-2 support later in 2026.
 
@@ -13,7 +17,7 @@ Both standards instruct the PDF renderer to provide screen readers:
 * Spatial coordinates for highlighting and assistive navigation
 * Required metadata such as title and language
 
-## Enabling a PDF Standard for Accessibility
+## How to enable a PDF Standard in Quarto
 
 In Quarto 1.9, specify a PDF standard for your document or project with `pdf-standard`
 
@@ -35,46 +39,64 @@ format:
 ```
 :::
 
-`pdf-standard` takes a single standard name or list of standard names.PDF version is used if provided in the list, but otherwise inferred from the standard.
+`pdf-standard` takes a single standard name or list of standard names. PDF version is used if provided in the list, but otherwise inferred from the standard.
 
-If you specify a PDF standard, Quarto first instructs LaTeX or Typst to use the standard when producing the PDF, and then validates the output PDF against the standard using veraPDF, an open-source PDF validation tool. 
+If you specify a PDF standard, Quarto first instructs LaTeX or Typst to use the standard when producing the PDF, and then validates the output PDF against the standard using veraPDF, an open-source PDF validation tool.
 
-## Markdown is naturally good for Accessibility
+::: {.callout-note}
+## Installing veraPDF
 
-Quarto doesn't guarantee PDF accessibility compliance, but its Markdown-based workflow handles many requirements automatically:
+veraPDF requires a separate install:
+
+```{.bash filename="Terminal"}
+quarto install verapdf
+```
+
+veraPDF requires Java.
+
+:::
+
+When a document passes validation, you'll see output like:
+
+```
+[verapdf]: Validating my-document.pdf against PDF/UA-2... PASSED
+```
+
+## Creating accessible PDFs
+
+Quarto's Markdown-based workflow handles many accessibility requirements automatically:
 
 * Document metadata (title, author, date, language) flows into the PDF's built-in metadata fields.
 * The semantic structure of Markdown satisfies PDF tagging requirements. For Typst this is always enabled; for LaTeX it is enabled when you specify a standard that requires it.
 * Alt text for images is carried through to the PDF for screen readers.
 
-See the [LaTeX](https://prerelease.quarto.org/docs/output-formats/pdf-basics.html#accessibility-requirements) and [Typst](https://prerelease.quarto.org/docs/output-formats/typst.html#accessibility-requirements) documentation for details.
+But you do need to make sure your document has:
 
-## What to expect
+* A **title** in the YAML front matter.
+* **Alt text for every image**, specified with `fig-alt`. See [Figures](/docs/authoring/figures.qmd) for details.
 
-We ran our test suite, with 188 LaTeX examples and 317 Typst examples, in order to see: 
+See the [LaTeX](https://prerelease.quarto.org/docs/output-formats/pdf-basics.html#accessibility-requirements) and [Typst](https://prerelease.quarto.org/docs/output-formats/typst.html#accessibility-requirements) documentation for more details.
 
-* Where Quarto produces PDFs that do not pass UA-1 or UA-2.
-* Where users will need to change their documents to meet accessibility standards
+## Current limitations
 
-### Both formats
-
-Your document needs a title.
-
-Your document needs alt text and/or a caption for every image.
+We ran our test suite -- 188 LaTeX examples and 317 Typst examples -- to find where Quarto PDFs do not yet pass UA-1 or UA-2, and where users will need to change their documents.
 
 ### LaTeX
 
-Margin notes are the biggest structural blocker. The `sidenotes` and `marginnote` LaTeX packages [do not cooperate with PDF Tagging](https://github.com/quarto-dev/quarto-cli/issues/14103).
+Margin content is the biggest structural blocker. If you use `.column-margin` divs, `cap-location: margin`, `reference-location: margin`, or `citation-location: margin`, the resulting PDF will not pass UA-2. The underlying `sidenotes` and `marginnote` LaTeX packages [do not cooperate with PDF tagging](https://github.com/quarto-dev/quarto-cli/issues/14103). 
 
-There are smaller upstream issues in Pandoc, LaTeX, and LaTeX packages, [documented here](https://github.com/quarto-dev/quarto-cli/pull/14097#issuecomment-3947653207). 
+(Margin content does work with Typst and passes UA-1 -- see [Typst Article Layout](/docs/output-formats/typst.qmd#article-layout).)
 
-We expect that as awareness of accessibility and UA-2 spreads, these problems will get fixed upstream. Please search for [discussions](https://github.com/orgs/quarto-dev/discussions) and file a new one if essential features of PDF output in Quarto fail UA-2.
+There are smaller upstream issues in Pandoc, LaTeX, and LaTeX packages, [documented here](https://github.com/quarto-dev/quarto-cli/pull/14097#issuecomment-3947653207).
 
 ### Typst
 
 In our tests, Typst catches every UA-1 violation, and fails to generate the PDF. veraPDF did not detect any violation that Typst did not.
 
-Typst also seems to do a very good job of generating UA-1 compliant output by default - almost all errors were titles and alt text.
+Typst also seems to do a very good job of generating UA-1 compliant output by default -- almost all errors were titles and alt text.
 
-However, we did discover that Typst Books are not yet compliant. There is [structural problem with the Typst orange-book package](https://github.com/flavio20002/typst-orange-template/issues/38) and we'll work with the maintainers to correct it.
+However, we did discover that [Typst Books](/docs/books/book-output.qmd#typst-output) are not yet compliant. There is a [structural problem with the Typst orange-book package](https://github.com/flavio20002/typst-orange-template/issues/38) and we'll work with the maintainers to correct it.
 
+---
+
+We expect PDF accessibility support to improve upstream throughout 2026 as awareness of UA-2 and the new regulations spreads. If you run into accessibility issues with PDF output, please search the [Quarto discussions](https://github.com/orgs/quarto-dev/discussions) and open a new one with the `accessibility` label for any issues you discover.
