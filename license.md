@@ -10,7 +10,7 @@ The [Quarto CLI](https://github.com/quarto-dev/quarto-cli) is licensed under the
 
 ### VS Code Extension and Visual Editor
 
-The Quarto [VS Code extension](https://github.com/quarto-dev/quarto/tree/main/apps/vscode) and the [visual editor](https://github.com/quarto-dev/quarto) used in VS Code, Positron, and RStudio are licensed under the [GNU AGPL v3](https://www.gnu.org/licenses/agpl-3.0.en.html).
+The Quarto [VS Code extension](https://github.com/quarto-dev/quarto/tree/main/apps/vscode) and the [visual editor](https://github.com/quarto-dev/quarto/tree/main/packages/editor) used in VS Code, Positron, and RStudio are licensed under the [GNU AGPL v3](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
 ### Dependencies
 
