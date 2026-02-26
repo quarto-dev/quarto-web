@@ -255,4 +255,28 @@ Finally, we added an option to control the span of the page that our figures occ
 This allows our figure display to span out beyond the normal body text column.
 See the documentation on [Article Layout](/docs/authoring/article-layout.qmd) to learn about all of the available layout options.
 
+## Inline Code
+
+In addition to code cells, you can also include code inline in the markdown sections of your document.
+To include an executable expression, enclose it in `` `{python} ` ``.
+For example, you can use inline code to state the number of observations in the `gapminder` data.
+Try adding the following markdown text to your Quarto document.
+
+````markdown
+There are `{python} len(gapminder)` rows in the `gapminder` data.
+````
+
+Save your document, and the preview will update.
+The expression inside the backticks has been executed and the sentence includes the actual number of rows:
+
+::: {.border .p-3}
+There are 1704 rows in the `gapminder` data.
+:::
+
+::: callout-tip
+Inline expressions should be confined to simple values that you have pre-computed within normal code cells (rather than function calls that do non-trivial work).
+:::
+
+For additional details, visit the [Inline Code](/docs/computations/inline-code.qmd) documentation.
+
 {{< include _footer.md >}}
