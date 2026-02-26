@@ -1,0 +1,68 @@
+---
+title: Typst Books, Article Layout, and `typst-gather`
+---
+
+Typst is a modern and lightning-fast typesetting system that aims to replace LaTeX. 
+
+The Typst ecosystem is exploding, and Quarto 1.9 provides first-class support for Typst packages:
+
+* Typst Books
+* Article layout in Typst
+* Bundling of Typst packages for offline rendering
+
+## Typst Books
+
+In Quarto 1.9, a project with type `book` and format `typst` is now rendered as a single document with multiple chapters and other book content.
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: book
+
+book:
+  title: "My Book"
+  author: "Jane Doe"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+
+format: typst
+```
+
+![](typst-book.png)
+
+All book features previously available in the LaTeX format are now available in Typst:
+
+* Parts and Chapters
+* Appendices
+* Cross-references and chapter-based numbering
+* Table of Contents
+
+List-of-Figures and List-of-Tables support is [coming soon](https://github.com/quarto-dev/quarto-cli/issues/14081).
+
+Typst Books are implemented as Quarto [Format Extensions](https://quarto.org/docs/extensions/formats.html). Typst partials define the overall book structure, while Lua filters handle the necessary AST transformations.
+
+Quarto bundles the [quarto-orange-book](https://github.com/quarto-ext/orange-book) extension, which [bundles](#typst-gather) the Typst [orange-book](https://typst.app/universe/package/orange-book) package. Orange-book provides a textbook-style layout with colored chapter headers and sidebars.
+
+## Article Layout in Typst
+
+Also in Quarto 1.9, all [Article Layout](https://quarto.org/docs/authoring/article-layout.html) features now work in Typst, via the Typst [Marginalia](https://typst.app/universe/package/marginalia/) package.
+
+Specifically:
+
+
+* Figures, tables, code listings, and equations can be placed in the margin using the `.column-margin` class.
+* Figure, table, and code listing captions can be placed in the margin with `cap-location: margin`
+* Footnotes and citations can be displayed in the margin with `reference-location: margin` and `citation-location: margin`. When margin citations are enabled, the bibliography is suppressed.
+
+![](typst-article.png)
+
+Naturally, book and article layout can be combined:
+
+![](typst-book-article.png)
+
+## `typst-gather`
+
+Quarto 1.9 automatically stages Typst packages — from your extensions, from Quarto's bundled extensions, and from Quarto itself — into the `.quarto/` cache directory before calling `typst compile`. This means Typst documents render offline without needing network access.
+
+To make this work, extension authors use the new [`typst-gather`](/docs/advanced/typst/typst-gather.qmd) tool, which scans their `.typ` files for `@preview` imports and downloads the packages into the extension directory. Authors run `quarto call typst-gather` and commit the results — users of the extension don't need to do anything. This means [Custom Typst Formats](/docs/output-formats/typst-custom.qmd#custom-formats) can depend on Typst packages without copying and pasting Typst code, making them simpler and easier to maintain.
