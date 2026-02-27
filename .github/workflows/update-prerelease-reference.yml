@@ -117,6 +117,7 @@ jobs:
       # --- Create PR ---
 
       - name: Create branch and PR
+        id: create-pr
         if: steps.should-update.outputs.update == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -132,19 +133,18 @@ jobs:
           git commit -m "Update reference pages for v${version}"
           git push origin "$branch"
 
-          gh pr create \
+          pr_url=$(gh pr create \
             --base prerelease \
             --head "$branch" \
             --title "Update reference pages for v${version}" \
             --body "$(cat <<EOF
           Automated update of reference documentation for Quarto prerelease v${version}.
 
-          ## Changes
-          - Format/cell/project reference JSON files (from \`tools/reference.ts\`)
-          - CLI reference markdown files (from \`tools/reference-cli-generate-md.R\`)
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
 
-          ## Review checklist
-          - [ ] Spot check a few reference pages render correctly
-          - [ ] No unexpected deletions
-          EOF
-          )"
+      - name: Trigger preview deployment
+        if: steps.should-update.outputs.update == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ steps.create-pr.outputs.pr_url }}" --body "/deploy-preview"
