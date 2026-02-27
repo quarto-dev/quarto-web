@@ -30,14 +30,6 @@ You can switch between visual and source mode at any time and can even edit docu
     ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-mode-menu-dark.png){.border .dark-content width="609" fig-alt='The editor menu with the Edit in Visual Mode command highlighted.'}
     
 
-:::{.content-hidden unless-meta="tool.is_positron"}
-5.  Using the **Source**/**Visual** buttons in the toolbar:
-
-    ![](/docs/tools/images/positron-visual-editor-toolbar-toggle.png){.border .light-content fig-alt="The toolbar in Positron with the Source and Visual buttons highlighted." width="609"}
-
-    ![](/docs/tools/images/positron-visual-editor-toolbar-toggle-dark.png){.border .dark-content fig-alt="The toolbar in Positron with the Source and Visual buttons highlighted." width="609"}
-:::
-
 You can also right click a `.qmd` document in the file explorer and select the **Open With...** command, which will prompt you for the editor to open the file with:
 
 ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode.png){.border .light-content width="609"}
