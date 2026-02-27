@@ -273,9 +273,9 @@ about:
   template: jolla
   image: profile.jpg
   links:
-    - icon: twitter
-      text: twitter
-      href: https://twitter.com
+    - icon: bluesky
+      text: Bluesky
+      href: https://bsky.app
 ---
 ```
 
