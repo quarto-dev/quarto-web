@@ -1,0 +1,177 @@
+---
+title: Quarto 1.9
+description: |
+  Quarto 1.9 adds publishing to Posit Connect Cloud, LLM-friendly website output, major Typst improvements, experimental PDF accessibility standards, and list tables for complex table content.
+categories:
+  - Quarto 1.9
+  - Releases
+author: Charlotte Wickham
+date: "2026-03-10"
+draft: true
+image: thumbnail.png
+image-alt: "Quarto 1.9"
+---
+
+Quarto 1.9 is out! You can get the current release from the [download page](/docs/download/index.qmd).
+
+Sharing your work just got easier with integrated Posit Connect Cloud publishing. Typst users will appreciate book project support and article layouts, while experimental PDF accessibility standards bring PDF/A and PDF/UA compliance to both LaTeX and Typst. This release also introduces LLM-friendly output for websites, the `quarto use brand` command for keeping your brand assets in sync, and list tables for authoring complex tables with familiar bullet syntax.
+
+You can read about these improvements and some other highlights below. You can find all the changes in this version in the [Release Notes](/docs/download/changelog/1.9/).
+
+## Publish to Posit Connect Cloud
+
+You can now publish documents and websites to [Posit Connect Cloud](https://connect.posit.cloud) directly from the command line.
+For example, publish your Quarto website project with:
+
+```{.bash filename="Terminal"}
+quarto publish posit-connect-cloud
+```
+
+Posit Connect Cloud is a hosted platform for sharing data applications and documents without managing your own infrastructure. It includes a free tier for unlimited static document publishing.
+Read more in [Publishing > Posit Connect Cloud](/docs/publishing/posit-connect-cloud.qmd).
+
+## Improvements to Typst Support
+
+Quarto 1.9 brings substantial improvements to Typst output, including book project support via the bundled `orange-book` extension, article layout options for margins and side notes, new typography options, and theorem styling with four appearance options.
+
+There's so much new, we've already written up the details in a separate [Typst improvements blog post](TODO-LINK-TO-TYPST-BLOG-POST).
+
+## PDF Accessibility (Experimental)
+
+We're rolling out experimental support for PDF accessibility standards in 1.9. The new `pdf-standard` option enables PDF/A archival formats and PDF/UA accessibility compliance for both LaTeX and Typst outputs. Alt text from `fig-alt` attributes now passes through to PDF for screen reader support, and Typst gains support for alt text on cross-referenced equations.
+
+Not everything works yet---look for a blog post and patch release in the coming weeks with more details and improvements.
+
+Read more in the documentation for [LaTeX](/docs/output-formats/pdf-basics.qmd#pdf-accessibility-standards) and [Typst](/docs/output-formats/typst.qmd#pdf-accessibility-standards).
+
+## Output for LLMs
+
+Quarto can now generate [llms.txt](https://llmstxt.org/) format output for your website, making your content more accessible to large language models and AI-powered tools.
+
+Enable it in your website configuration:
+
+```{.yaml filename="_quarto.yml"}
+website:
+  title: "My Documentation"
+  llms-txt: true
+```
+
+When you render your site, Quarto creates:
+
+- An `llms.txt` index file at the root of your site listing all pages
+- A `.llms.md` markdown file alongside each HTML page (e.g., `guide.html` gets `guide.llms.md`)
+
+The markdown files contain clean versions of your content---navigation, sidebars, and scripts are stripped out; tables, code blocks, and callouts are converted to standard markdown.
+
+Read more, including how to customize what appears in LLM output, in [Websites > Output for LLMs](/docs/websites/website-llms.qmd).
+
+## `quarto use brand` Command
+
+Keep your project's brand assets in sync with an external source using the new `quarto use brand` command:
+
+```{.bash filename="Terminal"}
+quarto use brand myorg/shared-brand
+```
+
+The command copies brand files from a GitHub repository, local directory, or zip archive into your project's `_brand/` directory. Quarto walks you through each step---confirming trust for remote sources, creating the directory if needed, and asking whether to overwrite or remove files.
+
+See [Guide > Brand](/docs/authoring/brand.qmd#quarto-use-brand) for `--dry-run`, `--force`, and other options.
+
+## List Tables
+
+List tables provide a new syntax for creating tables with complex content---multiple paragraphs, code blocks, or nested lists---using familiar bullet syntax instead of grid table formatting:
+
+::: {layout-ncol="2"}
+
+:::: {}
+
+```` markdown
+::: {.list-table}
+- - Function
+  - Description
+
+- - `sum()`
+  - Add values:
+
+    ```python
+    sum([1, 2, 3])
+    ```
+
+- - `len()`
+  - Count items:
+
+    - Works on lists
+    - Works on strings
+:::
+````
+
+::::
+
+:::: {}
+
+::: {.list-table}
+- - Function
+  - Description
+
+- - `sum()`
+  - Add values:
+
+    ```python
+    sum([1, 2, 3])
+    ```
+
+- - `len()`
+  - Count items:
+
+    - Works on lists
+    - Works on strings
+:::
+
+::::
+
+:::
+
+Each top-level bullet represents a row; nested bullets represent cells. This syntax is much easier to maintain than grid tables, especially when cells contain code or other block elements.
+
+List tables support all the usual table features: captions, cross-references, column widths, and alignment. Thanks to Martin Fischer for the original development, with contributions from Albert Krewinkel and William Lupton.
+
+Find all the details in [Guide > Tables](/docs/authoring/tables.qmd#list-tables).
+
+## Other Highlights
+
+- Privacy-focused features for websites:
+
+  - [A privacy-first default for cookie consent](/docs/websites/website-tools.qmd#cookie-consent): The default for cookie consent has changed to `type: express`, providing opt-in consent that blocks cookies until users explicitly agree. This privacy-conscious default is designed with modern privacy regulations in mind.
+
+  - [Algolia Search Insights avoids cookies](/docs/websites/website-search.qmd#cookie-consent-and-user-tracking): Use Algolia Insights now uses persistent cookies only if `cookie-consent` is active, and the user has opted-in.
+
+  - [Use Plausible Analytics](/docs/websites/website-tools.qmd#plausible-analytics): Add privacy-friendly Plausible Analytics to websites via the `plausible-analytics` configuration option.
+
+- [`aria-label` for videos](/docs/authoring/videos.qmd#accessibility-label): Improve accessibility of embedded videos by providing custom descriptive labels for screen readers instead of the default "Video Player" label.
+
+- [New `syntax-highlighting` Option](/docs/output-formats/pdf-basics.qmd#syntax-highlighting): Replaces the deprecated `highlight-style` (Pandoc 3.8). Supports style names, custom `.theme` files, `none`, or `idiomatic` for format-native highlighting.
+
+- Metadata and brand extensions now work without a `_quarto.yml` project. A temporary default project is created in memory.
+
+- [Engine extensions](/docs/extensions/engine.qmd) allow replacement of the execution engine:
+  - Julia is now a bundled extension instead of being built-in.
+  - **quarto-marimo** will soon change from a filter extension to an engine extension.
+  - New `quarto create extension engine` command.
+  - New `quarto call build-ts-extension` command.
+  - New **Quarto API** for engine extensions to use. (This is in flux and will not be documented for the next few releases, but there will be a dev blog post about it.)
+
+Dependency updates:
+
+- `pandoc` updated to 3.8.3
+- `typst` updated to 0.14.2
+- `esbuild` updated to 0.25.10
+- `deno` updated to 2.4.5
+- `mermaid` updated to 11.12.0
+
+## Acknowledgements
+
+We'd like to say a huge thank you to everyone who contributed to this release by opening issues and pull requests:
+
+{{< include _contribs.md >}}
+
+The airplane departure emoji in the [listing and social card image](thumbnail.png) for this post comes from [OpenMoji](https://openmoji.org/){.external}– the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#){.external}
