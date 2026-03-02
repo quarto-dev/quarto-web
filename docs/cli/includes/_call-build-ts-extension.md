@@ -61,11 +61,6 @@ quarto call build-ts-extension [entry-point:string]
    <td style="text-align:left;">  </td>
    <td style="text-align:left;"> Suppress console output. </td>
   </tr>
-  <tr>
-   <td style="text-align:left;"> <code>--profile</code> </td>
-   <td style="text-align:left;">  </td>
-   <td style="text-align:left;"> Active project profile(s) </td>
-  </tr>
 </tbody>
 </table>
 ```

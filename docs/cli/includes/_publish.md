@@ -5,6 +5,7 @@ Available providers include:
  - Quarto Pub (quarto-pub)
  - GitHub Pages (gh-pages)
  - Posit Connect (connect)
+ - Posit Connect Cloud (posit-connect-cloud)
  - Netlify (netlify)
  - Confluence (confluence)
  - Hugging Face Spaces (huggingface)
@@ -165,6 +166,12 @@ quarto publish connect
 
 ``` {.bash filename='Terminal'}
 quarto publish connect --server example.com --token 01A24233E294
+```
+
+### Publish project to Posit Connect Cloud
+
+``` {.bash filename='Terminal'}
+quarto publish posit-connect-cloud
 ```
 
 ### Publish without confirmation prompt
