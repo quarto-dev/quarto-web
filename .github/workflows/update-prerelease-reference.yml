@@ -2,40 +2,29 @@ name: Update Prerelease Reference Pages
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - prototype/ci-reference-pages  # TEMP: remove after testing
-  schedule:
-    # Run daily at 6am UTC
-    - cron: "0 6 * * *"
+    inputs:
+      version:
+        description: 'Prerelease version (e.g., 1.9.24)'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Prerelease version (e.g., 1.9.24)'
+        required: true
+        type: string
+    secrets:
+      ISSUE_COMMENT_TRIGGER_PAT:
+        required: true
 
 jobs:
-  check-and-update:
+  update-reference:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout prerelease branch
         uses: actions/checkout@v4
         with:
           ref: prerelease
-
-      - name: Get current documented version
-        id: current
-        run: |
-          version=$(jq -r '.version' docs/cli/cli-info.json)
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "Current documented version: $version"
-
-      - name: Get latest prerelease version
-        id: latest
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # Find the latest prerelease from quarto-cli
-          latest=$(gh api repos/quarto-dev/quarto-cli/releases \
-            --jq '[.[] | select(.prerelease)] | .[0].tag_name' \
-            | sed 's/^v//')
-          echo "version=$latest" >> "$GITHUB_OUTPUT"
-          echo "Latest prerelease version: $latest"
 
       - name: Check for existing PR
         id: check-pr
@@ -46,49 +35,41 @@ jobs:
           pr_count=$(gh pr list \
             --base prerelease \
             --state open \
-            --search "Update reference pages for v${{ steps.latest.outputs.version }}" \
+            --search "Update reference pages for v${{ inputs.version }}" \
             --json number \
             --jq 'length')
           echo "existing_pr=$pr_count" >> "$GITHUB_OUTPUT"
           echo "Existing PRs for this version: $pr_count"
 
-      - name: Determine if update needed
-        id: should-update
-        run: |
-          if [ "${{ steps.current.outputs.version }}" != "${{ steps.latest.outputs.version }}" ] && \
-             [ "${{ steps.check-pr.outputs.existing_pr }}" = "0" ]; then
-            echo "update=true" >> "$GITHUB_OUTPUT"
-            echo "Update needed: new version available and no existing PR"
-          else
-            echo "update=false" >> "$GITHUB_OUTPUT"
-            echo "No update needed"
+          if [ "$pr_count" != "0" ]; then
+            echo "::notice::Skipping - PR already exists for v${{ inputs.version }}"
           fi
 
-      # --- Setup steps (only run if update needed) ---
+      # --- Setup steps (only run if no existing PR) ---
 
       - name: Install Quarto (prerelease)
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          version: "pre-release"
+          version: ${{ inputs.version }}
 
       - name: Verify Quarto version
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         run: quarto --version
 
       - name: Clone quarto-cli at matching tag
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         run: |
-          git clone --depth 1 --branch v${{ steps.latest.outputs.version }} \
+          git clone --depth 1 --branch v${{ inputs.version }} \
             https://github.com/quarto-dev/quarto-cli.git \
             ../quarto-cli
 
       - name: Setup R
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         uses: r-lib/actions/setup-r@v2
 
       - name: Install R dependencies
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
@@ -102,12 +83,12 @@ jobs:
       # --- Run reference generation scripts ---
 
       - name: Generate format/cell/project reference JSON
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         run: |
           quarto run tools/reference.ts
 
       - name: Generate CLI reference
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         run: |
           # Generate CLI info JSON
           quarto dev-call cli-info > docs/cli/cli-info.json
@@ -118,11 +99,11 @@ jobs:
 
       - name: Create branch and PR
         id: create-pr
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          version="${{ steps.latest.outputs.version }}"
+          version="${{ inputs.version }}"
           branch="auto/prerelease-reference-v${version}"
 
           git config user.name 'github-actions[bot]'
@@ -165,14 +146,14 @@ jobs:
           echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
 
       - name: Assign PR
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh pr edit "${{ steps.create-pr.outputs.pr_url }}" --add-assignee cwickham
 
       - name: Trigger preview deployment
-        if: steps.should-update.outputs.update == 'true'
+        if: steps.check-pr.outputs.existing_pr == '0'
         env:
           GH_TOKEN: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
         run: |
