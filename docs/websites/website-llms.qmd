@@ -1,0 +1,61 @@
+---
+title: Output for LLMs
+---
+
+## Overview
+
+Quarto can generate [llms.txt](https://llmstxt.org/) format output for your website, making your content more accessible to large language models and AI-powered tools. When enabled, Quarto creates an `llms.txt` index file and `.llms.md` markdown files for each page.
+
+## Enabling `llms.txt`
+
+To enable `llms.txt` output, add `llms-txt: true` to your website configuration:
+
+```{.yaml filename="_quarto.yml"}
+website:
+  title: "My Documentation"
+  llms-txt: true
+```
+
+## Generated Output
+
+When you render your site, Quarto creates files in the output directory (typically `_site/`).
+
+### `llms.txt` Index
+
+An `llms.txt` file is created at the root of your site. This index lists all pages with their titles, using your site's title and description from the website configuration in `_quarto.yml`.
+
+### Markdown Files
+
+For each HTML page, a corresponding `.llms.md` file is created alongside it (e.g., `guide.html` gets `guide.llms.md`). These contain clean markdown versions of your content.
+
+## Content Conversion
+
+HTML content is converted to markdown using Pandoc. Navigation elements, sidebars, breadcrumbs, footers, and scripts are removed. Tables, code blocks, callouts, tabsets, and images are converted to standard markdown formats. Internal links are automatically rewritten from `.html` to `.llms.md` extensions, including links with anchors.
+
+## Conditional Content
+
+To include content only in the `.llms.md` output, use the `llms-txt` format with [conditional content](/docs/authoring/conditional.qmd) classes.
+
+For example, to include content only in `document.llms.md`:
+
+```{.markdown filename="document.qmd"}
+::: {.content-visible when-format="llms-txt"}
+This content appears only in the `.llms.md` output.
+:::
+```
+
+To exclude content from `document.llms.md`:
+
+```{.markdown filename="document.qmd"}
+::: {.content-hidden when-format="llms-txt"}
+This content appears in HTML but not in `.llms.md` output.
+:::
+```
+
+## Draft Handling
+
+Draft pages are automatically excluded from both `.llms.md` generation and the `llms.txt` index. The 404 page is also excluded from the index.
+
+## Build Behavior
+
+On full builds, all `.llms.md` files and the `llms.txt` index are regenerated. On incremental builds, individual `.llms.md` files are updated but `llms.txt` is preserved, matching the behavior of sitemap generation.

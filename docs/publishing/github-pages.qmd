@@ -1,8 +1,9 @@
 ---
 title: "GitHub Pages"
 editor: visual
-provider: gh-pages
-provider-token: GITHUB_TOKEN
+provider:
+  id: gh-pages
+  name: GitHub Pages
 ---
 
 ## Overview
@@ -36,6 +37,8 @@ project:
 Then, add a `.nojekyll` file to the root of your repository that tells GitHub Pages not to do additional processing of your published site using Jekyll (the GitHub default site generation tool):
 
 +---------------+---------------------------------+
+|               |                                 |
++===============+=================================+
 | Mac/Linux     | ``` {.bash filename="Terminal"} |
 |               | touch .nojekyll                 |
 |               | ```                             |
@@ -117,9 +120,9 @@ Here are all of the available command line options for `quarto publish gh-pages`
 
 {{< include _cli-options.md >}}
 
-## GitHub Action
+## GitHub Action {#github-action}
 
-Using the `quarto publish {{< meta provider >}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
+Using the `quarto publish {{< meta provider.id>}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
 
 There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion on [Rendering for CI](ci.qmd#rendering-for-ci).
 
@@ -162,7 +165,7 @@ jobs:
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
-          target: {{< meta provider >}}
+          target: {{< meta provider.id>}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -263,7 +266,7 @@ It's possible to have a Quarto project in a larger GitHub repository, where the 
 - name: Render and Publish
   uses: quarto-dev/quarto-actions/publish@v2
   with:
-    target: {{< meta provider >}}
+    target: {{< meta provider.id>}}
     path: subdirectory-to-use
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -275,7 +278,7 @@ By default, `quarto publish` will re-render your project before publishing it. H
 - name: Render and Publish
   uses: quarto-dev/quarto-actions/publish@v2
   with:
-    target: {{< meta provider >}}
+    target: {{< meta provider.id>}}
     render: false
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -285,19 +288,17 @@ See the full definition of the Quarto [publish action](https://github.com/quarto
 
 ## Custom Domain {#custom-domain}
 
-A custom domain allows you to use your own domain name instead of the default `username.github.io` domain for your GitHub Pages site.
-To use a custom domain you need to complete two steps:
+A custom domain allows you to use your own domain name instead of the default `username.github.io` domain for your GitHub Pages site. To use a custom domain you need to complete two steps:
 
-1. Add your domain to your GitHub repository settings
-2. Configure records with your DNS provider
+1.  Add your domain to your GitHub repository settings
+2.  Configure records with your DNS provider
 
-### 1. Add your domain to your GitHub repository settings 
+### 1. Add your domain to your GitHub repository settings
 
 Add a `CNAME` file to your project root directory (i.e., alongside `_quarto.yml`) that contains your custom domain:
 
 ::: {layout-ncol="2"}
-
-```{.default filename="website/"}
+``` {.default filename="website/"}
 ├── _site/
 ├── _quarto.yml
 ├── CNAME
@@ -305,31 +306,24 @@ Add a `CNAME` file to your project root directory (i.e., alongside `_quarto.yml`
 └── index.qmd
 ```
 
-```{.default filename="CNAME"}
+``` {.default filename="CNAME"}
 blog.example.com
 ```
-::::
+:::
 
 Quarto will recognize the `CNAME` file as a [site resource](/docs/websites/website-tools.qmd#site-resources) and will copy it your site output directory when you render.
 
-Re-render and publish your site to ensure `CNAME` is available to GitHub Pages. 
+Re-render and publish your site to ensure `CNAME` is available to GitHub Pages.
 
-::: {.callout-note}
-
-The GitHub Pages documentation describes adding your domain to your repository in the  **Settings** pane. 
-However, this creates a `CNAME` file in the location of your rendered site, 
-which will be overwritten whenever you render your site with Quarto.
-
+::: callout-note
+The GitHub Pages documentation describes adding your domain to your repository in the **Settings** pane. However, this creates a `CNAME` file in the location of your rendered site, which will be overwritten whenever you render your site with Quarto.
 :::
-
 
 ### 2. Configure records with your DNS provider
 
-The records you need to configure with your DNS provider depend on whether you are using an apex domain (e.g., `example.com`) or a subdomain (e.g., `www.example.com` or `blog.example.com`). 
+The records you need to configure with your DNS provider depend on whether you are using an apex domain (e.g., `example.com`) or a subdomain (e.g., `www.example.com` or `blog.example.com`).
 
-Apex domains require an `ALIAS`, `ANAME`, or `A` record, whereas subdomains require a `CNAME` record. 
-Find the appropriate values from the [DNS records summary table in the GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#dns-records-for-your-custom-domain).
-For apex domains, pay particular attention to the DNS record values, you may need to overwrite addresses your DNS provider has added by default.
+Apex domains require an `ALIAS`, `ANAME`, or `A` record, whereas subdomains require a `CNAME` record. Find the appropriate values from the [DNS records summary table in the GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#dns-records-for-your-custom-domain). For apex domains, pay particular attention to the DNS record values, you may need to overwrite addresses your DNS provider has added by default.
 
 ## User Site
 
