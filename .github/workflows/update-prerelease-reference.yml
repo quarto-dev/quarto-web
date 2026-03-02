@@ -145,6 +145,13 @@ jobs:
 
           echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
 
+      - name: Assign PR
+        if: steps.should-update.outputs.update == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit "${{ steps.create-pr.outputs.pr_url }}" --add-assignee cwickham
+
       - name: Trigger preview deployment
         if: steps.should-update.outputs.update == 'true'
         env:
