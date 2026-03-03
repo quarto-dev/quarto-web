@@ -3,10 +3,12 @@ title: Typst Books, Article Layout, and `typst-gather`
 author: Gordon Woodhull
 description: |
   Quarto 1.9 adds Typst book projects, article margin layout via Marginalia, and offline package bundling with `typst-gather`.
-image: typst-book-article.png
+image: typst-article-landscape.png
+image-alt: A Typst article page showing code and a margin figure rendered with the Marginalia package
+lightbox: true
 ---
 
-Typst is a lightning-fast typesetting system that provides a modern alternative to LaTeX. 
+Typst is a lightning-fast typesetting system that provides a modern alternative to LaTeX.
 
 The Typst ecosystem is thriving, and Quarto 1.9 brings Typst much closer to feature parity with LaTeX:
 
@@ -33,7 +35,16 @@ book:
 format: typst
 ```
 
-![](typst-book.png)
+::: {layout-ncol=4 group=book}
+![Part page](typst-book-part-page.png){fig-alt="A Typst book rendered with the orange-book extension, showing the part one page with a colored background and table of contents"}
+
+
+![Chapter page](typst-book-1.png){fig-alt="A Typst book rendered with the orange-book extension, showing the chapter one page with colored headers and sidebar navigation"}
+
+![Chapter content](typst-book-2.png){fig-alt="A Typst book rendered with the orange-book extension, showing the second page from chapter one with colored headers and sidebar navigation"}
+
+![Next chapter](typst-book-3.png){fig-alt="A Typst book rendered with the orange-book extension, showing the chapter two page with colored headers and sidebar navigation"}
+:::
 
 All book features previously available in the LaTeX format are now available in Typst:
 
@@ -44,7 +55,22 @@ All book features previously available in the LaTeX format are now available in 
 
 List-of-Figures and List-of-Tables support is [coming soon](https://github.com/quarto-dev/quarto-cli/issues/14081).
 
-The default Typst book uses the bundled Quarto [quarto-orange-book](https://github.com/quarto-ext/orange-book) extension, which itself [bundles](#typst-gather) the Typst [orange-book](https://typst.app/universe/package/orange-book) package. Orange-book provides a textbook-style layout with colored chapter headers and sidebars.
+The default Typst book uses the bundled Quarto [quarto-orange-book](https://github.com/quarto-ext/orange-book) extension, which uses [`typst-gather`](#typst-gather) to bundle the Typst [orange-book](https://typst.app/universe/package/orange-book) package. Orange-book provides a textbook-style layout with colored chapter headers and sidebars.
+
+The orange-book extension supports [brand.yml](/docs/authoring/brand.qmd) customization — it uses the `primary` color for chapter headers and sidebars, and the `medium` logo on the title page. The screenshots above were generated with this `_brand.yml`:
+
+``` {.yaml filename="_brand.yml"}
+color:
+  primary: "#F36619"
+  secondary: "#2E86AB"
+
+logo:
+  images:
+    test-logo:
+      path: logo.svg
+      alt: "Test Logo"
+  medium: test-logo
+```
 
 Since Typst books are implemented as Quarto [Format Extensions](/docs/extensions/formats.qmd), you can customize the appearance by creating your own extension. Typst partials define the overall book structure, while Lua filters handle the necessary AST transformations.
 
@@ -54,24 +80,24 @@ Also in Quarto 1.9, all [Article Layout](/docs/authoring/article-layout.qmd) fea
 
 Specifically:
 
-* Figures, tables, code listings, and equations can be placed in the margin using the `.column-margin` class, or the `column: margin` code cell option. You can also target specific output types with `fig-column: margin` or `tbl-column: margin`.
+* Figures, tables, code listings, and equations can be placed in the margin using the `.column-margin` class or the `column: margin` code cell option.
+* You can also target specific output types with `fig-column: margin` or `tbl-column: margin`.
 * Figure, table, and code listing captions can be placed in the margin with `cap-location: margin` (or `fig-cap-location: margin` and `tbl-cap-location: margin` for specific types).
 * Footnotes and citations can be displayed in the margin with `reference-location: margin` and `citation-location: margin`. When margin citations are enabled, the bibliography is suppressed.
 * Asides (`.aside` class) place content in the margin without a footnote number.
 
-![](typst-article.png)
+::: {layout-ncol=3 group=article}
+![Margin note and figure](typst-article.png){group="article" fig-alt="A page of a Typst article with a margin note and a margin figure using the Marginalia package"}
 
+![Margin captions](typst-article-2.png){group="article" fig-alt="A page of a Typst article using margin captions"}
 
+![Margin references](typst-article-3.png){group="article" fig-alt="A page of a Typst article using margin references"}
+:::
 
 ::: {.callout-warning}
 ## Books with article layout are functional, but need work
-You can combine book and article layout, but the page layout is not perfect, so we will not show screenshots here. It is perfectly functional and will not require any further changes to Quarto, but Marginalia needs to be integrated into the book template. 
-
-We will work with the orange-book author to improve the default book template.
+You can combine book and article layout, but there are some layout quirks when combining the two. We'll work with the orange-book author to integrate Marginalia into the book template. 
 :::
-
-
-![](typst-book-article.png)
 
 ## `typst-gather`
 
@@ -81,4 +107,4 @@ To make this work, extension authors use the new [`typst-gather`](/docs/advanced
 
 This means [Custom Typst Formats](/docs/output-formats/typst-custom.qmd#custom-formats) can depend on Typst packages without copying and pasting Typst code, making them simpler and easier to maintain.
 
-Both Typst books and article layout are built on `typst-gather` — orange-book depends on the Typst [orange-book](https://typst.app/universe/package/orange-book) package, and article layout depends on [Marginalia](https://typst.app/universe/package/marginalia/). As the Typst package ecosystem grows, we're excited to see what the community builds with these tools.
+Both Typst books and article layout are built on `typst-gather` — orange-book depends on the Typst [orange-book](https://typst.app/universe/package/orange-book) package, and article layout depends on [Marginalia](https://typst.app/universe/package/marginalia/). As the Typst package ecosystem grows, we're excited to see what the community builds with Typst packages.
