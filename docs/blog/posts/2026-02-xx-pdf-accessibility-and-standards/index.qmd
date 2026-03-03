@@ -1,5 +1,12 @@
 ---
 title: PDF Accessibility and Standards
+description: |
+  Quarto 1.9 brings PDF accessibility and standards support, building on new tagging features in LaTeX and Typst.
+author: Gordon Woodhull
+date: "2026-02-xx"
+image: verapdf.jpg
+image-alt: "veraPDF logo"
+draft: true
 ---
 
 2025 was a big year for PDF accessibility. LaTeX and Typst both released support for PDF tagging and accessibility standards, just in time for new regulations in the [EU](https://en.wikipedia.org/wiki/European_Accessibility_Act) (June 2025) and [US](https://accessible.org/ada-title-ii-web-accessibility/) (April 2026).  
@@ -21,38 +28,40 @@ Both standards instruct the PDF renderer to provide screen readers:
 
 In Quarto 1.9, specify a PDF standard for your document or project with `pdf-standard`
 
-::: panel-tabset
-## PDF (LaTeX)
+::::: {layout-ncol=2}
+:::: {}
+**PDF (LaTeX)**
 
 ```yaml
 format:
   pdf:
     pdf-standard: ua-2
 ```
+::::
 
-## Typst
+:::: {}
+**Typst**
 
 ```yaml
 format:
   typst:
     pdf-standard: ua-1
 ```
-:::
+::::
+:::::
 
 `pdf-standard` takes a single standard name or list of standard names. PDF version is used if provided in the list, but otherwise inferred from the standard.
 
-If you specify a PDF standard, Quarto first instructs LaTeX or Typst to use the standard when producing the PDF, and then validates the output PDF against the standard using veraPDF, an open-source PDF validation tool.
+If you specify a PDF standard, Quarto first instructs LaTeX or Typst to use the standard when producing the PDF, and then validates the output PDF against the standard using veraPDF, an open-source PDF validation tool. If veraPDF is not installed, you'll get a warning but still receive a PDF -- it just won't be validated.
 
 ::: {.callout-note}
 ## Installing veraPDF
 
-veraPDF requires a separate install:
+To install veraPDF, you'll first need Java, then run:
 
 ```{.bash filename="Terminal"}
 quarto install verapdf
 ```
-
-veraPDF requires Java.
 
 :::
 
@@ -73,7 +82,7 @@ Quarto's Markdown-based workflow handles many accessibility requirements automat
 But you do need to make sure your document has:
 
 * A **title** in the YAML front matter.
-* **Alt text for every image**, specified with `fig-alt`. See [Figures](/docs/authoring/figures.qmd) for details.
+* **Alt text for every image**, specified with `fig-alt`. See [Figures](/docs/authoring/figures.qmd#alt-text) for details.
 
 See the [LaTeX](https://prerelease.quarto.org/docs/output-formats/pdf-basics.html#accessibility-requirements) and [Typst](https://prerelease.quarto.org/docs/output-formats/typst.html#accessibility-requirements) documentation for more details.
 
@@ -93,7 +102,7 @@ There are smaller upstream issues in Pandoc, LaTeX, and LaTeX packages, [documen
 
 In our tests, Typst catches every UA-1 violation, and fails to generate the PDF. veraPDF did not detect any violation that Typst did not.
 
-Typst also seems to do a very good job of generating UA-1 compliant output by default -- almost all errors were titles and alt text.
+Typst also seems to do a very good job of generating UA-1 compliant output by default -- almost all errors were due to missing titles or missing alt text.
 
 However, we did discover that [Typst Books](/docs/books/book-output.qmd#typst-output) are not yet compliant. There is a [structural problem with the Typst orange-book package](https://github.com/flavio20002/typst-orange-template/issues/38) and we'll work with the maintainers to correct it.
 
