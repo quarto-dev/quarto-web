@@ -132,7 +132,16 @@ The group order determines which phase is active on **quarto.org** (the main sit
 |---|---|
 | `_quarto-prerelease-docs.yml` | Site-specific configuration for prerelease.quarto.org |
 
-The `prerelease-subdomain` variable is defined as empty (`''`) in `_quarto.yml` (so links point to `quarto.org` by default) and overridden to `prerelease.` only in `_quarto-prerelease-docs.yml`.
+### Subdomain variables
+
+Two variables control how links resolve across builds. Both use the same pattern — `https://{{< meta VAR >}}quarto.org/...` — but serve different purposes:
+
+| Variable | Purpose | Default | Set by `rc` | Set by `prerelease-docs` |
+|---|---|---|---|---|
+| `prerelease-subdomain` | **Site identity** — "am I the prerelease site?" | `''` | — | `prerelease.` |
+| `prerelease-link-subdomain` | **Content linking** — "where do prerelease docs live right now?" | `''` | `prerelease.` | `prerelease.` |
+
+Use `prerelease-subdomain` for self-referential links (e.g. RevealJS demo links back to its own site). Use `prerelease-link-subdomain` for content on `main` that references docs only available on prerelease during RC phase (e.g. blog posts announcing upcoming features).
 
 ### Release lifecycle
 
