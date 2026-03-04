@@ -105,6 +105,65 @@ quarto run tools/reference.ts
 
 This builds the `.json` files in `docs/references` based on the [Quarto CLI schema](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/schema). The script assumes you have `quarto-cli/` at the same level in your directory structure as `quarto-web/`.
 
+## Profile System
+
+This project uses [Quarto profiles](https://quarto.org/docs/projects/profiles.html) to build two sites from the same source: [quarto.org](https://quarto.org/) and [prerelease.quarto.org](https://prerelease.quarto.org/).
+
+### Two-layer architecture
+
+**Phase profiles** (`rc` / `prerelease`) control release-phase branding. They are declared as a [profile group](https://quarto.org/docs/projects/profiles.html#profile-groups) in `_quarto.yml`:
+
+```yaml
+profile:
+  group:
+    - [rc, prerelease]   # first entry is the default
+```
+
+The group order determines which phase is active on **quarto.org** (the main site). Flipping the order (e.g. `[rc, prerelease]` to `[prerelease, rc]`) switches the main site between "Release Candidate" and "Pre-release" branding.
+
+| File | Purpose |
+|---|---|
+| `_quarto-prerelease.yml` | Phase variables for the pre-release/development phase |
+| `_quarto-rc.yml` | Phase variables for the release candidate phase |
+
+**Site profile** (`prerelease-docs`) configures everything specific to prerelease.quarto.org: site URL, announcement banner, search index, theme, and the `prerelease-subdomain` variable.
+
+| File | Purpose |
+|---|---|
+| `_quarto-prerelease-docs.yml` | Site-specific configuration for prerelease.quarto.org |
+
+### Subdomain variables
+
+Two variables control how links resolve across builds. Both use the same pattern — `https://{{< meta VAR >}}quarto.org/...` — but serve different purposes:
+
+| Variable | Purpose | Default | Set by `rc` | Set by `prerelease-docs` |
+|---|---|---|---|---|
+| `prerelease-subdomain` | **Site identity** — "am I the prerelease site?" | `''` | — | `prerelease.` |
+| `prerelease-link-subdomain` | **Content linking** — "where do prerelease docs live right now?" | `''` | `prerelease.` | `prerelease.` |
+
+Use `prerelease-subdomain` for self-referential links (e.g. RevealJS demo links back to its own site). Use `prerelease-link-subdomain` for content on `main` that references docs only available on prerelease during RC phase (e.g. blog posts announcing upcoming features).
+
+### Release lifecycle
+
+1. **Development phase:** group is `[prerelease, rc]` — main site shows "Pre-release"
+2. **RC phase:** flip group to `[rc, prerelease]` — main site shows "Release Candidate"
+3. **Release:** flip back to `[prerelease, rc]` for the next development cycle
+
+These flips only affect quarto.org. The prerelease site CI explicitly activates `prerelease,prerelease-docs`, so it always shows "Pre-release" regardless of group order.
+
+### Local preview
+
+```bash
+# Main site with RC branding
+quarto preview --profile rc
+
+# Main site with pre-release branding (default when prerelease is first in group)
+quarto preview
+
+# Prerelease site
+quarto preview --profile prerelease,prerelease-docs
+```
+
 ## GitHub Action Workflows
 
 Our GitHub Action workflows are documented in [`.github/workflows/README.md`](.github/workflows/README.md)
