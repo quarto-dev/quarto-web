@@ -19,10 +19,12 @@ local function handler(args, kwargs, meta)
     return pandoc.Str("prerelease.")
   end
 
-  -- Compare referenced version to this branch's version
-  local branch_version = pandoc.utils.stringify(meta["version"])
+  -- Compare referenced version to this branch's version using
+  -- pandoc.types.Version for correct element-wise comparison (1.12 > 1.9)
+  local branch_version = pandoc.types.Version(pandoc.utils.stringify(meta["version"]))
+  local ref = pandoc.types.Version(ref_version)
 
-  if ref_version == branch_version then
+  if ref <= branch_version then
     return pandoc.Str("")
   else
     return pandoc.Str("prerelease.")
