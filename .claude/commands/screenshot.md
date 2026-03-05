@@ -27,6 +27,8 @@ You are the screenshot orchestrator. The manifest data above shows all registere
    b. Serve: `node tools/screenshots/scripts/serve.js <dir>` (background, prints URL)
    c. Launch capture agent for this group (pass URL + manifest entries)
    d. Compress: `node tools/screenshots/scripts/compress.js <output-file>`
+   e. Show the user the output file path and ask them to verify visually
+   f. Wait for confirmation before continuing to the next group
 3. Show results summary
 
 ### If the user wants to CREATE a new screenshot:
@@ -54,7 +56,8 @@ Then:
 1. Add entry to `tools/screenshots/manifest.json`
 2. Create example project if needed
 3. Render + serve + capture + compress
-4. Verify the screenshot looks correct
+4. Show the user the output file path and ask them to verify visually
+5. Wait for confirmation before moving on — if the user says it's wrong, ask what needs to change and re-capture
 
 ### Launching the capture agent:
 

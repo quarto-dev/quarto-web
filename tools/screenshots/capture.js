@@ -8,12 +8,14 @@
 //   node tools/screenshots/capture.js --name "about-*"    # glob pattern
 //   node tools/screenshots/capture.js --dry-run            # show plan only
 //   node tools/screenshots/capture.js --no-compress        # skip oxipng
+//   node tools/screenshots/capture.js --verify              # open each image for review
 //   node tools/screenshots/capture.js --list               # list entries
 
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { execSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { openFile } from './scripts/open.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TOOLS_DIR = __dirname;
@@ -24,6 +26,7 @@ const args = process.argv.slice(2);
 const namePattern = args.includes('--name') ? args[args.indexOf('--name') + 1] : null;
 const dryRun = args.includes('--dry-run');
 const noCompress = args.includes('--no-compress');
+const verify = args.includes('--verify');
 const listOnly = args.includes('--list');
 const SESSION = 'screenshot';
 
@@ -240,6 +243,12 @@ async function main() {
           // Compress
           if (!dryRun) {
             compressPng(outputPath);
+          }
+
+          // Verify — open image for visual review
+          if (verify && !dryRun) {
+            console.log(`  Opening for review: ${outputPath}`);
+            openFile(outputPath);
           }
 
           console.log(`  ${label} ... done`);
