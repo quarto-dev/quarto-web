@@ -8,7 +8,7 @@ GitHub Action that runs oxipng on changed PNG files in PRs. Ensures all committe
 
 ## Strategy
 
-- **Locally:** `capture.mjs` runs `oxipng` if found in PATH, silently skips if not
+- **Locally:** `capture.js` runs `oxipng` if found in PATH, silently skips if not
 - **CI:** Catches any unoptimized PNGs, commits optimized versions back to PR
 - **Result:** Contributors never need oxipng installed — CI is the safety net
 
