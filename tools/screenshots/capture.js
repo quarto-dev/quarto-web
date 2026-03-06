@@ -54,6 +54,10 @@ if (screenshots.length === 0) {
 if (listOnly) {
   for (const s of screenshots) {
     console.log(`${s.name} → ${s.output}`);
+    if (s.dark) {
+      const ext = s.output.lastIndexOf('.');
+      console.log(`${s.name} (dark) → ${s.output.slice(0, ext)}-dark${s.output.slice(ext)}`);
+    }
   }
   process.exit(0);
 }
@@ -143,32 +147,61 @@ async function runInteractions(page, shot) {
   }
 }
 
-// Take a screenshot
-async function takeScreenshot(page, shot) {
-  const outputPath = resolve(REPO_ROOT, shot.output);
+// Compute dark output path: about-jolla.png → about-jolla-dark.png
+function darkOutputPath(outputPath) {
+  const ext = outputPath.lastIndexOf('.');
+  return outputPath.slice(0, ext) + '-dark' + outputPath.slice(ext);
+}
+
+// Switch to dark mode by clicking the toggle
+async function switchToDark(page) {
+  const darkConfig = manifest.defaults.dark;
+  await page.locator(darkConfig.toggle).click();
+  await page.locator(darkConfig.ready).waitFor({ timeout: 5000 });
+  if (darkConfig.settle) {
+    await page.waitForTimeout(darkConfig.settle);
+  }
+}
+
+// Switch back to light mode
+async function switchToLight(page) {
+  const darkConfig = manifest.defaults.dark;
+  await page.locator(darkConfig.toggle).click();
+  // Wait for dark class to be removed
+  const readySelector = darkConfig.ready.replace('.quarto-dark', '.quarto-light');
+  await page.locator(readySelector).waitFor({ timeout: 5000 });
+  if (darkConfig.settle) {
+    await page.waitForTimeout(darkConfig.settle);
+  }
+}
+
+// Compute clip region from selectors
+async function computeClip(page, selectors) {
+  const boxes = [];
+  for (const sel of selectors) {
+    const loc = page.locator(sel);
+    if (await loc.count() > 0) {
+      const box = await loc.first().boundingBox();
+      if (box) boxes.push(box);
+    }
+  }
+  if (boxes.length === 0) throw new Error('No clip selectors matched');
+  const vp = page.viewportSize();
+  const pad = 10;
+  const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
+  const y = Math.max(0, Math.min(...boxes.map(b => b.y)) - pad);
+  const right = Math.min(Math.max(...boxes.map(b => b.x + b.width)) + pad, vp.width);
+  const bottom = Math.min(Math.max(...boxes.map(b => b.y + b.height)) + pad, vp.height);
+  return { x, y, width: right - x, height: bottom - y };
+}
+
+// Take a screenshot (optionally override output path and/or clip)
+async function takeScreenshot(page, shot, overridePath, overrideClip) {
+  const outputPath = overridePath || resolve(REPO_ROOT, shot.output);
 
   if (shot.capture?.clip) {
-    // Clip screenshot: union bounding box of multiple selectors
-    const selectors = shot.capture.clip;
-    const boxes = [];
-    for (const sel of selectors) {
-      const loc = page.locator(sel);
-      if (await loc.count() > 0) {
-        const box = await loc.first().boundingBox();
-        if (box) boxes.push(box);
-      }
-    }
-    if (boxes.length === 0) throw new Error('No clip selectors matched');
-    const vp = page.viewportSize();
-    const pad = 10;
-    const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
-    const y = Math.max(0, Math.min(...boxes.map(b => b.y)) - pad);
-    const right = Math.min(Math.max(...boxes.map(b => b.x + b.width)) + pad, vp.width);
-    const bottom = Math.min(Math.max(...boxes.map(b => b.y + b.height)) + pad, vp.height);
-    await page.screenshot({
-      path: outputPath,
-      clip: { x, y, width: right - x, height: bottom - y }
-    });
+    const clip = overrideClip || await computeClip(page, shot.capture.clip);
+    await page.screenshot({ path: outputPath, clip });
   } else if (shot.capture?.element) {
     await page.locator(shot.capture.element).screenshot({ path: outputPath });
   } else {
@@ -261,11 +294,44 @@ async function main() {
             // Interactions
             await runInteractions(page, shot);
 
-            // Screenshot
-            const outputPath = await takeScreenshot(page, shot);
+            // For dark variants with clip: compute union clip across both modes
+            // so light and dark screenshots have identical dimensions
+            let sharedClip = null;
+            if (shot.dark && shot.capture?.clip) {
+              const lightClip = await computeClip(page, shot.capture.clip);
+              await switchToDark(page);
+              await runInteractions(page, shot);
+              const darkClip = await computeClip(page, shot.capture.clip);
+              // Union of both clip regions
+              const x = Math.min(lightClip.x, darkClip.x);
+              const y = Math.min(lightClip.y, darkClip.y);
+              const right = Math.max(lightClip.x + lightClip.width, darkClip.x + darkClip.width);
+              const bottom = Math.max(lightClip.y + lightClip.height, darkClip.y + darkClip.height);
+              sharedClip = { x, y, width: right - x, height: bottom - y };
+              // Take dark screenshot while we're here
+              const darkPath = darkOutputPath(resolve(REPO_ROOT, shot.output));
+              console.log(`  ${shot.name} (dark)...`);
+              await takeScreenshot(page, shot, darkPath, sharedClip);
+              compressPng(darkPath);
+              // Switch back to light for the light screenshot
+              await switchToLight(page);
+              await runInteractions(page, shot);
+            }
 
-            // Compress
+            // Light screenshot
+            const outputPath = await takeScreenshot(page, shot, null, sharedClip);
             compressPng(outputPath);
+
+            // Dark variant (non-clip mode: element or viewport)
+            if (shot.dark && !shot.capture?.clip) {
+              console.log(`  ${shot.name} (dark)...`);
+              await switchToDark(page);
+              const darkPath = darkOutputPath(outputPath);
+              await runInteractions(page, shot);
+              await takeScreenshot(page, shot, darkPath);
+              compressPng(darkPath);
+              await switchToLight(page);
+            }
 
             // Verify — open image for visual review
             if (verify) {

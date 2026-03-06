@@ -74,13 +74,24 @@ playwright-cli -s=screenshot run-code "async page => {
 playwright-cli -s=screenshot screenshot --filename=<output-path>
 ```
 
-### 6. Visual validation
+### 6. Dark mode variant
+
+If the screenshot has `"dark": true` in manifest:
+1. Click the color scheme toggle: `playwright-cli -s=screenshot run-code "async page => await page.locator('.quarto-color-scheme-toggle').click()"`
+2. Wait for dark mode: `playwright-cli -s=screenshot run-code "async page => await page.locator('body.quarto-dark').waitFor()"`
+3. Re-run any interactions (e.g., dropdown may have closed during toggle)
+4. Take the screenshot again with `-dark` suffix on the filename
+5. Click toggle again to return to light mode
+
+Note: `capture.js` handles this automatically. This step is only needed for manual/interactive captures.
+
+### 7. Visual validation
 
 After capturing, verify:
 - The screenshot file was created and is non-empty
 - Report what you captured (element, viewport size, interactions performed)
 
-### 7. Close when done
+### 8. Close when done
 
 ```bash
 playwright-cli -s=screenshot close
@@ -89,7 +100,7 @@ playwright-cli -s=screenshot close
 ## Rules
 
 - ALWAYS use `-s=screenshot` session flag (avoids collisions with other sessions)
-- ALWAYS use light color scheme (default)
+- ALWAYS capture light mode first (default), then dark if needed
 - ALWAYS wait for fonts and icons to load before capturing
 - ALWAYS remove prerelease/preview banners
 - Use consistent viewport sizes from the manifest

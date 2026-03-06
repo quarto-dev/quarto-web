@@ -4,17 +4,18 @@ Tooling for capturing and maintaining documentation screenshots in quarto-web.
 
 ## Prerequisites
 
-- **Node.js 18+** — required for scripts and playwright-cli
+- **Node.js 18+** — required for scripts and Playwright
 - **Quarto** — required for rendering example projects (set `QUARTO_CMD` env var if your binary has a different name)
 
 ## Option A: Automated Replay (no AI)
 
 ```bash
-# One-time: install playwright-cli and browser
-npm install -g @playwright/cli@latest
-playwright-cli install-browser
+# One-time: install dependencies and browser
+cd tools/screenshots
+npm install
+npx playwright install chromium
 
-# From tools/screenshots/:
+# Capture all screenshots (light + dark variants):
 npm run capture                          # all screenshots
 npm run capture -- --name navbar-tools   # specific
 npm run capture -- --name "about-*"      # glob pattern
@@ -73,18 +74,19 @@ A CI workflow compresses changed PNGs after merge to main. Local install is opti
 ```
 tools/screenshots/
 ├── manifest.json          # screenshot definitions (single source of truth)
-├── capture.js             # replay script (no AI)
-├── package.json           # type:module, npm scripts
+├── capture.js             # replay script (uses Playwright API directly)
+├── package.json           # dependencies: playwright, open
 ├── CLAUDE.md              # visual rules for Claude
 ├── SETUP.md               # this file
 ├── scripts/
 │   ├── list.js            # read + format manifest
 │   ├── render.js          # quarto render wrapper
 │   ├── serve.js           # static file server
+│   ├── open.js            # open file with OS default app
 │   └── compress.js        # oxipng wrapper
 └── examples/
-    ├── about-pages/       # about page templates
-    └── navbar-tools/      # navbar with dropdown
+    ├── about-pages/       # about page templates (light + dark theme)
+    └── navbar-tools/      # navbar with dropdown (light + dark theme)
 ```
 
 ## Manifest Format
@@ -92,8 +94,11 @@ tools/screenshots/
 Each screenshot in `manifest.json` specifies:
 - `name` — unique identifier
 - `output` — output PNG path (relative to repo root)
+- `dark` — if `true`, also captures a `-dark` variant (e.g. `about-jolla-dark.png`)
 - `source` — where to get the page (example project, URL, or local)
-- `capture` — viewport, interactions, element selector
+- `capture` — viewport, interactions, clip selectors, element selector
 - `doc` — which .qmd file references this image
+
+Dark mode works by clicking the Quarto color scheme toggle (`.quarto-color-scheme-toggle`). Example projects must have `theme: { light: cosmo, dark: darkly }` in `_quarto.yml`.
 
 See `manifest.json` for the full schema.
