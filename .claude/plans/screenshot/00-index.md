@@ -28,6 +28,8 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 05 | [05-documentation.md](05-documentation.md) | CLAUDE.md, SETUP.md, visual rules | Revised |
 | 06 | [06-skill-scripts.md](06-skill-scripts.md) | `/screenshot` skill, `!` preprocessing, helper scripts | New |
 | 07 | [07-capture-agent.md](07-capture-agent.md) | `screenshot-capture` agent definition | New |
+| 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated |
+| 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | New |
 
 ## Key Decisions
 
