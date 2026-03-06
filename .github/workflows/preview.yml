@@ -1,6 +1,8 @@
 on:
   pull_request:
     branches: [main, prerelease]
+    paths-ignore:
+      - '.github/**'
   issue_comment:
     types: [created]
 
@@ -135,6 +137,8 @@ jobs:
             docs/**/[^_]*.qmd
             docs/**/[^_]*.md
             docs/extensions/listings/*.yml
+            docs/reference/**/*.json
+            docs/cli/*.json
           json: true
           escape_json: false
       
@@ -150,39 +154,75 @@ jobs:
             const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
             const deployUrl = process.env.DEPLOY_URL;
             const changedFiles = JSON.parse(process.env.CHANGED_FILES);
-            
+
             let commentBody = `## 📝 Preview Deployment\n\n`;
             commentBody += `🔍 Full site preview: [${deployUrl}](${deployUrl})\n\n`;
-            
+
             if (changedFiles.length > 0) {
-              commentBody += `### 🔄 Modified Documents\n\n`;
+              // Explicit mapping for files that don't follow standard naming conventions
+              const specialFileMapping = {
+                'docs/extensions/listings/shortcodes-and-filters.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/journal-articles.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/custom-formats.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/revealjs-formats.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/revealjs.yml': 'docs/extensions/index.html',
+                'docs/cli/cli-info.json': 'docs/reference/index.html',
+              };
+
+              // Projects/ JSON files have many-to-one mapping to .qmd pages
+              const projectsJsonMapping = {
+                'book': 'docs/reference/projects/books.html',
+                'manuscript': 'docs/reference/projects/manuscripts.html',
+                'project': 'docs/reference/projects/options.html',
+                'preview': 'docs/reference/projects/options.html',
+                'serve': 'docs/reference/projects/options.html',
+              };
+              const projectsDefault = 'docs/reference/projects/websites.html';
+
+              // Resolve each changed file to its preview URL path
+              // Group files by their target page for deduplication
+              const pageToFiles = new Map();
+
               changedFiles.forEach(file => {
                 let fileUrlPath;
 
-                // Define a mapping for special files to their corresponding URLs
-                const specialFileMapping = {
-                  'docs/extensions/listings/shortcodes-and-filters.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/journal-articles.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/custom-formats.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/revealjs-formats.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/revealjs.yml': 'docs/extensions/index.html'
-                };
-
-                // Check if the file is in the special mapping
                 if (specialFileMapping[file]) {
                   fileUrlPath = specialFileMapping[file];
                 } else if (file.endsWith('.qmd') || file.endsWith('.md')) {
-                  // Convert path to URL (removing file extension and adding appropriate path)
                   fileUrlPath = file.replace(/\.(qmd|md)$/, '.html');
+                } else if (file.startsWith('docs/reference/projects/') && file.endsWith('.json')) {
+                  const stem = file.split('/').pop().replace('.json', '');
+                  fileUrlPath = projectsJsonMapping[stem] || projectsDefault;
+                } else if (file.endsWith('.json')) {
+                  // Generic: formats/, cells/, metadata/ JSON have sibling .qmd files
+                  fileUrlPath = file.replace(/\.json$/, '.html');
                 }
 
                 if (fileUrlPath) {
-                  const fileUrl = `${deployUrl}/${fileUrlPath}`;
-                  commentBody += `- [${file}](${fileUrl})\n`;
+                  if (!pageToFiles.has(fileUrlPath)) {
+                    pageToFiles.set(fileUrlPath, []);
+                  }
+                  pageToFiles.get(fileUrlPath).push(file);
                 }
               });
+
+              if (pageToFiles.size > 0) {
+                commentBody += `### 🔄 Modified Documents\n\n`;
+                for (const [page, files] of pageToFiles) {
+                  const fileUrl = `${deployUrl}/${page}`;
+                  if (files.length === 1) {
+                    commentBody += `- [${files[0]}](${fileUrl})\n`;
+                  } else {
+                    // Multiple source files map to one page - show page with file summary
+                    const basenames = files.map(f => f.split('/').pop());
+                    const shown = basenames.slice(0, 3).join(', ');
+                    const rest = basenames.length > 3 ? `, +${basenames.length - 3} more` : '';
+                    commentBody += `- [${page}](${fileUrl}) (${shown}${rest})\n`;
+                  }
+                }
+              }
             }
-            
+
             github.rest.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
