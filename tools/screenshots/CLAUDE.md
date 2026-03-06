@@ -14,6 +14,12 @@ node tools/screenshots/capture.js --name "about-*"     # glob pattern
 /screenshot
 ```
 
+## Manifest Path Conventions
+
+- `output` paths are relative to the **repo root** (e.g., `docs/websites/images/about-jolla.png`)
+- `source.project` paths are relative to **tools/screenshots/** (e.g., `examples/about-pages`)
+- `doc.file` paths are relative to the **repo root**
+
 ## Adding New Screenshots
 
 1. Add entry to `tools/screenshots/manifest.json`

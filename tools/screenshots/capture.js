@@ -370,7 +370,7 @@ async function main() {
 
     } finally {
       if (browser) await browser.close();
-      if (server) server.kill();
+      if (server) try { server.kill(); } catch {}
     }
   }
 
