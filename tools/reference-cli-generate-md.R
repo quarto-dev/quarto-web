@@ -39,6 +39,18 @@ relativize_quarto_urls <- function(text) {
   gsub("<https://quarto\\.org(/[^>]+)>", "[\\1](\\1)", text)
 }
 
+# Escape @ symbols so Quarto doesn't interpret them as citations
+escape_namespace <- function(text) {
+  gsub("@", "\\\\@", text)
+}
+
+# Ensure blank line before list items (required by Quarto)
+ensure_list_spacing <- function(text) {
+  # Match line ending with colon, followed by indented numbered or bulleted list
+
+  gsub("(:\\n)([ \\t]+)(\\d+\\.|[-*])", "\\1\n\\2\\3", text)
+}
+
 process_options <- function(options) {
   options_table <- tibble(options = options) |>
     unnest_wider(options) |>
@@ -107,7 +119,7 @@ md_content <- function(name, description, usage, options, commands, examples) {
   examples_text <- process_examples(examples)
 
   paste(
-    strip_ctl(description, ctl = "sgr") |> wrap_urls() |> relativize_quarto_urls(),
+    strip_ctl(description, ctl = "sgr") |> wrap_urls() |> relativize_quarto_urls() |> escape_namespace() |> ensure_list_spacing(),
     usage_text,
     "\n",
     heading("Options"),
