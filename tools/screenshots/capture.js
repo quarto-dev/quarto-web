@@ -371,7 +371,7 @@ async function main() {
       }
 
     } finally {
-      try { if (browser) await browser.close(); } catch {}
+      try { if (browser) await browser.close(); } catch (e) { console.error(`  browser.close failed: ${e.message}`); }
       if (server) try { server.kill(); } catch (e) { if (e.code !== 'ESRCH') throw e; }
     }
   }
