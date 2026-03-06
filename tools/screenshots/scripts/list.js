@@ -12,7 +12,7 @@ const manifest = JSON.parse(readFileSync(join(__dirname, '..', 'manifest.json'),
 const namePattern = process.argv.includes('--name')
   ? process.argv[process.argv.indexOf('--name') + 1]
   : null;
-if (process.argv.includes('--name') && !namePattern) {
+if (process.argv.includes('--name') && (!namePattern || namePattern.startsWith('-'))) {
   console.error('--name requires a value');
   process.exit(1);
 }

@@ -25,7 +25,7 @@ const REPO_ROOT = resolve(__dirname, '..', '..');
 // Parse args
 const args = process.argv.slice(2);
 const namePattern = args.includes('--name') ? args[args.indexOf('--name') + 1] : null;
-if (args.includes('--name') && !namePattern) {
+if (args.includes('--name') && (!namePattern || namePattern.startsWith('-'))) {
   console.error('--name requires a value');
   process.exit(1);
 }
@@ -88,7 +88,7 @@ function startServer(dir) {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     let output = '';
-    const timer = setTimeout(() => reject(new Error('Server start timeout')), 10000);
+    const timer = setTimeout(() => { try { proc.kill(); } catch {} reject(new Error('Server start timeout')); }, 10000);
     proc.stdout.on('data', chunk => {
       output += chunk.toString();
       const match = output.match(/http:\/\/localhost:\d+/);
@@ -152,6 +152,8 @@ async function runInteractions(page, shot) {
       case 'scroll':
         await page.locator(step.selector).scrollIntoViewIfNeeded();
         break;
+      default:
+        console.warn(`  Warning: unknown interaction action "${step.action}", skipping`);
     }
   }
 }
@@ -369,8 +371,8 @@ async function main() {
       }
 
     } finally {
-      if (browser) await browser.close();
-      if (server) try { server.kill(); } catch {}
+      try { if (browser) await browser.close(); } catch {}
+      if (server) try { server.kill(); } catch (e) { if (e.code !== 'ESRCH') throw e; }
     }
   }
 

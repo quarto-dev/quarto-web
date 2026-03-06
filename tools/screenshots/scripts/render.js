@@ -6,14 +6,14 @@
 import { execSync } from 'node:child_process';
 import { resolve } from 'node:path';
 
-import { existsSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 
 const projectDir = resolve(process.argv[2] || '');
 if (!process.argv[2]) {
   console.error('Usage: node render.js <project-dir>');
   process.exit(1);
 }
-if (!existsSync(projectDir)) {
+if (!existsSync(projectDir) || !statSync(projectDir).isDirectory()) {
   console.error(`Directory not found: ${projectDir}`);
   process.exit(1);
 }
