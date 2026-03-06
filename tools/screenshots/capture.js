@@ -71,7 +71,8 @@ if (listOnly) {
 function groupBySource(shots) {
   const groups = new Map();
   for (const s of shots) {
-    const key = s.source.type === 'example' ? s.source.project
+    const key = s.source.type === 'example'
+      ? s.source.project + (s.source.profile ? `:${s.source.profile}` : '')
       : s.source.type === 'url' ? `url:${s.source.url}`
       : `local:${s.source.page || 'site'}`;
     if (!groups.has(key)) groups.set(key, []);
@@ -111,11 +112,14 @@ function startServer(dir) {
 }
 
 // Render a Quarto project
-function renderProject(projectDir) {
+function renderProject(projectDir, profile) {
   const renderScript = join(TOOLS_DIR, 'scripts', 'render.js');
-  console.log(`  Rendering ${projectDir}...`);
+  const profileLabel = profile ? ` (profile: ${profile})` : '';
+  console.log(`  Rendering ${projectDir}${profileLabel}...`);
   if (!dryRun) {
-    execSync(`node "${renderScript}" "${projectDir}"`, { stdio: 'inherit' });
+    const args = [renderScript, projectDir];
+    if (profile) args.push('--profile', profile);
+    execSync(`node ${args.map(a => `"${a}"`).join(' ')}`, { stdio: 'inherit' });
   }
 }
 
@@ -248,7 +252,7 @@ async function main() {
       // Prepare source
       if (shots[0].source.type === 'example') {
         const projectDir = resolve(TOOLS_DIR, shots[0].source.project);
-        renderProject(projectDir);
+        renderProject(projectDir, shots[0].source.profile);
         const siteDir = join(projectDir, '_site');
         if (!dryRun) {
           server = await startServer(siteDir);
@@ -278,7 +282,8 @@ async function main() {
       if (!dryRun) {
         await page.goto(firstUrl, { waitUntil: 'domcontentloaded' });
       } else {
-        console.log(`  [dry-run] goto ${firstUrl}`);
+        const profileLabel = shots[0].source.profile ? ` [profile: ${shots[0].source.profile}]` : '';
+        console.log(`  [dry-run] goto ${firstUrl}${profileLabel}`);
       }
 
       for (const shot of shots) {

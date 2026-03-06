@@ -18,7 +18,14 @@ if (!existsSync(projectDir) || !statSync(projectDir).isDirectory()) {
   process.exit(1);
 }
 
+const profileIdx = process.argv.indexOf('--profile');
+const profile = profileIdx !== -1 ? process.argv[profileIdx + 1] : null;
+
 const quartoCmd = process.env.QUARTO_CMD || 'quarto';
-console.log(`Rendering: ${projectDir}`);
-execSync(`${quartoCmd} render "${projectDir}"`, { stdio: 'inherit' });
+const args = [quartoCmd, 'render', `"${projectDir}"`];
+if (profile) args.push('--profile', profile);
+
+const profileLabel = profile ? ` (profile: ${profile})` : '';
+console.log(`Rendering: ${projectDir}${profileLabel}`);
+execSync(args.join(' '), { stdio: 'inherit' });
 console.log(`Done. Output in: ${projectDir}/_site/`);
