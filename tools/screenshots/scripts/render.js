@@ -20,6 +20,10 @@ if (!existsSync(projectDir) || !statSync(projectDir).isDirectory()) {
 
 const profileIdx = process.argv.indexOf('--profile');
 const profile = profileIdx !== -1 ? process.argv[profileIdx + 1] : null;
+if (profileIdx !== -1 && (!profile || profile.startsWith('-'))) {
+  console.error('--profile requires a value');
+  process.exit(1);
+}
 
 const quartoCmd = process.env.QUARTO_CMD || 'quarto';
 const args = [quartoCmd, 'render', `"${projectDir}"`];
