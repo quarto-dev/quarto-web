@@ -266,9 +266,15 @@ async function main() {
       const context = !dryRun ? await browser.newContext() : null;
       const page = !dryRun ? await context.newPage() : null;
 
+      // Build navigation URL for a shot
+      function shotUrl(shot) {
+        if (shot.source.type === 'url') return shot.source.url;
+        const pagePath = shot.source.page || 'index.html';
+        return `${baseUrl}/${pagePath}`;
+      }
+
       // Navigate to first page
-      const firstPage = shots[0].source.page || '';
-      const firstUrl = baseUrl + (firstPage ? `/${firstPage}` : '');
+      const firstUrl = shotUrl(shots[0]);
       if (!dryRun) {
         await page.goto(firstUrl, { waitUntil: 'domcontentloaded' });
       } else {
@@ -283,11 +289,11 @@ async function main() {
         try {
           // Navigate if not the first page in this group
           if (shot !== shots[0]) {
-            const pagePath = shot.source.page || 'index.html';
+            const targetUrl = shotUrl(shot);
             if (!dryRun) {
-              await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: 'domcontentloaded' });
+              await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
             } else {
-              console.log(`  [dry-run] goto ${baseUrl}/${pagePath}`);
+              console.log(`  [dry-run] goto ${targetUrl}`);
             }
           }
 
@@ -371,7 +377,7 @@ async function main() {
       }
 
     } finally {
-      try { if (browser) await browser.close(); } catch (e) { console.error(`  browser.close failed: ${e.message}`); }
+      try { if (browser) await browser.close(); } catch (e) { console.error('  browser.close failed:', e); }
       if (server) try { server.kill(); } catch (e) { if (e.code !== 'ESRCH') throw e; }
     }
   }
