@@ -4,23 +4,24 @@ Parent: [00-index.md](00-index.md)
 
 ## Purpose
 
-A thin Node.js script that reads `manifest.json` and replays screenshot captures using `playwright-cli` commands. No AI needed — purely mechanical execution. Anyone with Node.js + playwright-cli installed can run it to reproduce all screenshots.
+A thin Node.js script that reads `manifest.json` and replays screenshot captures using the Playwright API directly. No AI needed — purely mechanical execution. Anyone with Node.js installed can run it to reproduce all screenshots.
 
-## Why playwright-cli (not Playwright API)
+## Why Playwright API (not playwright-cli)
 
-- Same commands the capture agent used — replay is 1:1
-- Token-efficient CLI designed for agents (refs, snapshots)
-- Element screenshots via refs: `playwright-cli screenshot e5`
-- Interactions: `click`, `hover`, `eval`, `resize`
-- Session management: daemon persists between commands
-- `npx playwright-cli` works without global install
+- Direct API calls — no shell, no quoting, no string marshaling
+- Works identically on all platforms (no cmd.exe / bash differences)
+- CSS selectors work directly — no ref resolution needed
+- `page.evaluate(script)` accepts strings directly — no escaping
+- Bounding box computation is in-process — no shell round-trips
+
+Originally used playwright-cli subprocess calls, but Windows `execSync` goes through `cmd.exe` which corrupts complex JS strings with quotes and newlines. The direct API eliminates this entire class of bugs.
 
 ## Dependencies
 
-- Node.js 18+ (already needed for playwright-cli)
-- playwright-cli: `npm install -g @playwright/cli@latest` or `npx playwright-cli`
+- Node.js 18+
+- `playwright` npm package (Chromium browser auto-installed via `npx playwright install chromium`)
+- `open` npm package (cross-platform file opener for --verify)
 - Optional: `oxipng` (use if in PATH, skip silently if not)
-- Zero npm dependencies — Node.js built-ins only
 
 ## CLI Interface
 
@@ -30,6 +31,7 @@ node tools/screenshots/capture.js --name navbar-tools      # specific
 node tools/screenshots/capture.js --name "about-*"         # glob pattern
 node tools/screenshots/capture.js --dry-run                # show plan without executing
 node tools/screenshots/capture.js --no-compress            # skip oxipng
+node tools/screenshots/capture.js --verify                 # open each image for review
 node tools/screenshots/capture.js --list                   # list all screenshots in manifest
 ```
 
@@ -45,100 +47,59 @@ node tools/screenshots/capture.js --list                   # list all screenshot
       - Start Node HTTP server on <project-dir>/_site/ (random port)
    b. If type=url: use URL directly
    c. If type=local: start Node HTTP server on repo _site/
-5. Open playwright-cli session:
-   - playwright-cli open <url>
+5. Launch Playwright browser:
+   - const browser = await chromium.launch({ headless: true })
+   - const page = await browser.newContext().then(c => c.newPage())
+   - await page.goto(url, { waitUntil: 'domcontentloaded' })
 6. For each screenshot in group:
-   a. playwright-cli goto <page-url>
-   b. playwright-cli resize <width> <height>
-   c. Wait for load (eval document.readyState or setTimeout)
-   d. Run cleanup steps:
-      - For each cleanup entry: playwright-cli eval "<script>"
-   e. Run interaction steps:
-      - click: playwright-cli snapshot → find ref → playwright-cli click <ref>
-      - hover: playwright-cli snapshot → find ref → playwright-cli hover <ref>
-      - wait: playwright-cli eval "document.querySelector('<selector>')" in loop
-      - eval: playwright-cli eval "<script>"
-   f. Take screenshot:
-      - If capture.element: playwright-cli snapshot → find ref → playwright-cli screenshot <ref> --filename=<output>
-      - Else: playwright-cli screenshot --filename=<output>
-   g. If compress enabled: run oxipng on output file
-7. playwright-cli close
+   a. await page.goto(pageUrl, { waitUntil: 'domcontentloaded' })
+   b. await page.setViewportSize({ width, height })
+   c. Run cleanup steps:
+      - await page.evaluate(script)  // script is a string from manifest
+   d. Run interaction steps:
+      - click: await page.click(selector)
+      - hover: await page.hover(selector)
+      - wait: await page.waitForSelector(selector, { timeout })
+      - eval: await page.evaluate(script)
+      - scroll: await page.locator(selector).scrollIntoViewIfNeeded()
+   e. Take screenshot:
+      - clip mode: compute union bounding box via locator.boundingBox(), page.screenshot({ clip })
+      - element mode: page.locator(selector).screenshot({ path })
+      - viewport mode: page.screenshot({ path })
+   f. If compress enabled: run oxipng on output file
+7. await browser.close()
 8. Stop HTTP server
 9. Report results (success/fail per screenshot)
 ```
 
-## Ref Resolution Challenge
+## Interaction Mapping: Manifest → Playwright API
 
-playwright-cli uses refs (e3, e15) not CSS selectors for click/screenshot. The replay script needs to:
+| Manifest action | API call |
+|----------------|----------|
+| `{ "action": "click", "selector": ".bi-github" }` | `await page.locator('.bi-github').click()` |
+| `{ "action": "hover", "selector": ".nav-link" }` | `await page.locator('.nav-link').hover()` |
+| `{ "action": "wait", "selector": ".dropdown-menu.show" }` | `await page.locator('.dropdown-menu.show').waitFor({ timeout })` |
+| `{ "action": "eval", "script": "..." }` | `await page.evaluate(script)` |
+| `{ "action": "scroll", "selector": "#section" }` | `await page.locator('#section').scrollIntoViewIfNeeded()` |
 
-1. Take a snapshot: `playwright-cli snapshot --filename=temp.yaml`
-2. Parse the YAML to find the ref matching a CSS selector
-3. Use that ref for click/screenshot
-
-This is the trickiest part. The manifest stores CSS selectors (`.bi-github`, `.navbar`), but playwright-cli needs refs.
-
-### Approach: eval-based selector resolution
-
-For interactions (click, hover), use `playwright-cli eval` to find elements, then use `playwright-cli run-code` for precise targeting:
-
-```bash
-# Instead of trying to map CSS selector → ref, use run-code for clicks:
-playwright-cli run-code "async page => await page.click('.bi-github')"
-
-# For element screenshots, use run-code too:
-playwright-cli run-code "async page => {
-  const el = await page.locator('.navbar');
-  await el.screenshot({ path: 'output.png' });
-}"
-```
-
-This bypasses the ref system entirely for the replay script, while the capture agent (which IS an AI) can use refs naturally from snapshots.
-
-## Static File Server
-
-Zero-dependency Node.js server (same as before, works):
+## Clip Screenshot (union of selectors)
 
 ```javascript
-import http from 'node:http';
-import fs from 'node:fs';
-import path from 'node:path';
-
-const MIME = {
-  '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
-  '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml',
-  '.json': 'application/json', '.woff2': 'font/woff2',
-};
-
-function serve(dir, port = 0) {
-  const server = http.createServer((req, res) => {
-    let filePath = path.join(dir, decodeURIComponent(new URL(req.url, 'http://localhost').pathname));
-    if (filePath.endsWith('/') || filePath.endsWith(path.sep)) filePath = path.join(filePath, 'index.html');
-    const ext = path.extname(filePath);
-    const stream = fs.createReadStream(filePath);
-    res.setHeader('Content-Type', MIME[ext] || 'application/octet-stream');
-    stream.pipe(res);
-    stream.on('error', () => { res.writeHead(404); res.end('Not found'); });
-  });
-  return new Promise(resolve => server.listen(port, () => resolve(server)));
+const boxes = [];
+for (const sel of shot.capture.clip) {
+  const loc = page.locator(sel);
+  if (await loc.count() > 0) {
+    const box = await loc.first().boundingBox();
+    if (box) boxes.push(box);
+  }
 }
-```
-
-## Interaction Mapping: Manifest → playwright-cli
-
-| Manifest action | Replay command |
-|----------------|----------------|
-| `{ "action": "click", "selector": ".bi-github" }` | `playwright-cli run-code "async page => await page.click('.bi-github')"` |
-| `{ "action": "hover", "selector": ".nav-link" }` | `playwright-cli run-code "async page => await page.hover('.nav-link')"` |
-| `{ "action": "wait", "selector": ".dropdown-menu.show" }` | `playwright-cli run-code "async page => await page.waitForSelector('.dropdown-menu.show')"` |
-| `{ "action": "eval", "script": "..." }` | `playwright-cli eval "..."` |
-| `{ "action": "scroll", "selector": "#section" }` | `playwright-cli run-code "async page => await page.locator('#section').scrollIntoViewIfNeeded()"` |
-
-## Element Screenshot via run-code
-
-```bash
-playwright-cli run-code "async page => {
-  await page.locator('.navbar').screenshot({ path: 'docs/websites/images/navbar-tools.png' });
-}"
+const vp = page.viewportSize();
+const pad = 2;
+const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
+const y = Math.max(0, Math.min(...boxes.map(b => b.y)) - pad);
+const right = Math.min(Math.max(...boxes.map(b => b.x + b.width)) + pad, vp.width);
+const bottom = Math.min(Math.max(...boxes.map(b => b.y + b.height)) + pad, vp.height);
+await page.screenshot({ path, clip: { x, y, width: right - x, height: bottom - y } });
 ```
 
 ## Error Handling
@@ -152,9 +113,8 @@ playwright-cli run-code "async page => {
 
 ```
 $ node tools/screenshots/capture.js
-[1/8] navbar-tools ... ✓ (compressed: 45KB → 32KB)
-[2/8] sidebar-tools ... ✓ (compressed: 28KB → 20KB)
-[3/8] about-jolla ... ✓ (oxipng not found, skipping compression)
+[1/8] navbar-tools ... done
+[2/8] about-jolla ... done
 ...
 Done: 8/8 succeeded
 ```

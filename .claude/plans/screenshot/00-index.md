@@ -31,8 +31,9 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 
 ## Key Decisions
 
-- **playwright-cli** for all browser ops (not agent-browser, not Chrome DevTools MCP)
-- **Node.js scripts** with zero npm deps (built-in modules only)
+- **playwright-cli** for interactive design (agent/skill explores selectors, viewports)
+- **Playwright API** (Node.js library) for automated replay in capture.js — avoids shell quoting issues across platforms
+- **npm deps**: `playwright` + `open` in tools/screenshots/package.json
 - **Sonnet** for capture agent, **Opus** for orchestrator
 - **Manifest-driven** — every screenshot fully described and reproducible
 - **Two sessions**: Session 1 = build + validate (2 screenshots), Session 2 = all 8
@@ -51,6 +52,7 @@ tools/screenshots/
 ├── CLAUDE.md                       # visual rules for Claude
 ├── SETUP.md                        # colleague setup guide
 ├── .gitignore
+├── package.json                    # deps: playwright, open
 ├── scripts/
 │   ├── list.js                     # read manifest, format output
 │   ├── render.js                   # quarto render wrapper

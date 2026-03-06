@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Replay script: reads manifest.json and captures all screenshots using playwright-cli.
+// Replay script: reads manifest.json and captures all screenshots using Playwright API.
 // No AI needed — purely mechanical execution.
 //
 // Usage:
@@ -11,11 +11,12 @@
 //   node tools/screenshots/capture.js --verify              # open each image for review
 //   node tools/screenshots/capture.js --list               # list entries
 
-import { readFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { execSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { openFile } from './scripts/open.js';
+import { chromium } from 'playwright';
+import open from 'open';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TOOLS_DIR = __dirname;
@@ -28,7 +29,6 @@ const dryRun = args.includes('--dry-run');
 const noCompress = args.includes('--no-compress');
 const verify = args.includes('--verify');
 const listOnly = args.includes('--list');
-const SESSION = 'screenshot';
 
 // Read manifest
 const manifest = JSON.parse(readFileSync(join(TOOLS_DIR, 'manifest.json'), 'utf8'));
@@ -71,21 +71,6 @@ function groupBySource(shots) {
   return groups;
 }
 
-// Run a playwright-cli command in the screenshot session
-function pcli(...args) {
-  const cmd = `playwright-cli -s=${SESSION} ${args.join(' ')}`;
-  if (dryRun) {
-    console.log(`  [dry-run] ${cmd}`);
-    return '';
-  }
-  try {
-    return execSync(cmd, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
-  } catch (e) {
-    console.error(`  playwright-cli error: ${e.stderr || e.message}`);
-    throw e;
-  }
-}
-
 // Start a Node.js file server, return { url, kill }
 function startServer(dir) {
   const serveScript = join(TOOLS_DIR, 'scripts', 'serve.js');
@@ -122,54 +107,74 @@ function renderProject(projectDir) {
 }
 
 // Run cleanup steps (defaults + per-screenshot)
-function runCleanup(shot) {
+async function runCleanup(page, shot) {
   const steps = [...(manifest.defaults.cleanup || []), ...(shot.capture?.cleanup || [])];
   for (const step of steps) {
     if (step.action === 'eval') {
-      pcli('eval', JSON.stringify(step.script));
+      await page.evaluate(step.script);
     }
   }
 }
 
 // Run interaction steps
-function runInteractions(shot) {
+async function runInteractions(page, shot) {
   const steps = shot.capture?.interaction || [];
   for (const step of steps) {
     switch (step.action) {
       case 'click':
-        pcli('run-code', JSON.stringify(`async page => await page.click('${step.selector}')`));
+        await page.locator(step.selector).click();
         if (step.wait) {
-          pcli('run-code', JSON.stringify(`async page => await page.waitForSelector('${step.wait}', { timeout: 5000 })`));
+          await page.locator(step.wait).waitFor({ timeout: 5000 });
         }
         break;
       case 'hover':
-        pcli('run-code', JSON.stringify(`async page => await page.hover('${step.selector}')`));
+        await page.locator(step.selector).hover();
         break;
       case 'wait':
-        pcli('run-code', JSON.stringify(`async page => await page.waitForSelector('${step.selector}', { timeout: ${step.timeout || 5000} })`));
+        await page.locator(step.selector).waitFor({ timeout: step.timeout || 5000 });
         break;
       case 'eval':
-        pcli('eval', JSON.stringify(step.script));
+        await page.evaluate(step.script);
         break;
       case 'scroll':
-        pcli('run-code', JSON.stringify(`async page => await page.locator('${step.selector}').scrollIntoViewIfNeeded()`));
+        await page.locator(step.selector).scrollIntoViewIfNeeded();
         break;
     }
   }
 }
 
 // Take a screenshot
-function takeScreenshot(shot) {
+async function takeScreenshot(page, shot) {
   const outputPath = resolve(REPO_ROOT, shot.output);
-  if (shot.capture?.element) {
-    // Element screenshot via run-code (bypasses ref system)
-    const selector = shot.capture.element.replace(/'/g, "\\'");
-    pcli('run-code', JSON.stringify(`async page => {
-  await page.locator('${selector}').screenshot({ path: '${outputPath.replace(/\\/g, '/')}' });
-}`));
+
+  if (shot.capture?.clip) {
+    // Clip screenshot: union bounding box of multiple selectors
+    const selectors = shot.capture.clip;
+    const boxes = [];
+    for (const sel of selectors) {
+      const loc = page.locator(sel);
+      if (await loc.count() > 0) {
+        const box = await loc.first().boundingBox();
+        if (box) boxes.push(box);
+      }
+    }
+    if (boxes.length === 0) throw new Error('No clip selectors matched');
+    const vp = page.viewportSize();
+    const pad = 10;
+    const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
+    const y = Math.max(0, Math.min(...boxes.map(b => b.y)) - pad);
+    const right = Math.min(Math.max(...boxes.map(b => b.x + b.width)) + pad, vp.width);
+    const bottom = Math.min(Math.max(...boxes.map(b => b.y + b.height)) + pad, vp.height);
+    await page.screenshot({
+      path: outputPath,
+      clip: { x, y, width: right - x, height: bottom - y }
+    });
+  } else if (shot.capture?.element) {
+    await page.locator(shot.capture.element).screenshot({ path: outputPath });
   } else {
-    pcli('screenshot', `--filename="${outputPath}"`);
+    await page.screenshot({ path: outputPath });
   }
+
   return outputPath;
 }
 
@@ -190,9 +195,11 @@ async function main() {
 
   for (const [sourceKey, shots] of groups) {
     let server = null;
-    let baseUrl = '';
+    let browser = null;
 
     try {
+      let baseUrl = '';
+
       // Prepare source
       if (shots[0].source.type === 'example') {
         const projectDir = resolve(TOOLS_DIR, shots[0].source.project);
@@ -207,10 +214,21 @@ async function main() {
         baseUrl = shots[0].source.url;
       }
 
-      // Open browser session
+      // Launch browser
+      if (!dryRun) {
+        browser = await chromium.launch({ headless: true });
+      }
+      const context = !dryRun ? await browser.newContext() : null;
+      const page = !dryRun ? await context.newPage() : null;
+
+      // Navigate to first page
       const firstPage = shots[0].source.page || '';
       const firstUrl = baseUrl + (firstPage ? `/${firstPage}` : '');
-      pcli('open', firstUrl);
+      if (!dryRun) {
+        await page.goto(firstUrl, { waitUntil: 'domcontentloaded' });
+      } else {
+        console.log(`  [dry-run] goto ${firstUrl}`);
+      }
 
       for (const shot of shots) {
         total++;
@@ -220,35 +238,40 @@ async function main() {
         try {
           // Navigate if not the first page in this group
           if (shot !== shots[0]) {
-            const page = shot.source.page || 'index.html';
-            pcli('goto', `${baseUrl}/${page}`);
+            const pagePath = shot.source.page || 'index.html';
+            if (!dryRun) {
+              await page.goto(`${baseUrl}/${pagePath}`, { waitUntil: 'domcontentloaded' });
+            } else {
+              console.log(`  [dry-run] goto ${baseUrl}/${pagePath}`);
+            }
           }
 
           // Resize viewport
           const vp = shot.capture?.viewport || manifest.defaults.viewport;
-          pcli('resize', `${vp.width}`, `${vp.height}`);
-
-          // Wait for load
-          pcli('eval', '"document.readyState"');
-
-          // Cleanup
-          runCleanup(shot);
-
-          // Interactions
-          runInteractions(shot);
-
-          // Screenshot
-          const outputPath = takeScreenshot(shot);
-
-          // Compress
           if (!dryRun) {
-            compressPng(outputPath);
+            await page.setViewportSize({ width: vp.width, height: vp.height });
+          } else {
+            console.log(`  [dry-run] resize ${vp.width}x${vp.height}`);
           }
 
-          // Verify — open image for visual review
-          if (verify && !dryRun) {
-            console.log(`  Opening for review: ${outputPath}`);
-            openFile(outputPath);
+          if (!dryRun) {
+            // Cleanup
+            await runCleanup(page, shot);
+
+            // Interactions
+            await runInteractions(page, shot);
+
+            // Screenshot
+            const outputPath = await takeScreenshot(page, shot);
+
+            // Compress
+            compressPng(outputPath);
+
+            // Verify — open image for visual review
+            if (verify) {
+              console.log(`  Opening for review: ${outputPath}`);
+              await open(outputPath);
+            }
           }
 
           console.log(`  ${label} ... done`);
@@ -259,8 +282,10 @@ async function main() {
         }
       }
 
-      // Close browser session
-      try { pcli('close'); } catch { /* ignore */ }
+      // Close browser
+      if (browser) {
+        await browser.close();
+      }
 
     } finally {
       if (server) server.kill();

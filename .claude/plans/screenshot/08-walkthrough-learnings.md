@@ -128,9 +128,15 @@ Desired workflow:
 
 Key question: Should clip coordinates be **hardcoded** in manifest (fragile — break if layout changes) or **computed dynamically** by the replay script from bounding boxes (more robust but adds complexity)? Possible hybrid: store CSS selectors + padding rules in manifest, compute coordinates at runtime.
 
+### L14: Shell quoting breaks Windows screenshot capture — switch to direct Playwright API
+
+`execSync` on Windows goes through `cmd.exe`, which corrupts complex JS strings passed as arguments (multiline code with quotes and newlines gets mangled). This caused wrong screenshot dimensions (309x180 instead of 1440x127). Even `execFileSync` with `shell: true` had the same issue.
+
+Fix: replaced all `pcli()` subprocess calls with direct Playwright API calls (`chromium.launch()`, `page.goto()`, `page.evaluate()`, `page.screenshot()`, etc.). The manifest format didn't change — it already described Playwright operations. Also replaced custom `scripts/open.js` with the `open` npm package.
+
 ## Still to Validate
 
-- [x] Click interaction (navbar dropdown) — ✅ works with named session + click ref + run-code clip
-- [ ] `run-code` for CSS selector-based capture in replay script
+- [x] Click interaction (navbar dropdown) — works with named session + click ref + run-code clip
+- [x] CSS selector-based capture in replay script — direct API, no ref resolution needed
 - [ ] Multiple pages in one session (goto between pages without reopening)
 - [ ] Cleanup evals (removing prerelease callouts)
