@@ -6,6 +6,8 @@ Parent: `glistening-beaming-thunder.md` | Task #3
 
 Minimal Quarto projects in `tools/screenshots/examples/` that produce the pages being screenshotted. Each project is the absolute minimum to render its screenshot — no extra content, but should look good and realistic.
 
+All example projects use `theme: { light: cosmo, dark: darkly }` to support both light and dark screenshot variants.
+
 ## Projects
 
 ### examples/navbar-tools/
@@ -15,6 +17,7 @@ Purpose: Screenshot of navbar with Bluesky + GitHub tools (including dropdown)
 ```
 navbar-tools/
 ├── _quarto.yml
+├── .gitignore
 └── index.qmd
 ```
 
@@ -22,10 +25,23 @@ navbar-tools/
 ```yaml
 project:
   type: website
+  render:
+    - index.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
 
 website:
   title: "ProjectX"
   navbar:
+    left:
+      - text: Blog
+        href: "#"
+      - text: Help
+        href: "#"
     tools:
       - icon: bluesky
         href: https://bsky.app
@@ -46,18 +62,31 @@ Purpose: Screenshot of sidebar with Bluesky + GitHub tools (including dropdown)
 ```
 sidebar-tools/
 ├── _quarto.yml
-├── index.qmd
-└── page2.qmd
+├── .gitignore
+└── index.qmd
 ```
 
 **`_quarto.yml`:**
 ```yaml
 project:
   type: website
+  render:
+    - index.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
 
 website:
+  title: "ProjectX"
   sidebar:
-    title: "ProjectX"
+    contents:
+      - text: Overview
+        href: "#"
+      - text: Getting Started
+        href: "#"
     tools:
       - icon: bluesky
         href: https://bsky.app
@@ -67,37 +96,58 @@ website:
             href: https://code.com
           - text: Report a Bug
             href: https://bugs.com
-    contents:
-      - index.qmd
-      - page2.qmd
 ```
 
-Need at least 2 pages for sidebar navigation to render properly.
+Uses `href: "#"` for sidebar navigation items — avoids needing extra .qmd files while still populating the sidebar.
 
 ### examples/about-pages/
 
-Purpose: Screenshots of all 5 about page templates
+Purpose: Screenshots of all 5 about page templates using Quarto profiles.
 
 ```
 about-pages/
-├── _quarto.yml
-├── profile.jpg      ← realistic avatar image
-├── jolla.qmd
-├── trestles.qmd
-├── solana.qmd
-├── marquee.qmd
-└── broadside.qmd
+├── _quarto.yml              ← base config (no template)
+├── _quarto-jolla.yml        ← profile: sets template to jolla
+├── _quarto-trestles.yml     ← profile: sets template to trestles
+├── _quarto-solana.yml       ← profile: sets template to solana
+├── _quarto-marquee.yml      ← profile: sets template to marquee
+├── _quarto-broadside.yml    ← profile: sets template to broadside
+├── about.qmd                ← shared content (no template in frontmatter)
+├── profile.jpg              ← avatar image
+└── .gitignore
 ```
 
-**`_quarto.yml`:** Minimal website project config.
+**`_quarto.yml`:**
+```yaml
+project:
+  type: website
+  render:
+    - about.qmd
 
-**Each template .qmd** (e.g., `jolla.qmd`):
+website:
+  title: "About Pages"
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+```
+
+**Profile configs** (e.g., `_quarto-trestles.yml`):
+```yaml
+about:
+  template: trestles
+```
+
+Each profile overrides only the template. The base `_quarto.yml` has no template default — projects are always rendered with an explicit `--profile`.
+
+**`about.qmd`:**
 ```yaml
 ---
 title: "Finley Malloc"
 image: profile.jpg
 about:
-  template: jolla
   links:
     - icon: bluesky
       text: Bluesky
@@ -108,20 +158,23 @@ about:
 ---
 
 Finley Malloc is the Chief Data Scientist at Wengo Analytics...
-(same content as current docs examples)
 
 ## Education
 University of California, San Diego | San Diego, CA
 PhD in Mathematics | Sept 2011 - June 2015
 
+Macalester College | St. Paul, MN
+B.A in Economics | Sept 2007 - June 2011
+
 ## Experience
 Wengo Analytics | Head Data Scientist | April 2018 - present
+
+GeoScynce | Chief Analyst | Sept 2012 - April 2018
 ```
 
-**`profile.jpg`:** Need a realistic-looking avatar. Options:
-- Use a placeholder image service
-- Use a simple generated avatar
-- Reuse the image from the existing screenshots (extract from current about-jolla.png or find the original)
+The `about` block in frontmatter has `links` but no `template` — the template comes exclusively from the profile config. This prevents page-level YAML from overriding the project-level profile setting.
+
+**`profile.jpg`:** Reused from the existing about-pages example (originally sourced from the quarto-web docs).
 
 ### examples/myblog/
 
@@ -132,12 +185,11 @@ myblog/
 ├── _quarto.yml
 ├── index.qmd
 ├── about.qmd
-├── styles.css
+├── .gitignore
 └── posts/
-    ├── _metadata.yml
     ├── welcome/
     │   └── index.qmd
-    └── post-with-code/
+    └── first-post/
         └── index.qmd
 ```
 
@@ -145,6 +197,17 @@ myblog/
 ```yaml
 project:
   type: website
+  render:
+    - index.qmd
+    - about.qmd
+    - posts/first-post/index.qmd
+    - posts/welcome/index.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
 
 website:
   title: "myblog"
@@ -155,31 +218,15 @@ website:
         href: https://github.com
       - icon: bluesky
         href: https://bsky.app
-  search: true
-
-format:
-  html:
-    theme: cosmo
 ```
 
-**`index.qmd`:** Blog listing page:
-```yaml
----
-title: "myblog"
-listing:
-  contents: posts
-  sort: "date desc"
-  type: default
-  categories: true
----
-```
+**`index.qmd`:** Blog listing page with `listing: { contents: posts, sort: "date desc", type: default, categories: true }`.
 
-**Posts:** 2 minimal example posts with different categories, dates, descriptions, and preview images so the listing looks realistic.
+**Posts:** 2 minimal example posts ("Welcome To My Blog" and "Post With Code") with different categories and dates so the listing and category sidebar look populated.
 
 ## Visual Consistency Rules
 
-- All projects use default Quarto theme (cosmo) unless the screenshot needs a specific theme
-- Light color scheme always
+- All projects use `theme: { light: cosmo, dark: darkly }` for light/dark screenshot support
 - Use "Finley Malloc" for about pages (matches existing screenshots)
 - Use "myblog" as blog title (matches existing)
 - Use "ProjectX" as generic site title for navbar/sidebar examples
@@ -188,13 +235,12 @@ listing:
 
 ## .gitignore
 
-At `tools/screenshots/.gitignore`:
+Each example project has its own `.gitignore`:
 ```
-_site/
-_freeze/
-.quarto/
+/.quarto/
+**/*.quarto_ipynb
 ```
 
 ## profile.jpg
 
-Need to source or create a profile image for the about pages. Check if the original image used in the existing screenshots can be found, otherwise use a simple placeholder.
+Reused from the original about-pages example. The image was already present in the repo from earlier work.

@@ -22,14 +22,14 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | # | File | Covers | Status |
 |---|------|--------|--------|
 | 01 | [01-capture-script.md](01-capture-script.md) | `capture.js` replay script (playwright-cli) | Rewritten |
-| 02 | [02-manifest.md](02-manifest.md) | `manifest.json` format + all 8 PR #1815 entries | OK |
-| 03 | [03-example-projects.md](03-example-projects.md) | Example Quarto projects (navbar, sidebar, about, blog) | OK |
+| 02 | [02-manifest.md](02-manifest.md) | `manifest.json` format + all 8 PR #1815 entries | Updated (profiles, dark, clip) |
+| 03 | [03-example-projects.md](03-example-projects.md) | Example Quarto projects (navbar, sidebar, about, blog) | Updated (profiles) |
 | 04 | [04-ci-workflow.md](04-ci-workflow.md) | GitHub Action: oxipng on PR PNGs | OK |
 | 05 | [05-documentation.md](05-documentation.md) | CLAUDE.md, SETUP.md, visual rules | Revised |
 | 06 | [06-skill-scripts.md](06-skill-scripts.md) | `/screenshot` skill, `!` preprocessing, helper scripts | New |
 | 07 | [07-capture-agent.md](07-capture-agent.md) | `screenshot-capture` agent definition | New |
-| 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated |
-| 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | New |
+| 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated (all validated, L15 profiles) |
+| 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Updated (all 8 screenshots) |
 
 ## Key Decisions
 
@@ -39,6 +39,9 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 - **Sonnet** for capture agent, **Opus** for orchestrator
 - **Manifest-driven** — every screenshot fully described and reproducible
 - **Two sessions**: Session 1 = build + validate (2 screenshots), Session 2 = all 8
+- **Quarto profiles** for multi-template examples — one shared .qmd, profile configs override template
+- **Dark mode** — `"dark": true` auto-captures `-dark` variant; clip union ensures identical dimensions
+- **Clip over element** — `capture.clip` (union bounding box) handles dropdown overflow; `capture.element` clips to element bounds
 
 ## File Layout (Session 1 deliverables)
 

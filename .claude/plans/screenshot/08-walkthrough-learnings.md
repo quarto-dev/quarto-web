@@ -138,5 +138,9 @@ Fix: replaced all `pcli()` subprocess calls with direct Playwright API calls (`c
 
 - [x] Click interaction (navbar dropdown) — works with named session + click ref + run-code clip
 - [x] CSS selector-based capture in replay script — direct API, no ref resolution needed
-- [ ] Multiple pages in one session (goto between pages without reopening)
-- [ ] Cleanup evals (removing prerelease callouts)
+- [x] Multiple pages in one session (goto between pages without reopening) — works via `page.goto()` within a group
+- [x] Cleanup evals (removing prerelease callouts) — defaults.cleanup runs on every screenshot
+
+### L15: Quarto profiles for multi-template examples
+
+Using `_quarto-<name>.yml` profile configs lets a single `about.qmd` render with different templates. The `about` block in page frontmatter must NOT include `template:` — page-level YAML overrides project-level profile settings. Template selection lives exclusively in profile configs.
