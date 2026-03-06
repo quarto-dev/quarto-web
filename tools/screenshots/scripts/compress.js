@@ -1,9 +1,16 @@
 #!/usr/bin/env node
-// Usage: node tools/screenshots/scripts/compress.js <file.png> [<file2.png> ...]
+// Usage: node tools/screenshots/scripts/compress.js [<file.png> ...]
+// No args: compress all manifest outputs that exist on disk.
+// With args: compress the specified files.
 // Runs oxipng if available, silently skips otherwise.
 
 import { execSync, execFileSync } from 'node:child_process';
-import { statSync } from 'node:fs';
+import { statSync, existsSync, readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const repoRoot = resolve(__dirname, '..', '..', '..');
 
 let hasOxipng = false;
 try {
@@ -11,10 +18,25 @@ try {
   hasOxipng = true;
 } catch { /* not installed */ }
 
-const files = process.argv.slice(2);
+let files = process.argv.slice(2);
+
 if (files.length === 0) {
-  console.error('Usage: node compress.js <file.png> [...]');
-  process.exit(1);
+  // No args: collect all manifest output paths
+  const manifestPath = resolve(__dirname, '..', 'manifest.json');
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  for (const entry of manifest.screenshots) {
+    const light = resolve(repoRoot, entry.output);
+    if (existsSync(light)) files.push(light);
+    if (entry.dark) {
+      const dark = light.replace(/\.png$/, '-dark.png');
+      if (existsSync(dark)) files.push(dark);
+    }
+  }
+  if (files.length === 0) {
+    console.log('No manifest output files found on disk — nothing to compress.');
+    process.exit(0);
+  }
+  console.log(`Found ${files.length} manifest outputs to compress.`);
 }
 
 if (!hasOxipng) {

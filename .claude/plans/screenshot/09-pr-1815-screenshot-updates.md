@@ -64,12 +64,19 @@ All example projects now use Bluesky instead of Twitter. Update alt text:
 
 ## Workflow
 
-All of this happens on the **twitter-to-bluesky** branch, not the screenshot-tool branch:
+All 8 screenshots already exist in the manifest with examples ready. This happens
+on the **twitter-to-bluesky** branch, not the screenshot-tool branch:
 
-1. Run `capture.js` on the twitter-to-bluesky branch to generate all 16 images
+1. Run capture to generate all 16 images (8 light + 8 dark):
+   ```bash
+   npm run capture
+   ```
 2. Visually verify each screenshot (compare with existing originals)
-3. Add `.include-dark` and update alt text in the 3 .qmd files
-4. Commit images and .qmd changes together
+3. If any look wrong, use `/screenshot` to iterate on manifest entry or example project, then re-run `npm run capture`
+4. Copy final images to the twitter-to-bluesky branch
+5. Add `.include-dark` and update alt text in the 3 .qmd files
+6. Commit images and .qmd changes together
+7. Compression: CI handles it after merge, or run `npm run compress` locally
 
 ## What's Already Done on twitter-to-bluesky
 

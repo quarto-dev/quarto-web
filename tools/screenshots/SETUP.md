@@ -7,7 +7,9 @@ Tooling for capturing and maintaining documentation screenshots in quarto-web.
 - **Node.js 18+** — required for scripts and Playwright
 - **Quarto** — required for rendering example projects (set `QUARTO_CMD` env var if your binary has a different name)
 
-## Option A: Automated Replay (no AI)
+## Quick Start
+
+Most screenshots already exist in the manifest. Install dependencies and run `capture.js`:
 
 ```bash
 # One-time: install dependencies and browser
@@ -27,7 +29,9 @@ node tools/screenshots/capture.js
 node tools/screenshots/capture.js --name navbar-tools
 ```
 
-## Option B: Interactive with Claude Code
+## Interactive with Claude Code
+
+Use `/screenshot` for creating new screenshots or iterating on existing ones:
 
 ```bash
 # One-time: install playwright-cli skill
@@ -37,7 +41,9 @@ playwright-cli install --skills
 /screenshot
 ```
 
-## Option C: Manual with playwright-cli
+## Manual Exploration with playwright-cli
+
+For debugging or figuring out what to capture interactively:
 
 ```bash
 # 1. Render example project
@@ -79,6 +85,7 @@ tools/screenshots/
 ├── CLAUDE.md              # visual rules for Claude
 ├── SETUP.md               # this file
 ├── scripts/
+│   ├── help.js            # print available commands
 │   ├── list.js            # read + format manifest
 │   ├── render.js          # quarto render wrapper
 │   ├── serve.js           # static file server

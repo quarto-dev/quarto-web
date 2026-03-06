@@ -24,6 +24,26 @@ const REPO_ROOT = resolve(__dirname, '..', '..');
 
 // Parse args
 const args = process.argv.slice(2);
+
+if (args.includes('--help') || args.includes('-h')) {
+  console.log(`Usage: npm run capture [-- options]
+
+Options:
+  --name <pattern>   Capture specific entry (supports glob patterns)
+  --list             List manifest entries
+  --dry-run          Show plan without capturing
+  --no-compress      Skip oxipng compression
+  --verify           Open each image for visual review
+  --help, -h         Show this help
+
+Examples:
+  npm run capture                          # all screenshots
+  npm run capture -- --name navbar-tools   # specific entry
+  npm run capture -- --name "about-*"      # glob pattern
+  npm run capture -- --dry-run             # preview plan`);
+  process.exit(0);
+}
+
 const namePattern = args.includes('--name') ? args[args.indexOf('--name') + 1] : null;
 if (args.includes('--name') && (!namePattern || namePattern.startsWith('-'))) {
   console.error('--name requires a value');
