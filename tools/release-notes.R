@@ -99,6 +99,24 @@ glue('
   date: { format(as.Date(old_release_date), "%Y-%m-%d") }
   path: https://github.com/quarto-dev/quarto-cli/releases/tag/v{ old_release }
   changelog: "[Release Notes](changelog/{ major_version }/)"
-') |> 
+') |>
   cat(file = path(downloads, "_download-older.yml"), append = TRUE)
+
+# Update version for prerelease-docs-url shortcode -------------------------
+# _quarto.yml tracks the stable release version. Bumping it here on the
+# prerelease branch means it propagates to main when prerelease is merged,
+# so the shortcode resolves blog post links to quarto.org.
+# _quarto-prerelease-docs.yml is bumped to the next prerelease for the
+# announcement banner on the prerelease site.
+
+readLines("_quarto.yml") |>
+  str_replace("^version: .*", paste0("version: '", new_release_major, "'")) |>
+  writeLines("_quarto.yml")
+
+readLines("_quarto-prerelease-docs.yml") |>
+  str_replace("^version: .*", paste0("version: '", new_prerelease_major, "'")) |>
+  writeLines("_quarto-prerelease-docs.yml")
+
+cat("Version: _quarto.yml ->", new_release_major,
+    ", _quarto-prerelease-docs.yml ->", new_prerelease_major, "\n")
 
