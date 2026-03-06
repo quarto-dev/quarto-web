@@ -269,8 +269,8 @@ async function main() {
       // Build navigation URL for a shot
       function shotUrl(shot) {
         if (shot.source.type === 'url') return shot.source.url;
-        const pagePath = shot.source.page || 'index.html';
-        return `${baseUrl}/${pagePath}`;
+        const pagePath = shot.source.page || '';
+        return baseUrl + (pagePath ? `/${pagePath}` : '');
       }
 
       // Navigate to first page
