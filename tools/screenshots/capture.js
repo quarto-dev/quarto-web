@@ -88,10 +88,12 @@ function startServer(dir) {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
     let output = '';
+    const timer = setTimeout(() => reject(new Error('Server start timeout')), 10000);
     proc.stdout.on('data', chunk => {
       output += chunk.toString();
       const match = output.match(/http:\/\/localhost:\d+/);
       if (match) {
+        clearTimeout(timer);
         resolvePromise({
           url: match[0],
           kill: () => proc.kill(),
@@ -101,11 +103,10 @@ function startServer(dir) {
     proc.stderr.on('data', chunk => {
       console.error(`  serve.js: ${chunk}`);
     });
-    proc.on('error', reject);
+    proc.on('error', (err) => { clearTimeout(timer); reject(err); });
     proc.on('close', (code) => {
-      if (code !== 0) reject(new Error(`serve.js exited with code ${code}`));
+      if (code !== 0) { clearTimeout(timer); reject(new Error(`serve.js exited with code ${code}`)); }
     });
-    setTimeout(() => reject(new Error('Server start timeout')), 10000);
   });
 }
 
@@ -309,21 +310,23 @@ async function main() {
             if (shot.dark && shot.capture?.clip) {
               const lightClip = await computeClip(page, shot.capture.clip);
               await switchToDark(page);
-              await runInteractions(page, shot);
-              const darkClip = await computeClip(page, shot.capture.clip);
-              // Union of both clip regions
-              const x = Math.min(lightClip.x, darkClip.x);
-              const y = Math.min(lightClip.y, darkClip.y);
-              const right = Math.max(lightClip.x + lightClip.width, darkClip.x + darkClip.width);
-              const bottom = Math.max(lightClip.y + lightClip.height, darkClip.y + darkClip.height);
-              sharedClip = { x, y, width: right - x, height: bottom - y };
-              // Take dark screenshot while we're here
-              const darkPath = darkOutputPath(resolve(REPO_ROOT, shot.output));
-              console.log(`  ${shot.name} (dark)...`);
-              await takeScreenshot(page, shot, darkPath, sharedClip);
-              compressPng(darkPath);
-              // Switch back to light for the light screenshot
-              await switchToLight(page);
+              try {
+                await runInteractions(page, shot);
+                const darkClip = await computeClip(page, shot.capture.clip);
+                // Union of both clip regions
+                const x = Math.min(lightClip.x, darkClip.x);
+                const y = Math.min(lightClip.y, darkClip.y);
+                const right = Math.max(lightClip.x + lightClip.width, darkClip.x + darkClip.width);
+                const bottom = Math.max(lightClip.y + lightClip.height, darkClip.y + darkClip.height);
+                sharedClip = { x, y, width: right - x, height: bottom - y };
+                // Take dark screenshot while we're here
+                const darkPath = darkOutputPath(resolve(REPO_ROOT, shot.output));
+                console.log(`  ${shot.name} (dark)...`);
+                await takeScreenshot(page, shot, darkPath, sharedClip);
+                compressPng(darkPath);
+              } finally {
+                await switchToLight(page);
+              }
               await runInteractions(page, shot);
             }
 
@@ -335,11 +338,14 @@ async function main() {
             if (shot.dark && !shot.capture?.clip) {
               console.log(`  ${shot.name} (dark)...`);
               await switchToDark(page);
-              const darkPath = darkOutputPath(outputPath);
-              await runInteractions(page, shot);
-              await takeScreenshot(page, shot, darkPath);
-              compressPng(darkPath);
-              await switchToLight(page);
+              try {
+                const darkPath = darkOutputPath(outputPath);
+                await runInteractions(page, shot);
+                await takeScreenshot(page, shot, darkPath);
+                compressPng(darkPath);
+              } finally {
+                await switchToLight(page);
+              }
             }
 
             // Verify — open image for visual review
@@ -362,12 +368,8 @@ async function main() {
         }
       }
 
-      // Close browser
-      if (browser) {
-        await browser.close();
-      }
-
     } finally {
+      if (browser) await browser.close();
       if (server) server.kill();
     }
   }
