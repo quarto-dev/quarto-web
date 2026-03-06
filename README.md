@@ -132,16 +132,17 @@ The group order determines which phase is active on **quarto.org** (the main sit
 |---|---|
 | `_quarto-prerelease-docs.yml` | Site-specific configuration for prerelease.quarto.org |
 
-### Subdomain variables
+### Subdomain variable and shortcode
 
-Two variables control how links resolve across builds. Both use the same pattern — `https://{{< meta VAR >}}quarto.org/...` — but serve different purposes:
+**`prerelease-subdomain`** — site identity variable ("am I the prerelease site?"). Default `''` in `_quarto.yml`, set to `prerelease.` in `_quarto-prerelease-docs.yml`. Use for self-referential links (e.g. RevealJS demo links back to its own site).
 
-| Variable | Purpose | Default | Set by `rc` | Set by `prerelease-docs` |
-|---|---|---|---|---|
-| `prerelease-subdomain` | **Site identity** — "am I the prerelease site?" | `''` | — | `prerelease.` |
-| `prerelease-link-subdomain` | **Content linking** — "where do prerelease docs live right now?" | `''` | `prerelease.` | `prerelease.` |
+**`prerelease-docs-url`** — version-aware shortcode for content linking. Use in blog posts that reference docs only available on prerelease:
 
-Use `prerelease-subdomain` for self-referential links (e.g. RevealJS demo links back to its own site). Use `prerelease-link-subdomain` for content on `main` that references docs only available on prerelease during RC phase (e.g. blog posts announcing upcoming features).
+```markdown
+[PDF Accessibility](https://{{< prerelease-docs-url 1.9 >}}quarto.org/docs/output-formats/pdf-accessibility.html)
+```
+
+The shortcode compares its version argument to the `version` key in `_quarto.yml` (which tracks the current stable release on `main`). If they match, docs are on quarto.org (`""`); if not, they're still on prerelease.quarto.org (`"prerelease."`). On the prerelease site (`prerelease-docs` profile), it always returns `"prerelease."`.
 
 ### Release lifecycle
 
@@ -149,7 +150,7 @@ Use `prerelease-subdomain` for self-referential links (e.g. RevealJS demo links 
 2. **RC phase:** flip group to `[rc, prerelease]` — main site shows "Release Candidate"
 3. **Release:** flip back to `[prerelease, rc]` for the next development cycle
 
-These flips only affect quarto.org. The prerelease site CI explicitly activates `prerelease,prerelease-docs`, so it always shows "Pre-release" regardless of group order.
+These flips only affect quarto.org. The prerelease site CI activates `prerelease-docs`, and the group order determines the phase branding on the prerelease site too.
 
 ### Local preview
 
