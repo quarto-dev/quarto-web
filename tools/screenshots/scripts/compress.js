@@ -26,7 +26,7 @@ for (const file of files) {
   const before = statSync(file).size;
   execFileSync('oxipng', ['-o', '4', '-i', '0', '--strip', 'safe', file], { stdio: 'pipe' });
   const after = statSync(file).size;
-  const saved = Math.round((1 - after / before) * 100);
+  const saved = before > 0 ? Math.round((1 - after / before) * 100) : 0;
   console.log(`Compressed: ${file} (${formatSize(before)} → ${formatSize(after)}, ${saved}% saved)`);
 }
 

@@ -36,13 +36,12 @@ playwright-cli -s=screenshot snapshot
 
 ### 3. Run cleanup steps
 
-Remove prerelease callouts and banners:
+Read cleanup steps from `manifest.json` `defaults.cleanup` array. For each step with `"action": "eval"`, run:
 ```bash
-playwright-cli -s=screenshot eval "document.querySelectorAll('.callout-note').forEach(el => { if (el.textContent.includes('Pre-release')) el.remove() })"
-playwright-cli -s=screenshot eval "document.querySelectorAll('[class*=prerelease],[class*=preview]').forEach(el => el.remove())"
+playwright-cli -s=screenshot eval "<script from manifest>"
 ```
 
-Run any additional cleanup from the manifest entry.
+Then run any additional cleanup from the per-screenshot `capture.cleanup` array.
 
 ### 4. Run interaction steps
 

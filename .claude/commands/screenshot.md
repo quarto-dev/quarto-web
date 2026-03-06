@@ -29,6 +29,7 @@ You are the screenshot orchestrator. The manifest data above shows all registere
    d. Compress: `node tools/screenshots/scripts/compress.js <output-file>`
    e. Show the user the output file path and ask them to verify visually
    f. Wait for confirmation before continuing to the next group
+   g. Stop the background server process started in step 2b
 3. Show results summary
 
 ### If the user wants to CREATE a new screenshot:

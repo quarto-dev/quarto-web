@@ -12,11 +12,16 @@ const manifest = JSON.parse(readFileSync(join(__dirname, '..', 'manifest.json'),
 const namePattern = process.argv.includes('--name')
   ? process.argv[process.argv.indexOf('--name') + 1]
   : null;
+if (process.argv.includes('--name') && !namePattern) {
+  console.error('--name requires a value');
+  process.exit(1);
+}
 
 const filtered = namePattern
   ? manifest.screenshots.filter(s => {
       if (namePattern.includes('*')) {
-        const re = new RegExp('^' + namePattern.replace(/\*/g, '.*') + '$');
+        const escaped = namePattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+        const re = new RegExp('^' + escaped.replace(/\*/g, '.*') + '$');
         return re.test(s.name);
       }
       return s.name === namePattern;

@@ -25,6 +25,10 @@ const REPO_ROOT = resolve(__dirname, '..', '..');
 // Parse args
 const args = process.argv.slice(2);
 const namePattern = args.includes('--name') ? args[args.indexOf('--name') + 1] : null;
+if (args.includes('--name') && !namePattern) {
+  console.error('--name requires a value');
+  process.exit(1);
+}
 const dryRun = args.includes('--dry-run');
 const noCompress = args.includes('--no-compress');
 const verify = args.includes('--verify');
@@ -37,7 +41,8 @@ const manifest = JSON.parse(readFileSync(join(TOOLS_DIR, 'manifest.json'), 'utf8
 function matchName(name, pattern) {
   if (!pattern) return true;
   if (pattern.includes('*')) {
-    const re = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+    const escaped = pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('^' + escaped.replace(/\*/g, '.*') + '$');
     return re.test(name);
   }
   return name === pattern;
@@ -97,6 +102,9 @@ function startServer(dir) {
       console.error(`  serve.js: ${chunk}`);
     });
     proc.on('error', reject);
+    proc.on('close', (code) => {
+      if (code !== 0) reject(new Error(`serve.js exited with code ${code}`));
+    });
     setTimeout(() => reject(new Error('Server start timeout')), 10000);
   });
 }
@@ -167,9 +175,7 @@ async function switchToDark(page) {
 async function switchToLight(page) {
   const darkConfig = manifest.defaults.dark;
   await page.locator(darkConfig.toggle).click();
-  // Wait for dark class to be removed
-  const readySelector = darkConfig.ready.replace('.quarto-dark', '.quarto-light');
-  await page.locator(readySelector).waitFor({ timeout: 5000 });
+  await page.locator(darkConfig.readyLight || 'body:not(.quarto-dark)').waitFor({ timeout: 5000 });
   if (darkConfig.settle) {
     await page.waitForTimeout(darkConfig.settle);
   }
@@ -186,6 +192,9 @@ async function computeClip(page, selectors) {
     }
   }
   if (boxes.length === 0) throw new Error('No clip selectors matched');
+  if (boxes.length < selectors.length) {
+    console.warn(`  Warning: only ${boxes.length}/${selectors.length} clip selectors matched`);
+  }
   const vp = page.viewportSize();
   const pad = 10;
   const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
@@ -336,7 +345,12 @@ async function main() {
             // Verify — open image for visual review
             if (verify) {
               console.log(`  Opening for review: ${outputPath}`);
-              await open(outputPath);
+              await open(outputPath, { wait: true });
+              if (shot.dark) {
+                const darkPath = darkOutputPath(outputPath);
+                console.log(`  Opening dark for review: ${darkPath}`);
+                await open(darkPath, { wait: true });
+              }
             }
           }
 
