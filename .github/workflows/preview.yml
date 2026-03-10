@@ -66,8 +66,22 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with: 
+        with:
           ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
+
+      # On issue_comment events (e.g. /deploy-preview), github.event.pull_request
+      # is not populated so tj-actions/changed-files can't determine the base commit
+      # to diff against. Fetch it from the API so we can pass it explicitly.
+      - name: Get PR base SHA
+        if: github.event_name != 'pull_request'
+        id: pr-info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number=${{ github.event.issue.number }}
+          base_sha=$(gh -R $GITHUB_REPOSITORY pr view $pr_number --json baseRefOid --jq '.baseRefOid')
+          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
+        shell: bash
 
       - name: Get latest pre-release from github
         id: github-release
@@ -131,6 +145,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
+          base_sha: ${{ github.event.pull_request.base.sha || steps.pr-info.outputs.base_sha }}
           files: |
             # don't consider modifications on file used for includes for now.
             license.md
