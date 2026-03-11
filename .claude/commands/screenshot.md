@@ -47,18 +47,40 @@ Ask these questions:
 4. **For `example` source:**
    - Does an example project already exist in `tools/screenshots/examples/`?
    - If not, create one (minimal Quarto project, just enough to render the screenshot)
-5. **What viewport size?** (suggest based on category: navbar=1440x400, sidebar=400x300, about=1200x900, full page=1440x900)
-6. **Element or full page?** If element, what CSS selector?
-7. **Any interactions needed?** (click dropdown, hover, etc.)
-8. **Output path?** (suggest based on doc location)
-9. **Which .qmd file references this image?** (for doc.file in manifest)
+5. **What viewport size?** (suggest based on category: navbar=1440x400, sidebar=992x600, about=1200x900, full page=1440x900)
+6. **Zoom?** (suggest 1.15 for about pages or content with excess internal padding; default 1.0)
+7. **Trim whitespace?** (suggest `trim: true` when there's blank space around content. Won't work if layout elements like vertical rules extend to the edge — use cropBottom/maxHeight instead.)
+8. **Crop bottom or max height?** (suggest `cropBottom` when a fixed amount of blank space at bottom, `maxHeight` when the image should be capped. Use when trim can't detect blank edges.)
+9. **Element or full page?** If element, what CSS selector?
+10. **Any interactions needed?** (click dropdown, hover, etc.)
+11. **Output path?** (suggest based on doc location)
+12. **Which .qmd file references this image?** (for doc.file in manifest)
 
-Then:
-1. Add entry to `tools/screenshots/manifest.json`
-2. Create example project if needed
-3. Render + serve + capture + compress
-4. Show the user the output file path and ask them to verify visually
-5. Wait for confirmation before moving on — if the user says it's wrong, ask what needs to change and re-capture
+Then work through two phases:
+
+#### Phase A: Visual design (what to capture)
+
+Use playwright-cli to explore the page interactively and nail down the visual:
+
+1. Create example project if needed
+2. Render: `node tools/screenshots/scripts/render.js <project-path>`
+3. Serve: `node tools/screenshots/scripts/serve.js <dir>` (prints URL)
+4. Open in playwright-cli: `playwright-cli -s=screenshot open <url>`
+5. Iterate with the user: adjust viewport, element selector, cleanup evals, interactions, zoom
+6. Use `playwright-cli --help` to discover available commands for interactive exploration
+
+#### Phase B: Image processing (how to post-process)
+
+Once the visual is right, configure post-capture processing:
+
+1. Add the manifest entry to `tools/screenshots/manifest.json`
+2. Run `npm run capture -- --name <name>` to produce the screenshot
+3. Show the user the output — ask them to verify visually
+4. If blank space remains, decide with the user:
+   - **Uniform background edges?** → add `"trim": true`
+   - **Vertical rules or multi-color edges?** → add `"cropBottom": N` or `"maxHeight": N`
+   - **Both?** → trim runs first, then crop
+5. Re-capture and verify until the user is satisfied
 
 ### Launching the capture agent:
 
@@ -66,4 +88,5 @@ Use the Agent tool with `subagent_type="general-purpose"` and `model="sonnet"`. 
 - The base URL where the site is being served
 - The capture agent reference (already in your context above)
 - Specific screenshot details: viewport, cleanup, interactions, element, output path
+- Note: zoom and post-processing (trim, crop) are handled by capture.js, not the agent. If the agent captures manually, it should apply zoom via `page.evaluate(z => document.body.style.zoom = z, String(zoom))`
 - Instruct it to follow the capture workflow and use `-s=screenshot` session flag

@@ -21,6 +21,7 @@ Originally used playwright-cli subprocess calls, but Windows `execSync` goes thr
 - Node.js 18+
 - `playwright` npm package (Chromium browser auto-installed via `npx playwright install chromium`)
 - `open` npm package (cross-platform file opener for --verify)
+- `sharp` npm package (image processing — content-aware trim)
 - Optional: `oxipng` (use if in PATH, skip silently if not)
 
 ## CLI Interface
@@ -54,6 +55,9 @@ node tools/screenshots/capture.js --list                   # list all screenshot
 6. For each screenshot in group:
    a. await page.goto(pageUrl, { waitUntil: 'domcontentloaded' })
    b. await page.setViewportSize({ width, height })
+   b2. Apply zoom (if capture.zoom or defaults.zoom != 1):
+       await page.evaluate(z => document.body.style.zoom = z, String(zoom))
+       await page.waitForTimeout(200)
    c. Run cleanup steps:
       - await page.evaluate(script)  // script is a string from manifest
    d. Run interaction steps:
@@ -66,7 +70,9 @@ node tools/screenshots/capture.js --list                   # list all screenshot
       - clip mode: compute union bounding box via locator.boundingBox(), page.screenshot({ clip })
       - element mode: page.locator(selector).screenshot({ path })
       - viewport mode: page.screenshot({ path })
-   f. If compress enabled: run oxipng on output file
+   f. If trim enabled: sharp trim (sample bg from top-left pixel, trim matching edges, extend with uniform padding)
+   g. If cropBottom or maxHeight set: sharp crop (remove bottom pixels or enforce max height)
+   h. If compress enabled: run oxipng on output file
 7. await browser.close()
 8. Stop HTTP server
 9. Report results (success/fail per screenshot)
@@ -94,7 +100,7 @@ for (const sel of shot.capture.clip) {
   }
 }
 const vp = page.viewportSize();
-const pad = 2;
+const pad = 20;
 const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
 const y = Math.max(0, Math.min(...boxes.map(b => b.y)) - pad);
 const right = Math.min(Math.max(...boxes.map(b => b.x + b.width)) + pad, vp.width);

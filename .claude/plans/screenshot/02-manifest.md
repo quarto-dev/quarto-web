@@ -16,6 +16,7 @@ A JSON file that maps every documentation screenshot to its source, capture conf
     "cleanup": [
       { "action": "eval", "script": "..." }
     ],
+    "zoom": 1.0,
     "dark": {
       "toggle": ".quarto-color-scheme-toggle",
       "ready": "body.quarto-dark",
@@ -41,9 +42,13 @@ A JSON file that maps every documentation screenshot to its source, capture conf
 | `source.url` | if url | Direct URL to screenshot |
 | `source.path` | if preview | Path appended to preview URL template |
 | `capture.viewport` | no | Override default viewport `{ width, height }` |
+| `capture.zoom` | no | CSS zoom factor (default 1.0). Makes content larger, reducing blank space from element padding. Applied via `document.body.style.zoom` |
 | `capture.clip` | no | Array of CSS selectors — union bounding box used as clip region |
 | `capture.element` | no | CSS selector for element-level screenshot |
 | `capture.interaction` | no | Array of interaction steps before capture |
+| `capture.trim` | no | `true` or `{ threshold, padding }` — content-aware trim via sharp after capture. Samples top-left pixel for background, removes matching edges, extends with uniform padding. Default threshold: 10, default padding: 20. |
+| `capture.cropBottom` | no | Number of pixels to remove from the bottom edge after capture/trim. For layouts where trim can't detect blank space (e.g., vertical rule lines extending full height). |
+| `capture.maxHeight` | no | Maximum image height in pixels. If image exceeds this after capture/trim, crops from the bottom. |
 | `capture.cleanup` | no | Array of cleanup steps (merged with defaults) |
 | `doc.file` | no | Documentation .qmd file that references this screenshot |
 | `doc.alt` | no | Alt text for the image (kept in sync with .qmd) |
@@ -88,7 +93,9 @@ For screenshots with `clip`, light and dark clips are computed separately and me
 
 ## Clip vs Element Screenshots
 
-**`capture.clip`** — array of CSS selectors. capture.js computes each element's bounding box, takes the union (with padding), and uses Playwright's `page.screenshot({ clip })`. Handles overflow (e.g., dropdown menus that extend beyond parent elements).
+**`capture.zoom`** — optional CSS zoom factor (default 1.0). Applied via `document.body.style.zoom` after viewport resize, before cleanup/capture. Zoom affects element bounding boxes proportionally — a 1.15 zoom makes the element's bounding box ~15% larger in viewport pixels, naturally reducing relative blank space. About pages use 1.15.
+
+**`capture.clip`** — array of CSS selectors. capture.js computes each element's bounding box, takes the union (with 20px padding), and uses Playwright's `page.screenshot({ clip })`. Handles overflow (e.g., dropdown menus that extend beyond parent elements). Note: clip is clamped to viewport bounds — if the element extends beyond the viewport, increase viewport height to accommodate.
 
 **`capture.element`** — single CSS selector. Uses Playwright's `locator.screenshot()`. Clips to the element's own bounds, which can cut off overflowing content like dropdowns.
 

@@ -12,11 +12,13 @@
 //   node tools/screenshots/capture.js --list               # list entries
 
 import { readFileSync, existsSync } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
 import { join, dirname, resolve } from 'node:path';
 import { execSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import open from 'open';
+import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TOOLS_DIR = __dirname;
@@ -223,7 +225,7 @@ async function computeClip(page, selectors) {
     console.warn(`  Warning: only ${boxes.length}/${selectors.length} clip selectors matched`);
   }
   const vp = page.viewportSize();
-  const pad = 10;
+  const pad = 20;
   const x = Math.max(0, Math.min(...boxes.map(b => b.x)) - pad);
   const y = Math.max(0, Math.min(...boxes.map(b => b.y)) - pad);
   const right = Math.min(Math.max(...boxes.map(b => b.x + b.width)) + pad, vp.width);
@@ -252,6 +254,65 @@ function compressPng(filePath) {
   if (noCompress) return;
   const compressScript = join(TOOLS_DIR, 'scripts', 'compress.js');
   execSync(`node "${compressScript}" "${filePath}"`, { stdio: 'inherit' });
+}
+
+// Content-aware trim: remove blank edges, add uniform padding
+async function trimPng(filePath, trimConfig) {
+  const threshold = trimConfig.threshold ?? 10;
+  const padding = trimConfig.padding ?? 20;
+
+  // Determine background color: explicit config or sample top-left pixel (sharp's default)
+  let bg = trimConfig.background;
+  if (!bg) {
+    const { data } = await sharp(filePath)
+      .extract({ left: 0, top: 0, width: 1, height: 1 })
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    bg = { r: data[0], g: data[1], b: data[2] };
+  }
+
+  const trimmed = await sharp(filePath)
+    .trim({ background: bg, threshold, lineArt: true })
+    .extend({ top: padding, bottom: padding, left: padding, right: padding, background: bg })
+    .toBuffer();
+
+  await writeFile(filePath, trimmed);
+}
+
+// Crop image: remove pixels from bottom and/or enforce max height
+async function cropPng(filePath, { cropBottom = 0, maxHeight = 0 }) {
+  const meta = await sharp(filePath).metadata();
+  let targetHeight = meta.height;
+
+  if (cropBottom > 0) {
+    targetHeight = Math.max(1, targetHeight - cropBottom);
+  }
+  if (maxHeight > 0 && targetHeight > maxHeight) {
+    targetHeight = maxHeight;
+  }
+  if (targetHeight === meta.height) return;
+
+  const cropped = await sharp(filePath)
+    .extract({ left: 0, top: 0, width: meta.width, height: targetHeight })
+    .toBuffer();
+
+  await writeFile(filePath, cropped);
+}
+
+// Post-process a screenshot: trim, crop, compress (in order)
+async function postProcess(filePath, shot) {
+  const trimConfig = shot.capture?.trim ?? manifest.defaults.trim ?? false;
+  if (trimConfig) {
+    await trimPng(filePath, trimConfig === true ? {} : trimConfig);
+  }
+
+  const cropBottom = shot.capture?.cropBottom ?? 0;
+  const maxHeight = shot.capture?.maxHeight ?? 0;
+  if (cropBottom || maxHeight) {
+    await cropPng(filePath, { cropBottom, maxHeight });
+  }
+
+  compressPng(filePath);
 }
 
 // Main
@@ -331,6 +392,13 @@ async function main() {
           }
 
           if (!dryRun) {
+            // Apply zoom if configured
+            const zoom = shot.capture?.zoom || manifest.defaults.zoom || 1;
+            if (zoom !== 1) {
+              await page.evaluate(z => document.body.style.zoom = z, String(zoom));
+              await page.waitForTimeout(200);
+            }
+
             // Cleanup
             await runCleanup(page, shot);
 
@@ -356,7 +424,7 @@ async function main() {
                 const darkPath = darkOutputPath(resolve(REPO_ROOT, shot.output));
                 console.log(`  ${shot.name} (dark)...`);
                 await takeScreenshot(page, shot, darkPath, sharedClip);
-                compressPng(darkPath);
+                await postProcess(darkPath, shot);
               } finally {
                 await switchToLight(page);
               }
@@ -365,7 +433,7 @@ async function main() {
 
             // Light screenshot
             const outputPath = await takeScreenshot(page, shot, null, sharedClip);
-            compressPng(outputPath);
+            await postProcess(outputPath, shot);
 
             // Dark variant (non-clip mode: element or viewport)
             if (shot.dark && !shot.capture?.clip) {
@@ -375,7 +443,7 @@ async function main() {
                 const darkPath = darkOutputPath(outputPath);
                 await runInteractions(page, shot);
                 await takeScreenshot(page, shot, darkPath);
-                compressPng(darkPath);
+                await postProcess(darkPath, shot);
               } finally {
                 await switchToLight(page);
               }

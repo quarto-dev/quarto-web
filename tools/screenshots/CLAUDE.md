@@ -67,12 +67,62 @@ generates both light/dark `<img>` tags.
 - Verify Bootstrap Icons loaded (not blank boxes)
 - Consistent fictional data: "Finley Malloc", "myblog", "ProjectX"
 
+## Zoom
+
+`capture.zoom` (optional, default 1.0) — CSS zoom factor applied to the page body
+before capture. Makes content larger relative to the viewport, reducing blank space
+from element internal padding.
+
+Applied after viewport resize, before cleanup/interactions/screenshot.
+Can be set per-screenshot in `capture.zoom` or globally in `defaults.zoom`.
+
+Example: `"zoom": 1.15` makes content 15% larger. About pages use 1.15.
+
+## Trim
+
+`capture.trim` (optional, default false) — content-aware whitespace removal via sharp.
+Samples the top-left pixel for background color, removes matching edges, then adds
+uniform padding back (default 20px).
+
+Set `"trim": true` for defaults, or `"trim": { "threshold": 10, "padding": 20 }` to
+customize. Handles both light and dark screenshots automatically (detects background
+from each image independently).
+
+### When to use trim vs crop
+
+**Crop is more faithful** — it preserves real page margins (top, left, right) as
+rendered in the browser. Only the bottom is affected. Use when the screenshot should
+match what a user actually sees on screen.
+
+**Trim produces a clean, uniform result** — it replaces real margins with synthetic
+uniform padding (default 20px on all sides). Use for isolated element captures where
+a consistent presentation matters more than fidelity to the page layout.
+
+**Use `cropBottom`/`maxHeight`** when:
+- You want to preserve real page margins (more faithful to what the user sees)
+- Layout has vertical rule lines extending to the image edge (e.g., trestles template)
+- Multi-colored backgrounds (e.g., colored sidebars alongside main content)
+- Top-left pixel isn't representative of the background (trim samples pixel at 0,0)
+
+`trim` and `cropBottom`/`maxHeight` can be combined — trim runs first, then crop.
+
+## Crop
+
+`capture.cropBottom` (optional) — removes N pixels from the bottom edge after
+capture/trim. For layouts where trim can't detect blank space (e.g., trestles
+template has a vertical rule extending the full height).
+
+`capture.maxHeight` (optional) — caps the image height. If the image exceeds this
+after capture/trim, crops from the bottom.
+
+Both can be combined. `cropBottom` is applied first, then `maxHeight`.
+
 ## Viewport Sizes
 
 | Category | Width | Height |
 |----------|-------|--------|
 | Navbar | 1440 | 400 |
-| Sidebar | 400 | 300 |
+| Sidebar | 992 | 600 |
 | About pages | 1200 | 900 |
 | Blog/full pages | 1440 | 900 |
 

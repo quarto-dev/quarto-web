@@ -30,12 +30,15 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 07 | [07-capture-agent.md](07-capture-agent.md) | `screenshot-capture` agent definition | New |
 | 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated (all validated, L15 profiles) |
 | 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Updated (all 8 screenshots) |
+| 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | New |
+| 11 | [11-manifest-schema.md](11-manifest-schema.md) | JSON Schema for manifest validation + help reference | Planned |
 
 ## Key Decisions
 
 - **playwright-cli** for interactive design (agent/skill explores selectors, viewports)
 - **Playwright API** (Node.js library) for automated replay in capture.js — avoids shell quoting issues across platforms
-- **npm deps**: `playwright` + `open` in tools/screenshots/package.json
+- **npm deps**: `playwright` + `open` + `sharp` in tools/screenshots/package.json
+- **sharp trim** — content-aware trim after capture removes blank space from CSS layout padding; `capture.trim` manifest option
 - **Sonnet** for capture agent, **Opus** for orchestrator
 - **Manifest-driven** — every screenshot fully described and reproducible
 - **Two sessions**: Session 1 = build + validate (2 screenshots), Session 2 = all 8
@@ -57,7 +60,7 @@ tools/screenshots/
 ├── CLAUDE.md                       # visual rules for Claude
 ├── SETUP.md                        # colleague setup guide
 ├── .gitignore
-├── package.json                    # deps: playwright, open
+├── package.json                    # deps: playwright, open, sharp
 ├── scripts/
 │   ├── list.js                     # read manifest, format output
 │   ├── render.js                   # quarto render wrapper

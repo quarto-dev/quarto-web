@@ -17,7 +17,17 @@ playwright-cli -s=screenshot open <url>/<page>
 playwright-cli -s=screenshot resize <width> <height>
 ```
 
-### 2. Wait for full load
+### 2. Apply zoom (if specified)
+
+If the manifest entry has `capture.zoom`, apply it before any other operations:
+```bash
+playwright-cli -s=screenshot eval "document.body.style.zoom = '1.15'"
+playwright-cli -s=screenshot eval "new Promise(r => setTimeout(r, 200))"
+```
+
+Note: `capture.js` handles zoom automatically. This step is only needed for manual/interactive captures.
+
+### 3. Wait for full load
 
 ```bash
 playwright-cli -s=screenshot snapshot
@@ -34,7 +44,7 @@ playwright-cli -s=screenshot eval "new Promise(r => setTimeout(r, 2000))"
 playwright-cli -s=screenshot snapshot
 ```
 
-### 3. Run cleanup steps
+### 4. Run cleanup steps
 
 Read cleanup steps from `manifest.json` `defaults.cleanup` array. For each step with `"action": "eval"`, run:
 ```bash
@@ -43,7 +53,7 @@ playwright-cli -s=screenshot eval "<script from manifest>"
 
 Then run any additional cleanup from the per-screenshot `capture.cleanup` array.
 
-### 4. Run interaction steps
+### 5. Run interaction steps
 
 For clicks (e.g., opening a dropdown):
 1. Take a snapshot to get refs
@@ -62,7 +72,7 @@ playwright-cli -s=screenshot run-code "async page => {
 }"
 ```
 
-### 5. Take screenshot
+### 6. Take screenshot
 
 **Element screenshot** (when capture.element is specified):
 1. Snapshot to find the ref for the element
@@ -73,7 +83,17 @@ playwright-cli -s=screenshot run-code "async page => {
 playwright-cli -s=screenshot screenshot --filename=<output-path>
 ```
 
-### 6. Dark mode variant
+### 6b. Post-capture processing (automatic)
+
+`capture.js` handles these automatically — the agent does not need to replicate them:
+- **trim** (`capture.trim`) — content-aware whitespace removal via sharp
+- **cropBottom** (`capture.cropBottom`) — removes N pixels from bottom edge
+- **maxHeight** (`capture.maxHeight`) — caps image height, crops from bottom
+- **compress** — oxipng compression
+
+These run in order: trim → crop → compress.
+
+### 7. Dark mode variant
 
 If the screenshot has `"dark": true` in manifest:
 1. Click the color scheme toggle: `playwright-cli -s=screenshot run-code "async page => await page.locator('.quarto-color-scheme-toggle').click()"`
@@ -84,13 +104,13 @@ If the screenshot has `"dark": true` in manifest:
 
 Note: `capture.js` handles this automatically. This step is only needed for manual/interactive captures.
 
-### 7. Visual validation
+### 8. Visual validation
 
 After capturing, verify:
 - The screenshot file was created and is non-empty
 - Report what you captured (element, viewport size, interactions performed)
 
-### 8. Close when done
+### 9. Close when done
 
 ```bash
 playwright-cli -s=screenshot close

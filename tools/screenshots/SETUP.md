@@ -103,9 +103,15 @@ Each screenshot in `manifest.json` specifies:
 - `output` — output PNG path (relative to repo root)
 - `dark` — if `true`, also captures a `-dark` variant (e.g. `about-jolla-dark.png`)
 - `source` — where to get the page (example project, URL, or local)
-- `capture` — viewport, interactions, clip selectors, element selector
+- `capture` — viewport, zoom, interactions, clip selectors, element selector
 - `doc` — which .qmd file references this image
 
 Dark mode works by clicking the Quarto color scheme toggle (`.quarto-color-scheme-toggle`). Example projects must have `theme: { light: cosmo, dark: darkly }` in `_quarto.yml`.
+
+Optional `capture.zoom` (e.g., `1.15`) applies CSS zoom before capture, making content larger and reducing blank space from element padding. About pages use zoom 1.15.
+
+Optional `capture.trim` (`true` or `{ threshold, padding }`) removes whitespace borders after capture using sharp. Samples the top-left pixel for background color, trims matching edges, adds uniform padding back (default 20px). Works for both light and dark screenshots.
+
+Optional `capture.cropBottom` (pixels) removes a fixed number of pixels from the bottom edge. Optional `capture.maxHeight` (pixels) caps the image height — crops from bottom if exceeded. Use these when trim can't detect blank space (e.g., vertical rule lines extending to the edge).
 
 See `manifest.json` for the full schema.
