@@ -8,7 +8,7 @@ A Claude Code sub-agent (Sonnet) that handles all browser operations for screens
 
 ## Agent Definition
 
-**Location:** `.claude/agents/screenshot-capture.md`
+**Location:** `.claude/skills/screenshot/capture-agent.md`
 
 ```markdown
 ---

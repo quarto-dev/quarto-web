@@ -6,9 +6,9 @@ Parent: [00-index.md](00-index.md)
 
 The `/screenshot` command is the entry point for all screenshot work. It uses `!` command preprocessing to inject manifest data before Claude sees the prompt (zero AI turns for reading files). Helper scripts handle all deterministic work.
 
-## /screenshot Command
+## /screenshot Skill
 
-**Location:** `.claude/commands/screenshot.md`
+**Location:** `.claude/skills/screenshot/SKILL.md`
 
 ### Command Definition
 
