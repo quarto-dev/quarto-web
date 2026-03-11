@@ -32,6 +32,7 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Updated (all 8 screenshots) |
 | 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | Done (about-pages + myblog) |
 | 11 | [11-manifest-schema.md](11-manifest-schema.md) | JSON Schema for manifest validation + help reference | Planned |
+| 12 | [12-navigation-screenshots.md](12-navigation-screenshots.md) | All 11 website-navigation.qmd screenshots: 3 new example projects, 9 new manifest entries | New |
 
 ## Key Decisions
 
@@ -69,9 +70,12 @@ tools/screenshots/
 │   └── compress.js                 # oxipng wrapper
 └── examples/
     ├── navbar-tools/               # navbar with dropdown
-    ├── sidebar-tools/              # sidebar with dropdown (Session 2)
+    ├── sidebar-tools/              # sidebar with dropdown
     ├── about-pages/                # 5 about templates
-    └── myblog/                     # blog homepage (Session 2)
+    ├── myblog/                     # blog homepage
+    ├── navbar-basic/               # basic navbar (plan 12)
+    ├── sidebar-demo/               # sidebar styles + features (plan 12)
+    └── hybrid-nav/                 # hybrid navbar+sidebar (plan 12)
 
 .github/workflows/
 └── optimize-images.yml             # CI oxipng
