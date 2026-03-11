@@ -30,7 +30,7 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 07 | [07-capture-agent.md](07-capture-agent.md) | `screenshot-capture` agent definition | New |
 | 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated (all validated, L15 profiles) |
 | 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Updated (all 8 screenshots) |
-| 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | New |
+| 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | Done (about-pages + myblog) |
 | 11 | [11-manifest-schema.md](11-manifest-schema.md) | JSON Schema for manifest validation + help reference | Planned |
 
 ## Key Decisions
@@ -45,6 +45,7 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 - **Quarto profiles** for multi-template examples — one shared .qmd, profile configs override template
 - **Dark mode** — `"dark": true` auto-captures `-dark` variant; clip union ensures identical dimensions
 - **Clip over element** — `capture.clip` (union bounding box) handles dropdown overflow; `capture.element` clips to element bounds
+- **cropBottom/maxHeight** — post-capture image cropping for layouts where trim can't detect blank edges (vertical rules, multi-colored backgrounds)
 
 ## File Layout (Session 1 deliverables)
 

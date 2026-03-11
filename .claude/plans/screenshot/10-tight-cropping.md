@@ -132,11 +132,11 @@ Rationale:
 - Background auto-detected from top-left pixel (handles light + dark)
 - Combined with zoom (1.15) for readable fonts + tight layout
 
-**Phase 3 — myblog trim/zoom (separate step):**
-- myblog dark mode has a multi-colored background (blue navbar vs dark body) — trim can't detect uniform edges
-- The blue band around all sides of the dark screenshot is a pre-existing rendering issue, not trim-related
-- Options: fix example project CSS/layout, use cleanup eval to normalize background, or adjust viewport
-- Handle in its own investigation — don't block about-page trim rollout
+**Phase 3 — myblog rework (done):**
+- Updated myblog example to match `quarto create project blog` output: post thumbnail images, `page-layout: full`, `background: primary` on navbar, `posts/_metadata.yml`
+- Dark mode works without trim — navbar is muted blue, body is dark gray, no blue band issue
+- Used `maxHeight: 640` to crop blank space below content (content ends ~593px in 900px viewport)
+- Trim not used for myblog — multi-colored background (navbar vs body) prevents content-aware edge detection
 
 **Phase 4 — Playwright `style` support (future):**
 - Add `capture.style` manifest field (CSS string)

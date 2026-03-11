@@ -78,9 +78,15 @@ on the **twitter-to-bluesky** branch, not the screenshot-tool branch:
 6. Commit images and .qmd changes together
 7. Compression: CI handles it after merge, or run `npm run compress` locally
 
-## What's Already Done on twitter-to-bluesky
+## Progress
 
-Commit `104974f` already handled:
-- about-jolla: `.include-dark` + alt text
-- navbar-tools: `.include-dark` + alt text
-- Line ~112 navbar-tools reference: `.include-dark` + alt text
+### Done (images cherry-picked to twitter-to-bluesky)
+- **About pages** (5): all screenshots captured with trim + zoom, dark variants included
+- **myblog**: reworked example (post images, blue navbar, page-layout: full), maxHeight: 640 cropping, dark variant works
+- `.include-dark` + alt text for about-jolla and navbar-tools (commit `104974f`)
+
+### Remaining
+- **navbar-tools**: images regenerated in worktree but not yet committed/cherry-picked to twitter-to-bluesky
+- **sidebar-tools** (tools.png): images regenerated in worktree but not yet committed/cherry-picked; `.include-dark` + alt text still needed in `website-navigation.qmd`
+- **myblog**: `.include-dark` + alt text still needed in `website-blog.qmd`
+- Remaining `.include-dark` + alt text changes in `website-about.qmd` (4 templates) and `website-navigation.qmd` (sidebar-tools)
