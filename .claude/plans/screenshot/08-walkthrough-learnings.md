@@ -144,3 +144,15 @@ Fix: replaced all `pcli()` subprocess calls with direct Playwright API calls (`c
 ### L15: Quarto profiles for multi-template examples
 
 Using `_quarto-<name>.yml` profile configs lets a single `about.qmd` render with different templates. The `about` block in page frontmatter must NOT include `template:` — page-level YAML overrides project-level profile settings. Template selection lives exclusively in profile configs.
+
+### L16: `!` preprocessing blocks `$()` command substitution
+
+Claude Code's permission check system rejects `$()` in `!` backtick preprocessing commands. `$(git rev-parse --show-toplevel)` fails with "Command contains $() command substitution". Fix: use `${CLAUDE_SKILL_DIR}` (expanded by Claude Code before the shell sees it) with relative paths. From `.claude/skills/screenshot/`, `${CLAUDE_SKILL_DIR}/../../..` reaches the repo root.
+
+→ Sub-plan 06 updated with correct `!` preprocessing commands.
+
+### L17: URL sources need specific selectors for shared icons
+
+Pages from real sites (e.g., quarto-demo) often have multiple instances of the same icon. The quarto-demo page has 3 `.bi-github` elements (sidebar tools dropdown, "Edit this page" link, TOC actions). Playwright's strict mode fails with "resolved to 3 elements". Fix: use a specific selector like `#quarto-navigation-tool-dropdown-0` instead of `.bi-github`.
+
+→ Sub-plan 02 updated with specific selector for sidebar-tools.

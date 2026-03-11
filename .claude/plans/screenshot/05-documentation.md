@@ -110,7 +110,7 @@ Documented in CLAUDE.md, enforced by manifest defaults:
 
 1. **Viewport sizes by category:**
    - Navbar screenshots: 1440 x 400
-   - Sidebar screenshots: 400 x 300
+   - Sidebar screenshots: 992 x 600
    - About pages: 1200 x 900
    - Blog/full pages: 1440 x 900
    - Gallery thumbnails: 1440 x 900

@@ -19,7 +19,7 @@ The tooling branch produces 8 screenshots (16 images with dark variants) via `ca
 | about-marquee | `about-marquee.png` | `about-marquee-dark.png` | 1200x900 | about-pages profile=marquee |
 | about-broadside | `about-broadside.png` | `about-broadside-dark.png` | 1200x900 | about-pages profile=broadside |
 | navbar-tools | `navbar-tools.png` | `navbar-tools-dark.png` | 1440x400 | navbar-tools |
-| sidebar-tools | `tools.png` | `tools-dark.png` | 400x300 | sidebar-tools |
+| sidebar-tools | `tools.png` | `tools-dark.png` | 992x600 | quarto-demo URL |
 | myblog | `myblog.png` | `myblog-dark.png` | 1440x900 | myblog |
 
 ## .qmd Changes Needed in PR #1815
@@ -80,13 +80,15 @@ on the **twitter-to-bluesky** branch, not the screenshot-tool branch:
 
 ## Progress
 
-### Done (images cherry-picked to twitter-to-bluesky)
-- **About pages** (5): all screenshots captured with trim + zoom, dark variants included
-- **myblog**: reworked example (post images, blue navbar, page-layout: full), maxHeight: 640 cropping, dark variant works
-- `.include-dark` + alt text for about-jolla and navbar-tools (commit `104974f`)
+### All Done — cherry-picked to twitter-to-bluesky branch
 
-### Remaining
-- **navbar-tools**: images regenerated in worktree but not yet committed/cherry-picked to twitter-to-bluesky
-- **sidebar-tools** (tools.png): images regenerated in worktree but not yet committed/cherry-picked; `.include-dark` + alt text still needed in `website-navigation.qmd`
-- **myblog**: `.include-dark` + alt text still needed in `website-blog.qmd`
-- Remaining `.include-dark` + alt text changes in `website-about.qmd` (4 templates) and `website-navigation.qmd` (sidebar-tools)
+**Images (all 8 light + 8 dark):**
+- **About pages** (5): captured with trim + zoom, dark variants
+- **myblog**: reworked example, maxHeight: 640 cropping, dark variant
+- **navbar-tools**: captured from example project, dark variant
+- **sidebar-tools** (tools.png): recaptured from quarto-demo URL (richer context: title, search, sections), maxHeight: 320, dark variant
+
+**.qmd changes (all 3 files):**
+- `website-about.qmd`: `.include-dark` + alt text for all 5 about templates (jolla done early in `104974f`, remaining 4 in later commit)
+- `website-navigation.qmd`: `.include-dark` + alt text for navbar-tools (done in `104974f`) and sidebar-tools
+- `website-blog.qmd`: `.include-dark` + alt text for myblog

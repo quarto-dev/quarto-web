@@ -8,7 +8,7 @@
 Claude Code is the primary operator. Scripts handle deterministic work (zero AI tokens). AI only for visual judgment.
 
 ```
-/screenshot command (orchestrator, Opus)
+/screenshot skill (orchestrator, Opus)
     ├── !`node scripts/list.js`  → manifest data injected before prompt
     ├── scripts/render.js        → quarto render (deterministic)
     ├── scripts/serve.js         → file server (deterministic)
@@ -26,10 +26,10 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 03 | [03-example-projects.md](03-example-projects.md) | Example Quarto projects (navbar, sidebar, about, blog) | Updated (profiles) |
 | 04 | [04-ci-workflow.md](04-ci-workflow.md) | GitHub Action: oxipng on PR PNGs | OK |
 | 05 | [05-documentation.md](05-documentation.md) | CLAUDE.md, SETUP.md, visual rules | Revised |
-| 06 | [06-skill-scripts.md](06-skill-scripts.md) | `/screenshot` skill, `!` preprocessing, helper scripts | New |
-| 07 | [07-capture-agent.md](07-capture-agent.md) | `screenshot-capture` agent definition | New |
-| 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated (all validated, L15 profiles) |
-| 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Updated (all 8 screenshots) |
+| 06 | [06-skill-scripts.md](06-skill-scripts.md) | `/screenshot` skill, `!` preprocessing, helper scripts | Updated (skill dir, preprocessing fix) |
+| 07 | [07-capture-agent.md](07-capture-agent.md) | `screenshot-capture` agent definition | Updated (bundled in skill dir) |
+| 08 | [08-walkthrough-learnings.md](08-walkthrough-learnings.md) | Learnings from Phase 0.5 walkthrough | Updated (L16-L17 added) |
+| 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Done (all cherry-picked) |
 | 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | Done (about-pages + myblog) |
 | 11 | [11-manifest-schema.md](11-manifest-schema.md) | JSON Schema for manifest validation + help reference | Planned |
 | 12 | [12-navigation-screenshots.md](12-navigation-screenshots.md) | All 11 website-navigation.qmd screenshots: 3 new example projects, 9 new manifest entries | New |
@@ -47,6 +47,8 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 - **Dark mode** — `"dark": true` auto-captures `-dark` variant; clip union ensures identical dimensions
 - **Clip over element** — `capture.clip` (union bounding box) handles dropdown overflow; `capture.element` clips to element bounds
 - **cropBottom/maxHeight** — post-capture image cropping for layouts where trim can't detect blank edges (vertical rules, multi-colored backgrounds)
+- **URL source** — `source.type: "url"` captures from live sites (e.g., quarto-demo). Use specific selectors when pages have multiple instances of an icon (e.g., `#quarto-navigation-tool-dropdown-0` instead of `.bi-github`)
+- **`${CLAUDE_SKILL_DIR}`** — skill directory variable for CWD-independent paths in `!` preprocessing. `$()` command substitution is blocked by Claude Code permission checks; use `${CLAUDE_SKILL_DIR}/../../..` to reach repo root
 
 ## File Layout (Session 1 deliverables)
 

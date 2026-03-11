@@ -55,50 +55,11 @@ website:
 
 **`index.qmd`:** Minimal content (heading + paragraph) so the page looks realistic.
 
-### examples/sidebar-tools/
+### examples/sidebar-tools/ (superseded by URL source)
 
-Purpose: Screenshot of sidebar with Bluesky + GitHub tools (including dropdown)
+The sidebar-tools screenshot now uses `source.type: "url"` pointing at https://quarto-dev.github.io/quarto-demo/ instead of this local example project. The quarto-demo site provides richer sidebar content (title, search, multiple sections with children) and supports dark mode (cosmo light / darkly dark).
 
-```
-sidebar-tools/
-├── _quarto.yml
-├── .gitignore
-└── index.qmd
-```
-
-**`_quarto.yml`:**
-```yaml
-project:
-  type: website
-  render:
-    - index.qmd
-
-format:
-  html:
-    theme:
-      light: cosmo
-      dark: darkly
-
-website:
-  title: "ProjectX"
-  sidebar:
-    contents:
-      - text: Overview
-        href: "#"
-      - text: Getting Started
-        href: "#"
-    tools:
-      - icon: bluesky
-        href: https://bsky.app
-      - icon: github
-        menu:
-          - text: Source Code
-            href: https://code.com
-          - text: Report a Bug
-            href: https://bugs.com
-```
-
-Uses `href: "#"` for sidebar navigation items — avoids needing extra .qmd files while still populating the sidebar.
+The example project still exists on disk but is no longer the capture source. It may be removed in a future cleanup.
 
 ### examples/about-pages/
 

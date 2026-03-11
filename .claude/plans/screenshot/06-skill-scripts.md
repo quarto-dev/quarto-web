@@ -4,27 +4,31 @@ Parent: [00-index.md](00-index.md)
 
 ## Overview
 
-The `/screenshot` command is the entry point for all screenshot work. It uses `!` command preprocessing to inject manifest data before Claude sees the prompt (zero AI turns for reading files). Helper scripts handle all deterministic work.
+The `/screenshot` skill is the entry point for all screenshot work. It lives in `.claude/skills/screenshot/SKILL.md` (skill directory format) and uses `!` preprocessing to inject manifest data before Claude sees the prompt (zero AI turns for reading files). Helper scripts handle all deterministic work.
 
 ## /screenshot Skill
 
 **Location:** `.claude/skills/screenshot/SKILL.md`
 
-### Command Definition
+### Skill Definition
 
 ```markdown
 ---
 description: Capture or update documentation screenshots
-allowed-tools: Bash(node:*), Bash(quarto:*), Agent
+allowed-tools: Bash(node *), Bash(playwright-cli *), Bash(oxipng *), Agent
 ---
 
 ## Current Screenshots
 
-!`node tools/screenshots/scripts/list.js`
+!`node "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/scripts/list.js"`
 
 ## Visual Rules
 
-!`cat tools/screenshots/CLAUDE.md`
+!`cat "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/CLAUDE.md"`
+
+## Capture Agent Reference
+
+!`cat "${CLAUDE_SKILL_DIR}/capture-agent.md"`
 
 ## Instructions
 
@@ -78,9 +82,12 @@ Use the Agent tool with subagent_type="general-purpose" and model="sonnet":
 ### `!` Preprocessing
 
 The `!`backtick`` syntax runs the command at skill-load time, before Claude processes the prompt. This means:
-- `!`node tools/screenshots/scripts/list.js`` outputs the formatted manifest → injected as text
-- `!`cat tools/screenshots/CLAUDE.md`` outputs the visual rules → injected as text
+- `!`node "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/scripts/list.js"`` outputs the formatted manifest → injected as text
+- `!`cat "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/CLAUDE.md"`` outputs the visual rules → injected as text
+- `!`cat "${CLAUDE_SKILL_DIR}/capture-agent.md"`` outputs the capture agent reference → injected as text
 - Zero AI turns spent reading these files
+
+**Critical constraint:** `$()` command substitution is blocked by Claude Code's permission check system. This means `$(git rev-parse --show-toplevel)` cannot be used in `!` preprocessing commands. Instead, use `${CLAUDE_SKILL_DIR}` (expanded by Claude Code, not the shell) with relative paths: `${CLAUDE_SKILL_DIR}/../../..` reaches the repo root from `.claude/skills/screenshot/`.
 
 ## Helper Scripts
 

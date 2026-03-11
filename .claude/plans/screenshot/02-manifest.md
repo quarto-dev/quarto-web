@@ -140,16 +140,18 @@ Prefer `clip` for anything involving dropdowns or overflow.
   "name": "sidebar-tools",
   "output": "docs/websites/images/tools.png",
   "dark": true,
-  "source": { "type": "example", "project": "examples/sidebar-tools", "page": "index.html" },
+  "source": { "type": "url", "url": "https://quarto-dev.github.io/quarto-demo/html-themes.html" },
   "capture": {
-    "viewport": { "width": 400, "height": 300 },
+    "viewport": { "width": 992, "height": 600 },
     "interaction": [
-      { "action": "click", "selector": ".bi-github", "wait": ".dropdown-menu.show" }
+      { "action": "click", "selector": "#quarto-navigation-tool-dropdown-0", "wait": ".dropdown-menu.show" }
     ],
-    "clip": [".sidebar-tools-main", ".dropdown-menu.show"]
+    "clip": ["#quarto-sidebar", ".dropdown-menu.show"],
+    "maxHeight": 320
   }
 }
 ```
+Note: Uses `#quarto-navigation-tool-dropdown-0` instead of `.bi-github` because quarto-demo pages have multiple GitHub icons (sidebar tools, "Edit this page", TOC actions). Source is the live quarto-demo site (has dark mode: cosmo light / darkly dark).
 
 ### 3-7. about-* (5 templates via profiles)
 All share source project `examples/about-pages` and page `about.html`. Each uses a different Quarto profile to select the template:
