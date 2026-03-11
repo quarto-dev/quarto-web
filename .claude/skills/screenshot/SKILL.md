@@ -5,11 +5,11 @@ allowed-tools: Bash(node *), Bash(playwright-cli *), Bash(oxipng *), Agent
 
 ## Current Screenshots
 
-!`cd "$(git rev-parse --show-toplevel)" && node tools/screenshots/scripts/list.js`
+!`node "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/scripts/list.js"`
 
 ## Visual Rules
 
-!`cd "$(git rev-parse --show-toplevel)" && cat tools/screenshots/CLAUDE.md`
+!`cat "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/CLAUDE.md"`
 
 ## Capture Agent Reference
 
