@@ -52,9 +52,11 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 
 ```
 .claude/
-├── commands/screenshot.md          # /screenshot orchestrator
-├── agents/screenshot-capture.md    # Sonnet capture agent
-└── skills/playwright-cli/          # installed via playwright-cli install --skills
+├── skills/
+│   ├── screenshot/                    # /screenshot skill (orchestrator + agent)
+│   │   ├── SKILL.md                   # orchestrator, uses ${CLAUDE_SKILL_DIR}
+│   │   └── capture-agent.md           # Sonnet capture agent reference
+│   └── playwright-cli/                # installed via playwright-cli install --skills
 
 tools/screenshots/
 ├── manifest.json                   # screenshot definitions
