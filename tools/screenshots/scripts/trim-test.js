@@ -14,8 +14,8 @@ if (!inputPath) {
   process.exit(1);
 }
 
-const threshold = Number(thresholdArg) || 10;
-const padding = Number(paddingArg) || 20;
+const threshold = thresholdArg != null ? Number(thresholdArg) : 10;
+const padding = paddingArg != null ? Number(paddingArg) : 20;
 
 // Build output path: foo.png → foo-trimmed.png
 const ext = extname(inputPath);

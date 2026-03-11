@@ -369,7 +369,7 @@ The right selector and style will be determined during interactive `/screenshot`
   "name": "nav-breadcrumbs",
   "output": "docs/websites/images/nav-breadcrumbs.png",
   "dark": true,
-  "source": { "type": "example", "project": "examples/sidebar-demo", "page": "tutorial-landing.html", "profile": "docked" },
+  "source": { "type": "example", "project": "examples/sidebar-demo", "page": "tutorial-landing.html", "profile": "breadcrumbs" },
   "capture": {
     "viewport": { "width": 1200, "height": 400 },
     "clip": [".breadcrumb", "#title-block-header"]
