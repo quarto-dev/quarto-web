@@ -48,7 +48,7 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 - **Clip over element** — `capture.clip` (union bounding box) handles dropdown overflow; `capture.element` clips to element bounds
 - **cropBottom/maxHeight** — post-capture image cropping for layouts where trim can't detect blank edges (vertical rules, multi-colored backgrounds)
 - **URL source** — `source.type: "url"` captures from live sites (e.g., quarto-demo). Use specific selectors when pages have multiple instances of an icon (e.g., `#quarto-navigation-tool-dropdown-0` instead of `.bi-github`)
-- **quarto-demo subtree** — git subtree (not URL source) for sidebar/breadcrumbs/repo-actions screenshots. Enables local profile overrides (floating, breadcrumbs, repo-actions) while reusing real content. `output-dir: docs` requires capture.js fix.
+- **quarto-demo subtree** — git subtree (not URL source) for sidebar/breadcrumbs/repo-actions screenshots. Enables local profile overrides (floating, breadcrumbs, repo-actions) while reusing real content. Uses `freeze: true` (no Python/R needed), output to `_site` (default).
 - **`${CLAUDE_SKILL_DIR}`** — skill directory variable for CWD-independent paths in `!` preprocessing. `$()` command substitution is blocked by Claude Code permission checks; use `${CLAUDE_SKILL_DIR}/../../..` to reach repo root
 
 ## File Layout (Session 1 deliverables)
