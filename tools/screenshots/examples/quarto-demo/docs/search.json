@@ -29,7 +29,7 @@
     "href": "website-basics.html#projects",
     "title": "Basics",
     "section": "Projects",
-    "text": "Projects\nQuarto Projects are a generic facility not tied to websites, that nevertheless provide some important features for creating websites and books:\n\nA way to render all or some of the files in a directory with a single command.\nA way to share YAML configuration across multiple files.\nThe ability to redirect output artifacts to another directory.\nThe ability to freeze rendered output (e.g. don’t re-execute an .Rmd or .ipynb) either unqualified or tied to the content of the source file (via hash).\n\nFor example, here is a _quarto.yml config file for a website project:\nproject:\n  type: site\n  \nsite:\n  title: \"Quarto Demo\"\n\nformat:\n  html:\n    theme: cosmo\n    toc: true\n    \nbibliography: references.bib\nFor this project, output files will go to the _site directory by default. You can override this by adding an output-dir option to the project section of your config.",
+    "text": "Projects\nQuarto Projects are a generic facility not tied to websites, that nevertheless provide some important features for creating websites and books:\n\nA way to render all or some of the files in a directory with a single command.\nA way to share YAML configuration across multiple files.\nThe ability to redirect output artifacts to another directory.\nThe ability to freeze rendered output (e.g. don’t re-execute an .Rmd or .ipynb) either unqualified or tied to the content of the source file (via hash).\n\nFor example, here is a _quarto.yml config file for a website project:\nproject:\n  type: website\n\nwebsite:\n  title: \"Quarto Demo\"\n\nformat:\n  html:\n    theme: cosmo\n    toc: true\n    \nbibliography: references.bib\nFor this project, output files will go to the _site directory by default. You can override this by adding an output-dir option to the project section of your config.",
     "crumbs": [
       "Websites",
       "Basics"
@@ -40,7 +40,7 @@
     "href": "website-basics.html#rendering",
     "title": "Basics",
     "section": "Rendering",
-    "text": "Rendering\nTo render all of the files within a project, use quarto render:\n$ quarto render\nThe above command renders the project in the current working directory. You can also target another directory:\n$ quarto render mysite\nTo render from R, use the quarto package:\nlibrary(quarto)\nquarto_render()\nBy default, all valid Quarto input files (.Rmd, .ipynb, .md) in the project directory will be rendered, save for ones with a file or directory prefix of . (hidden files) or _ (typically used for non top-level files, e.g. ones included in other files).\nYou can however explicitly control which files are rendered using the render option (which is a list of file globs to be rendered, with globs preceded by ! excluded). For example:\nproject:\n  type: site\n  render: \n    - *.Rmd\n    - *.ipynb\n    - !import.Rmd",
+    "text": "Rendering\nTo render all of the files within a project, use quarto render:\n$ quarto render\nThe above command renders the project in the current working directory. You can also target another directory:\n$ quarto render mysite\nTo render from R, use the quarto package:\nlibrary(quarto)\nquarto_render()\nBy default, all valid Quarto input files (.Rmd, .ipynb, .md) in the project directory will be rendered, save for ones with a file or directory prefix of . (hidden files) or _ (typically used for non top-level files, e.g. ones included in other files).\nYou can however explicitly control which files are rendered using the render option (which is a list of file globs to be rendered, with globs preceded by ! excluded). For example:\nproject:\n  type: website\n  render: \n    - *.Rmd\n    - *.ipynb\n    - !import.Rmd",
     "crumbs": [
       "Websites",
       "Basics"
@@ -73,7 +73,7 @@
     "href": "website-basics.html#working-dir",
     "title": "Basics",
     "section": "Working Dir",
-    "text": "Working Dir\nBy default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the execute-dir option to your config:\nproject:\n  type: site\n  execute-dir: project\nNote that you can always determine the location of the currently executing Quarto project using the QUARTO_PROJECT_DIR environment variable.",
+    "text": "Working Dir\nBy default, the working directory for rendering files within a project is the directory of the file itself. If you prefer to use the main project directory instead, you can add the execute-dir option to your config:\nproject:\n  type: website\n  execute-dir: project\nNote that you can always determine the location of the currently executing Quarto project using the QUARTO_PROJECT_DIR environment variable.",
     "crumbs": [
       "Websites",
       "Basics"
@@ -95,7 +95,7 @@
     "href": "website-basics.html#resources",
     "title": "Basics",
     "section": "Resources",
-    "text": "Resources\nBesides input and configuration files, your site likely also includes a variety of resources (e.g. images) that you will want to publish along with your site. Quarto will automatically detect any files that you reference within your site and copy them to the output directory (e.g. _site).\nIf this auto-detection fails for any reason, of if you want to publish a file not explicitly linked to from within your site, you can add a resources entry to your configuration. For example, here we specify that we want to include all Excel spreadsheets within the project directory as part of the website:\nproject:\n  type: site\n  resources: \n    - *.xlsx\nYou can also add a resources metadata value to individual files. For example:\ntitle: \"My Page\"\nresources:\n  - sheet.xlsx\nImages are the most commonly used type of resource file. If you have global images (e.g. a logo) that you want to reference from various pages within your site, you can use an site-absolute path to refer to the images, and it will be automatically converted to a relative path during publishing. For example:\n![](/images/logo.png)",
+    "text": "Resources\nBesides input and configuration files, your site likely also includes a variety of resources (e.g. images) that you will want to publish along with your site. Quarto will automatically detect any files that you reference within your site and copy them to the output directory (e.g. _site).\nIf this auto-detection fails for any reason, of if you want to publish a file not explicitly linked to from within your site, you can add a resources entry to your configuration. For example, here we specify that we want to include all Excel spreadsheets within the project directory as part of the website:\nproject:\n  type: website\n  resources: \n    - *.xlsx\nYou can also add a resources metadata value to individual files. For example:\ntitle: \"My Page\"\nresources:\n  - sheet.xlsx\nImages are the most commonly used type of resource file. If you have global images (e.g. a logo) that you want to reference from various pages within your site, you can use an site-absolute path to refer to the images, and it will be automatically converted to a relative path during publishing. For example:\n![](/images/logo.png)",
     "crumbs": [
       "Websites",
       "Basics"
@@ -432,6 +432,171 @@
     ]
   },
   {
+    "objectID": "book-basics.html",
+    "href": "book-basics.html",
+    "title": "Basics",
+    "section": "",
+    "text": "TipLearn more\n\n\n\nSee the full guide on Creating a Book.",
+    "crumbs": [
+      "Books",
+      "Basics"
+    ]
+  },
+  {
+    "objectID": "book-basics.html#overview",
+    "href": "book-basics.html#overview",
+    "title": "Basics",
+    "section": "Overview",
+    "text": "Overview\nQuarto Books are combinations of multiple documents (chapters) into a single manuscript. Books can be created in a variety of formats:\n\nPDF\nHTML\nEPUB\nMS Word\n\nHTML books are not that different from Quarto Websites save for the fact that chapters and sections are numbered and therefore support Cross References.\nHere are some examples of books created with Quarto:\n\nHands on Programming with R\nVisualization Curriculum",
+    "crumbs": [
+      "Books",
+      "Basics"
+    ]
+  },
+  {
+    "objectID": "book-basics.html#getting-started",
+    "href": "book-basics.html#getting-started",
+    "title": "Basics",
+    "section": "Getting Started",
+    "text": "Getting Started\nTo create a new book project, use the Quarto create-project command:\n$ quarto create-project mybook --type book\nThis will create the scaffolding for a simple book in the mybook subdirectory. To build and view the HTML version of the book use the serve command:\n$ quarto serve mybook\nThis will build the HTML version of the book and run a local web server to view it. Here’s what you’ll see in your browser for the simple book scaffolding:\n\nThe book’s chapters are contained in the files index.md, introduction.md, summary.md. Try adding some content to one of these files and saving—you’ll notice that the book preview is automatically updated in the browser.\nYou’ll also notice that a Quarto project file (_quarto.yml) was created in the mybook directory. This file contains the initial configuration for your book:\nproject:\n  type: book\n\nbook:\n  title: \"mybook\"\n  author: \"Jane Doe\"\n  date: \"5/11/2021\"\n  chapters:\n    - index.md\n    - intro.md\n    - summary.md\n    - references.md\n\nbibliography: references.bib\n\nformat:\n  html:\n    theme: cosmo\n  pdf:\n    documentclass: report\n  epub:\n    epub-cover-image: cover.png",
+    "crumbs": [
+      "Books",
+      "Basics"
+    ]
+  },
+  {
+    "objectID": "book-basics.html#workflow",
+    "href": "book-basics.html#workflow",
+    "title": "Basics",
+    "section": "Workflow",
+    "text": "Workflow\n\nDevelopment\nWhen working on a book, you’ll typically run the local development server as described above and incrementally preview content as you work:\n$ quarto serve\nNote that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the quarto R package:\n# install the quarto R package\nremotes::install_github(\"quarto-dev/quarto-r\")\n\n# run the development server\nlibrary(quarto)\nquarto_serve()\nIf you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.\nNote that you should also be sure to disable the standard RStudio preview behavior when using this workflow:\n\nNote that the (No Preview) option is checked to disable the normal preview on render behavior.\nNote that development server updates do not cause an update to the final book output. Consequently, you should always quarto render your site before deploying it as described below in Publishing.\n\n\nPublishing\nWhen you are ready to publish the book, use the render command to render all output formats:\n$ quarto render --to all\nIf you pass no arguments to quarto render the default format (HTML) will be rendered. You can also render individual formats via the --to argument:\n$ quarto render           # render default format (HTML)\n$ quarto render --to pdf  # render PDF format only\nThe output of your book will be written to the _book sub-directory of your book project:\nmybook/\n  _book/\n    index.html # and other website files\n    mybook.pdf\n    mybook.epub",
+    "crumbs": [
+      "Books",
+      "Basics"
+    ]
+  },
+  {
+    "objectID": "book-basics.html#learning-more",
+    "href": "book-basics.html#learning-more",
+    "title": "Basics",
+    "section": "Learning More",
+    "text": "Learning More\nOnce you are familiar with the basic mechanics, read the article on Book Authoring to learn about:\n\nHow to structure your book (numbered and unnumbered chapters/sections, creating multiple parts, adding appendices, etc.)\nIncorporating computational output from knitr or Jupyter (including tools for caching the results of longer running chapters/sections).\nCreating cross-references to chapters, sections, figures, tables, etc.\nCustomizing the style and appearance of your book in the various output formats.\nProviding navigation and other tools for readers (e.g. download other formats, share on twitter, suggest changes, etc.)",
+    "crumbs": [
+      "Books",
+      "Basics"
+    ]
+  },
+  {
+    "objectID": "basics-knitr.html",
+    "href": "basics-knitr.html",
+    "title": "Knitr Basics",
+    "section": "",
+    "text": "TipLearn more\n\n\n\nSee the full guide on Using R with Quarto and Knitr Code Cells.",
+    "crumbs": [
+      "Basics",
+      "Knitr Basics"
+    ]
+  },
+  {
+    "objectID": "basics-knitr.html#introduction",
+    "href": "basics-knitr.html#introduction",
+    "title": "Knitr Basics",
+    "section": "Introduction",
+    "text": "Introduction\nThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.\nWhen you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:\n\nsummary(cars)\n\n     speed           dist       \n Min.   : 4.0   Min.   :  2.00  \n 1st Qu.:12.0   1st Qu.: 26.00  \n Median :15.0   Median : 36.00  \n Mean   :15.4   Mean   : 42.98  \n 3rd Qu.:19.0   3rd Qu.: 56.00  \n Max.   :25.0   Max.   :120.00",
+    "crumbs": [
+      "Basics",
+      "Knitr Basics"
+    ]
+  },
+  {
+    "objectID": "basics-knitr.html#plot-output",
+    "href": "basics-knitr.html#plot-output",
+    "title": "Knitr Basics",
+    "section": "Plot Output",
+    "text": "Plot Output\nYou can also embed plots, for example:\n\n\nCode\nlibrary(ggplot2)\ndat &lt;- data.frame(cond = rep(c(\"A\", \"B\"), each=10),\n                  xvar = 1:20 + rnorm(20,sd=3),\n                  yvar = 1:20 + rnorm(20,sd=3))\n\nggplot(dat, aes(x=xvar, y=yvar)) +\n    geom_point(shape=1) + \n    geom_smooth() \n\n\n\n\n\n\n\n\n\nNote that the code-fold: true parameter was added to the code chunk to hide the code by default (click the “Code” above to see the code).",
+    "crumbs": [
+      "Basics",
+      "Knitr Basics"
+    ]
+  },
+  {
+    "objectID": "basics-knitr.html#interactive-plots",
+    "href": "basics-knitr.html#interactive-plots",
+    "title": "Knitr Basics",
+    "section": "Interactive Plots",
+    "text": "Interactive Plots\nYou can also add interactive plots. For example:\n\nlibrary(dygraphs)\ndygraph(nhtemp, main = \"New Haven Temperatures\") %&gt;% \n  dyRangeSelector(dateWindow = c(\"1920-01-01\", \"1960-01-01\"))",
+    "crumbs": [
+      "Basics",
+      "Knitr Basics"
+    ]
+  },
+  {
+    "objectID": "basics-knitr.html#latex-math",
+    "href": "basics-knitr.html#latex-math",
+    "title": "Knitr Basics",
+    "section": "LaTeX Math",
+    "text": "LaTeX Math\nYou can also include LaTeX math:\n\nP\\left(A=2\\middle|\\frac{A^2}{B}&gt;4\\right)",
+    "crumbs": [
+      "Basics",
+      "Knitr Basics"
+    ]
+  },
+  {
+    "objectID": "basics-jupyter.html",
+    "href": "basics-jupyter.html",
+    "title": "Jupyter Basics",
+    "section": "",
+    "text": "TipLearn more\n\n\n\nSee the full guide on Using Python with Quarto and Jupyter Code Cells.",
+    "crumbs": [
+      "Basics",
+      "Jupyter Basics"
+    ]
+  },
+  {
+    "objectID": "basics-jupyter.html#introduction",
+    "href": "basics-jupyter.html#introduction",
+    "title": "Jupyter Basics",
+    "section": "Introduction",
+    "text": "Introduction\nThis is an Jupyter Markdown document. You can embed a Python code chunk like this:\n\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n\n\n\n\n\n\n\n\none\ntwo\n\n\n\n\n0\n1.0\n4.0\n\n\n1\n2.0\n3.0\n\n\n2\n3.0\n2.0\n\n\n3\n4.0\n1.0",
+    "crumbs": [
+      "Basics",
+      "Jupyter Basics"
+    ]
+  },
+  {
+    "objectID": "basics-jupyter.html#plot-output",
+    "href": "basics-jupyter.html#plot-output",
+    "title": "Jupyter Basics",
+    "section": "Plot Output",
+    "text": "Plot Output\nYou can also embed plots, for example:\n\n\nCode\nimport matplotlib.pyplot as plt\n\nlabels = ['G1', 'G2', 'G3', 'G4', 'G6']\nmen_means = [20, 35, 30, 35, 27]\nwomen_means = [25, 32, 34, 20, 25]\nmen_std = [2, 3, 4, 1, 2]\nwomen_std = [3, 5, 2, 3, 3]\nwidth = 0.35       # the width of the bars: can also be len(x) sequence\n\nfig, ax = plt.subplots()\n\nax.bar(labels, men_means, width, yerr=men_std, label='Men')\nax.bar(labels, women_means, width, yerr=women_std, bottom=men_means,\n      label='Women')\n\nax.set_ylabel('Scores')\nax.set_title('Scores broken out by group and gender')\nax.legend()\nplt.show()\n\n\n\n\n\n\n\n\n\nNote that the code-fold: true parameter was added to the code chunk to hide the code by default (click the “Code” above to see the code).",
+    "crumbs": [
+      "Basics",
+      "Jupyter Basics"
+    ]
+  },
+  {
+    "objectID": "basics-jupyter.html#interactive-plots",
+    "href": "basics-jupyter.html#interactive-plots",
+    "title": "Jupyter Basics",
+    "section": "Interactive Plots",
+    "text": "Interactive Plots\nYou can also embed interactive ipython widgets. For example:\n\nfrom ipyleaflet import Map, Marker, basemaps, basemap_to_tiles\nm = Map(\n  basemap=basemap_to_tiles(\n    basemaps.NASAGIBS.ModisTerraTrueColorCR, \"2017-04-08\"\n  ),\n  center=(52.204793, 360.121558),\n  zoom=4\n)\nm.add_layer(Marker(location=(52.204793, 360.121558)))\nm",
+    "crumbs": [
+      "Basics",
+      "Jupyter Basics"
+    ]
+  },
+  {
+    "objectID": "basics-jupyter.html#latex-math",
+    "href": "basics-jupyter.html#latex-math",
+    "title": "Jupyter Basics",
+    "section": "LaTeX Math",
+    "text": "LaTeX Math\nYou can also include LaTeX math:\n\nP\\left(A=2\\middle|\\frac{A^2}{B}&gt;4\\right)",
+    "crumbs": [
+      "Basics",
+      "Jupyter Basics"
+    ]
+  },
+  {
     "objectID": "book-authoring.html",
     "href": "book-authoring.html",
     "title": "Authoring",
@@ -509,169 +674,18 @@
     ]
   },
   {
-    "objectID": "basics-jupyter.html",
-    "href": "basics-jupyter.html",
-    "title": "Jupyter Basics",
+    "objectID": "CLAUDE.local.html",
+    "href": "CLAUDE.local.html",
+    "title": "Quarto Demo - Local Development",
     "section": "",
-    "text": "TipLearn more\n\n\n\nSee the full guide on Using Python with Quarto and Jupyter Code Cells.",
-    "crumbs": [
-      "Basics",
-      "Jupyter Basics"
-    ]
+    "text": "This project has a .venv managed by uv. Activate before running Quarto:\nsource .venv/Scripts/activate\nAlways activate the venv before quarto render or quarto preview — Jupyter notebooks need the Python packages installed there (e.g., ipyleaflet)."
   },
   {
-    "objectID": "basics-jupyter.html#introduction",
-    "href": "basics-jupyter.html#introduction",
-    "title": "Jupyter Basics",
-    "section": "Introduction",
-    "text": "Introduction\nThis is an Jupyter Markdown document. You can embed a Python code chunk like this:\n\nimport pandas as pd\nd = {'one' : [1., 2., 3., 4.],\n     'two' : [4., 3., 2., 1.]}\ndf = pd.DataFrame(d)\ndf\n\n\n\n\n\n\n\n\none\ntwo\n\n\n\n\n0\n1.0\n4.0\n\n\n1\n2.0\n3.0\n\n\n2\n3.0\n2.0\n\n\n3\n4.0\n1.0",
-    "crumbs": [
-      "Basics",
-      "Jupyter Basics"
-    ]
-  },
-  {
-    "objectID": "basics-jupyter.html#plot-output",
-    "href": "basics-jupyter.html#plot-output",
-    "title": "Jupyter Basics",
-    "section": "Plot Output",
-    "text": "Plot Output\nYou can also embed plots, for example:\n\n\nCode\nimport matplotlib.pyplot as plt\n\nlabels = ['G1', 'G2', 'G3', 'G4', 'G6']\nmen_means = [20, 35, 30, 35, 27]\nwomen_means = [25, 32, 34, 20, 25]\nmen_std = [2, 3, 4, 1, 2]\nwomen_std = [3, 5, 2, 3, 3]\nwidth = 0.35       # the width of the bars: can also be len(x) sequence\n\nfig, ax = plt.subplots()\n\nax.bar(labels, men_means, width, yerr=men_std, label='Men')\nax.bar(labels, women_means, width, yerr=women_std, bottom=men_means,\n      label='Women')\n\nax.set_ylabel('Scores')\nax.set_title('Scores broken out by group and gender')\nax.legend()\nplt.show()\n\n\n\n\n\n\n\n\n\nNote that the code-fold: true parameter was added to the code chunk to hide the code by default (click the “Code” above to see the code).",
-    "crumbs": [
-      "Basics",
-      "Jupyter Basics"
-    ]
-  },
-  {
-    "objectID": "basics-jupyter.html#interactive-plots",
-    "href": "basics-jupyter.html#interactive-plots",
-    "title": "Jupyter Basics",
-    "section": "Interactive Plots",
-    "text": "Interactive Plots\nYou can also embed interactive ipython widgets. For example:\n\nfrom ipyleaflet import Map, Marker, basemaps, basemap_to_tiles\nm = Map(\n  basemap=basemap_to_tiles(\n    basemaps.NASAGIBS.ModisTerraTrueColorCR, \"2017-04-08\"\n  ),\n  center=(52.204793, 360.121558),\n  zoom=4\n)\nm.add_layer(Marker(location=(52.204793, 360.121558)))\nm",
-    "crumbs": [
-      "Basics",
-      "Jupyter Basics"
-    ]
-  },
-  {
-    "objectID": "basics-jupyter.html#latex-math",
-    "href": "basics-jupyter.html#latex-math",
-    "title": "Jupyter Basics",
-    "section": "LaTeX Math",
-    "text": "LaTeX Math\nYou can also include LaTeX math:\n\nP\\left(A=2\\middle|\\frac{A^2}{B}&gt;4\\right)",
-    "crumbs": [
-      "Basics",
-      "Jupyter Basics"
-    ]
-  },
-  {
-    "objectID": "basics-knitr.html",
-    "href": "basics-knitr.html",
-    "title": "Knitr Basics",
+    "objectID": "CLAUDE.local.html#python-environment",
+    "href": "CLAUDE.local.html#python-environment",
+    "title": "Quarto Demo - Local Development",
     "section": "",
-    "text": "TipLearn more\n\n\n\nSee the full guide on Using R with Quarto and Knitr Code Cells.",
-    "crumbs": [
-      "Basics",
-      "Knitr Basics"
-    ]
-  },
-  {
-    "objectID": "basics-knitr.html#introduction",
-    "href": "basics-knitr.html#introduction",
-    "title": "Knitr Basics",
-    "section": "Introduction",
-    "text": "Introduction\nThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.\nWhen you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:\n\nsummary(cars)\n\n     speed           dist       \n Min.   : 4.0   Min.   :  2.00  \n 1st Qu.:12.0   1st Qu.: 26.00  \n Median :15.0   Median : 36.00  \n Mean   :15.4   Mean   : 42.98  \n 3rd Qu.:19.0   3rd Qu.: 56.00  \n Max.   :25.0   Max.   :120.00",
-    "crumbs": [
-      "Basics",
-      "Knitr Basics"
-    ]
-  },
-  {
-    "objectID": "basics-knitr.html#plot-output",
-    "href": "basics-knitr.html#plot-output",
-    "title": "Knitr Basics",
-    "section": "Plot Output",
-    "text": "Plot Output\nYou can also embed plots, for example:\n\n\nCode\nlibrary(ggplot2)\ndat &lt;- data.frame(cond = rep(c(\"A\", \"B\"), each=10),\n                  xvar = 1:20 + rnorm(20,sd=3),\n                  yvar = 1:20 + rnorm(20,sd=3))\n\nggplot(dat, aes(x=xvar, y=yvar)) +\n    geom_point(shape=1) + \n    geom_smooth() \n\n\n\n\n\n\n\n\n\nNote that the code-fold: true parameter was added to the code chunk to hide the code by default (click the “Code” above to see the code).",
-    "crumbs": [
-      "Basics",
-      "Knitr Basics"
-    ]
-  },
-  {
-    "objectID": "basics-knitr.html#interactive-plots",
-    "href": "basics-knitr.html#interactive-plots",
-    "title": "Knitr Basics",
-    "section": "Interactive Plots",
-    "text": "Interactive Plots\nYou can also add interactive plots. For example:\n\nlibrary(dygraphs)\ndygraph(nhtemp, main = \"New Haven Temperatures\") %&gt;% \n  dyRangeSelector(dateWindow = c(\"1920-01-01\", \"1960-01-01\"))",
-    "crumbs": [
-      "Basics",
-      "Knitr Basics"
-    ]
-  },
-  {
-    "objectID": "basics-knitr.html#latex-math",
-    "href": "basics-knitr.html#latex-math",
-    "title": "Knitr Basics",
-    "section": "LaTeX Math",
-    "text": "LaTeX Math\nYou can also include LaTeX math:\n\nP\\left(A=2\\middle|\\frac{A^2}{B}&gt;4\\right)",
-    "crumbs": [
-      "Basics",
-      "Knitr Basics"
-    ]
-  },
-  {
-    "objectID": "book-basics.html",
-    "href": "book-basics.html",
-    "title": "Basics",
-    "section": "",
-    "text": "TipLearn more\n\n\n\nSee the full guide on Creating a Book.",
-    "crumbs": [
-      "Books",
-      "Basics"
-    ]
-  },
-  {
-    "objectID": "book-basics.html#overview",
-    "href": "book-basics.html#overview",
-    "title": "Basics",
-    "section": "Overview",
-    "text": "Overview\nQuarto Books are combinations of multiple documents (chapters) into a single manuscript. Books can be created in a variety of formats:\n\nPDF\nHTML\nEPUB\nMS Word\n\nHTML books are not that different from Quarto Websites save for the fact that chapters and sections are numbered and therefore support Cross References.\nHere are some examples of books created with Quarto:\n\nHands on Programming with R\nVisualization Curriculum",
-    "crumbs": [
-      "Books",
-      "Basics"
-    ]
-  },
-  {
-    "objectID": "book-basics.html#getting-started",
-    "href": "book-basics.html#getting-started",
-    "title": "Basics",
-    "section": "Getting Started",
-    "text": "Getting Started\nTo create a new book project, use the Quarto create-project command:\n$ quarto create-project mybook --type book\nThis will create the scaffolding for a simple book in the mybook subdirectory. To build and view the HTML version of the book use the serve command:\n$ quarto serve mybook\nThis will build the HTML version of the book and run a local web server to view it. Here’s what you’ll see in your browser for the simple book scaffolding:\n\nThe book’s chapters are contained in the files index.md, introduction.md, summary.md. Try adding some content to one of these files and saving—you’ll notice that the book preview is automatically updated in the browser.\nYou’ll also notice that a Quarto project file (_quarto.yml) was created in the mybook directory. This file contains the initial configuration for your book:\nproject:\n  type: book\n\nbook:\n  title: \"mybook\"\n  author: \"Jane Doe\"\n  date: \"5/11/2021\"\n  chapters:\n    - index.md\n    - intro.md\n    - summary.md\n    - references.md\n\nbibliography: references.bib\n\nformat:\n  html:\n    theme: cosmo\n  pdf:\n    documentclass: report\n  epub:\n    epub-cover-image: cover.png",
-    "crumbs": [
-      "Books",
-      "Basics"
-    ]
-  },
-  {
-    "objectID": "book-basics.html#workflow",
-    "href": "book-basics.html#workflow",
-    "title": "Basics",
-    "section": "Workflow",
-    "text": "Workflow\n\nDevelopment\nWhen working on a book, you’ll typically run the local development server as described above and incrementally preview content as you work:\n$ quarto serve\nNote that if you are using Quarto within RStudio, you can run the development server within the RStudio Viewer pane using the quarto R package:\n# install the quarto R package\nremotes::install_github(\"quarto-dev/quarto-r\")\n\n# run the development server\nlibrary(quarto)\nquarto_serve()\nIf you have a plain markdown file (with no computations), then saving it will cause the preview to automatically update (as will changes to config files, CSS files, etc.). If you are working on a file with computations (e.g. an Rmd or Jupyter notebook) then you need to explicitly re-render it to update the preview.\nNote that you should also be sure to disable the standard RStudio preview behavior when using this workflow:\n\nNote that the (No Preview) option is checked to disable the normal preview on render behavior.\nNote that development server updates do not cause an update to the final book output. Consequently, you should always quarto render your site before deploying it as described below in Publishing.\n\n\nPublishing\nWhen you are ready to publish the book, use the render command to render all output formats:\n$ quarto render --to all\nIf you pass no arguments to quarto render the default format (HTML) will be rendered. You can also render individual formats via the --to argument:\n$ quarto render           # render default format (HTML)\n$ quarto render --to pdf  # render PDF format only\nThe output of your book will be written to the _book sub-directory of your book project:\nmybook/\n  _book/\n    index.html # and other website files\n    mybook.pdf\n    mybook.epub",
-    "crumbs": [
-      "Books",
-      "Basics"
-    ]
-  },
-  {
-    "objectID": "book-basics.html#learning-more",
-    "href": "book-basics.html#learning-more",
-    "title": "Basics",
-    "section": "Learning More",
-    "text": "Learning More\nOnce you are familiar with the basic mechanics, read the article on Book Authoring to learn about:\n\nHow to structure your book (numbered and unnumbered chapters/sections, creating multiple parts, adding appendices, etc.)\nIncorporating computational output from knitr or Jupyter (including tools for caching the results of longer running chapters/sections).\nCreating cross-references to chapters, sections, figures, tables, etc.\nCustomizing the style and appearance of your book in the various output formats.\nProviding navigation and other tools for readers (e.g. download other formats, share on twitter, suggest changes, etc.)",
-    "crumbs": [
-      "Books",
-      "Basics"
-    ]
+    "text": "This project has a .venv managed by uv. Activate before running Quarto:\nsource .venv/Scripts/activate\nAlways activate the venv before quarto render or quarto preview — Jupyter notebooks need the Python packages installed there (e.g., ipyleaflet)."
   },
   {
     "objectID": "crossref-knitr.html",
@@ -997,7 +1011,7 @@
     "href": "website-navigation.html#top-navigation",
     "title": "Navigation",
     "section": "Top Navigation",
-    "text": "Top Navigation\nTo add top-navigation to a website, add a navbar entry to the site config in _quarto.yml. For example, the following YAML:\nsite:\n  navbar:\n    type: dark\n    background: primary\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.Rmd\n      - talks.Rmd\n      - about.Rmd \nWould result in a navigation bar that looks something like this:\n\nAbove we use the left option to specify items for the left side of the navigation bar. You can also use the right option to specify items for the right side.\nThe text for navigation bar items will be taken from the underlying target document’s title. Note that in the above example we provide a custom text: \"Home\" value for index.Rmd.\nYou can also create a navigation menu by including a menu (which is list of items much like left and right). For example:\nleft:\n  - text: \"More\"\n    menu:\n      - talks.Rmd\n      - about.Rmd \nHere are all of the options available for top navigation:\n\n\n\nOption\nDescription\n\n\n\n\ntitle\nNavbar title (uses the site-title if none is specified).\n\n\nlogo\nOptional logo image to be displayed left of the title.\n\n\ntype\n“dark” or “light” (each Bootstrap theme has a light and dark variation of the navigation bar)\n\n\nbackground\nBackground color (“primary”, “secondary”, “success”, “danger”, “warning”, “info”, “light”, or “dark”)\n\n\nsearch\nInclude a search box (true or false)\n\n\nleft / right\nLists of navigation items for left and right side of navbar\n\n\npinned\nAlways show the navbar (true or false). Defaults to false, and uses headroom.js to automatically show the navbar when the user scrolls up on the page.\n\n\ncollapse\nCollapse the navbar items into a hamburger menu when the display gets narrow (defaults to true)\n\n\ncollapse-below\nResponsive breakpoint at which to collapse navbar items to a hamburger menu (“sm”, “md”, “lg”, “xl”, or “xxl”, defaults to “lg”)\n\n\n\nHere are the options available for individual navigation items:\n\n\n\nOption\nDescription\n\n\n\n\nfile\nLink to file contained with the project.\n\n\nurl\nLink to external URL.\n\n\ntext\nText to display for navigation item (defaults to the document title if not provided).\n\n\nicon\nName of one of the standard Bootstrap 5 icons (e.g. “github”, “twitter”, “share”, etc.).\n\n\naria-label\nAccessible label for the navigation item.\n\n\nmenu\nList of navigation items to populate a drop-down menu.",
+    "text": "Top Navigation\nTo add top-navigation to a website, add a navbar entry to the website config in _quarto.yml. For example, the following YAML:\nwebsite:\n  navbar:\n    type: dark\n    background: primary\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.Rmd\n      - talks.Rmd\n      - about.Rmd \nWould result in a navigation bar that looks something like this:\n\nAbove we use the left option to specify items for the left side of the navigation bar. You can also use the right option to specify items for the right side.\nThe text for navigation bar items will be taken from the underlying target document’s title. Note that in the above example we provide a custom text: \"Home\" value for index.Rmd.\nYou can also create a navigation menu by including a menu (which is list of items much like left and right). For example:\nleft:\n  - text: \"More\"\n    menu:\n      - talks.Rmd\n      - about.Rmd \nHere are all of the options available for top navigation:\n\n\n\nOption\nDescription\n\n\n\n\ntitle\nNavbar title (uses the site-title if none is specified).\n\n\nlogo\nOptional logo image to be displayed left of the title.\n\n\ntype\n“dark” or “light” (each Bootstrap theme has a light and dark variation of the navigation bar)\n\n\nbackground\nBackground color (“primary”, “secondary”, “success”, “danger”, “warning”, “info”, “light”, or “dark”)\n\n\nsearch\nInclude a search box (true or false)\n\n\nleft / right\nLists of navigation items for left and right side of navbar\n\n\npinned\nAlways show the navbar (true or false). Defaults to false, and uses headroom.js to automatically show the navbar when the user scrolls up on the page.\n\n\ncollapse\nCollapse the navbar items into a hamburger menu when the display gets narrow (defaults to true)\n\n\ncollapse-below\nResponsive breakpoint at which to collapse navbar items to a hamburger menu (“sm”, “md”, “lg”, “xl”, or “xxl”, defaults to “lg”)\n\n\n\nHere are the options available for individual navigation items:\n\n\n\nOption\nDescription\n\n\n\n\nfile\nLink to file contained with the project.\n\n\nurl\nLink to external URL.\n\n\ntext\nText to display for navigation item (defaults to the document title if not provided).\n\n\nicon\nName of one of the standard Bootstrap 5 icons (e.g. “github”, “twitter”, “share”, etc.).\n\n\naria-label\nAccessible label for the navigation item.\n\n\nmenu\nList of navigation items to populate a drop-down menu.",
     "crumbs": [
       "Websites",
       "Navigation"
@@ -1008,7 +1022,7 @@
     "href": "website-navigation.html#side-navigation",
     "title": "Navigation",
     "section": "Side Navigation",
-    "text": "Side Navigation\nIf your site consists of more than a handful of documents, you might prefer to use side navigation, which enables you to display an arbitrarily deep hierarchy or articles.\nIf you are reading this page on a desktop device then you will see the default side navigation display on the left (otherwise you’ll see a title bar at the top which you can click or touch to reveal the navigation).\nTo add side navigation to a website, add a sidebar entry to the site section of _quarto.yml. For example:\nsite:\n  sidebar:\n    style: \"docked\"\n    search: true\n    contents:\n      - section: \"Basics\"\n        contents:\n          - index.md\n          - basics-knitr.Rmd\n          - basics-jupyter.md\n      - section: \"Layout\"\n        contents:\n          - layout.md\n          - layout-knitr.Rmd\n          - layout-jupyter.md\nThere are two styles of side navigation available: “docked” which shows the navigation in a sidebar with a distinct background color, and “floating” which places it closer to the main body text. Here’s that the “docked” and “floating” styles look like (respectively):\n\n\n\n\n\n\n\n\n\n\n\n\nHere are all of the options available for side navigation:\n\n\n\nOption\nDescription\n\n\n\n\nid\nOptional identifier (used only for hybrid navigation, described below).\n\n\ntitle\nSidebar title (uses the project title if none is specified).\n\n\nsubtitle\nOptional subtitle\n\n\nlogo\nOptional logo image\n\n\nsearch\nInclude a search box (true or false). Note that if there is already a search box on the top navigation bar it won’t be displayed on the sidebar.\n\n\ntools\nList of sidebar tools (e.g. link to github or twitter, etc.). See the next section for details.\n\n\nfooter\nFooter content to place immediately below the sidebar.\n\n\nitems\nList of navigation items to display (typically top level items will in turn have a list of sub-items).\n\n\nstyle\n“docked” or “floating”\n\n\ntype\n“dark” or “light” (hint to make sure the text color is the inverse of the background)\n\n\nbackground\nBackground color (“none”, “primary”, “secondary”, “success”, “danger”, “warning”, “info”, “light”, “dark”, or “white”). Defaults to “light”.\n\n\nalignment\nAlignment (“left”, “right”, or “center”).\n\n\ncollapse-level\nWhether to show sidebar navigation collapsed by default. The default is 2, which shows the top and next level fully expanded (but leaves the 3rd and subsequent levels collapsed).\n\n\npinned\nAlways show a title bar that expands to show the sidebar at narrower screen widths (true or false). Defaults to false, and uses headroom.js to automatically show the navigation bar when the user scrolls up on the page.\n\n\n\n\nSidebar Tools\nIn addition to traditional navigation, the sidebar can also display a set of tools (e.g. social actions, github view or edit action, etc…) A basic tool definition consists of an icon name and an href to follow when clicked. For icon, use the icon name of any of the 1,300+ Bootstrap Icons.\nFor example:\n\n\n\n\n\n\n\nsite:\n  sidebar:\n    tools:\n      - icon: twitter\n        href: https://twitter.com\n      - icon: github\n        menu:\n          - text: Source Code\n          - url:  https://code.com\n          - text: Report a Bug\n          - url:  https://bugs.com",
+    "text": "Side Navigation\nIf your site consists of more than a handful of documents, you might prefer to use side navigation, which enables you to display an arbitrarily deep hierarchy or articles.\nIf you are reading this page on a desktop device then you will see the default side navigation display on the left (otherwise you’ll see a title bar at the top which you can click or touch to reveal the navigation).\nTo add side navigation to a website, add a sidebar entry to the website section of _quarto.yml. For example:\nwebsite:\n  sidebar:\n    style: \"docked\"\n    search: true\n    contents:\n      - section: \"Basics\"\n        contents:\n          - index.md\n          - basics-knitr.Rmd\n          - basics-jupyter.md\n      - section: \"Layout\"\n        contents:\n          - layout.md\n          - layout-knitr.Rmd\n          - layout-jupyter.md\nThere are two styles of side navigation available: “docked” which shows the navigation in a sidebar with a distinct background color, and “floating” which places it closer to the main body text. Here’s that the “docked” and “floating” styles look like (respectively):\n\n\n\n\n\n\n\n\n\n\n\n\nHere are all of the options available for side navigation:\n\n\n\nOption\nDescription\n\n\n\n\nid\nOptional identifier (used only for hybrid navigation, described below).\n\n\ntitle\nSidebar title (uses the project title if none is specified).\n\n\nsubtitle\nOptional subtitle\n\n\nlogo\nOptional logo image\n\n\nsearch\nInclude a search box (true or false). Note that if there is already a search box on the top navigation bar it won’t be displayed on the sidebar.\n\n\ntools\nList of sidebar tools (e.g. link to github or twitter, etc.). See the next section for details.\n\n\nfooter\nFooter content to place immediately below the sidebar.\n\n\nitems\nList of navigation items to display (typically top level items will in turn have a list of sub-items).\n\n\nstyle\n“docked” or “floating”\n\n\ntype\n“dark” or “light” (hint to make sure the text color is the inverse of the background)\n\n\nbackground\nBackground color (“none”, “primary”, “secondary”, “success”, “danger”, “warning”, “info”, “light”, “dark”, or “white”). Defaults to “light”.\n\n\nalignment\nAlignment (“left”, “right”, or “center”).\n\n\ncollapse-level\nWhether to show sidebar navigation collapsed by default. The default is 2, which shows the top and next level fully expanded (but leaves the 3rd and subsequent levels collapsed).\n\n\npinned\nAlways show a title bar that expands to show the sidebar at narrower screen widths (true or false). Defaults to false, and uses headroom.js to automatically show the navigation bar when the user scrolls up on the page.\n\n\n\n\nSidebar Tools\nIn addition to traditional navigation, the sidebar can also display a set of tools (e.g. social actions, github view or edit action, etc…) A basic tool definition consists of an icon name and an href to follow when clicked. For icon, use the icon name of any of the 1,300+ Bootstrap Icons.\nFor example:\n\n\n\n\n\n\n\nwebsite:\n  sidebar:\n    tools:\n      - icon: twitter\n        href: https://twitter.com\n      - icon: github\n        menu:\n          - text: Source Code\n          - url:  https://code.com\n          - text: Report a Bug\n          - url:  https://bugs.com",
     "crumbs": [
       "Websites",
       "Navigation"
@@ -1019,7 +1033,7 @@
     "href": "website-navigation.html#hybrid-navigation",
     "title": "Navigation",
     "section": "Hybrid Navigation",
-    "text": "Hybrid Navigation\nIf you have a website with dozens or even hundreds of pages you will likely want to use top and side navigation together (where the top navigation links to various sections, each with their own side navigation).\nTo do this, provide a list of nav-side entries and give them each an id, which you then use to reference them from the nav-top. For example, if you are using the Diátaxis Framework for documentation, you might have separate sections for tutorials, how-to guides, explanations, and reference documents:\n\nYour configuration for this site might look something like this:\nsite:\n  navbar:\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.Rmd\n      - sidebar:tutorials\n      - sidebar:howto\n      - sidebar:fundamentals\n      - sidebar:reference\n\n  sidebar:\n    - id: tutorials\n      title: \"Tutorials\"\n      contents: \n        # navigation items\n        \n    - id: howto\n      title: \"How-To\"\n      contents:\n        # navigation items\n        \n    - id: fundamentals\n      title: \"Fundamentals\"\n      contents: :\n        # navigation items\n        \n    - id: reference\n      title: \"Reference\"\n      contents: \n        # navigation items",
+    "text": "Hybrid Navigation\nIf you have a website with dozens or even hundreds of pages you will likely want to use top and side navigation together (where the top navigation links to various sections, each with their own side navigation).\nTo do this, provide a list of nav-side entries and give them each an id, which you then use to reference them from the nav-top. For example, if you are using the Diátaxis Framework for documentation, you might have separate sections for tutorials, how-to guides, explanations, and reference documents:\n\nYour configuration for this site might look something like this:\nwebsite:\n  navbar:\n    search: true\n    left:\n      - text: \"Home\"\n        file: index.Rmd\n      - sidebar:tutorials\n      - sidebar:howto\n      - sidebar:fundamentals\n      - sidebar:reference\n\n  sidebar:\n    - id: tutorials\n      title: \"Tutorials\"\n      contents: \n        # navigation items\n        \n    - id: howto\n      title: \"How-To\"\n      contents:\n        # navigation items\n        \n    - id: fundamentals\n      title: \"Fundamentals\"\n      contents: :\n        # navigation items\n        \n    - id: reference\n      title: \"Reference\"\n      contents: \n        # navigation items",
     "crumbs": [
       "Websites",
       "Navigation"
@@ -1030,7 +1044,7 @@
     "href": "website-navigation.html#site-search",
     "title": "Navigation",
     "section": "Site Search",
-    "text": "Site Search\nYou can add site search by including search: true in either your site-navbar or site-sidebar configuration. For example:\nsite:\n  sidebar:\n    style: \"docked\"\n    search: true\n    items:\n      - text: \"Basics\"\n        contents:\n          - index.Rmd\n          - basics-jupyter.md\n        # etc",
+    "text": "Site Search\nYou can add site search by including search: true in either your site-navbar or site-sidebar configuration. For example:\nwebsite:\n  sidebar:\n    style: \"docked\"\n    search: true\n    items:\n      - text: \"Basics\"\n        contents:\n          - index.Rmd\n          - basics-jupyter.md\n        # etc",
     "crumbs": [
       "Websites",
       "Navigation"
@@ -1041,7 +1055,7 @@
     "href": "website-navigation.html#github-links",
     "title": "Navigation",
     "section": "GitHub Links",
-    "text": "GitHub Links\nYou can add various links (e.g. to edit pages, report issues, etc.) to the GitHub repository where your site source code is hosted. To do this, add a repo-url along with one or more actions in repo-actions. For example:\nsite:\n  repo-url: https://github.com/quarto-dev/quarto-demo\n  repo-actions: [edit, issue]\nThe links will be displayed immediately below the page table of contents:\n\nBy default, the main branch will be used for generating links. You can specify an alternate branch using the repo-branch option.",
+    "text": "GitHub Links\nYou can add various links (e.g. to edit pages, report issues, etc.) to the GitHub repository where your site source code is hosted. To do this, add a repo-url along with one or more actions in repo-actions. For example:\nwebsite:\n  repo-url: https://github.com/quarto-dev/quarto-demo\n  repo-actions: [edit, issue]\nThe links will be displayed immediately below the page table of contents:\n\nBy default, the main branch will be used for generating links. You can specify an alternate branch using the repo-branch option.",
     "crumbs": [
       "Websites",
       "Navigation"

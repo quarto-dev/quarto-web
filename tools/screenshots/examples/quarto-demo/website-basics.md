@@ -24,9 +24,9 @@ For example, here is a `_quarto.yml` config file for a website project:
 
 ``` {.yaml}
 project:
-  type: site
-  
-site:
+  type: website
+
+website:
   title: "Quarto Demo"
 
 format:
@@ -66,7 +66,7 @@ You can however explicitly control which files are rendered using the `render` o
 
 ``` {.yaml}
 project:
-  type: site
+  type: website
   render: 
     - *.Rmd
     - *.ipynb
@@ -113,7 +113,7 @@ By default, the working directory for rendering files within a project is the di
 
 ``` {.yaml}
 project:
-  type: site
+  type: website
   execute-dir: project
 ```
 
@@ -165,7 +165,7 @@ If this auto-detection fails for any reason, of if you want to publish a file no
 
 ``` {.yaml .yml}
 project:
-  type: site
+  type: website
   resources: 
     - *.xlsx
 ```
