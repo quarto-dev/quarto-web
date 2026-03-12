@@ -134,6 +134,15 @@ function startServer(dir) {
 }
 
 // Render a Quarto project
+// Read project.output-dir from _quarto.yml (default: '_site')
+function getOutputDir(projectDir) {
+  const quartoYml = join(projectDir, '_quarto.yml');
+  if (!existsSync(quartoYml)) return '_site';
+  const content = readFileSync(quartoYml, 'utf8');
+  const match = content.match(/^\s*output-dir:\s*(.+)$/m);
+  return match ? match[1].trim().replace(/^["']|["']$/g, '') : '_site';
+}
+
 function renderProject(projectDir, profile) {
   const renderScript = join(TOOLS_DIR, 'scripts', 'render.js');
   const profileLabel = profile ? ` (profile: ${profile})` : '';
@@ -334,7 +343,7 @@ async function main() {
       if (shots[0].source.type === 'example') {
         const projectDir = resolve(TOOLS_DIR, shots[0].source.project);
         renderProject(projectDir, shots[0].source.profile);
-        const siteDir = join(projectDir, '_site');
+        const siteDir = join(projectDir, getOutputDir(projectDir));
         if (!dryRun) {
           server = await startServer(siteDir);
           baseUrl = server.url;
