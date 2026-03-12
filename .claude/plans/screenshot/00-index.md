@@ -32,7 +32,7 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Done (all cherry-picked) |
 | 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | Done (about-pages + myblog) |
 | 11 | [11-manifest-schema.md](11-manifest-schema.md) | JSON Schema for manifest validation + help reference | Planned |
-| 12 | [12-navigation-screenshots.md](12-navigation-screenshots.md) | All 11 website-navigation.qmd screenshots: 3 new example projects, 9 new manifest entries | New |
+| 12 | [12-navigation-screenshots.md](12-navigation-screenshots.md) | All 11 website-navigation.qmd screenshots: quarto-demo subtree + 2 new example projects, 9 new manifest entries | Active |
 
 ## Key Decisions
 
@@ -48,6 +48,7 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 - **Clip over element** — `capture.clip` (union bounding box) handles dropdown overflow; `capture.element` clips to element bounds
 - **cropBottom/maxHeight** — post-capture image cropping for layouts where trim can't detect blank edges (vertical rules, multi-colored backgrounds)
 - **URL source** — `source.type: "url"` captures from live sites (e.g., quarto-demo). Use specific selectors when pages have multiple instances of an icon (e.g., `#quarto-navigation-tool-dropdown-0` instead of `.bi-github`)
+- **quarto-demo subtree** — git subtree (not URL source) for sidebar/breadcrumbs/repo-actions screenshots. Enables local profile overrides (floating, breadcrumbs, repo-actions) while reusing real content. `output-dir: docs` requires capture.js fix.
 - **`${CLAUDE_SKILL_DIR}`** — skill directory variable for CWD-independent paths in `!` preprocessing. `$()` command substitution is blocked by Claude Code permission checks; use `${CLAUDE_SKILL_DIR}/../../..` to reach repo root
 
 ## File Layout (Session 1 deliverables)
@@ -78,7 +79,7 @@ tools/screenshots/
     ├── about-pages/                # 5 about templates
     ├── myblog/                     # blog homepage
     ├── navbar-basic/               # basic navbar (plan 12)
-    ├── sidebar-demo/               # sidebar styles + features (plan 12)
+    ├── quarto-demo/                # git subtree: sidebar, breadcrumbs, repo-actions (plan 12)
     └── hybrid-nav/                 # hybrid navbar+sidebar (plan 12)
 
 .github/workflows/
