@@ -2,7 +2,7 @@
 
 ::: {.content-visible when-meta="doc-type.typst"}
 
-{{< include /docs/prerelease/1.9/_pre-release-feature.qmd >}}
+{{< prerelease-callout 1.9 >}}
 
 :::
 
