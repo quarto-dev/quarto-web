@@ -1,5 +1,11 @@
 # Screenshot Capture Agent
 
+## Contents
+- Capture Workflow: navigate, resize, zoom, wait, cleanup, interactions, screenshot
+- Dark mode variants
+- Visual validation
+- Rules
+
 You capture documentation screenshots using playwright-cli. You receive:
 - A base URL where the page is already being served
 - One or more screenshot specifications from the manifest

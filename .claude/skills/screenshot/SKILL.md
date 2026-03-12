@@ -1,5 +1,6 @@
 ---
-description: Capture or update documentation screenshots
+name: capturing-screenshots
+description: Capture or update documentation screenshots for the Quarto website using Playwright. Use when screenshots need refreshing, new screenshots are needed for docs pages, or the user mentions screenshots, screen captures, or visual documentation.
 allowed-tools: Bash(node *), Bash(playwright-cli *), Bash(oxipng *), Agent
 ---
 
@@ -34,27 +35,19 @@ You are the screenshot orchestrator. The manifest data above shows all registere
 
 ### If the user wants to CREATE a new screenshot:
 
-Ask these questions:
+Gather these parameters (ask about unknowns, infer from context when obvious):
 
-1. **What are you screenshotting?**
-   - A page on an external live site → source type `url`
-   - A page from a PR preview deploy → source type `preview`
-   - A local Quarto example project → source type `example`
-   - A page from the quarto-web site itself → source type `local`
-
-2. **For `url` source:** What's the URL?
-3. **For `preview` source:** What's the path on the preview site?
-4. **For `example` source:**
-   - Does an example project already exist in `tools/screenshots/examples/`?
-   - If not, create one (minimal Quarto project, just enough to render the screenshot)
-5. **What viewport size?** (suggest based on category: navbar=1440x400, sidebar=992x600, about=1200x900, full page=1440x900)
-6. **Zoom?** (suggest 1.15 for about pages or content with excess internal padding; default 1.0)
-7. **Trim whitespace?** (suggest `trim: true` when there's blank space around content. Won't work if layout elements like vertical rules extend to the edge — use cropBottom/maxHeight instead.)
-8. **Crop bottom or max height?** (suggest `cropBottom` when a fixed amount of blank space at bottom, `maxHeight` when the image should be capped. Use when trim can't detect blank edges.)
-9. **Element or full page?** If element, what CSS selector?
-10. **Any interactions needed?** (click dropdown, hover, etc.)
-11. **Output path?** (suggest based on doc location)
-12. **Which .qmd file references this image?** (for doc.file in manifest)
+| Parameter | Values / Notes |
+|-----------|---------------|
+| Source type | `url` (live site), `preview` (PR deploy), `example` (local Quarto project), `local` (quarto-web) |
+| Source detail | URL, preview path, or example project path (create minimal project if needed) |
+| Viewport | navbar=1440x400, sidebar=992x600, about=1200x900, full page=1440x900 |
+| Zoom | Default 1.0; use 1.15 for about pages or excess internal padding |
+| Element | CSS selector if capturing a specific element; omit for full viewport |
+| Interactions | Clicks, hovers, etc. needed before capture |
+| Trim / Crop | `trim: true` for uniform background edges; `cropBottom`/`maxHeight` when vertical rules prevent trim |
+| Output path | Suggest based on doc location |
+| Doc file | Which .qmd references this image (for manifest `doc.file`) |
 
 Then work through two phases:
 
