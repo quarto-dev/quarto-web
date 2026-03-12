@@ -1,4 +1,5 @@
 [CoryMcCartan](https://github.com/CoryMcCartan), 
+[DanChaltiel](https://github.com/DanChaltiel), 
 [Data-Wise](https://github.com/Data-Wise), 
 [FrankwaP](https://github.com/FrankwaP), 
 [Joao-O-Santos](https://github.com/Joao-O-Santos), 
@@ -36,6 +37,7 @@
 [hamgamb](https://github.com/hamgamb), 
 [herosi](https://github.com/herosi), 
 [icarusz](https://github.com/icarusz), 
+[idavydov](https://github.com/idavydov), 
 [jeremy886](https://github.com/jeremy886), 
 [jkrumbiegel](https://github.com/jkrumbiegel), 
 [jmcphers](https://github.com/jmcphers), 
