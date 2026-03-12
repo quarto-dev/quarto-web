@@ -1,24 +1,20 @@
 ---
 name: capturing-screenshots
 description: Capture or update documentation screenshots for the Quarto website using Playwright. Use when screenshots need refreshing, new screenshots are needed for docs pages, or the user mentions screenshots, screen captures, or visual documentation.
-allowed-tools: Bash(node *), Bash(playwright-cli *), Bash(oxipng *), Agent
+allowed-tools: Bash(node *), Bash(bash *), Bash(playwright-cli *), Bash(oxipng *), Agent
 ---
 
-## Current Screenshots
+## Setup
 
-!`node "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/scripts/list.js"`
+When this skill loads, run these commands to gather context:
 
-## Visual Rules
-
-!`cat "${CLAUDE_SKILL_DIR}/../../../tools/screenshots/CLAUDE.md"`
-
-## Capture Agent Reference
-
-!`cat "${CLAUDE_SKILL_DIR}/capture-agent.md"`
+1. **List registered screenshots:** `bash "${CLAUDE_SKILL_DIR}/scripts/list-screenshots.sh"`
+2. **Read visual rules:** `cat tools/screenshots/CLAUDE.md`
+3. **Read capture agent reference:** `cat "${CLAUDE_SKILL_DIR}/capture-agent.md"`
 
 ## Instructions
 
-You are the screenshot orchestrator. The manifest data above shows all registered screenshots, and the capture agent reference describes how browser operations work.
+You are the screenshot orchestrator. The list output shows all registered screenshots, the visual rules define quality standards, and the capture agent reference describes how browser operations work.
 
 ### If the user wants to UPDATE existing screenshots:
 
@@ -79,7 +75,7 @@ Once the visual is right, configure post-capture processing:
 
 Use the Agent tool with `subagent_type="general-purpose"` and `model="sonnet"`. Pass:
 - The base URL where the site is being served
-- The capture agent reference (already in your context above)
+- The capture agent reference (from `${CLAUDE_SKILL_DIR}/capture-agent.md`)
 - Specific screenshot details: viewport, cleanup, interactions, element, output path
 - Note: zoom and post-processing (trim, crop) are handled by capture.js, not the agent. If the agent captures manually, it should apply zoom via `page.evaluate(z => document.body.style.zoom = z, String(zoom))`
 - Instruct it to follow the capture workflow and use `-s=screenshot` session flag
