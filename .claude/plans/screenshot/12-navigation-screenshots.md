@@ -37,14 +37,11 @@ Already has: docked sidebar, 6 sections (Basics, Layout, Crossrefs, HTML, Websit
 - `_quarto-repo-actions.yml` — `repo-actions: [edit, source, issue]` → `repo-actions.png`
 - (default config) — docked sidebar as-is → `nav-side-anchored.png`
 
-**Environment setup** (required after subtree pull):
-- Python: `cd examples/quarto-demo && uv sync` (creates `.venv/` with ipyleaflet, jupyter, etc.)
-- R: `cd examples/quarto-demo && Rscript -e 'renv::restore()'` (installs knitr, ggplot2, etc.)
-- Upstream added `_environment` with `QUARTO_PYTHON=.venv/Scripts/python.exe`
+**Environment setup**: None needed. Upstream uses `freeze: true` — all computation results are in `_freeze/` directory. No Python or R required.
 
-**Rendering**: Use `npm run render -- examples/quarto-demo [--profile X]` (not quartoPreRelease directly).
+**Rendering**: Use `npm run render -- examples/quarto-demo [--profile X]` (not quartoPreRelease directly). Fast with freeze.
 
-**Note**: `output-dir: docs` (not `_site`). capture.js `getOutputDir()` handles this (done in Phase 1).
+**Output dir**: Default `_site` (no `output-dir` in `_quarto.yml`). Profile overrides use `docs-floating`, `docs-breadcrumbs`, `docs-repo-actions`. capture.js `getOutputDir()` handles this.
 
 ### navbar-basic (NEW) — screenshots 1, 10
 
@@ -98,16 +95,12 @@ Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
 ### Phase 2: quarto-demo subtree + 4 captures — IN PROGRESS
 1. `git subtree add` quarto-demo — DONE
 2. Add 3 profile YAMLs — DONE
-3. Subtree updated twice (pulled `_environment` + `renv/settings.json`) — DONE
-4. Python venv (`uv sync`) and R renv (`renv::restore()`) — DONE
-5. All 4 profiles rendered successfully — DONE
-6. 4 manifest entries added — DONE (in manifest.json, uncommitted)
-7. nav-side-anchored captured (light + dark) — DONE (needs visual review)
-8. nav-side-floating captured (light + dark) — DONE (needs visual review)
-9. nav-breadcrumbs captured (light only) — DONE (needs visual review)
-10. repo-actions — **TODO**
-11. Visual review/adjustment pass on all 4 screenshots — **TODO**
-12. Commit — **TODO**
+3. Subtree updated 3x (pulled `_environment`, `renv/settings.json`, freeze + drop output-dir) — DONE
+4. Upstream now uses `freeze: true`, output to `_site` (no Python/R needed) — DONE
+5. 4 manifest entries added — DONE (committed in WIP)
+6. First-pass captures from old `docs/` renders — need re-capture from `_site`
+7. Re-render all profiles, re-capture all 4, visual review — **TODO**
+8. Commit final screenshots — **TODO**
 
 ### Phase 3: navbar-basic + 2 captures
 8. Create `examples/navbar-basic/` project
@@ -166,12 +159,14 @@ Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
 ## Session Notes (2026-03-12)
 
 ### Learnings
-- **Subtree environment setup**: After pulling quarto-demo subtree, must run `uv sync` (Python) and `renv::restore()` (R) before rendering. The upstream added `_environment` with `QUARTO_PYTHON=.venv/Scripts/python.exe`.
 - **render.js cwd fix**: `execSync` needed `cwd: projectDir` so quarto resolves relative paths in `_environment` correctly.
 - **Use `npm run render`**: Not `quartoPreRelease` directly. The render.js script handles profile flag passthrough.
 - **Use playwright-cli for exploration**: The `/screenshot` skill expects playwright-cli, not chrome devtools MCP.
-- **`--no-render` flag**: `npm run capture -- --name X --no-render` skips rendering but capture.js still renders anyway (it renders per-group). Rendering is fast when cached.
+- **`--no-render` flag**: `npm run capture -- --name X --no-render` skips rendering but capture.js still renders anyway (it renders per-group). Rendering is fast with freeze.
 - **Dark variants**: nav-side-anchored and nav-side-floating set to `dark: true`. nav-breadcrumbs and repo-actions set to `dark: false` (matching existing images that have no dark variant in the qmd).
+- **freeze: true**: Upstream quarto-demo now uses freeze — no Python/R needed, `_freeze/` dir has all computation results. Deleted `.venv` and `renv/library`.
+- **output-dir change**: Upstream removed `output-dir: docs`, now defaults to `_site`. Profile YAMLs still use `docs-*` custom names.
+- **git subtree can't exclude paths**: `.github/` comes along with the subtree, kept as-is.
 
 ### Uncommitted state
 - `tools/screenshots/manifest.json` — 4 new entries added
@@ -180,7 +175,9 @@ Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
 - `docs/websites/images/nav-breadcrumbs.png` — captured
 
 ### Next session TODO
-1. Visually review all 3 captured screenshots, adjust viewport/clip/interactions as needed
-2. Capture repo-actions screenshot
-3. Commit manifest + PNGs
-4. Continue with Phase 3 (navbar-basic) and Phase 4 (hybrid-nav)
+1. Re-render all 4 profiles (output dir changed from `docs` to `_site`)
+2. Re-capture all 3 screenshots (they were captured from old `docs/` renders)
+3. Visually review and adjust viewport/clip/interactions as needed
+4. Capture repo-actions screenshot
+5. Commit manifest + PNGs
+6. Continue with Phase 3 (navbar-basic) and Phase 4 (hybrid-nav)
