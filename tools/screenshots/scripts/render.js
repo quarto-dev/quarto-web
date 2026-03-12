@@ -31,5 +31,5 @@ if (profile) args.push('--profile', profile);
 
 const profileLabel = profile ? ` (profile: ${profile})` : '';
 console.log(`Rendering: ${projectDir}${profileLabel}`);
-execSync(args.join(' '), { stdio: 'inherit' });
+execSync(args.join(' '), { stdio: 'inherit', cwd: projectDir });
 console.log(`Done. Output in: ${projectDir}/`);
