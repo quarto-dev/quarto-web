@@ -22,10 +22,10 @@ In addition, you can add full text search to either the top or side navigation i
 
 ## Top Navigation
 
-To add top-navigation to a website, add a `navbar` entry to the `site` config in `_quarto.yml`. For example, the following YAML:
+To add top-navigation to a website, add a `navbar` entry to the `website` config in `_quarto.yml`. For example, the following YAML:
 
 ``` {.yaml}
-site:
+website:
   navbar:
     type: dark
     background: primary
@@ -86,10 +86,10 @@ If your site consists of more than a handful of documents, you might prefer to u
 
 If you are reading this page on a desktop device then you will see the default side navigation display on the left (otherwise you'll see a title bar at the top which you can click or touch to reveal the navigation).
 
-To add side navigation to a website, add a `sidebar` entry to the `site` section of `_quarto.yml`. For example:
+To add side navigation to a website, add a `sidebar` entry to the `website` section of `_quarto.yml`. For example:
 
 ``` {.yaml}
-site:
+website:
   sidebar:
     style: "docked"
     search: true
@@ -139,7 +139,7 @@ For example:
 
 +------------------------------------+-----------------------+
 | ``` {.yaml}                        | ![](images/tools.png) |
-| site:                              |                       |
+| website:                           |                       |
 |   sidebar:                         |                       |
 |     tools:                         |                       |
 |       - icon: twitter              |                       |
@@ -164,7 +164,7 @@ To do this, provide a list of `nav-side` entries and give them each an `id`, whi
 Your configuration for this site might look something like this:
 
 ``` {.yaml}
-site:
+website:
   navbar:
     search: true
     left:
@@ -203,7 +203,7 @@ site:
 You can add site search by including `search: true` in either your `site-navbar` or `site-sidebar` configuration. For example:
 
 ``` {.yaml}
-site:
+website:
   sidebar:
     style: "docked"
     search: true
@@ -220,7 +220,7 @@ site:
 You can add various links (e.g. to edit pages, report issues, etc.) to the GitHub repository where your site source code is hosted. To do this, add a `repo-url` along with one or more actions in `repo-actions`. For example:
 
 ``` {.yaml}
-site:
+website:
   repo-url: https://github.com/quarto-dev/quarto-demo
   repo-actions: [edit, issue]
 ```
