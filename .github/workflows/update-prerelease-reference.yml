@@ -193,8 +193,9 @@ jobs:
           EOF
 
           if [ -n "$existing_pr_number" ]; then
-            # Update existing PR - force-with-lease to avoid overwriting unexpected changes
-            git push --force-with-lease origin "$branch"
+            # Force-push is safe: concurrency group prevents overlapping runs,
+            # and only this workflow writes to this branch.
+            git push --force origin "$branch"
             gh pr edit "$existing_pr_number" --body-file "$RUNNER_TEMP/pr-body.md"
 
             pr_url="${{ steps.check-pr.outputs.existing_pr_url }}"
