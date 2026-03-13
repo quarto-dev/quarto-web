@@ -427,6 +427,7 @@ async function main() {
               const lightClip = await computeClip(page, shot.capture.clip);
               await switchToDark(page);
               try {
+                await runCleanup(page, shot);
                 await runInteractions(page, shot);
                 const darkClip = await computeClip(page, shot.capture.clip);
                 // Union of both clip regions
@@ -456,6 +457,7 @@ async function main() {
               await switchToDark(page);
               try {
                 const darkPath = darkOutputPath(outputPath);
+                await runCleanup(page, shot);
                 await runInteractions(page, shot);
                 await takeScreenshot(page, shot, darkPath);
                 await postProcess(darkPath, shot);

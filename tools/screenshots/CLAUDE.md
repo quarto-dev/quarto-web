@@ -59,6 +59,9 @@ Screenshots with `"dark": true` get a `-dark` variant automatically.
 Use `.include-dark` class on images in .qmd files so the include-dark.lua filter
 generates both light/dark `<img>` tags.
 
+Cleanup and interactions are re-run after switching to dark mode so that CSS
+overrides are reapplied (dark theme CSS can clobber inline style changes).
+
 ## Visual Rules
 
 - Light color scheme first (dark captured automatically)
@@ -77,6 +80,20 @@ Applied after viewport resize, before cleanup/interactions/screenshot.
 Can be set per-screenshot in `capture.zoom` or globally in `defaults.zoom`.
 
 Example: `"zoom": 1.15` makes content 15% larger. About pages use 1.15.
+
+## Cleanup
+
+`capture.cleanup` (optional) — array of actions to run after page load, before
+screenshot. Each action has an `action` type and relevant parameters.
+
+Supported actions:
+- `{ "action": "eval", "script": "..." }` — run JavaScript on the page
+- `{ "action": "remove", "selector": "..." }` — remove matching elements
+
+Cleanup runs in both light and dark modes. After switching to dark mode, cleanup
+is re-run so that CSS property overrides (which may be clobbered by the dark theme)
+are reapplied. DOM mutations like `display: none` persist across theme switches,
+but re-running cleanup is harmless for idempotent operations.
 
 ## Trim
 
