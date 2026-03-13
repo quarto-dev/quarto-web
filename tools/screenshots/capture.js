@@ -160,7 +160,7 @@ function renderProject(projectDir, profile) {
   }
 }
 
-// Run cleanup steps (defaults + per-screenshot)
+// Run cleanup steps (defaults + per-screenshot), then apply spotlight if configured
 async function runCleanup(page, shot) {
   const steps = [...(manifest.defaults.cleanup || []), ...(shot.capture?.cleanup || [])];
   for (const step of steps) {
@@ -168,6 +168,62 @@ async function runCleanup(page, shot) {
       await page.evaluate(step.script);
     }
   }
+  if (shot.capture?.spotlight) {
+    await applySpotlight(page, shot.capture.spotlight);
+  }
+}
+
+// Spotlight effect: dim page with overlay, highlight target element
+async function applySpotlight(page, config) {
+  const { selector, elevate, dim, overlay = 0.5, radius = '6px', padding = '8px' } = config;
+  const dimSelectors = Array.isArray(dim) ? dim : dim ? [dim] : [];
+
+  await page.evaluate(({ selector, elevate, dimSelectors, overlay, radius, padding }) => {
+    // Idempotent: remove previous spotlight
+    document.getElementById('__spotlight-overlay')?.remove();
+    document.getElementById('__spotlight-style')?.remove();
+
+    const bg = getComputedStyle(document.body).backgroundColor;
+
+    // Hide scrollbar — the overlay div can trigger one
+    document.documentElement.style.overflow = 'hidden';
+
+    let css = `
+      #__spotlight-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, ${overlay});
+        z-index: 9998;
+        pointer-events: none;
+      }
+      ${selector} {
+        background: ${bg} !important;
+        border-radius: ${radius} !important;
+        padding: ${padding} !important;
+      }
+    `;
+
+    if (elevate) {
+      // Lift ancestor above overlay (stacking context fix)
+      css += `${elevate} { z-index: 9999 !important; }\n`;
+    } else {
+      // Simple case: target itself above overlay
+      css += `${selector} { position: relative !important; z-index: 9999 !important; }\n`;
+    }
+
+    for (const dimSel of dimSelectors) {
+      css += `${dimSel} { opacity: 0.3 !important; }\n`;
+    }
+
+    const style = document.createElement('style');
+    style.id = '__spotlight-style';
+    style.textContent = css;
+    document.head.appendChild(style);
+
+    const overlay_el = document.createElement('div');
+    overlay_el.id = '__spotlight-overlay';
+    document.body.appendChild(overlay_el);
+  }, { selector, elevate, dimSelectors, overlay, radius, padding });
 }
 
 // Run interaction steps
@@ -205,7 +261,7 @@ function darkOutputPath(outputPath) {
   return outputPath.slice(0, ext) + '-dark' + outputPath.slice(ext);
 }
 
-// Switch to dark mode by clicking the toggle
+// Switch to dark mode by clicking the toggle (call before cleanup hides it)
 async function switchToDark(page) {
   const darkConfig = manifest.defaults.dark;
   await page.locator(darkConfig.toggle).click();
@@ -407,63 +463,54 @@ async function main() {
           }
 
           if (!dryRun) {
-            // Apply zoom if configured
-            const zoom = shot.capture?.zoom || manifest.defaults.zoom || 1;
-            if (zoom !== 1) {
-              await page.evaluate(z => document.body.style.zoom = z, String(zoom));
-              await page.waitForTimeout(200);
-            }
-
-            // Cleanup
-            await runCleanup(page, shot);
-
-            // Interactions
-            await runInteractions(page, shot);
-
-            // For dark variants with clip: compute union clip across both modes
-            // so light and dark screenshots have identical dimensions
-            let sharedClip = null;
-            if (shot.dark && shot.capture?.clip) {
-              const lightClip = await computeClip(page, shot.capture.clip);
-              await switchToDark(page);
-              try {
-                await runCleanup(page, shot);
-                await runInteractions(page, shot);
-                const darkClip = await computeClip(page, shot.capture.clip);
-                // Union of both clip regions
-                const x = Math.min(lightClip.x, darkClip.x);
-                const y = Math.min(lightClip.y, darkClip.y);
-                const right = Math.max(lightClip.x + lightClip.width, darkClip.x + darkClip.width);
-                const bottom = Math.max(lightClip.y + lightClip.height, darkClip.y + darkClip.height);
-                sharedClip = { x, y, width: right - x, height: bottom - y };
-                // Take dark screenshot while we're here
-                const darkPath = darkOutputPath(resolve(REPO_ROOT, shot.output));
-                console.log(`  ${shot.name} (dark)...`);
-                await takeScreenshot(page, shot, darkPath, sharedClip);
-                await postProcess(darkPath, shot);
-              } finally {
-                await switchToLight(page);
+            // Prepare page: zoom, cleanup (+ spotlight), interactions
+            async function prepareShot() {
+              const zoom = shot.capture?.zoom || manifest.defaults.zoom || 1;
+              if (zoom !== 1) {
+                await page.evaluate(z => document.body.style.zoom = z, String(zoom));
+                await page.waitForTimeout(200);
               }
+              await runCleanup(page, shot);
               await runInteractions(page, shot);
             }
 
-            // Light screenshot
+            // --- Light screenshot ---
+            await prepareShot();
+
+            let sharedClip = null;
+            if (shot.dark && shot.capture?.clip) {
+              // Compute light clip for union calculation
+              sharedClip = await computeClip(page, shot.capture.clip);
+            }
+
             const outputPath = await takeScreenshot(page, shot, null, sharedClip);
             await postProcess(outputPath, shot);
 
-            // Dark variant (non-clip mode: element or viewport)
-            if (shot.dark && !shot.capture?.clip) {
+            // --- Dark variant ---
+            if (shot.dark) {
               console.log(`  ${shot.name} (dark)...`);
+              // Reload fresh page, switch to dark before cleanup
+              const url = shotUrl(shot);
+              await page.goto(url, { waitUntil: 'domcontentloaded' });
+              await page.setViewportSize({ width: vp.width, height: vp.height });
               await switchToDark(page);
-              try {
-                const darkPath = darkOutputPath(outputPath);
-                await runCleanup(page, shot);
-                await runInteractions(page, shot);
+              await prepareShot();
+
+              const darkPath = darkOutputPath(resolve(REPO_ROOT, shot.output));
+
+              if (shot.capture?.clip) {
+                // Compute dark clip and union with light clip
+                const darkClip = await computeClip(page, shot.capture.clip);
+                const x = Math.min(sharedClip.x, darkClip.x);
+                const y = Math.min(sharedClip.y, darkClip.y);
+                const right = Math.max(sharedClip.x + sharedClip.width, darkClip.x + darkClip.width);
+                const bottom = Math.max(sharedClip.y + sharedClip.height, darkClip.y + darkClip.height);
+                const unionClip = { x, y, width: right - x, height: bottom - y };
+                await takeScreenshot(page, shot, darkPath, unionClip);
+              } else {
                 await takeScreenshot(page, shot, darkPath);
-                await postProcess(darkPath, shot);
-              } finally {
-                await switchToLight(page);
               }
+              await postProcess(darkPath, shot);
             }
 
             // Verify — open image for visual review

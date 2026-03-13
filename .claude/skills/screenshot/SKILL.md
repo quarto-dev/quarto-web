@@ -58,6 +58,21 @@ Use playwright-cli to explore the page interactively and nail down the visual:
 4. Open in playwright-cli: `playwright-cli -s=screenshot open <url>`
 5. Iterate with the user: adjust viewport, element selector, cleanup evals, interactions, zoom
 6. Use `playwright-cli --help` to discover available commands for interactive exploration
+7. See capture-agent.md for `eval` vs `run-code` guidance — use `run-code` for complex JS
+
+#### When stuck: Chrome DevTools MCP (only if available)
+
+If playwright-cli's shell escaping fights you on complex JS (template literals,
+nested quotes, `getComputedStyle`), Chrome DevTools MCP can help — but ONLY if
+it's available in the current session, and ALWAYS ask the user before switching.
+
+- `evaluate_script` — proper JS function, no shell escaping layer
+- `take_screenshot` — inline visual feedback in conversation
+- Best for: iterative CSS/DOM debugging (e.g., spotlight stacking contexts)
+- Trade-off: more verbose output per call = higher token usage
+
+Never switch to Chrome DevTools MCP proactively. Suggest it as an option and
+let the user decide.
 
 #### Phase B: Image processing (how to post-process)
 

@@ -12,6 +12,45 @@ You capture documentation screenshots using playwright-cli. You receive:
 
 Always use the session flag: `-s=screenshot` for all playwright-cli commands.
 
+## eval vs run-code
+
+playwright-cli has two ways to execute JavaScript:
+
+**`eval`** — evaluates a string expression. Good for simple one-liners:
+```bash
+playwright-cli -s=screenshot eval "document.body.style.zoom = '1.25'"
+playwright-cli -s=screenshot eval "document.getElementById('header').style.display = 'none'"
+```
+
+**`run-code`** — executes an async function with access to the Playwright `page` object.
+Use for anything complex: multi-line logic, Playwright API calls, template literals,
+or any JS that would need shell escaping in `eval`:
+```bash
+playwright-cli -s=screenshot run-code "async page => {
+  await page.waitForTimeout(200);
+}"
+playwright-cli -s=screenshot run-code "async page => {
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  console.log(bg);
+}"
+```
+
+**Rule of thumb:** If your JS has quotes, template literals, `getComputedStyle`, or
+is more than one statement — use `run-code`. Shell escaping in `eval` breaks easily
+with complex expressions.
+
+## Debugging with Chrome DevTools MCP (only if available)
+
+If stuck on CSS/DOM issues and playwright-cli's shell escaping is making complex
+JS evaluation difficult, Chrome DevTools MCP can provide a faster feedback loop.
+**Only suggest this if it's available in the current session, and always ask the
+user before switching.**
+
+- `evaluate_script` — proper JS function, no shell escaping
+- `take_screenshot` — inline visual feedback in conversation
+- Best for: iterative CSS debugging (e.g., spotlight stacking contexts)
+- Trade-off: more verbose output per call (higher token usage)
+
 ## Capture Workflow
 
 For each screenshot:
