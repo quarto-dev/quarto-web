@@ -163,7 +163,7 @@ Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
 - **Use `npm run render`**: Not `quartoPreRelease` directly. The render.js script handles profile flag passthrough.
 - **Use playwright-cli for exploration**: The `/screenshot` skill expects playwright-cli, not chrome devtools MCP.
 - **`--no-render` flag**: `npm run capture -- --name X --no-render` skips rendering but capture.js still renders anyway (it renders per-group). Rendering is fast with freeze.
-- **Dark variants**: nav-side-anchored and nav-side-floating set to `dark: true`. nav-breadcrumbs and repo-actions set to `dark: false` (matching existing images that have no dark variant in the qmd).
+- **Dark variants**: All 4 quarto-demo screenshots set to `dark: true` — breadcrumbs and repo-actions need dark variants for `.include-dark` in the qmd.
 - **freeze: true**: Upstream quarto-demo now uses freeze — no Python/R needed, `_freeze/` dir has all computation results. Deleted `.venv` and `renv/library`.
 - **output-dir change**: Upstream removed `output-dir: docs`, now defaults to `_site`. Profile YAMLs still use `docs-*` custom names.
 - **git subtree can't exclude paths**: `.github/` comes along with the subtree, kept as-is.

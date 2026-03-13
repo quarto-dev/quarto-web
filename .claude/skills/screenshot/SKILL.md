@@ -19,15 +19,16 @@ You are the screenshot orchestrator. The list output shows all registered screen
 ### If the user wants to UPDATE existing screenshots:
 
 1. Ask which screenshots to update (or "all")
-2. For each screenshot group (by source project):
-   a. Render: `node tools/screenshots/scripts/render.js <project-path>`
-   b. Serve: `node tools/screenshots/scripts/serve.js <dir>` (background, prints URL)
-   c. Launch capture agent for this group (pass URL + manifest entries)
-   d. Compress: `node tools/screenshots/scripts/compress.js <output-file>`
-   e. Show the user the output file path and ask them to verify visually
-   f. Wait for confirmation before continuing to the next group
-   g. Stop the background server process started in step 2b
+2. Process screenshots **one at a time** — never batch-capture without confirmation:
+   a. Render: `node tools/screenshots/scripts/render.js <project-path>` (can batch-render all profiles upfront)
+   b. Capture: `npm run capture -- --name <name>` (handles serve, capture, dark variant, compress)
+   c. Show the user the output image(s) using the Read tool
+   d. **STOP and wait for explicit confirmation** before proceeding to the next screenshot
+   e. If the user requests adjustments, update manifest and re-capture
+   f. Only after confirmation, move to the next screenshot
 3. Show results summary
+
+**Critical:** Each screenshot requires user visual review and explicit approval. Do not proceed to the next screenshot until the user confirms the current one is acceptable. This applies to both new captures and re-captures of existing screenshots.
 
 ### If the user wants to CREATE a new screenshot:
 
