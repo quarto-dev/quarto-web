@@ -9,21 +9,21 @@ Doc page: `docs/websites/website-navigation.qmd`
 |---|-----------|------|---------|--------|--------|----------|
 | 1 | `nav-bar.png` | 37 | Top Navigation | **TODO** | navbar-basic | 1440x400 |
 | 2 | `navbar-tools.png` | 112 | Navbar Tools | DONE | navbar-tools | 1440x400 |
-| 3 | `nav-side-anchored.png` | 158 | Side Navigation | **CAPTURED** — needs review | quarto-demo (default) | 1200x800 |
-| 4 | `nav-side-floating.png` | 158 | Side Navigation | **CAPTURED** — needs review | quarto-demo (floating) | 1200x800 |
+| 3 | `nav-side-anchored.png` | 158 | Side Navigation | **DONE** | quarto-demo (default) | 1200x800 |
+| 4 | `nav-side-floating.png` | 158 | Side Navigation | **DONE** | quarto-demo (floating) | 1200x800 |
 | 5 | `tools.png` | 276 | Sidebar Tools | DONE | quarto-demo URL | 992x600 |
 | 6 | `nav-bar-hybrid.png` | 285 | Hybrid Navigation | **TODO** | hybrid-nav | 1440x400 |
 | 7 | `nav-bar-hybrid-sidebar.png` | 289 | Hybrid Navigation | **TODO** | hybrid-nav | 1200x800 |
 | 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **TODO** | hybrid-nav (dropdown) | 1440x400 |
-| 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **CAPTURED** — needs review | quarto-demo (breadcrumbs) | 1200x400 |
+| 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE** | examples/breadcrumbs | 1200x400 clip+trim |
 | 10 | `reader-mode.png` | 476 | Reader Mode | **TODO** | navbar-basic (reader-mode) | 1440x400 |
-| 11 | `repo-actions.png` | 514 | GitHub Links | **TODO** | quarto-demo (repo-actions) | 1200x800 |
+| 11 | `repo-actions.png` | 514 | GitHub Links | **IN PROGRESS** | quarto-demo (repo-actions) | 900x600 + spotlight |
 
-6 TODO, 3 CAPTURED (need visual review/adjustment). Each uses `/screenshot` skill for interactive design and capture.
+3 DONE, 1 IN PROGRESS, 7 TODO.
 
 ## Source Projects
 
-### quarto-demo (git subtree) — screenshots 3, 4, 9, 11
+### quarto-demo (git subtree) — screenshots 3, 4, 11
 
 **Path**: `tools/screenshots/examples/quarto-demo/`
 **Repo**: https://github.com/quarto-dev/quarto-demo
@@ -33,15 +33,21 @@ Already has: docked sidebar, 6 sections (Basics, Layout, Crossrefs, HTML, Websit
 
 **Profile YAMLs** (added locally inside subtree):
 - `_quarto-floating.yml` — `sidebar.style: "floating"` → `nav-side-floating.png`
-- `_quarto-breadcrumbs.yml` — navigates nested page for breadcrumbs → `nav-breadcrumbs.png`
 - `_quarto-repo-actions.yml` — `repo-actions: [edit, source, issue]` → `repo-actions.png`
 - (default config) — docked sidebar as-is → `nav-side-anchored.png`
 
 **Environment setup**: None needed. Upstream uses `freeze: true` — all computation results are in `_freeze/` directory. No Python or R required.
 
-**Rendering**: Use `npm run render -- examples/quarto-demo [--profile X]` (not quartoPreRelease directly). Fast with freeze.
+**Rendering**: Use `npm run render -- examples/quarto-demo [--profile X]`. Fast with freeze.
 
-**Output dir**: Default `_site` (no `output-dir` in `_quarto.yml`). Profile overrides use `docs-floating`, `docs-breadcrumbs`, `docs-repo-actions`. capture.js `getOutputDir()` handles this.
+**Output dir**: Default `_site`. Profile overrides use `docs-floating`, `docs-repo-actions`.
+
+### breadcrumbs (NEW, dedicated) — screenshot 9
+
+**Path**: `tools/screenshots/examples/breadcrumbs/`
+Minimal project matching the qmd's sidebar YAML example (Tutorials > Tutorial Landing).
+Uses `dark: [darkly, theme-dark.scss]` with `$breadcrumb-bg: transparent` to eliminate
+the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mix(85%)`).
 
 ### navbar-basic (NEW) — screenshots 1, 10
 
@@ -61,30 +67,6 @@ Already has: docked sidebar, 6 sections (Basics, Layout, Crossrefs, HTML, Websit
 - (default) — flat hybrid navbar + sidebar → `nav-bar-hybrid.png`, `nav-bar-hybrid-sidebar.png`
 - `dropdown` — navbar items reference sidebar IDs → `nav-bar-hybrid-dropdown.png`
 
-## Prerequisite: Fix output-dir in capture.js — DONE
-
-capture.js `getOutputDir()` reads `_quarto.yml` → `project.output-dir`, with profile override support. render.js sets `cwd: projectDir` so relative paths in `_environment` resolve correctly.
-
-**Commits**: Already on `worktree-screenshot-tool` branch.
-
-## Cleanup
-
-Delete `examples/sidebar-tools/` — superseded by URL source to quarto-demo live site.
-
-## Per-Screenshot Workflow
-
-Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
-
-| Step | Action | Tool |
-|------|--------|------|
-| A | Create/setup example project | Manual (files + git subtree) |
-| B | Render: `node tools/screenshots/scripts/render.js <project> [--profile X]` | Shell |
-| C | Interactive design: viewport, clip, interactions, cleanup | `/screenshot` skill |
-| D | Add manifest entry | `/screenshot` skill |
-| E | Automated capture: `npm run capture -- --name <name>` | `/screenshot` skill |
-| F | .qmd update: add `.include-dark`, update alt text | Edit |
-| G | Commit (split: tooling \| images \| .qmd) | Git |
-
 ## Execution Order
 
 ### Phase 1: Prerequisite (output-dir fix) — DONE
@@ -92,33 +74,43 @@ Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
 - render.js `cwd: projectDir` fix — committed
 - `.gitignore` for `quarto-demo/docs*/` — committed
 
-### Phase 2: quarto-demo subtree + 4 captures — IN PROGRESS
-1. `git subtree add` quarto-demo — DONE
-2. Add 3 profile YAMLs — DONE
-3. Subtree updated 3x (pulled `_environment`, `renv/settings.json`, freeze + drop output-dir) — DONE
-4. Upstream now uses `freeze: true`, output to `_site` (no Python/R needed) — DONE
-5. 4 manifest entries added — DONE (committed in WIP)
-6. First-pass captures from old `docs/` renders — need re-capture from `_site`
-7. Re-render all profiles, re-capture all 4, visual review — **TODO**
-8. Commit final screenshots — **TODO**
+### Phase 2: quarto-demo + breadcrumbs captures — DONE (3/4)
 
-### Phase 3: navbar-basic + 2 captures
-8. Create `examples/navbar-basic/` project
-9. `/screenshot` for `nav-bar.png`
-10. `/screenshot` for `reader-mode.png`
-11. Commit
+**Completed:**
+- nav-side-anchored (light + dark) — committed
+- nav-side-floating (light + dark) — committed
+- nav-breadcrumbs (light + dark) — committed, uses dedicated `examples/breadcrumbs/` project
 
-### Phase 4: hybrid-nav + 3 captures
-12. Create `examples/hybrid-nav/` project
-13. `/screenshot` for `nav-bar-hybrid.png`
-14. `/screenshot` for `nav-bar-hybrid-sidebar.png`
-15. `/screenshot` for `nav-bar-hybrid-dropdown.png`
-16. Commit
+**In progress:**
+- repo-actions — needs spotlight effect (see plan 13). Current state:
+  - Manifest: source=quarto-demo/repo-actions, viewport 1200x800, zoom 1.25
+  - Cleanup evals: hide navbar + sidebar (content + TOC only)
+  - Blocked on: spotlight feature implementation (plan 13)
+  - Explored interactively: 900x600 at 1.25x zoom looks good but needs spotlight
+    to highlight the "Edit this page / View source / Report an issue" links
 
-### Phase 5: .qmd updates + cleanup
-17. Add `.include-dark` to all 9 image references
-18. Delete `examples/sidebar-tools/`
-19. Commit
+**Tooling improvements made during Phase 2:**
+- capture.js: cleanup now re-runs after `switchToDark` (CSS overrides survive theme changes)
+- CLAUDE.md: added Cleanup section documenting re-run behavior
+- /screenshot skill: updated to enforce one-at-a-time confirmation workflow
+
+### Phase 3: navbar-basic + 2 captures — TODO
+1. Create `examples/navbar-basic/` project
+2. `/screenshot` for `nav-bar.png`
+3. `/screenshot` for `reader-mode.png`
+4. Commit
+
+### Phase 4: hybrid-nav + 3 captures — TODO
+5. Create `examples/hybrid-nav/` project
+6. `/screenshot` for `nav-bar-hybrid.png`
+7. `/screenshot` for `nav-bar-hybrid-sidebar.png`
+8. `/screenshot` for `nav-bar-hybrid-dropdown.png`
+9. Commit
+
+### Phase 5: .qmd updates + cleanup — TODO
+10. Add `.include-dark` to all image references
+11. Delete `examples/sidebar-tools/` (superseded)
+12. Commit
 
 ## .qmd Changes Needed
 
@@ -134,50 +126,12 @@ Each screenshot follows this cycle. Use `/screenshot` skill for steps C-E.
 | 476 | `reader-mode.png` | Add `.include-dark` |
 | 514 | `repo-actions.png` | Add `.include-dark` |
 
-## Files Modified
+## Key Learnings
 
-| File | Change |
-|------|--------|
-| `tools/screenshots/capture.js` | Add `getOutputDir()` with profile support — DONE |
-| `tools/screenshots/scripts/render.js` | Add `cwd: projectDir` to execSync — DONE |
-| `.gitignore` | Ignore `quarto-demo/docs*/` rendered output — DONE |
-| `tools/screenshots/examples/quarto-demo/` | git subtree + 3 profile YAMLs |
-| `tools/screenshots/examples/navbar-basic/` | New: 3 pages, 2 profile YAMLs |
-| `tools/screenshots/examples/hybrid-nav/` | New: 7 pages, 2 profile YAMLs |
-| `tools/screenshots/examples/sidebar-tools/` | Delete |
-| `tools/screenshots/manifest.json` | 9 new entries |
-| `docs/websites/website-navigation.qmd` | `.include-dark` on 9 images |
-| `docs/websites/images/` | 9 new PNGs + 9 dark variants |
-
-## Verification
-
-- `npm run capture -- --name "nav-*"` — all nav-prefixed screenshots capture
-- `npm run capture -- --name reader-mode` + `--name repo-actions` — remaining 2
-- All 18 images on disk (9 light + 9 dark)
-- All .qmd image references have `.include-dark` class
-
-## Session Notes (2026-03-12)
-
-### Learnings
-- **render.js cwd fix**: `execSync` needed `cwd: projectDir` so quarto resolves relative paths in `_environment` correctly.
-- **Use `npm run render`**: Not `quartoPreRelease` directly. The render.js script handles profile flag passthrough.
-- **Use playwright-cli for exploration**: The `/screenshot` skill expects playwright-cli, not chrome devtools MCP.
-- **`--no-render` flag**: `npm run capture -- --name X --no-render` skips rendering but capture.js still renders anyway (it renders per-group). Rendering is fast with freeze.
-- **Dark variants**: All 4 quarto-demo screenshots set to `dark: true` — breadcrumbs and repo-actions need dark variants for `.include-dark` in the qmd.
-- **freeze: true**: Upstream quarto-demo now uses freeze — no Python/R needed, `_freeze/` dir has all computation results. Deleted `.venv` and `renv/library`.
-- **output-dir change**: Upstream removed `output-dir: docs`, now defaults to `_site`. Profile YAMLs still use `docs-*` custom names.
-- **git subtree can't exclude paths**: `.github/` comes along with the subtree, kept as-is.
-
-### Uncommitted state
-- `tools/screenshots/manifest.json` — 4 new entries added
-- `docs/websites/images/nav-side-anchored.png` + `-dark.png` — captured
-- `docs/websites/images/nav-side-floating.png` + `-dark.png` — captured
-- `docs/websites/images/nav-breadcrumbs.png` — captured
-
-### Next session TODO
-1. Re-render all 4 profiles (output dir changed from `docs` to `_site`)
-2. Re-capture all 3 screenshots (they were captured from old `docs/` renders)
-3. Visually review and adjust viewport/clip/interactions as needed
-4. Capture repo-actions screenshot
-5. Commit manifest + PNGs
-6. Continue with Phase 3 (navbar-basic) and Phase 4 (hybrid-nav)
+- **Breadcrumb bar in darkly theme**: `$breadcrumb-bg: body-mix(85%)` creates a visible lighter bar. Fix: custom SCSS with `$breadcrumb-bg: transparent`. quarto.org uses cosmo for both light+dark with custom SCSS overlays.
+- **Cleanup re-run needed after dark switch**: CSS property overrides get clobbered by dark theme. Added `runCleanup` after `switchToDark` in both code paths.
+- **One-at-a-time screenshot workflow**: Must pause for Chris's visual review after each screenshot. Never batch-capture without confirmation.
+- **Use dedicated example projects**: breadcrumbs needed its own project to match the qmd's YAML example exactly (Tutorials > Tutorial Landing). Don't force quarto-demo to serve all use cases.
+- **quarto.org theme**: cosmo for both light/dark + custom `theme.scss`/`theme-dark.scss`. No breadcrumb-specific SCSS — the clean dark breadcrumb comes from cosmo not setting `$breadcrumb-bg`.
+- **freeze: true**: Upstream quarto-demo needs no Python/R. `_freeze/` has computation results.
+- **Commit separately**: tooling changes and image outputs in different commits.

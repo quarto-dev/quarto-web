@@ -32,7 +32,8 @@ Claude Code is the primary operator. Scripts handle deterministic work (zero AI 
 | 09 | [09-pr-1815-screenshot-updates.md](09-pr-1815-screenshot-updates.md) | .qmd changes for PR #1815 (`.include-dark`, alt text) | Done (all cherry-picked) |
 | 10 | [10-tight-cropping.md](10-tight-cropping.md) | Tight cropping: cleanup eval vs sharp vs Playwright style | Done (about-pages + myblog) |
 | 11 | [11-manifest-schema.md](11-manifest-schema.md) | JSON Schema for manifest validation + help reference | Planned |
-| 12 | [12-navigation-screenshots.md](12-navigation-screenshots.md) | All 11 website-navigation.qmd screenshots: quarto-demo subtree + 2 new example projects, 9 new manifest entries | Active |
+| 12 | [12-navigation-screenshots.md](12-navigation-screenshots.md) | All 11 website-navigation.qmd screenshots: quarto-demo subtree + 2 new example projects, 9 new manifest entries | Active (3/11 done, repo-actions blocked on plan 13) |
+| 13 | [13-spotlight-effect.md](13-spotlight-effect.md) | Spotlight visual effect: dim page, highlight element. CSS injection via cleanup eval. | Planned (Phase 0 validation next) |
 
 ## Key Decisions
 
@@ -78,8 +79,9 @@ tools/screenshots/
     ├── sidebar-tools/              # sidebar with dropdown
     ├── about-pages/                # 5 about templates
     ├── myblog/                     # blog homepage
+    ├── breadcrumbs/                # breadcrumb-only capture (plan 12)
     ├── navbar-basic/               # basic navbar (plan 12)
-    ├── quarto-demo/                # git subtree: sidebar, breadcrumbs, repo-actions (plan 12)
+    ├── quarto-demo/                # git subtree: sidebar, repo-actions (plan 12)
     └── hybrid-nav/                 # hybrid navbar+sidebar (plan 12)
 
 .github/workflows/
