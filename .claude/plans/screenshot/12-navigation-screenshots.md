@@ -17,9 +17,9 @@ Doc page: `docs/websites/website-navigation.qmd`
 | 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **TODO** | hybrid-nav (dropdown) | 1440x400 |
 | 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE** | examples/breadcrumbs | 1200x400 clip+trim |
 | 10 | `reader-mode.png` | 476 | Reader Mode | **TODO** | navbar-basic (reader-mode) | 1440x400 |
-| 11 | `repo-actions.png` | 514 | GitHub Links | **IN PROGRESS** | quarto-demo (repo-actions) | 900x600 + spotlight |
+| 11 | `repo-actions.png` | 514 | GitHub Links | **READY** | quarto-demo (repo-actions) | 900x600 + spotlight |
 
-3 DONE, 1 IN PROGRESS, 7 TODO.
+3 DONE, 1 READY, 7 TODO.
 
 ## Source Projects
 
@@ -81,18 +81,21 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - nav-side-floating (light + dark) — committed
 - nav-breadcrumbs (light + dark) — committed, uses dedicated `examples/breadcrumbs/` project
 
-**In progress:**
-- repo-actions — needs spotlight effect (see plan 13). Current state:
-  - Manifest: source=quarto-demo/repo-actions, viewport 1200x800, zoom 1.25
+**Ready to capture:**
+- repo-actions — spotlight feature implemented (plan 13 Phase 1 done), needs `npm run capture` + visual review
+  - Manifest: source=quarto-demo/repo-actions, viewport 900x600, zoom 1.25
   - Cleanup evals: hide navbar + sidebar (content + TOC only)
-  - Blocked on: spotlight feature implementation (plan 13)
-  - Explored interactively: 900x600 at 1.25x zoom looks good but needs spotlight
-    to highlight the "Edit this page / View source / Report an issue" links
+  - Spotlight: elevate margin-sidebar, dim TOC, highlight .toc-actions
+  - Dark mode: reload-based flow (switch before cleanup)
 
 **Tooling improvements made during Phase 2:**
-- capture.js: cleanup now re-runs after `switchToDark` (CSS overrides survive theme changes)
+- capture.js: spotlight feature with elevate/dim/overlay (plan 13)
+- capture.js: dark mode refactored to reload-based flow (no more hidden-toggle issues)
+- capture.js: cleanup now re-runs after dark switch (CSS overrides survive theme changes)
+- capture.js: scrollbar auto-hidden when spotlight active
 - CLAUDE.md: added Cleanup section documenting re-run behavior
 - /screenshot skill: updated to enforce one-at-a-time confirmation workflow
+- capture-agent.md: eval vs run-code guidance, Chrome DevTools MCP debugging tip
 
 ### Phase 3: navbar-basic + 2 captures — TODO
 1. Create `examples/navbar-basic/` project
@@ -134,4 +137,7 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - **Use dedicated example projects**: breadcrumbs needed its own project to match the qmd's YAML example exactly (Tutorials > Tutorial Landing). Don't force quarto-demo to serve all use cases.
 - **quarto.org theme**: cosmo for both light/dark + custom `theme.scss`/`theme-dark.scss`. No breadcrumb-specific SCSS — the clean dark breadcrumb comes from cosmo not setting `$breadcrumb-bg`.
 - **freeze: true**: Upstream quarto-demo needs no Python/R. `_freeze/` has computation results.
+- **Dark mode reload-based flow**: Refactored capture.js to reload the page fresh for dark variant, switching before cleanup runs. Eliminates hidden-toggle click failures when cleanup hides the navbar.
+- **Spotlight stacking contexts**: CSS z-index on target alone doesn't work when ancestors create stacking contexts (e.g., `#quarto-margin-sidebar` is `position: sticky; z-index: 1`). Need `elevate` to lift ancestor + `dim` to fade siblings.
+- **eval vs run-code in playwright-cli**: Use `run-code` for complex JS (template literals, getComputedStyle, multi-line). `eval` shell escaping breaks easily.
 - **Commit separately**: tooling changes and image outputs in different commits.
