@@ -261,10 +261,10 @@ function darkOutputPath(outputPath) {
   return outputPath.slice(0, ext) + '-dark' + outputPath.slice(ext);
 }
 
-// Switch to dark mode by clicking the toggle (call before cleanup hides it)
+// Switch to dark mode via JS (avoids toggle visibility issues at narrow viewports)
 async function switchToDark(page) {
   const darkConfig = manifest.defaults.dark;
-  await page.locator(darkConfig.toggle).click();
+  await page.evaluate(() => window.quartoToggleColorScheme());
   await page.locator(darkConfig.ready).waitFor({ timeout: 5000 });
   if (darkConfig.settle) {
     await page.waitForTimeout(darkConfig.settle);
@@ -274,7 +274,7 @@ async function switchToDark(page) {
 // Switch back to light mode
 async function switchToLight(page) {
   const darkConfig = manifest.defaults.dark;
-  await page.locator(darkConfig.toggle).click();
+  await page.evaluate(() => window.quartoToggleColorScheme());
   await page.locator(darkConfig.readyLight || 'body:not(.quarto-dark)').waitFor({ timeout: 5000 });
   if (darkConfig.settle) {
     await page.waitForTimeout(darkConfig.settle);
