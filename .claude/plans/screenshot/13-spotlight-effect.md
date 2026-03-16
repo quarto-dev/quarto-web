@@ -180,5 +180,5 @@ Add "Spotlight" section to `tools/screenshots/CLAUDE.md` covering:
 
 - [x] Phase 0: Validate CSS approach (Chrome DevTools MCP) — approved
 - [x] Phase 1: Implement spotlight in capture.js — commit `08f55bff9`
-- [ ] Phase 2: Use for repo-actions screenshot (manifest ready, needs capture + visual review)
+- [x] Phase 2: Use for repo-actions screenshot — captured `dfefda1a4`
 - [ ] Update CLAUDE.md docs

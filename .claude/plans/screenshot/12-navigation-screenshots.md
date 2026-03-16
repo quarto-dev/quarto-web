@@ -17,9 +17,9 @@ Doc page: `docs/websites/website-navigation.qmd`
 | 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **TODO** | hybrid-nav (dropdown) | 1440x400 |
 | 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE + PR** | examples/breadcrumbs | 1200x400 clip+trim |
 | 10 | `reader-mode.png` | 476 | Reader Mode | **TODO** | navbar-basic (reader-mode) | 1440x400 |
-| 11 | `repo-actions.png` | 514 | GitHub Links | **READY** | quarto-demo (repo-actions) | 900x600 + spotlight |
+| 11 | `repo-actions.png` | 514 | GitHub Links | **DONE** | quarto-demo (repo-actions) | 900x600 + spotlight |
 
-5 DONE (3 on tool branch + 2 from plan 09), 1 READY, 5 TODO.
+6 DONE (4 on tool branch + 2 from plan 09), 5 TODO.
 Cherry-picked to PR #1815: #2 navbar-tools, #3 anchored, #4 floating, #5 tools, #9 breadcrumbs.
 
 ## Source Projects
@@ -84,13 +84,10 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 
 `.include-dark` added on PR branch for all three (anchored + floating in `08ac2bf46`, breadcrumbs in `7f8f47aa7`).
 
-**Ready to capture:**
-- repo-actions — spotlight feature implemented (plan 13 Phase 1 done), needs `npm run capture` + visual review
-  - Manifest: source=quarto-demo/repo-actions, viewport 900x600, zoom 1.25
-  - Cleanup evals: hide navbar + sidebar (content + TOC only)
-  - Spotlight: elevate margin-sidebar, dim TOC, highlight .toc-actions
-  - Dark mode: reload-based flow (switch before cleanup)
-  - Rendered HTML already exists: `examples/quarto-demo/docs-repo-actions/html-themes.html`
+**Completed on tool branch (not yet cherry-picked to PR):**
+- repo-actions (light + dark) — spotlight effect, committed `dfefda1a4`
+  - Fixed: dark mode toggle uses `quartoToggleColorScheme()` JS instead of click (navbar hidden at 900px viewport)
+  - Fix committed separately: `049ee2b1c`
 
 **Tooling improvements made during Phase 2:**
 - capture.js: spotlight feature with elevate/dim/overlay (plan 13)
@@ -145,3 +142,5 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - **Spotlight stacking contexts**: CSS z-index on target alone doesn't work when ancestors create stacking contexts (e.g., `#quarto-margin-sidebar` is `position: sticky; z-index: 1`). Need `elevate` to lift ancestor + `dim` to fade siblings.
 - **eval vs run-code in playwright-cli**: Use `run-code` for complex JS (template literals, getComputedStyle, multi-line). `eval` shell escaping breaks easily.
 - **Commit separately**: tooling changes and image outputs in different commits.
+- **Dark mode toggle at narrow viewports**: At <992px, Quarto's navbar collapses and `.quarto-color-scheme-toggle` is hidden. Fix: use `page.evaluate(() => window.quartoToggleColorScheme())` instead of clicking. The JS function is identical to the click handler (confirmed via deepwiki). It toggles classes, stylesheets, persists to localStorage, and dispatches resize. Fresh browser context per capture group prevents localStorage bleed.
+- **npm in Git Bash**: `npm` is a `.ps1` script on this system (installed via nvm/scoop). Must use `pwsh -Command 'npm run ...'` from Git Bash.
