@@ -92,3 +92,19 @@ on the **twitter-to-bluesky** branch, not the screenshot-tool branch:
 - `website-about.qmd`: `.include-dark` + alt text for all 5 about templates (jolla done early in `104974f`, remaining 4 in later commit)
 - `website-navigation.qmd`: `.include-dark` + alt text for navbar-tools (done in `104974f`) and sidebar-tools
 - `website-blog.qmd`: `.include-dark` + alt text for myblog
+
+**Verified on deploy preview** (2026-03-16): All 8 screenshots render correctly on `deploy-preview-1815.quarto.org` with Bluesky icons, dark variant switching works.
+
+### Additional plan 12 images cherry-picked to PR
+
+Beyond the original 8, three plan 12 navigation screenshots were also cherry-picked:
+- `nav-side-anchored.png` + dark — commit `08ac2bf46`
+- `nav-side-floating.png` + dark — commit `08ac2bf46`
+- `nav-breadcrumbs.png` + dark — commit `7f8f47aa7`
+
+`.include-dark` added for all three on the PR branch.
+
+### Outstanding
+
+- **cwickham review suggestion** on `docs/websites/_footer.md`: update footer text wording ("navigational items for GitHub and Bluesky rather than text")
+- **repo-actions screenshot**: plan 12 item, not yet captured (spotlight ready, needs capture + cherry-pick)

@@ -8,18 +8,19 @@ Doc page: `docs/websites/website-navigation.qmd`
 | # | Image file | Line | Section | Status | Source | Viewport |
 |---|-----------|------|---------|--------|--------|----------|
 | 1 | `nav-bar.png` | 37 | Top Navigation | **TODO** | navbar-basic | 1440x400 |
-| 2 | `navbar-tools.png` | 112 | Navbar Tools | DONE | navbar-tools | 1440x400 |
-| 3 | `nav-side-anchored.png` | 158 | Side Navigation | **DONE** | quarto-demo (default) | 1200x800 |
-| 4 | `nav-side-floating.png` | 158 | Side Navigation | **DONE** | quarto-demo (floating) | 1200x800 |
-| 5 | `tools.png` | 276 | Sidebar Tools | DONE | quarto-demo URL | 992x600 |
+| 2 | `navbar-tools.png` | 112 | Navbar Tools | DONE (plan 09) | navbar-tools | 1440x400 |
+| 3 | `nav-side-anchored.png` | 158 | Side Navigation | **DONE + PR** | quarto-demo (default) | 1200x800 |
+| 4 | `nav-side-floating.png` | 158 | Side Navigation | **DONE + PR** | quarto-demo (floating) | 1200x800 |
+| 5 | `tools.png` | 276 | Sidebar Tools | DONE (plan 09) | quarto-demo URL | 992x600 |
 | 6 | `nav-bar-hybrid.png` | 285 | Hybrid Navigation | **TODO** | hybrid-nav | 1440x400 |
 | 7 | `nav-bar-hybrid-sidebar.png` | 289 | Hybrid Navigation | **TODO** | hybrid-nav | 1200x800 |
 | 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **TODO** | hybrid-nav (dropdown) | 1440x400 |
-| 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE** | examples/breadcrumbs | 1200x400 clip+trim |
+| 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE + PR** | examples/breadcrumbs | 1200x400 clip+trim |
 | 10 | `reader-mode.png` | 476 | Reader Mode | **TODO** | navbar-basic (reader-mode) | 1440x400 |
 | 11 | `repo-actions.png` | 514 | GitHub Links | **READY** | quarto-demo (repo-actions) | 900x600 + spotlight |
 
-3 DONE, 1 READY, 7 TODO.
+5 DONE (3 on tool branch + 2 from plan 09), 1 READY, 5 TODO.
+Cherry-picked to PR #1815: #2 navbar-tools, #3 anchored, #4 floating, #5 tools, #9 breadcrumbs.
 
 ## Source Projects
 
@@ -76,10 +77,12 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 
 ### Phase 2: quarto-demo + breadcrumbs captures — DONE (3/4)
 
-**Completed:**
-- nav-side-anchored (light + dark) — committed
-- nav-side-floating (light + dark) — committed
-- nav-breadcrumbs (light + dark) — committed, uses dedicated `examples/breadcrumbs/` project
+**Completed and cherry-picked to PR #1815 (`twitter-to-bluesky` branch):**
+- nav-side-anchored (light + dark) — committed on tool branch, cherry-picked `08ac2bf46`
+- nav-side-floating (light + dark) — committed on tool branch, cherry-picked `08ac2bf46`
+- nav-breadcrumbs (light + dark) — committed on tool branch, cherry-picked `7f8f47aa7`
+
+`.include-dark` added on PR branch for all three (anchored + floating in `08ac2bf46`, breadcrumbs in `7f8f47aa7`).
 
 **Ready to capture:**
 - repo-actions — spotlight feature implemented (plan 13 Phase 1 done), needs `npm run capture` + visual review
@@ -87,6 +90,7 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
   - Cleanup evals: hide navbar + sidebar (content + TOC only)
   - Spotlight: elevate margin-sidebar, dim TOC, highlight .toc-actions
   - Dark mode: reload-based flow (switch before cleanup)
+  - Rendered HTML already exists: `examples/quarto-demo/docs-repo-actions/html-themes.html`
 
 **Tooling improvements made during Phase 2:**
 - capture.js: spotlight feature with elevate/dim/overlay (plan 13)
@@ -117,17 +121,17 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 
 ## .qmd Changes Needed
 
-| Line | Image | Change |
-|------|-------|--------|
-| 37 | `nav-bar.png` | Add `.include-dark` |
-| 158 | `nav-side-anchored.png` | Add `.include-dark` |
-| 158 | `nav-side-floating.png` | Add `.include-dark` |
-| 285 | `nav-bar-hybrid.png` | Add `.include-dark` |
-| 289 | `nav-bar-hybrid-sidebar.png` | Add `.include-dark` |
-| 345 | `nav-bar-hybrid-dropdown.png` | Add `.include-dark` |
-| 404 | `nav-breadcrumbs.png` | Add `.include-dark` |
-| 476 | `reader-mode.png` | Add `.include-dark` |
-| 514 | `repo-actions.png` | Add `.include-dark` |
+| Line | Image | Change | Status |
+|------|-------|--------|--------|
+| 37 | `nav-bar.png` | Add `.include-dark` | TODO |
+| 158 | `nav-side-anchored.png` | Add `.include-dark` | DONE on PR (`08ac2bf46`) |
+| 158 | `nav-side-floating.png` | Add `.include-dark` | DONE on PR (`08ac2bf46`) |
+| 285 | `nav-bar-hybrid.png` | Add `.include-dark` | TODO |
+| 289 | `nav-bar-hybrid-sidebar.png` | Add `.include-dark` | TODO |
+| 345 | `nav-bar-hybrid-dropdown.png` | Add `.include-dark` | TODO |
+| 404 | `nav-breadcrumbs.png` | Add `.include-dark` | DONE on PR (`7f8f47aa7`) |
+| 476 | `reader-mode.png` | Add `.include-dark` | TODO |
+| 514 | `repo-actions.png` | Add `.include-dark` | TODO |
 
 ## Key Learnings
 
