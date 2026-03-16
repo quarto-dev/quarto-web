@@ -1,7 +1,7 @@
 ---
 name: capturing-screenshots
 description: Capture or update documentation screenshots for the Quarto website using Playwright. Use when screenshots need refreshing, new screenshots are needed for docs pages, or the user mentions screenshots, screen captures, or visual documentation.
-allowed-tools: Bash(node tools/screenshots/*), Bash(cat *), Bash(playwright-cli *), Bash(oxipng *), Agent
+allowed-tools: Bash(node tools/screenshots/*), Bash(npm.cmd *), Bash(cat *), Bash(playwright-cli *), Bash(oxipng *), Agent
 ---
 
 ## Setup

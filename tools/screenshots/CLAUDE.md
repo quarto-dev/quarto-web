@@ -59,6 +59,12 @@ Screenshots with `"dark": true` get a `-dark` variant automatically.
 Use `.include-dark` class on images in .qmd files so the include-dark.lua filter
 generates both light/dark `<img>` tags.
 
+Dark mode switching uses `window.quartoToggleColorScheme()` via `page.evaluate()`.
+This is the same function the toggle button calls — it switches stylesheets, toggles
+`quarto-dark`/`quarto-light` body classes, and persists to localStorage. Using JS
+instead of clicking avoids issues at narrow viewports where the navbar collapses and
+the toggle is hidden.
+
 Cleanup and interactions are re-run after switching to dark mode so that CSS
 overrides are reapplied (dark theme CSS can clobber inline style changes).
 
@@ -152,6 +158,7 @@ Both can be combined. `cropBottom` is applied first, then `maxHeight`.
 
 ## Environment
 
+- `package.json` lives in `tools/screenshots/` — run `npm` commands from that directory
 - `QUARTO_CMD` env var to override quarto command (default: `quarto`)
 - Playwright is an npm dependency (no global install needed)
 - `playwright-cli -s=screenshot` for interactive exploration
