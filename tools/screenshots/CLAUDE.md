@@ -94,7 +94,6 @@ screenshot. Each action has an `action` type and relevant parameters.
 
 Supported actions:
 - `{ "action": "eval", "script": "..." }` — run JavaScript on the page
-- `{ "action": "remove", "selector": "..." }` — remove matching elements
 
 Cleanup runs in both light and dark modes. After switching to dark mode, cleanup
 is re-run so that CSS property overrides (which may be clobbered by the dark theme)

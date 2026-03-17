@@ -11,6 +11,13 @@ When this skill loads, run these commands to gather context:
 1. **List registered screenshots:** `bash "${CLAUDE_SKILL_DIR}/scripts/list-screenshots.sh"`
 2. **Read visual rules:** `cat tools/screenshots/CLAUDE.md`
 3. **Read capture agent reference:** `cat "${CLAUDE_SKILL_DIR}/capture-agent.md"`
+4. **Read manifest schema:** `cat "${CLAUDE_SKILL_DIR}/manifest-schema.md"`
+
+**Working directory:** `npm run` commands (`render`, `capture`, `compress`) work from
+any directory — they resolve paths from `tools/screenshots/package.json`. Direct
+`node scripts/...` calls and `playwright-cli` must run from `tools/screenshots/` or
+use absolute paths. Be careful not to double up path segments if you've already `cd`'d
+into `tools/screenshots/`.
 
 ## Instructions
 
@@ -50,15 +57,48 @@ Then work through two phases:
 
 #### Phase A: Visual design (what to capture)
 
-Use playwright-cli to explore the page interactively and nail down the visual:
+Use playwright-cli to explore the page interactively and nail down the visual.
+Phase A ends when the user approves the screenshot visual.
 
 1. Create example project if needed
 2. Render: `node tools/screenshots/scripts/render.js <project-path>`
 3. Serve: `node tools/screenshots/scripts/serve.js <dir>` (prints URL)
-4. Open in playwright-cli: `playwright-cli -s=screenshot open <url>`
-5. Iterate with the user: adjust viewport, element selector, cleanup evals, interactions, zoom
-6. Use `playwright-cli --help` to discover available commands for interactive exploration
-7. See capture-agent.md for `eval` vs `run-code` guidance — use `run-code` for complex JS
+4. Open in headed mode: `playwright-cli -s=screenshot open --headed <url>`
+   (headed mode shows the browser window so you can see the page)
+5. Discover what to capture:
+   a. Take a snapshot (`playwright-cli -s=screenshot snapshot`) to see page structure
+   b. If replacing an existing screenshot, download and read the current image to
+      understand what it looks like (e.g., `curl -sL -o /tmp/existing.png <url>`
+      then Read tool). Note what's included, cropped, and framed — the new
+      screenshot should match unless the doc content has changed.
+   c. Read the .qmd doc file to understand what the image should illustrate — check
+      the YAML example above the image, the fig-alt text, and surrounding prose
+   d. Determine initial viewport from the category table (navbar=1440x400,
+      sidebar=992x600, about=1200x900, full page=1440x900)
+6. Test and iterate in headed mode:
+   a. Resize: `playwright-cli -s=screenshot resize <w> <h>`
+   b. Test cleanup evals if needed (hiding elements, removing banners)
+   c. Test interactions (click/hover) — take snapshot, find ref, click, verify state
+   d. Take a test screenshot:
+      `playwright-cli -s=screenshot screenshot --filename=/tmp/test.png`
+   e. Show the screenshot to the user: `npm run open -- /tmp/test.png`
+      (cross-platform; do NOT use `open` or `start` directly)
+   f. Provide review context so the user can judge the screenshot:
+      - Which .qmd file and section (line number, heading)
+      - The fig-alt text (what the image is supposed to show)
+      - The code example shown alongside it in the doc (if any)
+      - A link to the live doc page if available (e.g., quarto.org URL)
+      - What to specifically check (does navbar match the YAML? Are the
+        right items visible? etc.)
+   g. Ask: "Does this capture what the doc needs? Anything to adjust?"
+   h. Repeat until the user approves the visual
+7. Encode findings into manifest:
+   a. Read manifest-schema.md for the complete field reference
+   b. Create the manifest entry based on what was validated interactively
+   c. Every field value should come from tested exploration, not guesswork
+
+Use `playwright-cli --help` to discover available commands.
+See capture-agent.md for `eval` vs `run-code` guidance — use `run-code` for complex JS.
 
 #### When stuck: Chrome DevTools MCP (only if available)
 
@@ -76,7 +116,8 @@ let the user decide.
 
 #### Phase B: Image processing (how to post-process)
 
-Once the visual is right, configure post-capture processing:
+Phase B starts after the user approves the visual in Phase A and a manifest entry
+exists. Now run the automated capture pipeline and tune post-processing.
 
 1. Add the manifest entry to `tools/screenshots/manifest.json`
 2. Run `npm run capture -- --name <name>` to produce the screenshot
