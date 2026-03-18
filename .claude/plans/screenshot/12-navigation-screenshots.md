@@ -7,7 +7,7 @@ Doc page: `docs/websites/website-navigation.qmd`
 
 | # | Image file | Line | Section | Status | Source | Viewport |
 |---|-----------|------|---------|--------|--------|----------|
-| 1 | `nav-bar.png` | 37 | Top Navigation | **TODO** | navbar-basic | 1440x400 |
+| 1 | `nav-bar.png` | 37 | Top Navigation | **DONE + PR** | navbar-basic | 1000x400 |
 | 2 | `navbar-tools.png` | 112 | Navbar Tools | DONE (plan 09) | navbar-tools | 1440x400 |
 | 3 | `nav-side-anchored.png` | 158 | Side Navigation | **DONE + PR** | quarto-demo (default) | 1200x800 |
 | 4 | `nav-side-floating.png` | 158 | Side Navigation | **DONE + PR** | quarto-demo (floating) | 1200x800 |
@@ -16,11 +16,11 @@ Doc page: `docs/websites/website-navigation.qmd`
 | 7 | `nav-bar-hybrid-sidebar.png` | 289 | Hybrid Navigation | **TODO** | hybrid-nav | 1200x800 |
 | 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **TODO** | hybrid-nav (dropdown) | 1440x400 |
 | 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE + PR** | examples/breadcrumbs | 1200x400 clip+trim |
-| 10 | `reader-mode.png` | 476 | Reader Mode | **TODO** | navbar-basic (reader-mode) | 1440x400 |
+| 10 | `reader-mode.png` | 476 | Reader Mode | **DONE + PR** | navbar-basic (reader-mode) | 1200x600 clip |
 | 11 | `repo-actions.png` | 514 | GitHub Links | **DONE** | quarto-demo (repo-actions) | 900x600 + spotlight |
 
-6 DONE (4 on tool branch + 2 from plan 09), 5 TODO.
-Cherry-picked to PR #1815: #2 navbar-tools, #3 anchored, #4 floating, #5 tools, #9 breadcrumbs, #11 repo-actions.
+8 DONE (6 on tool branch + 2 from plan 09), 3 TODO (hybrid-nav only).
+Cherry-picked to PR #1815: #1 nav-bar, #2 navbar-tools, #3 anchored, #4 floating, #5 tools, #9 breadcrumbs, #10 reader-mode, #11 repo-actions.
 
 ## Source Projects
 
@@ -98,11 +98,19 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - /screenshot skill: updated to enforce one-at-a-time confirmation workflow
 - capture-agent.md: eval vs run-code guidance, Chrome DevTools MCP debugging tip
 
-### Phase 3: navbar-basic + 2 captures — TODO
-1. Create `examples/navbar-basic/` project
-2. `/screenshot` for `nav-bar.png`
-3. `/screenshot` for `reader-mode.png`
-4. Commit
+### Phase 3: navbar-basic + 2 captures — DONE
+
+**Completed and cherry-picked to PR #1815:**
+- navbar-basic example project created (3 pages, reader-mode profile) — `77e37d535`
+- nav-bar (light + dark) — element capture of `.navbar` at 1000px — `a8c72b836`, cherry-picked `341e0b52d`
+- reader-mode (light + dark) — clip capture of icons + "On this page" dropdown at 1200x600 — `cf3defaf1`, cherry-picked `0fc132879`
+- `.include-dark` added on PR branch for nav-bar (`341e0b52d`) and reader-mode (`36566c5ee`)
+
+**Tooling improvements made during Phase 3:**
+- skill.md: Clarified serve.js takes directory path, not `--profile`; documented `docs-<profile>/` output convention
+- manifest-schema.md: Added stateful toggle warning (localStorage persistence breaks dark variant when using plain click)
+- capture-agent.md: Cross-referenced stateful toggle warning
+- manifest-schema.md: Created as new doc (`77e37d535`) — complete field reference for manifest.json
 
 ### Phase 4: hybrid-nav + 3 captures — TODO
 5. Create `examples/hybrid-nav/` project
@@ -120,14 +128,14 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 
 | Line | Image | Change | Status |
 |------|-------|--------|--------|
-| 37 | `nav-bar.png` | Add `.include-dark` | TODO |
+| 37 | `nav-bar.png` | Add `.include-dark` | DONE on PR (`341e0b52d`) |
 | 158 | `nav-side-anchored.png` | Add `.include-dark` | DONE on PR (`08ac2bf46`) |
 | 158 | `nav-side-floating.png` | Add `.include-dark` | DONE on PR (`08ac2bf46`) |
 | 285 | `nav-bar-hybrid.png` | Add `.include-dark` | TODO |
 | 289 | `nav-bar-hybrid-sidebar.png` | Add `.include-dark` | TODO |
 | 345 | `nav-bar-hybrid-dropdown.png` | Add `.include-dark` | TODO |
 | 404 | `nav-breadcrumbs.png` | Add `.include-dark` | DONE on PR (`7f8f47aa7`) |
-| 476 | `reader-mode.png` | Add `.include-dark` | TODO |
+| 476 | `reader-mode.png` | Add `.include-dark` + fix fig-alt | DONE on PR (`36566c5ee`) |
 | 514 | `repo-actions.png` | Add `.include-dark` | DONE on PR (`5018185fe`) |
 
 ## Key Learnings
@@ -144,3 +152,6 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - **Commit separately**: tooling changes and image outputs in different commits.
 - **Dark mode toggle at narrow viewports**: At <992px, Quarto's navbar collapses and `.quarto-color-scheme-toggle` is hidden. Fix: use `page.evaluate(() => window.quartoToggleColorScheme())` instead of clicking. The JS function is identical to the click handler (confirmed via deepwiki). It toggles classes, stylesheets, persists to localStorage, and dispatches resize. Fresh browser context per capture group prevents localStorage bleed.
 - **npm in Git Bash**: With nvm/scoop, `npm` resolves to an extensionless shell script that breaks on `npm run`. Use `npm.cmd` instead. Added to global Windows rules.
+- **Stateful toggles break dark variant**: Reader mode persists in localStorage. Light pass activates it → dark reload inherits active state → click deactivates it → timeout. Fix: use `eval` with guard condition (`if (!el.classList.contains('active')) el.click()`) instead of plain `click`. Documented in manifest-schema.md and capture-agent.md.
+- **serve.js doesn't understand --profile**: It only takes a directory path. For profiled renders, serve the output directory directly (e.g., `docs-reader-mode/`). Documented in skill.md.
+- **clip selectors work for tight crops**: Using `clip: [".quarto-navbar-tools", "#quarto-search", "#quarto-toc-toggle"]` with the 20px padding produces tight element-focused crops without needing cropLeft/cropTop/cropRight.
