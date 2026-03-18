@@ -68,6 +68,11 @@ the toggle is hidden.
 Cleanup and interactions are re-run after switching to dark mode so that CSS
 overrides are reapplied (dark theme CSS can clobber inline style changes).
 
+**Stateful toggle caution:** Interactions that click a stateful toggle (reader mode,
+sidebar collapse) will break on the dark pass if the toggle state persists in
+localStorage — the reload inherits the active state, so clicking again deactivates it.
+Use an `eval` guard instead of `click`. See `manifest-schema.md` for the pattern.
+
 ## Visual Rules
 
 - Light color scheme first (dark captured automatically)
