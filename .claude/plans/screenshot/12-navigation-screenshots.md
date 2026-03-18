@@ -12,15 +12,15 @@ Doc page: `docs/websites/website-navigation.qmd`
 | 3 | `nav-side-anchored.png` | 158 | Side Navigation | **DONE + PR** | quarto-demo (default) | 1200x800 |
 | 4 | `nav-side-floating.png` | 158 | Side Navigation | **DONE + PR** | quarto-demo (floating) | 1200x800 |
 | 5 | `tools.png` | 276 | Sidebar Tools | DONE (plan 09) | quarto-demo URL | 992x600 |
-| 6 | `nav-bar-hybrid.png` | 285 | Hybrid Navigation | **TODO** | hybrid-nav | 1440x400 |
-| 7 | `nav-bar-hybrid-sidebar.png` | 289 | Hybrid Navigation | **TODO** | hybrid-nav | 1200x800 |
-| 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **TODO** | hybrid-nav (dropdown) | 1440x400 |
+| 6 | `nav-bar-hybrid.png` | 285 | Hybrid Navigation | **DONE + PR** | hybrid-nav (default) | 1050x400 element |
+| 7 | `nav-bar-hybrid-sidebar.png` | 289 | Hybrid Navigation | **DONE + PR** | hybrid-nav (default) | 1200x350 zoom 1.25 maxH 280 |
+| 8 | `nav-bar-hybrid-dropdown.png` | 345 | Hybrid Navigation | **DONE + PR** | hybrid-nav (dropdown) | 1200x400 element |
 | 9 | `nav-breadcrumbs.png` | 404 | Breadcrumbs | **DONE + PR** | examples/breadcrumbs | 1200x400 clip+trim |
 | 10 | `reader-mode.png` | 476 | Reader Mode | **DONE + PR** | navbar-basic (reader-mode) | 1200x600 clip |
 | 11 | `repo-actions.png` | 514 | GitHub Links | **DONE** | quarto-demo (repo-actions) | 900x600 + spotlight |
 
-8 DONE (6 on tool branch + 2 from plan 09), 3 TODO (hybrid-nav only).
-Cherry-picked to PR #1815: #1 nav-bar, #2 navbar-tools, #3 anchored, #4 floating, #5 tools, #9 breadcrumbs, #10 reader-mode, #11 repo-actions.
+11/11 DONE. All cherry-picked to PR #1815.
+Cherry-picked to PR #1815: all 11 screenshots (9 from tool branch + 2 from plan 09).
 
 ## Source Projects
 
@@ -112,12 +112,15 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - capture-agent.md: Cross-referenced stateful toggle warning
 - manifest-schema.md: Created as new doc (`77e37d535`) — complete field reference for manifest.json
 
-### Phase 4: hybrid-nav + 3 captures — TODO
-5. Create `examples/hybrid-nav/` project
-6. `/screenshot` for `nav-bar-hybrid.png`
-7. `/screenshot` for `nav-bar-hybrid-sidebar.png`
-8. `/screenshot` for `nav-bar-hybrid-dropdown.png`
-9. Commit
+### Phase 4: hybrid-nav + 3 captures — DONE
+
+**Completed and cherry-picked to PR #1815:**
+- hybrid-nav example project created (7 pages, default + dropdown profiles) — `40469d215`
+- Used profile-based config split: base `_quarto.yml` has shared settings, `_quarto-default.yml` has plain navbar+sidebar, `_quarto-dropdown.yml` has sidebar:id navbar items. Avoids Quarto array merging issue.
+- nav-bar-hybrid (light + dark) — element capture of `.navbar` at 1050px — `aa5a66072`, cherry-picked `90a0c1cdf`
+- nav-bar-hybrid-sidebar (light + dark) — viewport capture at 1200x350 with zoom 1.25 + maxHeight 280 — `aa5a66072`, cherry-picked `90a0c1cdf`
+- nav-bar-hybrid-dropdown (light + dark) — element capture of `.navbar` at 1200px — `aa5a66072`, cherry-picked `90a0c1cdf`
+- `.include-dark` added on PR branch for all three (`241c9b3b8`)
 
 ### Phase 5: .qmd updates + cleanup — TODO
 10. Add `.include-dark` to all image references
@@ -131,9 +134,9 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 | 37 | `nav-bar.png` | Add `.include-dark` | DONE on PR (`341e0b52d`) |
 | 158 | `nav-side-anchored.png` | Add `.include-dark` | DONE on PR (`08ac2bf46`) |
 | 158 | `nav-side-floating.png` | Add `.include-dark` | DONE on PR (`08ac2bf46`) |
-| 285 | `nav-bar-hybrid.png` | Add `.include-dark` | TODO |
-| 289 | `nav-bar-hybrid-sidebar.png` | Add `.include-dark` | TODO |
-| 345 | `nav-bar-hybrid-dropdown.png` | Add `.include-dark` | TODO |
+| 285 | `nav-bar-hybrid.png` | Add `.include-dark` | DONE on PR (`241c9b3b8`) |
+| 289 | `nav-bar-hybrid-sidebar.png` | Add `.include-dark` | DONE on PR (`241c9b3b8`) |
+| 345 | `nav-bar-hybrid-dropdown.png` | Add `.include-dark` | DONE on PR (`241c9b3b8`) |
 | 404 | `nav-breadcrumbs.png` | Add `.include-dark` | DONE on PR (`7f8f47aa7`) |
 | 476 | `reader-mode.png` | Add `.include-dark` + fix fig-alt | DONE on PR (`36566c5ee`) |
 | 514 | `repo-actions.png` | Add `.include-dark` | DONE on PR (`5018185fe`) |
@@ -155,3 +158,4 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - **Stateful toggles break dark variant**: Reader mode persists in localStorage. Light pass activates it → dark reload inherits active state → click deactivates it → timeout. Fix: use `eval` with guard condition (`if (!el.classList.contains('active')) el.click()`) instead of plain `click`. Documented in manifest-schema.md and capture-agent.md.
 - **serve.js doesn't understand --profile**: It only takes a directory path. For profiled renders, serve the output directory directly (e.g., `docs-reader-mode/`). Documented in skill.md.
 - **clip selectors work for tight crops**: Using `clip: [".quarto-navbar-tools", "#quarto-search", "#quarto-toc-toggle"]` with the 20px padding produces tight element-focused crops without needing cropLeft/cropTop/cropRight.
+- **Quarto profile array merging**: When a profile YAML defines the same array as the base `_quarto.yml` (e.g., `website.navbar.left`), Quarto concatenates them instead of replacing. Fix: move conflicting arrays out of base config into dedicated profile files (`_quarto-default.yml` + `_quarto-dropdown.yml`), keeping only shared scalar settings in `_quarto.yml`.
