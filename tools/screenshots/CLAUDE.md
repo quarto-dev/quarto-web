@@ -80,6 +80,8 @@ Use an `eval` guard instead of `click`. See `manifest-schema.md` for the pattern
 - Remove prerelease callouts (automated in manifest defaults)
 - Verify Bootstrap Icons loaded (not blank boxes)
 - Consistent fictional data: "Finley Malloc", "myblog", "ProjectX"
+- When replacing an existing screenshot, always `npm run open` both the existing
+  image and the new capture for side-by-side comparison before asking for approval
 
 ## Zoom
 
