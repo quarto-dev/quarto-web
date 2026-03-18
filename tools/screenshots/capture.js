@@ -264,7 +264,12 @@ function darkOutputPath(outputPath) {
 // Switch to dark mode via JS (avoids toggle visibility issues at narrow viewports)
 async function switchToDark(page) {
   const darkConfig = manifest.defaults.dark;
-  await page.evaluate(() => window.quartoToggleColorScheme());
+  await page.evaluate(() => {
+    if (typeof window.quartoToggleColorScheme !== 'function') {
+      throw new Error('quartoToggleColorScheme not found — page may not support dark mode');
+    }
+    window.quartoToggleColorScheme();
+  });
   await page.locator(darkConfig.ready).waitFor({ timeout: 5000 });
   if (darkConfig.settle) {
     await page.waitForTimeout(darkConfig.settle);
@@ -274,7 +279,12 @@ async function switchToDark(page) {
 // Switch back to light mode
 async function switchToLight(page) {
   const darkConfig = manifest.defaults.dark;
-  await page.evaluate(() => window.quartoToggleColorScheme());
+  await page.evaluate(() => {
+    if (typeof window.quartoToggleColorScheme !== 'function') {
+      throw new Error('quartoToggleColorScheme not found — page may not support dark mode');
+    }
+    window.quartoToggleColorScheme();
+  });
   await page.locator(darkConfig.readyLight || 'body:not(.quarto-dark)').waitFor({ timeout: 5000 });
   if (darkConfig.settle) {
     await page.waitForTimeout(darkConfig.settle);
@@ -511,6 +521,9 @@ async function main() {
                 await takeScreenshot(page, shot, darkPath);
               }
               await postProcess(darkPath, shot);
+
+              // Reset dark mode state so subsequent shots in this group start light
+              await page.evaluate(() => localStorage.removeItem('quarto-color-scheme'));
             }
 
             // Verify — open image for visual review

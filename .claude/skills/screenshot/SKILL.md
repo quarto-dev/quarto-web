@@ -72,7 +72,7 @@ Phase A ends when the user approves the screenshot visual.
 5. Discover what to capture:
    a. Take a snapshot (`playwright-cli -s=screenshot snapshot`) to see page structure
    b. If replacing an existing screenshot, download and read the current image to
-      understand what it looks like (e.g., `curl -sL -o /tmp/existing.png <url>`
+      understand what it looks like (e.g., `curl -sL -o "$TMPDIR/existing.png" <url>`
       then Read tool). Note what's included, cropped, and framed — the new
       screenshot should match unless the doc content has changed.
    c. Read the .qmd doc file to understand what the image should illustrate — check
@@ -84,8 +84,8 @@ Phase A ends when the user approves the screenshot visual.
    b. Test cleanup evals if needed (hiding elements, removing banners)
    c. Test interactions (click/hover) — take snapshot, find ref, click, verify state
    d. Take a test screenshot:
-      `playwright-cli -s=screenshot screenshot --filename=/tmp/test.png`
-   e. Show the screenshot to the user: `npm run open -- /tmp/test.png`
+      `playwright-cli -s=screenshot screenshot --filename="$TMPDIR/test.png"`
+   e. Show the screenshot to the user: `npm run open -- "$TMPDIR/test.png"`
       (cross-platform; do NOT use `open` or `start` directly)
    f. Provide review context so the user can judge the screenshot:
       - Which .qmd file and section (line number, heading)
