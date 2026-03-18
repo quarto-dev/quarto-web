@@ -61,8 +61,12 @@ Use playwright-cli to explore the page interactively and nail down the visual.
 Phase A ends when the user approves the screenshot visual.
 
 1. Create example project if needed
-2. Render: `node tools/screenshots/scripts/render.js <project-path>`
-3. Serve: `node tools/screenshots/scripts/serve.js <dir>` (prints URL)
+2. Render: `node tools/screenshots/scripts/render.js <project-path>` (add `--profile <name>` if needed)
+3. Serve the **rendered output directory**: `node tools/screenshots/scripts/serve.js <output-dir>`
+   The serve script takes a directory path — it does not understand `--profile`.
+   For default renders, the output is `_site/` inside the project. For profiled renders,
+   it's `docs-<profile>/` (e.g., `examples/navbar-basic/docs-reader-mode`). Check the
+   render output to confirm the actual path.
 4. Open in headed mode: `playwright-cli -s=screenshot open --headed <url>`
    (headed mode shows the browser window so you can see the page)
 5. Discover what to capture:

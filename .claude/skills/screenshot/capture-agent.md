@@ -105,7 +105,13 @@ For clicks (e.g., opening a dropdown):
 2. Find the ref matching the target (e.g., the GitHub icon)
 3. Click it: `playwright-cli -s=screenshot click <ref>`
 4. **Verify the interaction worked**: snapshot again and check for the expected state (e.g., `[expanded]` attribute, `.dropdown-menu.show`)
-5. If a dropdown toggled closed instead of opening, click again (L13: click toggles)
+5. If a dropdown toggled closed instead of opening, click again (click toggles)
+
+**Stateful toggle caution:** Some toggles (reader mode, sidebar collapse) persist state
+in localStorage. When `dark: true`, interactions run twice (light + dark). On the dark
+pass the page reloads but localStorage persists, so the toggle may already be active —
+clicking it again deactivates it. In the manifest, use an `eval` with a guard condition
+instead of a plain `click` for these. See `manifest-schema.md` for the pattern.
 
 For element screenshots where content overflows (like dropdowns):
 1. Use `eval` to get bounding boxes of the element + overflow content

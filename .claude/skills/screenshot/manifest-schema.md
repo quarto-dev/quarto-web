@@ -144,6 +144,20 @@ Examples:
 { "action": "scroll", "selector": "#section-3" }
 ```
 
+**Stateful toggle warning:** When `dark: true`, capture.js runs interactions twice — once
+for light, once for dark (after reloading the page). If an interaction clicks a **stateful
+toggle** (reader mode, sidebar collapse, etc.) whose state persists in localStorage, the
+second click will **deactivate** the feature instead of activating it. Use `eval` with a
+guard condition instead of `click`:
+
+```json
+{ "action": "eval", "script": "if (!document.querySelector('.toggle.active')) document.querySelector('.toggle').click()" }
+{ "action": "wait", "selector": ".expected-element" }
+```
+
+This does not affect stateless interactions (dropdowns, hover menus, tab clicks) which
+reset on page reload.
+
 ### `capture.spotlight`
 
 Highlights a target element by dimming the rest of the page with a semi-transparent
