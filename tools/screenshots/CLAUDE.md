@@ -107,6 +107,57 @@ is re-run so that CSS property overrides (which may be clobbered by the dark the
 are reapplied. DOM mutations like `display: none` persist across theme switches,
 but re-running cleanup is harmless for idempotent operations.
 
+## Spotlight
+
+`capture.spotlight` (optional) — dims the page with a semi-transparent overlay while
+highlighting a specific element. Useful for drawing attention to a UI feature in
+documentation screenshots (e.g., repo-actions links, sidebar tools).
+
+```json
+"spotlight": {
+  "selector": ".toc-actions",
+  "elevate": "#quarto-margin-sidebar",
+  "dim": "#TOC.toc-active > ul:first-of-type",
+  "overlay": 0.5,
+  "radius": "6px",
+  "padding": "8px"
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `selector` | string | required | CSS selector for element to highlight |
+| `elevate` | string | null | Ancestor to lift above overlay (stacking context fix) |
+| `dim` | string or string[] | null | Sibling elements to fade within the elevated container |
+| `overlay` | number | 0.5 | Overlay opacity (0.0–1.0) |
+| `radius` | string | `"6px"` | Border-radius on spotlit element |
+| `padding` | string | `"8px"` | Padding around spotlit element |
+
+### Stacking contexts and `elevate`
+
+CSS stacking contexts trap child z-indexes. Quarto layouts commonly have ancestors
+with `position: sticky` + `z-index` (e.g., `#quarto-margin-sidebar`), so setting
+z-index on the target alone has no visible effect.
+
+**When `elevate` is needed:** If the target's ancestor creates a stacking context,
+set `elevate` to that ancestor's selector. This lifts the entire container above the
+overlay, then use `dim` to fade other elements inside it.
+
+**When `elevate` is NOT needed:** If the target has no stacking context ancestors
+(direct child of body, all ancestors are `static`), the simple spotlight works — the
+target gets `position: relative; z-index: 9999` automatically.
+
+**How to diagnose:** Walk up the DOM from the target checking `getComputedStyle` for
+`position` (not static) + `z-index` (not auto). Use Chrome DevTools MCP
+(`evaluate_script`) for faster iteration than playwright-cli.
+
+### Constraints
+
+- **Incompatible with `trim: true`** — the overlay changes the background color that
+  trim uses for edge detection.
+- **Only useful with viewport or clip capture** — element capture (`capture.element`)
+  clips to the element bounds, cutting out the overlay entirely.
+
 ## Trim
 
 `capture.trim` (optional, default false) — content-aware whitespace removal via sharp.
