@@ -107,8 +107,7 @@ function groupBySource(shots) {
   for (const s of shots) {
     const key = s.source.type === 'example'
       ? s.source.project + (s.source.profile ? `:${s.source.profile}` : '')
-      : s.source.type === 'url' ? `url:${s.source.url}`
-      : `local:${s.source.path}`;
+      : `url:${s.source.url}`;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(s);
   }
@@ -435,13 +434,6 @@ async function main() {
         }
       } else if (shots[0].source.type === 'url') {
         baseUrl = shots[0].source.url;
-      } else if (shots[0].source.type === 'local') {
-        const siteDir = resolve(REPO_ROOT, shots[0].source.path);
-        if (!dryRun) {
-          server = await startServer(siteDir);
-          baseUrl = server.url;
-          console.log(`  Serving ${siteDir} at ${baseUrl}`);
-        }
       }
 
       // Launch browser

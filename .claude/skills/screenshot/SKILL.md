@@ -43,7 +43,7 @@ Gather these parameters (ask about unknowns, infer from context when obvious):
 
 | Parameter | Values / Notes |
 |-----------|---------------|
-| Source type | `url` (live site), `example` (local Quarto project), `local` (pre-rendered site directory) |
+| Source type | `url` (live site), `example` (Quarto project — render then serve) |
 | Source detail | URL, example project path (create minimal project if needed), or pre-rendered site path |
 | Viewport | navbar=1440x400, sidebar=992x600, about=1200x900, full page=1440x900 |
 | Zoom | Default 1.0; use 1.15 for about pages or excess internal padding |

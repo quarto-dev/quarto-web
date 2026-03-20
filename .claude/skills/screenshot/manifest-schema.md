@@ -83,17 +83,6 @@ Three source types:
 { "type": "url", "url": "https://example.com/page.html" }
 ```
 
-**`local`** — an **already-rendered** site directory that capture.js will **serve only** (no rendering):
-```json
-{ "type": "local", "path": "_site", "page": "docs/websites/index.html" }
-```
-- `path` — path to the rendered site directory (relative to repo root)
-- `page` — HTML page within the site (optional, defaults to root)
-
-Use `local` when you've already built the site (e.g., quarto-web's `_site/`) and just
-need to screenshot pages from it. Use `example` when capture.js should handle
-rendering the Quarto project.
-
 ### `capture`
 
 All fields are optional. Missing fields inherit from `defaults` where applicable.

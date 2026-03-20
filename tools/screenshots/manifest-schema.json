@@ -132,8 +132,8 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["example", "url", "local"],
-          "description": "Source type: 'example' (local Quarto project), 'url' (live URL), 'local' (pre-rendered site path)."
+          "enum": ["example", "url"],
+          "description": "Source type: 'example' (Quarto project — render then serve), 'url' (live URL)."
         },
         "project": {
           "type": "string",
@@ -141,7 +141,7 @@
         },
         "page": {
           "type": "string",
-          "description": "HTML page within the rendered site (example/local types)."
+          "description": "HTML page within the rendered site (example type)."
         },
         "profile": {
           "type": "string",
@@ -150,21 +150,13 @@
         "url": {
           "type": "string",
           "description": "Live URL to capture (url type)."
-        },
-        "path": {
-          "type": "string",
-          "description": "Path to a pre-rendered site directory (local type)."
         }
       },
       "if": { "properties": { "type": { "const": "example" } } },
       "then": { "required": ["type", "project"] },
       "else": {
         "if": { "properties": { "type": { "const": "url" } } },
-        "then": { "required": ["type", "url"] },
-        "else": {
-          "if": { "properties": { "type": { "const": "local" } } },
-          "then": { "required": ["type", "path"] }
-        }
+        "then": { "required": ["type", "url"] }
       }
     },
     "captureConfig": {

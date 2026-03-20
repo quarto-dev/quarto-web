@@ -24,7 +24,7 @@ then re-run `npm run capture`.
 
 Use `/screenshot` to walk through the process:
 
-1. Create or identify the source (example project in `examples/`, live URL, or local path)
+1. Create or identify the source (example project in `examples/` or live URL)
 2. Explore interactively with playwright-cli to determine viewport, element,
    interactions, and cleanup steps
 3. Encode the findings into a manifest.json entry
@@ -60,11 +60,9 @@ URLs still fail at runtime.
 Path conventions:
 - `output` — relative to repo root (e.g., `docs/websites/images/about-jolla.png`)
 - `source.project` — relative to `tools/screenshots/` (e.g., `examples/about-pages`)
-- `source.path` — relative to repo root (local source type, e.g., `_site`)
 - `doc.file` — relative to repo root
 
-Source types: `example` (Quarto project — render then serve), `url` (live URL — no
-render/serve), `local` (already-rendered site directory — serve only, no render).
+Source types: `example` (Quarto project — render then serve), `url` (live URL).
 
 ## Dark Mode
 

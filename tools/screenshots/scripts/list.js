@@ -31,8 +31,7 @@ const filtered = namePattern
 console.log(`### ${filtered.length} screenshot(s) in manifest\n`);
 for (const s of filtered) {
   const src = s.source.type === 'example' ? s.source.project
-    : s.source.type === 'url' ? s.source.url
-    : s.source.path || s.source.page;
+    : s.source.url;
   const vp = s.capture?.viewport || manifest.defaults.viewport;
   console.log(`- **${s.name}** → \`${s.output}\``);
   console.log(`  Source: ${s.source.type} (${src})`);

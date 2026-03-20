@@ -105,7 +105,7 @@ Each screenshot in `manifest.json` specifies:
 - `name` — unique identifier
 - `output` — output PNG path (relative to repo root)
 - `dark` — if `true`, also captures a `-dark` variant (e.g. `about-jolla-dark.png`)
-- `source` — where to get the page (example project, URL, or local)
+- `source` — where to get the page (example project or URL)
 - `capture` — viewport, zoom, interactions, clip selectors, element selector
 - `doc` — which .qmd file references this image
 
