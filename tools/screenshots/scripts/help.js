@@ -21,6 +21,7 @@ Commands (run from tools/screenshots/):
   npm run compress -- <file.png>         Compress specific files
   npm run open -- <file>                 Open file with OS default app
 
+  npm run validate                       Validate manifest.json against schema
   npm run help                           Show this help
 
 Source of truth: manifest.json

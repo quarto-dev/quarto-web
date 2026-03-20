@@ -147,11 +147,10 @@ These run in order: trim → crop → compress.
 ### 7. Dark mode variant
 
 If the screenshot has `"dark": true` in manifest:
-1. Click the color scheme toggle: `playwright-cli -s=screenshot run-code "async page => await page.locator('.quarto-color-scheme-toggle').click()"`
-2. Wait for dark mode: `playwright-cli -s=screenshot run-code "async page => await page.locator('body.quarto-dark').waitFor()"`
-3. Re-run any interactions (e.g., dropdown may have closed during toggle)
-4. Take the screenshot again with `-dark` suffix on the filename
-5. Click toggle again to return to light mode
+1. Toggle via JS: `playwright-cli -s=screenshot run-code "async page => { await page.evaluate(() => window.quartoToggleColorScheme()); await page.locator('body.quarto-dark').waitFor(); }"`
+2. Re-run any interactions (e.g., dropdown may have closed during toggle)
+3. Take the screenshot again with `-dark` suffix on the filename
+4. Toggle back: `playwright-cli -s=screenshot run-code "async page => { await page.evaluate(() => window.quartoToggleColorScheme()); await page.locator('body.quarto-light').waitFor(); }"`
 
 Note: `capture.js` handles this automatically. This step is only needed for manual/interactive captures.
 

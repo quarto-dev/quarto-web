@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import open from 'open';
 import sharp from 'sharp';
+import { validateManifest } from './scripts/validate.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TOOLS_DIR = __dirname;
@@ -59,6 +60,17 @@ const listOnly = args.includes('--list');
 // Read manifest
 const manifest = JSON.parse(readFileSync(join(TOOLS_DIR, 'manifest.json'), 'utf8'));
 
+// Validate manifest against schema
+const validation = validateManifest(manifest);
+if (!validation.valid) {
+  console.error('manifest.json validation failed:');
+  validation.errors.forEach(e => console.error(`  ${e}`));
+  process.exit(1);
+}
+
+// Compression: respect both manifest defaults and CLI flag
+const shouldCompress = (manifest.defaults?.compress ?? true) && !noCompress;
+
 // Filter screenshots
 function matchName(name, pattern) {
   if (!pattern) return true;
@@ -96,7 +108,7 @@ function groupBySource(shots) {
     const key = s.source.type === 'example'
       ? s.source.project + (s.source.profile ? `:${s.source.profile}` : '')
       : s.source.type === 'url' ? `url:${s.source.url}`
-      : `local:${s.source.page || 'site'}`;
+      : `local:${s.source.path}`;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(s);
   }
@@ -332,7 +344,7 @@ async function takeScreenshot(page, shot, overridePath, overrideClip) {
 
 // Compress a PNG
 function compressPng(filePath) {
-  if (noCompress) return;
+  if (!shouldCompress) return;
   const compressScript = join(TOOLS_DIR, 'scripts', 'compress.js');
   execSync(`node "${compressScript}" "${filePath}"`, { stdio: 'inherit' });
 }
@@ -423,6 +435,13 @@ async function main() {
         }
       } else if (shots[0].source.type === 'url') {
         baseUrl = shots[0].source.url;
+      } else if (shots[0].source.type === 'local') {
+        const siteDir = resolve(REPO_ROOT, shots[0].source.path);
+        if (!dryRun) {
+          server = await startServer(siteDir);
+          baseUrl = server.url;
+          console.log(`  Serving ${siteDir} at ${baseUrl}`);
+        }
       }
 
       // Launch browser

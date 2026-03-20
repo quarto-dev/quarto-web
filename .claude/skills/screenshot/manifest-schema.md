@@ -31,7 +31,6 @@ Controls automatic dark variant capture.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `toggle` | string | CSS selector for the color scheme toggle button |
 | `ready` | string | CSS selector to wait for after switching to dark (e.g., `body.quarto-dark`) |
 | `readyLight` | string | CSS selector to wait for after switching back to light |
 | `settle` | number | Milliseconds to wait after dark mode switch |
@@ -66,7 +65,7 @@ Each entry in the `screenshots` array defines one screenshot to capture.
 
 Three source types:
 
-**`example`** — a local Quarto project in `tools/screenshots/examples/`:
+**`example`** — a Quarto project that capture.js will **render then serve**:
 ```json
 {
   "type": "example",
@@ -79,15 +78,21 @@ Three source types:
 - `page` — HTML page within the rendered site (optional, defaults to root)
 - `profile` — Quarto profile name (optional, renders with `--profile <name>`)
 
-**`url`** — a live URL:
+**`url`** — a live URL (no rendering or serving):
 ```json
 { "type": "url", "url": "https://example.com/page.html" }
 ```
 
-**`local`** — the quarto-web site itself (not yet used, reserved):
+**`local`** — an **already-rendered** site directory that capture.js will **serve only** (no rendering):
 ```json
-{ "type": "local", "page": "docs/websites/index.html" }
+{ "type": "local", "path": "_site", "page": "docs/websites/index.html" }
 ```
+- `path` — path to the rendered site directory (relative to repo root)
+- `page` — HTML page within the site (optional, defaults to root)
+
+Use `local` when you've already built the site (e.g., quarto-web's `_site/`) and just
+need to screenshot pages from it. Use `example` when capture.js should handle
+rendering the Quarto project.
 
 ### `capture`
 
@@ -216,6 +221,12 @@ capture.js processes each screenshot in this order:
    - Crop (`cropBottom` then `maxHeight`)
    - Compress (oxipng)
 8. Dark variant: reload page → switch to dark → repeat steps 3-7
+
+## Validation
+
+Run `npm run validate` to check manifest.json against the schema. Catches typos in
+field names, wrong types, and missing required fields. Also runs automatically at
+`capture.js` startup.
 
 ## Path Conventions
 

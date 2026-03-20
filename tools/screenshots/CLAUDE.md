@@ -24,19 +24,21 @@ then re-run `npm run capture`.
 
 Use `/screenshot` to walk through the process:
 
-1. Create or identify the source (example project in `examples/`, live URL, or local site)
+1. Create or identify the source (example project in `examples/`, live URL, or local path)
 2. Explore interactively with playwright-cli to determine viewport, element,
    interactions, and cleanup steps
 3. Encode the findings into a manifest.json entry
-4. Run `npm run capture` to produce the final image
-5. Verify output — iterate on manifest/example if needed
+4. Run `npm run validate` to check the manifest
+5. Run `npm run capture` to produce the final image
+6. Verify output — iterate on manifest/example if needed
 
 ## Tools
 
 | Tool | Role |
 |------|------|
 | `manifest.json` | Source of truth — defines all screenshots |
-| `npm run capture` | Execution — reads manifest, produces images |
+| `npm run capture` | Execution — reads manifest, validates, produces images |
+| `npm run validate` | Validate manifest.json against schema |
 | `/screenshot` + capture agent | Design — AI helps create/refine manifest entries and examples |
 | `playwright-cli` | Exploration — interactive browser for figuring out what to capture |
 | `npm run render` | Render example Quarto projects |
@@ -48,10 +50,21 @@ Use `/screenshot` to walk through the process:
 
 Single source of truth: `tools/screenshots/manifest.json`
 
+The manifest has a `$schema` key pointing to `manifest-schema.json` for VS Code
+autocompletion and hover descriptions. When adding new capture.js fields, update
+manifest-schema.json first.
+
+Schema validates structure only — invalid CSS selectors, missing files, and broken
+URLs still fail at runtime.
+
 Path conventions:
 - `output` — relative to repo root (e.g., `docs/websites/images/about-jolla.png`)
 - `source.project` — relative to `tools/screenshots/` (e.g., `examples/about-pages`)
+- `source.path` — relative to repo root (local source type, e.g., `_site`)
 - `doc.file` — relative to repo root
+
+Source types: `example` (Quarto project — render then serve), `url` (live URL — no
+render/serve), `local` (already-rendered site directory — serve only, no render).
 
 ## Dark Mode
 
@@ -211,7 +224,7 @@ Both can be combined. `cropBottom` is applied first, then `maxHeight`.
 - `npm run compress` — compresses all manifest outputs (runs oxipng if available)
 - `npm run compress -- file.png` — compress specific files
 - CI compresses all changed PNGs after merge (safety net)
-- `npm run capture` compresses by default (`--no-compress` to skip)
+- `npm run capture` compresses by default (`--no-compress` to skip, or `defaults.compress: false` in manifest)
 
 ## Environment
 

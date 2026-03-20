@@ -23,6 +23,7 @@ npm run capture -- --name navbar-tools   # specific
 npm run capture -- --name "about-*"      # glob pattern
 npm run capture -- --dry-run             # preview what would be captured
 npm run capture -- --list                # list manifest entries
+npm run validate                         # validate manifest against schema
 
 # Or from repo root:
 node tools/screenshots/capture.js
@@ -80,13 +81,15 @@ A CI workflow compresses changed PNGs after merge to main. Local install is opti
 ```
 tools/screenshots/
 ├── manifest.json          # screenshot definitions (single source of truth)
+├── manifest-schema.json   # JSON Schema for manifest validation + IDE autocompletion
 ├── capture.js             # replay script (uses Playwright API directly)
-├── package.json           # dependencies: playwright, open
+├── package.json           # dependencies: playwright, open, ajv, sharp
 ├── CLAUDE.md              # visual rules for Claude
 ├── SETUP.md               # this file
 ├── scripts/
 │   ├── help.js            # print available commands
 │   ├── list.js            # read + format manifest
+│   ├── validate.js        # manifest schema validation (CLI + importable)
 │   ├── render.js          # quarto render wrapper
 │   ├── serve.js           # static file server
 │   ├── open.js            # open file with OS default app
@@ -106,7 +109,7 @@ Each screenshot in `manifest.json` specifies:
 - `capture` — viewport, zoom, interactions, clip selectors, element selector
 - `doc` — which .qmd file references this image
 
-Dark mode works by clicking the Quarto color scheme toggle (`.quarto-color-scheme-toggle`). Example projects must have `theme: { light: cosmo, dark: darkly }` in `_quarto.yml`.
+Dark mode switches via `window.quartoToggleColorScheme()` (JS eval, not a CSS selector click). Example projects must have `theme: { light: cosmo, dark: darkly }` in `_quarto.yml`.
 
 Optional `capture.zoom` (e.g., `1.15`) applies CSS zoom before capture, making content larger and reducing blank space from element padding. About pages use zoom 1.15.
 

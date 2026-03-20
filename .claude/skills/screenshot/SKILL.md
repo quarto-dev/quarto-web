@@ -43,8 +43,8 @@ Gather these parameters (ask about unknowns, infer from context when obvious):
 
 | Parameter | Values / Notes |
 |-----------|---------------|
-| Source type | `url` (live site), `preview` (PR deploy), `example` (local Quarto project), `local` (quarto-web) |
-| Source detail | URL, preview path, or example project path (create minimal project if needed) |
+| Source type | `url` (live site), `example` (local Quarto project), `local` (pre-rendered site directory) |
+| Source detail | URL, example project path (create minimal project if needed), or pre-rendered site path |
 | Viewport | navbar=1440x400, sidebar=992x600, about=1200x900, full page=1440x900 |
 | Zoom | Default 1.0; use 1.15 for about pages or excess internal padding |
 | Element | CSS selector if capturing a specific element; omit for full viewport |
@@ -124,7 +124,8 @@ Phase B starts after the user approves the visual in Phase A and a manifest entr
 exists. Now run the automated capture pipeline and tune post-processing.
 
 1. Add the manifest entry to `tools/screenshots/manifest.json`
-2. Run `npm run capture -- --name <name>` to produce the screenshot
+2. Run `npm run validate` to check the manifest entry
+3. Run `npm run capture -- --name <name>` to produce the screenshot
 3. Show the user the output — ask them to verify visually
 4. If blank space remains, decide with the user:
    - **Uniform background edges?** → add `"trim": true`
