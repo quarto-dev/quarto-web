@@ -18,3 +18,11 @@ If you want to exclude a heading from the table of contents, add both the `.unnu
 ``` markdown
 ### More Options {.unnumbered .unlisted}
 ```
+
+::: {.content-visible when-meta="doc-type.typst"}
+The `toc-indent` option controls how far entries are indented in the displayed table of contents. The default is equivalent to:
+
+```{.yaml}
+toc-indent: 1.5em
+```
+:::
