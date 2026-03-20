@@ -122,10 +122,10 @@ the breadcrumb bar background in dark mode (darkly sets `$breadcrumb-bg: body-mi
 - nav-bar-hybrid-dropdown (light + dark) — element capture of `.navbar` at 1200px — `aa5a66072`, cherry-picked `90a0c1cdf`
 - `.include-dark` added on PR branch for all three (`241c9b3b8`)
 
-### Phase 5: .qmd updates + cleanup — TODO
-10. Add `.include-dark` to all image references
-11. Delete `examples/sidebar-tools/` (superseded)
-12. Commit
+### Phase 5: cleanup — REMAINING
+- `.include-dark` on all 9 images: DONE on PR branch (see .qmd Changes table)
+- Delete `examples/sidebar-tools/` (superseded by quarto-demo subtree): DONE
+- Final commit: TODO
 
 ## .qmd Changes Needed
 
