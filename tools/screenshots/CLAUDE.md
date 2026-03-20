@@ -44,6 +44,7 @@ Use `/screenshot` to walk through the process:
 | `npm run render` | Render example Quarto projects |
 | `npm run serve` | Serve rendered sites locally |
 | `npm run compress` | Compress PNGs with oxipng |
+| `npm run update-demo` | Pull latest quarto-demo subtree from upstream |
 | `npm run help` | Show available commands |
 
 ## Manifest
@@ -223,6 +224,17 @@ Both can be combined. `cropBottom` is applied first, then `maxHeight`.
 - `npm run compress -- file.png` — compress specific files
 - CI compresses all changed PNGs after merge (safety net)
 - `npm run capture` compresses by default (`--no-compress` to skip, or `defaults.compress: false` in manifest)
+
+## Example Site (quarto-demo subtree)
+
+`examples/quarto-demo/` is a git subtree of
+[quarto-dev/quarto-demo](https://github.com/quarto-dev/quarto-demo). To pull
+upstream changes:
+
+    npm run update-demo
+
+This runs `git subtree pull --squash` from the repo root. Extra args are passed
+through (e.g., `npm run update-demo -- --message "Update demo site"`).
 
 ## Environment
 
