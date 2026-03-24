@@ -22,10 +22,11 @@ You can create highly customized output with Typst by defining a new format base
 | [Letter](https://github.com/quarto-ext/typst-templates/tree/main/letter)       | `quarto use template quarto-ext/typst-templates/letter`    |
 | [Fiction](https://github.com/quarto-ext/typst-templates/tree/main/fiction)     | `quarto use template quarto-ext/typst-templates/fiction`   |
 | [Dept News](https://github.com/quarto-ext/typst-templates/tree/main/dept-news) | `quarto use template quarto-ext/typst-templates/dept-news` |
+| [orange-book](https://github.com/quarto-ext/orange-book)                       | Bundled; default for book projects                         |
 
 : {tbl-colwidths=\[20,80\]}
 
-The source code for these formats is available at <https://github.com/quarto-ext/typst-templates>.
+The source code for these formats is available at <https://github.com/quarto-ext/typst-templates> and <https://github.com/quarto-ext/orange-book>.
 
 ## Create a Format
 
@@ -50,6 +51,20 @@ Additional resources you might find useful when creating custom formats include:
 -   The official Typst tutorial on [Making a Template](https://typst.app/docs/tutorial/making-a-template/)
 
 -   List of third party templates from the [Awesome Typst](https://github.com/qjcg/awesome-typst#templates--libraries) repo.
+
+## Book Format Extensions
+
+{{< prerelease-callout 1.9 >}}
+
+A Typst book format extension includes template partials that configure the underlying Typst package, and a Lua filter that transforms Quarto's book structure into package-specific commands. The core partials are:
+
+-   `typst-show.typ` — imports the Typst package and applies its template with Quarto metadata
+-   `numbering.typ` — defines chapter-based numbering for equations, figures, callouts, and theorems, with appendix-aware transitions
+-   `page.typ` — configures page geometry
+
+The Lua filter uses `quarto.doc.file_metadata()` to detect book item types (parts, chapters, appendices) and emit the appropriate Typst code for each. Extensions can also integrate with the [marginalia](https://typst.app/universe/package/marginalia) package for margin notes with recto/verso page awareness.
+
+The bundled [orange-book extension](https://github.com/quarto-ext/orange-book) provides a complete example of this structure.
 
 ## Advanced Customization
 
@@ -78,3 +93,17 @@ contributes:
 Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/formats/typst/pandoc/quarto/template.typ) of the default template as a starting point for your `template.typ`. Note that you can call all of the template partials provided by Quarto (e.g. `biblio.typ()` or `notes.typ()`) from within your custom template implementation.
 
 The [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams) format provides an example of redefining the main template (in that case, it is to prevent automatic bibliography processing by Quarto in deference to the built-in handling of the Typst AMS template).
+
+## Bundling Typst Packages
+
+If your custom format uses packages from the Typst preview namespace (e.g., `@preview/cetz`), you can bundle them with your extension for offline use. The `quarto call typst-gather` command scans your template files for `@preview` imports and downloads the packages.
+
+From your extension directory, run:
+
+``` {.bash filename="Terminal"}
+quarto call typst-gather
+```
+
+The command auto-detects your `.typ` files from `_extension.yml` and downloads packages into your extension directory (e.g., `_extensions/myformat/typst/packages/`).
+
+For configuration options and advanced usage, see [Gathering Typst Packages](/docs/advanced/typst/typst-gather.qmd).

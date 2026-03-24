@@ -20,6 +20,12 @@ const readSchema = (file: string) => {
 // deno-lint-ignore no-explicit-any
 const formatAliases = (readSchema("format-aliases.yml") as any)["aliases"] as Record<string, string[]>;
 const allFormats = formatAliases["pandoc-all"];
+
+// Custom Quarto formats not in pandoc-all, mapped to their base Pandoc format
+const customFormatAliases: Record<string, string> = {
+  "hugo": "gfm",
+};
+
 const resolveFormats = (formats: string[]): string[] => {
   return distinct(formats
     .reduce((formats, format) => {
@@ -171,7 +177,12 @@ const writeDocumentOptions = (format: string, path: string) => {
 for (const file of expandGlobSync("docs/reference/formats/**/*.qmd")) {
   if (file.isFile) {
     const format = basename(file.name, ".qmd");
-    writeDocumentOptions(format, join(dirname(file.path), format + ".json"));
+    const lookupFormat = customFormatAliases[format] ?? format;
+    if (!allFormats.includes(lookupFormat)) {
+      console.warn(`Warning: format "${format}" not in pandoc-all and has no custom alias. Skipping.`);
+      continue;
+    }
+    writeDocumentOptions(lookupFormat, join(dirname(file.path), format + ".json"));
   }
 }
 

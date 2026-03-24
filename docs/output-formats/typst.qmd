@@ -1,8 +1,11 @@
 ---
 title: "Typst Basics"
 tbl-colwidths: [35,65]
-aliases: 
+aliases:
   - /docs/prerelease/1.4/typst.html
+pdf-standard-typst-examples: true
+doc-type:
+  typst: true
 # project:
 #   pre-render:
 #     - quarto run ../../tools/snapshot-typst.ts examples/gt-temps.qmd images/typst-tables-gt-temps.png
@@ -47,13 +50,13 @@ One of the highlights of Typst is the ease of creating highly customized templat
 
  Learn more about how to use them, and how to create your own in [Custom Formats](typst-custom.qmd).
 
+Typst is also supported for [book projects](/docs/books/book-output.qmd#typst-output).
+
 ## Known Limitations
 
 Since Typst is under active development, there are still some limitations to Quarto's Typst support:
 
 -   The default size of images may not reflect the behavior you are used to in other output formats. This is a problem that Typst, pandoc and Quarto are actively working to fix. In the meantime, you can manually [specify image widths](/docs/authoring/figures.qmd#figure-sizing).
-
--   Advanced page layout (e.g. using the `.column-*` classes as explained in [Article Layout](/docs/authoring/article-layout.qmd)) is not implemented.
 
 -   Various other small things might not yet be implemented. Please [let us know](https://github.com/quarto-dev/quarto-cli/issues/new/choose) if you see things that could use improvement!
 
@@ -129,27 +132,67 @@ To omit page numbers, set `page-numbering` to `false`:
 page-numbering: false
 ```
 
-{{< include /docs/output-formats/_document-options-toc.md >}}
+{{< include /docs/output-formats/_document-options-begin.md >}}
 
-The `toc-indent` option controls how far entries are indented in the displayed table of contents. The default is equivalent to:
+## Article Layout {#article-layout}
 
-```{.yaml}
-toc-indent: 1.5em
+Quarto's Typst format supports Tufte-style article layouts with margin content, full-width figures, and sidenotes, via the [Marginalia](https://typst.app/universe/package/marginalia) package. See [Article Layout](/docs/authoring/article-layout.qmd) for the complete guide to column classes and margin content.
+
+### Grid Customization
+
+You can customize the width of the margin and body columns using the `grid` option:
+
+``` yaml
+format:
+  typst:
+    grid:
+      margin-width: 2in
+      body-width: 4in
+      gutter-width: 0.25in
 ```
 
-{{< include /docs/output-formats/_document-options-section-numbering.md >}}
+| Option         | Description                                      |
+|----------------|--------------------------------------------------|
+| `margin-width` | Width of the margin note column                  |
+| `body-width`   | Width of the main text column                    |
+| `gutter-width` | Gap between body text and margin                 |
 
-You can also customize the display of the section numbers with the `section-numbering` YAML option. This option expects a string that describes the numbering schema. For example, the following schema describes numbering sections with numerals, subsection with uppercase letters, and subsubsections with lower case letters, using `.` as a separator:
+: Grid options for Typst {tbl-colwidths="[30,70]"}
 
-```yaml
----
-section-numbering: 1.A.a
----
+Note: `sidebar-width` does not apply to Typst output (there is no sidebar in PDF documents).
+
+For HTML grid customization, see [Page Layout - Grid Customization](/docs/output-formats/page-layout.qmd#grid-customization).
+
+### Margin Geometry
+
+For fine-grained control over margin layout, use the `margin-geometry` option. This directly configures the underlying [Marginalia](https://typst.app/universe/package/marginalia) package.
+
+``` yaml
+format:
+  typst:
+    margin-geometry:
+      outer:
+        far: 5mm
+        width: 2in
+        separation: 0.25in
+      inner:
+        far: 5mm
+        width: 0in
+        separation: 0in
+      clearance: 8pt
 ```
 
-You can read more about specifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
+| Option             | Description                                                |
+|--------------------|------------------------------------------------------------|
+| `outer.far`        | Distance from outer page edge to wideblock boundary        |
+| `outer.width`      | Width of the outer margin note column                      |
+| `outer.separation` | Gap between outer margin and body text                     |
+| `inner.*`          | Same options for inner margin (left side on recto pages)   |
+| `clearance`        | Minimum vertical spacing between margin notes (default 12pt)|
 
-{{< include /docs/output-formats/_code-annotation.md >}}
+: Margin geometry options {tbl-colwidths="[30,70]"}
+
+Quarto computes margin geometry based on `papersize`, using proportions from [Marginalia's](https://typst.app/universe/package/marginalia) A4 example.
 
 ## Bibliography
 
@@ -173,6 +216,27 @@ This gets compiled to
 #block(fill:luma(230), inset:8pt, radius:4pt,
 [This is a block with gray background and slightly rounded corners.])
 ````
+
+## Theorems
+
+{{< prerelease-callout 1.9 >}}
+
+Quarto uses the [theorion](https://typst.app/universe/package/theorion) package for theorems in Typst output. You can control the appearance of theorems, lemmas, proofs, and related blocks using the `theorem-appearance` option:
+
+``` yaml
+format:
+  typst:
+    theorem-appearance: fancy
+```
+
+| Appearance | Description |
+|------------|-------------|
+| `simple`   | Classic LaTeX-style theorems (default) |
+| `fancy`    | Colored boxes using brand colors |
+| `clouds`   | Rounded backgrounds |
+| `rainbow`  | Colored left border with colored title |
+
+The `fancy` appearance integrates with [`_brand.yml`](/docs/authoring/brand.qmd), using your brand colors for theorem boxes.
 
 ## Raw Typst 
 
@@ -245,6 +309,47 @@ For example, here is a temperature heatmap using `gt` in R, and `pandas` in Pyth
 Note that [named Typst colors](https://typst.app/docs/reference/visualize/color/#predefined-colors) will be preferred over [named CSS colors](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color). If you want exactly the same color in your HTML and Typst output, specify the color using `rgb()` or hexadecimal `#rrggbb` syntax.
 
 Typst does not support opacity as a filter, so opacity is simulated using the alpha channel of the color.
+
+{{< include _pdf-standard.md >}}
+
+::: callout-tip
+Typst also validates documents against the requested standard and will fail to produce a PDF if it detects non-compliance. Its validation is thorough but not as complete as veraPDF.
+:::
+
+### Image Alt Text
+
+Quarto passes alt text from markdown image `fig-alt` attributes to the `alt` parameter of Typst's `image()` function, making images accessible to screen readers. See [Figures](/docs/authoring/figures.qmd#alt-text) for details on specifying alt text.
+
+### Equation Alt Text {#equation-alt-text}
+
+Equations in Typst can include alternative text for screen readers.
+Alt text is supported for cross-referenced equations using the `alt` attribute in the equation label:
+
+```markdown
+$$
+E = mc^2
+$$ {#eq-einstein alt="Einstein's mass-energy equivalence equation"}
+```
+
+The `alt` attribute provides a plain-text description of the equation's meaning, which assistive technologies can read aloud.
+Mathematical notation is often inaccessible to screen readers by default, making this particularly valuable.
+
+::: {.callout-warning}
+## No alt text on inline equations
+It is not possible under Pandoc syntax to provide alt text for inline equations. Use a cross-referenced block/display equation for PDF accessibility in Typst.
+:::
+
+**Best practices for equation alt text:**
+
+- Describe what the equation represents, not just the symbols.
+- Use plain language that conveys the equation's purpose.
+- Keep descriptions concise but meaningful.
+
+| Equation                | Alt Text                                                 |
+| ----------------------- | -------------------------------------------------------- |
+| `E = mc^2`              | "Einstein's mass-energy equivalence equation"            |
+| `a^2 + b^2 = c^2`       | "Pythagorean theorem relating sides of a right triangle" |
+| `\frac{d}{dx}[f(g(x))]` | "Chain rule for derivatives"                             |
 
 ## Typst File (`.typ`)
 

@@ -3,6 +3,7 @@ library(stringr)
 library(glue)
 library(jsonlite)
 library(gh)
+library(yaml12)
 
 downloads <- path("docs", "download")
 
@@ -91,14 +92,55 @@ readLines(prerelease_page) |>
 
 old_abbr <- str_split(major_version, "\\.")[[1]] |> paste0(collapse = "")
 
-# Add new item to download-older listing in docs/download/index.qmd
+# Add or update item in download-older listing
+older_file <- path(downloads, "_download-older.yml")
 
-glue('
-\n- id: version{ old_abbr }
-  title: { old_release }
-  date: { format(as.Date(old_release_date), "%Y-%m-%d") }
-  path: https://github.com/quarto-dev/quarto-cli/releases/tag/v{ old_release }
-  changelog: "[Release Notes](changelog/{ major_version }/)"
-') |> 
-  cat(file = path(downloads, "_download-older.yml"), append = TRUE)
+# Preserve comment header, parse YAML data
+file_lines <- readLines(older_file)
+comment_lines <- file_lines[startsWith(file_lines, "#")]
+yaml_text <- file_lines[!startsWith(file_lines, "#")]
+entries <- parse_yaml(paste(yaml_text, collapse = "\n"))
+
+new_entry <- list(
+  id = paste0("version", old_abbr),
+  title = old_release,
+  date = format(as.Date(old_release_date), "%Y-%m-%d"),
+  path = paste0("https://github.com/quarto-dev/quarto-cli/releases/tag/v", old_release),
+  changelog = paste0("[Release Notes](changelog/", major_version, "/)")
+)
+
+# Upsert: update existing entry or append new one
+existing_idx <- which(vapply(entries, function(e) identical(e$title, old_release), logical(1)))
+
+if (length(existing_idx) > 0) {
+  entries[[existing_idx[1]]] <- new_entry
+  cat("Updated version", old_release, "in _download-older.yml\n")
+} else {
+  entries <- c(entries, list(new_entry))
+  cat("Added version", old_release, "to _download-older.yml\n")
+}
+
+# Write back: comments + formatted YAML
+writeLines(
+  c(comment_lines, format_yaml(entries)),
+  older_file
+)
+
+# Update version for prerelease-docs-url shortcode -------------------------
+# _quarto.yml tracks the stable release version. Bumping it here on the
+# prerelease branch means it propagates to main when prerelease is merged,
+# so the shortcode resolves blog post links to quarto.org.
+# _quarto-prerelease-docs.yml is bumped to the next prerelease for the
+# announcement banner on the prerelease site.
+
+readLines("_quarto.yml") |>
+  str_replace("^version: .*", paste0("version: '", new_release_major, "'")) |>
+  writeLines("_quarto.yml")
+
+readLines("_quarto-prerelease-docs.yml") |>
+  str_replace("^version: .*", paste0("version: '", new_prerelease_major, "'")) |>
+  writeLines("_quarto-prerelease-docs.yml")
+
+cat("Version: _quarto.yml ->", new_release_major,
+    ", _quarto-prerelease-docs.yml ->", new_prerelease_major, "\n")
 
