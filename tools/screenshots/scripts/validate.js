@@ -21,8 +21,8 @@ function formatErrors(errors) {
       const missingProp = err.params.missingProperty;
       return `${err.instancePath}: source requires "${missingProp}" field`;
     }
-    // if/then failures on source type — suppress the generic message, the required error above covers it
-    if (err.keyword === 'if' && err.instancePath.match(/\/screenshots\/\d+\/source$/)) {
+    // if/then failures — suppress the generic message, the required error above covers it
+    if (err.keyword === 'if' && err.instancePath.match(/\/screenshots\/\d+\/(source|capture\/interaction\/\d+)$/)) {
       return null;
     }
     return `${err.instancePath || '/'}: ${err.message}`;
