@@ -168,8 +168,10 @@ jobs:
             # Extract {output: doc.file} pairs, match against changed files
             IMAGE_PAGES=$(echo "$CHANGED" | jq -r --slurpfile manifest "$MANIFEST" '
               ($manifest[0].screenshots | map(select(.doc.file) | {(.output): .doc.file}) | add // {}) as $map |
-              [.[] | select(test("\\.png$")) | . as $img |
-                ($map[$img] // empty) | sub("\\.qmd$"; ".html")
+              [.[] | select(test("[.]png$")) |
+                # Normalize dark variants (foo-dark.png -> foo.png) for manifest lookup
+                sub("-dark[.]png$"; ".png") as $base |
+                ($map[$base] // empty) | sub("[.]qmd$"; ".html")
               ] | unique | .[]
             ')
             echo "pages<<EOF" >> "$GITHUB_OUTPUT"
