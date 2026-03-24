@@ -275,6 +275,9 @@ function darkOutputPath(outputPath) {
 // Switch to dark mode via JS (avoids toggle visibility issues at narrow viewports)
 async function switchToDark(page) {
   const darkConfig = manifest.defaults.dark;
+  if (!darkConfig?.ready) {
+    throw new Error('defaults.dark.ready must be configured when screenshots use "dark": true');
+  }
   await page.evaluate(() => {
     if (typeof window.quartoToggleColorScheme !== 'function') {
       throw new Error('quartoToggleColorScheme not found — page may not support dark mode');
@@ -290,6 +293,9 @@ async function switchToDark(page) {
 // Switch back to light mode
 async function switchToLight(page) {
   const darkConfig = manifest.defaults.dark;
+  if (!darkConfig?.ready) {
+    throw new Error('defaults.dark.ready must be configured when switching back to light');
+  }
   await page.evaluate(() => {
     if (typeof window.quartoToggleColorScheme !== 'function') {
       throw new Error('quartoToggleColorScheme not found — page may not support dark mode');

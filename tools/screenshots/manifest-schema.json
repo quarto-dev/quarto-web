@@ -67,7 +67,17 @@
           "type": "string",
           "description": "JavaScript for eval action."
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "action": { "enum": ["click", "hover", "wait", "scroll"] } } },
+          "then": { "required": ["selector"] }
+        },
+        {
+          "if": { "properties": { "action": { "const": "eval" } } },
+          "then": { "required": ["script"] }
+        }
+      ]
     },
     "spotlightConfig": {
       "type": "object",

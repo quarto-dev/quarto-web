@@ -23,7 +23,8 @@ const server = http.createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
   let filePath = path.join(dir, pathname);
   const resolved = path.resolve(filePath);
-  if (!resolved.startsWith(dir + path.sep) && resolved !== dir) {
+  const dirPrefix = dir.endsWith(path.sep) ? dir : dir + path.sep;
+  if (!resolved.startsWith(dirPrefix) && resolved !== dir) {
     res.writeHead(403);
     res.end('Forbidden');
     return;

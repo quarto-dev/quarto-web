@@ -63,7 +63,7 @@ Each entry in the `screenshots` array defines one screenshot to capture.
 
 ### `source`
 
-Three source types:
+Two source types:
 
 **`example`** — a Quarto project that capture.js will **render then serve**:
 ```json
