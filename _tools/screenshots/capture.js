@@ -13,7 +13,7 @@
 
 import { readFileSync, existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
-import { join, dirname, resolve } from 'node:path';
+import { join, dirname, resolve, normalize, sep } from 'node:path';
 import { execSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -334,6 +334,9 @@ async function computeClip(page, selectors) {
 // Take a screenshot (optionally override output path and/or clip)
 async function takeScreenshot(page, shot, overridePath, overrideClip) {
   const outputPath = overridePath || resolve(REPO_ROOT, shot.output);
+  if (!normalize(outputPath).startsWith(REPO_ROOT + sep)) {
+    throw new Error(`Output path escapes repo root: ${shot.output}`);
+  }
 
   if (shot.capture?.clip) {
     const clip = overrideClip || await computeClip(page, shot.capture.clip);
