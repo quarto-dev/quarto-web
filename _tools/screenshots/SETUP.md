@@ -13,7 +13,7 @@ Most screenshots already exist in the manifest. Install dependencies and run `ca
 
 ```bash
 # One-time: install dependencies and browser
-cd tools/screenshots
+cd _tools/screenshots
 npm install
 npx playwright install chromium
 
@@ -26,8 +26,8 @@ npm run capture -- --list                # list manifest entries
 npm run validate                         # validate manifest against schema
 
 # Or from repo root:
-node tools/screenshots/capture.js
-node tools/screenshots/capture.js --name navbar-tools
+node _tools/screenshots/capture.js
+node _tools/screenshots/capture.js --name navbar-tools
 ```
 
 ## Interactive with Claude Code
@@ -48,10 +48,10 @@ For debugging or figuring out what to capture interactively:
 
 ```bash
 # 1. Render example project
-quarto render tools/screenshots/examples/about-pages
+quarto render _tools/screenshots/examples/about-pages
 
 # 2. Serve the rendered site
-node tools/screenshots/scripts/serve.js tools/screenshots/examples/about-pages/_site
+node _tools/screenshots/scripts/serve.js _tools/screenshots/examples/about-pages/_site
 # → prints http://localhost:<port>
 
 # 3. In another terminal, capture
@@ -79,7 +79,7 @@ A CI workflow compresses changed PNGs after merge to main. Local install is opti
 ## File Structure
 
 ```
-tools/screenshots/
+_tools/screenshots/
 ├── manifest.json          # screenshot definitions (single source of truth)
 ├── manifest-schema.json   # JSON Schema for manifest validation + IDE autocompletion
 ├── capture.js             # replay script (uses Playwright API directly)

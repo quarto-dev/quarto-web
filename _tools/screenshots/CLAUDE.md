@@ -49,7 +49,7 @@ Use `/screenshot` to walk through the process:
 
 ## Manifest
 
-Single source of truth: `tools/screenshots/manifest.json`
+Single source of truth: `_tools/screenshots/manifest.json`
 
 The manifest has a `$schema` key pointing to `manifest-schema.json` for VS Code
 autocompletion and hover descriptions. When adding new capture.js fields, update
@@ -60,7 +60,7 @@ URLs still fail at runtime.
 
 Path conventions:
 - `output` — relative to repo root (e.g., `docs/websites/images/about-jolla.png`)
-- `source.project` — relative to `tools/screenshots/` (e.g., `examples/about-pages`)
+- `source.project` — relative to `_tools/screenshots/` (e.g., `examples/about-pages`)
 - `doc.file` — relative to repo root
 
 Source types: `example` (Quarto project — render then serve), `url` (live URL).
@@ -238,7 +238,7 @@ through (e.g., `npm run update-demo -- --message "Update demo site"`).
 
 ## Environment
 
-- `package.json` lives in `tools/screenshots/` — run `npm` commands from that directory
+- `package.json` lives in `_tools/screenshots/` — run `npm` commands from that directory
 - `QUARTO_CMD` env var to override quarto command (default: `quarto`)
 - Playwright is an npm dependency (no global install needed)
 - `playwright-cli -s=screenshot` for interactive exploration

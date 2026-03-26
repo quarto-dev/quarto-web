@@ -3,13 +3,13 @@
 // No AI needed — purely mechanical execution.
 //
 // Usage:
-//   node tools/screenshots/capture.js                     # all screenshots
-//   node tools/screenshots/capture.js --name navbar-tools # specific entry
-//   node tools/screenshots/capture.js --name "about-*"    # glob pattern
-//   node tools/screenshots/capture.js --dry-run            # show plan only
-//   node tools/screenshots/capture.js --no-compress        # skip oxipng
-//   node tools/screenshots/capture.js --verify              # open each image for review
-//   node tools/screenshots/capture.js --list               # list entries
+//   node _tools/screenshots/capture.js                     # all screenshots
+//   node _tools/screenshots/capture.js --name navbar-tools # specific entry
+//   node _tools/screenshots/capture.js --name "about-*"    # glob pattern
+//   node _tools/screenshots/capture.js --dry-run            # show plan only
+//   node _tools/screenshots/capture.js --no-compress        # skip oxipng
+//   node _tools/screenshots/capture.js --verify              # open each image for review
+//   node _tools/screenshots/capture.js --list               # list entries
 
 import { readFileSync, existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node tools/screenshots/scripts/open.js <file>
+// Usage: node _tools/screenshots/scripts/open.js <file>
 // Opens a file with the OS default application.
 
 import open from 'open';

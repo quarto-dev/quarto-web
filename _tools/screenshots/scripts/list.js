@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node tools/screenshots/scripts/list.js [--name <pattern>]
+// Usage: node _tools/screenshots/scripts/list.js [--name <pattern>]
 // Reads manifest.json and formats screenshot entries for Claude to read.
 
 import { readFileSync } from 'node:fs';

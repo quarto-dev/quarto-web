@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node tools/screenshots/scripts/serve.js <dir> [--port <port>]
+// Usage: node _tools/screenshots/scripts/serve.js <dir> [--port <port>]
 // Starts a static file server. Prints the URL to stdout.
 // Server runs in foreground (Ctrl+C to stop).
 

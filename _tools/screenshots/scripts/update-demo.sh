@@ -5,7 +5,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-PREFIX="tools/screenshots/examples/quarto-demo"
+PREFIX="_tools/screenshots/examples/quarto-demo"
 REMOTE="https://github.com/quarto-dev/quarto-demo"
 BRANCH="main"
 

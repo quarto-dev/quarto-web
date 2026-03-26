@@ -2,7 +2,7 @@
 # 1. Update JSON:
 # quarto dev-call cli-info > docs/cli/cli-info.json
 # 2. Generate .md with:
-# quarto run tools/reference-cli-generate-md.R
+# quarto run _tools/reference-cli-generate-md.R
 
 library(jsonlite)
 library(knitr)

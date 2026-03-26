@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node tools/screenshots/scripts/render.js <project-dir>
+// Usage: node _tools/screenshots/scripts/render.js <project-dir>
 // Renders a Quarto example project.
 // Set QUARTO_CMD env var to override the quarto command (default: "quarto").
 

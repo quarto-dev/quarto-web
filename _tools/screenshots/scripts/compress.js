@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Usage: node tools/screenshots/scripts/compress.js [<file.png> ...]
+// Usage: node _tools/screenshots/scripts/compress.js [<file.png> ...]
 // No args: compress all manifest outputs that exist on disk.
 // With args: compress the specified files.
 // Runs oxipng if available, silently skips otherwise.

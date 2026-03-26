@@ -1,6 +1,6 @@
 # Manifest Schema Reference
 
-The manifest file (`tools/screenshots/manifest.json`) is the single source of truth
+The manifest file (`_tools/screenshots/manifest.json`) is the single source of truth
 for all screenshot definitions. This document describes every field.
 
 ## Top-Level Structure
@@ -74,7 +74,7 @@ Two source types:
   "profile": "reader-mode"
 }
 ```
-- `project` — path relative to `tools/screenshots/`
+- `project` — path relative to `_tools/screenshots/`
 - `page` — HTML page within the rendered site (optional, defaults to root)
 - `profile` — Quarto profile name (optional, renders with `--profile <name>`)
 
@@ -220,5 +220,5 @@ field names, wrong types, and missing required fields. Also runs automatically a
 ## Path Conventions
 
 - `output` — relative to repo root (e.g., `docs/websites/images/about-jolla.png`)
-- `source.project` — relative to `tools/screenshots/` (e.g., `examples/about-pages`)
+- `source.project` — relative to `_tools/screenshots/` (e.g., `examples/about-pages`)
 - `doc.file` — relative to repo root

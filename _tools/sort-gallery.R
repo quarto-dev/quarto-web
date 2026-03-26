@@ -1,6 +1,6 @@
 # Reorder gallery YAML file -----------------------------------
 ## Example command
-##    quarto run .\tools\sort-gallery.R docs\extensions\listings\journal-articles.yml  
+##    quarto run .\_tools\sort-gallery.R docs\extensions\listings\journal-articles.yml  
 
 
 args <- commandArgs(trailingOnly = TRUE)

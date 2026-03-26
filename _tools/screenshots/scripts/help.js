@@ -5,7 +5,7 @@ console.log(`
 Screenshot tooling for quarto-web
 ==================================
 
-Commands (run from tools/screenshots/):
+Commands (run from _tools/screenshots/):
 
   npm run capture                        Capture all screenshots from manifest
   npm run capture -- --name <pattern>    Capture specific entry (supports globs)

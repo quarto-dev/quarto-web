@@ -1,7 +1,7 @@
 ---
 name: capturing-screenshots
 description: Capture or update documentation screenshots for the Quarto website using Playwright. Use when screenshots need refreshing, new screenshots are needed for docs pages, or the user mentions screenshots, screen captures, or visual documentation.
-allowed-tools: Bash(node tools/screenshots/*), Bash(npm.cmd *), Bash(cat *), Bash(playwright-cli *), Bash(oxipng *), Agent
+allowed-tools: Bash(node _tools/screenshots/*), Bash(npm.cmd *), Bash(cat *), Bash(playwright-cli *), Bash(oxipng *), Agent
 ---
 
 ## Setup
@@ -9,15 +9,15 @@ allowed-tools: Bash(node tools/screenshots/*), Bash(npm.cmd *), Bash(cat *), Bas
 When this skill loads, run these commands to gather context:
 
 1. **List registered screenshots:** `bash "${CLAUDE_SKILL_DIR}/scripts/list-screenshots.sh"`
-2. **Read visual rules:** `cat tools/screenshots/CLAUDE.md`
+2. **Read visual rules:** `cat _tools/screenshots/CLAUDE.md`
 3. **Read capture agent reference:** `cat "${CLAUDE_SKILL_DIR}/capture-agent.md"`
 4. **Read manifest schema:** `cat "${CLAUDE_SKILL_DIR}/manifest-schema.md"`
 
 **Working directory:** `npm run` commands (`render`, `capture`, `compress`) work from
-any directory — they resolve paths from `tools/screenshots/package.json`. Direct
-`node scripts/...` calls and `playwright-cli` must run from `tools/screenshots/` or
+any directory — they resolve paths from `_tools/screenshots/package.json`. Direct
+`node scripts/...` calls and `playwright-cli` must run from `_tools/screenshots/` or
 use absolute paths. Be careful not to double up path segments if you've already `cd`'d
-into `tools/screenshots/`.
+into `_tools/screenshots/`.
 
 ## Instructions
 
@@ -27,7 +27,7 @@ You are the screenshot orchestrator. The list output shows all registered screen
 
 1. Ask which screenshots to update (or "all")
 2. Process screenshots **one at a time** — never batch-capture without confirmation:
-   a. Render: `node tools/screenshots/scripts/render.js <project-path>` (can batch-render all profiles upfront)
+   a. Render: `node _tools/screenshots/scripts/render.js <project-path>` (can batch-render all profiles upfront)
    b. Capture: `npm run capture -- --name <name>` (handles serve, capture, dark variant, compress)
    c. Show the user the output image(s) using the Read tool
    d. **STOP and wait for explicit confirmation** before proceeding to the next screenshot
@@ -61,8 +61,8 @@ Use playwright-cli to explore the page interactively and nail down the visual.
 Phase A ends when the user approves the screenshot visual.
 
 1. Create example project if needed
-2. Render: `node tools/screenshots/scripts/render.js <project-path>` (add `--profile <name>` if needed)
-3. Serve the **rendered output directory**: `node tools/screenshots/scripts/serve.js <output-dir>`
+2. Render: `node _tools/screenshots/scripts/render.js <project-path>` (add `--profile <name>` if needed)
+3. Serve the **rendered output directory**: `node _tools/screenshots/scripts/serve.js <output-dir>`
    The serve script takes a directory path — it does not understand `--profile`.
    For default renders, the output is `_site/` inside the project. For profiled renders,
    it's `docs-<profile>/` (e.g., `examples/navbar-basic/docs-reader-mode`). Check the
@@ -123,7 +123,7 @@ let the user decide.
 Phase B starts after the user approves the visual in Phase A and a manifest entry
 exists. Now run the automated capture pipeline and tune post-processing.
 
-1. Add the manifest entry to `tools/screenshots/manifest.json`
+1. Add the manifest entry to `_tools/screenshots/manifest.json`
 2. Run `npm run validate` to check the manifest entry
 3. Run `npm run capture -- --name <name>` to produce the screenshot
 3. Show the user the output — ask them to verify visually
