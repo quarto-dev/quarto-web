@@ -100,7 +100,7 @@ Documents running python with the Knitr engine will go through **reticulate**. *
 The tablular data on options listed in the [Reference section](https://quarto.org/docs/reference/) are generated automatically by running:
 
 ```
-quarto run tools/reference.ts
+quarto run _tools/reference.ts
 ```
 
 This builds the `.json` files in `docs/references` based on the [Quarto CLI schema](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/schema). The script assumes you have `quarto-cli/` at the same level in your directory structure as `quarto-web/`.
