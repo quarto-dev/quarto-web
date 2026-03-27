@@ -1,0 +1,65 @@
+---
+title: "Knitr Basics"
+author: "Jane Doe"
+date: "March 22nd, 2021"
+toc: true
+format:
+  html:
+    html-math-method: katex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+::: {.callout-tip}
+## Learn more
+See the full guide on [Using R with Quarto](https://quarto.org/docs/computations/r.html) and [Knitr Code Cells](https://quarto.org/docs/reference/cells/cells-knitr.html).
+:::
+
+## Introduction
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Plot Output
+
+You can also embed plots, for example:
+
+```{r pressure, message=FALSE}
+#| code-fold: true
+library(ggplot2)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) + 
+    geom_smooth() 
+```
+
+Note that the `code-fold: true` parameter was added to the code chunk to hide the code by default (click the "Code" above to see the code).
+
+## Interactive Plots
+
+You can also add interactive plots. For example:
+
+```{r, fig.width=7, fig.height=4}
+library(dygraphs)
+dygraph(nhtemp, main = "New Haven Temperatures") %>% 
+  dyRangeSelector(dateWindow = c("1920-01-01", "1960-01-01"))
+```
+
+## LaTeX Math
+
+You can also include LaTeX math:
+
+$$
+P\left(A=2\middle|\frac{A^2}{B}>4\right)
+$$
+
