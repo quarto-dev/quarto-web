@@ -148,21 +148,45 @@ jobs:
           base_sha: ${{ github.event.pull_request.base.sha || steps.pr-info.outputs.base_sha }}
           files: |
             # don't consider modifications on file used for includes for now.
-            license.md
+            license.qmd
             docs/**/[^_]*.qmd
             docs/**/[^_]*.md
             docs/extensions/listings/*.yml
             docs/reference/**/*.json
             docs/cli/*.json
+            docs/**/images/*.png
           json: true
           escape_json: false
       
+      - name: Map changed images to doc pages
+        id: image-pages
+        run: |
+          # Build JSON mapping from image output paths to doc pages using manifest
+          MANIFEST="_tools/screenshots/manifest.json"
+          CHANGED='${{ steps.changed-files.outputs.all_changed_files }}'
+          if [ -f "$MANIFEST" ]; then
+            # Extract {output: doc.file} pairs, match against changed files
+            IMAGE_PAGES=$(echo "$CHANGED" | jq -r --slurpfile manifest "$MANIFEST" '
+              ($manifest[0].screenshots | map(select(.doc.file) | {(.output): .doc.file}) | add // {}) as $map |
+              [.[] | select(test("[.]png$")) |
+                # Normalize dark variants (foo-dark.png -> foo.png) for manifest lookup
+                sub("-dark[.]png$"; ".png") as $base |
+                ($map[$base] // empty) | sub("[.]qmd$"; ".html")
+              ] | unique | .[]
+            ')
+            echo "pages<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$IMAGE_PAGES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
       - name: Create custom PR comment
         if: github.event.pull_request || github.event.issue.pull_request
         uses: actions/github-script@v8
         env:
           DEPLOY_URL: ${{ steps.netlify-deploy.outputs.deploy-url }}
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          IMAGE_PAGES: ${{ steps.image-pages.outputs.pages }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -234,6 +258,19 @@ jobs:
                     const rest = basenames.length > 3 ? `, +${basenames.length - 3} more` : '';
                     commentBody += `- [${page}](${fileUrl}) (${shown}${rest})\n`;
                   }
+                }
+              }
+            }
+
+            // Add pages affected by changed screenshots
+            const imagePages = (process.env.IMAGE_PAGES || '').trim();
+            if (imagePages) {
+              const pages = [...new Set(imagePages.split('\n').filter(Boolean))];
+              if (pages.length > 0) {
+                commentBody += `\n### 🖼️ Pages with Updated Screenshots\n\n`;
+                for (const page of pages) {
+                  const fileUrl = `${deployUrl}/${page}`;
+                  commentBody += `- [${page}](${fileUrl})\n`;
                 }
               }
             }
