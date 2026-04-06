@@ -1,0 +1,50 @@
+---
+title: "What's next: Quarto 2"
+author: Carlos Scheidegger
+date: "2026-04-06"
+image: thumbnail.png
+image-alt: "Quarto 2.0"
+---
+
+TL;DR:
+
+- We've started working on Quarto 2, a full rewrite of the Quarto project in Rust.
+- It will ship with collaborative editing support based on [automerge](https://automerge.org).
+- The GitHub repo is [`quarto-dev/q2`](https://github.com/quarto-dev/q2/).
+
+We're excited to share an early look at Quarto 2. You might be aware that we [recently released Quarto 1.9](/docs/blog/posts/2026-03-24-1.9-release/), with support for long-standing requests such as PDF accessibility. Quarto is an excellent choice for authors of scientific and technical documents, and the amount and quality of the work you create with it is genuinely humbling for us. Before anything else, we want to thank you for using Quarto; you're all quite literally the reason we build it. So, what's Quarto 2?
+
+**Quarto 2 is a full rewrite of the Quarto CLI, written from the ground up in Rust** to better support your existing use cases, and enable a number of new, exciting use cases. Most importantly, Quarto 2 will include a built-in collaborative editor, and we plan on adding support for collaborative writing in Posit's commercial products such as Posit Cloud, Connect, and Workbench. With that said, the design of those integrations is still taking shape.
+
+It is also very early in the project. If you interact with the Quarto project solely as a user of the tool, nothing in your workflow will change, and you should proceed as if you didn't know about our plans for Quarto 2. **We don't expect to have a public release of Quarto 2 for at least 6 months. In addition, we will continue to develop and maintain parallel versions until Quarto 2 is a suitable replacement for users of Quarto 1**.
+
+Just like Quarto 1, Quarto 2 is open source and MIT licensed. The GitHub repository for Quarto 2 is currently [`quarto-dev/q2`](https://github.com/quarto-dev/q2).
+
+## Why Quarto 2?
+
+There are some fundamental pain points in Quarto 1 that can't be solved incrementally. The goal of Quarto 2 is not to change how you currently work with Quarto; instead, we've arrived at a point where incremental improvements do not provide the value you deserve given our team size and constraints. These are some of the things we want to do in Quarto 2:
+
+- **A new Markdown parser enables tighter integration with editors for the entire rendering pipeline**.
+  We know that good error messages, autocompletion, and YAML validation are some of your favorite features in Quarto 1. Quarto has about 1,000 different YAML configuration options, and we know how important it is to be able to provide good error messages. We want to extend this same idea to _everything_ in your Quarto project: Markdown syntax errors, Lua filter errors, broken links, etc. Whenever possible, these should be flagged in your editor of choice.
+
+- **A fundamental solution for long-standing performance problems**. 
+  Quarto 1 is built by integrating a number of tools that work very well in isolation, but aren't designed to be performant when used together. A full rewrite of the Quarto core functionality in a single programming language will enable us to provide much better performance than before.
+
+- **A collaborative editor**.
+  Quarto 2 will ship with a collaborative editor designed to work directly on the web as well as on the command-line. Keeping in the tradition and ethos of the Quarto project, this will include a robust open-source foundation based on [automerge](https://automerge.org), as well as a commercial solution for hosted project management. This follows the relationship between Quarto 1 and its integration with other Posit commercial offerings.
+
+- **A visual editor that works well alongside a source editor**.
+  The visual editor we ship in RStudio, VS Code, and Positron works well if everyone working on the document is using the visual editor. On the other hand, if you choose the visual editor, but your colleague chooses the source editor, then you'll find that the experience is full of sharp edges. Quarto 2 is built from the ground up to support _bidirectional_ editing workflows. A small change in your document using the visual editor shouldn't cause a large change in the `.qmd` file that is disruptive for your colleagues using a source editor.
+
+- **Support for Quarto 1 projects**.
+  We aim for Quarto 2 to be backwards compatible with Quarto 1. Concretely, we're aiming to incorporate our Quarto 1 test suite directly into Quarto 2's project, including support for Pandoc and its output formats that our community depends on. Your existing extensions and projects should just work in Quarto 2. Early on, there will be gaps, and Quarto 2 will initially be a better fit for new projects.
+
+## What happens to Quarto 1 development?
+
+It's not going anywhere, and will be in active development for at least the next year. We'll still provide bugfixes, and accept pull requests.
+
+## Current status
+
+The development is happening in a [separate GitHub repository](https://github.com/quarto-dev/q2). Feel free to look around! However, this code base isn't ready for public consumption, and is very much in flux: that means we're not going to spend a lot of time answering architectural questions about it until things have settled, and all discussion of Quarto should remain in our current discussion forum and issue tracker.
+
+There are big, interesting changes in the Quarto 2 architecture, and they deserve a longer exposition. We are working on those documents right now, and will share them with you in the next few weeks. Stay tuned!
