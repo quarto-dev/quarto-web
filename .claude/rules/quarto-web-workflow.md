@@ -8,6 +8,3 @@
 
 Always PR to `main` first for shared content. Never PR directly to `prerelease` for changes that apply to both stable and prerelease.
 
-## Remotes
-
-Push PR branches to `upstream` (quarto-dev/quarto-web), not `origin`.
