@@ -1,4 +1,4 @@
-Updates an extension or global dependency (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF).
+Updates an extension or global dependency (TinyTeX, Chromium (deprecated), Chrome Headless Shell, VeraPDF).
 
 ``` {.bash}
 quarto update [target...]
@@ -115,12 +115,6 @@ quarto update tool tinytex
 
 ``` {.bash filename='Terminal'}
 quarto update tool chrome-headless-shell
-```
-
-### Update Chromium (legacy)
-
-``` {.bash filename='Terminal'}
-quarto update tool chromium
 ```
 
 ### Choose tool to update
