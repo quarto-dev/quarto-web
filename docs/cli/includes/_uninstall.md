@@ -1,4 +1,4 @@
-Uninstalls a global dependency (TinyTeX, Chromium, Chrome Headless Shell, VeraPDF).
+Uninstalls a global dependency (TinyTeX, Chromium (deprecated), Chrome Headless Shell, VeraPDF).
 
 ``` {.bash}
 quarto uninstall [tool]
@@ -97,11 +97,5 @@ quarto uninstall tinytex
 
 ``` {.bash filename='Terminal'}
 quarto uninstall chrome-headless-shell
-```
-
-### Uninstall Chromium (legacy)
-
-``` {.bash filename='Terminal'}
-quarto uninstall chromium
 ```
 
