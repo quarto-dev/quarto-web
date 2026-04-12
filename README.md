@@ -171,4 +171,4 @@ Our GitHub Action workflows are documented in [`.github/workflows/README.md`](.g
 
 ## Style Guide
 
-You can find some style guidance in [style-guide.md](style-guide.md).
+You can find some style guidance in [_style-guide.md](_style-guide.md).
