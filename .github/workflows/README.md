@@ -21,6 +21,7 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
   - They are automically created and updated when the PR is created and updated by a user with Contributor role. 
   - For external PR, the preview can be triggered by adding a comment `/deploy-preview` on the PR.
   - Any rendering to prerelease also uses a specific profile at render time, set in action using `QUARTO_PROFILE` environment variable.
+  - Deploy previews use the `pr-preview` profile (`_quarto-pr-preview.yml`) which sets `draft-mode: visible` so that draft blog posts and pages are rendered and visible in PR previews. This is needed because `quarto render` (used in CI) hides drafts by default, unlike `quarto preview` (used locally) which always shows them.
 
 - `update-downloads.yml` - This workflow is triggered by a cron schedule. It retrieves information about latest release and prerelease on `quarto-dev/quarto-cli` repository and updates the download links on the website.
   - If there is a new version detected, it will commit the modified files and trigger a deploy of the website calling `publish.yml` workflow with `workflow_call` event trigger.
