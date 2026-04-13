@@ -59,6 +59,7 @@ Guest authors use structured form with `name:` and optional `url:`.
 `Tip`, `Extensions`, `Tables`, `Teaching`, `Jupyter`.
 
 **image / image-alt**: `thumbnail.png` preferred. `image-alt` is mandatory.
+See `references/thumbnail-guide.md` for dimensions, visual style, and design patterns.
 
 **Optional**: `lightbox: true` (many screenshots), `draft: true` (while developing).
 Do not use `subtitle:` (phased out after 2023).
