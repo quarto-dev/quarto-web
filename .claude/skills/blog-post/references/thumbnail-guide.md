@@ -51,9 +51,34 @@ Confluence logo). No Quarto branding needed — the partner identity is the visu
 
 ## Creating Thumbnails
 
-When you can't create the thumbnail yourself (e.g., no image generation tool available),
-note clearly what's needed and describe the intended design. The design should match the
-post type conventions above.
+### HTML/CSS + screenshot approach (recommended)
 
-For feature posts, a good default is: steel blue background + 2-3 white outline icons
-that represent the feature's concepts, at 1200x630 px.
+Create an HTML file sized to 1200x630 with the design, then screenshot it:
+
+1. **Source SVG icons** — good free sources:
+   - [svgrepo.com](https://www.svgrepo.com) — many Public Domain (PD) icons, no attribution needed
+   - [icon-icons.com](https://icon-icons.com) — CC BY 4.0 icons, attribution required
+2. **Build an HTML file** — set `body` to 1200x630 with the steel blue background,
+   embed SVG icons inline (recolor fills to white as needed), use flexbox for layout
+3. **Screenshot at 1200x630** — use `agent-browser` with viewport set to 1200x630:
+   ```bash
+   agent-browser set viewport 1200 630
+   agent-browser open file:///path/to/thumbnail.html
+   agent-browser screenshot /path/to/thumbnail.png
+   ```
+4. **Clean up** — delete the HTML source, keep only the PNG
+
+The Quarto logo SVG is at the repo root: `quarto-icon.svg`.
+
+### Attribution
+
+When using third-party icons, add an attribution line at the very end of the post
+(after the last content section). Match the format used in existing posts:
+
+```markdown
+The [icon description] in the [listing and social card image](thumbnail.png) for this
+post is by [Author](url){.external} via [source](url){.external}.
+License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/){.external}
+```
+
+Public Domain icons (e.g., from svgrepo.com PD collection) need no attribution.
