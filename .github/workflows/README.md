@@ -35,11 +35,23 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
   - This index file is retrieved on deployed website to be updated on Algolia.
   - Both `quarto.org` and `prerelease.quarto.org` indexes are updated in the same run - they each use one specific algolia index
 
+- `draft-check.yml` - A lightweight workflow that detects `draft: true` pages among changed `.qmd` files. Runs on all PRs to `main` and `prerelease` with no `paths-ignore`, so it always creates a status check. 
+  - Uses the reusable composite action at `.github/workflows/actions/detect-drafts/`.
+  - Configured as a required status check on `main` (`check-drafts` job), blocking merge until `draft: true` is removed.
+  - Admin override is available for intentional draft merges.
+
 - `port-to-prerelease.yml` - This workflow is used to sync changes made to main for quarto.org to prerelease branch for prerelease.quarto.org. 
   - It is triggered when a PR is merged in to `main`. It can also be triggered manually by adding a comment `/sync-prerelease` on a merged PR.
   - This workflow uses [`korthout/backport-action`](https://github.com/korthout/backport-action) to create a PR with the changes merged into `main` branch to be synced to `prerelease` branch.
   - It will also write a new `/deploy-preview` comment in the new PR to trigger the preview deployment from `preview.yml`.
   - This is possible because it uses a fine-grained PAT token which allows a workflow to trigger another using usual event (GITHUB_TOKEN does not allow that usually). This is configured in repo secrets.
+
+## Reusable Composite Actions
+
+Local composite actions live in `.github/workflows/actions/`:
+
+- `detect-drafts/` - Scans changed `.qmd` files for `draft: true` in YAML frontmatter. Outputs `found` (true/false) and `files` (newline-separated paths). Used by both `preview.yml` (to tag drafts in the PR comment) and `draft-check.yml` (to fail the required check).
+- `release-info/` - Retrieves release information from the quarto-cli repository.
 
 ## Netlify Configurations
 
