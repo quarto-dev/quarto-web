@@ -1,5 +1,5 @@
 name: 'Detect Draft Pages'
-description: 'Scan changed .qmd files for draft: true in YAML frontmatter'
+description: 'Scan changed .qmd and .md files for draft: true in YAML frontmatter'
 inputs:
   changed-files:
     description: 'JSON array of changed file paths (from tj-actions/changed-files)'
@@ -15,11 +15,12 @@ runs:
   using: composite
   steps:
     - id: detect
+      env:
+        CHANGED_FILES: ${{ inputs.changed-files }}
       run: |
-        CHANGED='${{ inputs.changed-files }}'
-        DRAFTS=$(echo "$CHANGED" | jq -r '.[]' | while read -r file; do
-          if [[ "$file" == *.qmd ]] && [ -f "$file" ]; then
-            if sed -n '/^---$/,/^---$/p' "$file" | grep -qE '^\s*draft:\s*true\s*$'; then
+        DRAFTS=$(echo "$CHANGED_FILES" | jq -r '.[]' | while read -r file; do
+          if [[ "$file" == *.qmd || "$file" == *.md ]] && [ -f "$file" ]; then
+            if sed -n '/^---$/,/^---$/p' "$file" | grep -qE '^[[:space:]]*draft:[[:space:]]*true[[:space:]]*$'; then
               echo "$file"
             fi
           fi
