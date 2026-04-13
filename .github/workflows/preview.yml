@@ -184,25 +184,9 @@ jobs:
 
       - name: Detect draft pages
         id: detect-drafts
-        run: |
-          CHANGED='${{ steps.changed-files.outputs.all_changed_files }}'
-          DRAFTS=$(echo "$CHANGED" | jq -r '.[]' | while read -r file; do
-            if [[ "$file" == *.qmd ]] && [ -f "$file" ]; then
-              # Check for draft: true in YAML frontmatter (between --- markers)
-              if sed -n '/^---$/,/^---$/p' "$file" | grep -qE '^\s*draft:\s*true\s*$'; then
-                echo "$file"
-              fi
-            fi
-          done)
-          if [ -n "$DRAFTS" ]; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "files<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$DRAFTS" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-          fi
-        shell: bash
+        uses: ./.github/workflows/actions/detect-drafts
+        with:
+          changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Create custom PR comment
         if: github.event.pull_request || github.event.issue.pull_request
@@ -326,21 +310,3 @@ jobs:
               body: commentBody
             });
 
-      - name: Report draft status check
-        if: github.event.pull_request || github.event.issue.pull_request
-        uses: actions/github-script@v8
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const hasDrafts = '${{ steps.detect-drafts.outputs.found }}' === 'true';
-            const sha = '${{ github.event.pull_request.head.sha || github.sha }}';
-            await github.rest.repos.createCommitStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: sha,
-              state: hasDrafts ? 'failure' : 'success',
-              context: 'No draft pages',
-              description: hasDrafts
-                ? 'This PR contains pages with draft: true'
-                : 'No draft pages detected',
-            });
