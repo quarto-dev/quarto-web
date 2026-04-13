@@ -289,18 +289,11 @@ jobs:
               }
             }
 
-            // Add draft pages warning
+            // Add draft warning callout (no file list — already tagged inline above)
             const hasDrafts = process.env.HAS_DRAFTS === 'true';
-            const draftFiles = (process.env.DRAFT_FILES || '').trim();
-            if (hasDrafts && draftFiles) {
-              const drafts = draftFiles.split('\n').filter(Boolean);
-              commentBody += `\n### ⚠️ Draft Pages\n\n`;
-              commentBody += `> [!WARNING]\n`;
-              commentBody += `> This PR contains pages with \`draft: true\`. Remove the draft status before merging if the content is ready to publish.\n\n`;
-              for (const file of drafts) {
-                const fileUrl = `${deployUrl}/${file.replace(/\.(qmd|md)$/, '.html')}`;
-                commentBody += `- [${file}](${fileUrl}) — \`draft: true\`\n`;
-              }
+            if (hasDrafts) {
+              commentBody += `\n> [!WARNING]\n`;
+              commentBody += `> This PR contains pages with \`draft: true\`. Remove the draft status before merging if the content is ready to publish.\n`;
             }
 
             await github.rest.issues.createComment({
