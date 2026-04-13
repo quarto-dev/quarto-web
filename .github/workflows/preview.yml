@@ -182,6 +182,28 @@ jobs:
           fi
         shell: bash
 
+      - name: Detect draft pages
+        id: detect-drafts
+        run: |
+          CHANGED='${{ steps.changed-files.outputs.all_changed_files }}'
+          DRAFTS=$(echo "$CHANGED" | jq -r '.[]' | while read -r file; do
+            if [[ "$file" == *.qmd ]] && [ -f "$file" ]; then
+              # Check for draft: true in YAML frontmatter (between --- markers)
+              if sed -n '/^---$/,/^---$/p' "$file" | grep -qE '^\s*draft:\s*true\s*$'; then
+                echo "$file"
+              fi
+            fi
+          done)
+          if [ -n "$DRAFTS" ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$DRAFTS" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
       - name: Create custom PR comment
         if: github.event.pull_request || github.event.issue.pull_request
         uses: actions/github-script@v8
@@ -189,12 +211,16 @@ jobs:
           DEPLOY_URL: ${{ steps.netlify-deploy.outputs.deploy-url }}
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           IMAGE_PAGES: ${{ steps.image-pages.outputs.pages }}
+          DRAFT_FILES: ${{ steps.detect-drafts.outputs.files }}
+          HAS_DRAFTS: ${{ steps.detect-drafts.outputs.found }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
             const deployUrl = process.env.DEPLOY_URL;
             const changedFiles = JSON.parse(process.env.CHANGED_FILES || '[]');
+            const draftFilesList = (process.env.DRAFT_FILES || '').trim().split('\n').filter(Boolean);
+            const draftSet = new Set(draftFilesList);
 
             let commentBody = `## 📝 Preview Deployment\n\n`;
             commentBody += `🔍 Full site preview: [${deployUrl}](${deployUrl})\n\n`;
@@ -251,14 +277,16 @@ jobs:
                 commentBody += `### 🔄 Modified Documents\n\n`;
                 for (const [page, files] of pageToFiles) {
                   const fileUrl = `${deployUrl}/${page}`;
+                  const isDraft = files.some(f => draftSet.has(f));
+                  const draftTag = isDraft ? ' — ⚠️ `draft`' : '';
                   if (files.length === 1) {
-                    commentBody += `- [${page}](${fileUrl})\n`;
+                    commentBody += `- [${page}](${fileUrl})${draftTag}\n`;
                   } else {
                     // Multiple source files map to one page - show page with file summary
                     const basenames = files.map(f => f.split('/').pop());
                     const shown = basenames.slice(0, 3).join(', ');
                     const rest = basenames.length > 3 ? `, +${basenames.length - 3} more` : '';
-                    commentBody += `- [${page}](${fileUrl}) (${shown}${rest})\n`;
+                    commentBody += `- [${page}](${fileUrl}) (${shown}${rest})${draftTag}\n`;
                   }
                 }
               }
@@ -277,9 +305,42 @@ jobs:
               }
             }
 
-            github.rest.issues.createComment({
+            // Add draft pages warning
+            const hasDrafts = process.env.HAS_DRAFTS === 'true';
+            const draftFiles = (process.env.DRAFT_FILES || '').trim();
+            if (hasDrafts && draftFiles) {
+              const drafts = draftFiles.split('\n').filter(Boolean);
+              commentBody += `\n### ⚠️ Draft Pages\n\n`;
+              commentBody += `> [!WARNING]\n`;
+              commentBody += `> This PR contains pages with \`draft: true\`. Remove the draft status before merging if the content is ready to publish.\n\n`;
+              for (const file of drafts) {
+                const fileUrl = `${deployUrl}/${file.replace(/\.(qmd|md)$/, '.html')}`;
+                commentBody += `- [${file}](${fileUrl}) — \`draft: true\`\n`;
+              }
+            }
+
+            await github.rest.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: commentBody
+            });
+
+      - name: Report draft status check
+        if: github.event.pull_request || github.event.issue.pull_request
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const hasDrafts = '${{ steps.detect-drafts.outputs.found }}' === 'true';
+            const sha = '${{ github.event.pull_request.head.sha || github.sha }}';
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: sha,
+              state: hasDrafts ? 'failure' : 'success',
+              context: 'No draft pages',
+              description: hasDrafts
+                ? 'This PR contains pages with draft: true'
+                : 'No draft pages detected',
             });
