@@ -59,34 +59,52 @@ if (!match) {
 
 const oldDateMatch = match[0].match(/\d{4}-\d{2}-\d{2}/);
 const oldDate = oldDateMatch ? oldDateMatch[0] : "unknown";
+const dateChanged = oldDate !== dateStr;
 
-if (oldDate === dateStr) {
-  console.log(`Date is already ${dateStr}, nothing to do.`);
+// Check if directory needs renaming
+const dirName = path.basename(resolvedDir);
+const dirDatePrefix = dirName.match(/^\d{4}-\d{2}-\d{2}/);
+const needsRename = dirDatePrefix !== null && dirDatePrefix[0] !== dateStr;
+
+if (!dateChanged && !needsRename) {
+  console.log(`Date is already ${dateStr} and directory matches, nothing to do.`);
   Deno.exit(0);
 }
 
-const newContent = content.replace(datePattern, `$1"${dateStr}"`);
-Deno.writeTextFileSync(indexPath, newContent);
-console.log(`Updated date: ${oldDate} → ${dateStr}`);
-
-// Rename directory if it has a date prefix
-const dirName = path.basename(resolvedDir);
-const dirDatePrefix = dirName.match(/^\d{4}-\d{2}-\d{2}/);
-
-if (dirDatePrefix && dirDatePrefix[0] !== dateStr) {
+// Rename directory first (before writing file) to avoid partial updates
+let finalDir = resolvedDir;
+if (needsRename) {
   const newDirName = dirName.replace(/^\d{4}-\d{2}-\d{2}/, dateStr);
   const parentDir = path.dirname(resolvedDir);
   const newResolvedDir = path.join(parentDir, newDirName);
 
-  Deno.renameSync(resolvedDir, newResolvedDir);
+  try {
+    Deno.renameSync(resolvedDir, newResolvedDir);
+  } catch (e) {
+    console.error(`Failed to rename directory: ${e instanceof Error ? e.message : e}`);
+    Deno.exit(1);
+  }
   console.log(`Renamed: ${dirName} → ${newDirName}`);
+  finalDir = newResolvedDir;
+}
+
+// Write updated date (at the new path if renamed)
+if (dateChanged) {
+  const finalIndexPath = path.join(finalDir, "index.qmd");
+  const newContent = content.replace(datePattern, `$1"${dateStr}"`);
+  Deno.writeTextFileSync(finalIndexPath, newContent);
+  console.log(`Updated date: ${oldDate} → ${dateStr}`);
+}
+
+// Print staging instructions
+if (needsRename) {
   console.log(`\nDone. Stage with:`);
-  console.log(`  git add -A ${path.relative(Deno.cwd(), newResolvedDir)} ${path.relative(Deno.cwd(), resolvedDir)}`);
+  console.log(`  git add -A ${path.relative(Deno.cwd(), finalDir)} ${path.relative(Deno.cwd(), resolvedDir)}`);
 } else if (!dirDatePrefix) {
   console.log("Directory has no date prefix — skipped rename.");
   console.log(`\nDone. Stage with:`);
-  console.log(`  git add ${path.relative(Deno.cwd(), indexPath)}`);
+  console.log(`  git add ${path.relative(Deno.cwd(), path.join(finalDir, "index.qmd"))}`);
 } else {
   console.log(`\nDone. Stage with:`);
-  console.log(`  git add ${path.relative(Deno.cwd(), indexPath)}`);
+  console.log(`  git add ${path.relative(Deno.cwd(), path.join(finalDir, "index.qmd"))}`);
 }
