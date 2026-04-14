@@ -26,4 +26,8 @@ quarto run _tools/publish-date.ts docs/blog/posts/2026-04-10-my-post
 quarto run _tools/snapshot-typst.ts source.qmd dest.png
 ```
 
-TypeScript scripts use the Deno runtime bundled with Quarto (no external install needed). R scripts require R/Rscript on PATH.
+TypeScript scripts use the Deno runtime bundled with Quarto (no external install needed).
+R scripts require R/Rscript on PATH, and Python scripts require Python on PATH.
+
+R and Python dependencies are managed at the project level via **renv** (R) and
+**pipenv** (Python). See the [project README](../README.md) for setup instructions.
