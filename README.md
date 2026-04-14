@@ -132,6 +132,12 @@ The group order determines which phase is active on **quarto.org** (the main sit
 |---|---|
 | `_quarto-prerelease-docs.yml` | Site-specific configuration for prerelease.quarto.org |
 
+**CI profile** (`pr-preview`) is used by the deploy preview workflow to render `draft: true` pages as visible. `quarto render` hides drafts by default, but PR reviewers need to see them.
+
+| File | Purpose |
+|---|---|
+| `_quarto-pr-preview.yml` | Sets `draft-mode: visible` for deploy previews |
+
 ### Subdomain variable and shortcode
 
 **`prerelease-subdomain`** — site identity variable ("am I the prerelease site?"). Default `''` in `_quarto.yml`, set to `prerelease.` in `_quarto-prerelease-docs.yml`. Use for self-referential links (e.g. RevealJS demo links back to its own site).

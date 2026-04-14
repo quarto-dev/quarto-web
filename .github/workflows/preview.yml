@@ -116,10 +116,10 @@ jobs:
           fi
         shell: bash
 
-      - name: Render 
+      - name: Render
         uses: quarto-dev/quarto-actions/render@v2
         env:
-          QUARTO_PROFILE: ${{ steps.prerelease-docs-check.outputs.is_prerelease_docs == 'true' && 'prerelease-docs' || '' }}
+          QUARTO_PROFILE: ${{ steps.prerelease-docs-check.outputs.is_prerelease_docs == 'true' && 'prerelease-docs,pr-preview' || 'pr-preview' }}
 
       - name: Deploy Preview to Netlify as preview
         id: netlify-deploy
@@ -182,6 +182,12 @@ jobs:
           fi
         shell: bash
 
+      - name: Detect draft pages
+        id: detect-drafts
+        uses: ./.github/workflows/actions/detect-drafts
+        with:
+          changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
+
       - name: Create custom PR comment
         if: github.event.pull_request || github.event.issue.pull_request
         uses: actions/github-script@v8
@@ -189,12 +195,16 @@ jobs:
           DEPLOY_URL: ${{ steps.netlify-deploy.outputs.deploy-url }}
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
           IMAGE_PAGES: ${{ steps.image-pages.outputs.pages }}
+          DRAFT_FILES: ${{ steps.detect-drafts.outputs.files }}
+          HAS_DRAFTS: ${{ steps.detect-drafts.outputs.found }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
             const deployUrl = process.env.DEPLOY_URL;
             const changedFiles = JSON.parse(process.env.CHANGED_FILES || '[]');
+            const draftFilesList = (process.env.DRAFT_FILES || '').trim().split('\n').filter(Boolean);
+            const draftSet = new Set(draftFilesList);
 
             let commentBody = `## 📝 Preview Deployment\n\n`;
             commentBody += `🔍 Full site preview: [${deployUrl}](${deployUrl})\n\n`;
@@ -251,14 +261,16 @@ jobs:
                 commentBody += `### 🔄 Modified Documents\n\n`;
                 for (const [page, files] of pageToFiles) {
                   const fileUrl = `${deployUrl}/${page}`;
+                  const isDraft = files.some(f => draftSet.has(f));
+                  const draftTag = isDraft ? ' — ⚠️ `draft`' : '';
                   if (files.length === 1) {
-                    commentBody += `- [${page}](${fileUrl})\n`;
+                    commentBody += `- [${page}](${fileUrl})${draftTag}\n`;
                   } else {
                     // Multiple source files map to one page - show page with file summary
                     const basenames = files.map(f => f.split('/').pop());
                     const shown = basenames.slice(0, 3).join(', ');
                     const rest = basenames.length > 3 ? `, +${basenames.length - 3} more` : '';
-                    commentBody += `- [${page}](${fileUrl}) (${shown}${rest})\n`;
+                    commentBody += `- [${page}](${fileUrl}) (${shown}${rest})${draftTag}\n`;
                   }
                 }
               }
@@ -277,9 +289,17 @@ jobs:
               }
             }
 
-            github.rest.issues.createComment({
+            // Add draft warning callout (no file list — already tagged inline above)
+            const hasDrafts = process.env.HAS_DRAFTS === 'true';
+            if (hasDrafts) {
+              commentBody += `\n> [!WARNING]\n`;
+              commentBody += `> This PR contains pages with \`draft: true\`. Remove the draft status before merging if the content is ready to publish.\n`;
+            }
+
+            await github.rest.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: commentBody
             });
+
