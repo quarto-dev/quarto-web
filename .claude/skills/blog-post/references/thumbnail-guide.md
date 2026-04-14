@@ -121,6 +121,11 @@ Create an HTML file sized to 1200x630 with the design, then screenshot it:
 5. **Clean up** — delete the HTML source after confirming the PNG looks correct.
    Keep the SVG for future reference.
 
+**Always use PNG as the thumbnail (`image: thumbnail.png`), never SVG.** Standalone
+SVGs don't center properly in Quarto listing cards or social card previews — the
+HTML uses flexbox for centering which SVG can't replicate without duplicating all
+the layout logic. The SVG is only a source file for regenerating the PNG.
+
 The Quarto logo SVG is at the repo root: `quarto-icon.svg` (fill color `#74AADB`
 — recolor to `#5286AB` for thumbnails or `white` for dark backgrounds).
 
