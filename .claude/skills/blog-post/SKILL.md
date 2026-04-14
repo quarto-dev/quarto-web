@@ -143,6 +143,17 @@ Use sparingly: `.callout-tip` for post origin context, `.callout-warning` for ca
 8. **Review**: direct opener? code blocks fenced with language? all images alt-texted?
    docs links present? closing matches type convention? categories correct?
 
+## Publishing
+
+When ready to publish, set the post date to today and rename the directory:
+
+```bash
+quarto run _tools/publish-date.ts docs/blog/posts/YYYY-MM-DD-slug
+```
+
+This updates `date:` in frontmatter and renames the directory to match. Run it
+on the day you intend to merge — avoids manual date edits if the publish date slips.
+
 ## PR Workflow
 
 PR to `main` first. On merge, auto-backport creates cherry-pick PR to `prerelease`.
