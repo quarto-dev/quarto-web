@@ -1,0 +1,36 @@
+name: 'Detect Draft Pages'
+description: 'Scan changed .qmd and .md files for draft: true in YAML frontmatter'
+inputs:
+  changed-files:
+    description: 'JSON array of changed file paths (from tj-actions/changed-files)'
+    required: true
+outputs:
+  found:
+    description: 'Whether any draft pages were found (true/false)'
+    value: ${{ steps.detect.outputs.found }}
+  files:
+    description: 'Newline-separated list of draft file paths'
+    value: ${{ steps.detect.outputs.files }}
+runs:
+  using: composite
+  steps:
+    - id: detect
+      env:
+        CHANGED_FILES: ${{ inputs.changed-files }}
+      run: |
+        DRAFTS=$(echo "$CHANGED_FILES" | jq -r '.[]' | while read -r file; do
+          if [[ "$file" == *.qmd || "$file" == *.md ]] && [ -f "$file" ]; then
+            if sed -n '/^---$/,/^---$/p' "$file" | grep -qE '^[[:space:]]*draft:[[:space:]]*true[[:space:]]*$'; then
+              echo "$file"
+            fi
+          fi
+        done)
+        if [ -n "$DRAFTS" ]; then
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$DRAFTS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+        else
+          echo "found=false" >> "$GITHUB_OUTPUT"
+        fi
+      shell: bash
