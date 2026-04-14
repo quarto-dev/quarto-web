@@ -96,9 +96,10 @@ Create an HTML file sized to 1200x630 with the design, then screenshot it:
    agent-browser close
    ```
 
-   With `file://` protocol (no server needed):
+   With `file://` protocol (no server needed, requires `--allow-file-access`):
    ```bash
-   agent-browser batch "set viewport 1200 630" \
+   agent-browser close  # Ensure clean daemon start
+   agent-browser --allow-file-access batch "set viewport 1200 630" \
      "open file:///absolute/path/to/thumbnail.html" \
      "screenshot path/to/thumbnail.png"
    agent-browser close
