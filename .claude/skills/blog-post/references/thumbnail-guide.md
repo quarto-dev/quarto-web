@@ -74,6 +74,17 @@ Confluence logo). No Quarto branding needed — the partner identity is the visu
 
 ## Creating Thumbnails
 
+### Prerequisites
+
+The screenshot step needs a headless browser. If `agent-browser` is installed
+(`npm i -g agent-browser`), use the examples below. If not, any tool that can
+screenshot an HTML page at a fixed viewport works — Playwright, Puppeteer, or
+even opening the HTML in Chrome DevTools at a locked viewport and saving manually.
+
+If no headless tool is available, create the SVG and ask someone with the tooling
+to generate the PNG, or open the HTML in a browser and use the OS screenshot tool
+at the right dimensions.
+
 ### HTML/CSS + screenshot approach (recommended)
 
 Create an HTML file sized to 1200x630 with the design, then screenshot it:
