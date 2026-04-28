@@ -65,15 +65,24 @@ Once you've made this configuration change GitHub will trigger a deployment of y
 
 ## Publish Command {#publish-command}
 
-The `quarto publish` command is an easy way to publish locally rendered documents and websites. Before attempting to use `quarto publish` (either locally or from a GitHub Action) you should be sure to configure the [Source Branch](#source-branch) and [Ignore Output](#ignoring-output) as described below.
+The `quarto publish` command is an easy way to publish locally rendered documents and websites. Before attempting to use `quarto publish` (either locally or from a GitHub Action) you should be sure to configure [Ignore Output](#ignoring-output) as described below. See [Source Branch](#source-branch) for an overview of how the `gh-pages` branch is managed.
 
 ### Source Branch {#source-branch}
 
-Before attempting to publish you should ensure that the **Source** branch for your repository is `gh-pages` and that the site directory is set to the repository root (`/`). You can modify these options in **Settings** : **Pages** for your repository. For example, if you already have a `gh-pages` branch:
+`quarto publish gh-pages` automatically creates a `gh-pages` branch (locally and on the remote) on its first run if one does not already exist. In most cases you do not need to create or configure this branch yourself.
+
+For **project sites** (`https://<username>.github.io/<repo>/`), GitHub detects the new `gh-pages` branch and configures GitHub Pages to deploy from it automatically --- no manual configuration under **Settings** : **Pages** is required.
+
+For **user or organization sites** (`https://<username>.github.io/`), the GitHub Pages source branch defaults to `main`. After the first publish you need to switch the source branch to `gh-pages` under **Settings** : **Pages** for your repository:
 
 ![](images/gh-pages-user-site.png){.border}
 
-If you do not already have a `gh-pages` branch, you can create one as follows. First, make sure you have committed all changes to your current working branch with `git status`. Then:
+Quarto prints a notice with a direct link to this settings page when it detects this case. See the [User Site](#user-site) section below for the complete setup.
+
+::: {.callout-tip collapse="true"}
+## Creating a `gh-pages` branch manually
+
+You usually do not need to do this --- `quarto publish gh-pages` will create the branch on its first run. If you prefer to set it up yourself beforehand, first make sure you have committed all changes on your current working branch with `git status`, then run:
 
 ``` {.bash filename="Terminal"}
 git checkout --orphan gh-pages
@@ -82,7 +91,8 @@ git commit --allow-empty -m "Initialising gh-pages branch"
 git push origin gh-pages
 ```
 
-Double-check that the last `git push` action has indeed set the **Settings** : **Pages** for your repository as expected in the previous figure. Get back to your original repository branch with, for example, `git checkout main`.
+Get back to your original repository branch with, for example, `git checkout main`.
+:::
 
 ### Ignoring Output {#ignoring-output}
 
@@ -90,7 +100,7 @@ Double-check that the last `git push` action has indeed set the **Settings** : *
 
 ### Publishing
 
-Once you have configured the source branch and updated your `.gitignore`, navigate to the directory where your project / git repository is located, make sure you are not on the `gh-pages` branch, and execute the `quarto publish` command for GitHub Pages:
+Once you have updated your `.gitignore`, navigate to the directory where your project / git repository is located, make sure you are not on the `gh-pages` branch, and execute the `quarto publish` command for GitHub Pages:
 
 ``` {.bash filename="Terminal"}
 quarto publish gh-pages
