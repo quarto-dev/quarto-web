@@ -7,7 +7,6 @@ Utility scripts for the quarto-web project. Run with `quarto run` (TypeScript, R
 | Script | Language | Description |
 |--------|----------|-------------|
 | `publish-date.ts` | TypeScript | Set a blog post date to today and rename its directory to match |
-| `algolia-add-custom-attribute.ts` | TypeScript | Post-render hook: adds custom attributes to Algolia search index |
 | `reference.ts` | TypeScript | Generate reference documentation |
 | `reference-cli-generate-md.R` | R | Generate CLI reference markdown |
 | `gallery-screenshot.R` | R | Capture gallery screenshots |

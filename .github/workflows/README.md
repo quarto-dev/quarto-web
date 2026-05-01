@@ -30,11 +30,6 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
     - For `prerelease` branch, we use `git cherry-pick` the commit from main following previous above step. 
     - Then we trigger the `publish.yml` workflow with `workflow_call` event trigger for each of the branch.
 
-- `upload-index.yml` - This workflow is triggered by a cron schedule. It updates the indexes for Algolia search engine, which powers the sites search. 
-  - `search.json` is built when the website is rendered and then it is deployed to the website.
-  - This index file is retrieved on deployed website to be updated on Algolia.
-  - Both `quarto.org` and `prerelease.quarto.org` indexes are updated in the same run - they each use one specific algolia index
-
 - `draft-check.yml` - A lightweight workflow that detects `draft: true` pages among changed `.qmd` files. Runs on all PRs to `main` and `prerelease` with no `paths-ignore`, so it always creates a status check. 
   - Uses the reusable composite action at `.github/workflows/actions/detect-drafts/`.
   - Configured as a required status check on `main` (`check-drafts` job), blocking merge until `draft: true` is removed.
