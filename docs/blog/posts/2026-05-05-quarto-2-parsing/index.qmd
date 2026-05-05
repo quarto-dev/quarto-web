@@ -1,0 +1,156 @@
+---
+format: html
+title: "Quarto 2: Parsing and Source Maps"
+author: Carlos Scheidegger
+date: "2026-04-06"
+image: thumbnail.png
+image-alt: "Quarto 2.0"
+description: |
+    Why Quarto 2 ships its own Markdown parser: actionable syntax errors, source locations that survive the entire processing pipeline, and a syntax we can hold stable for the project's lifespan.
+---
+
+This is the first of a series of posts about the design and features in Quarto 2.
+
+## UX Requirements for a text-centric authoring system
+
+Although Quarto 2 is now a standalone, new version of the Quarto system, it started as an attempt to solve long-standing parsing problems in Quarto 1.
+We soon realized there were three fundamental, separate syntax concerns: syntax errors, awareness of source locations during document processing, and syntax stability. We eventually concluded that none of these features could be solved incrementally in Quarto 1, which led to where we are today.
+
+### Requirement 1: Syntax errors
+
+Markdown is a very convenient language for lightly formatted text, and its minimalism
+keeps the source exceedingly readable on its own.
+Unfortunately, Markdown (in)famously has no syntax errors; every sequence of characters is a valid Markdown document. This is explicitly enshrined in the [CommonMark spec](https://spec.commonmark.org/0.31.2/#characters-and-lines):
+
+> Any sequence of Unicode characters is a valid Commonmark document.
+
+We believe this to be a fundamentally misguided principle.
+Instead, we believe that error messages are communication scaffolds, and that accepting error messages as a useful tool better reflects the reality of Markdown authoring in 2026.
+In short, Quarto has expectations about input documents, and users make typing mistakes.
+
+In the course of teaching Quarto, we repeatedly witness learners make the same classes of Markdown syntax errors when authoring Quarto documents. Let's take the following, typical example. Quarto makes extensive use of _fenced divs_, structural elements in Pandoc Markdown documents that can denote a variety of constructs, such as figures, multiple-column layouts, and callouts.
+
+```
+::: {.callout-warning appearance="minimal"}
+
+If you make syntax errors in Quarto 1, the system is unable to tell you about them.
+
+:::
+```
+
+Fenced divs can have classes and attributes, but the attribute syntax in Pandoc Markdown is somewhat brittle: `{key="value"}` produces an attribute, but `{key = "value"}` doesn't.
+But Markdown has no syntax errors. As a result, at best users see the attributes
+in the text and need to fix their source. At worst, this mistake falls through the cracks all the way to the published document.
+Quarto 1 attempts to detect and patch over these rough edges, but this isn't robust enough. If a user accidentally adds spaces between the key and value of an attribute, they get a mangled paragraph with `:::` in it instead of a div.
+
+If we accept this reality, then the best we can do is provide guidance, as clearly as we can, about the sources of errors. (Syntax errors are not the only classes of errors in Quarto. See our [error message document](./error-messages.qmd) for more).
+
+This requirement provided the initial motivation for us to design a formal grammar of the Quarto Markdown ("qmd") dialect using the [Tree-sitter system](https://tree-sitter.github.io/tree-sitter/). Because we have a formal grammar, documents might fail to parse as Markdown, and must be fixed before output is produced. But this trade-off allows us to provide contextual feedback in editors and in the command-line tooling.
+
+Our early experience with Quarto 2 gives us reason for optimism: we find that early reporting of syntax errors is not overly cumbersome and helps catch real problems. This includes, notably, several syntax errors which had slipped through our review into the [Quarto website](https://quarto.org). It also gives us more than just the ability to reject invalid input. Parse failures have additional information that we can use to produce precise, actionable error messages. We'll have more to say about that in the future: stay tuned!
+
+In the meantime, here's a preview of what syntax errors can buy you. Consider this simple Quarto file:
+
+```qmd
+---
+format: html
+---
+
+I _accidentally forgot to end this emphasis.
+
+A new paragraph.
+```
+
+In Quarto 2, you will get an error like this:
+
+```
+syntax-error-1.qmd: Error: [Q-2-5] Unclosed Underscore Emphasis
+   ╭─[ syntax-error-1.qmd:5:45 ]
+   │
+ 5 │ I _accidentally forgot to end this emphasis.
+   │  ─┬                                         ┬
+   │   ╰──────────────────────────────────────────── This is the opening '_' mark.
+   │                                             │
+   │                                             ╰── I reached the end of the block before finding a closing '_' for the emphasis.
+```
+
+### Requirement 2: Accurate, fine-grained source maps
+
+Most error states in Quarto can be associated with a particular region of a source document. Syntax errors can always be traced to the first character that fails to correspond to the grammar of the language being parsed (and often to more useful diagnostics). YAML metadata problems, such as using a number where a string is expected, are not _syntax_ errors, but are errors nevertheless, and also can be associated with the portion of the document where the user typed a number (intentionally or not).
+
+Quarto 1 has good support for YAML error messages (as well as auto-completion).
+What it lacks is support for error messages _like_ those of the YAML system beyond YAML metadata.
+For example, there are only a fixed number of callout types in Quarto. If someone writes `::: callout-beware`, it's likely that this is a mistake. Even if we don't want to issue a syntax error, it would be great to offer a warning with accurate source information in the command-line application; even better, we should have diagnostics available for modern text editors and IDEs, so the warning shows up instantly as the user is authoring the document.
+
+In order to do this reliably, Quarto needs access to source information for the entirety of the document: metadata, headings, divs, spans, attributes, and so on.
+In addition, this information needs to be preserved through the entire processing pipeline, from parsing to crossref generation to the application of format-specific templates.
+That granularity of source information simply isn't compatible with a system like Pandoc, whose entire point is to provide independence between input _and_ output formats.
+This isn't to say that Pandoc is wrong here; it's a brilliant design and system that will remain useful and necessary in the Markdown ecosystem (and Quarto 2 will continue to bundle Pandoc for a number of tasks). But Quarto's constraints are different, and require a different solution.
+
+We note that Quarto will continue to interoperate with Pandoc. The final notable feature of Quarto 2's source maps is that Quarto's JSON representation of its AST is fully compatible with Pandoc, and yet includes source mapping information for every node in the AST. We designed it such that Pandoc accepts the document, by picking field names in the JSON schema that are not used by Pandoc, and maintaining the Pandoc fields precisely as they are.
+
+For example, in Quarto 2 this means that error messages include source locations deep in document templates. 
+Concretely, if a user doesn't define an expected template variable in Quarto 2, we're able to emit diagnostics. 
+Consider what happens if a user specifies a custom template with an `$author-greeting$` variable but the Quarto 2 document doesn't define that:
+
+````
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>$title$</title>
+  </head>
+  <body>
+    <header>by $author-greeting$</header>
+    <main>$body$</main>
+  </body>
+</html>
+
+Warning: [Q-10-2] Undefined variable: author-greeting
+   ╭─[ post.html:8:16 ]
+   │
+ 8 │     <header>by $author-greeting$</header>
+   │                ────────┬───────
+   │                        ╰───────── Undefined variable: author-greeting
+───╯
+````
+
+### Requirement 3: Syntax stability over time
+
+In the half decade since its inception, Quarto 1 has accrued a large number of workarounds to support its `qmd` dialect, many inherited from the RMarkdown and knitr ecosystems.
+
+Consider this basic example of an executable code cell in Quarto/RMarkdown syntax:
+
+````
+```{r}
+cat("hello world")
+```
+````
+
+This syntax is widely supported in the Quarto/RMarkdown ecosystem, but the syntax hasn't actually been supported in Pandoc since [Pandoc 3](https://pandoc.org/releases.html#pandoc-3.0-2023-01-18), released in January 2023.
+
+Quarto also supports _shortcodes_ inspired by Hugo: `{{< video https://youtube.com/... >}}`. Early versions of Quarto processed shortcodes after Pandoc's parser was done. But this is a fundamentally impossible task, because transforming Markdown into an internal representation (the "AST") is a many-to-one mapping. Both `*hello*` and `_hello_` translate to (`Emph [Str "hello"]`); if we find an instance of that syntax inside something that looks like a shortcode invocation, there's no way to uniquely pull these nodes back to a single string. As a result, Quarto 1 now ships with a complex "pre-parser" that understands enough `qmd` syntax to transform shortcodes (and other constructs like the code blocks above) to a syntax that Pandoc can safely parse.
+
+This process is necessary in the Quarto 1 architecture, but is also unacceptably slow. In our benchmarks of rendering `quarto-dev/quarto-web`, we find that parsing Markdown takes about 1/3 of the _total_ rendering time. In addition, it's very brittle: we have to constantly maintain it to respond to small changes in Pandoc's Markdown parsing.
+
+Finally, Quarto is now five years old. The traditional heuristic tells us we can expect it to be a useful system for at least five more.
+We are a bit more ambitious. We want to deliver a system with a useful lifespan of at least 10 to 20 years, and that's what we've started planning for.
+
+In our view, this means that syntax changes become _less_ enticing over time; as a result, in Quarto 2, we've replaced the [front end](./terminology.qmd#front-end-and-back-end) of our pipeline with a dedicated parser and AST processor,
+to ensure we fully control our largest source of slow but substantial syntax drift.
+
+## A tree-sitter parser for Markdown
+
+Our first experiment started from a pair of [tree-sitter grammars from the community](https://github.com/tree-sitter-grammars/tree-sitter-markdown), and extended it to add support for Quarto's unique syntax constructs. Unfortunately, the split between block and inline parsers meant we couldn't get the quality of the resulting parses to match our requirements: Markdown's inline and block processing are fundamentally intertwined, especially when handling indentation-sensitive constructs like block quotes and bulleted lists. As a result, we needed to write a single parser from scratch.
+
+The main technique we employ is tree-sitter's coupled parser+lexer infrastructure. Originally designed to allow incremental parsing, tree-sitter only lexes as much of the document as necessary to make a parsing decision. As a result, it can allow the lexer to use information from the parser to make _lexing_ decisions. This makes tree-sitter parsers technically context-dependent, because tree-sitter lexers are actually in principle Turing-complete, and written in C (for the academics in the audience, we think this is an understudied object of theoretical interest!) After a few false starts, we realized we could lean heavily into this to cleanly solve some thorny issues in Markdown parsing.
+
+The prototypical example is a string like `^hello^beautiful^world^`. Should this be parsed as `Superscript [Str "hello", Superscript [Str "beautiful"], Str "world"]` or `[Superscript [Str "hello"], Str "beautiful", Superscript [Str "world"]]`? Markdown is full of such ambiguities. In Quarto 2's new parser, we generally opt for a "shortest bracket" interpretation: if a character can close an active bracket, we greedily choose to do so. This is possible in tree-sitter because at the moment of lexing the second `^`, we know the set of possible productions; if we know that `CLOSE_SUPERSCRIPT` is an acceptable production (and the tree-sitter API offers this information), then we produce it. Otherwise, we produce `OPEN_SUPERSCRIPT`.
+
+The general consequence is that Quarto 2's Markdown parser will open brackets when closing them would be a syntax error, and close them otherwise.
+This technique also works well in other cases.
+
+## Read more
+
+The source location infrastructure allows information about the textual source of the document to travel forward in Quarto 2\'s processing pipeline. One of the exciting new features of Quarto 2 is its ability to "pull source information backward". Quarto 2 includes infrastructure to take a change in an AST node, and reason through the necessary changes in the Markdown source, without having to rewrite the entire document.
+Our upcoming follow-up post on [bidirectionality](./bidi.qmd) will continue this discussion.
