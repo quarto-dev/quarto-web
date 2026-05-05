@@ -51,7 +51,7 @@ Our early experience with Quarto 2 gives us reason for optimism: we find that ea
 
 In the meantime, here's a preview of what syntax errors can buy you. Consider this simple Quarto file:
 
-```qmd
+```markdown
 ---
 format: html
 ---
@@ -93,7 +93,7 @@ For example, in Quarto 2 this means that error messages include source locations
 Concretely, if a user doesn't define an expected template variable in Quarto 2, we're able to emit diagnostics. 
 Consider what happens if a user specifies a custom template with an `$author-greeting$` variable but the Quarto 2 document doesn't define that:
 
-````
+````html
 <!doctype html>
 <html lang="en">
   <head>
@@ -105,7 +105,11 @@ Consider what happens if a user specifies a custom template with an `$author-gre
     <main>$body$</main>
   </body>
 </html>
+````
 
+The diagnostic you'll get looks like this:
+
+````
 Warning: [Q-10-2] Undefined variable: author-greeting
    ╭─[ post.html:8:16 ]
    │
@@ -153,4 +157,4 @@ This technique also works well in other cases.
 ## Read more
 
 The source location infrastructure allows information about the textual source of the document to travel forward in Quarto 2\'s processing pipeline. One of the exciting new features of Quarto 2 is its ability to "pull source information backward". Quarto 2 includes infrastructure to take a change in an AST node, and reason through the necessary changes in the Markdown source, without having to rewrite the entire document.
-Our upcoming follow-up post on [bidirectionality](./bidi.qmd) will continue this discussion.
+Our upcoming follow-up post on bidirectionality will continue this discussion.
