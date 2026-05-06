@@ -46,8 +46,17 @@ template uses a co-located filename for the logo.
 $skill = ".claude/skills/blog-post/assets"
 $post  = "docs/blog/posts/YYYY-MM-DD-slug"
 Copy-Item "$skill/thumbnail-diagram.typ" "$post/thumbnail.typ"   # or thumbnail-text.typ
-Copy-Item "$skill/quarto-logo-trademark-light.svg" $post
+Copy-Item "$skill/quarto-logo-trademark-light.svg" $post         # white-fill, for #447099 / dark backgrounds
 ```
+
+Two wordmark variants are bundled:
+
+| File | Use on |
+|------|--------|
+| `quarto-logo-trademark-light.svg` | Dark backgrounds (`#447099` blue, `#4D6E8E` steel) — default for the bundled templates |
+| `quarto-logo-trademark.svg` | Light backgrounds (`#F0F5F9`) — swap in if you adapt a template to the light palette |
+
+Both derive from the same brand-kit source; the only difference is `fill`.
 
 When the post is ready, commit all three artifacts together:
 
