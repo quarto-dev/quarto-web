@@ -39,6 +39,9 @@ function Pandoc(doc)
   local refJsonPath = stem .. ".json"
   
   local refJsonFile = io.open(refJsonPath, "r")
+  if refJsonFile == nil then
+    quarto.log.warning("Reference JSON not found: " .. refJsonPath)
+  end
   if refJsonFile ~= nil then
     io.input(refJsonFile)
     local refJson = io.read("*all")

@@ -1,12 +1,11 @@
 project:
   type: website
   output-dir: _site
-  post-render:
-    - tools/algolia-add-custom-attribute.ts
   resources:
     - "/docs/download/_download.json"
     - "/docs/download/_prerelease.json"
     - "/_redirects"
+    - "/netlify.toml"
     - "/docs/blog/posts/2024-07-02-beautiful-tables-in-typst/demo"
     - "/.well-known/atproto-did"
 
@@ -16,7 +15,8 @@ website:
   title: "Quarto"
   image: "quarto-dark-bg.jpeg"
   favicon: "favicon.png"
-  google-analytics: "G-FV9Z7SDZ0M"
+  plausible-analytics:
+    path: _plausible.html
   open-graph: true
   twitter-card: true
   site-url: https://quarto.org
@@ -25,15 +25,10 @@ website:
   repo-actions: [edit, issue]
   page-navigation: true
   bread-crumbs: true
+  llms-txt: true
   search:
     show-item-context: true
     type: overlay
-    algolia:
-      index-name: prod_QUARTO
-      application-id: ZPJB5I1QN7
-      search-only-api-key: 49ee55c4d51cbb25a06182d9eef55814
-      analytics-events: true
-      show-logo: true
   page-footer:
     left: |
       Proudly supported by
@@ -44,13 +39,13 @@ website:
       - text: "FAQ"
         href: docs/faq/index.qmd
       - text: "License"
-        href: license.md
+        href: license.qmd
       - text: "Trademark"
         href: trademark.qmd
     right:
-      - icon: twitter
-        href: https://twitter.com/quarto_pub
-        aria-label: Quarto Twitter
+      - icon: bluesky
+        href: https://bsky.app/profile/quarto.org
+        aria-label: Quarto Bluesky
       - icon: github
         href: https://github.com/quarto-dev/quarto-cli
         aria-label: Quarto GitHub
@@ -90,9 +85,9 @@ website:
             icon: "question-circle"
             href: docs/faq/index.qmd
     tools:
-      - icon: twitter
-        href: https://twitter.com/quarto_pub
-        text: Quarto Twitter
+      - icon: bluesky
+        href: https://bsky.app/profile/quarto.org
+        aria-label: Quarto Bluesky
       - icon: github
         href: https://github.com/quarto-dev/quarto-cli
         text: Quarto GitHub
@@ -215,6 +210,7 @@ website:
                 - docs/tools/neovim.qmd
                 - docs/tools/text-editors.qmd
             - section: "Documents"
+              href: docs/output-formats/all-formats.qmd
               contents:
                 - section: "HTML"
                   contents:
@@ -224,6 +220,7 @@ website:
                     - docs/output-formats/html-multi-format.qmd
                     - docs/output-formats/html-lightbox-figures.qmd
                     - docs/output-formats/html-publishing.qmd
+                    - docs/output-formats/html-accessibility.qmd
                 - section: "PDF"
                   contents:
                     - docs/output-formats/pdf-basics.qmd
@@ -312,6 +309,7 @@ website:
                 - docs/websites/website-drafts.qmd
                 - docs/websites/website-search.qmd
                 - docs/websites/website-tools.qmd
+                - docs/websites/website-llms.qmd
                 - docs/websites/website-about.qmd
                 - section: "Listing Pages"
                   href: docs/websites/website-listings.qmd
@@ -408,7 +406,7 @@ website:
                 - docs/publishing/quarto-pub.qmd
                 - docs/publishing/github-pages.qmd
                 - docs/publishing/rstudio-connect.qmd
-                - docs/publishing/posit-cloud.qmd
+                - docs/publishing/posit-connect-cloud.qmd
                 - docs/publishing/netlify.qmd
                 - docs/publishing/confluence.qmd
                 - docs/publishing/hugging-face.qmd
@@ -420,7 +418,8 @@ website:
                 - docs/projects/quarto-projects.qmd
                 - docs/projects/code-execution.qmd
                 - docs/projects/profiles.qmd
-                - docs/projects/environment.qmd
+                - text: "Environment Variables"
+                  href: docs/projects/environment.qmd
                 - docs/projects/scripts.qmd
                 - docs/projects/virtual-environments.qmd
                 - docs/projects/binder.qmd
@@ -473,13 +472,15 @@ website:
             - docs/extensions/formats.qmd
             - docs/extensions/revealjs.qmd
             - docs/extensions/project-types.qmd
+            - docs/extensions/starter-templates.qmd
             - text: "Metadata Extensions"
               href: docs/extensions/metadata.qmd
-            - docs/extensions/starter-templates.qmd
+            - docs/extensions/brand.qmd
+            - docs/extensions/engine.qmd
 
     - id: reference
       title: "Reference"
-      collapse-level: 3
+      collapse-level: 2
       contents:
         - section: "Reference"
           href: docs/reference/index.qmd
@@ -514,6 +515,8 @@ website:
                       href: docs/reference/formats/markdown/gfm.qmd
                     - text: "CommonMark"
                       href: docs/reference/formats/markdown/commonmark.qmd
+                    - text: "Hugo"
+                      href: docs/reference/formats/markdown/hugo.qmd
                     - text: "Markua"
                       href: docs/reference/formats/markdown/markua.qmd
                 - section: "Wikis"
@@ -597,6 +600,8 @@ website:
                   href: docs/reference/metadata/crossref.qmd
                 - text: "Brand"
                   href: docs/reference/metadata/brand.qmd
+            - section: "Quarto CLI"
+              contents: docs/cli/*.qmd
     - id: prerelease
       title: "Quarto 1.3"
       contents:
@@ -661,8 +666,6 @@ website:
               href: docs/projects/binder.qmd
             - text: Connect Emails
               href: docs/prerelease/1.4/email.qmd
-            - text: Cloud Publishing
-              href: docs/publishing/posit-cloud.qmd
             - text: Lightbox Images
               href: docs/output-formats/html-lightbox-figures.qmd
             - text: Lua Changes
@@ -685,8 +688,11 @@ format:
     include-in-header:
       - text: |
           <script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js"
-            data-light-bg="#dee2e6"
+            data-light-bg="#E8EDF2"
             data-light-text="#404041"
+            data-light-lt="#ee6331"
+            data-light-gt="#447099"
+            data-dark-bg="#333333"
             data-dark-lt="#ffffff"
             data-dark-gt="#ffffff"></script>
     include-after-body: js.html
@@ -700,6 +706,9 @@ filters:
   - filters/color-box.lua
   - at: post-quarto
     path: filters/include-dark.lua
+
+version: '1.9'
+prerelease-subdomain: ''
 
 freeze: true
 

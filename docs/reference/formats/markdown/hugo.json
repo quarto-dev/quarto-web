@@ -12,6 +12,10 @@
         "description": "Document date"
       },
       {
+        "name": "date-format",
+        "description": "Date format for the document"
+      },
+      {
         "name": "author",
         "description": "Author or authors of the document"
       },
@@ -25,6 +29,10 @@
     "name": "options",
     "title": "Format Options",
     "options": [
+      {
+        "name": "brand",
+        "description": "Branding information to use for this document. If a string, the path to a brand file.\nIf false, don't use branding on this document. If an object, an inline brand\ndefinition, or an object with light and dark brand paths or definitions.\n"
+      },
       {
         "name": "html-math-method",
         "description": "Method use to render math in HTML output (`plain`, `webtex`, `gladtex`, `mathml`, `mathjax`, `katex`).\n\nSee the Pandoc documentation on [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html)\nfor additional details.\n"
@@ -42,12 +50,12 @@
         "description": "Specify whether to use `atx` (`#`-prefixed) or\n`setext` (underlined) headings for level 1 and 2\nheadings (`atx` or `setext`).\n"
       },
       {
-        "name": "keep-yaml",
-        "description": "Preserve the original YAML front matter in rendered markdown"
-      },
-      {
         "name": "quarto-required",
         "description": "A semver version range describing the supported quarto versions for this document\nor project.\n\nExamples:\n\n- `>= 1.1.0`: Require at least quarto version 1.1\n- `1.*`: Require any quarto versions whose major version number is 1\n"
+      },
+      {
+        "name": "preview-mode",
+        "description": "The mode to use when previewing this document. To disable any special\npreviewing features, pass `raw` as the preview-mode.\n"
       }
     ]
   },
@@ -57,7 +65,7 @@
     "options": [
       {
         "name": "toc",
-        "description": "Include an automatically generated table of contents (or, in\nthe case of `latex`, `context`, `docx`, `odt`,\n`opendocument`, `rst`, or `ms`, an instruction to create\none) in the output document. This option has no effect\nif `standalone` is `false`.\n\nNote that if you are producing a PDF via `ms`, the table\nof contents will appear at the beginning of the\ndocument, before the title.  If you would prefer it to\nbe at the end of the document, use the option\n`pdf-engine-opt: --no-toc-relocation`.\n"
+        "description": "Include an automatically generated table of contents (or, in\nthe case of `latex`, `context`, `docx`, `odt`,\n`opendocument`, `rst`, or `ms`, an instruction to create\none) in the output document.\n\nNote that if you are producing a PDF via `ms`, the table\nof contents will appear at the beginning of the\ndocument, before the title.  If you would prefer it to\nbe at the end of the document, use the option\n`pdf-engine-opt: --no-toc-relocation`.\n"
       },
       {
         "name": "toc-depth",
@@ -74,12 +82,18 @@
         "description": "Number section headings rendered output. By default, sections are not numbered.\nSections with class `.unnumbered` will never be numbered, even if `number-sections`\nis specified.\n"
       },
       {
-        "name": "number-offset",
-        "description": "Offset for section headings in output (offsets are 0 by default)\nThe first number is added to the section number for\ntop-level headings, the second for second-level headings, and so on.\nSo, for example, if you want the first top-level heading in your\ndocument to be numbered \"6\", specify `number-offset: 5`. If your\ndocument starts with a level-2 heading which you want to be numbered\n\"1.5\", specify `number-offset: [1,4]`. Implies `number-sections`\n"
-      },
-      {
         "name": "shift-heading-level-by",
         "description": "Shift heading levels by a positive or negative integer.\nFor example, with `shift-heading-level-by: -1`, level 2\nheadings become level 1 headings, and level 3 headings\nbecome level 2 headings.  Headings cannot have a level\nless than 1, so a heading that would be shifted below level 1\nbecomes a regular paragraph.  Exception: with a shift of -N,\na level-N heading at the beginning of the document\nreplaces the metadata title.\n"
+      }
+    ]
+  },
+  {
+    "name": "code",
+    "title": "Code",
+    "options": [
+      {
+        "name": "code-annotations",
+        "description": "The style to use when displaying code annotations. Set this value\nto false to hide code annotations.\n"
       }
     ]
   },
@@ -90,11 +104,11 @@
     "options": [
       {
         "name": "eval",
-        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines \n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative numbers to selectively include or exclude expressions \n  (explicit inclusion/exclusion of expressions is available only when using the knitr engine)\n"
       },
       {
         "name": "echo",
-        "description": "Include cell source code in rendered output.\n\n- `true` (default): include source code in output\n- `false`: do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines\n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Include cell source code in rendered output.\n\n- `true` (default in most formats): include source code in output\n- `false` (default in presentation formats like `beamer`, `revealjs`, and `pptx`): do not include source code in output\n- `fenced`: in addition to echoing, include the cell delimiter as part of the output.\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines\n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
       },
       {
         "name": "output",
@@ -128,11 +142,11 @@
     "options": [
       {
         "name": "fig-width",
-        "description": "Default width for figures generated by Matplotlib or R graphics"
+        "description": "Default width for figures generated by Matplotlib or R graphics.\n\nNote that with the Jupyter engine, this option has no effect when\nprovided at the cell level; it can only be provided with\ndocument or project metadata.\n"
       },
       {
         "name": "fig-height",
-        "description": "Default height for figures generated by Matplotlib or R graphics"
+        "description": "Default height for figures generated by Matplotlib or R graphics.\n\nNote that with the Jupyter engine, this option has no effect when\nprovided at the cell level; it can only be provided with\ndocument or project metadata.\n"
       },
       {
         "name": "fig-format",
@@ -140,11 +154,11 @@
       },
       {
         "name": "fig-dpi",
-        "description": "Default DPI for figures generated by Matplotlib or R graphics"
+        "description": "Default DPI for figures generated by Matplotlib or R graphics.\n\nNote that with the Jupyter engine, this option has no effect when\nprovided at the cell level; it can only be provided with\ndocument or project metadata.\n"
       },
       {
         "name": "fig-asp",
-        "description": "The aspect ratio of the plot, i.e., the ratio of height/width. When `fig-asp` is specified, \nthe height of a plot (the option `fig-height`) is calculated from `fig-width * fig-asp`.\n\nThe `fig-asp` option is only available within the knitr engine.\n"
+        "description": "The aspect ratio of the plot, i.e., the ratio of height/width. When `fig-asp` is specified,\nthe height of a plot (the option `fig-height`) is calculated from `fig-width * fig-asp`.\n\nThe `fig-asp` option is only available within the knitr engine.\n"
       }
     ]
   },
@@ -152,10 +166,6 @@
     "name": "tables",
     "title": "Tables",
     "options": [
-      {
-        "name": "tbl-colwidths",
-        "description": "Apply explicit table column widths for markdown grid tables and pipe\ntables that are more than `columns` characters wide (72 by default). \n\nSome formats (e.g. HTML) do an excellent job automatically sizing\ntable columns and so don't benefit much from column width specifications.\nOther formats (e.g. LaTeX) require table column sizes in order to \ncorrectly flow longer cell content (this is a major reason why tables \n> 72 columns wide are assigned explicit widths by Pandoc).\n\nThis can be specified as:\n\n- `auto`: Apply markdown table column widths except when there is a\n  hyperlink in the table (which tends to throw off automatic\n  calculation of column widths based on the markdown text width of cells).\n  (`auto` is the default for HTML output formats)\n\n- `true`: Always apply markdown table widths (`true` is the default\n  for all non-HTML formats)\n\n- `false`: Never apply markdown table widths.\n\n- An array of numbers (e.g. `[40, 30, 30]`): Array of explicit width percentages.\n"
-      },
       {
         "name": "df-print",
         "description": "Method used to print tables in Knitr engine documents:\n\n-  `default`: Use the default S3 method for the data frame.\n-  `kable`: Markdown table using the `knitr::kable()` function.\n-  `tibble`: Plain text table using the `tibble` package.\n-  `paged`: HTML table with paging for row and column overflow.\n\nThe default printing method is `kable`.\n"
@@ -195,6 +205,16 @@
     ]
   },
   {
+    "name": "crossref",
+    "title": "Cross-References",
+    "options": [
+      {
+        "name": "crossref",
+        "description": "Configuration for cross-reference labels and prefixes. See [Cross-Reference Options](https://quarto.org/docs/reference/metadata/crossref.html) for more details."
+      }
+    ]
+  },
+  {
     "name": "citation",
     "title": "Citation",
     "options": [
@@ -228,19 +248,19 @@
     "options": [
       {
         "name": "include-before-body",
-        "description": "Include contents at the beginning of the document body\n(e.g. after the `<body>` tag in HTML, or the `\\begin{document}` command \nin LaTeX).\n\nA string value or an object with key \"file\" indicates a filename whose contents are to be included\n\nAn object with key \"text\" indicates textual content to be included\n"
+        "description": "Include contents at the beginning of the document body\n(e.g. after the `<body>` tag in HTML, or the `\\begin{document}` command\nin LaTeX).\n\nA string value or an object with key \"file\" indicates a filename whose contents are to be included\n\nAn object with key \"text\" indicates textual content to be included\n"
       },
       {
         "name": "include-after-body",
-        "description": "Include contents at the end of the document body (before\nthe `</body>` tag in HTML, or the `\\end{document}` command in LaTeX).\n\nA string value or an object with key \"file\" indicates a filename whose contents are to be included\n\nAn object with key \"text\" indicates textual content to be included\n"
+        "description": "Include content at the end of the document body immediately after the markdown content. While it will be included before the closing `</body>` tag in HTML and the `\\end{document}` command in LaTeX, this option refers to the end of the markdown content.\n\nA string value or an object with key \"file\" indicates a filename whose contents are to be included\n\nAn object with key \"text\" indicates textual content to be included\n"
       },
       {
         "name": "include-in-header",
-        "description": "Include contents at the end of the header. This can\nbe used, for example, to include special CSS or JavaScript in HTML \ndocuments.\n\nA string value or an object with key \"file\" indicates a filename whose contents are to be included\n\nAn object with key \"text\" indicates textual content to be included\n"
+        "description": "Include contents at the end of the header. This can\nbe used, for example, to include special CSS or JavaScript in HTML\ndocuments.\n\nA string value or an object with key \"file\" indicates a filename whose contents are to be included\n\nAn object with key \"text\" indicates textual content to be included\n"
       },
       {
         "name": "metadata-files",
-        "description": "Read metadata from the supplied YAML (or JSON) files. This\noption can be used with every input format, but string scalars\nin the YAML file will always be parsed as Markdown. Generally,\nthe input will be handled the same as in YAML metadata blocks.\nValues in files specified later in the list will be preferred\nover those specified earlier. Metadata values specified inside \nthe document, or by using `-M`, overwrite values specified with\nthis option.\n"
+        "description": "Read metadata from the supplied YAML (or JSON) files. This\noption can be used with every input format, but string scalars\nin the YAML file will always be parsed as Markdown. Generally,\nthe input will be handled the same as in YAML metadata blocks.\nValues in files specified later in the list will be preferred\nover those specified earlier. Metadata values specified inside\nthe document, or by using `-M`, overwrite values specified with\nthis option.\n"
       }
     ]
   },
@@ -269,16 +289,12 @@
         "description": "Include the specified files as partials accessible to the template for the generated content.\n"
       },
       {
-        "name": "standalone",
-        "description": "Produce output with an appropriate header and footer (e.g. a standalone HTML, LaTeX, TEI, or RTF file, not a fragment)\n"
-      },
-      {
         "name": "filters",
         "description": "Specify executables or Lua scripts to be used as a filter transforming\nthe pandoc AST after the input is parsed and before the output is written.\n"
       },
       {
         "name": "shortcodes",
-        "description": "Speicfy Lua scripts that implement shortcode handlers\n"
+        "description": "Specify Lua scripts that implement shortcode handlers\n"
       },
       {
         "name": "keep-md",
@@ -293,12 +309,20 @@
         "description": "Filters to pre-process ipynb files before rendering to markdown"
       },
       {
+        "name": "ipynb-shell-interactivity",
+        "description": "Specify which nodes should be run interactively (displaying output from expressions)\n"
+      },
+      {
+        "name": "plotly-connected",
+        "description": "If true, use the \"notebook_connected\" plotly renderer, which downloads\nits dependencies from a CDN and requires an internet connection to view.\n"
+      },
+      {
         "name": "extract-media",
         "description": "Extract images and other media contained in or linked from the source document to the\npath DIR, creating it if necessary, and adjust the images references in the document\nso they point to the extracted files. Media are downloaded, read from the file\nsystem, or extracted from a binary container (e.g. docx), as needed. The original\nfile paths are used if they are relative paths not containing ... Otherwise filenames\nare constructed from the SHA1 hash of the contents.\n"
       },
       {
         "name": "resource-path",
-        "description": "List of paths to search for images and other resources. The paths should\nbe separated by : on Linux, UNIX, and macOS systems, and by ; on Windows.\n"
+        "description": "List of paths to search for images and other resources.\n"
       },
       {
         "name": "default-image-extension",
@@ -311,6 +335,10 @@
       {
         "name": "dpi",
         "description": "Specify the default dpi (dots per inch) value for conversion from pixels to inch/\ncentimeters and vice versa. (Technically, the correct term would be ppi: pixels per\ninch.) The default is `96`. When images contain information about dpi internally, the\nencoded value is used instead of the default specified by this option.\n"
+      },
+      {
+        "name": "html-table-processing",
+        "description": "If `none`, do not process tables in HTML input."
       }
     ]
   },
@@ -324,7 +352,7 @@
       },
       {
         "name": "columns",
-        "description": "Specify length of lines in characters. This affects text wrapping in generated source\ncode (see `wrap`). It also affects calculation of column widths for plain text\ntables.\n"
+        "description": "Specify length of lines in characters. This affects text wrapping in generated source\ncode (see `wrap`). It also affects calculation of column widths for plain text\ntables. \n\nFor `typst`, number of columns for body text.\n"
       },
       {
         "name": "tab-stop",

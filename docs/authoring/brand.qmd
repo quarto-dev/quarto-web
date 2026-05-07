@@ -30,11 +30,19 @@ Currently, the formats that support **brand.yml** are: `html`, `dashboard`, `rev
 
 ## Applying Brand
 
+### Creating Brand Files
+
 To specify a brand, create a `_brand.yml` file in the root directory of your project (i.e. alongside `_quarto.yml`).
 Quarto will detect the presence of `_brand.yml` and automatically apply the brand to all documents of the supported formats in the project.
 
 You can create a `_brand.yml` file outside of a Quarto project (e.g. without a `_quarto.yml`).
 In this case, `_brand.yml` will automatically apply to documents in the same directory.
+
+```{.yaml filename="_brand.yml"}
+color:
+  background: "#eeeeee"
+```
+
 
 You can also set brand options in a document by specifying brand elements under the `brand` option:
 
@@ -45,6 +53,10 @@ brand:
     background: "#eeeeee"
 ---
 ```
+
+### Document and Project Brand Configuration
+
+This section covers how to configure brand settings for individual documents and projects. If you're looking to adopt a brand that's maintained externally---such as a shared organizational brand---see [Sharing brands across projects](#sharing-brands-across-projects).
 
 If you set `brand` in a document header, it will replace the entire brand from `_brand.yml`.
 
@@ -73,9 +85,61 @@ brand: brand/_brand.yml
 
 Paths specified in `_brand.yml` are relative to the location of the brand file.
 
-### Dark Brand
 
-As with [Themes](/docs/output-formats/html-themes.qmd#dark-mode), you can specify both light and dark brands, making both a light and a dark version of your output available:
+
+### Light and Dark Colors
+
+To specify colors for both light and dark modes using a single brand.yml file, specify any color in `color` or `typography` with an object containing the `light` and `dark` colors:
+
+```{.yaml filename="_brand.yml"}
+color:
+  background:
+    light: "#ffffff"
+    dark: "#333333"
+  foreground:
+    light: "#333333"
+    dark: "#ffffff"
+typography:
+  headings:
+    color:
+      light: "#111144"
+      dark: "#d0d0ff"
+```
+
+This also works with the brand specified directly in the document metadata:
+
+
+```{.yaml filename="document.qmd"}
+---
+brand:
+  color:
+    background:
+      light: "#ffffff"
+      dark: "#333333"
+    foreground:
+      light: "#333333"
+      dark: "#ffffff"
+  typography:
+    headings:
+      color:
+        light: "#111144"
+        dark: "#d0d0ff"
+---
+```
+
+
+::: {.callout-warning}
+
+## Limitation
+
+Colors in [the `palette`](#color) cannot currently be specified with `light` and `dark` variants.
+
+::: 
+
+
+### Light and Dark Brands
+
+If you prefer to author separate light and dark brands for light and dark mode, or you need to customize non-color properties, you can separate the brands into their own files, and specify `light` and `dark` brand files:
 
 ```{.yaml filename="document.qmd"}
 ---
@@ -84,6 +148,8 @@ brand:
   dark: dark-brand.yml
 ---
 ```
+
+This is similar to how [Themes](/docs/output-formats/html-themes.qmd#dark-mode) work.
 
 This also works with brands specified directly in the document:
 
@@ -109,24 +175,39 @@ brand:
   dark: dark-brand.yml
 ```
 
-
 ::: {.callout-warning}
 
 ## Limitation
 
-The `revealjs` format does not support switching between light and dark modes.
+Brand metadata cannot currently be specified directly in `_quarto.yml`, only via the file syntax.
 
-:::
+::: 
 
 
-#### Typst
 
-To choose a dark brand in Typst output use `brand-mode: dark`:
+### Brand Mode
+
+The Typst and revealjs formats do not produce outputs which can toggle between light and dark mode dynamically. 
+
+By default, Typst and revealjs formats will render using the light brand.
+Set `brand-mode: dark` to render using the dark brand. 
+
+Typst:
 
 ```{.yaml filename="document.qmd"}
 ---
 format:
   typst:
+    brand-mode: dark
+---
+```
+
+Revealjs:
+
+```{.yaml filename="document.qmd"}
+---
+format:
+  revealjs:
     brand-mode: dark
 ---
 ```
@@ -257,15 +338,18 @@ logo:
       path: https://quarto.org/quarto.png
       alt: "Quarto icon"
   small: quarto-logo
+``` 
+
+#### Light and Dark Logos {#light-and-dark-logos}
+
+Specify different logos for light and dark mode with `light` and `dark` options under `small`, `medium`, or `large`:
+
+``` {.yaml filename="_brand.yml"}
+logo:
+  medium:
+    light: logo.png
+    dark: logo-white.png
 ```
-
-::: {.callout-warning}
-
-## Limitation
-
-The **brand.yml** specification allows you to specify a `light` and `dark` version of your logo, but Quarto currently only uses the `light` version.
-
-::: 
 
 #### Document logo customization
 
@@ -278,13 +362,35 @@ logo: large
 ---
 ```
 
-Or, specify a brand logo and change the alt text:
+Or override the brand logo for this document with a logo from a file:
+
+```{.yaml filename="document.qmd"}
+---
+logo: logo.png
+---
+```
+
+Or specify a brand logo resource and change the alt text:
 
 ```{.yaml filename="document.qmd"}
 ---
 logo:
   path: large
   alt: Alternate alternate text
+---
+```
+
+You can also individually customize light and dark logos, with any of the variations shown above:
+
+```{.yaml filename="document.qmd"}
+---
+logo:
+  light:
+    path: large
+    alt: Alternate alternate text
+  dark:
+    path: dark-logo.png
+    alt: Alternate text for dark logo
 ---
 ```
 
@@ -296,35 +402,33 @@ It is [not currently possible](https://github.com/quarto-dev/quarto-cli/issues/1
 
 ::: 
 
-The Typst implementation allows customization of the logo position at the document level:
+When using `format: typst` you can additionally [customize the logo position](../output-formats/typst.qmd#logo-position).
 
-```{.yaml filename="document.qmd"}
----
-format:
-  typst:
-    logo:
-      width: 1in
-      location: right-top
-      padding-right: 0.5in
-      padding-top: 0.25in
-      alt: Alternate alternate text
----
+#### Disabling the logo
+
+If you want to use `_brand.yml` for colors and typography but don't want the brand logo to appear on specific navigation elements, you can disable it in your `_quarto.yml`.
+
+For websites:
+
+```{.yaml filename="_quarto.yml"}
+website:
+  sidebar:
+    logo: false
+  navbar:
+    logo: false
 ```
 
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option                   | Description                                                                                                                                    |
-+==========================+================================================================================================================================================+
-| `width`                  | Width in CSS units. Default `1.5in`.                                                                                                           |    
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-| `location`               | Location on the page in `X-Y`, where `X` is `left`, `center`, or `right` and Y is `top`, `middle`, or `bottom`.                                |
-|                          | Applied as Typst [`align`](https://typst.app/docs/reference/layout/align/).                                                                    |
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
-| `padding`, `padding-top`,| Amount of padding to add to each side of the logo, using CSS [`padding`](https://developer.mozilla.org/en-US/docs/Web/CSS/padding) conventions.| 
-| `padding-right`,         | Padding options are applied in alphabetical order.                                                                                             |
-| `padding-bottom`,        | Applied as Typst [`block.inset`](https://typst.app/docs/reference/layout/block/#parameters-inset).                                             |
-| `padding-left`           | Default `padding: 0.75in`.                                                                                                                     |
-+--------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+For books:
 
+```{.yaml filename="_quarto.yml"}
+book:
+  navbar:
+    logo: false
+  sidebar:
+    logo: false
+```
+
+This is useful when you want brand styling applied to your project but prefer not to display a logo in the navigation.
 
 ### Typography
 
@@ -340,13 +444,6 @@ typography:
 ```
 
 The properties you can set for a font under `fonts` depends on the `source`. You can see the other properties available in our [Reference for Brand](/docs/reference/metadata/brand.qmd#font-resource-definitions).
-
-
-::: {.callout-warning}
-## Limitation
-
-HTML formats do not currently support `source: file`.
-:::
 
 
 You can then refer to fonts by `family` in the remaining typography options:
@@ -534,10 +631,20 @@ Beyond the automatic application of your brand file, you can also directly acces
 
 Some values from the `_brand.yml` configuration file can be accessed via the `brand` shortcode. In particular, you can access colors and logos by name:
 
--   Use `{{{< brand color COLOR_NAME BRAND_MODE >}}}` to return the brand color named `COLOR_NAME` as a string.
--   Use `{{{< brand logo LOGO_NAME BRAND_MODE >}}}` to return the brand logo named `LOGO_NAME` as an image.
+-   Use `{{{< brand color COLOR_NAME VARIANT >}}}` to return the brand color named `COLOR_NAME` as a string.
+-   Use `{{{< brand logo LOGO_NAME VARIANT >}}}` to return the brand logo named `LOGO_NAME` as an image.
 
-The `BRAND_MODE` is optional and defaults to `light`. To return the color from the [dark brand](#dark-brand) use `dark`.
+`VARIANT` is optional:
+
+- For the `brand color` shortcode, the default is `light`. To return the color from the [dark brand](#dark-brand) use `dark`.
+- For the `brand logo` shortcode, the default is `both`, which will expand to both light and dark logos with the appropriate [classes for mode-specific content](../output-formats/html-themes.qmd#mode-specific-content) so that the light logo shows in light mode and the dark logo shows in dark mode.
+
+::: {.callout-note}
+
+If the `VARIANT` is `light` or `dark`, the `brand logo` shortcode will not add a mode-specific class.
+
+:::
+
 
 For example, you could use the shortcode to place a brand image you've named `icon` in a dashboard sidebar:
 
@@ -632,6 +739,26 @@ For example, you could make a rectangle filled with your `primary` brand color:
 ```
 ````
 
+Brand logos are set in dictionaries called `brand-logo` and `brand-logo-images`.
+
+For example, you can write Typst code to insert an image using its resolved path and alt text from `brand.logo.images`:
+
+````{.markdown filename="document.qmd"}
+---
+format: typst
+brand:
+  logo:
+    images:
+      custom:
+        path: custom.png
+        alt: custom logo
+---
+
+```{=typst}
+#image(brand-logo-images.custom.path, alt=brand-logo-images.custom.alt)
+```
+````
+
 ### Lua API
 
 Filters and shortcodes can access brand values using the `brand` Lua module.
@@ -641,11 +768,90 @@ local brand = require('modules/brand/brand')
 local primary = brand.get_color('primary')
 ```
 
-## Migrating to `_brand.yml`: use the `brand` string in `theme`
+## Sharing brands across projects {#sharing-brands-across-projects}
+
+Organizations often maintain a shared brand that multiple projects should use. Quarto provides two ways to bring an external brand into your project: the `quarto use brand` command and Quarto Brand Extensions.
+
+::: callout-warning
+Quarto requires all brand assets---including logos and font files---to live within your project directory. Both methods described below copy brand files into your project rather than referencing them externally.
+
+In most cases, these assets should be committed to source control.
+:::
+
+### `quarto use brand`
+
+{{< prerelease-callout 1.9 >}}
+
+The `quarto use brand` command copies brand files from an external source into your project's `_brand/` directory. To use it, navigate to your project directory and run:
+
+``` {.bash filename="Terminal"}
+quarto use brand <source>
+```
+
+The source can be a local directory, a GitHub repository, or a URL to a zip archive:
+
+``` {.bash filename="Terminal"}
+quarto use brand ./path/to/brand
+quarto use brand myorg/shared-brand
+quarto use brand https://example.com/brand.zip
+```
+
+When you run the command, Quarto walks you through the following steps:
+
+1.  If the source is remote, Quarto asks you to confirm that you trust the source.
+2.  If your project doesn't have a `_brand/` directory, Quarto asks to create one.
+3.  For each file that already exists in your `_brand/` directory, Quarto asks whether to overwrite it.
+4.  Quarto copies all files from the source to your `_brand/` directory.
+5.  If there are files in your `_brand/` directory that don't exist in the source, Quarto asks whether to remove them.
+
+The result is that your `_brand/` directory will match the source exactly, making it easy to stay in sync with a shared brand as it evolves.
+
+#### Previewing changes
+
+Before making any changes, you can see exactly what would happen using the `--dry-run` option:
+
+``` {.bash filename="Terminal"}
+quarto use brand myorg/shared-brand --dry-run
+```
+
+This displays a summary of changes without modifying any files:
+
+```
+Dry run - no changes will be made.
+
+Would overwrite:
+ - _brand.yml
+
+Would create:
+ - logo.png
+ - fonts/custom-font.woff2
+
+Would remove:
+ - old-logo.png
+```
+
+#### Non-interactive usage
+
+For scripts or automated workflows, use the `--force` option to skip all confirmation prompts:
+
+``` {.bash filename="Terminal"}
+quarto use brand myorg/shared-brand --force
+```
+
+With `--force`, Quarto trusts the source, overwrites conflicting files, creates new files, and removes files in your `_brand/` directory that aren't present in the source, all without prompting.
+
+### Quarto Brand Extensions
+
+Quarto also supports [brand extensions](../extensions/brand.qmd), a Quarto-specific way to distribute brand metadata and assets using a Git repository.
+
+Quarto extensions install to the `_extensions/` subdirectory of your project. You will have a copy of the brand metadata and assets in each project; use [`quarto update`](../extensions/managing.qmd#updating) to update the brand extension from its repository.
+
+
+## Combining brands and themes
 
 ::: callout-note
 
-The following information is only necessary if you are migrating projects created with Quarto 1.5 and earlier to use `_brand.yml`.
+The following information is only necessary if you want to combine bootswatch themes with `_brand.yml`.
 
 :::
 

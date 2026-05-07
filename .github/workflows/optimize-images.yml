@@ -1,0 +1,64 @@
+name: Optimize Images
+
+on:
+  push:
+    branches: [main, prerelease]
+    paths:
+      - '**/*.png'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  OXIPNG_VERSION: "10.1.0"
+
+jobs:
+  optimize-png:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - name: Install oxipng
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/oxipng"
+          gh release download "v${OXIPNG_VERSION}" \
+            --repo oxipng/oxipng \
+            --pattern "*x86_64-unknown-linux-musl.tar.gz" \
+            --output - | tar xz --strip-components=1 -C "$RUNNER_TEMP/oxipng"
+
+      - name: Get changed PNG files
+        id: changed-pngs
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: '**/*.png'
+          separator: '\n'
+
+      - name: Optimize PNGs
+        if: steps.changed-pngs.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-pngs.outputs.all_changed_files }}
+        run: |
+          echo "$ALL_CHANGED_FILES" | while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              echo "Optimizing: $file"
+              "$RUNNER_TEMP/oxipng/oxipng" -o 4 -i 0 --strip safe "$file"
+            fi
+          done
+
+      - name: Commit optimized images
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7
+        with:
+          commit_message: "Optimize PNG images with oxipng"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          file_pattern: '**/*.png'

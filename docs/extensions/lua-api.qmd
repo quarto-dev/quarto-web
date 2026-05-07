@@ -56,11 +56,13 @@ Complete documentation for the Pandoc Lua API can be found in the [Lua Filters](
 
 Various utility functions are provided:
 
-| Function | Description |
-|---------------------|---------------------------------------------------|
-| `quarto.version` | Return the current Quarto version as a `pandoc.Version` object. |
-| `quarto.log.output(obj)` | Dump a text representation of the passed object to stdout. |
-| `quarto.utils.resolve_path(path)` | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
+| Function                                     | Description                                                                                                                                                                                    |
+|-------------------|-----------------------------------------------------|
+| `quarto.version`                             | Return the current Quarto version as a `pandoc.Version` object.                                                                                                                                |
+| `quarto.log.output(obj)`                     | Dump a text representation of the passed object to stdout.                                                                                                                                     |
+| `quarto.utils.resolve_path(path)`            | Compute the full path to a file that is installed alongside your extension's Lua script. This is useful for *internal* resources that your filter needs but should not be visible to the user. |
+| `quarto.utils.string_to_inlines(path, sep)`  | Converts a string to a list of Pandoc Inlines, processing any Quarto custom syntax in the string.                                                                                              |
+| `quarto.utils.string_to_blocks(path)`        | Converts a string to a list of Pandoc Blocks, processing any Quarto custom syntax in the string.                                                                                               |
 
 Quarto includes the [pandoc-lua-logging](https://github.com/wlupton/pandoc-lua-logging) library, which should be used in preference to the dump function. For example, you can examine an element passed to a filter function as follows:
 
@@ -69,6 +71,61 @@ function Div(el)
   quarto.log.output(el)
 end
 ```
+
+### `require()`
+
+In larger, more complex filters, it becomes useful to structure your Lua code in modules.
+Quarto overwrites the standard LUA `require()` to support the use of relative paths, 
+so that small modules can be easily created and reused.
+
+For example:
+
+```{.lua filename="filter.lua"}
+local utility = require('./utils')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+Using relative paths makes it harder for multiple filters to accidentally
+create conflicting module names (as would eventually happen when using the standard Lua
+`require('utils')` syntax). It's possible to refer to subdirectories and parent directories as well:
+
+```{.lua filename="filter2.lua"}
+local parsing = require('./utils/parsing')
+function Pandoc(doc)
+  -- process 
+end
+```
+
+```{.lua filename="utils/parsing.lua"}
+local utils = require("../utils")
+-- ...
+```
+
+### Document Metadata
+
+Extensions may need to access the path for the input and output files. 
+Quarto makes these variables available:
+
+| Function                 | Description                                      |
+|--------------------------|--------------------------------------------------|
+| `quarto.doc.input_file`  | Full path to input file for the current render.  |
+| `quarto.doc.output_file` | Full path to output file for the current render. |
+
+### Project Metadata
+
+Extensions may need to know about paths relevant to the project.
+Quarto makes these variables available:
+
+
+| Function                          | Description                                                                                                     |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------|        
+| `quarto.project.directory`        | Full path to current project directory (`nil` if no project).                                                   |
+| `quarto.project.output_directory` | Full path to current project output directory (`nil` if no project).                                            |
+| `quarto.project.offset`           | Offset (relative path) from the directory of the current file to the root of the project (`nil` if no project). |
+| `quarto.project.profile`          | List of currently active project profiles.                                                                      |
+
 
 ### Format Detection
 
@@ -129,12 +186,14 @@ quarto.doc.include_file("after-body", "comments.html")
 
 Extensions will sometimes want to add external dependencies (for example, a JavaScript library and related CSS, or the usage of a LaTeX package). This can be accomplished with the following functions:
 
-| Function | Description |
-|---------------------|---------------------------------------------------|
-| `quarto.doc.add_html_dependency(dep)` | Add an HTML dependency (additional resources and content) to a document. See docs on the [HTML Dependencies](#html-dependencies) below for additional details. |
-| `quarto.doc.attach_to_dependency(name, attach)` | Attach a file to an existing dependency. `attach` is a file path relative to the Lua filter or table with \`path\` and \`name\` for renaming the file as its copied. |
-| `quarto.doc.use_latex_package(pkg, opt)` | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`) |
-| `quarto.doc.add_format_resource(path)` | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
+| Function                                        | Description                                                                                                                                                                                                                                               |
+|-------------------|-----------------------------------------------------|
+| `quarto.doc.add_html_dependency(dep)`           | Add an HTML dependency (additional resources and content) to a document. See docs on the [HTML Dependencies](#html-dependencies) below for additional details.                                                                                            |
+| `quarto.doc.attach_to_dependency(name, attach)` | Attach a file to an existing dependency. `attach` is a file path relative to the Lua filter or table with \`path\` and \`name\` for renaming the file as its copied.                                                                                      |
+| `quarto.doc.use_latex_package(pkg, opt)`        | Adds a `\usepackage` statement to the LaTeX output (along an options string specified in `opt`)                                                                                                                                                           |
+| `quarto.doc.add_format_resource(path)`          | Add a format resource to the document. Format resources will be copied into the directory next to the rendered output. This is useful, for example, if your format references a `bst` or `cls` file which must be copied into the LaTeX output directory. |
+| `quarto.doc.add_resource(path)`                 | Add a resource file to the current render, copying that file to the same relative location in the output directory. Learn more about resource handling in [Site Resources](/docs/websites/website-tools.qmd#site-resources).                                                                                                                                       |
+| `quarto.doc.add_supporting(path)`               | Add a supporting file to the current render, moving that file to the same relative location in the output directory. Supporting files can be cleaned up after rendering.                                                                                                                                 |
 
 For example, here we add a LaTeX package dependency:
 
@@ -154,7 +213,7 @@ The `dep` object passed to `quarto.doc.add_html_dependency()` has the following 
 | `version` | Version number (as a string). Required. |
 | `scripts` | List of scripts to include (paths can be absolute or relative to the Lua file calling the function). Scripts can be either a simple path or a [script object](#script-object). |
 | `stylesheets` | List of CSS style-sheets to include (paths can be absolute or relative to the Lua file calling the function). Stylesheets can either be a simple path or a [stylesheet object](#stylesheet-object) |
-| `links` | List of link tags to add to the document. Each tag should be a table with `rel` and `ref` (required) and optionally `type` |
+| `links` | List of link tags to add to the document. Each tag should be a table with `rel` and `href` (required) and optionally `type` |
 | `resources` | Additional files to copy to the input directory (each resource is an object with `name` (target file name in input directory) and `path` (source file name relative to Lua script). |
 | `serviceworkers` | JavaScript serviceworker files that should be copied to the root output directory (can be a simple string file name or table with \`path\` and \`name\` for renaming the file as its copied). |
 | `meta` | Table of optional `key = value` meta tags to insert into the document `<head>` |
@@ -224,6 +283,52 @@ quarto.doc.add_html_dependency({
 })
 ```
 
+### Custom Nodes
+
+Quarto defines custom AST node types that you can create programmatically in Lua filters. For details on the node types themselves (fields available when processing nodes in filters), see [Quarto AST: Custom Nodes](/docs/advanced/quarto-ast.qmd#custom-nodes).
+
+The constructors below accept the same fields as documented for each node type, with some additional flexibility:
+
+:::{.list-table}
+- - Constructor
+  - Description
+  - `tbl` fields
+  - Notes
+
+- - `quarto.Callout(tbl)`
+  - Creates a [Callout](/docs/advanced/quarto-ast.qmd#callouts).
+  - Required: `type`
+
+    Optional: `title`, `content`, `appearance`, `collapse`, `icon`, `attr`
+  - `title` and `content` accept strings. `attr` sets div attributes.
+
+- - `quarto.Tabset(tbl)`
+  - Creates a [Tabset](/docs/advanced/quarto-ast.qmd#tabsets).
+  - Optional: `tabs`, `level`, `attr`
+  - Use `quarto.Tab()` to create entries for `tabs`.
+
+- - `quarto.Tab(tbl)`
+  - Creates a Tab for use in a Tabset.
+  - Required: `title`
+
+    Optional: `content`, `active`
+  - `title` and `content` accept strings.
+
+- - `quarto.ConditionalBlock(tbl)`
+  - Creates a [Conditional Block](/docs/advanced/quarto-ast.qmd#conditional-blocks).
+  - Required: `node`, `behavior`
+
+    Optional: `condition`
+  -
+
+- - `quarto.FloatRefTarget(tbl)`
+  - Creates a [cross-referenceable float](/docs/advanced/quarto-ast.qmd#cross-referenceable-elements).
+  - Required: `type`, `content`, `identifier`
+
+    Optional: `caption_long`, `caption_short`, `classes`, `attributes`, `attr`, `parent_id`
+  - `attr` is an alternative to separate `identifier`, `classes`, `attributes` fields.
+:::
+
 ### JSON Encoding
 
 Quarto includes a copy of [json.lua](https://github.com/rxi/json.lua). a lightweight JSON library for Lua. You can access the JSON functions as follows:
@@ -257,6 +362,7 @@ Quarto exposes paths to utilities that are likely to be useful to Lua extension 
 |------------------------------------|------------------------------------|
 | `quarto.paths.rscript()` | Returns the path to `Rscript` that Quarto uses in the `knitr` engine and R files for `quarto run` scripts |
 | `quarto.paths.tinytex_bin_dir()` | Returns the path to `TinyTeX` binaries directory (where `tlmgr`, `pdlatex` and others are). If Quarto did not install `TinyTeX` and does not found it, it will return `nil`. This means that PDF rendering by Quarto probably used tools found in PATH. |
+| `quarto.paths.typst()` | Returns the path to `typst` used by Quarto. |
 
 ### Shortcodes
 
@@ -266,3 +372,114 @@ Quarto offers the following helper functions for shortcode developers, to be typ
 |----------|-------------|
 | `quarto.shortcode.read_arg(args, [n])` | Returns the `n`-th argument of the shortcode invocation |
 | `quarto.shortcode.error_output(name, message_or_args, context)` | Creates output to be used by shortcodes to depict an execution error, consistently with how Quarto shows such outputs |
+
+### Metadata Access
+
+Quarto provides programmatic access to document and project metadata from Lua filters and scripts. This is useful when you need to access metadata values within filter logic rather than in shortcode contexts.
+
+| Function | Description |
+|---------------------|---------------------------------------------------|
+| `quarto.metadata.get(key)` | Return the value of a metadata entry as a `pandoc.MetaValue`, or `nil` if the key is missing. This is the Lua equivalent of the `{{{< meta key >}}}` shortcode. |
+
+The `key` parameter can reference top-level metadata or use dot notation to access nested values. For example:
+
+``` lua
+function Meta(meta)
+  -- Get a simple metadata value
+  local title = quarto.metadata.get("title")
+
+  -- Check if a value exists before using it
+  local customField = quarto.metadata.get("custom-field")
+  if customField then
+    -- Process the metadata value
+    local value = pandoc.utils.stringify(customField)
+  end
+
+  return meta
+end
+```
+
+The function returns a `pandoc.MetaValue`, which may be a `MetaString`, `MetaInlines`, `MetaList`, `MetaMap`, or other [Pandoc metadata types](https://pandoc.org/lua-filters.html#type-metavalue). You can use `pandoc.utils.stringify()` to convert these to strings when needed:
+
+``` lua
+function Pandoc(doc)
+  -- Get metadata as MetaValue
+  local metaValue = quarto.metadata.get("description")
+
+  -- Convert to string for processing
+  local description = pandoc.utils.stringify(metaValue)
+
+  -- Handle complex metadata structures
+  local keywords = quarto.metadata.get("keywords")
+  if type(keywords) == "table" then
+    -- Process as a list or map
+    for k, v in pairs(keywords) do
+      quarto.log.output(pandoc.utils.stringify(v))
+    end
+  end
+
+  return doc
+end
+```
+
+### Variables Access
+
+Quarto projects can define variables in `_variables.yml` files. These variables can be accessed programmatically from Lua using the `quarto.variables.get()` function.
+
+| Function | Description |
+|---------------------|---------------------------------------------------|
+| `quarto.variables.get(name)` | Return the value of a variable from `_variables.yml` as a string, or `nil` if the variable is not defined. This is the Lua equivalent of the `{{{< var name >}}}` shortcode. |
+
+For example, if your `_variables.yml` contains:
+
+```yaml
+site-url: https://example.com
+api-version: v2.1
+feature-enabled: true
+```
+
+You can access these values in your Lua filter:
+
+``` lua
+function Pandoc(doc)
+  -- Get a variable value
+  local siteUrl = quarto.variables.get("site-url")
+
+  -- Use in conditional logic
+  local apiVersion = quarto.variables.get("api-version")
+  if apiVersion == "v2.1" then
+    -- Add version-specific content
+  end
+
+  -- Check if a variable exists
+  local featureFlag = quarto.variables.get("feature-enabled")
+  if featureFlag then
+    quarto.log.output("Feature flag: " .. featureFlag)
+  end
+
+  return doc
+end
+```
+
+Variables are always returned as strings (or `nil` if not found), so you may need to perform type conversions when working with numeric or boolean values:
+
+``` lua
+function Pandoc(doc)
+  -- Get a numeric variable
+  local maxItems = quarto.variables.get("max-items")
+  if maxItems then
+    local count = tonumber(maxItems)
+    if count and count > 10 then
+      -- Process with numeric value
+    end
+  end
+
+  -- Get a boolean variable
+  local enabled = quarto.variables.get("feature-enabled")
+  if enabled == "true" then
+    -- Feature is enabled
+  end
+
+  return meta
+end
+```

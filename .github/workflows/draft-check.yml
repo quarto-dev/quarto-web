@@ -1,0 +1,44 @@
+on:
+  pull_request:
+    branches: [main, prerelease]
+
+name: Draft Check
+
+jobs:
+  check-drafts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        with:
+          files: |
+            docs/**/*.qmd
+            docs/**/*.md
+          json: true
+          escape_json: false
+
+      - name: Detect draft pages
+        id: detect-drafts
+        uses: ./.github/workflows/actions/detect-drafts
+        with:
+          changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Report results
+        run: |
+          if [ "${{ steps.detect-drafts.outputs.found }}" == "true" ]; then
+            echo "### ⚠️ Draft pages detected" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Remove \`draft: true\` before merging:" >> "$GITHUB_STEP_SUMMARY"
+            echo '${{ steps.detect-drafts.outputs.files }}' | while read -r f; do
+              [ -n "$f" ] && echo "- \`$f\`" >> "$GITHUB_STEP_SUMMARY"
+            done
+            echo "::error::This PR contains pages with draft: true. Remove draft status before merging."
+            exit 1
+          else
+            echo "No draft pages found." >> "$GITHUB_STEP_SUMMARY"
+          fi
+        shell: bash

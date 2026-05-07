@@ -11,7 +11,7 @@ This article describes how to define and use computational parameters with Quart
 
 ## Definition
 
-Adding parameter definitions to a {{< meta document >}} works differently depending on whether you are using the [Jupyter](https://jupyter.org) or [Knitr](https://yihui.name/knitr) engine.
+Adding parameter definitions to a {{< meta document >}} works differently depending on whether you are using the [Jupyter](https://jupyter.org), [Knitr](https://yihui.name/knitr) or Julia engine.
 
 ### Jupyter
 
@@ -53,6 +53,29 @@ The parameters are available in the `params` list:
 ````python
 ```{{r}}
 params$alpha
+```
+````
+
+### Julia
+
+For the Julia engine, parameters are defined via the `params` YAML option.
+
+``` yaml
+---
+engine: julia
+params:
+  alpha: 0.1
+  ratio: 0.1
+---
+```
+
+Each key is evaluated as a constant and can be accessed under that name.
+Note that this means only keys that are valid Julia variable names are allowed.
+For example, `some_key` is valid while `some-key` isn't, even though the latter is a valid YAML key.
+
+````julia
+```{{julia}}
+alpha
 ```
 ````
 

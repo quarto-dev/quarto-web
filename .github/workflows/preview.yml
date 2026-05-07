@@ -1,6 +1,8 @@
 on:
   pull_request:
     branches: [main, prerelease]
+    paths-ignore:
+      - '.github/**'
   issue_comment:
     types: [created]
 
@@ -63,9 +65,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
-        with: 
+        uses: actions/checkout@v6
+        with:
           ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
+
+      # On issue_comment events (e.g. /deploy-preview), github.event.pull_request
+      # is not populated so tj-actions/changed-files can't determine the base commit
+      # to diff against. Fetch it from the API so we can pass it explicitly.
+      - name: Get PR base SHA
+        if: github.event_name != 'pull_request'
+        id: pr-info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_number=${{ github.event.issue.number }}
+          base_sha=$(gh -R $GITHUB_REPOSITORY pr view $pr_number --json baseRefOid --jq '.baseRefOid')
+          echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
+        shell: bash
 
       - name: Get latest pre-release from github
         id: github-release
@@ -100,10 +116,10 @@ jobs:
           fi
         shell: bash
 
-      - name: Render 
+      - name: Render
         uses: quarto-dev/quarto-actions/render@v2
         env:
-          QUARTO_PROFILE: ${{ steps.prerelease-docs-check.outputs.is_prerelease_docs == 'true' && 'prerelease-docs' || '' }}
+          QUARTO_PROFILE: ${{ steps.prerelease-docs-check.outputs.is_prerelease_docs == 'true' && 'prerelease-docs,pr-preview' || 'pr-preview' }}
 
       - name: Deploy Preview to Netlify as preview
         id: netlify-deploy
@@ -127,64 +143,163 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v46.0.5
+        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
         with:
+          base_sha: ${{ github.event.pull_request.base.sha || steps.pr-info.outputs.base_sha }}
           files: |
             # don't consider modifications on file used for includes for now.
+            license.qmd
             docs/**/[^_]*.qmd
             docs/**/[^_]*.md
             docs/extensions/listings/*.yml
+            docs/reference/**/*.json
+            docs/cli/*.json
+            docs/**/images/*.png
+          files_ignore: |
+            **/CLAUDE.md
           json: true
           escape_json: false
       
+      - name: Map changed images to doc pages
+        id: image-pages
+        run: |
+          # Build JSON mapping from image output paths to doc pages using manifest
+          MANIFEST="_tools/screenshots/manifest.json"
+          CHANGED='${{ steps.changed-files.outputs.all_changed_files }}'
+          if [ -f "$MANIFEST" ]; then
+            # Extract {output: doc.file} pairs, match against changed files
+            IMAGE_PAGES=$(echo "$CHANGED" | jq -r --slurpfile manifest "$MANIFEST" '
+              ($manifest[0].screenshots | map(select(.doc.file) | {(.output): .doc.file}) | add // {}) as $map |
+              [.[] | select(test("[.]png$")) |
+                # Normalize dark variants (foo-dark.png -> foo.png) for manifest lookup
+                sub("-dark[.]png$"; ".png") as $base |
+                ($map[$base] // empty) | sub("[.]qmd$"; ".html")
+              ] | unique | .[]
+            ')
+            echo "pages<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$IMAGE_PAGES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
+      - name: Detect draft pages
+        id: detect-drafts
+        uses: ./.github/workflows/actions/detect-drafts
+        with:
+          changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
+
       - name: Create custom PR comment
         if: github.event.pull_request || github.event.issue.pull_request
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           DEPLOY_URL: ${{ steps.netlify-deploy.outputs.deploy-url }}
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+          IMAGE_PAGES: ${{ steps.image-pages.outputs.pages }}
+          DRAFT_FILES: ${{ steps.detect-drafts.outputs.files }}
+          HAS_DRAFTS: ${{ steps.detect-drafts.outputs.found }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
             const deployUrl = process.env.DEPLOY_URL;
-            const changedFiles = JSON.parse(process.env.CHANGED_FILES);
-            
+            const changedFiles = JSON.parse(process.env.CHANGED_FILES || '[]');
+            const draftFilesList = (process.env.DRAFT_FILES || '').trim().split('\n').filter(Boolean);
+            const draftSet = new Set(draftFilesList);
+
             let commentBody = `## 📝 Preview Deployment\n\n`;
             commentBody += `🔍 Full site preview: [${deployUrl}](${deployUrl})\n\n`;
-            
+
             if (changedFiles.length > 0) {
-              commentBody += `### 🔄 Modified Documents\n\n`;
+              // Explicit mapping for files that don't follow standard naming conventions
+              const specialFileMapping = {
+                'docs/extensions/listings/shortcodes-and-filters.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/journal-articles.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/custom-formats.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/revealjs-formats.yml': 'docs/extensions/index.html',
+                'docs/extensions/listings/revealjs.yml': 'docs/extensions/index.html',
+                'docs/cli/cli-info.json': 'docs/reference/index.html',
+              };
+
+              // Projects/ JSON files have many-to-one mapping to .qmd pages
+              const projectsJsonMapping = {
+                'book': 'docs/reference/projects/books.html',
+                'manuscript': 'docs/reference/projects/manuscripts.html',
+                'project': 'docs/reference/projects/options.html',
+                'preview': 'docs/reference/projects/options.html',
+                'serve': 'docs/reference/projects/options.html',
+              };
+              const projectsDefault = 'docs/reference/projects/websites.html';
+
+              // Resolve each changed file to its preview URL path
+              // Group files by their target page for deduplication
+              const pageToFiles = new Map();
+
               changedFiles.forEach(file => {
                 let fileUrlPath;
 
-                // Define a mapping for special files to their corresponding URLs
-                const specialFileMapping = {
-                  'docs/extensions/listings/shortcodes-and-filters.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/journal-articles.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/custom-formats.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/revealjs-formats.yml': 'docs/extensions/index.html',
-                  'docs/extensions/listings/revealjs.yml': 'docs/extensions/index.html'
-                };
-
-                // Check if the file is in the special mapping
                 if (specialFileMapping[file]) {
                   fileUrlPath = specialFileMapping[file];
                 } else if (file.endsWith('.qmd') || file.endsWith('.md')) {
-                  // Convert path to URL (removing file extension and adding appropriate path)
                   fileUrlPath = file.replace(/\.(qmd|md)$/, '.html');
+                } else if (file.startsWith('docs/reference/projects/') && file.endsWith('.json')) {
+                  const stem = file.split('/').pop().replace('.json', '');
+                  fileUrlPath = projectsJsonMapping[stem] || projectsDefault;
+                } else if (file.endsWith('.json')) {
+                  // Generic: formats/, cells/, metadata/ JSON have sibling .qmd files
+                  fileUrlPath = file.replace(/\.json$/, '.html');
                 }
 
                 if (fileUrlPath) {
-                  const fileUrl = `${deployUrl}/${fileUrlPath}`;
-                  commentBody += `- [${file}](${fileUrl})\n`;
+                  if (!pageToFiles.has(fileUrlPath)) {
+                    pageToFiles.set(fileUrlPath, []);
+                  }
+                  pageToFiles.get(fileUrlPath).push(file);
                 }
               });
+
+              if (pageToFiles.size > 0) {
+                commentBody += `### 🔄 Modified Documents\n\n`;
+                for (const [page, files] of pageToFiles) {
+                  const fileUrl = `${deployUrl}/${page}`;
+                  const isDraft = files.some(f => draftSet.has(f));
+                  const draftTag = isDraft ? ' — ⚠️ `draft`' : '';
+                  if (files.length === 1) {
+                    commentBody += `- [${page}](${fileUrl})${draftTag}\n`;
+                  } else {
+                    // Multiple source files map to one page - show page with file summary
+                    const basenames = files.map(f => f.split('/').pop());
+                    const shown = basenames.slice(0, 3).join(', ');
+                    const rest = basenames.length > 3 ? `, +${basenames.length - 3} more` : '';
+                    commentBody += `- [${page}](${fileUrl}) (${shown}${rest})${draftTag}\n`;
+                  }
+                }
+              }
             }
-            
-            github.rest.issues.createComment({
+
+            // Add pages affected by changed screenshots
+            const imagePages = (process.env.IMAGE_PAGES || '').trim();
+            if (imagePages) {
+              const pages = [...new Set(imagePages.split('\n').filter(Boolean))];
+              if (pages.length > 0) {
+                commentBody += `\n### 🖼️ Pages with Updated Screenshots\n\n`;
+                for (const page of pages) {
+                  const fileUrl = `${deployUrl}/${page}`;
+                  commentBody += `- [${page}](${fileUrl})\n`;
+                }
+              }
+            }
+
+            // Add draft warning callout (no file list — already tagged inline above)
+            const hasDrafts = process.env.HAS_DRAFTS === 'true';
+            if (hasDrafts) {
+              commentBody += `\n> [!WARNING]\n`;
+              commentBody += `> This PR contains pages with \`draft: true\`. Remove the draft status before merging if the content is ready to publish.\n`;
+            }
+
+            await github.rest.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: commentBody
             });
+

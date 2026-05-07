@@ -1,0 +1,230 @@
+name: Update Prerelease Reference Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Prerelease version (e.g., 1.9.24)'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Prerelease version (e.g., 1.9.24)'
+        required: true
+        type: string
+    secrets:
+      ISSUE_COMMENT_TRIGGER_PAT:
+        required: true
+
+concurrency:
+  group: prerelease-reference-update
+  cancel-in-progress: false
+
+jobs:
+  update-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout prerelease branch
+        uses: actions/checkout@v6
+        with:
+          ref: prerelease
+
+      # --- Safety checks ---
+
+      - name: Clean up legacy per-version PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Find any open PRs from old per-version branches
+          legacy_prs=$(gh pr list \
+            --base prerelease \
+            --state open \
+            --json number,headRefName \
+            --jq '[.[] | select(.headRefName | startswith("auto/prerelease-reference-v"))]')
+          legacy_count=$(echo "$legacy_prs" | jq 'length')
+
+          if [ "$legacy_count" != "0" ]; then
+            echo "Found $legacy_count legacy per-version PR(s), closing them..."
+            echo "$legacy_prs" | jq -r '.[].number' | while read pr_number; do
+              echo "Closing PR #${pr_number}"
+              gh pr close "$pr_number" \
+                --comment "Superseded by rolling reference update PR." \
+                --delete-branch
+            done
+          else
+            echo "No legacy per-version PRs found."
+          fi
+
+      - name: Check for existing rolling PR
+        id: check-pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr_list=$(gh pr list \
+            --base prerelease \
+            --state open \
+            --head auto/prerelease-reference \
+            --json number,url)
+          pr_count=$(echo "$pr_list" | jq 'length')
+
+          if [ "$pr_count" -gt 1 ]; then
+            echo "::error::Found $pr_count open PRs from auto/prerelease-reference branch. Expected at most 1. Manual cleanup required."
+            exit 1
+          elif [ "$pr_count" -eq 1 ]; then
+            pr_number=$(echo "$pr_list" | jq -r '.[0].number')
+            pr_url=$(echo "$pr_list" | jq -r '.[0].url')
+            echo "existing_pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+            echo "existing_pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+            echo "Found existing PR #${pr_number}"
+          else
+            echo "No existing rolling PR found."
+
+            # Check for stale branch with no open PR (was merged or closed)
+            if git ls-remote --exit-code --heads origin auto/prerelease-reference > /dev/null 2>&1; then
+              echo "Deleting stale remote branch auto/prerelease-reference (no open PR)"
+              git push origin --delete auto/prerelease-reference
+            fi
+          fi
+
+      # --- Setup ---
+
+      - name: Install Quarto (prerelease)
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: ${{ inputs.version }}
+
+      - name: Verify Quarto version
+        run: quarto --version
+
+      - name: Clone quarto-cli at matching tag
+        run: |
+          git clone --depth 1 --branch v${{ inputs.version }} \
+            https://github.com/quarto-dev/quarto-cli.git \
+            ../quarto-cli
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            jsonlite
+            knitr
+            here
+            tidyverse
+            fansi
+            xfun
+
+      # --- Run reference generation scripts ---
+
+      - name: Generate format/cell/project reference JSON
+        run: |
+          quarto run _tools/reference.ts
+
+      - name: Generate CLI reference
+        run: |
+          # Generate CLI info JSON
+          quarto dev-call cli-info > docs/cli/cli-info.json
+          # Generate markdown from JSON
+          quarto run _tools/reference-cli-generate-md.R
+
+      # --- Check for changes ---
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No changes detected - reference pages are already up to date for v${{ inputs.version }}"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Changes detected:"
+            git diff --cached --stat
+          fi
+
+      # --- Create or update PR ---
+
+      - name: Push changes and create or update PR
+        id: push-pr
+        if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${{ inputs.version }}"
+          branch="auto/prerelease-reference"
+          existing_pr_number="${{ steps.check-pr.outputs.existing_pr_number }}"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # Capture summary before committing
+          diff_stat=$(git diff --cached --stat | tail -1)
+          changed_files=$(git diff --cached --name-only)
+
+          git checkout -b "$branch"
+          git commit -m "Update reference pages for prerelease v${version}"
+
+          # Write PR body once — used by both create and update paths
+          # Note: backticks must be escaped (\`) inside this heredoc
+          cat > "$RUNNER_TEMP/pr-body.md" <<EOF
+          Automated update of reference documentation for Quarto prerelease.
+
+          ## Latest version
+
+          v${version}
+
+          ## Summary
+
+          ${diff_stat}
+
+          ## Changed files
+
+          \`\`\`
+          ${changed_files}
+          \`\`\`
+
+          ## Scripts run
+
+          - \`_tools/reference.ts\` - format/cell/project reference JSON
+          - \`_tools/reference-cli-generate-md.R\` - CLI reference markdown
+          EOF
+
+          if [ -n "$existing_pr_number" ]; then
+            # Force-push is safe: concurrency group prevents overlapping runs,
+            # and only this workflow writes to this branch.
+            git push --force origin "$branch"
+            gh pr edit "$existing_pr_number" --body-file "$RUNNER_TEMP/pr-body.md"
+
+            pr_url="${{ steps.check-pr.outputs.existing_pr_url }}"
+            echo "Updated existing PR: $pr_url"
+          else
+            # Create new PR
+            git push origin "$branch"
+
+            pr_url=$(gh pr create \
+              --base prerelease \
+              --head "$branch" \
+              --title "Update reference pages (prerelease)" \
+              --body-file "$RUNNER_TEMP/pr-body.md")
+
+            echo "Created new PR: $pr_url"
+          fi
+
+          echo "pr_url=$pr_url" >> "$GITHUB_OUTPUT"
+
+      - name: Assign PR
+        if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit "${{ steps.push-pr.outputs.pr_url }}" --add-assignee cwickham
+
+      - name: Trigger preview deployment
+        if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
+        run: |
+          gh pr comment "${{ steps.push-pr.outputs.pr_url }}" --body "/deploy-preview"

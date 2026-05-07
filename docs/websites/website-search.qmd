@@ -77,6 +77,20 @@ You can use the following `search` options to customize how search results are d
 |                    | ![](images/search-item-context.png){.border fig-alt="search box with navigational context shown above the title of the first result." width="260"}                                                                                |
 +--------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+## Search Result Highlighting {#search-result-highlighting}
+
+When you click a search result, Quarto navigates to the destination page and highlights the matching terms with `<mark>` elements. This works with both the built-in search and [Algolia](#using-algolia) search.
+
+The highlighting is driven by a `?q=` URL parameter. You can manually add `?q=term` to any page URL to highlight occurrences of that term — useful for sharing links that draw attention to specific content.
+
+{{< prerelease-callout 1.9 >}}
+
+Highlights remain visible until you navigate away from the page. When a match is found inside a [tabset](/docs/output-formats/html-basics.qmd#tabsets), the correct tab is automatically activated to reveal the highlighted content, including nested and grouped tabsets. Multi-word search terms are highlighted correctly even when they span across formatting boundaries such as bold, italic, code spans, or syntax-highlighted code blocks.
+
+URLs that combine a search query with a section anchor (e.g., `page.html?q=term#section`) scroll to the specified section rather than jumping to the first match. For example, [this link](https://{{< meta prerelease-subdomain >}}quarto.org/docs/computations/execution-options.html?q=%22%23%23%20Heading%202%5Cn%22#raw-output) searches for `"## Heading 2\n"` on the Execution Options page with a `#raw-output` anchor — the Knitr tab is activated (instead of the default Jupyter tab), matches are highlighted inside the code block, and the page scrolls to the Raw Output section:
+
+![](images/search-highlight-tabset.png){.border .include-dark fig-alt="Quarto website showing search result highlighting: the Knitr tab is activated inside a tabset, yellow highlighted marks appear on code lines containing cat statements, and the page is scrolled to the Raw Output section."}
+
 ## Using Algolia
 
 In addition to the built-in search capability, Quarto websites can also be configured to use an external Algolia search index. When rendering a website, Quarto will produce a JSON file (`search.json` in the site output directory) which can be used to update an Algolia index. For more on creating indexes with Algolia, see [Send and Update Your Data](https://www.algolia.com/doc/guides/sending-and-managing-data/send-and-update-your-data/) using Algolia.
@@ -167,7 +181,36 @@ website:
       analytics-events: true
 ```
 
-You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger). Note that the click and conversion events use cookies to maintain an anonymous user identifier---if [cookie consent](website-tools.qmd#cookie-consent) is enabled, search events will only be enabled if cookie consent has been granted.
+You can confirm that events are being properly sent to Algolia using the [Event Debugger](https://www.algolia.com/events/debugger).
+
+#### Cookie Consent and User Tracking
+
+Algolia Insights uses user tokens to track click and conversion events. Quarto uses a **privacy-first approach** for handling cookies:
+
+- **Without cookie consent enabled**: A random session token is generated for each browser session. This allows tracking of search interactions during a single visit without storing persistent cookies. This privacy-first approach avoids persistent cookies entirely.
+
+- **With cookie consent enabled**: When you enable [cookie consent](website-tools.qmd#cookie-consent), cookies are blocked by default until the user expressly grants consent. After the user grants "tracking" consent, Algolia will use cookies to maintain an anonymous user identifier across sessions:
+
+``` yaml
+website:
+  cookie-consent: true
+  search:
+    algolia:
+      index-name: <my-index-name>
+      application-id: <my-application-id>
+      search-only-api-key: <my-search-only-api-key>
+      analytics-events: true
+```
+
+With this configuration, the Algolia Insights API will use cookies to maintain an anonymous user identifier across sessions, but only after the user has explicitly granted consent.
+
+::: {.callout-important}
+## Privacy Regulations
+
+The default session-only tracking (without cookie consent) provides meaningful analytics about search usage patterns without using persistent cookies. When cookie consent is enabled, Quarto uses an opt-in approach (express consent) by default, blocking cookies until the user explicitly agrees.
+
+While these features are designed with privacy regulations in mind, website owners should consult with legal counsel to ensure their specific implementation meets applicable privacy laws and regulations in their jurisdiction.
+:::
 
 ### Advanced Configuration
 
