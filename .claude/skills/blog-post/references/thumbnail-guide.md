@@ -2,6 +2,25 @@
 
 Design conventions for blog post listing card images, derived from 40 existing posts.
 
+## Choosing your path
+
+Two production paths exist for thumbnails. Pick before you start designing.
+
+| Path | Use when | Avoid when |
+|------|----------|------------|
+| **Typst** ([`typst-thumbnail.md`](typst-thumbnail.md)) | Text-only thumbnails, programmatic diagrams (trees, graphs, flow), version/title cards | Design uses 3rd-party logos/icons with their own colors |
+| **HTML+SVG** (rest of this guide) | Icon compositions with 3rd-party SVGs, photographic content, complex CSS-only layouts | Pure text or programmatic diagrams (Typst is faster) |
+
+> **Release posts default to HTML+SVG.** The release thumbnail template (steel
+> blue + Quarto logo + version + small thematic emoji) is established convention
+> from 1.4 through current. Switching to Typst for a release is a stylistic
+> choice — confirm with the team before deviating. New release posts that match
+> the template should reuse the existing HTML+SVG flow so all release thumbnails
+> stay visually consistent.
+
+For Typst, see [`typst-thumbnail.md`](typst-thumbnail.md). The rest of this
+guide covers the HTML+SVG path.
+
 ## Dimensions and Format
 
 - **Size**: 1200x630 px (Open Graph / social card standard)
@@ -72,7 +91,7 @@ Use Posit conference brand templates rather than the Quarto steel blue:
 Use the partner's own logo on a white or neutral background (e.g., Hugging Face logo,
 Confluence logo). No Quarto branding needed — the partner identity is the visual.
 
-## Creating Thumbnails
+## Creating Thumbnails (HTML+SVG path)
 
 ### Prerequisites
 
