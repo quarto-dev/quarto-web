@@ -59,7 +59,9 @@ Guest authors use structured form with `name:` and optional `url:`.
 `Tip`, `Extensions`, `Tables`, `Teaching`, `Jupyter`.
 
 **image / image-alt**: `thumbnail.png` preferred. `image-alt` is mandatory.
-See `references/thumbnail-guide.md` for dimensions, visual style, and design patterns.
+See `references/thumbnail-guide.md` for the decision between the two production
+paths (Typst, or HTML+SVG) and the HTML+SVG flow. For the Typst path, see
+`references/typst-thumbnail.md`.
 
 **Optional**: `lightbox: true` (many screenshots), `draft: true` (while developing).
 Do not use `subtitle:` (phased out after 2023).
@@ -139,7 +141,16 @@ Use sparingly: `.callout-tip` for post origin context, `.callout-warning` for ca
 4. **Draft body** following type-specific structure
 5. **Add images** with `fig-alt=` on every one
 6. **Link to docs** for every feature mentioned
-7. **Create thumbnail** (or note one is needed)
+7. **Create thumbnail**:
+   1. Read `references/thumbnail-guide.md` § Choosing your path
+   2. **Always present both options as a question to the user**, even if one
+      path is the obvious recommendation. State the recommendation with
+      reasoning (logos? programmatic diagram? text-only? release post?), then
+      explicitly ask the user to confirm or override before proceeding. Never
+      silently pick.
+   3. Read the chosen path's reference and execute
+      (`references/typst-thumbnail.md` for Typst, rest of `thumbnail-guide.md`
+      for HTML+SVG)
 8. **Review**: direct opener? code blocks fenced with language? all images alt-texted?
    docs links present? closing matches type convention? categories correct?
 
