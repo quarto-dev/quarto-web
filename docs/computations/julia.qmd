@@ -543,6 +543,25 @@ Please direct questions and requests regarding this functionality to the
 [QuartoNotebookRunner](https://github.com/PumasAI/QuartoNotebookRunner.jl)
 repository.
 
+## Conditional Execution
+
+To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell:
+
+```` markdown
+```{{julia}}
+using JSON
+
+info = JSON.parsefile(ENV["QUARTO_EXECUTE_INFO"])
+is_html = info["format"]["identifier"]["base-format"] == "html"
+
+if is_html
+    # HTML-only code, e.g. an interactive widget
+end
+```
+````
+
+This pairs well with [conditional content](/docs/authoring/conditional.qmd) when both visibility and execution should depend on format. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema.
+
 # Using the `jupyter` engine
 
 ### Installation {#installation}
