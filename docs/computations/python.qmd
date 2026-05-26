@@ -112,3 +112,25 @@ Note that this step is not required if you are merely using conda with Quarto. I
 :::
 
 {{< include _jupyter-daemon.md >}}
+
+## Conditional Execution
+
+To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell:
+
+```` markdown
+```{{python}}
+import json
+import os
+
+with open(os.environ["QUARTO_EXECUTE_INFO"]) as f:
+    info = json.load(f)
+
+is_html = info["format"]["identifier"]["base-format"] == "html"
+
+if is_html:
+    # HTML-only code, e.g. an interactive widget
+    ...
+```
+````
+
+This pairs well with [conditional content](/docs/authoring/conditional.qmd) when both visibility and execution should depend on format. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema.
