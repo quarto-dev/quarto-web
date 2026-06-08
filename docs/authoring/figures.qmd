@@ -95,13 +95,27 @@ as detailed in [the Pandoc documentation](https://pandoc.org/MANUAL.html#extensi
 
 ### Multiformat Figures
 
-You can write markdown that provides a distinct image file format depending on the target output format. To do this simply leave-off the extension, for example:
+You can write markdown that provides a distinct image file format depending on the target output format. To do this simply leave off the extension, for example:
 
 ``` markdown
 ![](elephant)
 ```
 
-By default this will look for `elephant.png`, however if you are rendering to PDF it will look for `elephant.pdf`. You can customize this behavior using the `default-image-extension` option. For example:
+Quarto will look for a file matching the extension associated with the target output format. The default extension per format is:
+
+| Format | Default extension |
+|--------|-------------------|
+| HTML, EPUB, DOCX, PPTX, and most others | `.png` |
+| PDF (via LaTeX / Beamer) | `.pdf` |
+| Typst | `.svg` |
+
+So for `![](elephant)`:
+
+- Rendering to HTML looks for `elephant.png`
+- Rendering to PDF (LaTeX) looks for `elephant.pdf`
+- Rendering to Typst looks for `elephant.svg`
+
+You can override the default per format using the `default-image-extension` option:
 
 ``` yaml
 format:
@@ -109,6 +123,16 @@ format:
     default-image-extension: svg
   pdf:
     default-image-extension: tex
+  typst:
+    default-image-extension: png
+```
+
+If you have images with no extension at all (e.g. remote URLs like badge URLs), set `default-image-extension` to an empty string to prevent Quarto from appending one:
+
+``` yaml
+format:
+  html:
+    default-image-extension: ""
 ```
 
 ### Lightbox Figures
