@@ -29,4 +29,4 @@ TypeScript scripts use the Deno runtime bundled with Quarto (no external install
 R scripts require R/Rscript on PATH, and Python scripts require Python on PATH.
 
 R and Python dependencies are managed at the project level via **renv** (R) and
-**pipenv** (Python). See the [project README](../README.md) for setup instructions.
+**uv** (Python). See the [project README](../README.md) for setup instructions.
