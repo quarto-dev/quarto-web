@@ -14,7 +14,7 @@ Any source change to a `.qmd` that has a `_freeze/` entry — even non-executabl
 
 **Wrong reasoning to avoid:** "I only added markdown, not executable code, so no `_freeze/` update needed." The cache is per-page, not per-cell.
 
-**Before committing:** `git diff --stat _freeze/` — every edited frozen `.qmd` must have a corresponding `_freeze/` change.
+**Before committing:** `git diff HEAD -- _freeze/` — every edited frozen `.qmd` must have a corresponding `_freeze/` change. (Use `HEAD` to show both staged and unstaged changes.)
 
 **If the freeze-check hook blocks a commit or push:** run `quarto render <file.qmd>` then commit the updated `_freeze/` output alongside the source change.
 

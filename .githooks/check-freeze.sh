@@ -37,10 +37,18 @@ fi
 
 while IFS= read -r qmd; do
     [ -n "$qmd" ] || continue
-    freeze_json="${REPO_ROOT}/_freeze/${qmd%.qmd}/execute-results/html.json"
-    [ -f "$freeze_json" ] || continue
+    freeze_rel="_freeze/${qmd%.qmd}/execute-results/html.json"
 
-    stored_hash=$(jq -r '.hash // empty' "$freeze_json" 2>/dev/null)
+    # Read freeze JSON from git objects, not working tree, to avoid false passes
+    # when the freeze file is updated on disk but not yet staged.
+    if [ "$MODE" = "commit" ]; then
+        freeze_content=$(git show ":${freeze_rel}" 2>/dev/null || git show "HEAD:${freeze_rel}" 2>/dev/null)
+    else
+        freeze_content=$(git show "HEAD:${freeze_rel}" 2>/dev/null)
+    fi
+    [ -n "$freeze_content" ] || continue
+
+    stored_hash=$(printf '%s' "$freeze_content" | jq -r '.hash // empty' 2>/dev/null)
     [ -n "$stored_hash" ] || continue
 
     if [ "$MODE" = "commit" ]; then
