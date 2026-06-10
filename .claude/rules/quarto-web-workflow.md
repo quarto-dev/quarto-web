@@ -10,20 +10,13 @@ Always PR to `main` first for shared content. Never PR directly to `prerelease` 
 
 ## `_freeze/` Updates
 
-Any modification to a `.qmd` file that has executable code — even adding only non-executable content like markdown text or includes — requires a re-render and a committed `_freeze/` update. The `_freeze/` hash is the MD5 of the source file (LF-normalized). A stale hash causes the deploy preview to show the old cached page, hiding the new content.
+Any source change to a `.qmd` that has a `_freeze/` entry — even non-executable content like text or includes — invalidates the freeze hash. A stale hash causes the deploy preview to show the old cached page.
 
-**Wrong reasoning to avoid:** "I only added markdown/include content, not executable code, so no `_freeze/` update is needed." The `_freeze/` cache is per-page, not per-code-cell. Any source change invalidates the hash.
+**Wrong reasoning to avoid:** "I only added markdown, not executable code, so no `_freeze/` update needed." The cache is per-page, not per-cell.
 
-**Automated check:** `.githooks/check-freeze.sh` verifies staged/pushed `.qmd` files against their freeze hash. Two enforcement layers:
-- Git pre-commit hook (`.githooks/pre-commit`) — blocks commit if freeze is stale
-- Claude Code PreToolUse hook (`.claude/settings.json`) — blocks `git commit` and `git push` commands in Claude sessions
+**Before committing:** `git diff --stat _freeze/` — every edited frozen `.qmd` must have a corresponding `_freeze/` change.
 
-**Contributor setup (one-time):** `git config core.hooksPath .githooks`
-
-**If quarto render fails** (missing kernel/env): update `_freeze/<path>/execute-results/html.json` manually:
-1. `stored_hash=$(git show HEAD:path/to/file.qmd | md5sum | cut -d' ' -f1)`
-2. Update `hash` field in the JSON to that value
-3. Update `result.markdown` field to the current LF-normalized source content
+**If the freeze-check hook blocks a commit or push:** run `quarto render <file.qmd>` then commit the updated `_freeze/` output alongside the source change.
 
 ## Avoid duplicating doc content
 
