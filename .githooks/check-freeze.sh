@@ -4,47 +4,61 @@
 # Checks that _freeze/ hash is current for any .qmd files being committed or pushed.
 # Quarto's freeze hash is the MD5 of the source file (LF-normalized).
 # Any content change to a page with executable code requires a _freeze/ update.
+#
+# Compatible with bash 3.2+ (macOS system bash), Linux, and Windows Git Bash.
+
+# Cross-platform MD5 of stdin, LF-normalized (strips \r before hashing)
+md5_lf() {
+    tr -d '\r' | (
+        if command -v md5sum >/dev/null 2>&1; then
+            md5sum | cut -d' ' -f1
+        else
+            md5 -r | cut -d' ' -f1
+        fi
+    )
+}
 
 MODE="${1:-commit}"
-STALE=()
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+STALE_FILE=$(mktemp)
+trap 'rm -f "$STALE_FILE"' EXIT
 
 if [ "$MODE" = "commit" ]; then
-  mapfile -t FILES < <(git diff --cached --name-only 2>/dev/null | grep '\.qmd$' || true)
+    QMDS=$(git diff --cached --name-only 2>/dev/null | grep '\.qmd$' || true)
 elif [ "$MODE" = "push" ]; then
-  REMOTE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null) || exit 0
-  [ -n "$REMOTE" ] || exit 0
-  mapfile -t FILES < <(git diff "${REMOTE}..HEAD" --name-only 2>/dev/null | grep '\.qmd$' || true)
+    REMOTE=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null) || exit 0
+    [ -n "$REMOTE" ] || exit 0
+    QMDS=$(git diff "${REMOTE}..HEAD" --name-only 2>/dev/null | grep '\.qmd$' || true)
 else
-  exit 0
+    exit 0
 fi
 
-[ ${#FILES[@]} -gt 0 ] || exit 0
+[ -n "$QMDS" ] || exit 0
 
-REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+while IFS= read -r qmd; do
+    [ -n "$qmd" ] || continue
+    freeze_json="${REPO_ROOT}/_freeze/${qmd%.qmd}/execute-results/html.json"
+    [ -f "$freeze_json" ] || continue
 
-for qmd in "${FILES[@]}"; do
-  freeze_json="${REPO_ROOT}/_freeze/${qmd%.qmd}/execute-results/html.json"
-  [ -f "$freeze_json" ] || continue
+    stored_hash=$(jq -r '.hash // empty' "$freeze_json" 2>/dev/null)
+    [ -n "$stored_hash" ] || continue
 
-  stored_hash=$(jq -r '.hash // empty' "$freeze_json" 2>/dev/null)
-  [ -n "$stored_hash" ] || continue
+    if [ "$MODE" = "commit" ]; then
+        current_hash=$(git show ":$qmd" 2>/dev/null | md5_lf)
+    else
+        current_hash=$(git show "HEAD:$qmd" 2>/dev/null | md5_lf)
+    fi
 
-  if [ "$MODE" = "commit" ]; then
-    current_hash=$(git show ":$qmd" 2>/dev/null | tr -d '\r' | md5sum | cut -d' ' -f1)
-  else
-    current_hash=$(git show "HEAD:$qmd" 2>/dev/null | tr -d '\r' | md5sum | cut -d' ' -f1)
-  fi
+    [ -n "$current_hash" ] || continue
+    [ "$current_hash" = "$stored_hash" ] || echo "$qmd" >> "$STALE_FILE"
+done <<< "$QMDS"
 
-  [ -n "$current_hash" ] || continue
-  [ "$current_hash" = "$stored_hash" ] || STALE+=("$qmd")
-done
-
-if [ ${#STALE[@]} -gt 0 ]; then
-  echo "_freeze/ not updated for:"
-  printf '  %s\n' "${STALE[@]}"
-  echo ""
-  echo "Re-render or update manually. See .claude/rules/quarto-web-workflow.md"
-  exit 2
+if [ -s "$STALE_FILE" ]; then
+    echo "_freeze/ not updated for:" >&2
+    sed 's/^/  /' "$STALE_FILE" >&2
+    echo "" >&2
+    echo "Run: quarto render <file.qmd> then commit the updated _freeze/ output." >&2
+    exit 2
 fi
 
 exit 0
