@@ -8,6 +8,16 @@
 
 Always PR to `main` first for shared content. Never PR directly to `prerelease` for changes that apply to both stable and prerelease.
 
+## `_freeze/` Updates
+
+Any modification to a `.qmd` file that has executable code — even adding only non-executable content like markdown text or includes — requires a re-render and a committed `_freeze/` update. The `_freeze/` hash is the MD5 of the source file (LF-normalized). A stale hash causes the deploy preview to show the old cached page, hiding the new content.
+
+**Wrong reasoning to avoid:** "I only added markdown/include content, not executable code, so no `_freeze/` update is needed." The `_freeze/` cache is per-page, not per-code-cell. Any source change invalidates the hash.
+
+**Check:** before opening a PR, run `git diff --stat _freeze/` and verify that every `.qmd` file with executable code that was edited has a corresponding updated freeze file.
+
+**If quarto render fails** (missing kernel/env): update `_freeze/<path>/execute-results/html.json` manually — set `hash` to MD5 of current source (LF-normalized, i.e. `git show HEAD:path/to/file.qmd | md5sum`), and set `result.markdown` to the current source content.
+
 ## Avoid duplicating doc content
 
 When a plan touches 3+ pages with similar prose, **scan for an existing shared-partial / include pattern in the repo before locking duplication into the plan.** quarto-web uses Quarto's `{{< include _foo.md >}}` shortcode extensively — examples in `docs/computations/` (e.g. `_jupyter-rendering.md`, `_jupyter-install.md`, `_caching-more.md`), `docs/tools/` (`_chunk-options.md`), and `docs/get-started/authoring/` (`_text-editor.md`). Many partials pair `{{< include >}}` with `.content-visible when-meta="..."` so the same source renders differently per consuming page.
