@@ -14,9 +14,16 @@ Any modification to a `.qmd` file that has executable code — even adding only 
 
 **Wrong reasoning to avoid:** "I only added markdown/include content, not executable code, so no `_freeze/` update is needed." The `_freeze/` cache is per-page, not per-code-cell. Any source change invalidates the hash.
 
-**Check:** before opening a PR, run `git diff --stat _freeze/` and verify that every `.qmd` file with executable code that was edited has a corresponding updated freeze file.
+**Automated check:** `.githooks/check-freeze.sh` verifies staged/pushed `.qmd` files against their freeze hash. Two enforcement layers:
+- Git pre-commit hook (`.githooks/pre-commit`) — blocks commit if freeze is stale
+- Claude Code PreToolUse hook (`.claude/settings.json`) — blocks `git commit` and `git push` commands in Claude sessions
 
-**If quarto render fails** (missing kernel/env): update `_freeze/<path>/execute-results/html.json` manually — set `hash` to MD5 of current source (LF-normalized, i.e. `git show HEAD:path/to/file.qmd | md5sum`), and set `result.markdown` to the current source content.
+**Contributor setup (one-time):** `git config core.hooksPath .githooks`
+
+**If quarto render fails** (missing kernel/env): update `_freeze/<path>/execute-results/html.json` manually:
+1. `stored_hash=$(git show HEAD:path/to/file.qmd | md5sum | cut -d' ' -f1)`
+2. Update `hash` field in the JSON to that value
+3. Update `result.markdown` field to the current LF-normalized source content
 
 ## Avoid duplicating doc content
 
