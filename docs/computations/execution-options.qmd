@@ -498,3 +498,11 @@ echo "foo"
 ````
 
 Note that the Knitr engine also supports ```` ```{python} ```` cells, enabling the combination of R, Python, and Bash in the same document
+
+## Conditional Execution
+
+In some cases you want code execution itself — not just visibility of its output — to depend on the active output format. For example, when rendering to PDF you may want to skip a cell that loads an interactive HTML widget, rather than execute it and hide the result.
+
+Quarto exposes the current rendering context in the `QUARTO_EXECUTE_INFO` environment variable. Cells can read this variable to detect the active format and branch accordingly. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema and examples in R, Python, and Julia.
+
+This complements format-based [conditional content](/docs/authoring/conditional.qmd), which controls visibility of *already-executed* output. `QUARTO_EXECUTE_INFO` lets you skip work, choose a different code path, or load a different library before any output is produced.
