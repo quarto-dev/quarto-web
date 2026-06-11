@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const hasha = require("hasha");
 const fs = require("fs");
 const path = require("path");
+const { mergeRedirects } = require("./merge-redirects");
 
 async function run() {
   // Repo information
@@ -171,14 +172,25 @@ async function run() {
   
   // Write the redirects
   if (redirectPath && redirectTemplate) {
-    const redirOutput = [];
+    const downloadLines = [];
     // Stable / latest release
-    redirOutput.push(...generateRedirects(redirects, redirectTemplate));
+    downloadLines.push(...generateRedirects(redirects, redirectTemplate));
 
     // Unstable / latest prerelease
-    redirOutput.push(...generateRedirects(prereleaseProcessed.redirects, preRedirectTemplate));
-    
-    const redirOut = redirOutput.join("\n");
+    downloadLines.push(...generateRedirects(prereleaseProcessed.redirects, preRedirectTemplate));
+
+    // The static path each template owns (text before the first $$ token),
+    // e.g. "/download/latest/" and "/download/prerelease/". Only lines under
+    // these namespaces are regenerated; all other lines are preserved.
+    const managedPrefixes = [redirectTemplate, preRedirectTemplate]
+      .filter(Boolean)
+      .map((t) => t.split("$$")[0]);
+
+    const existing = fs.existsSync(redirectPath)
+      ? fs.readFileSync(redirectPath, "utf8")
+      : "";
+
+    const redirOut = mergeRedirects(existing, downloadLines, managedPrefixes);
     console.log(`Writing redirects file to ${redirectPath}`);
     console.log(`${redirOut}\n\n`);
     fs.writeFileSync(redirectPath, redirOut);

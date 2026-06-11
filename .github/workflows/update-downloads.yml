@@ -10,7 +10,7 @@ jobs:
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
       commit: ${{ steps.auto-commit.outputs.commit_hash }}
-      commit_prerelease: ${{ steps.cherry-pick-prerelease.outputs.commit_hash }}
+      commit_prerelease: ${{ steps.sync-prerelease.outputs.commit_hash }}
       prerelease_version: ${{ steps.get-versions.outputs.prerelease_version }}
     steps:
       - name: Checkout Repo
@@ -45,16 +45,24 @@ jobs:
           commit_user_email: runner@quarto.org
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
         
-      - name: Cherry-pick change to prerelease branch
-        id: cherry-pick-prerelease
+      - name: Sync generated downloads to prerelease branch
+        id: sync-prerelease
         if: ${{ steps.auto-commit.outputs.changes_detected == 'true' }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          MAIN_SHA=${{ steps.auto-commit.outputs.commit_hash }}
           git checkout prerelease
-          git cherry-pick ${{ steps.auto-commit.outputs.commit_hash }}
-          git push origin prerelease
-          # set an output for github action with the resulted commit of cherry-pick command
+          # _redirects is authoritative on main (manual redirects reach prerelease
+          # via the backport workflow), so overwrite the generated files outright
+          # instead of cherry-picking — never conflicts.
+          git checkout "$MAIN_SHA" -- _redirects docs/download/_download.json docs/download/_prerelease.json
+          if git diff --cached --quiet; then
+            echo "No changes to sync to prerelease"
+          else
+            git commit -m "Sync generated download redirects from main"
+            git push origin prerelease
+          fi
           echo "commit_hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   # If a new commit has been made with updated downloads, 
