@@ -88,7 +88,7 @@ An announcement that appears at the top of the site. For example:
       - text: "About"
         href: about.qmd
       - text: "License"
-        href: license.md
+        href: license.qmd
       - text: "Trademark"
         href: trademark.qmd
 ```
@@ -273,9 +273,9 @@ about:
   template: jolla
   image: profile.jpg
   links:
-    - icon: twitter
-      text: twitter
-      href: https://twitter.com
+    - icon: bluesky
+      text: Bluesky
+      href: https://bsky.app
 ---
 ```
 

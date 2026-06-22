@@ -1,0 +1,33 @@
+{
+  "skill_name": "review-extension-prs",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Review PR 2075 for the extension listing",
+      "expected_output": "Structured review of gbt9704 extension with APPROVE verdict. Should check duplicate, repo, README, license, category, quality, and security. Repo is public, MIT licensed, has README, correct category (custom-formats.yml).",
+      "files": [],
+      "assertions": [
+        {"id": "has_verdict", "description": "Output contains APPROVE, REQUEST_CHANGES, or INVESTIGATE verdict", "type": "contains_any", "values": ["APPROVE", "REQUEST_CHANGES", "INVESTIGATE"]},
+        {"id": "checks_duplicate", "description": "Output mentions duplicate check", "type": "contains_any", "values": ["duplicate", "Duplicate"]},
+        {"id": "checks_license", "description": "Output mentions license check", "type": "contains_any", "values": ["license", "License", "MIT"]},
+        {"id": "checks_readme", "description": "Output mentions README check", "type": "contains_any", "values": ["readme", "README"]},
+        {"id": "checks_security", "description": "Output mentions security scan", "type": "contains_any", "values": ["security", "Security"]},
+        {"id": "correct_verdict", "description": "Verdict is APPROVE (repo is clean, MIT, has README, correct category)", "type": "contains", "value": "APPROVE"},
+        {"id": "names_repo", "description": "Output names the repository", "type": "contains", "value": "songwupei/quarto-gbt9704"}
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Review PR 2074 for the extension listing",
+      "expected_output": "Structured review of shortiquiz and stepbystep extensions. Two entries from same author. Should check both, run security scan on each, return per-entry verdicts. PR verdict is the worst across both entries.",
+      "files": [],
+      "assertions": [
+        {"id": "reviews_both_entries", "description": "Output mentions both shortiquiz and stepbystep", "type": "contains_all", "values": ["shortiquiz", "stepbystep"]},
+        {"id": "has_verdict", "description": "Output contains a verdict", "type": "contains_any", "values": ["APPROVE", "REQUEST_CHANGES", "INVESTIGATE"]},
+        {"id": "checks_security_both", "description": "Security check appears for both entries", "type": "contains", "value": "security"},
+        {"id": "checks_license", "description": "License checked for at least one entry", "type": "contains_any", "values": ["license", "License", "MIT"]},
+        {"id": "checks_duplicate", "description": "Duplicate check ran", "type": "contains_any", "values": ["duplicate", "Duplicate"]}
+      ]
+    }
+  ]
+}

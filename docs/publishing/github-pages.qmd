@@ -1,8 +1,9 @@
 ---
 title: "GitHub Pages"
 editor: visual
-provider: gh-pages
-provider-token: GITHUB_TOKEN
+provider:
+  id: gh-pages
+  name: GitHub Pages
 ---
 
 ## Overview
@@ -36,6 +37,8 @@ project:
 Then, add a `.nojekyll` file to the root of your repository that tells GitHub Pages not to do additional processing of your published site using Jekyll (the GitHub default site generation tool):
 
 +---------------+---------------------------------+
+|               |                                 |
++===============+=================================+
 | Mac/Linux     | ``` {.bash filename="Terminal"} |
 |               | touch .nojekyll                 |
 |               | ```                             |
@@ -62,15 +65,22 @@ Once you've made this configuration change GitHub will trigger a deployment of y
 
 ## Publish Command {#publish-command}
 
-The `quarto publish` command is an easy way to publish locally rendered documents and websites. Before attempting to use `quarto publish` (either locally or from a GitHub Action) you should be sure to configure the [Source Branch](#source-branch) and [Ignore Output](#ignoring-output) as described below.
+The `quarto publish` command is an easy way to publish locally rendered documents and websites. Before attempting to use `quarto publish` (either locally or from a GitHub Action) you should be sure to configure [Ignore Output](#ignoring-output) as described below. See [Source Branch](#source-branch) for an overview of how the `gh-pages` branch is managed.
 
 ### Source Branch {#source-branch}
 
-Before attempting to publish you should ensure that the **Source** branch for your repository is `gh-pages` and that the site directory is set to the repository root (`/`). You can modify these options in **Settings** : **Pages** for your repository. For example, if you already have a `gh-pages` branch:
+`quarto publish gh-pages` automatically creates a `gh-pages` branch (locally and on the remote) on its first run if one does not already exist. For most repositories --- the typical [project site](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#types-of-github-pages-sites) case where the URL is `https://<username>.github.io/<repo>/` --- GitHub then detects the new branch and configures GitHub Pages to deploy from it automatically. No manual configuration under **Settings** : **Pages** is required.
+
+[User and organization sites](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#types-of-github-pages-sites) (served at `https://<username>.github.io/`) behave differently on the GitHub side: their [default publishing source is the `main` branch](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-from-a-branch), not `gh-pages`. After the first run of `quarto publish gh-pages` you therefore need to switch the source branch to `gh-pages` manually under **Settings** : **Pages** for your repository:
 
 ![](images/gh-pages-user-site.png){.border}
 
-If you do not already have a `gh-pages` branch, you can create one as follows. First, make sure you have committed all changes to your current working branch with `git status`. Then:
+Quarto prints a notice with a direct link to this settings page when it detects this case. See the [User Site](#user-site) section below for the complete setup.
+
+::: {.callout-tip collapse="true"}
+## Creating a `gh-pages` branch manually
+
+You usually do not need to do this --- `quarto publish gh-pages` will create the branch on its first run. If you prefer to set it up yourself beforehand, first make sure you have committed all changes on your current working branch with `git status`, then run:
 
 ``` {.bash filename="Terminal"}
 git checkout --orphan gh-pages
@@ -79,7 +89,8 @@ git commit --allow-empty -m "Initialising gh-pages branch"
 git push origin gh-pages
 ```
 
-Double-check that the last `git push` action has indeed set the **Settings** : **Pages** for your repository as expected in the previous figure. Get back to your original repository branch with, for example, `git checkout main`.
+Get back to your original repository branch with, for example, `git checkout main`.
+:::
 
 ### Ignoring Output {#ignoring-output}
 
@@ -87,7 +98,7 @@ Double-check that the last `git push` action has indeed set the **Settings** : *
 
 ### Publishing
 
-Once you have configured the source branch and updated your `.gitignore`, navigate to the directory where your project / git repository is located, make sure you are not on the `gh-pages` branch, and execute the `quarto publish` command for GitHub Pages:
+Once you have updated your `.gitignore`, navigate to the directory where your project / git repository is located, make sure you are not on the `gh-pages` branch, and execute the `quarto publish` command for GitHub Pages:
 
 ``` {.bash filename="Terminal"}
 quarto publish gh-pages
@@ -117,9 +128,9 @@ Here are all of the available command line options for `quarto publish gh-pages`
 
 {{< include _cli-options.md >}}
 
-## GitHub Action
+## GitHub Action {#github-action}
 
-Using the `quarto publish {{< meta provider >}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
+Using the `quarto publish {{< meta provider.id>}}` command to publish locally rendered content is the most simple and straightforward way to publish. Another option is to use [GitHub Actions](https://docs.github.com/en/actions) to render and publish your site (you might prefer this if you want execution and/or rendering to be automatically triggered from commits).
 
 There are a few different ways to approach rendering and publishing content. Below, we'll provide a how-to guide for publishing with GitHub Actions. For more conceptual background on the various approaches, see the discussion on [Rendering for CI](ci.qmd#rendering-for-ci).
 
@@ -162,7 +173,7 @@ jobs:
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
-          target: {{< meta provider >}}
+          target: {{< meta provider.id>}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -263,7 +274,7 @@ It's possible to have a Quarto project in a larger GitHub repository, where the 
 - name: Render and Publish
   uses: quarto-dev/quarto-actions/publish@v2
   with:
-    target: {{< meta provider >}}
+    target: {{< meta provider.id>}}
     path: subdirectory-to-use
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -275,7 +286,7 @@ By default, `quarto publish` will re-render your project before publishing it. H
 - name: Render and Publish
   uses: quarto-dev/quarto-actions/publish@v2
   with:
-    target: {{< meta provider >}}
+    target: {{< meta provider.id>}}
     render: false
   env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -285,19 +296,17 @@ See the full definition of the Quarto [publish action](https://github.com/quarto
 
 ## Custom Domain {#custom-domain}
 
-A custom domain allows you to use your own domain name instead of the default `username.github.io` domain for your GitHub Pages site.
-To use a custom domain you need to complete two steps:
+A custom domain allows you to use your own domain name instead of the default `username.github.io` domain for your GitHub Pages site. To use a custom domain you need to complete two steps:
 
-1. Add your domain to your GitHub repository settings
-2. Configure records with your DNS provider
+1.  Add your domain to your GitHub repository settings
+2.  Configure records with your DNS provider
 
-### 1. Add your domain to your GitHub repository settings 
+### 1. Add your domain to your GitHub repository settings
 
 Add a `CNAME` file to your project root directory (i.e., alongside `_quarto.yml`) that contains your custom domain:
 
 ::: {layout-ncol="2"}
-
-```{.default filename="website/"}
+``` {.default filename="website/"}
 ├── _site/
 ├── _quarto.yml
 ├── CNAME
@@ -305,31 +314,24 @@ Add a `CNAME` file to your project root directory (i.e., alongside `_quarto.yml`
 └── index.qmd
 ```
 
-```{.default filename="CNAME"}
+``` {.default filename="CNAME"}
 blog.example.com
 ```
-::::
+:::
 
 Quarto will recognize the `CNAME` file as a [site resource](/docs/websites/website-tools.qmd#site-resources) and will copy it your site output directory when you render.
 
-Re-render and publish your site to ensure `CNAME` is available to GitHub Pages. 
+Re-render and publish your site to ensure `CNAME` is available to GitHub Pages.
 
-::: {.callout-note}
-
-The GitHub Pages documentation describes adding your domain to your repository in the  **Settings** pane. 
-However, this creates a `CNAME` file in the location of your rendered site, 
-which will be overwritten whenever you render your site with Quarto.
-
+::: callout-note
+The GitHub Pages documentation describes adding your domain to your repository in the **Settings** pane. However, this creates a `CNAME` file in the location of your rendered site, which will be overwritten whenever you render your site with Quarto.
 :::
-
 
 ### 2. Configure records with your DNS provider
 
-The records you need to configure with your DNS provider depend on whether you are using an apex domain (e.g., `example.com`) or a subdomain (e.g., `www.example.com` or `blog.example.com`). 
+The records you need to configure with your DNS provider depend on whether you are using an apex domain (e.g., `example.com`) or a subdomain (e.g., `www.example.com` or `blog.example.com`).
 
-Apex domains require an `ALIAS`, `ANAME`, or `A` record, whereas subdomains require a `CNAME` record. 
-Find the appropriate values from the [DNS records summary table in the GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#dns-records-for-your-custom-domain).
-For apex domains, pay particular attention to the DNS record values, you may need to overwrite addresses your DNS provider has added by default.
+Apex domains require an `ALIAS`, `ANAME`, or `A` record, whereas subdomains require a `CNAME` record. Find the appropriate values from the [DNS records summary table in the GitHub Pages documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#dns-records-for-your-custom-domain). For apex domains, pay particular attention to the DNS record values, you may need to overwrite addresses your DNS provider has added by default.
 
 ## User Site
 

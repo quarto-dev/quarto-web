@@ -108,7 +108,7 @@ display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
 
 # Using the `julia` engine
 
-{{< include /docs/prerelease/1.5/_pre-release-feature.qmd >}}
+{{< prerelease-callout 1.5 >}}
 
 ## Installation {#installation-julia-engine}
 
@@ -543,6 +543,26 @@ Please direct questions and requests regarding this functionality to the
 [QuartoNotebookRunner](https://github.com/PumasAI/QuartoNotebookRunner.jl)
 repository.
 
+## Conditional Execution
+
+To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell.
+For example, you could execute code only if the target format is based on HTML (e.g. for `html`, `revealjs`, and `dashboard` formats):
+
+```` markdown
+```{{julia}}
+using JSON
+
+info = JSON.parsefile(ENV["QUARTO_EXECUTE_INFO"])
+is_html = info["format"]["identifier"]["base-format"] == "html"
+
+if is_html
+    # HTML-only code, e.g. an interactive widget
+end
+```
+````
+
+This pairs well with [conditional content](/docs/authoring/conditional.qmd) when both visibility and execution should depend on format. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema.
+
 # Using the `jupyter` engine
 
 ### Installation {#installation}
@@ -662,3 +682,22 @@ To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
 
 To enable the cache for a document, add the `cache` option. For example:
 
+## Conditional Execution
+
+To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell.
+For example, you could execute code only if the target format is based on HTML (e.g. for `html`, `revealjs`, and `dashboard` formats):
+
+```` markdown
+```{{julia}}
+using JSON
+
+info = JSON.parsefile(ENV["QUARTO_EXECUTE_INFO"])
+is_html = info["format"]["identifier"]["base-format"] == "html"
+
+if is_html
+    # HTML-only code, e.g. an interactive widget
+end
+```
+````
+
+This pairs well with [conditional content](/docs/authoring/conditional.qmd) when both visibility and execution should depend on format. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema.

@@ -27,25 +27,28 @@ You can write Pandoc filters using Lua (via Pandoc's built-in Lua interpreter) o
 
 ## Activating Filters
 
-If you've developed a filter and want to use it within a document you need to add it to the list of `filters` for the document. For example, here we arrange for the [spellcheck](https://github.com/pandoc/lua-filters/tree/master/spellcheck) filter to run:
+If you've developed a filter and want to use it within a document you need to add it to the list of `filters` for the document. For example, here we arrange for the [lilypond](https://github.com/pandoc/lua-filters/tree/master/lilypond) music-engraving filter to run:
 
 ``` yaml
 ---
 filters:
-  - spellcheck.lua
+  - lilypond.lua
 ---
 ```
 
-By default, user filters are run before Quarto's built-in filters. For some filters you'll want to modify this behavior. For example, here we arrange to run `spellcheck` before Quarto's filters and `fontawesome` after:
+By default, user filters are run before Quarto's built-in filters. For some filters you'll want to modify this behavior. For example, here we arrange to run `lilypond` before Quarto's filters and `fontawesome` after:
 
 ``` yaml
 filters:
-  - spellcheck.lua
+  - lilypond.lua
   - quarto
   - fontawesome
 ```
 
-You'll notice that one of the extensions (`spellcheck.lua`) has a file extension and the other (`fontawesome`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to create filters as extensions.
+Beyond a running filters before or after Quarto's filters, you can also
+precisely target the location in the AST processing. Read more in [Targeting of AST Processing Phases](/docs/advanced/quarto-ast.qmd#targeting-of-ast-processing-phases).
+
+You'll notice that one of the extensions (`lilypond.lua`) has a file extension and the other (`fontawesome`) does not. This difference stems from how the extensions are distributed: an extension distributed as a plain Lua file uses `.lua` whereas a filter distributed as a [Quarto Extension](index.qmd) does not. The next section explores how to create filters as extensions.
 
 
 ## Filter Extensions 

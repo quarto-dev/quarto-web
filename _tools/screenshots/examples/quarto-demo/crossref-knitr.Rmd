@@ -1,0 +1,114 @@
+---
+title: "Knitr Crossrefs"
+author: "Jane Doe"
+date: "March 22nd, 2021"
+format: 
+  html:
+    code-fold: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning=FALSE)
+```
+
+::: {.callout-tip}
+## Learn more
+See the full guide on [Cross References](https://quarto.org/docs/authoring/cross-references.html).
+:::
+
+## Figures
+
+```` {.markdown}
+```{r}
+#| label: fig-random
+#| fig-cap: "Random"
+```
+````
+
+```{r}
+#| label: fig-random
+#| fig-cap: "Random"
+#| code-fold: true
+library(ggplot2)
+dat <- data.frame(cond = rep(c("A", "B"), each=10),
+                  xvar = 1:20 + rnorm(20,sd=3),
+                  yvar = 1:20 + rnorm(20,sd=3))
+
+ggplot(dat, aes(x=xvar, y=yvar)) +
+    geom_point(shape=1) + 
+    geom_smooth() 
+```
+
+See @fig-random.
+
+## Sub-Figures
+
+```` {.markdown}
+```{r}
+#| label: fig-multiple
+#| fig-cap: "Multiple"
+#| fig-subcap: ["Pressure", "Cars"]
+#| layout-ncol: 2
+```
+````
+
+```{r}
+#| label: fig-multiple
+#| fig-cap: "Multiple"
+#| fig-subcap: ["Pressure", "Cars"]
+#| layout-ncol: 2
+plot(pressure)
+plot(cars)
+```
+
+See @fig-multiple-1 and @fig-multiple-2.
+
+## Tables
+
+```` {.markdown}
+```{r}
+#| label: tbl-mtcars
+#| tbl-cap: "mtcars"
+```
+````
+
+```` See @tbl-mtcars. ````
+
+```{r}
+#| label: tbl-mtcars
+#| tbl-cap: "mtcars"
+library(knitr)
+kable(head(mtcars))
+```
+
+See @tbl-mtcars.
+
+## Sub-Tables
+
+```` {.markdown}
+```{r}
+#| label: tbl-tables
+#| tbl-cap: "Tables"
+#| tbl-subcap: ["Cars", "Pressure"]
+#| layout-ncol: 2
+```
+````
+
+```` See @tbl-tables-2 ````
+
+```{r}
+#| label: tbl-tables
+#| tbl-cap: "Tables"
+#| tbl-subcap: ["Cars", "Pressure"]
+#| layout-ncol: 2
+#| echo: false
+library(knitr)
+kable(head(cars))
+kable(head(pressure))
+```
+
+See @tbl-tables-2.
+
+
+
+

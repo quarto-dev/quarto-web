@@ -1,13 +1,11 @@
 project:
   type: website
   output-dir: _site
-  post-render:
-    - tools/algolia-add-custom-attribute.ts
   resources:
     - "/docs/download/_download.json"
     - "/docs/download/_prerelease.json"
     - "/_redirects"
-    - "/docs/blog/posts/2024-07-02-beautiful-tables-in-typst/demo"
+    - "/netlify.toml"
     - "/.well-known/atproto-did"
 
 highlight-style: a11y
@@ -16,7 +14,8 @@ website:
   title: "Quarto"
   image: "quarto-dark-bg.jpeg"
   favicon: "favicon.png"
-  google-analytics: "G-FV9Z7SDZ0M"
+  plausible-analytics:
+    path: _plausible.html
   open-graph: true
   twitter-card: true
   site-url: https://quarto.org
@@ -25,15 +24,10 @@ website:
   repo-actions: [edit, issue]
   page-navigation: true
   bread-crumbs: true
+  llms-txt: true
   search:
     show-item-context: true
     type: overlay
-    algolia:
-      index-name: prod_QUARTO
-      application-id: ZPJB5I1QN7
-      search-only-api-key: 49ee55c4d51cbb25a06182d9eef55814
-      analytics-events: true
-      show-logo: true
   page-footer:
     left: |
       Proudly supported by
@@ -44,7 +38,7 @@ website:
       - text: "FAQ"
         href: docs/faq/index.qmd
       - text: "License"
-        href: license.md
+        href: license.qmd
       - text: "Trademark"
         href: trademark.qmd
     right:
@@ -55,8 +49,8 @@ website:
         href: https://github.com/quarto-dev/quarto-cli
         aria-label: Quarto GitHub
       - icon: rss
-        href: https://quarto.org/docs/blog/index.xml
-        aria-label: Quarto Blog RSS
+        href: https://opensource.posit.co/blog/index.xml
+        aria-label: Posit Open Source Blog RSS
   navbar:
     background: light
     logo: quarto.png
@@ -77,7 +71,8 @@ website:
       - text: "Gallery"
         href: docs/gallery/index.qmd
       - text: "Blog"
-        href: docs/blog/index.qmd
+        icon: box-arrow-up-right
+        href: https://opensource.posit.co/blog/q/quarto/
       - text: "Help"
         menu:
           - text: "Report a Bug"
@@ -97,8 +92,8 @@ website:
         href: https://github.com/quarto-dev/quarto-cli
         text: Quarto GitHub
       - icon: rss
-        href: https://quarto.org/docs/blog/index.xml
-        text: Quarto Blog RSS
+        href: https://opensource.posit.co/blog/index.xml
+        text: Posit Open Source Blog RSS
 
   sidebar:
     - id: get-started
@@ -215,6 +210,7 @@ website:
                 - docs/tools/neovim.qmd
                 - docs/tools/text-editors.qmd
             - section: "Documents"
+              href: docs/output-formats/all-formats.qmd
               contents:
                 - section: "HTML"
                   contents:
@@ -313,6 +309,7 @@ website:
                 - docs/websites/website-drafts.qmd
                 - docs/websites/website-search.qmd
                 - docs/websites/website-tools.qmd
+                - docs/websites/website-llms.qmd
                 - docs/websites/website-about.qmd
                 - section: "Listing Pages"
                   href: docs/websites/website-listings.qmd
@@ -409,6 +406,7 @@ website:
                 - docs/publishing/quarto-pub.qmd
                 - docs/publishing/github-pages.qmd
                 - docs/publishing/rstudio-connect.qmd
+                - docs/publishing/posit-connect-cloud.qmd
                 - docs/publishing/netlify.qmd
                 - docs/publishing/confluence.qmd
                 - docs/publishing/hugging-face.qmd
@@ -420,7 +418,8 @@ website:
                 - docs/projects/quarto-projects.qmd
                 - docs/projects/code-execution.qmd
                 - docs/projects/profiles.qmd
-                - docs/projects/environment.qmd
+                - text: "Environment Variables"
+                  href: docs/projects/environment.qmd
                 - docs/projects/scripts.qmd
                 - docs/projects/virtual-environments.qmd
                 - docs/projects/binder.qmd
@@ -477,15 +476,17 @@ website:
             - text: "Metadata Extensions"
               href: docs/extensions/metadata.qmd
             - docs/extensions/brand.qmd
+            - docs/extensions/engine.qmd
 
     - id: reference
       title: "Reference"
-      collapse-level: 3
+      collapse-level: 2
       contents:
         - section: "Reference"
           href: docs/reference/index.qmd
           contents:
             - section: "Formats"
+              href: docs/reference/formats/index.qmd
               contents:
                 - text: "HTML"
                   href: docs/reference/formats/html.qmd
@@ -515,6 +516,8 @@ website:
                       href: docs/reference/formats/markdown/gfm.qmd
                     - text: "CommonMark"
                       href: docs/reference/formats/markdown/commonmark.qmd
+                    - text: "Hugo"
+                      href: docs/reference/formats/markdown/hugo.qmd
                     - text: "Markua"
                       href: docs/reference/formats/markdown/markua.qmd
                 - section: "Wikis"
@@ -577,6 +580,7 @@ website:
                 - text: "Observable"
                   href: docs/reference/cells/cells-ojs.qmd
             - section: "Projects"
+              href: docs/reference/projects/index.qmd
               contents:
                 - text: "Options"
                   href: docs/reference/projects/options.qmd
@@ -586,7 +590,8 @@ website:
                   href: docs/reference/projects/books.qmd
                 - text: "Manuscripts"
                   href: docs/reference/projects/manuscripts.qmd
-            - section: "More"
+            - section: "Metadata"
+              href: docs/reference/metadata/index.qmd
               contents:
                 - text: "Dates"
                   href: docs/reference/dates.qmd
@@ -598,6 +603,8 @@ website:
                   href: docs/reference/metadata/crossref.qmd
                 - text: "Brand"
                   href: docs/reference/metadata/brand.qmd
+            - section: "Quarto CLI"
+              contents: docs/cli/*.qmd
     - id: prerelease
       title: "Quarto 1.3"
       contents:
@@ -702,6 +709,9 @@ filters:
   - filters/color-box.lua
   - at: post-quarto
     path: filters/include-dark.lua
+
+version: '1.9'
+prerelease-subdomain: ''
 
 freeze: true
 

@@ -19,7 +19,7 @@ Quarto supports a variety of page layout options that enable you to author conte
 
 Quarto uses the concept of columns to describe page layout (e.g. the "body" column, the "margin" column, etc.). Below we'll describe how to arrange content into these columns. If you need to adjust the widths of the columns, see [Page Layout - Grid Customization](/docs/output-formats/page-layout.qmd#grid-customization).
 
-All of the layout capabilities described in this document work for HTML output and many work for PDF and LaTeX output. For details about the PDF / LaTeX output, see [PDF/LaTeX Layout].
+All of the layout capabilities described in this document work for HTML and Typst output. Many also work for PDF and LaTeX output, though with some differences. See [Typst Layout] and [PDF/LaTeX Layout] for format-specific details.
 
 ## Body Column
 
@@ -348,7 +348,7 @@ All of the below options currently only support setting a value of `margin` whic
 +----------------------+---------------------------------------------------------------------------------------------------------+
 | Option               | Description                                                                                             |
 +======================+=========================================================================================================+
-| `reference-location` | Where to place footnotes. Defaults to `document`.\                                                      |
+| `reference-location` | Where to place footnotes. Defaults to `document`.[^2]\                                                   |
 |                      | \[`document` \| `section` \| `block` \| `margin` \]                                                     |
 +----------------------+---------------------------------------------------------------------------------------------------------+
 | `citation-location`  | Where to place citations. Defaults to `document`.\                                                      |
@@ -483,6 +483,27 @@ This enables non-breaking code to overflow into the margin without cosmetic issu
 
 You can disable this treatment by setting the following `code-block-border-left: false` in your document front matter.
 
+## Typst Layout {#typst-layout data-link="Typst Layout"}
+
+Typst output supports the layout capabilities described in this document via the [Marginalia](https://typst.app/universe/package/marginalia) package.
+
+### Page Geometry
+
+When you use margin content in a Typst document, Quarto automatically calculates appropriate page geometry based on your `papersize` setting. The geometry creates a narrower body column and a margin column for notes and figures.
+
+You can customize the column widths using the `grid` option:
+
+``` yaml
+format:
+  typst:
+    grid:
+      margin-width: 2in
+      body-width: 4in
+      gutter-width: 0.25in
+```
+
+For fine-grained control over margin placement, Typst also provides the `margin-geometry` option which directly configures the underlying Marginalia package. See [Typst Basics - Article Layout](/docs/output-formats/typst.qmd#article-layout) for details.
+
 ## Landscape mode
 
 In `docx`, `pdf` and `typst` formats, you can set portions of the document to landscape mode by wrapping the content around a fenced div with class `landscape`:
@@ -509,3 +530,4 @@ This will appear in portrait mode again.
 
 
 [^1]: You can also position references in other location (such as the bottom of the block, section, or document).
+[^2]: Typst does not support `block` or `section` for `reference-location`.

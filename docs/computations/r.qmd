@@ -156,6 +156,26 @@ airquality$TempC <- (5 / 9) * (airquality$Temp - 32)
 
 Unless you want to specify a cross-reference avoid using the [reserved cross-reference prefixes](/docs/authoring/cross-references.qmd#reserved-prefixes) for chunk labels.
 
+## Conditional Execution
+
+To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell.
+For example, you could execute code only if the target format is based on HTML (e.g. for `html`, `revealjs`, and `dashboard` formats):
+
+```` markdown
+```{{r}}
+info <- jsonlite::fromJSON(Sys.getenv("QUARTO_EXECUTE_INFO"))
+is_html <- info$format$identifier$`base-format` == "html"
+
+if (is_html) {
+  # HTML-only code, e.g. an interactive widget
+}
+```
+````
+
+This pairs well with [conditional content](/docs/authoring/conditional.qmd) when both visibility and execution should depend on format. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema.
+
+For R cells using the knitr engine, knitr's `knitr::is_html_output()`, `knitr::is_latex_output()`, and `knitr::pandoc_to()` predicates are also available for the common format-detection cases. See the [knitr manual](https://pkg.yihui.org/knitr/manual#sec:man-output_type).
+
 ## Output Formats {#output-formats}
 
 Another difference between R Markdown and Quarto is related to output formats. Quarto includes many more built in output formats (and many more options for customizing each format). Quarto also has native features for special project types like [Websites](/docs/websites/), [Books](/docs/books/), and [Blogs](/docs/websites/website-blog.qmd) (rather than relying on external packages).
