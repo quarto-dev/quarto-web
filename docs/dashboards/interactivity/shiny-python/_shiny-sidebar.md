@@ -39,7 +39,7 @@ def displot():
 
 1.  The `server: shiny` option instructs Quarto to run a Shiny Server behind the document.
 
-2.  Create sidebars by adding the `.sidebar` class to a level 2 header. Sidebars can include code cells as well as images, narrative, and links.
+2.  Create sidebars by adding the `.sidebar` class to a level 2 heading. Sidebars can include code cells as well as images, narrative, and links.
 
 3.  A series of Shiny input elements (interacting with them updates the `input` object)
 

@@ -16,6 +16,10 @@
         "description": "Document date"
       },
       {
+        "name": "date-format",
+        "description": "Date format for the document"
+      },
+      {
         "name": "date-modified",
         "description": "Document date modified"
       },
@@ -46,6 +50,10 @@
     "title": "Format Options",
     "options": [
       {
+        "name": "brand",
+        "description": "Branding information to use for this document. If a string, the path to a brand file.\nIf false, don't use branding on this document. If an object, an inline brand\ndefinition, or an object with light and dark brand paths or definitions.\n"
+      },
+      {
         "name": "theme",
         "description": "Theme name, theme scss file, or a mix of both."
       },
@@ -72,6 +80,10 @@
       {
         "name": "smooth-scroll",
         "description": "Enables smooth scrolling within the page."
+      },
+      {
+        "name": "respect-user-color-scheme",
+        "description": "If set, Quarto reads the `prefers-color-scheme` media query to determine whether to show\nthe user a dark or light page. Otherwise the author-preferred color scheme is shown.\n"
       },
       {
         "name": "html-math-method",
@@ -165,7 +177,7 @@
       },
       {
         "name": "linestretch",
-        "description": "For HTML output sets the CSS `line-height` property on the html \nelement, which is preferred to be unitless.\n\nFor LaTeX output, adjusts line spacing using the \n[setspace](https://ctan.org/pkg/setspace) package, e.g. 1.25, 1.5.\n"
+        "description": "For HTML output sets the CSS `line-height` property on the html\nelement, which is preferred to be unitless.\n\nFor LaTeX output, adjusts line spacing using the\n[setspace](https://ctan.org/pkg/setspace) package, e.g. 1.25, 1.5.\n\nFor Typst output, adjusts the spacing between lines of text.\n"
       }
     ]
   },
@@ -179,7 +191,7 @@
       },
       {
         "name": "linkcolor",
-        "description": "For HTML output, sets the CSS `color` property on all links.\n\nFor LaTeX output, The color used for internal links using color options\nallowed by [`xcolor`](https://ctan.org/pkg/xcolor), \nincluding the `dvipsnames`, `svgnames`, and\n`x11names` lists.\n\nFor ConTeXt output, sets the color for both external links and links within the document.\n"
+        "description": "For HTML output, sets the CSS `color` property on all links.\n\nFor LaTeX output, The color used for internal links using color options\nallowed by [`xcolor`](https://ctan.org/pkg/xcolor),\nincluding the `dvipsnames`, `svgnames`, and\n`x11names` lists.\n\nFor ConTeXt output, sets the color for both external links and links within the document.\n\nFor Typst output, sets the color of internal hyperlinks using Typst color syntax.\n"
       },
       {
         "name": "monobackgroundcolor",
@@ -217,7 +229,7 @@
       },
       {
         "name": "grid",
-        "description": "Properties of the grid system used to layout Quarto HTML pages."
+        "description": "Properties of the grid system used to layout Quarto HTML and Typst pages."
       },
       {
         "name": "appendix-style",
@@ -310,8 +322,8 @@
         "description": "Specifies to apply a background color on code blocks. Provide a hex color to specify that the background color is\nenabled as well as the color of the background.\n"
       },
       {
-        "name": "highlight-style",
-        "description": "Specifies the coloring style to be used in highlighted source code.\n\nInstead of a *STYLE* name, a JSON file with extension\n` .theme` may be supplied.  This will be parsed as a KDE\nsyntax highlighting theme and (if valid) used as the\nhighlighting style.\n"
+        "name": "syntax-highlighting",
+        "description": "Specifies the coloring style to be used in highlighted source code.\n\nValid values:\n\n- `none`: Disables syntax highlighting for code blocks.\n- `idiomatic`: Uses the format's native syntax highlighter\n  (e.g., Typst's built-in highlighting, LaTeX `listings` package,\n  or reveal.js highlight.js plugin).\n- A style name (e.g., `pygments`, `tango`, `github`): Uses\n  Pandoc's skylighting with the specified theme.\n- A path to a `.theme` file: Uses a custom KDE syntax\n  highlighting theme.\n\nFor adaptive light/dark themes, specify an object with `light`\nand `dark` properties pointing to theme files.\n"
       },
       {
         "name": "syntax-definitions",
@@ -330,7 +342,7 @@
     "options": [
       {
         "name": "eval",
-        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines \n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative numbers to selectively include or exclude expressions \n  (explicit inclusion/exclusion of expressions is available only when using the knitr engine)\n"
       },
       {
         "name": "echo",
@@ -442,7 +454,7 @@
       },
       {
         "name": "link-external-filter",
-        "description": "A regular expression that can be used to determine whether a link is an internal link. For example, \nthe following will treat links that start with http://www.quarto.org as internal links (and others\nwill be considered external):\n\n```\n^(?:http:|https:)\\/\\/www\\.quarto\\.org\\/custom\n```\n"
+        "description": "A regular expression that can be used to determine whether a link is an internal link. For example, \nthe following will treat links that start with `http://www.quarto.org/custom` or `https://www.quarto.org/custom`\nas internal links (and others will be considered external):\n\n```\n^(?:http:|https:)\\/\\/www\\.quarto\\.org\\/custom\n```\n"
       },
       {
         "name": "format-links",
@@ -520,11 +532,11 @@
   },
   {
     "name": "crossref",
-    "title": "Crossrefs",
+    "title": "Cross-References",
     "options": [
       {
         "name": "crossref",
-        "description": "Configuration for crossref labels and prefixes."
+        "description": "Configuration for cross-reference labels and prefixes. See [Cross-Reference Options](https://quarto.org/docs/reference/metadata/crossref.html) for more details."
       },
       {
         "name": "crossrefs-hover",
@@ -557,6 +569,16 @@
       {
         "name": "dir",
         "description": "The base script direction for the document (`rtl` or `ltr`).\n\nFor bidirectional documents, native pandoc `span`s and\n`div`s with the `dir` attribute can\nbe used to override the base direction in some output\nformats.  This may not always be necessary if the final\nrenderer (e.g. the browser, when generating HTML) supports\nthe [Unicode Bidirectional Algorithm].\n\nWhen using LaTeX for bidirectional documents, only the\n`xelatex` engine is fully supported (use\n`--pdf-engine=xelatex`).\n"
+      }
+    ]
+  },
+  {
+    "name": "a11y",
+    "title": "Accessibility",
+    "options": [
+      {
+        "name": "axe",
+        "description": "When defined, run axe-core accessibility tests on the document."
       }
     ]
   },
@@ -720,7 +742,7 @@
       },
       {
         "name": "repo-actions",
-        "description": "Setting this to false prevents the `repo-actions` from appearing on this page."
+        "description": "Setting this to false prevents the `repo-actions` from appearing on this page.\nOther possible values are `none` or one or more of `edit`, `source`, and `issue`, *e.g.* `[edit, source, issue]`.\n"
       },
       {
         "name": "aliases",

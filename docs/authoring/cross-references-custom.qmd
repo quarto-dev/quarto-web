@@ -18,7 +18,6 @@ You can define custom float cross-reference types using the `custom` key to the 
 - `kind`, which currently can only be `float`
 - `key`, the abbreviation used in the reference identifier ("In `@fig-1`, ...")
 - `reference-prefix`, used for the reference in output ("In Figure 1, ...")
-- `caption-prefix`, used in front of the caption text ("Figure 1: ..."). If `caption-prefix` is unspecified, Quarto will use the value of `reference-prefix`.
 
 For example, the following YAML defines a new cross-reference type for videos:
 
@@ -54,11 +53,51 @@ Which renders as:
 
 In @vid-cern...
 
+There are some additional options that give you more control over the appearance of the cross-reference:
+
+- `caption-prefix`, the text used to construct the caption title shown under the float ("Figure 1: ..."). If unspecified, Quarto will use the value of `reference-prefix`.
+
+- `caption-location`, the position of the the caption. Options are: `top`, `bottom` (default) or `margin`.
+
+- `space-before-numbering`, whether there is a space between the prefix and number. Set to `false` to omit the space (e.g. "Figure1").
+
+
 You can find a complete listing of the options available for the `custom` key on the [Cross-Reference Options](/docs/reference/metadata/crossref.qmd#custom) reference page.
+
+## Localisation
+
+Custom cross-reference kinds inherit the same localisation pattern as built-in floats.
+A custom kind with `key: vid` is localised by setting `crossref-vid-title` and `crossref-vid-prefix` under `language:`:
+
+``` yaml
+---
+lang: es
+language:
+  crossref-vid-title: "Vídeo"
+  crossref-vid-prefix: "Vídeo"
+crossref:
+  custom:
+    - kind: float
+      reference-prefix: Video
+      key: vid
+---
+```
+
+The per-language subkeys form also works, which is useful when a single project is rendered in more than one language:
+
+``` yaml
+language:
+  es:
+    crossref-vid-prefix: "Vídeo"
+  fr:
+    crossref-vid-prefix: "Vidéo"
+```
+
+See [Cross-Reference Titles and Prefixes](language.qmd#cross-reference-titles-and-prefixes) for the full pattern.
 
 ## PDF Output
 
-If your output format is PDF you'll also need to specify `latex-env`, a name to be used for the float environment wrapped around the element in the intermediate TeX. For example, to use the custom video reference type in PDF you could add `latex-env: video`:
+If your output format is `pdf` you'll also need to specify `latex-env`, a name to be used for the float environment wrapped around the element in the intermediate TeX. For example, to use the custom video reference type you could add `latex-env: video`:
 
 ``` yaml
 format: pdf

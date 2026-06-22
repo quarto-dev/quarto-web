@@ -24,7 +24,7 @@ The `{{{< meta >}}}` syntax used here is an example of a [shortcode](/docs/exten
 
 If you are using a Quarto project, the `var` shortcode enables you to insert content from a project-level `_variables.yml` file. Create this file alongside your `_quarto.yml` project file, and then include references to those variables within any document in your project.
 
-Variables can be either simple values or can include arbitrary markdown content. To define variables, create a `_variables.yml` file in the root directory of your project. For example:
+Variables can be either simple values or markdown content. To define variables, create a `_variables.yml` file in the root directory of your project. For example:
 
 ``` yaml
 version: 1.2
@@ -38,7 +38,8 @@ engine:
   knitr: "[Knitr](<https://yihui.name/knitr>)"
 ```
 
-Note that the `engine` variable values include markdown for hyperlinks.
+Note that the `engine` variable values include markdown for hyperlinks. 
+Any markdown provided needs to be well-formed, and cannot change the structure of the content around it (e.g. by closing a div opened before the variable inclusion).
 
 To include the value of a variable, use the `{{</* var */>}}` shortcode, for example:
 
@@ -72,6 +73,13 @@ extract the first in the array of authors:
 
 ``` {.markdown shortcodes="false"}
 {{< meta author.1 >}}
+```
+
+To reference a field that contains a dot (`.`), escape the dot with a double backslash (`\\`). For example, to get `field.with.dots`:
+
+
+``` {.markdown shortcodes="false"}
+{{< meta field\\.with\\.dots >}}
 ```
 
 ## env {#env}

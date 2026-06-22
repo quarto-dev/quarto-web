@@ -6,7 +6,7 @@ quarto render notebook.ipynb --execute
 
 You can also specify this behavior within the notebook's YAML front matter:
 
-``` yaml
+```{.yaml filename="notebook.ipynb"}
 ---
 title: "My Notebook"
 execute: 

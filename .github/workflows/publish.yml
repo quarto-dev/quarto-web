@@ -27,17 +27,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # if called from workflow_call event, checkout the ref otherwise use default
           ref: ${{ inputs.ref || '' }}
 
       - name: Get latest pre-release from github
         id: github-release
-        env: 
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo version=$(gh api repos/quarto-dev/quarto-cli/releases | jq -r 'map(select(.prerelease)) | first | .tag_name | sub("^v";"")') >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+
+          # Retry a few times in case the API returns transient nulls
+          for i in 1 2 3 4 5; do
+            version="$(
+              gh api repos/quarto-dev/quarto-cli/releases \
+              | jq -r '
+                  map(select(.prerelease == true and (.tag_name? // "") != "")) 
+                  | first 
+                  | .tag_name? 
+                  // empty
+                  | sub("^v";"")
+                '
+            )" || true
+
+            if [ -n "${version:-}" ]; then
+              echo "version=$version" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Attempt $i: prerelease version not resolved; retrying..." >&2
+            sleep 2
+          done
+
+          echo "Failed to resolve prerelease version after retries." >&2
+          exit 1
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2

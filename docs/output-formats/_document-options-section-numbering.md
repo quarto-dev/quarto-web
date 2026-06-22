@@ -17,3 +17,15 @@ To exclude an individual heading from numbering, add the `.unnumbered` class to 
 ``` markdown
 ### More Options {.unnumbered}
 ```
+
+::: {.content-visible when-meta="doc-type.typst"}
+You can also customize the display of the section numbers with the `section-numbering` YAML option. This option expects a string that describes the numbering schema. For example, the following schema describes numbering sections with numerals, subsection with uppercase letters, and subsubsections with lower case letters, using `.` as a separator:
+
+```yaml
+---
+section-numbering: 1.A.a
+---
+```
+
+You can read more about specifying the numbering schema in the [Typst documentation for numbering](https://typst.app//docs/reference/model/numbering#parameters-numbering).
+:::

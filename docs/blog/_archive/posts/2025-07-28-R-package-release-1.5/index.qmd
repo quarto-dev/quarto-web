@@ -1,0 +1,399 @@
+---
+title: "quarto R package v1.5.0: Streamlined Workflows for R Users"
+description: |
+  The quarto R package 1.5.0 brings powerful new features for passing R values to Quarto metadata, inserting Markdown in HTML tables, working with R scripts, building paths from Quarto projects, and automating Quarto CLI from R.
+categories:
+  - R package
+  - knitr
+  - Releases
+author: Christophe Dervieux
+date: "2025-07-28"
+image: thumbnail.png
+image-alt: "quarto R logo with 1.5.0 release text"
+---
+
+The quarto R package version 1.5.0 is here! This release focuses on making Quarto more flexible and powerful for R users with significant workflow improvements.
+
+## What's New {#whats-new}
+
+Install the latest version from CRAN:
+
+```r
+install.packages("quarto")
+```
+
+Major features in this release include:
+
+- [**Pass R values to Quarto metadata**](#pass-r-values-to-quarto-metadata) - Set metadata programmatically based on computed values from knitr engine
+- [**Insert Markdown in HTML tables for Quarto processing**](#insert-markdown-in-html-tables) - Include Markdown content (equations, links, formatting) in HTML tables
+- [**Apply Light and Dark Themes to Plots and Tables**](#themes-helpers) - Change the background and foreground colors of plots and tables based on light & dark themes
+- [**Work with R scripts and Quarto**](#work-with-r-scripts) - Extract R code from Quarto documents or prepare R scripts for Quarto rendering
+- [**Build paths from Quarto Project**](#build-paths-from-project) - Build paths relative to Quarto project root within R cells
+- [**Automate Quarto CLI from R**](#automate-quarto-cli) - New and improved wrappers around Quarto CLI features for easier automation
+
+## Pass R Values to Quarto Metadata {#pass-r-values-to-quarto-metadata}
+
+Set metadata dynamically based on R computations with `write_yaml_metadata_block()`. For example, you could check a parameter value, and conditionally include content based on it:
+
+```r
+#| output: asis
+
+write_yaml_metadata_block(
+  is_france = params$country == "france"
+)
+```
+
+This will write the following (e.g., when `quarto render report.qmd -P country:france`):
+````yaml
+---
+is_france: true
+---
+````
+
+Then use Quarto's conditional features:
+
+```markdown
+::: {.content-visible when-meta="is_france"}
+## Fun fact about France
+
+In 2025, France is the most visited country in the world, attracting over 89 million tourists annually!
+
+:::
+```
+
+### Improved YAML 1.2 Compatibility
+
+The function now correctly handles special edge cases in YAML quoting. Specifically, it automatically quotes octal-like strings that are not supported in YAML 1.1 (like `"0888"` or `"0999"`):
+
+```r
+# These octal-like values are automatically quoted to prevent errors
+write_yaml_metadata_block(
+  code1 = "0888",    # Without quoting: YAML 1.2 interprets as 888 (invalid octal ignored)
+  code2 = "0999"     # Without quoting: YAML 1.2 interprets as 999 (invalid octal ignored)
+)
+```
+
+Without the automatic quoting, these values would be interpreted as decimal numbers (888 and 999) in YAML 1.2, losing the leading zeros. This could break code that expects string values like file permissions or ID codes that must preserve leading zeros.
+
+This change applies to internal functions that write YAML from R object lists, and so this improvement is particularly important when using `execute_params` with `quarto_render()`, where parameter values might include such edge cases:
+
+```r
+# Parameters with octal-like codes are now handled correctly
+quarto_render("report.qmd", 
+  execute_params = list(
+    site_code = "0888",
+    permission = "0755"
+  ))
+```
+
+For explicit control over quoting, use `yaml_quote_string()`:
+
+```r
+# Force specific values to be quoted in YAML output
+metadata <- list(
+  code1 = yaml_quote_string("1.0")
+)
+write_yaml_metadata_block(.list = metadata)
+```
+
+This will mark the string to be double quoted in YAML, preserving the character representation exactly as provided.
+
+See more examples in the [dynamic metadata vignette](https://quarto-dev.github.io/quarto-r/articles/dynamic-metadata.html), including how to make parameters available as metadata for conditional content.
+
+## Insert Markdown in HTML Tables for Quarto Processing {#insert-markdown-in-html-tables}
+
+Quarto can [parse Markdown content in HTML tables](https://quarto.org/docs/authoring/tables.html#html-tables), enabling rich formatting like math equations, links, and text styling. The new `tbl_qmd_*()` functions make this powerful Quarto feature easier to use from R:
+
+```r
+data.frame(
+  Feature = c("Formatting", "Math", "Links"),
+  Example = c(
+    tbl_qmd_span("**Bold**, *italic*"),
+    tbl_qmd_span("$E = mc^2$"),
+    tbl_qmd_span("[Quarto docs](https://quarto.org)")
+  )
+) |>
+  knitr::kable(format = "html", escape = FALSE)
+```
+
+These helper functions wrap content in HTML spans with `data-qmd-base64` attributes that Quarto recognizes for Markdown processing. They work with any table package that supports raw HTML (knitr, kableExtra, DT). For content that only works in Quarto, use the `display` argument for graceful fallback. See more examples in the [Markdown in HTML tables vignette](https://quarto-dev.github.io/quarto-r/articles/markdown-html-tables.html), including comparisons of Markdown support in HTML tables across different packages.
+
+## Apply Light and Dark Themes to Plots and Tables {#themes-helpers}
+
+The `theme_colors_flextable()`, `theme_colors_ggplot2()`, `theme_colors_gt()`, `theme_colors_plotly()`, `theme_colors_thematic()` helper functions change the background and foreground colors of six popular plot and table packages. These can be used to produce light and dark [`renderings`](https://quarto.org/docs/computations/execution-options.html#cell-renderings) to match the plot or table with themes in light and dark mode.
+
+The usage of the the results of these functions depends on the package. See the [Theme Helpers](https://quarto-dev.github.io/quarto-r/articles/theme-helpers.html) article for usage examples of `theme_colors_*`.
+
+The `theme_brand_flextable()`, `theme_brand_ggplot2()`, `theme_brand_gt()`, `theme_brand_plotly()`, `theme_brand_thematic()` helper functions change the background and foreground colors of these packages using corresponding [brand.yml](https://posit-dev.github.io/brand-yml/) colors. See the [Light & Dark Renderings Examples](https://examples.quarto.pub/lightdark-renderings-examples/ggplot2.html) for usage examples of `theme_brand_*`.
+
+## Work with R Scripts and Quarto {#work-with-r-scripts}
+
+### Extract R Code from Quarto Documents
+
+The new `qmd_to_r_script()` <a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='https://img.shields.io/badge/lifecycle-experimental-orange.svg' alt='Experimental lifecycle'></a> function provides an alternative to `knitr::purl()` that leverages `quarto inspect` for code extraction:
+
+```r
+# Extract R code from a Quarto document
+qmd_to_r_script("analysis.qmd")  # Creates "analysis.R"
+
+# Specify custom output
+qmd_to_r_script("analysis.qmd", script = "extracted-code.R")
+```
+
+This function uses Quarto's static document analysis rather than R evaluation, making it faster and safer for simple code extraction. It preserves cells options, commenting cells with `eval: false`, and ignoring content having `purl: false`. For documents using advanced knitr features like `child=` chunks or `knitr::read_chunk()`, `knitr::purl()` remains the recommended approach as it handles these through actual document processing.
+
+### Prepare R Scripts for Quarto Rendering
+
+Quarto can [render R scripts directly](https://quarto.org/docs/computations/render-scripts.html#knitr), treating specially formatted comments as Markdown. The `add_spin_preamble()` function helps prepare R scripts for this feature by adding the required YAML metadata:
+
+```r
+# Add metadata for rendering
+add_spin_preamble("analysis.R", 
+                  title = "Analysis Report",
+                  preamble = list(author = "Data Team"))
+
+# Now render the script with Quarto
+quarto_render("analysis.R")
+```
+
+This function adds a minimal spin-style preamble (using `#'` comments) that Quarto recognizes:
+
+```r
+#' ---
+#' title: Analysis Report
+#' author: Data Team
+#' ---
+#'
+
+# Your original R code follows...
+```
+
+The preamble enables Quarto's [engine binding](https://quarto.org/docs/computations/execution-options.html#engine-binding) to properly process the script, allowing you to use R scripts as source documents alongside `.qmd` files. Learn more about working with R scripts in the [R scripts vignette](https://quarto-dev.github.io/quarto-r/articles/r-scripts.html).
+
+## Build Paths from Quarto Project {#build-paths-from-project}
+
+Quarto [sets environment variables](https://quarto.org/docs/advanced/environment-vars.html#variables-quarto-sets) during rendering that identify the project root, but knitr doesn't have direct access to this information by default. The new project navigation functions bridge this gap:
+
+```r
+# Build paths relative to the Quarto project root
+data_file <- project_path("data", "analysis.csv")
+
+# Explicitly find the project root (searches for _quarto.yml)
+root <- find_project_root()
+```
+`project_path()` <a href='https://lifecycle.r-lib.org/articles/stages.html#experimental'><img src='https://img.shields.io/badge/lifecycle-experimental-orange.svg' alt='Experimental lifecycle'></a> intelligently handles different execution contexts:
+
+- During `quarto render`, it uses `QUARTO_PROJECT_ROOT` or `QUARTO_PROJECT_DIR` environment variables
+- In interactive sessions, it automatically detects the project root by searching for `_quarto.yml`.
+- Falls back to the current working directory with a warning if no project is found.
+
+This ensures your paths work consistently without hardcoding or manual adjustments. For example, you can read a CSV file relative to your project root:
+
+```r
+# In posts/2025/analysis/report.qmd, this resolves to ../../../data/results.csv
+results <- read.csv(project_path("data", "results.csv"))
+```
+
+For more explicit control, consider using `here::i_am()` and `here::here()` as an alternative approach. Follow [r-lib/usethis Issue #128](https://github.com/r-lib/here/issues/128) for improved support in next versions of `here`.
+
+## Automate Quarto CLI from R {#automate-quarto-cli}
+
+The quarto R package has always been designed as a comprehensive wrapper for the Quarto CLI, enabling seamless integration of Quarto into R workflows and pipelines. This release strengthens that foundation with improved wrappers and new helpers.
+
+### Extension Management
+Programmatically manage Quarto extensions:
+```r
+# Add an extension
+quarto_add_extension("quarto-journals/jss")
+
+# List installed extensions
+quarto_list_extensions()
+
+# Remove an extension
+quarto_remove_extension("jss")
+```
+
+### Project and Version Management
+New helpers for common CLI tasks:
+```r
+# Create projects from templates
+quarto_create("article", name = "my-analysis")
+
+# Check if a newer version of Quarto is available
+check_newer_version()
+```
+
+### Document Inspection
+Leverage `quarto inspect` results to answer questions about documents:
+```r
+# Check if a document has parameters (uses quarto inspect internally)
+if (has_parameters("report.qmd")) {
+  quarto_render("report.qmd", execute_params = list(year = 2025))
+}
+```
+
+These CLI wrappers enable automation scenarios like CI/CD pipelines, batch processing, and dynamic project management—all from within R. The consistent interface means you can script complex Quarto workflows without leaving your R environment.
+
+## Additional Improvements
+
+### Familiar Workflows for Blogdown Users
+
+The `new_blog_post()` function provides a familiar workflow for users transitioning from blogdown:
+
+```r
+# Create a new blog post with automatic date prefix and YAML frontmatter
+new_blog_post("my-first-quarto-post", dir = "posts")
+```
+
+Similar to blogdown's `new_post()`, this function automatically creates a new blog post file with proper YAML frontmatter in the appropriate directory structure for Quarto blogs, making the transition from blogdown to Quarto smoother.
+
+### Migration Helper for Bookdown Projects
+
+The `detect_bookdown_crossrefs()` function helps identify bookdown cross-reference syntax that needs conversion:
+
+```r
+# Scan your bookdown project for cross-references
+detect_bookdown_crossrefs("my-bookdown-project/")
+```
+
+The function prints detailed guidance to the console, showing:
+
+- Which cross-reference patterns need manual conversion
+- Which patterns can be automatically converted
+- Specific examples from your files
+
+Example output from the [bookdown book](https://bookdown.org/yihui/bookdown/) sources:
+```r
+> detect_bookdown_crossrefs("~/Documents/DEV_R/bookdown/inst/examples", verbose = FALSE)
+ℹ Scanning for bookdown cross-references in 12 .Rmd files...
+! Found 110 bookdown cross-references that should be converted:
+
+• 01-introduction.Rmd: 3 references
+- 3 Sec
+
+• 02-components.Rmd: 52 references
+- 5 Eq
+- 7 Fig
+- 1 Lem
+- 1 Lemma Div
+- 7 Numbered Equation
+- 17 Sec
+- 5 Tab
+- 5 Theorem Div
+- 4 Thm
+
+• 03-formats.Rmd: 20 references
+- 4 Fig
+- 16 Sec
+
+• 04-customization.Rmd: 5 references
+- 5 Sec
+
+• 05-editing.Rmd: 8 references
+- 3 Fig
+- 5 Sec
+
+• 06-publishing.Rmd: 8 references
+- 3 Fig
+- 5 Sec
+
+• 08-usage.Rmd: 3 references
+- 3 Sec
+
+• index.Rmd: 11 references
+- 11 Sec
+
+ℹ Summary of conversion requirements:
+• 5 Eq reference
+• 17 Fig reference
+• 1 Lem reference
+• 1 Lemma Div reference
+• 7 Numbered Equation reference
+• 65 Sec reference
+• 5 Tab reference
+• 5 Theorem Div reference
+• 4 Thm reference
+
+ℹ Manual conversion requirements:
+• Section headers: 65 references need manual attention
+• Figure labels: 17 references need manual attention
+• Table labels: 5 references need manual attention
+• Equation structure: 7 references need manual attention
+• Theorem blocks: 6 references need manual attention
+
+ℹ For detailed conversion guidance, run: quarto::detect_bookdown_crossrefs("~/Documents/DEV_R/bookdown/inst/examples", verbose = TRUE)
+```
+
+For converting chunk headers from curly brace syntax to Quarto's YAML style, remember that [`knitr::convert_chunk_header()`](https://yihui.org/knitr/reference/convert_chunk_header/) is available:
+
+```r
+# Convert {r label, option=value} to YAML-style chunk options for a single file
+knitr::convert_chunk_header("analysis.Rmd", output = NULL)
+
+# To process multiple files in a directory, you need to iterate:
+rmd_files <- list.files("my-bookdown-project/", pattern = "\\.Rmd$", 
+                        full.names = TRUE, recursive = TRUE)
+lapply(rmd_files, knitr::convert_chunk_header, output = NULL)
+```
+
+Together, these tools address the main syntax differences when migrating from bookdown to Quarto.
+
+### Enhanced Workflow
+- `quarto_preview()` now returns the preview URL for automation
+- Better debugging with `QUARTO_R_DEBUG=TRUE` environment variable
+- Consistent R version usage in embedded processes
+
+## Breaking Changes
+
+### Output File Handling
+
+The `output_file` parameter in `quarto_render()` now sets the `output-file` metadata field instead of passing the `--output` CLI flag to Quarto. This change better aligns with Quarto's metadata processing and enables support for multiple output formats:
+
+```r
+# Sets output-file metadata (like having 'output-file: report.html' in YAML)
+quarto_render("doc.qmd", output_file = "report.html")
+```
+
+If you specifically need the old CLI flag behavior, use `quarto_args`:
+
+```r
+# Use CLI flag directly
+quarto_render("doc.qmd", quarto_args = c("--output", "report.html"))
+```
+
+### Template Usage
+
+`quarto_use_template()` now requires an empty directory and fails with a clear error message when used in non-empty directories:
+
+```r
+# Create an empty directory first
+dir.create("my-article")
+quarto_use_template("quarto-journals/jss", dir = "my-article")
+```
+
+This change follows a Quarto CLI update that removed interactive prompting for programmatic use. If you need to use templates in existing directories, use `quarto use template` directly in the terminal for interactive installation.
+
+## Learn More
+
+Explore the new features and improvements:
+
+- Documentation for R package: <https://quarto-dev.github.io/quarto-r/>
+- Full changelog: <https://quarto-dev.github.io/quarto-r/news/index.html>
+- Report issues: <https://github.com/quarto-dev/quarto-r/issues>
+
+For detailed examples and workflows, check out the new vignettes:
+
+- [Dynamic metadata](https://quarto-dev.github.io/quarto-r/articles/dynamic-metadata.html)
+- [Markdown in HTML tables](https://quarto-dev.github.io/quarto-r/articles/markdown-html-tables.html)
+- [Working with R scripts](https://quarto-dev.github.io/quarto-r/articles/r-scripts.html)
+- [All vignettes](https://quarto-dev.github.io/quarto-r/articles/index.html)
+
+## Acknowledgments
+
+Special thanks to all contributors that helped make this release:
+
+[&#x0040;asadow](https://github.com/asadow), [&#x0040;caiolivf](https://github.com/caiolivf), [&#x0040;caocloud](https://github.com/caocloud), [&#x0040;cderv](https://github.com/cderv), [&#x0040;coatless](https://github.com/coatless), [&#x0040;ColinFay](https://github.com/ColinFay), [&#x0040;cwickham](https://github.com/cwickham), [&#x0040;davidrsch](https://github.com/davidrsch), [&#x0040;DillonHammill](https://github.com/DillonHammill), [&#x0040;eitsupi](https://github.com/eitsupi), [&#x0040;GeorgeBatten](https://github.com/GeorgeBatten), [&#x0040;gordonwoodhull](https://github.com/gordonwoodhull), [&#x0040;jennybc](https://github.com/jennybc), [&#x0040;jeroen](https://github.com/jeroen), [&#x0040;joanbadia](https://github.com/joanbadia), [&#x0040;JosephBARBIERDARNAL](https://github.com/JosephBARBIERDARNAL), [&#x0040;LiNk-NY](https://github.com/LiNk-NY), [&#x0040;llrs-roche](https://github.com/llrs-roche), [&#x0040;milanmlft](https://github.com/milanmlft), [&#x0040;papayoun](https://github.com/papayoun), [&#x0040;petermacp](https://github.com/petermacp), [&#x0040;remlapmot](https://github.com/remlapmot), [&#x0040;salim-b](https://github.com/salim-b), [&#x0040;saudiwin](https://github.com/saudiwin), [&#x0040;smzimbo-bayer](https://github.com/smzimbo-bayer), [&#x0040;srvanderplas](https://github.com/srvanderplas), and [&#x0040;wjschne](https://github.com/wjschne).
+
+---
+
+*Happy Quarto-ing with R!*

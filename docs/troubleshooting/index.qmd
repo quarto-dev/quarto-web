@@ -13,25 +13,26 @@ but this page might help you get up and running quickly.
 You can check the version of Quarto and its dependencies by running `quarto check`. Here's an example of the output it generates:
 
 ```
-Quarto 1.5.42
+Quarto 1.9.37
 [✓] Checking versions of quarto binary dependencies...
-      Pandoc version 3.2.0: OK
+      Pandoc version 3.4.0: OK
       Dart Sass version 1.70.0: OK
-      Deno version 1.41.0: OK
+      Deno version 1.46.3: OK
       Typst version 0.11.0: OK
 [✓] Checking versions of quarto dependencies......OK
 [✓] Checking Quarto installation......OK
-      Version: 1.5.42
+      Version: 1.9.37
       Path: /Applications/quarto/bin
 
 [✓] Checking tools....................OK
-      TinyTeX: v2024.03.13
+      TinyTeX: v2026.04
       Chromium: (not installed)
+      Chrome Headless Shell: (not installed)
 
 [✓] Checking LaTeX....................OK
       Using: TinyTex
       Path: /Users/username/Library/TinyTeX/bin/universal-darwin
-      Version: 2024
+      Version: 2026
 
 [✓] Checking basic markdown render....OK
 
@@ -39,18 +40,18 @@ Quarto 1.5.42
       Version: 3.12.1
       Path: /.venv/bin/python3
       Jupyter: 5.7.2
-      Kernels: julia-1.10, python3
+      Kernels: python3
 
 [✓] Checking Jupyter engine render....OK
 
 [✓] Checking R installation...........OK
-      Version: 4.3.3
-      Path: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources
+      Version: 4.4.2
+      Path: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources
       LibPaths:
-        - /Users/username/Library/R/arm64/4.3/library
-        - /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library
-      knitr: 1.45
-      rmarkdown: 2.26
+        - /Users/username/Library/R/arm64/4.4/library
+        - /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
+      knitr: 1.49
+      rmarkdown: 2.29
 
 [✓] Checking Knitr engine render......OK
 ```
@@ -66,7 +67,7 @@ Setting `QUARTO_PRINT_STACK=true` in your environment will cause Quarto to print
 On PowerShell:
 
 ```powershell
-$env:QUARTO_PRINT_STACK = "true"
+$env:QUARTO_PRINT_STACK="true"
 ```
 
 ## Unix
@@ -82,6 +83,30 @@ export QUARTO_PRINT_STACK=true
 ### Verbose mode
 
 Quarto will print more information about its internal state if you set `QUARTO_LOG_LEVEL=DEBUG` in your environment.
+
+::: panel-tabset
+
+## Windows
+
+On PowerShell:
+
+```powershell
+$env:QUARTO_LOG_LEVEL="DEBUG"
+```
+
+## Unix
+
+On bash-like shells:
+
+```bash
+export QUARTO_LOG_LEVEL=DEBUG
+```
+
+:::
+
+`--log-level debug` can also be passed at command line e.g. `quarto render index.qmd --log-level debug`
+
+If you prefer to have the log be written to file, you can set `QUARTO_LOG` in your environment, or `--log` at command line. 
 
 ### Inspect log files {#log-files}
 
@@ -105,7 +130,7 @@ If `$XDG_DATA_HOME` is set, `${XDG_DATA_HOME}/.local/share/quarto/logs`, otherwi
 
 ### Out-of-memory issues
 
-When building a large project or website, you might run into memory limits. In that case, consider the following environment variable.
+When building a large project or website, you might run into memory limits. In that case, consider adjusting the `QUARTO_DENO_V8_OPTIONS` environment variable.
 
 In this example, we're setting the maximum amount of memory to be allocated by Deno to be 8GB. Adjust this to your computer's limits.
 
@@ -116,7 +141,7 @@ In this example, we're setting the maximum amount of memory to be allocated by D
 On PowerShell:
 
 ```powershell
-$env:QUARTO_DENO_EXTRA_OPTIONS = "--v8-flags=--max-old-space-size=8192"
+$env:QUARTO_DENO_V8_OPTIONS="--max-old-space-size=8192"
 ```
 
 ## Unix
@@ -124,7 +149,7 @@ $env:QUARTO_DENO_EXTRA_OPTIONS = "--v8-flags=--max-old-space-size=8192"
 On bash-like shells:
 
 ```bash
-export QUARTO_DENO_EXTRA_OPTIONS=--v8-flags=--max-old-space-size=8192
+export QUARTO_DENO_V8_OPTIONS=--max-old-space-size=8192
 ```
 
 :::
@@ -154,7 +179,7 @@ issues with rendering to PDF, make sure you have an up-to-date installation of `
 
 One common source of tricky problems is the presence of multiple installations of R and Python in a system. Quarto will attempt to find an R or Python installation, and sometimes your shell environment is pointing to a different one.
 
-### knitr
+### `knitr`
 
 If you suspect that quarto is finding the wrong version of an R installation, you can obtain information about the R installation that Quarto sees by running the following .qmd file:
 
@@ -181,6 +206,11 @@ can ask for a difference between the outputs more directly:
 ```r
 sessioninfo:::session_diff(new = "quarto-session-info-output.txt")
 ```
+
+### `julia`
+
+One potential source of trouble in Julia execution and installationwith both the `jupyter` and `julia` engines are stale library versions in caches.
+In those situations, consider removing the contents of the directory described under `Quarto cache location` in `quarto check`.
 
 ## Advanced
 

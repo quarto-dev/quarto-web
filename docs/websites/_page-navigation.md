@@ -2,7 +2,7 @@
 
 If you have a {{< meta project-type >}} with several pages in a section or subsection, it is often convenient to offer the user the ability to navigate to the next page (or previous page) at the bottom of the page that they've just finished reading. You can enable this using:
 
-``` yaml
+```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   page-navigation: true
 ```

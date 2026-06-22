@@ -1,0 +1,268 @@
+---
+author:
+  - name: "Mickaël CANOUIL, _Ph.D._"
+    orcid: "0000-0002-3396-4549"
+    url: "https://mickael.canouil.fr"
+title: "How to use GitHub Codespaces to simplify your Quarto workshops"
+description: |
+  In this post, I'll teach you the basics of GitHub Codespaces and how to use them to make it easier to teach using Quarto.
+date: "2025-05-19"
+categories:
+  - GitHub Codespaces
+  - Teaching
+  - Dev Container
+image: featured.png
+image-alt: |
+  Quarto icon and text above GitHub Codespaces.
+lang: en-GB
+---
+
+## What Is GitHub Codespaces?
+
+[GitHub Codespaces](https://github.com/features/codespaces) is a cloud-powered, on-demand development environment that runs either in your browser or in Visual Studio Code via the [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces).
+It eliminates the need for lengthy local setup by providing a fully configured development container, complete with all necessary dependencies and tools.
+This means that whether you're an instructor or a developer, you can start coding immediately with a consistent environment tailored to your specific project, right on your web browser.
+
+More importantly, the participants of your workshops can use GitHub Codespaces just as easily as you can.
+With Codespaces, you and your participants all work on identical environments, minimising the "it doesn't work on my machine" problems we are all too aware of.
+
+In this post, I am assuming the case of a workshop instructor and a room full of participants with different laptops and operating systems.
+Codespaces are also useful for development, though, as you will notice reading on.
+
+## The Power of Combining Quarto CLI with Codespaces
+
+Imagine a world where your participants are instantly equipped with the same environment with all the tools, libraries, and sample projects ready to go in the cloud.
+That's the magic of using Codespaces:
+
+1. **Immediate Onboarding:** Workshop participants or students can bypass the hassle of local setup.
+   They simply launch a Codespace (running on their web browser of choice, independently of operating system), and the pre-configured environment is available immediately.
+
+1. **A Consistent Environment:** Ensuring that everyone has the same tools and dependencies can be challenging.
+   Codespaces lets you pre-define your environment with container configurations, reducing the risk of discrepancies in software versions or settings.
+
+2. **Reproducible Workflows:** Whether you're teaching a data science workshop or collaborating on a research paper, reproducibility is crucial.
+   Because GitHub Codespaces uses the [Dev Container specification](https://containers.dev/), you can ensure that your code can be run in the same environment.
+   When participants are ready to run their projects locally, they can use Codespace to build an equivalent Docker container.
+
+GitHub provides ["deep link"](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/setting-up-your-repository/facilitating-quick-creation-and-resumption-of-codespaces) to Codespaces, allowing you to create a link you can share with your students or workshop participants.
+
+For example, the [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) provides several Dev Container / Codespaces configurations.
+The following link will create a new Codespace using the `.devcontainer/universal/devcontainer.json` configuration file instead of the default `.devcontainer/devcontainer.json` file.
+
+:::: {style="text-align: center;"}
+[![](https://github.com/codespaces/badge.svg)](https://codespaces.new/mcanouil/quarto-codespaces?quickstart=1&devcontainer_path=.devcontainer%2Funiversal%2Fdevcontainer.json)
+:::
+
+```markdown
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mcanouil/quarto-codespaces?quickstart=1&devcontainer_path=.devcontainer%2Funiversal%2Fdevcontainer.json)
+```
+
+The link can include a specific branch, a particular file, or even a specific line in a file, allowing you to guide participants directly to the relevant content and setup.
+By doing nothing more than clicking that one link, participants create or resume an existing execution environment.
+
+:::: {.dark-content}
+:::: {layout-ncol="2"}
+![](quarto-codespaces-new-001-dark.png){.lightbox group="codespaces-dark" fig-alt="GitHub Codespaces interface showing the 'Create codespace' page. The page includes a section with the repository 'mcanouil/quarto-codespaces' and a message stating 'No codespace to resume'. There are two buttons: 'Change options' and 'Create new codespace'."}
+
+![](quarto-codespaces-new-002-dark.png){.lightbox group="codespaces-dark" fig-alt="image_url" alt="Screenshot of Visual Studio Code interface showing a GitHub Codespace for a project named 'quarto-codespaces'. The left sidebar contains a file explorer with folders and files such as .devcontainer, .github, init-env.sh, LICENSE, and README.md. The terminal at the bottom displays logs related to configuring the codespace, including commands and their outcomes. The right sidebar has a section titled 'Edit with Copilot' explaining how to use Copilot in agent mode."}
+:::
+:::
+
+:::: {.light-content}
+
+:::: {layout-ncol="2"}
+![](quarto-codespaces-new-001-light.png){.lightbox group="codespaces-light" fig-alt="GitHub Codespaces interface showing the 'Create codespace' page. The page includes a section with the repository 'mcanouil/quarto-codespaces' and a message stating 'No codespace to resume'. There are two buttons: 'Change options' and 'Create new codespace'."}
+
+![](quarto-codespaces-new-002-light.png){.lightbox group="codespaces-light" fig-alt="image_url" alt="Screenshot of Visual Studio Code interface showing a GitHub Codespace for a project named 'quarto-codespaces'. The left sidebar contains a file explorer with folders and files such as .devcontainer, .github, init-env.sh, LICENSE, and README.md. The terminal at the bottom displays logs related to configuring the codespace, including commands and their outcomes. The right sidebar has a section titled 'Edit with Copilot' explaining how to use Copilot in agent mode."}
+:::
+:::
+
+## Setting Up Your Own Quarto-Codespaces Environment
+
+If you're considering using Codespaces with Quarto CLI for your next workshop or teaching module, here's how to get started:
+
+Leverage the example provided by the [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) or [create your own Codespaces using the default](https://github.com/codespaces/new/).
+
+### Use an Existing Docker Image {#use-existing-docker-image}
+
+The easiest way to get started is to use an existing Docker image that has Quarto CLI and all the dependencies you need.
+There are several pre-built images available with or without the Quarto CLI:
+
+- Official Docker images:
+  - [`ghcr.io/quarto-dev/quarto`](https://github.com/quarto-dev/quarto-cli/pkgs/container/quarto)
+  - [`ghcr.io/quarto-dev/quarto-full`](https://github.com/quarto-dev/quarto-cli/pkgs/container/quarto-full)
+- Community Docker images:
+  - [`ghcr.io/mcanouil/quarto-codespaces`](https://github.com/mcanouil/quarto-codespaces/pkgs/container/quarto-codespaces)
+- Default Codespaces image:
+  - [`mcr.microsoft.com/devcontainers/universal`](https://github.com/devcontainers/images/tree/main/src/universal)
+
+You can use any of these images as a base for your Codespace.
+Inside the `.devcontainer/devcontainer.json` file, you can specify the image you want to use.
+The `.devcontainer/devcontainer.json` file serves as the blueprint for your Codespace.
+
+```json
+{
+  "name": "My Workshop Setup",
+  "image": "ghcr.io/mcanouil/quarto-codespaces:latest", // <1>
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "quarto.quarto", // <2>
+        "mcanouil.quarto-wizard" // <3>
+      ]
+    },
+    "codespaces": {
+      "openFiles": [ // <4>
+        "exercises/intro-to-quarto.qmd",
+        "exercises/computation.qmd"
+      ]
+    }
+  }
+}
+```
+
+1. The Docker image is specified in the `image` field.
+   It's built using a Dev Container specification that you can find in [`.github/.devcontainer`](https://github.com/mcanouil/quarto-codespaces/tree/main/.github/.devcontainer).
+2. The [`quarto` extension](https://github.com/quarto-dev/quarto) for Visual Studio Code / Positron to provide support for Quarto documents.
+3. The [`quarto-wizard` extension](https://github.com/mcanouil/quarto-wizard) for Visual Studio Code / Positron to provide assistance in managing Quarto extensions
+4. The `openFiles` field specifies the files to open when the Codespace is created.
+   This is useful for guiding participants to the right files or folders.
+   See the [Codespaces documentation](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/configuring-dev-containers/automatically-opening-files-in-the-codespaces-for-a-repository) for more information.
+
+### Configure the Development Container
+
+You can fork the [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) as a starting point for your own Codespaces.
+This repository includes the Dev Container configuration file (*i.e.*, `.devcontainer/devcontainer.json`) that instruct Codespaces on how to set up an environment complete with Quarto CLI and other essential tools.
+
+The `.devcontainer/devcontainer.json` configuration file ensures that every instance of your Codespace is identical, capturing everything from the Quarto CLI version to additional libraries or extensions you might need.
+
+The [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) is a great starting point as it provides a prebuilt Docker image with the latest Quarto CLI, Python, R, and Julia installed (*i.e.*, [`ghcr.io/mcanouil/quarto-codespaces`](https://github.com/mcanouil/quarto-codespaces/pkgs/container/quarto-codespaces) using [`.github/.devcontainer/devcontainer.json`](https://github.com/mcanouil/quarto-codespaces/tree/main/.github/.devcontainer)).
+
+```json
+{
+  "name": "Quarto",
+  // "image": "buildpack-deps:jammy-curl", // <1>
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": ".",
+    "args": {
+      "VARIANT": "jammy"
+    }
+  },
+  "remoteUser": "vscode",
+  "features": { // <2>
+    "./quarto-computing-dependencies": { // <3>
+      "rDeps": "rmarkdown,languageserver,nx10/httpgd@v2.0.3,prompt,lintr",
+      "pythonDeps": "jupyter,papermill",
+      "juliaDeps": "IJulia"
+    },
+    "./uv": { // <4>
+      "version": "latest"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": { // <5>
+      "version": "release",
+      "installTinyTex": "true",
+      "installChromium": "false"
+    }
+  },
+  "customizations": { // <6>
+    "vscode": {
+      "extensions": [
+        "quarto.quarto",
+        "mcanouil.quarto-wizard",
+        "REditorSupport.r",
+        "Posit.air-vscode"
+      ],
+      "settings": {
+        "r.rterm.option": [
+          "--no-save",
+          "--no-restore-data",
+          "--quiet"
+        ],
+        "[r]": {
+          "editor.defaultFormatter": "Posit.air-vscode",
+          "editor.formatOnSave": true
+        }
+      }
+    }
+  }
+}
+```
+
+1. The `image` field specifies the base image for the container.
+   You can customise this to suit your needs.
+2. The `features` section allows you to add additional tools or libraries.
+   See the [Dev Container Features available](https://containers.dev/features/) for a comprehensive list of available features.
+3. The `quarto-computing-dependencies` feature is a "local" custom feature that installs the computing dependencies: R, Python, and Julia.
+   This is a great way to ensure that your Codespace has everything it needs to run Quarto documents.
+4. The `uv` feature installs the [`uv` tool](https://docs.astral.sh/uv/) to manage Python packages and project dependencies.
+5. The `quarto-cli` feature installs the Quarto CLI.
+   You can specify the version you want to install, and it will be automatically downloaded and installed in your Codespace.
+   You can see the code for this feature in the source repository: <https://github.com/rocker-org/devcontainer-features/tree/main/src/quarto-cli>.
+6. The `customizations` section allows you to specify settings and extensions for Visual Studio Code.
+
+You can also add additional features to the `devcontainer.json` to suit your needs or start directly using the image as is as shown in [Use an Existing Docker Image](#use-existing-docker-image).
+
+For example, you might want to add additional R packages or Python libraries.
+You can do this by using the `quarto-computing-dependencies` custom feature and changing the `rDeps`, `pythonDeps`, and `juliaDeps` fields to include the packages you want to install globally, or by using the `postStartCommand` field to run a script that installs the packages you need.
+
+```json
+{
+  "name": "My Workshop Setup",
+  "image": "ghcr.io/mcanouil/quarto-codespaces:latest",
+  "remoteUser": "vscode",
+  "postStartCommand": "uv venv && source .venv/bin/activate && uv pip install -r requirements.txt"
+}
+```
+
+You can also use the `postStartCommand` field to run a script that installs the packages you need.
+
+```json
+{
+  "name": "My Workshop Setup",
+  "image": "ghcr.io/mcanouil/quarto-codespaces:latest",
+  "remoteUser": "vscode",
+  "postStartCommand": "bash ./init-env.sh --what all --force" // <1>
+}
+```
+
+1. The `postStartCommand` field specifies a command to run after the Codespace is started.
+   In this case, it runs the [`init-env.sh` script](https://github.com/mcanouil/quarto-codespaces/blob/main/init-env.sh) from [`quarto-codespaces` repository](https://github.com/mcanouil/quarto-codespaces) with the `--what all` and `--force` options.
+
+## Benefits for Workshops and Teaching
+
+When it comes to educational sessions, consistency and ease-of-use are paramount.
+Pairing Codespaces with Quarto CLI brings many direct benefits to a teaching environment:
+
+- **Streamlined Onboarding:** Students and workshop attendees can get right to work without spending time installing and configuring local environments.
+- **Live, Interactive Sessions:** Instructors can demonstrate live edits to Quarto documents.
+  Changes can be rendered instantly and reflect in each participant's environment: perfect for a hands-on, interactive learning experience.
+- **Collaboration and Version Control:** All changes can be recorded in Git, making it easy to track progress, handle peer reviews, and manage collaborative projects, all within a single hosted environment.
+- **Elimination of "Dependency Hell":** With containerised development, all attendees work from the same baseline, ensuring that version conflicts or missing libraries don't derail a session.
+
+## Final Thoughts and Future Directions
+
+Whether you're running a workshop, teaching a class, or collaborating on research, using Codespaces can reduce setup hassles, foster reproducibility, and encourage interactive learning.
+
+In addition to the benefits mentioned above, other features further enhance your experience with Codespaces and Quarto CLI:
+
+- **Automated Pipelines:** Integrating CI/CD tools to automatically validate Quarto document renders and catch errors using the exact same environment.
+  See [GitHub Actions: Running jobs in a container](https://docs.github.com/en/actions/writing-workflows/choosing-where-your-workflow-runs/running-jobs-in-a-container)
+- **Real-Time Co-Editing Features:** Enhancing collaborative sessions with simultaneous multi-user editing directly in Codespaces.
+  See [GitHub Codespaces: Real-time collaboration](https://docs.github.com/en/codespaces/developing-in-a-codespace/working-collaboratively-in-a-codespace)
+
+This post covered the basics of using Codespaces and Quarto together, but there's much more to Codespaces.
+Learn more by [consulting their documentation](https://docs.github.com/en/codespaces).
+
+Happy teaching!
+
+## Disclaimer {.appendix .unnumbered}
+
+GitHub Codespaces is a product of GitHub, Inc. and comes with a quota of free usage, including CPU hours and storage.
+Be sure to check the [GitHub Codespaces billing documentation](https://docs.github.com/en/billing/managing-billing-for-your-products/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) and your current GitHub plan to avoid unexpected charges.
+If you are a student or an educator, you can explore the [GitHub Education program](https://education.github.com/pack) and [GitHub Classroom](https://docs.github.com/en/education/manage-coursework-with-github-classroom/integrate-github-classroom-with-an-ide/using-github-codespaces-with-github-classroom).
+
+## Acknowledgements {.appendix .unnumbered}
+
+Thanks to [Carlos Scheidegger](https://github.com/cscheid), [Julia Silge](https://github.com/juliasilge), and [James J. Balamuta](https://github.com/coatless) for their feedback and suggestions on this post.

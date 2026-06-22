@@ -152,7 +152,7 @@
 - Development version cleans old vendor directory on success (https://github.com/quarto-dev/quarto-cli/pull/1863#issuecomment-1215452392)
 - properly support YAML scalar syntax (#1838)
 - Add support for Giscus lazy loading (use `loading: lazy` #1357)
-- Properly handle duplicated affilations in author metadata (#1286)
+- Properly handle duplicated affiliations in author metadata (#1286)
 - Display image path when an error occurs reading PNG metadata
 - `quarto run *.ts` preserves stdout and stderr (#1954)
 - Lua filters: quarto.utils.dump does not loop on circular structures (#1958)

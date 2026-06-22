@@ -1,4 +1,4 @@
-## Creating Slides
+## Creating Slides {#creating-slides}
 
 In markdown, slides are delineated using headings. For example, here is a simple slide show with two slides (each defined with a level 2 heading (`##`):
 
@@ -20,7 +20,7 @@ format: {{< meta slide-format >}}
 - Count sheep
 ```
 
-You can also divide slide shows into sections with title slides using a level 1 header (`#`). For example:
+You can also divide slide shows into sections with title slides using a level 1 heading (`#`). For example:
 
 ``` {.markdown code-preview="examples/creating-slides-2.qmd"}
 ---

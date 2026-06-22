@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "$id": "manifest-schema.json",
+  "title": "Screenshot Manifest",
+  "description": "Defines all screenshots to capture for quarto-web documentation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["defaults", "screenshots"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Path to the JSON Schema file (for IDE autocompletion)."
+    },
+    "defaults": { "$ref": "#/$defs/defaultsConfig" },
+    "screenshots": {
+      "type": "array",
+      "description": "List of screenshot entries to capture.",
+      "items": { "$ref": "#/$defs/screenshotEntry" }
+    }
+  },
+  "$defs": {
+    "viewport": {
+      "type": "object",
+      "description": "Browser viewport dimensions.",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1, "description": "Viewport width in pixels." },
+        "height": { "type": "integer", "minimum": 1, "description": "Viewport height in pixels." }
+      }
+    },
+    "cleanupStep": {
+      "type": "object",
+      "description": "A cleanup step that runs JavaScript on the page.",
+      "additionalProperties": false,
+      "required": ["action", "script"],
+      "properties": {
+        "action": { "const": "eval", "description": "Only 'eval' is supported." },
+        "script": { "type": "string", "description": "JavaScript to pass to page.evaluate()." }
+      }
+    },
+    "interactionStep": {
+      "type": "object",
+      "description": "An interaction step run before screenshot capture.",
+      "additionalProperties": false,
+      "required": ["action"],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["click", "hover", "wait", "eval", "scroll"],
+          "description": "Interaction type."
+        },
+        "selector": {
+          "type": "string",
+          "description": "CSS selector for click, hover, wait, scroll actions."
+        },
+        "wait": {
+          "type": "string",
+          "description": "CSS selector to wait for after a click action."
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Timeout in ms for wait action (default: 5000)."
+        },
+        "script": {
+          "type": "string",
+          "description": "JavaScript for eval action."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "action": { "enum": ["click", "hover", "wait", "scroll"] } } },
+          "then": { "required": ["selector"] }
+        },
+        {
+          "if": { "properties": { "action": { "const": "eval" } } },
+          "then": { "required": ["script"] }
+        }
+      ]
+    },
+    "spotlightConfig": {
+      "type": "object",
+      "description": "Highlight a target element by dimming the rest of the page.",
+      "additionalProperties": false,
+      "required": ["selector"],
+      "properties": {
+        "selector": { "type": "string", "description": "CSS selector for the highlighted element." },
+        "elevate": { "type": "string", "description": "Ancestor selector to lift above overlay (stacking context fix)." },
+        "dim": {
+          "description": "Sibling selector(s) to fade (opacity: 0.3).",
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "overlay": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.5, "description": "Overlay opacity (0-1)." },
+        "radius": { "type": "string", "default": "6px", "description": "Border-radius on the highlighted element." },
+        "padding": { "type": "string", "default": "8px", "description": "Padding around the highlighted element." }
+      }
+    },
+    "trimConfig": {
+      "description": "Content-aware whitespace trimming. `true` for defaults, or an object to customize.",
+      "anyOf": [
+        { "type": "boolean" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "threshold": { "type": "integer", "default": 10, "description": "Color distance threshold for edge detection." },
+            "padding": { "type": "integer", "default": 20, "description": "Uniform padding added after trimming (px)." },
+            "background": {
+              "type": "object",
+              "description": "Explicit background color (auto-detected from top-left pixel if omitted).",
+              "additionalProperties": false,
+              "required": ["r", "g", "b"],
+              "properties": {
+                "r": { "type": "integer", "minimum": 0, "maximum": 255 },
+                "g": { "type": "integer", "minimum": 0, "maximum": 255 },
+                "b": { "type": "integer", "minimum": 0, "maximum": 255 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "darkConfig": {
+      "type": "object",
+      "description": "Dark mode switching configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "ready": { "type": "string", "description": "CSS selector to wait for after switching to dark (e.g., body.quarto-dark)." },
+        "readyLight": { "type": "string", "description": "CSS selector to wait for after switching back to light." },
+        "settle": { "type": "integer", "minimum": 0, "description": "Milliseconds to wait after dark mode switch." }
+      }
+    },
+    "sourceConfig": {
+      "type": "object",
+      "description": "Where the page comes from. Discriminated by 'type' field.",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["example", "url"],
+          "description": "Source type: 'example' (Quarto project — render then serve), 'url' (live URL)."
+        },
+        "project": {
+          "type": "string",
+          "description": "Path to Quarto project relative to _tools/screenshots/ (example type)."
+        },
+        "page": {
+          "type": "string",
+          "description": "HTML page within the rendered site (example type)."
+        },
+        "profile": {
+          "type": "string",
+          "description": "Quarto profile name for rendering (example type)."
+        },
+        "url": {
+          "type": "string",
+          "description": "Live URL to capture (url type)."
+        }
+      },
+      "if": { "properties": { "type": { "const": "example" } } },
+      "then": { "required": ["type", "project"] },
+      "else": {
+        "if": { "properties": { "type": { "const": "url" } } },
+        "then": { "required": ["type", "url"] }
+      }
+    },
+    "captureConfig": {
+      "type": "object",
+      "description": "How to capture the screenshot.",
+      "additionalProperties": false,
+      "properties": {
+        "viewport": { "$ref": "#/$defs/viewport" },
+        "zoom": { "type": "number", "exclusiveMinimum": 0, "description": "CSS zoom factor applied to body (default: 1.0)." },
+        "cleanup": {
+          "type": "array",
+          "description": "Per-screenshot cleanup steps (run after default cleanup).",
+          "items": { "$ref": "#/$defs/cleanupStep" }
+        },
+        "interaction": {
+          "type": "array",
+          "description": "Interaction steps before screenshot.",
+          "items": { "$ref": "#/$defs/interactionStep" }
+        },
+        "spotlight": { "$ref": "#/$defs/spotlightConfig" },
+        "clip": {
+          "type": "array",
+          "description": "CSS selectors — screenshot the union bounding box.",
+          "items": { "type": "string" },
+          "minItems": 1
+        },
+        "element": { "type": "string", "description": "CSS selector — screenshot this element only." },
+        "trim": { "$ref": "#/$defs/trimConfig" },
+        "cropBottom": { "type": "integer", "minimum": 0, "description": "Remove N pixels from bottom edge." },
+        "maxHeight": { "type": "integer", "minimum": 1, "description": "Cap image height, crop from bottom." }
+      }
+    },
+    "docConfig": {
+      "type": "object",
+      "description": "Links the screenshot to its documentation file.",
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string", "description": "Path to the .qmd file (relative to repo root)." },
+        "alt": { "type": "string", "description": "Alt text for the image." }
+      }
+    },
+    "defaultsConfig": {
+      "type": "object",
+      "description": "Global settings applied to all screenshots unless overridden.",
+      "additionalProperties": false,
+      "properties": {
+        "viewport": { "$ref": "#/$defs/viewport" },
+        "zoom": { "type": "number", "exclusiveMinimum": 0, "description": "Default CSS zoom factor (default: 1)." },
+        "compress": { "type": "boolean", "default": true, "description": "Compress outputs with oxipng (default: true)." },
+        "trim": { "$ref": "#/$defs/trimConfig" },
+        "cleanup": {
+          "type": "array",
+          "description": "Cleanup steps run on every screenshot.",
+          "items": { "$ref": "#/$defs/cleanupStep" }
+        },
+        "dark": { "$ref": "#/$defs/darkConfig" }
+      }
+    },
+    "screenshotEntry": {
+      "type": "object",
+      "description": "A single screenshot definition.",
+      "additionalProperties": false,
+      "required": ["name", "output", "source"],
+      "properties": {
+        "name": { "type": "string", "description": "Unique identifier, used with --name flag." },
+        "output": { "type": "string", "description": "Output path relative to repo root." },
+        "dark": { "type": "boolean", "default": false, "description": "Produce a -dark variant." },
+        "source": { "$ref": "#/$defs/sourceConfig" },
+        "capture": { "$ref": "#/$defs/captureConfig" },
+        "doc": { "$ref": "#/$defs/docConfig" }
+      }
+    }
+  }
+}

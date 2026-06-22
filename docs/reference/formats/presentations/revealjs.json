@@ -16,6 +16,10 @@
         "description": "Document date"
       },
       {
+        "name": "date-format",
+        "description": "Date format for the document"
+      },
+      {
         "name": "author",
         "description": "Author or authors of the document"
       },
@@ -33,6 +37,10 @@
     "name": "options",
     "title": "Format Options",
     "options": [
+      {
+        "name": "brand",
+        "description": "Branding information to use for this document. If a string, the path to a brand file.\nIf false, don't use branding on this document. If an object, an inline brand\ndefinition, or an object with light and dark brand paths or definitions.\n"
+      },
       {
         "name": "theme",
         "description": "Theme name, theme scss file, or a mix of both."
@@ -186,6 +194,10 @@
       {
         "name": "multiplex",
         "description": "Configuration for reveal presentation multiplexing."
+      },
+      {
+        "name": "scroll-view",
+        "description": "Control the scroll view feature of Revealjs"
       }
     ]
   },
@@ -338,6 +350,10 @@
       {
         "name": "slide-tone",
         "description": "Play a subtle sound when changing slides"
+      },
+      {
+        "name": "jump-to-slide",
+        "description": "Deactivate jump to slide feature."
       }
     ]
   },
@@ -418,10 +434,6 @@
         "description": "The \"normal\" height of the presentation, aspect ratio will\nbe preserved when the presentation is scaled to fit different\nresolutions. Can be specified using percentage units.\n"
       },
       {
-        "name": "margin",
-        "description": "For `revealjs`, the factor of the display size that should remain empty around the content (e.g. 0.1).\n\nFor `typst`, a dictionary with the fields defined in the Typst documentation:\n`x`, `y`, `top`, `bottom`, `left`, `right` (margins are specified in `cm` units,\ne.g. `5cm`).\n"
-      },
-      {
         "name": "min-scale",
         "description": "Bounds for smallest possible scale to apply to content"
       },
@@ -464,6 +476,10 @@
         "description": "For LaTeX/PDF output, the options set for the document\nclass.\n\nFor HTML output using KaTeX, you can render display\nmath equations flush left using `classoption: fleqn`\n"
       },
       {
+        "name": "brand-mode",
+        "description": "The brand mode to use for rendering the document, `light` or `dark`.\n"
+      },
+      {
         "name": "grid",
         "description": "Properties of the grid system used to layout Quarto HTML pages."
       },
@@ -486,6 +502,10 @@
       {
         "name": "margin-bottom",
         "description": "For HTML output, sets the `margin-bottom` property on the Body element.\n\nFor LaTeX output, sets the bottom margin if `geometry` is not \nused (otherwise `geometry` overrides this value)\n\nFor ConTeXt output, sets the bottom margin if `layout` is not used, \notherwise `layout` overrides these.\n\nFor `wkhtmltopdf` sets the bottom page margin.\n"
+      },
+      {
+        "name": "margin",
+        "description": "For `revealjs`, the factor of the display size that should remain empty around the content (e.g. 0.1).\n\nFor `typst`, a dictionary specifying page margins. Use `x` and `y` for symmetric\nhorizontal/vertical margins, or `top`, `bottom`, `left`, `right` for\nindividual sides. Values should include units (e.g. `1.5in`, `2cm`).\n"
       }
     ]
   },
@@ -522,8 +542,8 @@
         "description": "The style to use when displaying code annotations. Set this value\nto false to hide code annotations.\n"
       },
       {
-        "name": "highlight-style",
-        "description": "Specifies the coloring style to be used in highlighted source code.\n\nInstead of a *STYLE* name, a JSON file with extension\n` .theme` may be supplied.  This will be parsed as a KDE\nsyntax highlighting theme and (if valid) used as the\nhighlighting style.\n"
+        "name": "syntax-highlighting",
+        "description": "Specifies the coloring style to be used in highlighted source code.\n\nValid values:\n\n- `none`: Disables syntax highlighting for code blocks.\n- `idiomatic`: Uses the format's native syntax highlighter\n  (e.g., Typst's built-in highlighting, LaTeX `listings` package,\n  or reveal.js highlight.js plugin).\n- A style name (e.g., `pygments`, `tango`, `github`): Uses\n  Pandoc's skylighting with the specified theme.\n- A path to a `.theme` file: Uses a custom KDE syntax\n  highlighting theme.\n\nFor adaptive light/dark themes, specify an object with `light`\nand `dark` properties pointing to theme files.\n"
       },
       {
         "name": "syntax-definitions",
@@ -542,7 +562,7 @@
     "options": [
       {
         "name": "eval",
-        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines \n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative numbers to selectively include or exclude expressions \n  (explicit inclusion/exclusion of expressions is available only when using the knitr engine)\n"
       },
       {
         "name": "echo",
@@ -644,7 +664,7 @@
       },
       {
         "name": "link-external-filter",
-        "description": "A regular expression that can be used to determine whether a link is an internal link. For example, \nthe following will treat links that start with http://www.quarto.org as internal links (and others\nwill be considered external):\n\n```\n^(?:http:|https:)\\/\\/www\\.quarto\\.org\\/custom\n```\n"
+        "description": "A regular expression that can be used to determine whether a link is an internal link. For example, \nthe following will treat links that start with `http://www.quarto.org/custom` or `https://www.quarto.org/custom`\nas internal links (and others will be considered external):\n\n```\n^(?:http:|https:)\\/\\/www\\.quarto\\.org\\/custom\n```\n"
       }
     ]
   },
@@ -690,11 +710,11 @@
   },
   {
     "name": "crossref",
-    "title": "Crossrefs",
+    "title": "Cross-References",
     "options": [
       {
         "name": "crossref",
-        "description": "Configuration for crossref labels and prefixes."
+        "description": "Configuration for cross-reference labels and prefixes. See [Cross-Reference Options](https://quarto.org/docs/reference/metadata/crossref.html) for more details."
       },
       {
         "name": "crossrefs-hover",
@@ -727,6 +747,16 @@
       {
         "name": "dir",
         "description": "The base script direction for the document (`rtl` or `ltr`).\n\nFor bidirectional documents, native pandoc `span`s and\n`div`s with the `dir` attribute can\nbe used to override the base direction in some output\nformats.  This may not always be necessary if the final\nrenderer (e.g. the browser, when generating HTML) supports\nthe [Unicode Bidirectional Algorithm].\n\nWhen using LaTeX for bidirectional documents, only the\n`xelatex` engine is fully supported (use\n`--pdf-engine=xelatex`).\n"
+      }
+    ]
+  },
+  {
+    "name": "a11y",
+    "title": "Accessibility",
+    "options": [
+      {
+        "name": "axe",
+        "description": "When defined, run axe-core accessibility tests on the document."
       }
     ]
   },

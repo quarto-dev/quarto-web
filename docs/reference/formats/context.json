@@ -16,6 +16,10 @@
         "description": "Document date"
       },
       {
+        "name": "date-format",
+        "description": "Date format for the document"
+      },
+      {
         "name": "author",
         "description": "Author or authors of the document"
       },
@@ -34,8 +38,12 @@
     "title": "Format Options",
     "options": [
       {
+        "name": "brand",
+        "description": "Branding information to use for this document. If a string, the path to a brand file.\nIf false, don't use branding on this document. If an object, an inline brand\ndefinition, or an object with light and dark brand paths or definitions.\n"
+      },
+      {
         "name": "pdf-engine",
-        "description": "Use the specified engine when producing PDF output. If the engine is not\nin your PATH, the full path of the engine may be specified here. If this\noption is not specified, Quarto uses the following defaults\ndepending on the output format in use:\n\n- `latex`: `xelatex` (other options: `pdflatex`, `lualatex`,\n  `tectonic`, `latexmk`)\n- `context`: `context`\n- `html`:  `wkhtmltopdf` (other options: `prince`, `weasyprint`, `pagedjs-cli`;\n  see [print-css.rocks](https://print-css.rocks) for a good\n  introduction to PDF generation from HTML/CSS.)\n- `ms`:  `pdfroff`\n- `typst`: `typst`\n"
+        "description": "Use the specified engine when producing PDF output. If the engine is not\nin your PATH, the full path of the engine may be specified here. If this\noption is not specified, Quarto uses the following defaults\ndepending on the output format in use:\n\n- `latex`: `lualatex` (other options: `pdflatex`, `xelatex`,\n  `tectonic`, `latexmk`)\n- `context`: `context`\n- `html`:  `wkhtmltopdf` (other options: `prince`, `weasyprint`, `pagedjs-cli`;\n  see [print-css.rocks](https://print-css.rocks) for a good\n  introduction to PDF generation from HTML/CSS.)\n- `ms`:  `pdfroff`\n- `typst`: `typst`\n"
       },
       {
         "name": "pdf-engine-opt",
@@ -74,10 +82,6 @@
         "description": "Number section headings rendered output. By default, sections are not numbered.\nSections with class `.unnumbered` will never be numbered, even if `number-sections`\nis specified.\n"
       },
       {
-        "name": "number-offset",
-        "description": "Offset for section headings in output (offsets are 0 by default)\nThe first number is added to the section number for\ntop-level headings, the second for second-level headings, and so on.\nSo, for example, if you want the first top-level heading in your\ndocument to be numbered \"6\", specify `number-offset: 5`. If your\ndocument starts with a level-2 heading which you want to be numbered\n\"1.5\", specify `number-offset: [1,4]`. Implies `number-sections`\n"
-      },
-      {
         "name": "shift-heading-level-by",
         "description": "Shift heading levels by a positive or negative integer.\nFor example, with `shift-heading-level-by: -1`, level 2\nheadings become level 1 headings, and level 3 headings\nbecome level 2 headings.  Headings cannot have a level\nless than 1, so a heading that would be shifted below level 1\nbecomes a regular paragraph.  Exception: with a shift of -N,\na level-N heading at the beginning of the document\nreplaces the metadata title.\n"
       },
@@ -109,7 +113,7 @@
       },
       {
         "name": "linestretch",
-        "description": "For HTML output sets the CSS `line-height` property on the html \nelement, which is preferred to be unitless.\n\nFor LaTeX output, adjusts line spacing using the \n[setspace](https://ctan.org/pkg/setspace) package, e.g. 1.25, 1.5.\n"
+        "description": "For HTML output sets the CSS `line-height` property on the html\nelement, which is preferred to be unitless.\n\nFor LaTeX output, adjusts line spacing using the\n[setspace](https://ctan.org/pkg/setspace) package, e.g. 1.25, 1.5.\n\nFor Typst output, adjusts the spacing between lines of text.\n"
       },
       {
         "name": "interlinespace",
@@ -131,7 +135,7 @@
     "options": [
       {
         "name": "linkcolor",
-        "description": "For HTML output, sets the CSS `color` property on all links.\n\nFor LaTeX output, The color used for internal links using color options\nallowed by [`xcolor`](https://ctan.org/pkg/xcolor), \nincluding the `dvipsnames`, `svgnames`, and\n`x11names` lists.\n\nFor ConTeXt output, sets the color for both external links and links within the document.\n"
+        "description": "For HTML output, sets the CSS `color` property on all links.\n\nFor LaTeX output, The color used for internal links using color options\nallowed by [`xcolor`](https://ctan.org/pkg/xcolor),\nincluding the `dvipsnames`, `svgnames`, and\n`x11names` lists.\n\nFor ConTeXt output, sets the color for both external links and links within the document.\n\nFor Typst output, sets the color of internal hyperlinks using Typst color syntax.\n"
       },
       {
         "name": "contrastcolor",
@@ -146,10 +150,6 @@
       {
         "name": "layout",
         "description": "The options for margins and text layout for this document.\n\nSee [ConTeXt Layout](https://wiki.contextgarden.net/Layout) for additional information.\n"
-      },
-      {
-        "name": "grid",
-        "description": "Properties of the grid system used to layout Quarto HTML pages."
       },
       {
         "name": "margin-left",
@@ -196,7 +196,7 @@
     "options": [
       {
         "name": "eval",
-        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative line numbers to selectively include or exclude lines \n  (explicit inclusion/excusion of lines is available only when using the knitr engine)\n"
+        "description": "Evaluate code cells (if `false` just echos the code into output).\n\n- `true` (default): evaluate code cell\n- `false`: don't evaluate code cell\n- `[...]`: A list of positive or negative numbers to selectively include or exclude expressions \n  (explicit inclusion/exclusion of expressions is available only when using the knitr engine)\n"
       },
       {
         "name": "echo",
@@ -288,11 +288,11 @@
   },
   {
     "name": "crossref",
-    "title": "Crossrefs",
+    "title": "Cross-References",
     "options": [
       {
         "name": "crossref",
-        "description": "Configuration for crossref labels and prefixes."
+        "description": "Configuration for cross-reference labels and prefixes. See [Cross-Reference Options](https://quarto.org/docs/reference/metadata/crossref.html) for more details."
       }
     ]
   },
