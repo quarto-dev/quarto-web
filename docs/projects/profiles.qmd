@@ -127,6 +127,12 @@ quarto render
 quarto render --profile advanced,production
 ```
 
+When multiple profiles are active and their configurations contain the same scalar key, the **first-listed profile takes priority**. For example, with `--profile advanced,production`, the `advanced` profile's values win any scalar conflicts. Arrays and objects follow standard [metadata merging](quarto-projects.qmd#metadata-merging) rules (arrays are union-concatenated, objects are deep-merged).
+
+::: {.callout-warning}
+If a profile is specified but no corresponding `_quarto-{name}.yml` file exists, the profile is **silently ignored** with no warning or error. This can lead to unexpected behavior if you mistype a profile name.
+:::
+
 ## Profile Content
 
 You can also specify that content within your project only be included when a certain profile is active. You do this using the `.content-visible` class along with the `when-profile` attribute to a div or span. For example, here we defined a div that is included only for the `advanced` profile:
