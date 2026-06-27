@@ -3,7 +3,7 @@ local function dark_path(src)
   return path[1] .. "-dark" .. path[2]
 end
 
-local function new_image(img, src, class) 
+local function new_image(img, src, class)
   local new_classes = pandoc.List.filter(img.classes, function(c)
     return c ~= "include-dark"
   end)
@@ -15,10 +15,14 @@ end
 
 function Image(img)
   if img.classes:includes("include-dark") then
-    local dark_img = new_image(img, dark_path(img.src), "dark-content")
-    local light_img = new_image(img, img.src, "light-content")
+    local stem, ext = pandoc.path.split_extension(img.src)
+    local _, inner_ext = pandoc.path.split_extension(stem)
+    -- Quarto adds a spurious extension when src is resolved via {{< meta >}};
+    -- strip it when the same extension appears twice (e.g. foo.png.png).
+    local src = (inner_ext == ext) and stem or img.src
+    local dark_img = new_image(img, dark_path(src), "dark-content")
+    local light_img = new_image(img, src, "light-content")
     return {dark_img, light_img}
   end
   return img
 end
-
