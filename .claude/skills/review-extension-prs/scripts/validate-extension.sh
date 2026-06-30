@@ -47,8 +47,8 @@ fi
 
 echo "INFO: _extension.yml at $FOUND_PATH"
 
-uv run --with pyyaml python - "$TMPYAML" "$TMPTREE" "$FOUND_PATH" <<'PYEOF'
-import sys, json, yaml, os
+uv run --with pyyaml python - "$TMPYAML" "$TMPTREE" "$FOUND_PATH" "$REPO" <<'PYEOF'
+import sys, json, yaml, os, re, subprocess
 
 with open(sys.argv[1], encoding="utf-8") as f:
     content = f.read()
@@ -56,6 +56,7 @@ with open(sys.argv[2], encoding="utf-8") as f:
     tree_set = set(json.load(f))
 found_path = sys.argv[3] if len(sys.argv) > 3 else ""
 ext_dir = os.path.dirname(found_path) if "(" not in found_path else ""
+repo = sys.argv[4] if len(sys.argv) > 4 else ""
 
 try:
     data = yaml.safe_load(content)
@@ -120,4 +121,55 @@ for ref in refs:
         print(f"PASS: referenced file exists — {ref}")
     else:
         print(f"FAIL: referenced file missing from repo — {ref}")
+
+# Reverse check: Lua files in extension dir not referenced in manifest.
+# For each unreferenced file, read all Lua files in the extension and scan for require() calls.
+# require()'d internally → INFO; genuinely unreferenced → WARN (dead code).
+if ext_dir:
+    all_refs_raw = collect_refs(data)  # full manifest, not just contributes
+    all_refs_normalized = set()
+    for r in all_refs_raw:
+        clean = r.lstrip("./")
+        all_refs_normalized.add(clean)
+        if ext_dir:
+            all_refs_normalized.add(f"{ext_dir}/{clean}")
+            if clean.startswith(f"{ext_dir}/"):
+                all_refs_normalized.add(clean[len(ext_dir)+1:])
+
+    lua_files = sorted(p for p in tree_set if p.startswith(f"{ext_dir}/") and p.endswith(".lua"))
+    unreferenced = [p for p in lua_files
+                    if p not in all_refs_normalized and p[len(ext_dir)+1:] not in all_refs_normalized]
+
+    if unreferenced and repo:
+        # Fetch all Lua files in the extension dir to scan for require() calls
+        lua_contents = {}
+        for lua_path in lua_files:
+            result = subprocess.run(
+                ["gh", "repo", "read-file", lua_path, "--repo", repo],
+                capture_output=True, text=True, encoding="utf-8", errors="replace"
+            )
+            if result.returncode == 0 and result.stdout:
+                lua_contents[lua_path] = result.stdout
+
+        # Collect every module name passed to require() across all Lua files
+        require_pat = re.compile(r"""require\s*[\(\s]["']([^"']+)["']""")
+        required_modules = set()
+        for lua_src in lua_contents.values():
+            for m in require_pat.finditer(lua_src):
+                mod = m.group(1)
+                required_modules.add(mod)                          # "path.to.module"
+                required_modules.add(mod.replace(".", "/"))        # "path/to/module"
+                required_modules.add(mod.split(".")[-1])           # "module"
+                required_modules.add(mod.split("/")[-1])
+
+        for lua_path in unreferenced:
+            base = os.path.splitext(os.path.basename(lua_path))[0]
+            lua_rel = lua_path[len(ext_dir)+1:]
+            lua_rel_noext = os.path.splitext(lua_rel)[0]
+            if (base in required_modules
+                    or lua_rel_noext in required_modules
+                    or lua_rel_noext.replace("/", ".") in required_modules):
+                print(f"INFO: Lua file not in manifest but require()'d internally — {lua_path}")
+            else:
+                print(f"WARN: Lua file not referenced in manifest and not require()'d — {lua_path} (dead code?)")
 PYEOF
