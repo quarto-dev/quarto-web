@@ -47,13 +47,15 @@ fi
 
 echo "INFO: _extension.yml at $FOUND_PATH"
 
-uv run --with pyyaml python - "$TMPYAML" "$TMPTREE" <<'PYEOF'
-import sys, json, yaml
+uv run --with pyyaml python - "$TMPYAML" "$TMPTREE" "$FOUND_PATH" <<'PYEOF'
+import sys, json, yaml, os
 
 with open(sys.argv[1], encoding="utf-8") as f:
     content = f.read()
 with open(sys.argv[2], encoding="utf-8") as f:
     tree_set = set(json.load(f))
+found_path = sys.argv[3] if len(sys.argv) > 3 else ""
+ext_dir = os.path.dirname(found_path) if "(" not in found_path else ""
 
 try:
     data = yaml.safe_load(content)
@@ -113,7 +115,8 @@ if not refs:
     print("INFO: no file references found in contributes")
 for ref in refs:
     clean = ref.lstrip("./")
-    if clean in tree_set:
+    qualified = (ext_dir + "/" + clean) if ext_dir else clean
+    if qualified in tree_set or clean in tree_set:
         print(f"PASS: referenced file exists — {ref}")
     else:
         print(f"FAIL: referenced file missing from repo — {ref}")
