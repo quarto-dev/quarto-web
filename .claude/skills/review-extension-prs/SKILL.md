@@ -56,7 +56,7 @@ For each entry, check:
    - No document-header fields at root: `execute`, `jupyter`, `bibliography`, `format`, etc. — signals LLM-generated garbage
    - All file paths in `contributes` (`reference-doc`, `template`, `format-resources`, `filters`) actually exist in repo tree
 
-8. **Install test** — `bash "${CLAUDE_SKILL_DIR}/scripts/test-install.sh" "<owner/repo>"` — runs `quarto add --no-prompt` in a temp dir and checks `_extensions/<owner>/<name>/_extension.yml` was created. Slow (network); run last.
+8. **Install test** — `bash "${CLAUDE_SKILL_DIR}/scripts/test-install.sh" "<owner/repo>" "<name>"` — runs `quarto add --no-prompt` in a temp dir and checks `_extensions/<owner>/<name>/_extension.yml` was created. Also warns if the repo installs more than one extension (unrelated/leftover extension dirs shipped in the same repo) or if the listed `<name>` doesn't match what got installed. Slow (network); run last.
 
 9. **Security** — `gh api repos/<owner/repo>/git/trees/HEAD?recursive=1 --jq '[.tree[] | select(.path | test("\\.(lua|js|ts|py|sh)$"))] | .[].path'` — read key source files; flag outbound network calls, shell execution, obfuscation
 
