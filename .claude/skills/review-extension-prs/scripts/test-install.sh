@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Test that a Quarto extension installs successfully via quarto add.
-# Usage: test-install.sh <owner/repo>
-# Output: PASS/FAIL lines. Always exits 0 — caller interprets output.
+# Usage: test-install.sh <owner/repo> [expected-extension-name]
+# Output: PASS/FAIL/WARN lines. Always exits 0 — caller interprets output.
 # Note: downloads from GitHub; slower than other checks — run last.
 
-REPO="${1:?Usage: test-install.sh <owner/repo>}"
+REPO="${1:?Usage: test-install.sh <owner/repo> [expected-extension-name]}"
+EXPECTED_NAME="$2"
 OWNER="${REPO%%/*}"
 
 WORK_DIR=$(mktemp -d)
@@ -42,11 +43,21 @@ if [ ${#installed[@]} -eq 0 ]; then
   exit 0
 fi
 
+names=()
 for ext_dir in "${installed[@]}"; do
   ext_name=$(basename "$ext_dir")
+  names+=("$ext_name")
   if [ -f "${ext_dir}_extension.yml" ]; then
     echo "PASS: installed _extensions/${OWNER}/${ext_name}/ with _extension.yml"
   else
     echo "FAIL: installed _extensions/${OWNER}/${ext_name}/ but _extension.yml missing"
   fi
 done
+
+if [ ${#installed[@]} -gt 1 ]; then
+  echo "WARN: repo installed ${#installed[@]} extensions (${names[*]}), not 1 — repo tree likely contains unrelated/leftover extension dirs"
+fi
+
+if [ -n "$EXPECTED_NAME" ] && [ ! -d "${EXT_BASE}/${EXPECTED_NAME}" ]; then
+  echo "WARN: expected extension name '${EXPECTED_NAME}' not found under _extensions/${OWNER}/ (found: ${names[*]})"
+fi
