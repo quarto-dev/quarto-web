@@ -71,6 +71,21 @@ This reports *evidence* (occurrences / pages), not a guess at ownership — on a
 that demos Quarto, "in the document body" is not the same as "authored here", so the
 report deliberately leaves ownership to the reader.
 
+## Getting AI help to fix findings
+
+The HTML report is built for handing findings to an AI, two ways:
+
+- **Chat mode** (paste into any assistant) — the **copy** button on each row, and
+  the header **Copy AI briefing (all findings)** button, put a self-contained
+  markdown briefing on the clipboard: the rule, WCAG criterion, severity, scope
+  ("fix once → N occurrences" for systemic), the failing elements, axe's help URL,
+  and a preamble that steers the fix toward the Quarto *source* (`.qmd`,
+  `_quarto.yml`, `brand.yml`, theme SCSS) rather than the generated HTML.
+- **Agent mode** (the AI has the repo, e.g. Claude Code) — each finding has a stable
+  **id** (e.g. `link-name-7b818f`, click to copy). Point the agent at it: "fix
+  `link-name-7b818f` from `_axe-checks/findings.json`" and it reads the full,
+  lossless record (every occurrence + selector) rather than a paste.
+
 ## Coverage & options
 
 Defaults: `pages.txt` (a layout-distinct sample — chrome recurs, so cover layouts,

@@ -20,6 +20,7 @@
 // pages OR within one page); a one-off has a single instance.
 
 import { readFileSync, readdirSync, writeFileSync } from "fs";
+import { createHash } from "crypto";
 
 const argv = process.argv.slice(2);
 const opt = (n, d) => (argv.indexOf(`--${n}`) >= 0 && argv[argv.indexOf(`--${n}`) + 1]) || d;
@@ -110,7 +111,7 @@ for (const c of ok) {
           signature: sig, rule: v.id, impact: v.impact || "minor",
           conformance: conformance(v.tags), standard: standardInfo(v.tags),
           bestPractice: v.tags.includes("best-practice"),
-          help: v.help,
+          help: v.help, helpUrl: v.helpUrl,
           _instances: new Set(), // distinct DOM elements = (page + raw target)
           pages: new Set(), cells: new Set(),
           viewports: new Set(), themes: new Set(),
@@ -149,10 +150,13 @@ const findings = [...groups.values()]
     const instances = g._instances.size;
     const pages = g.pages.size;
     return {
+      // stable, human-ish id (rule + hash of the signature) so an AI/agent can be
+      // pointed at one finding: "fix <id> in findings.json".
+      id: `${g.rule}-${createHash("sha1").update(g.signature).digest("hex").slice(0, 6)}`,
       signature: g.signature, rule: g.rule, impact: g.impact,
       conformance: g.conformance, standard: g.standard.label, standardRank: g.standard.rank,
       severityRank: IMPACT_RANK[g.impact] || 0,
-      bestPractice: g.bestPractice, help: g.help,
+      bestPractice: g.bestPractice, help: g.help, helpUrl: g.helpUrl,
       detail: g.detail,
       instances, pages, cells: g.cells.size,
       // systemic = repeated source: many DOM elements OR many pages
