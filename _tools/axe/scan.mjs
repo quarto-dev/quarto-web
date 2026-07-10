@@ -101,6 +101,16 @@ ws.addEventListener("message", (ev) => {
 await cmd("Runtime.enable");
 await cmd("Page.enable");
 
+// Warm-up: axe-check.js imports axe-core from a CDN, and the very first (cold)
+// import occasionally hangs — which would time out whichever cell happens to run
+// first. Prime the module cache with one throwaway load so every real cell is warm.
+if (pages.length) {
+  const warm = new Promise((resolve) => (onDone = resolve));
+  await cmd("Page.navigate", { url: `${base}/${pages[0]}` });
+  await Promise.race([warm, new Promise((r) => setTimeout(r, 30000))]);
+  onDone = null;
+}
+
 const slug = (p) => p.replace(/\.html$/, "").replace(/[\/]/g, "_") || "index";
 const summary = [];
 
