@@ -104,8 +104,10 @@ echo "→ aggregating"
 node "$HERE/aggregate.mjs" --dir "$JSON" --out "$OUT/findings.json"
 echo "→ rendering report"
 node "$HERE/report.mjs" --file "$OUT/findings.json" --format html --base "$REPORT_BASE" > "$OUT/report.html"
+node "$HERE/report.mjs" --file "$OUT/findings.json" --format ai > "$OUT/README.md"
 node "$HERE/report.mjs" --file "$OUT/findings.json" --format table
 
 echo
-echo "✓ wrote $OUT/findings.json and $OUT/report.html  (raw per-cell dumps in $JSON/)"
+echo "✓ wrote $OUT/report.html, $OUT/findings.json, $OUT/README.md  (raw per-cell dumps in $JSON/)"
 echo "  open the report:  open $OUT/report.html"
+echo "  point an AI at:   $OUT/README.md + $OUT/findings.json"

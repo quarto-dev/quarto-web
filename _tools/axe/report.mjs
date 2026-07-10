@@ -21,11 +21,6 @@ const r = JSON.parse(readFileSync(file, "utf8"));
 const esc = (s) =>
   String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-const reach = (f) =>
-  `${f.pages}pg ${f.instances}×` +
-  (f.viewports.length === 1 ? ` ${f.viewports[0]}-only` : "") +
-  (f.themes.length === 1 ? ` ${f.themes[0]}-only` : "");
-
 if (format === "html") {
   const pageLink = (p) => `<a href="${esc(base ? base + "/" + p : p)}">${esc(p)}</a>`;
 
@@ -59,19 +54,8 @@ if (format === "html") {
       ``, `Please help me fix this in the Quarto source.`,
     ].join("\n");
   };
-  const allBriefing = [
-    `# Accessibility audit: ${r.pagesScanned} pages, ${r.findings.length} findings`, ``,
-    PREAMBLE, ``,
-    `Findings, sorted by standard then severity. Ask about any by its id.`, ``,
-    ...r.findings.map(
-      (f) =>
-        `- \`${f.id}\` — **${f.rule}** (${f.standard}, ${f.impact}, ${f.label}): ` +
-        `${f.detail || f.occurrences[0]?.detail || ""} — ${f.pages}pg/${f.instances}×${f.helpUrl ? ` — ${f.helpUrl}` : ""}`
-    ),
-  ].join("\n");
   const aiData = JSON.stringify({
     briefings: Object.fromEntries(r.findings.map((f) => [f.id, mdBriefing(f)])),
-    all: allBriefing,
   }).replace(/</g, "\\u003c"); // safe inside a <script> block
 
   const rows = r.findings
@@ -143,17 +127,15 @@ if (format === "html") {
   .occ .snip { color:var(--mut); } .cells { white-space:nowrap; color:var(--mut); }
   .findings > thead th:not([data-key]) { cursor:default; }
   td.act { white-space:nowrap; text-align:right; }
-  .cp, #copy-all { font:inherit; border:1px solid var(--br); border-radius:6px; background:var(--bg); color:var(--fg); cursor:pointer; }
-  .cp { font-size:.8em; padding:.1rem .45rem; } .cp:hover, #copy-all:hover { background:var(--hd); }
+  .cp { font:inherit; font-size:.8em; padding:.1rem .45rem; border:1px solid var(--br); border-radius:6px; background:var(--bg); color:var(--fg); cursor:pointer; }
+  .cp:hover { background:var(--hd); }
   .idchip { display:block; margin-top:.25rem; font-family:ui-monospace,monospace; font-size:.72em; color:var(--mut); cursor:pointer; }
   .idchip:hover { color:var(--fg); text-decoration:underline; }
-  #copy-all { font-size:.85em; padding:.25rem .7rem; margin:0 0 1rem; }
 </style></head><body>
 <h1>axe site audit</h1>
 <p class="sub">${esc(r.pagesScanned)} pages · ${esc(r.cells.ok)}/${esc(r.cells.total)} cells ok · generated ${esc(r.generated)}<br>
 Sorted by standard, then severity — click any header to re-sort; click a row to see occurrences.
 <strong>systemic</strong> = repeats from a shared source (fix once, fixes many) · <strong>localized</strong> = one-off. <strong>pages</strong> = distinct pages affected; <strong>occurrences</strong> = distinct elements.</p>
-<button id="copy-all" title="Copy an AI briefing for the whole audit (all findings) to paste into a chat">📋 Copy AI briefing (all findings)</button>
 ${notOk}
 <table class="findings" id="findings"><thead><tr>
   <th data-key="standard" data-type="num">standard</th>
@@ -176,8 +158,6 @@ ${rows}
       setTimeout(function(){ el.textContent = was; }, 1200);
     });
   }
-  document.getElementById('copy-all').addEventListener('click', function(e){ copyText(AI.all, e.currentTarget); });
-
   var tbody = document.querySelector('#findings tbody');
   function pairs(){ var out=[], cur=null; Array.prototype.forEach.call(tbody.children, function(tr){
     if (tr.classList.contains('f')) { cur = {f:tr, d:null}; out.push(cur); } else if (cur) { cur.d = tr; } }); return out; }
@@ -208,6 +188,79 @@ ${rows}
   });
 </script>
 </body></html>\n`);
+} else if (format === "ai") {
+  // Orientation doc written to the output dir so an agent (with repo access) can
+  // read it alongside findings.json and know how to act. Not a data dump — the data
+  // is findings.json; this explains what it is and how to fix things in a Quarto site.
+  const byStandard = {};
+  for (const f of r.findings) byStandard[f.standard] = (byStandard[f.standard] || 0) + 1;
+  const breakdown = Object.entries(byStandard).map(([s, n]) => `${s}: ${n}`).join(" · ");
+  console.log(`# axe accessibility audit — results & how to act on them
+
+Generated ${r.generated} · ${r.pagesScanned} pages scanned · ${r.cells.ok}/${r.cells.total} cells ok · ${r.findings.length} findings (${breakdown}).
+
+## What this is
+
+An [axe-core](https://github.com/dequelabs/axe-core) accessibility audit of a
+website built by **Quarto**, scanned across a viewport × theme matrix. Findings are
+grouped by root cause (so one repeated defect is one finding with a count) and
+ordered by standard, then severity.
+
+## Fixing findings — important for a Quarto site
+
+Do **not** edit files in \`_site/\` — that is generated output, overwritten on every
+\`quarto render\`. Fix at the source:
+
+- **content** issues (a specific page) → that page's \`.qmd\`
+- **theme / colour / chrome** issues → \`_quarto.yml\`, \`brand.yml\`, or a theme \`.scss\`
+- **shared-template** issues (navbar, footer, listings, about pages) → these come from
+  Quarto itself; the right fix may be an **upstream Quarto issue**, not a local change.
+
+Each finding is labelled **systemic** (repeats from a shared source — fix once, fixes
+all its occurrences) or **localized** (a single instance). "in the document body" is
+*not* the same as "authored here" — this site demos Quarto, so judge ownership from
+the evidence, not the DOM location.
+
+## Files here
+
+- \`report.html\` — human drill-down report (sortable, expandable)
+- \`findings.json\` — the structured results (schema below); the source of truth
+- \`json/\` — raw per-cell axe output (\`<page>__<viewport>__<theme>.json\`)
+
+## findings.json schema
+
+\`\`\`
+{ generated, cells: { total, ok, notOk }, pagesScanned,
+  findings: [ {
+    id,            // stable handle, e.g. "link-name-7b818f"
+    rule,          // axe rule id
+    standard,      // e.g. "WCAG 2.1 AA" (or "best-practice")
+    conformance,   // full label incl. success criteria, e.g. "WCAG 2.0AA 1.4.3"
+    impact,        // critical | serious | moderate | minor
+    label,         // "systemic" | "localized"
+    pages,         // distinct pages affected (int)
+    instances,     // distinct elements affected (int)
+    viewports, themes,   // which cells it appeared in (e.g. dark-only)
+    detail, helpUrl,     // failure summary + axe remediation URL
+    occurrences: [ { page, target /* CSS selector */, html /* element */, cells, detail } ]
+  } ] }
+\`\`\`
+
+## How to work through them
+
+1. Read \`findings.json\` (already sorted by standard, then severity).
+2. Pick a finding by \`id\` or \`rule\`; its \`occurrences\` give the exact page, CSS
+   selector, and element HTML.
+3. For **systemic** findings, fix the shared source once. For **localized**, fix that page.
+4. \`helpUrl\` links axe's remediation guidance for the rule.
+
+## Limits
+
+- **Resting DOM only** — no hover / focus / open-menu states, which is a large share
+  of real issues. Treat a clean scan as necessary, not sufficient.
+- The axe-core version is whatever Quarto fetches at scan time; results can shift on a
+  Quarto upgrade independent of content.
+`);
 } else if (format === "markdown") {
   const line = (f) =>
     `| ${f.label} | ${f.impact} | \`${f.rule}\` | ${f.conformance || "-"} | ${f.pages} | ${f.instances} | ${f.detail ? f.detail : "`" + f.examples[0] + "`"} |`;

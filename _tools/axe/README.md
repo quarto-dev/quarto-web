@@ -43,6 +43,8 @@ Output lands in `_axe-checks/` (git-ignored — regenerable):
 - `report.html` — the drill-down report (open this)
 - `findings.json` — grouped, deduplicated findings with occurrences (the stable,
   re-groupable intermediate; also the seam for a future baseline/diff)
+- `README.md` — an orientation doc for an AI/agent: what the results are, the
+  `findings.json` schema, and how to fix issues in a Quarto site
 - `json/<page>__<viewport>__<theme>.json` — raw axe result per cell
 
 ## The three stages
@@ -75,16 +77,17 @@ report deliberately leaves ownership to the reader.
 
 The HTML report is built for handing findings to an AI, two ways:
 
-- **Chat mode** (paste into any assistant) — the **copy** button on each row, and
-  the header **Copy AI briefing (all findings)** button, put a self-contained
-  markdown briefing on the clipboard: the rule, WCAG criterion, severity, scope
-  ("fix once → N occurrences" for systemic), the failing elements, axe's help URL,
-  and a preamble that steers the fix toward the Quarto *source* (`.qmd`,
-  `_quarto.yml`, `brand.yml`, theme SCSS) rather than the generated HTML.
-- **Agent mode** (the AI has the repo, e.g. Claude Code) — each finding has a stable
-  **id** (e.g. `link-name-7b818f`, click to copy). Point the agent at it: "fix
-  `link-name-7b818f` from `_axe-checks/findings.json`" and it reads the full,
-  lossless record (every occurrence + selector) rather than a paste.
+- **Chat mode** (paste into any assistant) — the **copy** button on each report row
+  puts a self-contained markdown briefing on the clipboard: the rule, WCAG criterion,
+  severity, scope ("fix once → N occurrences" for systemic), the failing elements,
+  axe's help URL, and a preamble that steers the fix toward the Quarto *source*
+  (`.qmd`, `_quarto.yml`, `brand.yml`, theme SCSS) rather than the generated HTML.
+- **Agent mode** (the AI has the repo, e.g. Claude Code) — point it at
+  `_axe-checks/README.md`, which orients it (what the results are, the `findings.json`
+  schema, how to fix issues in a Quarto site) and hands off to `findings.json`. Each
+  finding has a stable **id** (e.g. `link-name-7b818f`, click to copy in the report),
+  so "fix `link-name-7b818f` from `_axe-checks/findings.json`" resolves to the full,
+  lossless record (every occurrence + selector).
 
 ## Coverage & options
 
