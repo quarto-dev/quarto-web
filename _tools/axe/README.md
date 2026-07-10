@@ -109,5 +109,15 @@ persist after the local server stops).
 
 - **Resting DOM only** — no hover / open-menu / focus states (a large share of real
   issues). See `axe-test-coverage.md` in the audit repo.
+- **Client-side-rendered content races the scan** — axe runs when Quarto's
+  `axe-check.js` reports complete, which does **not** wait for content that renders
+  after load: Mermaid, OJS, Plotly, htmlwidgets, leaflet, etc. So a scan may sample a
+  transient pre-render state, giving **flaky false positives** that don't reproduce
+  every run. Observed example: a Mermaid diagram's source `<pre class="mermaid">` is
+  briefly styled black-on-dark before it becomes an SVG, so it intermittently trips
+  `color-contrast` (`#000000 on #151515 = 1.14`) in dark mode only. Treat findings
+  whose element is a JS-rendered widget (`.mermaid`, `.ojs-*`, `.plotly`, …) as
+  "verify manually," not hard failures. (The real fix is upstream: have axe wait for
+  network-idle / render-settle before running.)
 - **axe version is Quarto's** (fetched online), so results can shift on a Quarto
   upgrade independent of content.
