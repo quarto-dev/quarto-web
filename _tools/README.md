@@ -14,6 +14,12 @@ Utility scripts for the quarto-web project. Run with `quarto run` (TypeScript, R
 | `release-notes.R` | R | Generate release notes content |
 | `snapshot-typst.ts` | TypeScript | Capture Typst document snapshots as PNG |
 
+## Subdirectories
+
+| Directory | Description |
+|-----------|-------------|
+| `axe/` | Accessibility audit — scans the built site with Quarto's axe reporter across viewport/theme and reports deduplicated findings. See [`axe/README.md`](axe/README.md). Run with `_tools/axe/run.sh` after rendering with `--metadata-file _tools/axe/axe-meta.yml`. |
+
 ## Usage
 
 ```bash

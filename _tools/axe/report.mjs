@@ -1,0 +1,173 @@
+// Render findings.json (from aggregate.mjs) as a ranked table.
+//
+// Usage: node report.mjs [--file _results/findings.json] [--format table|markdown]
+//
+// A dumb view: no grouping logic here — that all lives in aggregate.mjs. Findings
+// are ranked by reach (most-duplicated first) with a soft systemic/localized label.
+// "systemic" = the defect repeats from a shared source (many instances across pages
+// OR within one page) so fixing the source fixes all; "localized" = a one-off.
+// regionHint (chrome/body/mixed) is a secondary orientation cue, NOT ownership.
+
+import { readFileSync } from "fs";
+
+const argv = process.argv.slice(2);
+const opt = (n, d) => (argv.indexOf(`--${n}`) >= 0 && argv[argv.indexOf(`--${n}`) + 1]) || d;
+const file = opt("file", "_results/findings.json");
+const format = opt("format", "table");
+const base = opt("base", "").replace(/\/$/, ""); // URL/path prefix for page links
+
+const r = JSON.parse(readFileSync(file, "utf8"));
+
+const esc = (s) =>
+  String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+const reach = (f) =>
+  `${f.pages}pg ${f.instances}×` +
+  (f.viewports.length === 1 ? ` ${f.viewports[0]}-only` : "") +
+  (f.themes.length === 1 ? ` ${f.themes[0]}-only` : "");
+
+if (format === "html") {
+  const pageLink = (p) => `<a href="${esc(base ? base + "/" + p : p)}">${esc(p)}</a>`;
+  const rows = r.findings
+    .map((f) => {
+      const occ = f.occurrences
+        .map(
+          (o) =>
+            `<tr><td>${pageLink(o.page)}</td><td class="cells">${o.cells.map(esc).join("<br>")}</td>` +
+            `<td><code>${esc(o.target)}</code></td><td><code class="snip">${esc(o.html)}</code></td>` +
+            `<td>${esc(o.detail)}</td></tr>`
+        )
+        .join("");
+      return `<tr class="f" data-standard="${f.standardRank}" data-severity="${f.severityRank}" ` +
+        `data-rule="${esc(f.rule)}" data-class="${f.label === "systemic" ? 0 : 1}" ` +
+        `data-pages="${f.pages}" data-instances="${f.instances}">
+  <td class="std" title="${esc(f.conformance)}">${esc(f.standard)}</td>
+  <td><span class="badge impact-${f.impact}">${esc(f.impact)}</span></td>
+  <td><code class="rule">${esc(f.rule)}</code></td>
+  <td><span class="badge ${f.label}">${f.label}</span></td>
+  <td class="num">${f.pages}</td>
+  <td class="num">${f.instances}</td>
+  <td class="dcell">${esc(f.detail || f.examples[0])}</td></tr>
+<tr class="d" hidden><td colspan="7">
+  <table class="occ"><thead><tr><th>page</th><th>cells (width·theme)</th><th>selector</th><th>element</th><th>detail</th></tr></thead>
+  <tbody>${occ}</tbody></table></td></tr>`;
+    })
+    .join("\n");
+  const notOk = r.notOkCells.length
+    ? `<p class="warn"><strong>Non-OK cells (fail-closed — not counted as passing):</strong> ${r.notOkCells
+        .map((c) => `${esc(c.status)} ${esc(c.page)} ${esc(c.viewport)}·${esc(c.theme)}`)
+        .join("; ")}</p>`
+    : "";
+  process.stdout.write(`<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>axe site audit — ${esc(r.pagesScanned)} pages</title>
+<style>
+  :root { color-scheme: light dark; --br:#d0d3d9; --mut:#5b6470; --bg:#fff; --fg:#1a1d21; --card:#f6f7f9; --hd:#eef1f4; }
+  @media (prefers-color-scheme: dark){ :root{ --br:#333a44; --mut:#9aa4b0; --bg:#15171a; --fg:#e6e8eb; --card:#1e2126; --hd:#22262c; } }
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 0 auto; max-width: 1180px; padding: 1.5rem; color:var(--fg); background:var(--bg); }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--mut); margin:0 0 1rem; } .mut { color: var(--mut); }
+  .warn { border-left:4px solid #c0392b; padding-left:.6rem; }
+  table.findings { width:100%; border-collapse:collapse; }
+  .findings > thead th { position:sticky; top:0; background:var(--hd); text-align:left; padding:.45rem .6rem;
+    font-size:.85em; border-bottom:2px solid var(--br); cursor:pointer; user-select:none; white-space:nowrap; }
+  .findings > thead th[data-key]::after { content:" ↕"; color:var(--mut); font-size:.85em; }
+  .findings > thead th[aria-sort=ascending]::after { content:" ↑"; color:var(--fg); }
+  .findings > thead th[aria-sort=descending]::after { content:" ↓"; color:var(--fg); }
+  tr.f > td { padding:.4rem .6rem; border-bottom:1px solid var(--br); vertical-align:top; cursor:pointer; }
+  tr.f:hover > td { background:var(--card); }
+  tr.f.open > td { background:var(--card); }
+  td.std::before { content:"▸ "; color:var(--mut); }
+  tr.f.open td.std::before { content:"▾ "; }
+  .rule { font-family: ui-monospace, monospace; font-weight:600; }
+  .reach { white-space:nowrap; }
+  .badge { font-size:.72em; padding:.05rem .4rem; border-radius:99px; border:1px solid var(--br); text-transform:uppercase; letter-spacing:.03em; }
+  .badge.systemic { background:#fde8e8; color:#8a1c1c; border-color:#f5c2c2; }
+  .badge.localized { background:#eef1f4; color:#3a4048; }
+  .impact-critical,.impact-serious { background:#c0392b; color:#fff; border-color:#c0392b; }
+  .impact-moderate { background:#e0892e; color:#fff; border-color:#e0892e; }
+  .impact-minor { background:#8a939e; color:#fff; border-color:#8a939e; }
+  td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+  tr.d > td { padding:0 .6rem .6rem 1.6rem; background:var(--card); }
+  table.occ { width:100%; border-collapse:collapse; font-size:.86em; }
+  .occ th,.occ td { text-align:left; padding:.3rem .5rem; border-top:1px solid var(--br); vertical-align:top; }
+  .occ th { color:var(--mut); font-weight:600; }
+  .occ code { font-family: ui-monospace, monospace; font-size:.92em; word-break:break-all; }
+  .occ .snip { color:var(--mut); } .cells { white-space:nowrap; color:var(--mut); }
+</style></head><body>
+<h1>axe site audit</h1>
+<p class="sub">${esc(r.pagesScanned)} pages · ${esc(r.cells.ok)}/${esc(r.cells.total)} cells ok · generated ${esc(r.generated)}<br>
+Sorted by standard, then severity — click any header to re-sort; click a row to see occurrences.
+<strong>systemic</strong> = repeats from a shared source (fix once, fixes many) · <strong>localized</strong> = one-off. <strong>pages</strong> = distinct pages affected; <strong>occurrences</strong> = distinct elements.</p>
+${notOk}
+<table class="findings" id="findings"><thead><tr>
+  <th data-key="standard" data-type="num">standard</th>
+  <th data-key="severity" data-type="num">severity</th>
+  <th data-key="rule" data-type="str">rule</th>
+  <th data-key="class" data-type="num">class</th>
+  <th class="num" data-key="pages" data-type="num">pages</th>
+  <th class="num" data-key="instances" data-type="num">occurrences</th>
+  <th>detail</th>
+</tr></thead><tbody>
+${rows}
+</tbody></table>
+<script>
+  var tbody = document.querySelector('#findings tbody');
+  function pairs(){ var out=[], cur=null; Array.prototype.forEach.call(tbody.children, function(tr){
+    if (tr.classList.contains('f')) { cur = {f:tr, d:null}; out.push(cur); } else if (cur) { cur.d = tr; } }); return out; }
+  tbody.addEventListener('click', function(e){
+    if (e.target.closest('a')) return;
+    var row = e.target.closest('tr.f'); if (!row) return;
+    var d = row.nextElementSibling;
+    if (d && d.classList.contains('d')) { d.hidden = !d.hidden; row.classList.toggle('open'); }
+  });
+  var DEFAULT_DIR = { standard:1, class:1, rule:1, severity:-1, pages:-1, instances:-1 };
+  var sortKey = null, dir = 1;
+  Array.prototype.forEach.call(document.querySelectorAll('#findings th[data-key]'), function(th){
+    th.addEventListener('click', function(){
+      var key = th.dataset.key, type = th.dataset.type || 'str';
+      dir = (sortKey === key) ? -dir : DEFAULT_DIR[key]; sortKey = key;
+      var ps = pairs();
+      ps.sort(function(a,b){
+        var va = a.f.dataset[key], vb = b.f.dataset[key];
+        if (type === 'num') return (parseFloat(va) - parseFloat(vb)) * dir;
+        return va.localeCompare(vb) * dir;
+      });
+      ps.forEach(function(p){ tbody.appendChild(p.f); if (p.d) tbody.appendChild(p.d); });
+      Array.prototype.forEach.call(document.querySelectorAll('#findings th'), function(h){ h.removeAttribute('aria-sort'); });
+      th.setAttribute('aria-sort', dir > 0 ? 'ascending' : 'descending');
+    });
+  });
+</script>
+</body></html>\n`);
+} else if (format === "markdown") {
+  const line = (f) =>
+    `| ${f.label} | ${f.impact} | \`${f.rule}\` | ${f.conformance || "-"} | ${f.pages} | ${f.instances} | ${f.detail ? f.detail : "`" + f.examples[0] + "`"} |`;
+  console.log(`## axe site audit (${r.pagesScanned} pages, ${r.cells.ok}/${r.cells.total} cells ok)\n`);
+  console.log(`| class | impact | rule | conformance | pages | occurrences | detail |`);
+  console.log(`|---|---|---|---|---|---|---|`);
+  for (const f of r.findings) console.log(line(f));
+} else {
+  console.log(`\n=== axe site audit ===`);
+  console.log(`generated ${r.generated}`);
+  console.log(`cells: ${r.cells.total} scanned, ${r.cells.ok} ok, ${r.cells.notOk} not-ok | pages: ${r.pagesScanned}`);
+  if (r.notOkCells.length) {
+    console.log(`\n!! NON-OK CELLS (fail-closed — not counted as passing):`);
+    for (const c of r.notOkCells)
+      console.log(`   ${c.status.toUpperCase().padEnd(10)} ${c.page} ${c.viewport} ${c.theme}`);
+  }
+  const systemic = r.findings.filter((f) => f.label === "systemic");
+  const localized = r.findings.filter((f) => f.label === "localized");
+  const row = (f) =>
+    `  ${(f.impact || "-").padEnd(8)} ${f.rule.padEnd(28)} ${(f.conformance || "-").padEnd(22)} ` +
+    `${String(f.pages).padStart(3)}pg ${String(f.instances).padStart(4)}× ` +
+    `${(f.viewports.length === 1 ? f.viewports[0] : "both").padEnd(9)} ${(f.themes.length === 1 ? f.themes[0] : "both").padEnd(5)} ${f.detail || f.examples[0]}`;
+  const head = `  impact   rule                         conformance            pages  occ  vp        theme detail`;
+  console.log(`\n--- SYSTEMIC (repeats from a shared source — fix once, fixes many) ---`);
+  console.log(head);
+  console.log(systemic.map(row).join("\n") || "  (none)");
+  console.log(`\n--- LOCALIZED (one-off, single instance) ---`);
+  console.log(head);
+  console.log(localized.map(row).join("\n") || "  (none)");
+  console.log("");
+}
