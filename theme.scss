@@ -17,15 +17,18 @@ $code-block-bg: #eff2f5;
 
 /*-- scss:rules --*/
 
-// Quarto renders appendix content (footnotes, citation, reuse) at opacity .9,
+// Quarto dims appendix content (footnotes, citation, reuse) to opacity .9,
 // which fades $link-color to an effective #4d80a8 = 4.22:1 on white — a WCAG
-// AA 1.4.3 failure (axe color-contrast-733538). A darker link keeps the
-// blended color at ~5.2:1. Overriding the Bootstrap var rather than `color`
-// preserves the a:hover color swap. Scoped to body.quarto-light because in
-// dark mode this (light) stylesheet stays enabled underneath the dark one,
-// and an unscoped custom property would leak through.
-body.quarto-light #quarto-appendix.default section {
-  --bs-link-color-rgb: 47, 96, 138; // #2f608a; shows as #447096 after the fade
+// AA 1.4.3 failure (axe color-contrast-733538). Undo the fade; selectors
+// mirror Quarto's so this wins by cascade order in the light theme, while
+// the dark stylesheet (loaded after this one) re-asserts Quarto's .9 —
+// the dark link color passes even faded. Remove once quarto-cli dims
+// appendix content via color rather than opacity.
+#quarto-appendix.default section {
+  *[role="doc-endnotes"],
+  > *:not(a) {
+    opacity: 1;
+  }
 }
 
 .layout-example {
