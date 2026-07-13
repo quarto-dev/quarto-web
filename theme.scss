@@ -2,6 +2,13 @@
 $link-color: #39729E;
 $text-muted: #6a737b;
 
+// Quarto's body-secondary mixin (blockquotes, captions, asides, header
+// section numbers) defaults to theme-dim($body-color, 25%) = #6d7a86, only
+// 4.39:1 on white — a WCAG AA 1.4.3 failure (axe color-contrast-7ed054).
+// Defining $body-secondary makes the mixin use it instead; $text-muted is
+// 4.83:1.
+$body-secondary: $text-muted;
+
 // Code-block background: the darkest tint of the site's cosmo blue-gray that
 // still keeps every a11y-light syntax color at WCAG AA (>=4.5:1). a11y-light's
 // palette is tuned for a near-white background, so this stays pale; one step
@@ -9,6 +16,17 @@ $text-muted: #6a737b;
 $code-block-bg: #eff2f5;
 
 /*-- scss:rules --*/
+
+// Quarto renders appendix content (footnotes, citation, reuse) at opacity .9,
+// which fades $link-color to an effective #4d80a8 = 4.22:1 on white — a WCAG
+// AA 1.4.3 failure (axe color-contrast-733538). A darker link keeps the
+// blended color at ~5.2:1. Overriding the Bootstrap var rather than `color`
+// preserves the a:hover color swap. Scoped to body.quarto-light because in
+// dark mode this (light) stylesheet stays enabled underneath the dark one,
+// and an unscoped custom property would leak through.
+body.quarto-light #quarto-appendix.default section {
+  --bs-link-color-rgb: 47, 96, 138; // #2f608a; shows as #447096 after the fade
+}
 
 .layout-example {
   background: $gray-500;
