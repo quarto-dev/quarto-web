@@ -58,19 +58,20 @@ if (format === "html") {
     briefings: Object.fromEntries(r.findings.map((f) => [f.id, mdBriefing(f)])),
   }).replace(/</g, "\\u003c"); // safe inside a <script> block
 
-  const rows = r.findings
-    .map((f) => {
-      const occ = f.occurrences
-        .map(
-          (o) =>
-            `<tr><td>${pageLink(o.page)}</td><td class="cells">${o.cells.map(esc).join("<br>")}</td>` +
-            `<td><code>${esc(o.target)}</code></td><td><code class="snip">${esc(o.html)}</code></td>` +
-            `<td>${esc(o.detail)}</td></tr>`
-        )
-        .join("");
-      return `<tr class="f" data-standard="${f.standardRank}" data-severity="${f.severityRank}" ` +
-        `data-rule="${esc(f.rule)}" data-class="${f.label === "systemic" ? 0 : 1}" ` +
-        `data-pages="${f.pages}" data-instances="${f.instances}">
+  const buildRows = (list) =>
+    list
+      .map((f) => {
+        const occ = f.occurrences
+          .map(
+            (o) =>
+              `<tr><td>${pageLink(o.page)}</td><td class="cells">${o.cells.map(esc).join("<br>")}</td>` +
+              `<td><code>${esc(o.target)}</code></td><td><code class="snip">${esc(o.html)}</code></td>` +
+              `<td>${esc(o.detail)}</td></tr>`
+          )
+          .join("");
+        return `<tr class="f" data-standard="${f.standardRank}" data-severity="${f.severityRank}" ` +
+          `data-rule="${esc(f.rule)}" data-class="${f.label === "systemic" ? 0 : 1}" ` +
+          `data-pages="${f.pages}" data-instances="${f.instances}">
   <td class="std" title="${esc(f.conformance)}">${esc(f.standard)}</td>
   <td><span class="badge impact-${f.impact}">${esc(f.impact)}</span></td>
   <td><code class="rule">${esc(f.rule)}</code></td>
@@ -82,12 +83,37 @@ if (format === "html") {
 <tr class="d" hidden><td colspan="8">
   <table class="occ"><thead><tr><th>page</th><th>cells (width·theme)</th><th>selector</th><th>element</th><th>detail</th></tr></thead>
   <tbody>${occ}</tbody></table></td></tr>`;
-    })
-    .join("\n");
+      })
+      .join("\n");
+  // New (report these) vs baselined (known/accepted — collapsed, out of the way).
+  const newFindings = r.findings.filter((f) => !f.baselined);
+  const baselinedFindings = r.findings.filter((f) => f.baselined);
+  const rows = buildRows(newFindings);
+  const baselinedRows = buildRows(baselinedFindings);
   const notOk = r.notOkCells.length
     ? `<p class="warn"><strong>Non-OK cells (fail-closed — not counted as passing):</strong> ${r.notOkCells
         .map((c) => `${esc(c.status)} ${esc(c.page)} ${esc(c.viewport)}·${esc(c.theme)}`)
         .join("; ")}</p>`
+    : "";
+  // Collapsed "known / baselined" section: accepted findings, kept for audit but out of
+  // the main list so newly-added pages surface only genuinely new root causes.
+  const baselinedSection = baselinedFindings.length
+    ? `<details class="baselined"><summary>Known / baselined — ${baselinedFindings.length} finding${baselinedFindings.length === 1 ? "" : "s"} accepted, suppressed from the list above</summary>
+<table class="findings" id="baselined"><thead><tr>
+  <th>standard</th><th>severity</th><th>rule</th><th>class</th>
+  <th class="num">pages</th><th class="num">occurrences</th><th>detail</th>
+  <th title="Copy an AI briefing (markdown), or the finding id">AI</th>
+</tr></thead><tbody>
+${baselinedRows}
+</tbody></table></details>`
+    : "";
+  const stale = (r.baseline && r.baseline.stale) || [];
+  const staleNotice = stale.length
+    ? `<p class="mut stale">↳ ${stale.length} baseline entr${stale.length === 1 ? "y" : "ies"} not seen in this scan${
+        r.pagesScanned ? "" : ""
+      } — if this was a full-page scan they are resolved and can be pruned from <code>${esc(
+        (r.baseline.file || "baseline.json").split("/").pop()
+      )}</code>: ${stale.map((e) => `<code>${esc(e.id)}</code>`).join(", ")}</p>`
     : "";
   process.stdout.write(`<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -131,12 +157,23 @@ if (format === "html") {
   .cp:hover { background:var(--hd); }
   .idchip { display:block; margin-top:.25rem; font-family:ui-monospace,monospace; font-size:.72em; color:var(--mut); cursor:pointer; }
   .idchip:hover { color:var(--fg); text-decoration:underline; }
+  details.baselined { margin-top:1.5rem; border:1px solid var(--br); border-radius:8px; background:var(--card); }
+  details.baselined > summary { cursor:pointer; padding:.6rem .8rem; color:var(--mut); font-size:.9em; user-select:none; }
+  details.baselined[open] > summary { border-bottom:1px solid var(--br); }
+  details.baselined table.findings { padding:.2rem; }
+  details.baselined tr.f > td { opacity:.85; }
+  p.stale { border-left:4px solid #e0892e; padding-left:.6rem; font-size:.9em; }
+  p.stale code { font-family:ui-monospace,monospace; }
 </style></head><body>
 <h1>axe site audit</h1>
 <p class="sub">${esc(r.pagesScanned)} pages · ${esc(r.cells.ok)}/${esc(r.cells.total)} cells ok · generated ${esc(r.generated)}<br>
+<strong>${newFindings.length} new finding${newFindings.length === 1 ? "" : "s"}</strong> shown below${
+  baselinedFindings.length ? ` · ${baselinedFindings.length} baselined (known, collapsed)` : ""
+}.<br>
 Sorted by standard, then severity — click any header to re-sort; click a row to see occurrences.
 <strong>systemic</strong> = repeats from a shared source (fix once, fixes many) · <strong>localized</strong> = one-off. <strong>pages</strong> = distinct pages affected; <strong>occurrences</strong> = distinct elements.</p>
 ${notOk}
+${staleNotice}
 <table class="findings" id="findings"><thead><tr>
   <th data-key="standard" data-type="num">standard</th>
   <th data-key="severity" data-type="num">severity</th>
@@ -149,6 +186,7 @@ ${notOk}
 </tr></thead><tbody>
 ${rows}
 </tbody></table>
+${baselinedSection}
 <script id="axe-ai" type="application/json">${aiData}</script>
 <script>
   var AI = JSON.parse(document.getElementById('axe-ai').textContent);
@@ -161,14 +199,16 @@ ${rows}
   var tbody = document.querySelector('#findings tbody');
   function pairs(){ var out=[], cur=null; Array.prototype.forEach.call(tbody.children, function(tr){
     if (tr.classList.contains('f')) { cur = {f:tr, d:null}; out.push(cur); } else if (cur) { cur.d = tr; } }); return out; }
-  tbody.addEventListener('click', function(e){
+  function onRowClick(e){
     var cp = e.target.closest('[data-copy]'); if (cp) { copyText(AI.briefings[cp.dataset.copy], cp); return; }
     var ci = e.target.closest('[data-copyid]'); if (ci) { copyText(ci.dataset.copyid, ci); return; }
     if (e.target.closest('a')) return;
     var row = e.target.closest('tr.f'); if (!row) return;
     var d = row.nextElementSibling;
     if (d && d.classList.contains('d')) { d.hidden = !d.hidden; row.classList.toggle('open'); }
-  });
+  }
+  // expand/copy work in both the main table and the collapsed baselined table
+  Array.prototype.forEach.call(document.querySelectorAll('table.findings tbody'), function(tb){ tb.addEventListener('click', onRowClick); });
   var DEFAULT_DIR = { standard:1, class:1, rule:1, severity:-1, pages:-1, instances:-1 };
   var sortKey = null, dir = 1;
   Array.prototype.forEach.call(document.querySelectorAll('#findings th[data-key]'), function(th){
@@ -192,12 +232,15 @@ ${rows}
   // Orientation doc written to the output dir so an agent (with repo access) can
   // read it alongside findings.json and know how to act. Not a data dump — the data
   // is findings.json; this explains what it is and how to fix things in a Quarto site.
+  const newF = r.findings.filter((f) => !f.baselined);
+  const baseN = r.findings.length - newF.length;
+  const stale = (r.baseline && r.baseline.stale) || [];
   const byStandard = {};
-  for (const f of r.findings) byStandard[f.standard] = (byStandard[f.standard] || 0) + 1;
-  const breakdown = Object.entries(byStandard).map(([s, n]) => `${s}: ${n}`).join(" · ");
+  for (const f of newF) byStandard[f.standard] = (byStandard[f.standard] || 0) + 1;
+  const breakdown = Object.entries(byStandard).map(([s, n]) => `${s}: ${n}`).join(" · ") || "none";
   console.log(`# axe accessibility audit — results & how to act on them
 
-Generated ${r.generated} · ${r.pagesScanned} pages scanned · ${r.cells.ok}/${r.cells.total} cells ok · ${r.findings.length} findings (${breakdown}).
+Generated ${r.generated} · ${r.pagesScanned} pages scanned · ${r.cells.ok}/${r.cells.total} cells ok · **${newF.length} new finding${newF.length === 1 ? "" : "s"}**${baseN ? ` (+${baseN} baselined/known)` : ""}${breakdown !== "none" ? ` — ${breakdown}` : ""}.
 
 ## What this is
 
@@ -205,6 +248,26 @@ An [axe-core](https://github.com/dequelabs/axe-core) accessibility audit of a
 website built by **Quarto**, scanned across a viewport × theme matrix. Findings are
 grouped by root cause (so one repeated defect is one finding with a count) and
 ordered by standard, then severity.
+
+## Baseline — focus on what's new
+
+This run has **${newF.length} new finding${newF.length === 1 ? "" : "s"}** and **${baseN} baselined** (already-accepted) finding${baseN === 1 ? "" : "s"}. Act on the
+new ones. In \`findings.json\`, each finding has a \`baselined\` boolean — the actionable
+set is \`baselined: false\`.
+
+The baseline (\`${(r.baseline && r.baseline.file || "baseline.json").split("/").pop()}\`) is a ledger of findings that were accepted at a point in time
+(shared-chrome defects, issues tracked upstream, deferred best-practice items). It is
+keyed by each finding's page-independent **signature**, so a known chrome defect is
+**not** re-reported when it recurs on a newly-added page — suppression is by signature,
+never by page or count. Expanding the scanned page set therefore surfaces only genuinely
+new root causes.
+${stale.length ? `\n⚠️ ${stale.length} baseline entr${stale.length === 1 ? "y is" : "ies are"} not present in this scan (${stale.map((e) => `\`${e.id}\``).join(", ")}). If this was a full-page scan, they are resolved — prune them from the baseline. If you scanned a subset, they may just live on unscanned pages.\n` : ""}
+To re-capture the baseline after fixing things (merges/adds, never drops; preserves any
+hand-written \`note\` per entry):
+
+\`\`\`sh
+node _tools/axe/aggregate.mjs --dir _axe-checks/json --out _axe-checks/findings.json --update-baseline
+\`\`\`
 
 ## Fixing findings — important for a Quarto site
 
@@ -231,8 +294,12 @@ the evidence, not the DOM location.
 
 \`\`\`
 { generated, cells: { total, ok, notOk }, pagesScanned,
+  counts: { total, new, baselined },   // headline split
+  baseline: { file, entries, stale: [ { signature, id, rule, note } ] },
   findings: [ {
-    id,            // stable handle, e.g. "link-name-7b818f"
+    id,            // stable handle, e.g. "link-name-7b818f" (hash of signature)
+    signature,     // page-independent root-cause key (the baseline key)
+    baselined,     // true = already accepted in the baseline; act on false
     rule,          // axe rule id
     standard,      // e.g. "WCAG 2.1 AA" (or "best-practice")
     conformance,   // full label incl. success criteria, e.g. "WCAG 2.0AA 1.4.3"
@@ -264,10 +331,13 @@ the evidence, not the DOM location.
 } else if (format === "markdown") {
   const line = (f) =>
     `| ${f.label} | ${f.impact} | \`${f.rule}\` | ${f.conformance || "-"} | ${f.pages} | ${f.instances} | ${f.detail ? f.detail : "`" + f.examples[0] + "`"} |`;
+  const actionable = r.findings.filter((f) => !f.baselined);
+  const baselinedN = r.findings.length - actionable.length;
   console.log(`## axe site audit (${r.pagesScanned} pages, ${r.cells.ok}/${r.cells.total} cells ok)\n`);
+  console.log(`${actionable.length} new finding${actionable.length === 1 ? "" : "s"}${baselinedN ? ` · ${baselinedN} baselined/known (suppressed)` : ""}\n`);
   console.log(`| class | impact | rule | conformance | pages | occurrences | detail |`);
   console.log(`|---|---|---|---|---|---|---|`);
-  for (const f of r.findings) console.log(line(f));
+  for (const f of actionable) console.log(line(f));
 } else {
   console.log(`\n=== axe site audit ===`);
   console.log(`generated ${r.generated}`);
@@ -277,8 +347,10 @@ the evidence, not the DOM location.
     for (const c of r.notOkCells)
       console.log(`   ${c.status.toUpperCase().padEnd(10)} ${c.page} ${c.viewport} ${c.theme}`);
   }
-  const systemic = r.findings.filter((f) => f.label === "systemic");
-  const localized = r.findings.filter((f) => f.label === "localized");
+  const actionable = r.findings.filter((f) => !f.baselined);
+  const baselinedN = r.findings.length - actionable.length;
+  const systemic = actionable.filter((f) => f.label === "systemic");
+  const localized = actionable.filter((f) => f.label === "localized");
   const row = (f) =>
     `  ${(f.impact || "-").padEnd(8)} ${f.rule.padEnd(28)} ${(f.conformance || "-").padEnd(22)} ` +
     `${String(f.pages).padStart(3)}pg ${String(f.instances).padStart(4)}× ` +
@@ -290,5 +362,12 @@ the evidence, not the DOM location.
   console.log(`\n--- LOCALIZED (one-off, single instance) ---`);
   console.log(head);
   console.log(localized.map(row).join("\n") || "  (none)");
+  const stale = (r.baseline && r.baseline.stale) || [];
+  if (baselinedN || stale.length)
+    console.log(
+      `\n(${baselinedN} baselined/known finding${baselinedN === 1 ? "" : "s"} suppressed` +
+      (stale.length ? `; ${stale.length} baseline entr${stale.length === 1 ? "y" : "ies"} not seen this scan` : "") +
+      `)`
+    );
   console.log("");
 }

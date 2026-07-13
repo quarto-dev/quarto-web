@@ -19,15 +19,26 @@
 // guess at ownership: a defect from a repeated source has many instances (across
 // pages OR within one page); a one-off has a single instance.
 
-import { readFileSync, readdirSync, writeFileSync } from "fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync } from "fs";
 import { createHash } from "crypto";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 const argv = process.argv.slice(2);
 const opt = (n, d) => (argv.indexOf(`--${n}`) >= 0 && argv[argv.indexOf(`--${n}`) + 1]) || d;
+const flag = (n) => argv.indexOf(`--${n}`) >= 0;
 const dir = opt("dir", "_results");
 const outFile = opt("out", `${dir}/findings.json`);
 // instances-or-pages threshold above which a finding is "systemic" (repeated source)
 const SYSTEMIC_MIN = Number(opt("systemic-min", "3"));
+
+// Baseline: a ledger of accepted findings keyed by page-independent SIGNATURE, so a
+// known defect (esp. shared chrome) is not re-reported when it recurs on a newly added
+// page — its signature matches the baseline regardless of which page it appeared on.
+// Default lives next to this script; --update-baseline captures/merges current findings.
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const baselineFile = opt("baseline", join(scriptDir, "baseline.json"));
+const updateBaseline = flag("update-baseline");
 
 const cells = readdirSync(dir)
   .filter((f) => f.endsWith(".json") && f !== "_index.json" && f !== "findings.json")
@@ -179,12 +190,59 @@ const findings = [...groups.values()]
       b.pages - a.pages
   );
 
+// --- Baseline reconciliation -------------------------------------------------
+// Load the ledger (if any), keyed by signature. Suppression is by SIGNATURE, never
+// by page or by count: a baselined chrome finding growing from 12 to 40 pages as you
+// expand the page set is expected, stays baselined, and never re-alerts.
+let baseline = { captured: null, entries: [] };
+if (existsSync(baselineFile)) {
+  try { baseline = JSON.parse(readFileSync(baselineFile, "utf8")); }
+  catch (e) { console.error(`!! could not parse ${baselineFile}: ${e.message}`); }
+}
+const baseEntry = new Map((baseline.entries || []).map((e) => [e.signature, e]));
+
+if (updateBaseline) {
+  // MERGE-ADD, never drop: newly-seen signatures are appended; existing entries (and
+  // their hand-written notes) are preserved even if not seen in this run — a partial
+  // scan must not silently discard baseline entries for pages it didn't visit. Prune
+  // stale entries by hand (they're reported below).
+  const now = new Date().toISOString();
+  for (const f of findings)
+    if (!baseEntry.has(f.signature))
+      baseEntry.set(f.signature, {
+        signature: f.signature, id: f.id, rule: f.rule,
+        conformance: f.conformance, impact: f.impact, firstSeen: now, note: "",
+      });
+  const entries = [...baseEntry.values()].sort(
+    (a, b) => a.rule.localeCompare(b.rule) || a.signature.localeCompare(b.signature)
+  );
+  writeFileSync(baselineFile, JSON.stringify({ captured: now, entries }, null, 2));
+  console.log(`updated baseline ${baselineFile}: ${entries.length} entries (${entries.length - baseline.entries.length} added)`);
+}
+
+const currentSigs = new Set(findings.map((f) => f.signature));
+for (const f of findings) f.baselined = baseEntry.has(f.signature);
+// Baseline entries not seen in THIS scan. Trustworthy only on a full-page scan; on a
+// subset scan these may simply live on unscanned pages, so we report, never auto-prune.
+const staleBaseline = [...baseEntry.values()]
+  .filter((e) => !currentSigs.has(e.signature))
+  .map((e) => ({ signature: e.signature, id: e.id, rule: e.rule, note: e.note || "" }));
+
+const newCount = findings.filter((f) => !f.baselined).length;
+const baselinedCount = findings.length - newCount;
+
 const report = {
   generated: new Date().toISOString(),
   cells: { total: cells.length, ok: ok.length, notOk: notOk.length },
   notOkCells: notOk.map((c) => ({ page: c.page, viewport: c.viewport, theme: c.theme, status: c.status })),
   pagesScanned: new Set(ok.map((c) => c.page)).size,
+  baseline: { file: baselineFile, entries: baseEntry.size, stale: staleBaseline },
+  counts: { total: findings.length, new: newCount, baselined: baselinedCount },
   findings,
 };
 writeFileSync(outFile, JSON.stringify(report, null, 2));
-console.log(`wrote ${outFile}: ${findings.length} findings from ${cells.length} cells (${ok.length} ok, ${notOk.length} not-ok)`);
+console.log(
+  `wrote ${outFile}: ${findings.length} findings (${newCount} new, ${baselinedCount} baselined) ` +
+  `from ${cells.length} cells (${ok.length} ok, ${notOk.length} not-ok)` +
+  (staleBaseline.length ? `; ${staleBaseline.length} baseline entr${staleBaseline.length === 1 ? "y" : "ies"} not seen this scan` : "")
+);

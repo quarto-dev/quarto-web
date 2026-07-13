@@ -101,7 +101,11 @@ done
 echo "→ scanning"
 node "$HERE/scan.mjs" --base "http://localhost:$PORT" --pages "$PAGES" --out "$JSON"
 echo "→ aggregating"
-node "$HERE/aggregate.mjs" --dir "$JSON" --out "$OUT/findings.json"
+# Baseline (_tools/axe/baseline.json) is read automatically: known findings are marked
+# baselined and kept out of the "new" list, so recurring chrome on newly-added pages
+# doesn't re-report. Set UPDATE_BASELINE=1 to (re)capture the current findings as the
+# baseline — merges/adds, never drops, and preserves hand-written notes.
+node "$HERE/aggregate.mjs" --dir "$JSON" --out "$OUT/findings.json" ${UPDATE_BASELINE:+--update-baseline}
 echo "→ rendering report"
 node "$HERE/report.mjs" --file "$OUT/findings.json" --format html --base "$REPORT_BASE" > "$OUT/report.html"
 node "$HERE/report.mjs" --file "$OUT/findings.json" --format ai > "$OUT/README.md"
@@ -111,3 +115,4 @@ echo
 echo "✓ wrote $OUT/report.html, $OUT/findings.json, $OUT/README.md  (raw per-cell dumps in $JSON/)"
 echo "  open the report:  open $OUT/report.html"
 echo "  point an AI at:   $OUT/README.md + $OUT/findings.json"
+echo "  accept current findings as baseline:  UPDATE_BASELINE=1 $0"

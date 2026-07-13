@@ -42,7 +42,8 @@ Output lands in `_axe-checks/` (git-ignored — regenerable):
 
 - `report.html` — the drill-down report (open this)
 - `findings.json` — grouped, deduplicated findings with occurrences (the stable,
-  re-groupable intermediate; also the seam for a future baseline/diff)
+  re-groupable intermediate); each finding carries a `baselined` flag (see
+  [Baseline](#baseline-focus-on-new-findings))
 - `README.md` — an orientation doc for an AI/agent: what the results are, the
   `findings.json` schema, and how to fix issues in a Quarto site
 - `json/<page>__<viewport>__<theme>.json` — raw axe result per cell
@@ -73,6 +74,42 @@ This reports *evidence* (occurrences / pages), not a guess at ownership — on a
 that demos Quarto, "in the document body" is not the same as "authored here", so the
 report deliberately leaves ownership to the reader.
 
+## Baseline (focus on new findings)
+
+`baseline.json` (next to the scripts) is a ledger of findings **accepted at a point
+in time** — shared-chrome defects, issues tracked upstream, deferred best-practice
+items. Any finding whose signature is in the baseline is marked `baselined: true`,
+dropped from the "new" list, and tucked into a collapsed *Known / baselined* section
+of the report. So you act only on genuinely new findings.
+
+The key property: the baseline is keyed by each finding's **page-independent
+signature** (the same key used for grouping — a colour pair for `color-contrast`, a
+normalized selector otherwise). Suppression is therefore **by signature, never by page
+or count**. A known navbar/footer/sidebar defect stays suppressed when it recurs on a
+newly-added page — its signature is identical regardless of which page it's on — so
+**expanding `pages.txt` surfaces only genuinely new root causes.** (A finding sitting in
+a page-type-specific selector, e.g. a homepage-only `#quarto-content > …`, is naturally
+page-scoped and won't auto-suppress on a different layout — correct, since it isn't the
+same recurring instance.)
+
+Workflow:
+
+```bash
+# Capture / re-capture the baseline from the current findings.
+UPDATE_BASELINE=1 _tools/axe/run.sh
+# …or without re-scanning, straight from existing per-cell dumps:
+node _tools/axe/aggregate.mjs --dir _axe-checks/json --out _axe-checks/findings.json --update-baseline
+```
+
+`--update-baseline` **merges and adds, never drops**: newly-seen signatures are
+appended; existing entries — and any hand-written `note` you add per entry (e.g.
+`"tracked upstream quarto-cli#14378"`) — are preserved, even for signatures not seen in
+this run (a partial scan must not discard entries for pages it didn't visit). Baseline
+entries not present in the current scan are reported as **stale**; if it was a full-page
+scan they're resolved and safe to prune by hand — if a subset scan, they may just live
+on unscanned pages. `baseline.json` is committed (unlike the git-ignored `_axe-checks/`),
+so the accepted set is shared and reviewable.
+
 ## Getting AI help to fix findings
 
 The HTML report is built for handing findings to an AI, two ways:
@@ -101,9 +138,10 @@ node _tools/axe/scan.mjs --base http://localhost:8788 \
   --viewports 1440x900,390x844 --themes light,dark
 ```
 
-Env overrides for `run.sh`: `SITE PAGES OUT PORT CDP CHROME QUARTO_CHROMIUM REPORT_BASE`.
-`REPORT_BASE` sets the report's page links (default `https://quarto.org`, so links
-persist after the local server stops).
+Env overrides for `run.sh`: `SITE PAGES OUT PORT CDP CHROME QUARTO_CHROMIUM REPORT_BASE`
+and `UPDATE_BASELINE` (set to re-capture the baseline — see above). `REPORT_BASE` sets
+the report's page links (default `https://quarto.org`, so links persist after the local
+server stops).
 
 ## Known limits
 
