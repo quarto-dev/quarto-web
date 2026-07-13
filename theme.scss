@@ -2,6 +2,13 @@
 $link-color: #39729E;
 $text-muted: #6a737b;
 
+// Quarto's body-secondary mixin (blockquotes, captions, asides, header
+// section numbers) defaults to theme-dim($body-color, 25%) = #6d7a86, only
+// 4.39:1 on white — a WCAG AA 1.4.3 failure (axe color-contrast-7ed054).
+// Defining $body-secondary makes the mixin use it instead; $text-muted is
+// 4.83:1.
+$body-secondary: $text-muted;
+
 // Code-block background: the darkest tint of the site's cosmo blue-gray that
 // still keeps every a11y-light syntax color at WCAG AA (>=4.5:1). a11y-light's
 // palette is tuned for a near-white background, so this stays pale; one step
@@ -9,6 +16,20 @@ $text-muted: #6a737b;
 $code-block-bg: #eff2f5;
 
 /*-- scss:rules --*/
+
+// Quarto dims appendix content (footnotes, citation, reuse) to opacity .9,
+// which fades $link-color to an effective #4d80a8 = 4.22:1 on white — a WCAG
+// AA 1.4.3 failure (axe color-contrast-733538). Undo the fade; selectors
+// mirror Quarto's so this wins by cascade order in the light theme, while
+// the dark stylesheet (loaded after this one) re-asserts Quarto's .9 —
+// the dark link color passes even faded. Remove if quarto-cli fixes
+// this upstream.
+#quarto-appendix.default section {
+  *[role="doc-endnotes"],
+  > *:not(a) {
+    opacity: 1;
+  }
+}
 
 .layout-example {
   background: $gray-500;
