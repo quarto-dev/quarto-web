@@ -17,9 +17,7 @@ Resolve to the **prerelease / new-stable** content, except where `main` is a str
 
 ## Freeze on a release merge
 
-The site is `freeze: true`, so `quarto render <file>` only *thaws* the existing freeze — it does not rewrite it.
-
-Markdown-engine pages (mermaid/`dot` diagrams, no `r`/`python`/`julia` cells — confirm with `quarto inspect <file>`) produce no computational output, so an `execute-results/html.json` under `_freeze/` for such a page is vestigial: delete it rather than regenerate it. The check-freeze hook's `git show HEAD:` fallback currently re-flags an intentional freeze deletion, so clearing it needs the hook fix or a confirmed `--no-verify`.
+A release merge can surface `_freeze/` conflicts. Resolve them per the `_freeze/` section of `.claude/rules/quarto-web-workflow.md` (always loaded) — most often it's a markdown-engine page carrying a vestigial freeze entry to delete.
 
 ## After merging
 
