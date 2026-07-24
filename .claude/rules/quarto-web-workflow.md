@@ -8,7 +8,7 @@
 
 Always PR to `main` first for shared content. Never PR directly to `prerelease` for changes that apply to both stable and prerelease.
 
-Release-time `prerelease` → `main` merge: use the `release-merge` skill.
+Release-time `prerelease` → `main` merge: use the `/release-merge` skill.
 
 ## `_freeze/` Updates
 
