@@ -16,7 +16,21 @@ Any source change to a `.qmd` that has a `_freeze/` entry — even non-executabl
 
 **Before committing:** `git diff HEAD -- _freeze/` — every edited frozen `.qmd` must have a corresponding `_freeze/` change. (Use `HEAD` to show both staged and unstaged changes.)
 
-**If the freeze-check hook blocks a commit or push:** run `quarto render <file.qmd>` then commit the updated `_freeze/` output alongside the source change.
+**If the freeze-check hook blocks a commit or push:** first check the page's engine with `quarto inspect <file.qmd>`.
+
+- **Computational engine (`knitr`/`jupyter`/`julia`):** the page has a real freeze. Because the site is `freeze: true`, a plain `quarto render <file.qmd>` only *thaws* the existing freeze — it does not rewrite it. Re-execute to regenerate the freeze (render with execution forced), then commit the updated `_freeze/` output alongside the source change.
+- **Markdown engine (mermaid/`dot` diagrams, no `r`/`python`/`julia` cells):** the page produces no computational output, so an `execute-results/html.json` under `_freeze/` for it is **vestigial** — delete it rather than regenerate it. The check-freeze hook's `git show HEAD:` fallback currently re-flags an intentional freeze deletion, so clearing it needs the hook fix or a confirmed `--no-verify`.
+
+## Release: merging `prerelease` → `main`
+
+At release time the `prerelease` branch is merged into `main` to publish the new stable docs. The full release steps live in quarto-cli `dev-docs/checklist-make-a-new-quarto-release.md`; this covers the quarto-web mechanics.
+
+Two ways to do the merge:
+
+- **Direct merge + push to `main`** (the checklist default). A direct push does not trigger `port-to-prerelease.yml`, so no backport PR is created.
+- **Via a PR to `main`** — lets CI (`build-deploy-preview`) verify the site builds before it lands. Label the PR `no-sync-prerelease` so the backport action does not try to cherry-pick the whole prerelease history back onto `prerelease` (it would fail with a noisy comment). Merge with a **merge commit, not squash**, to preserve the topology so the branches don't re-diverge.
+
+Resolve conflicts to the **prerelease / new-stable** content, except where `main` is a strict superset (e.g. a direct-push edit the prerelease copy never received). Expect version-string and `quarto check` sample-output conflicts (resolve to the new version) and possible freeze conflicts (see `_freeze/` above). After merging, sync `main` back into `prerelease` per the checklist.
 
 ## Avoid duplicating doc content
 
