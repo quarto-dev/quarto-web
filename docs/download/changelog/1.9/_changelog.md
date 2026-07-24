@@ -192,11 +192,11 @@ All changes included in 1.9:
 
 ### `use brand`
 
-- ([#13828](https://github.com/quarto-dev/quarto-cli/pull/13828)): New `quarto use brand` command copies and synchronizes the `_brand/` directory from a repo, directory, or ZIP file. See [the prerelease documentation](https://prerelease.quarto.org/docs/authoring/brand.html#quarto-use-brand) for details.
+- ([#13828](https://github.com/quarto-dev/quarto-cli/pull/13828)): New `quarto use brand` command copies and synchronizes the `_brand/` directory from a repo, directory, or ZIP file. See [the prerelease documentation](https://quarto.org/docs/authoring/brand.html#quarto-use-brand) for details.
 
 ### `call build-ts-extension`
 
-- (): New `quarto call build-ts-extension` command builds a TypeScript extension, such as an engine extension, and places the artifacts in the `_extensions` directory. See the [engine extension pre-release documentation](https://prerelease.quarto.org/docs/extensions/engine.html) for details.
+- New `quarto call build-ts-extension` command builds a TypeScript extension, such as an engine extension, and places the artifacts in the `_extensions` directory. See the [engine extension pre-release documentation](https://quarto.org/docs/extensions/engine.html) for details.
 
 ### `install`
 
@@ -212,7 +212,7 @@ All changes included in 1.9:
 
 - Metadata and brand extensions now work without a `_quarto.yml` project. (Engine extensions do too.) A temporary default project is created in memory.
 
-- New **Engine Extensions**, to allow other execution engines than knitr, jupyter, julia. Julia is now a bundled extension. See [the prerelease notes](https://prerelease.quarto.org/docs/prerelease/1.9/) and [engine extension documentation](https://prerelease.quarto.org/docs/extensions/engine.html).
+- New **Engine Extensions**, to allow other execution engines than knitr, jupyter, julia. Julia is now a bundled extension. See [the prerelease notes](https://quarto.org/docs/prerelease/1.9/) and [engine extension documentation](https://quarto.org/docs/extensions/engine.html).
 
 ## Engines
 
