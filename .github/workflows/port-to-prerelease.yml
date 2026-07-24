@@ -14,12 +14,15 @@ jobs:
   sync-to-prerelease:
     name: Backport pull request
     runs-on: ubuntu-latest
-    # Don't run on closed unmerged pull requests and only PRs to main
-    # or on comment made by Github Action Bot
+    # Don't run on closed unmerged pull requests and only PRs to main,
+    # skipping PRs labeled 'no-sync-prerelease' (e.g. release merges that
+    # would otherwise try to cherry-pick the whole prerelease history back).
+    # Also runs on a '/sync-prerelease' comment, ignoring the Github Action Bot.
     if: > 
       (
         github.event.pull_request.merged && 
-        github.event.pull_request.base.ref == 'main'
+        github.event.pull_request.base.ref == 'main' &&
+        !contains(github.event.pull_request.labels.*.name, 'no-sync-prerelease')
       ) || (
         github.event_name == 'issue_comment' &&
         github.event.issue.pull_request &&
