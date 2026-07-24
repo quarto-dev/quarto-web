@@ -17,7 +17,7 @@ Resolve to the **prerelease / new-stable** content, except where `main` is a str
 
 ## Freeze on a release merge
 
-A release merge can surface `_freeze/` conflicts. Resolve them per the `_freeze/` section of `.claude/rules/quarto-web-workflow.md` (always loaded) — most often it's a markdown-engine page carrying a vestigial freeze entry to delete.
+A release merge can surface `_freeze/` conflicts. Resolve them per the `_freeze/` section of `.claude/rules/quarto-web-workflow.md` — most often it's a markdown-engine page carrying a vestigial freeze entry to delete.
 
 ## After merging
 
