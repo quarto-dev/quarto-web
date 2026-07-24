@@ -167,3 +167,37 @@ You can create and use a custom translation for a new language not supported by 
 The `language` option can be specified at a project or document level. Additionally, if you include a `_language.yml` file in the root of your project alongside your `_quarto.yml` config file it will be automatically used.
 
 If you create a language translation file please consider contributing it so others can benefit from it. See the documentation on [contributing language translations](https://github.com/quarto-dev/quarto-cli/tree/main/src/resources/language) for additional details.
+
+## Localized Strings in Templates
+
+{{< prerelease-callout 1.10 >}}
+
+When you author a custom [Pandoc template](/docs/journals/templates.qmd) or a [template partial](/docs/journals/templates.qmd#template-partials), Quarto exposes its resolved localized strings to Pandoc template variables under a reserved `quarto.language` namespace.
+
+Read any localized string with dotted-form template variables:
+
+``` default
+$quarto.language.crossref-fig-title$
+$quarto.language.toc-title-document$
+$quarto.language.section-title-abstract$
+```
+
+Values resolve through the full localization chain described above: Quarto's bundled `_language.yml`, then the per-locale file matching `lang:`, then any `language:` overrides set on the document or project. For example, `$quarto.language.crossref-ch-prefix$` resolves to `Chapter` by default, to `Chapitre` with `lang: fr`, and to `チャプター` with `lang: ja`.
+
+A minimal custom template that uses a localized cross-reference prefix:
+
+``` {.default filename="my-template.tex"}
+\documentclass{article}
+\begin{document}
+\section*{$quarto.language.crossref-ch-prefix$~1}
+$body$
+\end{document}
+```
+
+The keys available under `quarto.language` are the same keys you can override via the top-level `language:` YAML option, listed in [`_language.yml`](https://github.com/quarto-dev/quarto-cli/blob/main/src/resources/language/_language.yml).
+
+::: callout-note
+## Internal namespace
+
+`quarto.*` is reserved as an internal, Quarto-owned namespace inside Pandoc template variables. The user-facing override path for localized strings remains the top-level `language:` YAML key documented above — the schema does not surface `variables.quarto.*` as a user option. If a document explicitly sets `variables.quarto.language.<key>` as an escape hatch, that value wins over Quarto's resolved localization.
+:::
