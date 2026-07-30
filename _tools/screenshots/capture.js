@@ -83,8 +83,9 @@ function matchName(name, pattern) {
 }
 
 const screenshots = manifest.screenshots.filter(s => matchName(s.name, namePattern));
+const manualMatches = (manifest.manual ?? []).filter(s => matchName(s.name, namePattern));
 
-if (screenshots.length === 0) {
+if (screenshots.length === 0 && manualMatches.length === 0) {
   console.error(`No screenshots match pattern: ${namePattern}`);
   process.exit(1);
 }
@@ -98,8 +99,18 @@ if (listOnly) {
       console.log(`${s.name} (dark) → ${s.output.slice(0, ext)}-dark${s.output.slice(ext)}`);
     }
   }
+  for (const m of manualMatches) {
+    console.log(`${m.name} (manual: node ${m.script}) → ${m.output}`);
+  }
   process.exit(0);
 }
+
+// Manual entries can't be captured by this script — point at theirs.
+for (const m of manualMatches) {
+  console.log(`${m.name}: manual capture — ${m.reason}`);
+  console.log(`  Run: node ${m.script} (see the script header for prerequisites)`);
+}
+if (screenshots.length === 0) process.exit(0);
 
 // Group by source project (avoid re-rendering the same project)
 function groupBySource(shots) {
