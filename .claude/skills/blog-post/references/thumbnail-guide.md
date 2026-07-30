@@ -1,6 +1,7 @@
 # Thumbnail Guide
 
-Design conventions for blog post listing card images, derived from 40 existing posts.
+Design conventions for blog post thumbnails — used as both the post hero and
+the listing card image — derived from 40+ existing posts.
 
 ## Choosing your path
 
@@ -16,19 +17,21 @@ Two production paths exist for thumbnails. Pick before you start designing.
 > from 1.4 through current. Switching to Typst for a release is a stylistic
 > choice — confirm with the team before deviating. New release posts that match
 > the template should reuse the existing HTML+SVG flow so all release thumbnails
-> stay visually consistent.
+> stay visually consistent — rebuilt at 1920x1080, since pre-move release
+> thumbnails were 1200x630.
 
 For Typst, see [`typst-thumbnail.md`](typst-thumbnail.md). The rest of this
 guide covers the HTML+SVG path.
 
 ## Dimensions and Format
 
-- **Size**: 1200x630 px (Open Graph / social card standard)
-- **Format**: PNG preferred (34 of 40 posts use PNG)
-- **HiDPI**: Some posts use 2400x1260 (2x) — same aspect ratio, sharper on retina
+- **Size**: 1920x1080 px (16:9) — the Posit Open Source blog standard; the
+  image serves as both the post hero and the listing card
+- **Format**: PNG or JPG (GIF is supported and will animate)
+- **HiDPI**: 3840x2160 (2x) — same aspect ratio, sharper on retina
 
-The 1200x630 ratio (~1.9:1) is the current standard for all post types from 2024 onward.
-Earlier posts used inconsistent sizes — don't follow those as examples.
+Posts published before the May 2026 blog move used 1200x630 (~1.9:1, the old
+quarto.org / Open Graph standard) — don't copy dimensions from those examples.
 
 ## Quarto Brand Colors
 
@@ -106,21 +109,21 @@ at the right dimensions.
 
 ### HTML/CSS + screenshot approach (recommended)
 
-Create an HTML file sized to 1200x630 with the design, then screenshot it:
+Create an HTML file sized to 1920x1080 with the design, then screenshot it:
 
 1. **Source SVG icons** — good free sources:
    - [svgrepo.com](https://www.svgrepo.com) — many Public Domain (PD) icons, no attribution needed
    - [icon-icons.com](https://icon-icons.com) — CC BY 4.0 icons, attribution required
-2. **Build an HTML file** — set `body` to 1200x630, embed SVG icons inline, use
+2. **Build an HTML file** — set `body` to 1920x1080, embed SVG icons inline, use
    flexbox for layout. Choose background color based on post type (see above).
-3. **Serve and screenshot** — serve the HTML locally and screenshot at 1200x630.
+3. **Serve and screenshot** — serve the HTML locally and screenshot at 1920x1080.
    Use any local HTTP server + headless browser screenshot tool. Examples:
 
    With `agent-browser` + a local server:
    ```bash
    # Serve with any static server (python, npx serve, simple-http-server, etc.)
    python -m http.server 8181 -d path/to/post/dir &
-   agent-browser batch "set viewport 1200 630" \
+   agent-browser batch "set viewport 1920 1080" \
      "open http://127.0.0.1:8181/thumbnail.html" \
      "screenshot path/to/thumbnail.png"
    agent-browser close
@@ -129,7 +132,7 @@ Create an HTML file sized to 1200x630 with the design, then screenshot it:
    With `file://` protocol (no server needed, requires `--allow-file-access`):
    ```bash
    agent-browser close  # Ensure clean daemon start
-   agent-browser --allow-file-access batch "set viewport 1200 630" \
+   agent-browser --allow-file-access batch "set viewport 1920 1080" \
      "open file:///absolute/path/to/thumbnail.html" \
      "screenshot path/to/thumbnail.png"
    agent-browser close
@@ -141,11 +144,11 @@ Create an HTML file sized to 1200x630 with the design, then screenshot it:
    Keep the SVG for future reference.
 
 **Always use PNG as the thumbnail (`image: thumbnail.png`), never SVG.** Standalone
-SVGs don't center properly in Quarto listing cards or social card previews — the
+SVGs don't center properly in listing cards or social card previews — the
 HTML uses flexbox for centering which SVG can't replicate without duplicating all
 the layout logic. The SVG is only a source file for regenerating the PNG.
 
-The Quarto logo SVG is at the repo root: `quarto-icon.svg` (fill color `#74AADB`
+The Quarto logo SVG is at the quarto-web repo root: `quarto-icon.svg` (fill color `#74AADB`
 — recolor to `#5286AB` for thumbnails or `white` for dark backgrounds).
 
 ### Attribution

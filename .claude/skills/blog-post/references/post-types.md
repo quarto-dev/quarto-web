@@ -3,6 +3,9 @@
 Detailed structure guidance for each blog post type. Read the section that matches
 your post — you rarely need all four.
 
+All docs links in examples are absolute (`https://quarto.org/docs/...`) — the
+blog no longer lives on quarto.org, so site-relative paths break.
+
 ## Release Announcements
 
 The most structured type. Readers expect consistency across releases.
@@ -12,21 +15,21 @@ download and changelog links. No preamble.
 
 ```markdown
 Quarto 1.9 is out! You can get the current release from the
-[download page](/docs/download/index.qmd). Read the full
-[changelog](https://github.com/quarto-dev/quarto-cli/releases/tag/v1.9)
-for a complete list of changes.
+[download page](https://quarto.org/docs/download/index.html). You can find all
+the changes in this version in the
+[Release Notes](https://quarto.org/docs/download/changelog/1.9/).
 ```
 
 **Feature sections**: Each major feature gets a `##` heading named after the feature
 (not "What's New"). Order by importance. Each section:
 - Explain in 2-3 sentences
 - Code example or screenshot (or both)
-- Link to docs: "Learn more at [Feature Name](/docs/path)."
+- Link to docs: "Learn more at [Feature Name](https://quarto.org/docs/path.html)."
 
 **Other Highlights**: `## Other Highlights` bundles smaller improvements. Format:
 
 ```markdown
-- [Feature Name](/docs/path)---Short description of what it does.
+- [Feature Name](https://quarto.org/docs/path.html)---Short description of what it does.
 ```
 
 Note the em-dash (`---`) between link and description.
@@ -35,10 +38,14 @@ Note the em-dash (`---`) between link and description.
 Highlights if applicable.
 
 **Closing**: Always `## Acknowledgements`. Thank contributors. Recent releases use
-`{{< include _contribs.md >}}`. Release posts with emoji thumbnails include OpenMoji
-attribution at the very end.
+`{{< include _contribs.md >}}`, with `_contribs.md` committed in the post
+folder. Release posts with emoji thumbnails include OpenMoji attribution at
+the very end.
 
-**Categories**: Always `Quarto X.Y` + `Releases`.
+**Callouts**: release posts typically skip them.
+
+**Frontmatter**: `title` is `"Quarto X.Y"`; `source: quarto` always; `topics`
+from the fixed set (release posts have used `Publishing`).
 
 ---
 
@@ -47,10 +54,16 @@ attribution at the very end.
 Spotlight a specific feature, often published before the corresponding release. More
 varied structure than release posts.
 
-**Opening**: If unreleased, add prerelease callout at the very top:
+**Opening**: If the feature is unreleased, add a static callout at the very top
+(the quarto.org `{{< prerelease-callout >}}` shortcode doesn't exist in
+open-source-website), and remove it once the version ships:
 
 ```markdown
-{{< prerelease-callout 1.10 type="blog" >}}
+::: {.callout-note}
+This feature is available in the
+[pre-release version of Quarto](https://quarto.org/docs/download/prerelease.html)
+and will be part of the upcoming X.Y release.
+:::
 ```
 
 Then a direct statement of what the feature does. Get to the point — readers clicked
@@ -62,8 +75,8 @@ headings name the concept being explained.
 Problem/Solution framing works well for features that address a pain point: explain
 the problem first, then show how the feature solves it.
 
-**Closing**: Link to the documentation. "Learn more on the [Feature Name](/docs/path)
-page." No acknowledgements section.
+**Closing**: Link to the documentation. "Learn more on the
+[Feature Name](https://quarto.org/docs/path.html) page." No acknowledgements section.
 
 ---
 
