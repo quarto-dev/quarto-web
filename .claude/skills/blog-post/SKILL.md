@@ -25,8 +25,13 @@ mechanics.
 3. Browse `content/blog/ported/quarto/` for prior Quarto posts. Recent ones
    (e.g. `2026-03-24-1.9-release/`) show the current frontmatter and structure
    conventions.
-4. If the post covers a Quarto feature, read the relevant docs page in this
-   repo for accurate terminology, and link to it with an absolute URL.
+4. If the post covers a Quarto feature, read its docs from this repo — not
+   from quarto.org — so drafting works even when the docs aren't live yet.
+   Docs for an unreleased version live on the `prerelease` branch: check the
+   working tree first, then `git fetch origin prerelease` and
+   `git show origin/prerelease:docs/<path>`. quarto.org serves `main`, so
+   anything prerelease-only won't be live until the release-time merge — see
+   § Links for how to link to it anyway.
 
 ## File Structure
 
@@ -128,11 +133,20 @@ project:
 
 ### Links
 
-**Docs links must be absolute**: `https://quarto.org/docs/...`, using the live
-page URL as served (copy it from the browser), never a `.qmd` source path or a
-site-root-relative path — the post no longer lives on quarto.org. Every
-feature mentioned links to its docs page. Pattern: explain briefly, show
-example, then link.
+**Docs links must be absolute**: `https://quarto.org/docs/...`, never a
+`.qmd` source path or a site-root-relative path — the post no longer lives on
+quarto.org. Derive the URL from the repo path:
+`docs/<path>/<page>.qmd` → `https://quarto.org/docs/<path>/<page>.html`.
+Every feature mentioned links to its docs page. Pattern: explain briefly,
+show example, then link.
+
+**Verify every quarto.org link resolves** (e.g.
+`curl -s -o /dev/null -w '%{http_code}' <url>`). A page whose docs exist only
+on the `prerelease` branch will 404 until the release-time
+`prerelease` → `main` merge. Keep the quarto.org URL anyway — never
+substitute the prerelease site's domain — and **flag every such
+pending-merge link when handing off the draft** so it's re-checked before the
+post publishes.
 
 **Other blog posts**: link with the permalink pattern `/blog/YYYY-MM-DD_slug/`
 (see the authoring guide), never content-directory paths.
@@ -209,8 +223,9 @@ and will be part of the upcoming X.Y release.
    In a Claude session started in that repo, the `/check-post` and
    `/review-post` commands run validation and a content review interactively.
 10. **Review**: direct opener? code blocks fenced with language? all images
-    alt-texted? absolute docs links? closing matches type convention?
-    frontmatter complete (`people`, `topics`, `source: quarto`)?
+    alt-texted? absolute docs links, each verified live or flagged as
+    pending-merge? closing matches type convention? frontmatter complete
+    (`people`, `topics`, `source: quarto`)?
 
 ## Publishing
 
