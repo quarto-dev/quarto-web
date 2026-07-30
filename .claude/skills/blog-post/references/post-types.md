@@ -20,11 +20,24 @@ the changes in this version in the
 [Release Notes](https://quarto.org/docs/download/changelog/1.9/).
 ```
 
+The summary paragraph between the download link and the feature sections names
+each major feature as a short noun phrase ("more refined HTML accessibility
+checks") — one clause per feature, no capability details. The detail belongs in
+the feature sections.
+
 **Feature sections**: Each major feature gets a `##` heading named after the feature
 (not "What's New"). Order by importance. Each section:
 - Explain in 2-3 sentences
 - Code example or screenshot (or both)
 - Link to docs: "Learn more at [Feature Name](https://quarto.org/docs/path.html)."
+
+Keep feature prose lean — state what changed plainly:
+- Cut "why this matters" clauses and parenthetical examples (`e.g.`,
+  `such as`); the docs link carries that detail.
+- Scope claims precisely: if a behavior applies only under a particular
+  option, say so ("When using `output: document`, violations are…").
+- Cover the headline change only. Adjacent minor wins (a platform port, a
+  related small fix) can be dropped — the changelog has them.
 
 **Other Highlights**: `## Other Highlights` bundles smaller improvements. Format:
 
