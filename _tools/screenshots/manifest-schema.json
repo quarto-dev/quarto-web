@@ -16,6 +16,11 @@
       "type": "array",
       "description": "List of screenshot entries to capture.",
       "items": { "$ref": "#/$defs/screenshotEntry" }
+    },
+    "manual": {
+      "type": "array",
+      "description": "Screenshots capture.js cannot produce; each entry points to the script that does.",
+      "items": { "$ref": "#/$defs/manualEntry" }
     }
   },
   "$defs": {
@@ -223,6 +228,19 @@
           "items": { "$ref": "#/$defs/cleanupStep" }
         },
         "dark": { "$ref": "#/$defs/darkConfig" }
+      }
+    },
+    "manualEntry": {
+      "type": "object",
+      "description": "A screenshot produced by a dedicated script instead of capture.js.",
+      "additionalProperties": false,
+      "required": ["name", "output", "script", "reason"],
+      "properties": {
+        "name": { "type": "string", "description": "Unique identifier, used with --name flag." },
+        "output": { "type": "string", "description": "Output path relative to repo root." },
+        "script": { "type": "string", "description": "Capture script relative to _tools/screenshots/ (see its header for prerequisites)." },
+        "reason": { "type": "string", "description": "Why capture.js cannot produce this screenshot." },
+        "doc": { "$ref": "#/$defs/docConfig" }
       }
     },
     "screenshotEntry": {
