@@ -42,9 +42,12 @@ Copy the template and the logo SVG from the skill's `assets/` directory into
 your post directory. Both files must live alongside `thumbnail.typ` because the
 template uses a co-located filename for the logo.
 
+The post directory lives in the open-source-website clone (conventionally a
+sibling of this repo):
+
 ```powershell
 $skill = ".claude/skills/blog-post/assets"
-$post  = "docs/blog/posts/YYYY-MM-DD-slug"
+$post  = "../open-source-website/content/blog/my-post-slug"
 Copy-Item "$skill/thumbnail-diagram.typ" "$post/thumbnail.typ"   # or thumbnail-text.typ
 Copy-Item "$skill/quarto-logo-trademark-light.svg" $post         # white-fill, for #447099 / dark backgrounds
 ```
@@ -71,8 +74,9 @@ the thumbnail on a fresh checkout.
 
 Both bundled templates use:
 
-- Page size: `1200pt` × `630pt` (Open Graph / social card standard)
-- Margin: `50pt`
+- Page size: `1920pt` × `1080pt` (16:9, the Posit Open Source blog standard —
+  one page point per pixel at `--ppi 72`)
+- Margin: `80pt`
 - Background fill: `rgb("#447099")` — Quarto release-thumbnail blue
 
 Quarto brand palette (mirror of `thumbnail-guide.md`):
@@ -143,7 +147,7 @@ edge("doc", "header")
 edge("doc", "str")
 ```
 
-Position uses cetz coordinate units; `length: 45pt` on `cetz.canvas` scales
+Position uses cetz coordinate units; `length: 72pt` on `cetz.canvas` scales
 units to layout points. Adjust coordinates to spread nodes out.
 
 ### Snippet 2 — rectangle nodes with custom colors
@@ -161,7 +165,7 @@ let box(pos, label, name) = {
     stroke: white,
     name: name,
   )
-  content((x, y), text(fill: rgb("#1f3a52"), weight: "bold", size: 20pt)[#label])
+  content((x, y), text(fill: rgb("#1f3a52"), weight: "bold", size: 32pt)[#label])
 }
 
 box((0, 0), "input.qmd",   "src")
@@ -174,7 +178,7 @@ Replace `edge` with a variant that draws an arrowhead:
 
 ```typst
 let arrow(a, b) = {
-  line(a, b, mark: (end: ">"), stroke: (paint: white, thickness: 1.5pt))
+  line(a, b, mark: (end: ">"), stroke: (paint: white, thickness: 2.5pt))
 }
 
 arrow("src", "out")
@@ -184,7 +188,7 @@ For a label on the edge, place a `content()` at the midpoint:
 
 ```typst
 content(((src.x + out.x) / 2, (src.y + out.y) / 2 + 0.4),
-        text(fill: white, size: 16pt)[render])
+        text(fill: white, size: 26pt)[render])
 ```
 
 For richer cetz patterns (anchors, transformations, plot integration) consult
@@ -195,12 +199,13 @@ the cetz manual at <https://typst.app/universe/package/cetz/>.
 Run from the post directory:
 
 ```powershell
-cd docs/blog/posts/YYYY-MM-DD-slug
+cd ../open-source-website/content/blog/my-post-slug
 quarto typst compile thumbnail.typ thumbnail.png -f png --ppi 144
 ```
 
-`--ppi 144` produces a 2400×1260 PNG (twice the 1200×630 base) — the HiDPI/2x
-retina convention noted in `thumbnail-guide.md`.
+`--ppi 144` produces a 3840×2160 PNG (twice the 1920×1080 base) — the HiDPI/2x
+retina convention noted in `thumbnail-guide.md`. Use `--ppi 72` for an exact
+1920×1080 output instead.
 
 ## Anti-patterns
 
