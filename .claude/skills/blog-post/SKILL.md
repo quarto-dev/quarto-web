@@ -75,6 +75,13 @@ path, see `references/typst-thumbnail.md`.
 
 **people**: full names, individuals only — never a team name.
 
+**tags**: freeform — this is where the old quarto.org `categories` vocabulary
+lives on (`Releases`, `Quarto X.Y`, `Features`, `Authoring`, `Learn`,
+`Workshop`, `Tip`, ...; the port moved each post's categories into its tags).
+Reuse tags already present in `content/blog/ported/quarto/` sources rather
+than coining synonyms, and skip a bare `Quarto` tag — `source` and `software`
+already cover it.
+
 Never add `ported_from` or `port_status` (migration metadata), and don't carry
 over the old quarto.org schema: no `categories`, no `subtitle`, no
 `_metadata.yml` inheritance.

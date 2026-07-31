@@ -58,7 +58,9 @@ the very end.
 **Callouts**: release posts typically skip them.
 
 **Frontmatter**: `title` is `"Quarto X.Y"`; `source: quarto` always; `topics`
-from the fixed set (release posts have used `Publishing`).
+from the fixed set (release posts have used `Publishing`); `tags` are
+`Quarto X.Y` and `Releases` — the old categories convention, carried by every
+ported release post.
 
 ---
 
