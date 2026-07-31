@@ -164,6 +164,32 @@ the Hugo pipeline.
 
 Both are processed by Quarto at render time and work in open-source-website.
 
+**Displaying literal shortcode syntax** (showing readers what to type) takes
+three ingredients — this is how every such example in the ported Quarto posts
+works (verified empirically):
+
+1. **Put the syntax in code** — a fenced block or inline code, never prose.
+   An escape in prose reaches Hugo as a live shortcode: a name Hugo knows
+   silently renders its output in place of your example; an unknown name
+   fails the entire site build.
+2. **Escape it so Quarto doesn't execute it**: triple braces
+   (`{{{< meta state >}}}`), or the `shortcodes="false"` attribute on a
+   fenced block (`{.markdown shortcodes="false"}`). Unescaped syntax in code
+   is swallowed at the Quarto stage, leaving empty code.
+3. **Opt into the site's escape filter** in the post frontmatter:
+
+   ```yaml
+   filters:
+     - escape-shortcodes
+   ```
+
+   The filter (`content/_extensions/escape-shortcodes`) rewrites `{{<` to
+   Hugo's comment escape in code contexts, so Hugo displays the syntax
+   instead of executing it. Ported Quarto posts get it automatically via
+   `content/blog/ported/quarto/_metadata.yml`; new posts must opt in.
+
+In prose, refer to shortcodes by name instead ("the `video` shortcode").
+
 **`{{< prerelease-callout >}}` does NOT exist there** — it's a quarto-web
 extension. For a post about an unreleased feature, write a static callout
 instead, and remove it once the version ships:
