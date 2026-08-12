@@ -5,13 +5,14 @@
   <li class="gal-card<%= item.slug ? ' cat-' + item.slug : '' %>" <%= metadataAttrs(item) %>>
     <% if (item.image) { %>
       <a href="<%- cardHref %>" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
-        <img class="thumb-img" src="<%- item.image %>" alt="<%= item.alt || (item.name + ' screenshot') %>"/>
+        <img class="thumb-img" src="<%- item.image %>" alt=""/>
       </a>
     <% } else { %>
       <div class="thumb" aria-hidden="true"><%= item.name || item.title %></div>
     <% } %>
     <div class="body">
-      <p class="job"><a class="listing-title" href="<%- cardHref %>" target="_blank" rel="noopener noreferrer"><%= item.title %></a></p>
+      <p class="job"><a class="listing-title" href="<%- cardHref %>" target="_blank" rel="noopener noreferrer" aria-label="<%= item.title %>, opens in new window"><%= item.title %></a></p>
+      <% if (item.alt) { %><span class="visually-hidden">Screenshot: <%= item.alt %></span><% } %>
       <p class="who"><span class="listing-name"><%= item.name %></span><% if (item.author) { %> by <span class="listing-author"><%= item.author %></span><% } %></p>
       <% if (item.categories && item.categories.length) { %>
       <div class="gal-cats listing-categories">
@@ -25,8 +26,8 @@
       <% } %>
       <% if (item.description) { %><p class="why listing-description"><%= item.description %></p><% } %>
       <div class="foot">
-        <% if (item.live) { %><a href="<%- item.live %>" target="_blank" rel="noopener noreferrer" aria-label="Live demo of <%= item.name || item.title %>">Live &#8599;</a><% } %>
-        <% if (item.code) { %><a href="<%- item.code %>" target="_blank" rel="noopener noreferrer" aria-label="Source for <%= item.name || item.title %>">&lt;/&gt; Source</a><% } %>
+        <% if (item.live) { %><a href="<%- item.live %>" target="_blank" rel="noopener noreferrer" aria-label="Live demo of <%= item.name || item.title %>, opens in new window">Live &#8599;</a><% } %>
+        <% if (item.code) { %><a href="<%- item.code %>" target="_blank" rel="noopener noreferrer" aria-label="Source for <%= item.name || item.title %>, opens in new window">&lt;/&gt; Source</a><% } %>
       </div>
     </div>
   </li>
