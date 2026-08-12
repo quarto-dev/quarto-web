@@ -6,7 +6,7 @@
       <span class="row">
         <span class="ic" aria-hidden="true"><% if (item.icon) { %><i class="bi bi-<%- item.icon %>"></i><% } %></span>
       </span>
-      <h2 class="no-anchor"><%= item.category %></h2>
+      <span class="gal-choice-title"><%= item.category %></span>
       <p><%= item.tagline %></p>
     </a>
   </li>

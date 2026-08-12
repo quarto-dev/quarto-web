@@ -32,14 +32,15 @@
     <% for (const item of featured) { %>
       <li class="gal-card">
         <% if (item.preview) { %>
-          <a href="<%- item.live || '#' %>" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" class="thumb-stack"><img class="thumb-img" src="<%- item.image %>" alt="<%= item.alt || (item.name + ' screenshot') %>"/><video class="thumb-img gal-preview" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"><source src="<%- item.preview %>.webm" type="video/webm"><source src="<%- item.preview %>.mp4" type="video/mp4"></video></a>
+          <a href="<%- item.live || '#' %>" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" class="thumb-stack"><img class="thumb-img" src="<%- item.image %>" alt=""/><video class="thumb-img gal-preview" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"><source src="<%- item.preview %>.webm" type="video/webm"><source src="<%- item.preview %>.mp4" type="video/mp4"></video></a>
         <% } else if (item.image) { %>
-          <a href="<%- item.live || '#' %>" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img class="thumb-img" src="<%- item.image %>" alt="<%= item.alt || (item.name + ' screenshot') %>"/></a>
+          <a href="<%- item.live || '#' %>" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true"><img class="thumb-img" src="<%- item.image %>" alt=""/></a>
         <% } else { %>
           <div class="thumb" aria-hidden="true"><%= item.name || item.title %></div>
         <% } %>
         <div class="body">
-          <p class="job"><a href="<%- item.live || '#' %>" target="_blank" rel="noopener noreferrer"><%= item.title %></a></p>
+          <p class="job"><a href="<%- item.live || '#' %>" target="_blank" rel="noopener noreferrer" aria-label="<%= item.title %>, opens in new window"><%= item.title %></a></p>
+          <% if (item.alt) { %><span class="visually-hidden">Screenshot: <%= item.alt %></span><% } %>
           <% if (item.author) { %><p class="who">by <%= item.author %></p><% } %>
           <% if ((item.categories && item.categories.length) || (item.features && item.features.length)) { %>
           <div class="feats">
@@ -49,8 +50,8 @@
           <% } %>
           <% if (item.description) { %><p class="why"><%= item.description %></p><% } %>
           <div class="foot">
-            <% if (item.live) { %><a href="<%- item.live %>" target="_blank" rel="noopener noreferrer" aria-label="Live demo of <%= item.name || item.title %>">Live &#8599;</a><% } %>
-            <% if (item.code) { %><a href="<%- item.code %>" target="_blank" rel="noopener noreferrer" aria-label="Source for <%= item.name || item.title %>">&lt;/&gt; Source</a><% } %>
+            <% if (item.live) { %><a href="<%- item.live %>" target="_blank" rel="noopener noreferrer" aria-label="Live demo of <%= item.name || item.title %>, opens in new window">Live &#8599;</a><% } %>
+            <% if (item.code) { %><a href="<%- item.code %>" target="_blank" rel="noopener noreferrer" aria-label="Source for <%= item.name || item.title %>, opens in new window">&lt;/&gt; Source</a><% } %>
           </div>
         </div>
       </li>
