@@ -437,6 +437,33 @@ Like utterances, you need to specify at least the Git repo you want to use for s
 
 Review the [Giscus documentation](https://giscus.app) for instructions on setting up Giscus in your repository. Additional options are [covered here](/docs/reference/projects/websites.qmd#giscus).
 
+{{< prerelease-callout 1.10 >}}
+
+You may also enable [Beblob](https://gitlab.com/antonbelev/beblob) for commenting using the `beblob` option. Unlike Utterances and Giscus, which are backed by GitHub, Beblob is backed by **GitLab**: it stores comments as issues in a GitLab project, and works with both gitlab.com and self-managed GitLab instances.
+
+First [register a GitLab OAuth application](https://docs.gitlab.com/integration/oauth_provider/) (on gitlab.com or your self-managed instance) with the `api` scope and a redirect URI pointing at your published site. Then provide at least the application's `client-id`, the matching `redirect-uri`, and the `project-name`:
+
+``` yaml
+comments:
+  beblob:
+    client-id: your-gitlab-oauth-app-id
+    redirect-uri: https://example.com/
+    project-name: my-project
+```
+
+`project-name` is the GitLab project's *name* as shown in GitLab (Beblob looks the project up by searching for this name), **not** its `group/project` path. For a self-managed GitLab instance, set `gitlab-url` to its base URL:
+
+``` yaml
+comments:
+  beblob:
+    client-id: your-gitlab-oauth-app-id
+    redirect-uri: https://example.com/
+    project-name: my-project
+    gitlab-url: https://gitlab.example.com
+```
+
+You can also control how pages map to issues with `issue-mapping-strategy` and the appearance with `theme`. These and other options are [covered here](/docs/reference/projects/websites.qmd#beblob).
+
 ### Disabling Comments
 
 If you have comments enabled for an entire website or book, you can selectively disable comments for a single page by specifying `comments: false`. For example:

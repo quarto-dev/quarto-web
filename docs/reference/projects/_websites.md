@@ -66,9 +66,9 @@ An announcement that appears at the top of the site. For example:
 ``` yaml
 ---
 {{< meta project-type >}}:
-  announcement: 
-    content: "**New** - this is an announcement" 
-    position: below-navbar 
+  announcement:
+    content: "**New** - this is an announcement"
+    position: below-navbar
 ---
 ```
 
@@ -84,7 +84,7 @@ An announcement that appears at the top of the site. For example:
 ```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   page-footer:
-    center: 
+    center:
       - text: "About"
         href: about.qmd
       - text: "License"
@@ -138,7 +138,7 @@ Social metadata is provided as a subkey of `{{< meta project-type >}}` options. 
 ```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
   open-graph: true
-  twitter-card: 
+  twitter-card:
     site: "@sitehandle"
 ```
 
@@ -148,7 +148,7 @@ Set Twitter options under the `twitter-card` key:
 
 ```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
-  twitter-card: 
+  twitter-card:
     site: "@sitehandle"
 ```
 
@@ -162,7 +162,7 @@ Set Open Graph options under the `open-graph` key:
 
 ```{.yaml filename="_quarto.yml"}
 {{< meta project-type >}}:
-  open-graph: 
+  open-graph:
     title: "Title for Open Graph"
 ```
 
@@ -171,7 +171,7 @@ Set Open Graph options under the `open-graph` key:
 
 ## Comments
 
-You can add commenting to your {{< meta project-type >}} using either [Hypothesis](https://web.hypothes.is/), [Utterances](https://utteranc.es/), or [Giscus](https://giscus.app/).
+You can add commenting to your {{< meta project-type >}} using [Hypothesis](https://web.hypothes.is/), [Utterances](https://utteranc.es/), [Giscus](https://giscus.app/), or [Beblob](https://gitlab.com/antonbelev/beblob).
 
 ### Hypothesis
 
@@ -179,7 +179,7 @@ Enable and configure Hypothesis commenting via `comments` key. For example:
 
 ```{.yaml filename="_quarto.yml"}
 website:
-  comments: 
+  comments:
     hypothesis:
       theme: clean
       openSidebar: false
@@ -196,7 +196,7 @@ Enable and configure Utterances commenting via the `comments` key. For example:
 
 ```{.yaml filename="_quarto.yml"}
 website:
-  comments: 
+  comments:
     utterances:
       repo: quarto-dev/quarto-web
 ```
@@ -218,6 +218,29 @@ website:
 ::: {#table-giscus}
 :::
 
+### Beblob
+
+{{< prerelease-callout 1.10 >}}
+
+Enable and configure [Beblob](https://gitlab.com/antonbelev/beblob) commenting via the `comments` key. Unlike Utterances and Giscus, which are backed by GitHub, Beblob is backed by GitLab: it stores comments as issues in a GitLab project (gitlab.com or a self-managed instance). For example:
+
+```{.yaml filename="_quarto.yml"}
+website:
+  comments:
+    beblob:
+      client-id: your-gitlab-oauth-app-id
+      redirect-uri: https://example.com/
+      project-name: my-project
+      gitlab-url: https://gitlab.example.com
+```
+
+Beblob requires a [GitLab OAuth application](https://docs.gitlab.com/integration/oauth_provider/) with the `api` scope; `client-id` and `redirect-uri` must match its configuration. `project-name` is the project's *name* (as shown in GitLab), not the `group/project` path — Beblob resolves it by searching GitLab, so the authenticating user must be able to see the project.
+
+Support for self-managed GitLab instances (the `gitlab-url` option) requires Beblob 2.0 or later, which Quarto loads by default. If you pin an older release with `version`, `gitlab-url` is ignored and comments fall back to gitlab.com.
+
+::: {#table-beblob}
+:::
+
 ## Listings
 
 [Listings](/docs/websites/website-listings.qmd) enable you to automatically generate the contents of a page (or region of a page) from a list of Quarto documents or other custom data. You can enable listings on a page using the `listing` option in the document front matter. For example, setting `listing: default` will generate a listing of all documents in the directory (with the exception of the current document):
@@ -234,7 +257,7 @@ To customize the listing, specify additional options under the `listing` key:
 ``` yaml
 ---
 title: "Listing Example"
-listing: 
+listing:
   contents: posts
   type: grid
   grid-columns: 2
@@ -263,7 +286,7 @@ listing:
 
 ## About
 
-Layout a simple about page for an individual or organization. 
+Layout a simple about page for an individual or organization.
 Specify about page options under the `about` key in the document front matter:
 
 ```yaml
@@ -279,7 +302,7 @@ about:
 ---
 ```
 
-For more, see the [About Pages](/docs/websites/website-about.qmd) documentation. 
+For more, see the [About Pages](/docs/websites/website-about.qmd) documentation.
 
 ::: {#table-about}
 :::
