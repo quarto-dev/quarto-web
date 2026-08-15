@@ -147,6 +147,33 @@ website:
 
 Files listed in `metadata-files` are merged with the parent file in the same fashion that project, directory, and document options are merged. This means that included files can both provide new options as well as combine with existing options.
 
+#### Generated Metadata
+
+{{< prerelease-callout 1.11 >}}
+
+Instead of naming a static file, a `metadata-files` entry can run a command using the `!exec` YAML tag. Quarto executes the command and parses its standard output as YAML, merging the result into the metadata exactly like a regular metadata file:
+
+``` {.yaml filename="_quarto.yml"}
+metadata-files:
+  - _website.yml
+  - !exec ./gen-chapters.py
+```
+
+The command can be a [TypeScript, R, Python, or Lua script](scripts.qmd#periodic-scripts) (run with the matching interpreter) or any other executable. For example, `gen-chapters.py` might discover chapter files and print them as YAML:
+
+``` {.python filename="gen-chapters.py"}
+import glob
+
+print("book:")
+print("  chapters:")
+for chapter in sorted(glob.glob("chapters/*.qmd")):
+    print(f"    - {chapter}")
+```
+
+::: callout-note
+The command's output is validated the same way a metadata file's contents are, so it must produce YAML that's valid for wherever the entry is included (e.g. project or document metadata).
+:::
+
 ### Local Config
 
 Sometimes its useful to define local changes to project configuration that are not checked in to version control. You can do this by creating a `_quarto.yml.local` config file. For example, here we specify that we want to use the execution cache when running locally:
