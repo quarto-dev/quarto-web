@@ -1,4 +1,4 @@
-Installs a global dependency (TinyTeX, Chromium (deprecated), Chrome Headless Shell, VeraPDF).
+Installs a global dependency (TinyTex or Chromium).
 
 ``` {.bash}
 quarto install [target...]
@@ -93,10 +93,10 @@ quarto install [target...]
 quarto install tinytex
 ```
 
-### Install Chrome Headless Shell
+### Install Chromium
 
 ``` {.bash filename='Terminal'}
-quarto install chrome-headless-shell
+quarto install chromium
 ```
 
 ### Choose tool to install
