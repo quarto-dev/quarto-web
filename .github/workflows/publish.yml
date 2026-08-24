@@ -15,6 +15,10 @@ on:
         description: 'Whether to deploy prerelease or release site'
         type: boolean
         default: false
+    secrets:
+      NETLIFY_AUTH_TOKEN:
+        required: true
+        description: 'Netlify token used to deploy both the production and prerelease sites'
 
 name: Quarto Publish
 
@@ -31,6 +35,7 @@ jobs:
         with:
           # if called from workflow_call event, checkout the ref otherwise use default
           ref: ${{ inputs.ref || '' }}
+          persist-credentials: false # deploys with NETLIFY_AUTH_TOKEN, never pushes
 
       - name: Get latest pre-release from github
         id: github-release
