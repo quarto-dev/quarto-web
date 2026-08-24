@@ -30,12 +30,12 @@ jobs:
         startsWith(github.event.comment.body, '/sync-prerelease')
       )
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Create backport pull requests
         id: synced-pr
-        # https://github.com/korthout/backport-action/releases/tag/v4.2.0
-        uses: korthout/backport-action@4aaf0e03a94ff0a619c9a511b61aeb42adea5b02
+        # https://github.com/korthout/backport-action/releases/tag/v4.6.0
+        uses: korthout/backport-action@2e830a1d0b8269505846ddd407a70876913ad1f8 # v4.6.0
         with:
           cherry_picking: auto
           branch_name: sync-${pull_number}-to-${target_branch}
@@ -55,7 +55,7 @@ jobs:
 
       - name: Trigger deploy using a comment
         if: steps.synced-pr.outputs.was_successful == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           # special fine-grained token for issue comment trigger
           github-token: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
