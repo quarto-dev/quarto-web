@@ -4,7 +4,7 @@ It's possible to have a Quarto project in a large GitHub repository, where the Q
 
 ``` yaml
 - name: Render and Publish
-  uses: quarto-dev/quarto-actions/publish@v2
+  uses: quarto-dev/quarto-actions/publish@{{< var github-actions.quarto-publish >}}
   with:
     target: {{< meta provider.id >}}
     path: subdirectory-to-use
@@ -14,7 +14,7 @@ By default, `quarto publish` will re-render your project before publishing it. H
 
 ``` yaml
 - name: Render and Publish
-  uses: quarto-dev/quarto-actions/publish@v2
+  uses: quarto-dev/quarto-actions/publish@{{< var github-actions.quarto-publish >}}
   with:
     target: {{< meta provider.id >}}
     render: false
