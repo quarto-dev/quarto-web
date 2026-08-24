@@ -20,6 +20,8 @@ jobs:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
     if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
     runs-on: ubuntu-latest
+    # Only writes a workflow annotation.
+    permissions: {}
     steps:
       - name: Error with message for manual deploy
         run: |
@@ -65,6 +67,12 @@ jobs:
       ) 
       
     runs-on: ubuntu-latest
+    # contents to check out the merge ref, statuses for the Netlify deploy
+    # status, pull-requests to post the preview comment.
+    permissions:
+      contents: read
+      statuses: write
+      pull-requests: write
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

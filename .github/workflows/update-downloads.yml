@@ -7,6 +7,9 @@ on:
 jobs:
   update-downloads:
     runs-on: ubuntu-latest
+    # Commits the regenerated download JSON to main and syncs it to prerelease.
+    permissions:
+      contents: write
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
       commit: ${{ steps.auto-commit.outputs.commit_hash }}
@@ -74,6 +77,11 @@ jobs:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/publish.yml
+    # A called workflow cannot exceed its caller's grant, so this mirrors the
+    # permissions publish.yml declares for itself.
+    permissions:
+      contents: read
+      statuses: write
     with:
       ref: ${{ needs.update-downloads.outputs.commit }}
       prerelease: false
@@ -87,6 +95,11 @@ jobs:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/publish.yml
+    # A called workflow cannot exceed its caller's grant, so this mirrors the
+    # permissions publish.yml declares for itself.
+    permissions:
+      contents: read
+      statuses: write
     with:
       ref: ${{ needs.update-downloads.outputs.commit_prerelease }}
       prerelease: true
@@ -99,6 +112,10 @@ jobs:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/update-prerelease-reference.yml
+    # Mirrors update-prerelease-reference.yml's own permissions.
+    permissions:
+      contents: write
+      pull-requests: write
     with:
       version: ${{ needs.update-downloads.outputs.prerelease_version }}
     secrets:
