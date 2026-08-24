@@ -34,10 +34,12 @@ jobs:
         id: commenter-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+          AUTHOR_ASSOCIATION: ${{ github.event.comment.author_association }}
         run: |
-          commenter_role=$(gh api repos/$GITHUB_REPOSITORY/collaborators/${{ github.event.comment.user.login }}/permission --jq '.permission')
+          commenter_role=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$COMMENTER/permission" --jq '.permission')
           echo "commenter_role=$commenter_role" >> "$GITHUB_OUTPUT"
-          echo "author_association=${{ github.event.comment.author_association }}" >> "$GITHUB_OUTPUT"
+          echo "author_association=$AUTHOR_ASSOCIATION" >> "$GITHUB_OUTPUT"
         shell: bash
 
   build-deploy-preview:
@@ -68,6 +70,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
+          persist-credentials: false # nothing here pushes
 
       # On issue_comment events (e.g. /deploy-preview), github.event.pull_request
       # is not populated so tj-actions/changed-files can't determine the base commit
@@ -77,9 +80,9 @@ jobs:
         id: pr-info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          pr_number=${{ github.event.issue.number }}
-          base_sha=$(gh -R $GITHUB_REPOSITORY pr view $pr_number --json baseRefOid --jq '.baseRefOid')
+          base_sha=$(gh -R "$GITHUB_REPOSITORY" pr view "$PR_NUMBER" --json baseRefOid --jq '.baseRefOid')
           echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -99,13 +102,16 @@ jobs:
         id: prerelease-docs-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          ISSUE_PR_URL: ${{ github.event.issue.pull_request.url }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          if [ "${{ github.event.pull_request.base.ref }}" == "prerelease" ]; then
+          if [ "$PR_BASE_REF" == "prerelease" ]; then
             echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
-          elif [ -n "${{ github.event.issue.pull_request.url }}" ]; then
-            # This will trigger when not pull request event, so a PR comment event. 
+          elif [ -n "$ISSUE_PR_URL" ]; then
+            # This will trigger when not pull request event, so a PR comment event.
             # we need to get the base info from PR number the comment is made in
-            base_ref=$(gh -R $GITHUB_REPOSITORY pr view ${{ github.event.issue.number }} --json baseRefName --jq '.baseRefName')
+            base_ref=$(gh -R "$GITHUB_REPOSITORY" pr view "$ISSUE_NUMBER" --json baseRefName --jq '.baseRefName')
             if [ "$base_ref" == "prerelease" ]; then
               echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
             else
@@ -164,10 +170,11 @@ jobs:
       
       - name: Map changed images to doc pages
         id: image-pages
+        env:
+          CHANGED: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           # Build JSON mapping from image output paths to doc pages using manifest
           MANIFEST="_tools/screenshots/manifest.json"
-          CHANGED='${{ steps.changed-files.outputs.all_changed_files }}'
           if [ -f "$MANIFEST" ]; then
             # Extract {output: doc.file} pairs, match against changed files
             IMAGE_PAGES=$(echo "$CHANGED" | jq -r --slurpfile manifest "$MANIFEST" '
