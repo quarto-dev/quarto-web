@@ -8,6 +8,8 @@ on:
 
 name: Deploy Preview
 
+permissions: {} # each job opts in below
+
 concurrency:
   # Use github.event.pull_request.number on pull requests, so it's unique per pull request
   # Use github.event.issue.number on issue comments, so it's unique per comment
@@ -20,26 +22,11 @@ jobs:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
     if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
     runs-on: ubuntu-latest
+    permissions: {} # only writes an annotation
     steps:
       - name: Error with message for manual deploy
         run: |
           echo "::error title=Manual action required for preview::PR from fork can't be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview manually."
-        shell: bash
-
-  role-of-commenter:
-    if: github.event.issue.pull_request
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if commenter is a member, owner or collaborator
-        id: commenter-check
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COMMENTER: ${{ github.event.comment.user.login }}
-          AUTHOR_ASSOCIATION: ${{ github.event.comment.author_association }}
-        run: |
-          commenter_role=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$COMMENTER/permission" --jq '.permission')
-          echo "commenter_role=$commenter_role" >> "$GITHUB_OUTPUT"
-          echo "author_association=$AUTHOR_ASSOCIATION" >> "$GITHUB_OUTPUT"
         shell: bash
 
   build-deploy-preview:
@@ -65,6 +52,10 @@ jobs:
       ) 
       
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write # for the Netlify deploy status
+      pull-requests: write # so it can post the preview comment
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
