@@ -31,6 +31,8 @@ jobs:
       )
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true # backport-action pushes with these and has no token of its own
 
       - name: Create backport pull requests
         id: synced-pr
@@ -56,6 +58,8 @@ jobs:
       - name: Trigger deploy using a comment
         if: steps.synced-pr.outputs.was_successful == 'true'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          CREATED_PULL_NUMBERS: ${{ steps.synced-pr.outputs.created_pull_numbers }}
         with:
           # special fine-grained token for issue comment trigger
           github-token: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
@@ -63,6 +67,6 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: "${{ steps.synced-pr.outputs.created_pull_numbers }}",
+              issue_number: process.env.CREATED_PULL_NUMBERS,
               body: "/deploy-preview",
             });

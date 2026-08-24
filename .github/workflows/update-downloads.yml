@@ -15,7 +15,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-#        with:
+        with:
+          persist-credentials: true # git-auto-commit-action and the push to prerelease use these
 #          token: ${{ secrets.COMMIT_PAT }}
 
       - name: Regenerate Download Json
@@ -48,10 +49,11 @@ jobs:
       - name: Sync generated downloads to prerelease branch
         id: sync-prerelease
         if: ${{ steps.auto-commit.outputs.changes_detected == 'true' }}
+        env:
+          MAIN_SHA: ${{ steps.auto-commit.outputs.commit_hash }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          MAIN_SHA=${{ steps.auto-commit.outputs.commit_hash }}
           git checkout prerelease
           # _redirects is authoritative on main (manual redirects reach prerelease
           # via the backport workflow), so overwrite the generated files outright
@@ -75,7 +77,8 @@ jobs:
     with:
       ref: ${{ needs.update-downloads.outputs.commit }}
       prerelease: false
-    secrets: inherit
+    secrets:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   # If a new commit has been made with updated downloads,
   # then publish the changes using the new commit as ref to checkout
@@ -87,7 +90,8 @@ jobs:
     with:
       ref: ${{ needs.update-downloads.outputs.commit_prerelease }}
       prerelease: true
-    secrets: inherit
+    secrets:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   # If a new commit has been made with updated downloads,
   # trigger the reference page update workflow
@@ -97,4 +101,5 @@ jobs:
     uses: ./.github/workflows/update-prerelease-reference.yml
     with:
       version: ${{ needs.update-downloads.outputs.prerelease_version }}
-    secrets: inherit
+    secrets:
+      ISSUE_COMMENT_TRIGGER_PAT: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
