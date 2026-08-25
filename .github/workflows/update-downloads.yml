@@ -7,6 +7,8 @@ on:
 jobs:
   update-downloads:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # commits the regenerated JSON and syncs it to prerelease
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
       commit: ${{ steps.auto-commit.outputs.commit_hash }}
@@ -14,8 +16,9 @@ jobs:
       prerelease_version: ${{ steps.get-versions.outputs.prerelease_version }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v6
-#        with:
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true # git-auto-commit-action and the push to prerelease use these
 #          token: ${{ secrets.COMMIT_PAT }}
 
       - name: Regenerate Download Json
@@ -38,7 +41,7 @@ jobs:
 
       - name: Commit Changes to main branch
         id: auto-commit
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
         with:
           repository: .
           commit_user_name: Github Action Runner
@@ -48,10 +51,11 @@ jobs:
       - name: Sync generated downloads to prerelease branch
         id: sync-prerelease
         if: ${{ steps.auto-commit.outputs.changes_detected == 'true' }}
+        env:
+          MAIN_SHA: ${{ steps.auto-commit.outputs.commit_hash }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          MAIN_SHA=${{ steps.auto-commit.outputs.commit_hash }}
           git checkout prerelease
           # _redirects is authoritative on main (manual redirects reach prerelease
           # via the backport workflow), so overwrite the generated files outright
@@ -72,10 +76,15 @@ jobs:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/publish.yml
+    # A called workflow cannot exceed its caller's grant.
+    permissions:
+      contents: read
+      statuses: write
     with:
       ref: ${{ needs.update-downloads.outputs.commit }}
       prerelease: false
-    secrets: inherit
+    secrets:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   # If a new commit has been made with updated downloads,
   # then publish the changes using the new commit as ref to checkout
@@ -84,10 +93,15 @@ jobs:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/publish.yml
+    # A called workflow cannot exceed its caller's grant.
+    permissions:
+      contents: read
+      statuses: write
     with:
       ref: ${{ needs.update-downloads.outputs.commit_prerelease }}
       prerelease: true
-    secrets: inherit
+    secrets:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   # If a new commit has been made with updated downloads,
   # trigger the reference page update workflow
@@ -95,6 +109,11 @@ jobs:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
     uses: ./.github/workflows/update-prerelease-reference.yml
+    # A called workflow cannot exceed its caller's grant.
+    permissions:
+      contents: write
+      pull-requests: write
     with:
       version: ${{ needs.update-downloads.outputs.prerelease_version }}
-    secrets: inherit
+    secrets:
+      ISSUE_COMMENT_TRIGGER_PAT: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}

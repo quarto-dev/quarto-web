@@ -15,8 +15,16 @@ on:
         description: 'Whether to deploy prerelease or release site'
         type: boolean
         default: false
+    secrets:
+      NETLIFY_AUTH_TOKEN:
+        required: true
+        description: 'Netlify token used to deploy both the production and prerelease sites'
 
 name: Quarto Publish
+
+permissions:
+  contents: read
+  statuses: write # for the Netlify deploy status
 
 concurrency:
   group: ${{ format('{0} - {1} - {2}', github.workflow, github.ref, inputs.prerelease && 'prerelease' || 'main') }}
@@ -27,10 +35,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # if called from workflow_call event, checkout the ref otherwise use default
           ref: ${{ inputs.ref || '' }}
+          persist-credentials: false # deploys with NETLIFY_AUTH_TOKEN, never pushes
 
       - name: Get latest pre-release from github
         id: github-release
@@ -97,7 +106,7 @@ jobs:
         #   (we need to protect also from workflow_dispatch inherited from workflow_call event - where inputs.prerelease is defined)
         if: ${{ inputs.prerelease || (format('{0}', inputs.prerelease) != 'false' && contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name) && github.ref == 'refs/heads/prerelease') }}
         id: netlify-deploy
-        uses: nwtgck/actions-netlify@v4
+        uses: nwtgck/actions-netlify@d22a32a27c918fe470bbc562e984f80ec48c2668 # v4.0.0
         env:
           NETLIFY_SITE_ID: 2a3da659-672b-4e5b-8785-e10ebf79a962
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

@@ -1,0 +1,35 @@
+name: Audit Workflows
+
+on:
+  pull_request:
+    paths: ['.github/**']
+  push:
+    branches: [main, prerelease]
+    paths: ['.github/**']
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Audit workflows with zizmor
+        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        with:
+          # Scoped to our own workflows: the repo root also holds the
+          # quarto-demo subtree, refreshed wholesale from upstream.
+          inputs: .github/
+          collect: all # the default mode skips dependabot.yml
+          advanced-security: false # annotations instead, so no SARIF upload
+          annotations: true

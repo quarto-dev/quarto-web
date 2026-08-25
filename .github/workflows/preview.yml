@@ -8,6 +8,8 @@ on:
 
 name: Deploy Preview
 
+permissions: {} # each job opts in below
+
 concurrency:
   # Use github.event.pull_request.number on pull requests, so it's unique per pull request
   # Use github.event.issue.number on issue comments, so it's unique per comment
@@ -20,24 +22,11 @@ jobs:
     # Be helpful with reviewer and remind them to trigger a deploy preview if the PR is from a fork.
     if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork == true }}
     runs-on: ubuntu-latest
+    permissions: {} # only writes an annotation
     steps:
       - name: Error with message for manual deploy
         run: |
           echo "::error title=Manual action required for preview::PR from fork can't be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview manually."
-        shell: bash
-
-  role-of-commenter:
-    if: github.event.issue.pull_request
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if commenter is a member, owner or collaborator
-        id: commenter-check
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          commenter_role=$(gh api repos/$GITHUB_REPOSITORY/collaborators/${{ github.event.comment.user.login }}/permission --jq '.permission')
-          echo "commenter_role=$commenter_role" >> "$GITHUB_OUTPUT"
-          echo "author_association=${{ github.event.comment.author_association }}" >> "$GITHUB_OUTPUT"
         shell: bash
 
   build-deploy-preview:
@@ -63,11 +52,16 @@ jobs:
       ) 
       
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write # for the Netlify deploy status
+      pull-requests: write # so it can post the preview comment
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
+          persist-credentials: false # nothing here pushes
 
       # On issue_comment events (e.g. /deploy-preview), github.event.pull_request
       # is not populated so tj-actions/changed-files can't determine the base commit
@@ -77,9 +71,9 @@ jobs:
         id: pr-info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
         run: |
-          pr_number=${{ github.event.issue.number }}
-          base_sha=$(gh -R $GITHUB_REPOSITORY pr view $pr_number --json baseRefOid --jq '.baseRefOid')
+          base_sha=$(gh -R "$GITHUB_REPOSITORY" pr view "$PR_NUMBER" --json baseRefOid --jq '.baseRefOid')
           echo "base_sha=$base_sha" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -99,13 +93,16 @@ jobs:
         id: prerelease-docs-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          ISSUE_PR_URL: ${{ github.event.issue.pull_request.url }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          if [ "${{ github.event.pull_request.base.ref }}" == "prerelease" ]; then
+          if [ "$PR_BASE_REF" == "prerelease" ]; then
             echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
-          elif [ -n "${{ github.event.issue.pull_request.url }}" ]; then
-            # This will trigger when not pull request event, so a PR comment event. 
+          elif [ -n "$ISSUE_PR_URL" ]; then
+            # This will trigger when not pull request event, so a PR comment event.
             # we need to get the base info from PR number the comment is made in
-            base_ref=$(gh -R $GITHUB_REPOSITORY pr view ${{ github.event.issue.number }} --json baseRefName --jq '.baseRefName')
+            base_ref=$(gh -R "$GITHUB_REPOSITORY" pr view "$ISSUE_NUMBER" --json baseRefName --jq '.baseRefName')
             if [ "$base_ref" == "prerelease" ]; then
               echo "is_prerelease_docs=true" >> "$GITHUB_OUTPUT"
             else
@@ -123,7 +120,7 @@ jobs:
 
       - name: Deploy Preview to Netlify as preview
         id: netlify-deploy
-        uses: nwtgck/actions-netlify@v4
+        uses: nwtgck/actions-netlify@d22a32a27c918fe470bbc562e984f80ec48c2668 # v4.0.0
         env:
           NETLIFY_SITE_ID: 2a3da659-672b-4e5b-8785-e10ebf79a962
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -143,7 +140,7 @@ jobs:
 
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323 # v47.0.5
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         with:
           base_sha: ${{ github.event.pull_request.base.sha || steps.pr-info.outputs.base_sha }}
           files: |
@@ -164,10 +161,11 @@ jobs:
       
       - name: Map changed images to doc pages
         id: image-pages
+        env:
+          CHANGED: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           # Build JSON mapping from image output paths to doc pages using manifest
           MANIFEST="_tools/screenshots/manifest.json"
-          CHANGED='${{ steps.changed-files.outputs.all_changed_files }}'
           if [ -f "$MANIFEST" ]; then
             # Extract {output: doc.file} pairs, match against changed files
             IMAGE_PAGES=$(echo "$CHANGED" | jq -r --slurpfile manifest "$MANIFEST" '
@@ -186,7 +184,7 @@ jobs:
 
       - name: Create custom PR comment
         if: github.event.pull_request || github.event.issue.pull_request
-        uses: actions/github-script@v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           DEPLOY_URL: ${{ steps.netlify-deploy.outputs.deploy-url }}
           CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
