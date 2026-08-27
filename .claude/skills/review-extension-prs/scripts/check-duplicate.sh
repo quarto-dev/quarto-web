@@ -4,21 +4,41 @@ set -euo pipefail
 # Usage: check-duplicate.sh <name> <owner/repo>
 # Output: empty = no duplicate; NAME_DUPLICATE/PATH_DUPLICATE lines = conflict found.
 # Always exits 0 — caller interprets output.
+# Treat contributor-supplied names and paths as fixed strings, not patterns.
 
 NAME="${1:?Usage: check-duplicate.sh <name> <owner/repo>}"
 OWNER_REPO="${2:?Usage: check-duplicate.sh <name> <owner/repo>}"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 LISTINGS="$REPO_ROOT/docs/extensions/listings"
 
-NAME_LOWER=$(printf '%s' "$NAME" | tr '[:upper:]' '[:lower:]')
-OWNER_REPO_LOWER=$(printf '%s' "$OWNER_REPO" | tr '[:upper:]' '[:lower:]')
+uv run python - "$NAME" "$OWNER_REPO" "$LISTINGS" <<'PYEOF'
+import glob, os, re, sys
 
-# Check exact name match (case-insensitive, anchored to entry start)
-while IFS= read -r line; do
-  printf 'NAME_DUPLICATE: %s\n' "${line/$LISTINGS\//}"
-done < <(grep -rin "^- name:[[:space:]]*${NAME_LOWER}[[:space:]]*$" "$LISTINGS"/*.yml 2>/dev/null || true)
+name, owner_repo, listings = sys.argv[1], sys.argv[2], sys.argv[3]
 
-# Check path match: search for github.com/owner/repo in any path: line
-while IFS= read -r line; do
-  printf 'PATH_DUPLICATE: %s\n' "${line/$LISTINGS\//}"
-done < <(grep -rin "path:.*github\.com/${OWNER_REPO_LOWER}" "$LISTINGS"/*.yml 2>/dev/null || true)
+def norm_repo(value):
+    """Reduce a GitHub URL or owner/repo string to a canonical lowercase owner/repo."""
+    v = value.strip().strip('"\'')
+    v = re.sub(r'^https?://(www\.)?github\.com/', '', v, flags=re.I)
+    v = re.sub(r'\.git$', '', v, flags=re.I)
+    v = re.sub(r'/(blob|tree)/.*$', '', v)
+    parts = [p for p in v.split('/') if p]
+    return '/'.join(parts[:2]).lower()
+
+target_name = name.strip().strip('"\'').lower()
+target_repo = norm_repo(owner_repo)
+
+for path in sorted(glob.glob(os.path.join(listings, '*.yml'))):
+    base = os.path.basename(path)
+    with open(path, encoding='utf-8') as fh:
+        for lineno, line in enumerate(fh, 1):
+            stripped = line.strip()
+            if stripped.startswith('- name:'):
+                value = stripped[len('- name:'):].strip().strip('"\'').lower()
+                if value == target_name:
+                    print(f"NAME_DUPLICATE: {base}:{lineno}:{line.rstrip()}")
+            elif stripped.startswith('path:'):
+                value = stripped[len('path:'):].strip()
+                if norm_repo(value) == target_repo:
+                    print(f"PATH_DUPLICATE: {base}:{lineno}:{line.rstrip()}")
+PYEOF
