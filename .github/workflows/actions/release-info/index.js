@@ -5,6 +5,7 @@ const hasha = require("hasha");
 const fs = require("fs");
 const path = require("path");
 const { mergeRedirects } = require("./merge-redirects");
+const { assertNotOlder } = require("./version-guard");
 
 async function run() {
   // Repo information
@@ -26,7 +27,14 @@ async function run() {
   const redirectTemplate = core.getInput("redirects-template");
   const preRedirectTemplate = core.getInput("pre-redirects-template")
 
-  // Function to process a release into a set of 
+  // The version currently committed to a generated JSON file. This is the
+  // baseline a newly resolved release is checked against. A missing or
+  // unparseable file throws, which is correct: both files are committed in
+  // this repo, so their absence means something is already wrong.
+  const committedVersion = (filePath) =>
+    JSON.parse(fs.readFileSync(filePath, "utf8")).version;
+
+  // Function to process a release into a set of
   // download urls / info and a list of redirects
   const processRelease = async (releaseRaw) => {
     const releaseInfo = {};
@@ -89,34 +97,36 @@ async function run() {
     }
   }
   
-  // Function to get latest prerelease
+  // Function to get latest prerelease.
+  //
+  // Paging is capped. Stable releases are interleaved singly among
+  // prereleases, so the newest prerelease is always near the top of the list.
+  // Without a cap, a repository with no prerelease at all - or an API
+  // returning empty pages - loops until the job times out.
+  const maxPrereleasePages = 4;
   const getPrerelease = async () => {
-    // List the releases
-    var pagenumber = 1;
-    var matchedRelease = undefined;
-    while(true) {
+    for (let pagenumber = 1; pagenumber <= maxPrereleasePages; pagenumber++) {
       console.log("page " + pagenumber + " of prereleases");
-      var releases = await octokit.rest.repos.listReleases({
+      const releases = await octokit.rest.repos.listReleases({
         owner,
         repo,
         per_page: 25,
         page: pagenumber
-      });  
+      });
+
+      if (releases.data.length === 0) {
+        break;
+      }
 
       for (const release of releases.data) {
         if (release.prerelease) {
-          matchedRelease = release;
-          break;
+          return release;
         }
       }
-
-      if (matchedRelease) {
-        break;
-      } else {
-        pagenumber = pagenumber + 1;
-      }
     }
-    return matchedRelease;    
+    throw new Error(
+      `No prerelease found in the first ${maxPrereleasePages} pages of releases for ${owner}/${repo}.`
+    );
   }
 
   const generateRedirects = (redirects, redirTemplate) => {
@@ -149,6 +159,11 @@ async function run() {
     owner,
     repo,
   });
+  assertNotOlder(
+    latestRelease.data.tag_name,
+    committedVersion(pathToWrite),
+    "Latest release"
+  );
   const releaseProcessed = await processRelease(latestRelease.data);
   const redirects = releaseProcessed.redirects;
   const releaseInfo = releaseProcessed.releaseInfo;
@@ -160,6 +175,11 @@ async function run() {
   // Process the latest pre-release
   console.log("Starting prelease");
   const prerelease = await getPrerelease();
+  assertNotOlder(
+    prerelease.tag_name,
+    committedVersion(prePathToWrite),
+    "Latest prerelease"
+  );
   const prereleaseProcessed = await processRelease(prerelease);
   const prereleaseInfo = prereleaseProcessed.releaseInfo;
   if (prereleaseInfo.assets === undefined || prereleaseInfo.assets.length === 0) {
