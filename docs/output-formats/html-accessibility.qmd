@@ -4,15 +4,13 @@ css:
   - autodark.css
 ---
 
-::: callout-note
-This feature was introduced in Quarto 1.8.
-:::
+{{< prerelease-callout 1.8 >}}
 
 Quarto includes integrated support for [`axe-core`](https://github.com/dequelabs/axe-core), a broadly-supported, open source, industry standard tool for accessibility checks in HTML documents.
 
-## Accessibility checks with `axe-core`
+## Interactive accessibility checks
 
-To enable the simplest form of accessibility checks in Quarto 1.8, add the `axe` YAML metadata configuration to HTML `format`s (`html`, `dashboard`, and `revealjs`):
+To enable the simplest form of accessibility checks, add the `axe` YAML metadata configuration to HTML `format`s (`html`, `dashboard`, and `revealjs`):
 
 ``` yaml
 format:
@@ -20,11 +18,53 @@ format:
     axe: true
 ```
 
-In this situation, if your webpage has accessibility violations that `axe-core` can catch, Quarto will produce console messages that are visible by opening your browser's development tools.
+Render and open the document in a browser. Accessibility violations will be visible as console messages in your browser's development tools. 
 
-### Customization
+For example, this document contains a color contrast violation:
 
-Quarto supports two additional output formats for the accessibility checks, available through the `output` option.
+::: light-content
+
+``` markdown
+---
+title: Testing Quarto's accessibility checker
+format:
+  html:
+    axe: true
+---
+
+This violates contrast rules: [insufficient contrast.]{style="color: #eee"}.
+```
+
+:::
+
+::: dark-content
+
+``` markdown
+---
+title: Testing Quarto's accessibility checker
+format:
+  html:
+    axe: true
+---
+
+This violates contrast rules: [insufficient contrast.]{style="color: #111"}.
+```
+
+:::
+
+Previewing the rendered page and opening the browser's developer tools shows the violation `axe-core` found:
+
+::: {.light-content}
+![The rendered webpage with the developer tools console open](images/axe-console.png){fig-alt="A rendered webpage with the browser developer tools open below it. The console shows messages from axe-core: a violation description reading 'Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds', followed by the selector and HTML of the offending element."}
+:::
+
+::: {.dark-content}
+![The rendered webpage with the developer tools console open](images/axe-console.png){.autodark fig-alt="A rendered webpage with the browser developer tools open below it. The console shows messages from axe-core: a violation description reading 'Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds', followed by the selector and HTML of the offending element."}
+:::
+
+### Output location
+
+Quarto supports three output formats for the accessibility checks, available through the `output` option.
 
 -   `document`: embedded reports
 
@@ -32,10 +72,10 @@ Quarto supports two additional output formats for the accessibility checks, avai
     format:
       html:
         axe:
-          output: document 
+          output: document
     ```
 
-    With this option, Quarto will generate a visible report of `axe-core` violations on the webpage itself. This is useful for visual inspection of a page. Note that with this setting, Quarto will always produce a report.
+    With this option, Quarto will generate a visible report of `axe-core` violations on the webpage itself. Each violation displays its WCAG conformance level (e.g., `WCAG 2.0 AA`), so best-practice findings are distinguishable from genuine WCAG failures. This is useful for visual inspection of a page. Note that with this setting, Quarto will always produce a report.
 
     If you wish to use this feature, we recommend adding it to a "debug" [project profile](/docs/projects/profiles.qmd) to reduce the chance you will accidentally publish a website to production with these reports.
 
@@ -63,55 +103,47 @@ Quarto supports two additional output formats for the accessibility checks, avai
 
     This option is equivalent to `axe: true`.
 
-## Example: insufficient contrast
-
-As a minimal example of how this works in Quarto, consider this simple document:
-
-::: light-content
-
-``` markdown
----
-title: Testing Quarto's accessibility checker
-format:
-  html: 
-    axe:
-      output: document
----
-
-This violates contrast rules: [insufficient contrast.]{style="color: #eee"}.
-```
-
-:::
-
-::: dark-content
-
-``` markdown
----
-title: Testing Quarto's accessibility checker
-format:
-  html: 
-    axe:
-      output: document
----
-
-This violates contrast rules: [insufficient contrast.]{style="color: #111"}.
-```
-
-::: 
-
-
-This is the produced result visible on the page:
+For the example above, `output: document` places the report on the page itself:
 
 ::: {.light-content}
-![The rendered webpage with an accessibility violation warning](images/axe-violation.png)
+![The rendered webpage with an accessibility violation warning](images/axe-violation.png){.border fig-alt="A rendered webpage with an overlay along the bottom reporting a color contrast violation found by axe-core, including its severity, WCAG conformance level, and the selector of the offending element."}
 :::
 
 ::: {.dark-content}
-![The rendered webpage with an accessibility violation warning](images/axe-violation.png){.autodark}
+![The rendered webpage with an accessibility violation warning](images/axe-violation.png){.border .autodark fig-alt="A rendered webpage with an overlay along the bottom reporting a color contrast violation found by axe-core, including its severity, WCAG conformance level, and the selector of the offending element."}
 :::
 
-## Planned work: automated checks before publishing
+### Checking against a WCAG conformance level
 
-Currently, this feature requires users to open the webpage in a [local preview](/docs/websites/index.html#website-preview), and it uses a CDN to load the `axe-core` library itself.
+{{< prerelease-callout 1.10 >}}
+
+By default, `axe-core` runs its full default rule set, which combines rules for several WCAG versions and levels with axe's own "best practice" rules. If you are working toward a specific WCAG conformance level, use the `standard` option to check only the rules for that level:
+
+``` yaml
+format:
+  html:
+    axe:
+      standard: wcag21aa
+```
+
+The available values name a WCAG version followed by a level: `wcag2a`, `wcag2aa`, `wcag2aaa`, `wcag21a`, `wcag21aa`, `wcag21aaa`, `wcag22a`, `wcag22aa`, and `wcag22aaa`. Each standard is cumulative — it includes the rules for the lower levels and earlier versions it builds on. For example, `standard: wcag21aa` checks the rules for WCAG 2.0 A, 2.0 AA, 2.1 A, and 2.1 AA.
+
+For the full list of rules, grouped by these same WCAG versions and levels, see `axe-core`'s [rule descriptions](https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md).
+
+When you specify `standard` Axe's best-practice rules are excluded. To check them alongside a standard, add `best-practice: true`:
+
+``` yaml
+format:
+  html:
+    axe:
+      standard: wcag21aa
+      best-practice: true
+```
+
+You can also exclude the best-practice rules without choosing a standard by setting `best-practice: false` on its own.
+
+## Site-wide accessibility checks
+
+The checks above are interactive: they require opening each page in a [local preview](/docs/websites/index.html#website-preview) and inspecting the results in the browser.
 
 In the future, we envision a mode where every page of a website can be checked at the time of `quarto render` or `quarto publish` in order to reduce the amount of required manual intervention.

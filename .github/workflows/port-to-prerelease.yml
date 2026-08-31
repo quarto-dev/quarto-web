@@ -14,12 +14,15 @@ jobs:
   sync-to-prerelease:
     name: Backport pull request
     runs-on: ubuntu-latest
-    # Don't run on closed unmerged pull requests and only PRs to main
-    # or on comment made by Github Action Bot
+    # Don't run on closed unmerged pull requests and only PRs to main,
+    # skipping PRs labeled 'no-sync-prerelease' (e.g. release merges that
+    # would otherwise try to cherry-pick the whole prerelease history back).
+    # Also runs on a '/sync-prerelease' comment, ignoring the Github Action Bot.
     if: > 
       (
         github.event.pull_request.merged && 
-        github.event.pull_request.base.ref == 'main'
+        github.event.pull_request.base.ref == 'main' &&
+        !contains(github.event.pull_request.labels.*.name, 'no-sync-prerelease')
       ) || (
         github.event_name == 'issue_comment' &&
         github.event.issue.pull_request &&
@@ -27,12 +30,14 @@ jobs:
         startsWith(github.event.comment.body, '/sync-prerelease')
       )
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true # backport-action pushes with these and has no token of its own
 
       - name: Create backport pull requests
         id: synced-pr
-        # https://github.com/korthout/backport-action/releases/tag/v4.2.0
-        uses: korthout/backport-action@4aaf0e03a94ff0a619c9a511b61aeb42adea5b02
+        # https://github.com/korthout/backport-action/releases/tag/v4.6.0
+        uses: korthout/backport-action@2e830a1d0b8269505846ddd407a70876913ad1f8 # v4.6.0
         with:
           cherry_picking: auto
           branch_name: sync-${pull_number}-to-${target_branch}
@@ -52,7 +57,9 @@ jobs:
 
       - name: Trigger deploy using a comment
         if: steps.synced-pr.outputs.was_successful == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          CREATED_PULL_NUMBERS: ${{ steps.synced-pr.outputs.created_pull_numbers }}
         with:
           # special fine-grained token for issue comment trigger
           github-token: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
@@ -60,6 +67,6 @@ jobs:
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: "${{ steps.synced-pr.outputs.created_pull_numbers }}",
+              issue_number: process.env.CREATED_PULL_NUMBERS,
               body: "/deploy-preview",
             });

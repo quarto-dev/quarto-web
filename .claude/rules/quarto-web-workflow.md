@@ -8,6 +8,8 @@
 
 Always PR to `main` first for shared content. Never PR directly to `prerelease` for changes that apply to both stable and prerelease.
 
+Release-time `prerelease` → `main` merge: use the `/release-merge` skill.
+
 ## `_freeze/` Updates
 
 Any source change to a `.qmd` that has a `_freeze/` entry — even non-executable content like text or includes — invalidates the freeze hash. A stale hash causes the deploy preview to show the old cached page.
@@ -16,7 +18,10 @@ Any source change to a `.qmd` that has a `_freeze/` entry — even non-executabl
 
 **Before committing:** `git diff HEAD -- _freeze/` — every edited frozen `.qmd` must have a corresponding `_freeze/` change. (Use `HEAD` to show both staged and unstaged changes.)
 
-**If the freeze-check hook blocks a commit or push:** run `quarto render <file.qmd>` then commit the updated `_freeze/` output alongside the source change.
+**If the freeze-check hook blocks a commit or push:** first check whether the page even executes code — `quarto inspect <file.qmd>` reports an `engines` array. `markdown` there means no code runs (so the page should carry no computational freeze); any other engine — `knitr`, `jupyter`, `julia`, or a custom Engine Extension — means it executes code.
+
+- **Computational engine (any non-`markdown` engine — e.g. `knitr`, `jupyter`, `julia`, an Engine Extension):** the page has a real freeze. Because the site is `freeze: true`, a plain `quarto render <file.qmd>` only *thaws* the existing freeze — it does not rewrite it. Re-execute to regenerate the freeze (render with execution forced), then commit the updated `_freeze/` output alongside the source change.
+- **Markdown engine (mermaid/`dot` diagrams, no `r`/`python`/`julia` cells):** the page produces no computational output, so an `execute-results/html.json` under `_freeze/` for it is **vestigial** — delete it rather than regenerate it. The check-freeze hook's `git show HEAD:` fallback currently re-flags an intentional freeze deletion, so clearing it needs the hook fix or a confirmed `--no-verify`.
 
 ## Avoid duplicating doc content
 

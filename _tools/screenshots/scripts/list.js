@@ -17,16 +17,18 @@ if (process.argv.includes('--name') && (!namePattern || namePattern.startsWith('
   process.exit(1);
 }
 
-const filtered = namePattern
-  ? manifest.screenshots.filter(s => {
-      if (namePattern.includes('*')) {
-        const escaped = namePattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-        const re = new RegExp('^' + escaped.replace(/\*/g, '.*') + '$');
-        return re.test(s.name);
-      }
-      return s.name === namePattern;
-    })
-  : manifest.screenshots;
+function matchName(name) {
+  if (!namePattern) return true;
+  if (namePattern.includes('*')) {
+    const escaped = namePattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('^' + escaped.replace(/\*/g, '.*') + '$');
+    return re.test(name);
+  }
+  return name === namePattern;
+}
+
+const filtered = manifest.screenshots.filter(s => matchName(s.name));
+const manual = (manifest.manual ?? []).filter(m => matchName(m.name));
 
 console.log(`### ${filtered.length} screenshot(s) in manifest\n`);
 for (const s of filtered) {
@@ -39,4 +41,14 @@ for (const s of filtered) {
   if (s.capture?.element) console.log(`  Element: \`${s.capture.element}\``);
   if (s.capture?.interaction?.length) console.log(`  Interactions: ${s.capture.interaction.length} step(s)`);
   console.log();
+}
+
+if (manual.length) {
+  console.log(`### ${manual.length} manual capture(s) — not produced by capture.js\n`);
+  for (const m of manual) {
+    console.log(`- **${m.name}** → \`${m.output}\``);
+    console.log(`  Script: \`node ${m.script}\` (see its header for prerequisites)`);
+    console.log(`  Why manual: ${m.reason}`);
+    console.log();
+  }
 }

@@ -32,6 +32,23 @@ Use `/screenshot` to walk through the process:
 5. Run `npm run capture` to produce the final image
 6. Verify output — iterate on manifest/example if needed
 
+## Manual Captures
+
+Some screenshots can't go through capture.js. They're registered in the
+manifest's `manual` array — name, output, the script that produces them, and
+why they're manual — so `npm run capture -- --list` and the listing tools show
+them, and `npm run capture -- --name <name>` points at the right script instead
+of failing.
+
+Current manual captures:
+
+- **axe-console** (`docs/output-formats/images/axe-console.png`) — the browser
+  DevTools console lives outside the page, so Playwright can't screenshot it.
+  `scripts/capture-axe-devtools.mjs` launches headed Chromium with DevTools
+  auto-opened (dock, panel, theme, and zoom preseeded via profile preferences)
+  and captures the OS window by window ID (macOS only). Prerequisites in the
+  script header.
+
 ## Tools
 
 | Tool | Role |
