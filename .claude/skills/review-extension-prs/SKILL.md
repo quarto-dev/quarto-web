@@ -4,7 +4,7 @@ description: Use when asked to review open pull requests that add Quarto extensi
   to the listing YAML files in docs/extensions/listings/. Triggers include "review
   extension PRs", "check extension submissions", "are there new listing PRs", or any
   request to triage or verify community extension submissions before merge.
-allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/*), Bash(gh *), Bash(grep *), Read
+allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/*), Bash(gh *), Bash(grep *), Read, WebFetch
 ---
 
 # Review Extension Listing PRs
