@@ -103,3 +103,37 @@ Every report from then on separates **new** findings from **baselined** ones. On
 Entries that a full-site scan no longer sees are reported as stale. Prune them by hand. A subset scan cannot tell a fixed finding from a page it did not scan.
 
 There is no `--update-baseline` flag, by design. Every entry in the baseline exists because a person wrote it and said why.
+
+## Exit Codes
+
+| Exit code | Meaning |
+|------|--------------------------------------------------------------------|
+| `0` | The scan is complete. There are no new findings at or above `--fail-on`, when you gave that flag. |
+| `1` | The scan is complete, and there are new findings at or above the `--fail-on` threshold. |
+| `2` | The scan is incomplete. A cell timed out or errored, no browser started, or there was nothing to scan. Code `2` takes precedence over code `1`, because an incomplete scan never reads as a pass. |
+| `3` | Usage error. The command got a flag value it cannot accept, such as `--fail-on serius`, or a filter that matches nothing, such as `--themes dark` on a site with no dark mode. A typo is not a result, so it gets its own code. |
+
+## Checking Accessibility in CI
+
+Without `--fail-on`, the scan reports findings and exits `0`. Add `--fail-on <impact>` to make new findings fail the job. A minimal gate for GitHub Actions:
+
+``` {.yaml filename=".github/workflows/accessibility.yml"}
+- uses: quarto-dev/quarto-actions/setup@v2
+- run: quarto install chrome-headless-shell --no-prompt
+- run: quarto render
+- run: quarto call axe _site --fail-on serious
+```
+
+`report.md` is GitHub-flavored markdown, so a workflow can post it straight into the pull request. No Quarto-side tooling is needed. Use a sticky comment, which updates in place on each push instead of adding one comment for each run:
+
+``` {.yaml filename=".github/workflows/accessibility.yml"}
+- if: always()
+  uses: marocchino/sticky-pull-request-comment@v2
+  with:
+    header: axe
+    path: _axe-checks/report.md
+```
+
+The `if: always()` condition keeps the comment current when `--fail-on` fails the job. The `header` key identifies the comment, so your other sticky comments stay untouched.
+
+GitHub caps a comment body at 65,536 characters. A whole-site report on a large site can exceed that cap. If it does, trim the report, or attach it as a workflow artifact instead.
