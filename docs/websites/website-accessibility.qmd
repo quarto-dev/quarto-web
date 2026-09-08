@@ -12,7 +12,7 @@ Tell us how it works for you in [Quarto discussions](https://github.com/quarto-d
 
 ## Overview
 
-`quarto call axe` scans a rendered Quarto site for accessibility violations with [`axe-core`](https://github.com/dequelabs/axe-core). It drives headless Chrome over every page of the site, at a desktop width and a mobile width, in each color mode the page ships.
+`quarto call axe` scans a rendered Quarto site for accessibility violations with [`axe-core`](https://github.com/dequelabs/axe-core). It drives headless Chrome over every page of the site, at a desktop and a mobile viewport, in each color mode the page supports.
 
 The command groups violations by root cause and compares them against a baseline that you commit. It then writes a report. You can read that report, post it into a pull request, or use it to fail a CI job.
 
@@ -22,7 +22,7 @@ Quarto gives you two ways to check accessibility, and they answer different ques
 
 The [`axe` format option](/docs/output-formats/html-accessibility.qmd) checks the page you are looking at, in your own browser, while you write it. Use it for fast feedback on one page.
 
-`quarto call axe` checks the whole site: every page, both widths, and light and dark mode. It runs after a render, or in CI. Use it when you want a site-wide inventory of problems, a gate that catches new problems, or output that an agent can work through.
+`quarto call axe` checks the whole site: every page, both viewports, and light and dark mode. It runs after a render, or in CI. Use it when you want a site-wide inventory of problems, a gate that catches new ones, or output that an agent can work through.
 
 ## Prerequisites
 
@@ -45,7 +45,7 @@ quarto call axe _site
 
 The scan prints the matrix it covers, then one line for each cell, then a summary of the findings.
 
-A cell is one page, at one width, in one color mode. A page that ships a light mode and a dark mode contributes two cells. A page with a single mode contributes one.
+A cell is one page, at one viewport, in one color mode. A page with a light mode and a dark mode contributes two cells. A page with a single mode contributes one.
 
 ## Scan Artifacts
 
@@ -56,9 +56,9 @@ The scan writes its artifacts to `_axe-checks/` at the project root. The project
 | `findings.json` | Every finding, machine-readable. |
 | `report.md` | The summary for people to read, in GitHub-flavored markdown. |
 | `README.md` | Generated documentation for the artifacts, including how to write a baseline. |
-| `cells/` | The raw `axe-core` output for each page, width, and mode. |
+| `cells/` | The raw `axe-core` output for each cell. |
 
-The `_axe-checks/` directory ignores itself. The scanner writes a `.gitignore` with `*` into it, because the directory is a disposable snapshot and not a thing to commit.
+The `_axe-checks/` directory ignores itself: the scanner writes a `.gitignore` with `*` into it. The directory is a disposable snapshot, and you never commit it.
 
 Read the generated `README.md` after a scan. It documents the shape of every entry in `findings.json`, and it always matches the build that wrote it.
 
@@ -89,14 +89,14 @@ One finding is one root cause, not one element. An image with no alt text in a s
 | `--pages <globs>` | all `*.html` | Comma-separated globs, relative to the site directory. |
 | `--exclude <globs>` | — | Globs to skip, applied after `--pages`. |
 | `--max-pages <n>` | ∞ | A cap on the number of pages. The pages are sorted first, so the cap is deterministic. Redirect stubs do not use up the cap. |
-| `--viewports <WxH,...>` | `1440x900,320x568` | The widths and heights to scan. |
+| `--viewports <WxH,...>` | `1440x900,320x568` | The viewport widths and heights to scan. |
 | `--themes <light,dark>` | `light,dark` | Which color modes to scan. This filters pages with two modes. A page with a single mode always scans once. |
 | `--timeout <ms>` | `30000` | The time budget for one cell. |
 | `--settle <ms>` | `50` | An extra delay after the page reports that it is ready. |
 | `--fail-on <impact>` | off | Exit 1 when there are new findings at or above `minor`, `moderate`, `serious`, or `critical`. |
 | `--report <path>` | `_axe-checks/report.md` | Write the report somewhere else, such as inside your site source. |
 
-The narrow default width is 320 CSS pixels. This is the width that WCAG's reflow criterion (SC 1.4.10) names, and it is equivalent to 400% zoom on a 1280 pixel window. Every rule therefore runs against the reflowed mobile layout of your site.
+The narrow default viewport is 320 CSS pixels wide. This is the width that WCAG's reflow criterion (SC 1.4.10) names, and it is equivalent to 400% zoom on a 1280 pixel window. Every rule therefore runs against the reflowed mobile layout of your site.
 
 If you scan a subset with `--pages`, `--exclude`, or `--max-pages`, the artifacts say so. Their counts describe the subset, not the site.
 
@@ -124,7 +124,7 @@ There is no `--update-baseline` flag, by design. Every entry in the baseline exi
 
 | Exit code | Meaning |
 |------|--------------------------------------------------------------------|
-| `0` | The scan is complete. There are no new findings at or above `--fail-on`, when you gave that flag. |
+| `0` | The scan is complete. There are no new findings at or above the `--fail-on` impact, if you gave that flag. |
 | `1` | The scan is complete, and there are new findings at or above the `--fail-on` threshold. |
 | `2` | The scan is incomplete. A cell timed out or errored, no browser started, or there was nothing to scan. Code `2` takes precedence over code `1`, because an incomplete scan never reads as a pass. |
 | `3` | Usage error. The command got a flag value it cannot accept, such as `--fail-on serius`, or a filter that matches nothing, such as `--themes dark` on a site with no dark mode. A typo is not a result, so it gets its own code. |
@@ -169,6 +169,6 @@ The script runs from the project directory after Quarto writes the outputs. The 
 
 Exit codes propagate. Without `--fail-on`, findings never fail the render. With `--fail-on`, a new finding at the threshold fails `quarto render` itself, and so does an incomplete scan. The error line from the scan appears in the render output.
 
-This adds the time of the scan to every full render.
-
 Only full renders scan. Quarto also runs post-render scripts for an incremental render and for a preview reload, and the scan skips both with a note and exit `0`. A part-rebuilt site would mix the output of this render with the output of the last one. To scan, run `quarto render` with no file argument.
+
+This adds the time of the scan to every full render.
