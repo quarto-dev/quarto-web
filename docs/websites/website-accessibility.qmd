@@ -65,3 +65,21 @@ Read the generated `README.md` after a scan. It documents the shape of every ent
 Each finding carries an id that is stable across runs, such as `image-alt-6e3b76`. The id works as a handle in a task list, or in an instruction to an agent that reads the artifacts for you.
 
 Fixes belong in your Quarto source: a `.qmd` file, `_quarto.yml`, `_brand.yml`, or a theme `.scss` file. Do not edit the rendered site directory, because the next render overwrites it.
+
+## Scan Options
+
+| Flag | Default | Description |
+|-------------|-------------|-------------------------------------------|
+| `--pages <globs>` | all `*.html` | Comma-separated globs, relative to the site directory. |
+| `--exclude <globs>` | — | Globs to skip, applied after `--pages`. |
+| `--max-pages <n>` | ∞ | A cap on the number of pages. The pages are sorted first, so the cap is deterministic. Redirect stubs do not use up the cap. |
+| `--viewports <WxH,...>` | `1440x900,320x568` | The widths and heights to scan. |
+| `--themes <light,dark>` | `light,dark` | Which color modes to scan. This filters pages with two modes. A page with a single mode always scans once. |
+| `--timeout <ms>` | `30000` | The time budget for one cell. |
+| `--settle <ms>` | `50` | An extra delay after the page reports that it is ready. |
+| `--fail-on <impact>` | off | Exit 1 when there are new findings at or above `minor`, `moderate`, `serious`, or `critical`. |
+| `--report <path>` | `_axe-checks/report.md` | Write the report somewhere else, such as inside your site source. |
+
+The narrow default width is 320 CSS pixels. This is the width that WCAG's reflow criterion (SC 1.4.10) names, and it is equivalent to 400% zoom on a 1280 pixel window. Every rule therefore runs against the reflowed mobile layout of your site.
+
+If you scan a subset with `--pages`, `--exclude`, or `--max-pages`, the artifacts say so. Their counts describe the subset, not the site.
