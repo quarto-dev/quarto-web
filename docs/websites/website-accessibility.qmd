@@ -83,3 +83,23 @@ Fixes belong in your Quarto source: a `.qmd` file, `_quarto.yml`, `_brand.yml`, 
 The narrow default width is 320 CSS pixels. This is the width that WCAG's reflow criterion (SC 1.4.10) names, and it is equivalent to 400% zoom on a 1280 pixel window. Every rule therefore runs against the reflowed mobile layout of your site.
 
 If you scan a subset with `--pages`, `--exclude`, or `--max-pages`, the artifacts say so. Their counts describe the subset, not the site.
+
+## Accepting Findings with a Baseline
+
+The first scan of a real site reports findings that you will not fix today. They include defects in an upstream library, best-practice items you defer, and false positives.
+
+The baseline is the committed record of those decisions. It lives in `_axe-baseline.json` at the project root, beside the `_axe-checks/` directory and never inside it.
+
+1.  Scan the site, then fix what you can from `report.md`.
+
+2.  For each finding that you accept instead, copy it out of `findings.json` into the `findings` array of the baseline. Trim it, then add a `note` that says why you accepted it.
+
+3.  Commit `_axe-baseline.json`.
+
+The generated `_axe-checks/README.md` documents the fields of a baseline entry, and how the `pages` field scopes one.
+
+Every report from then on separates **new** findings from **baselined** ones. Only new findings can fail CI. A baselined finding alerts again as new when its impact escalates, or when it appears on a page outside its scope.
+
+Entries that a full-site scan no longer sees are reported as stale. Prune them by hand. A subset scan cannot tell a fixed finding from a page it did not scan.
+
+There is no `--update-baseline` flag, by design. Every entry in the baseline exists because a person wrote it and said why.
