@@ -23,3 +23,45 @@ Quarto gives you two ways to check accessibility, and they answer different ques
 The [`axe` format option](/docs/output-formats/html-accessibility.qmd) checks the page you are looking at, in your own browser, while you write it. Use it for fast feedback on one page.
 
 `quarto call axe` checks the whole site: every page, both widths, and light and dark mode. It runs after a render, or in CI. Use it when you want a site-wide inventory of problems, a gate that catches new problems, or output that an agent can work through.
+
+## Prerequisites
+
+The scan needs a Chromium browser that Quarto can find. Install the browser that Quarto manages:
+
+``` {.bash filename="Terminal"}
+quarto install chrome-headless-shell
+```
+
+An installed system Chrome or Edge also works.
+
+## Your First Scan
+
+Render the site, then scan the output directory:
+
+``` {.bash filename="Terminal"}
+quarto render
+quarto call axe _site
+```
+
+The scan prints the matrix it covers, then one line for each cell, then a summary of the findings.
+
+A cell is one page, at one width, in one color mode. A page that ships a light mode and a dark mode contributes two cells. A page with a single mode contributes one.
+
+## Scan Artifacts
+
+The scan writes its artifacts to `_axe-checks/` at the project root. The project root is the directory of the nearest `_quarto.yml` at or above the site directory.
+
+| File | What it is |
+|--------------|-----------------------------------------------------------|
+| `findings.json` | Every finding, machine-readable. |
+| `report.md` | The summary for people to read, in GitHub-flavored markdown. |
+| `README.md` | Generated documentation for the artifacts, including how to write a baseline. |
+| `cells/` | The raw `axe-core` output for each page, width, and mode. |
+
+The `_axe-checks/` directory ignores itself. The scanner writes a `.gitignore` with `*` into it, because the directory is a disposable snapshot and not a thing to commit.
+
+Read the generated `README.md` after a scan. It documents the shape of every entry in `findings.json`, and it always matches the build that wrote it.
+
+Each finding carries an id that is stable across runs, such as `image-alt-6e3b76`. The id works as a handle in a task list, or in an instruction to an agent that reads the artifacts for you.
+
+Fixes belong in your Quarto source: a `.qmd` file, `_quarto.yml`, `_brand.yml`, or a theme `.scss` file. Do not edit the rendered site directory, because the next render overwrites it.
