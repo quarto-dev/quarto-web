@@ -1,0 +1,25 @@
+---
+title: "Website Accessibility Checks"
+---
+
+{{< prerelease-callout 1.11 >}}
+
+::: {.callout-warning title="Experimental command"}
+`quarto call axe` is experimental. The command is hidden, so it does not appear in `quarto call --help`, and it carries no stability promise. Flags, artifacts, and behavior can change between pre-release builds.
+
+Tell us how it works for you in [Quarto discussions](https://github.com/quarto-dev/quarto-cli/discussions).
+:::
+
+## Overview
+
+`quarto call axe` scans a rendered Quarto site for accessibility violations with [`axe-core`](https://github.com/dequelabs/axe-core). It drives headless Chrome over every page of the site, at a desktop width and a mobile width, in each color mode the page ships.
+
+The command groups violations by root cause and compares them against a baseline that you commit. It then writes a report. You can read that report, post it into a pull request, or use it to fail a CI job.
+
+## When to Use a Site Scan
+
+Quarto gives you two ways to check accessibility, and they answer different questions.
+
+The [`axe` format option](/docs/output-formats/html-accessibility.qmd) checks the page you are looking at, in your own browser, while you write it. Use it for fast feedback on one page.
+
+`quarto call axe` checks the whole site: every page, both widths, and light and dark mode. It runs after a render, or in CI. Use it when you want a site-wide inventory of problems, a gate that catches new problems, or output that an agent can work through.
