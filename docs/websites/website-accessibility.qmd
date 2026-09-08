@@ -137,3 +137,22 @@ Without `--fail-on`, the scan reports findings and exits `0`. Add `--fail-on <im
 The `if: always()` condition keeps the comment current when `--fail-on` fails the job. The `header` key identifies the comment, so your other sticky comments stay untouched.
 
 GitHub caps a comment body at 65,536 characters. A whole-site report on a large site can exceed that cap. If it does, trim the report, or attach it as a workflow artifact instead.
+
+## Scanning on Every Render
+
+The command also works as a project `post-render` script, so a full render scans itself:
+
+``` {.yaml filename="_quarto.yml"}
+project:
+  type: website
+  post-render:
+    - quarto call axe _site/
+```
+
+The script runs from the project directory after Quarto writes the outputs. The relative site directory and the project root therefore resolve as they do on the command line.
+
+Exit codes propagate. Without `--fail-on`, findings never fail the render. With `--fail-on`, a new finding at the threshold fails `quarto render` itself, and so does an incomplete scan. The error line from the scan appears in the render output.
+
+This adds the time of the scan to every full render.
+
+Only full renders scan. Quarto also runs post-render scripts for an incremental render and for a preview reload, and the scan skips both with a note and exit `0`. A part-rebuilt site would mix the output of this render with the output of the last one. To scan, run `quarto render` with no file argument.
