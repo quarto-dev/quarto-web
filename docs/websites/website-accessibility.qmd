@@ -66,6 +66,22 @@ Each finding carries an id that is stable across runs, such as `image-alt-6e3b76
 
 Fixes belong in your Quarto source: a `.qmd` file, `_quarto.yml`, `_brand.yml`, or a theme `.scss` file. Do not edit the rendered site directory, because the next render overwrites it.
 
+### Reading report.md
+
+The report is GitHub-flavored markdown. Read it where markdown already renders: the preview in your editor, GitHub, or the sticky pull request comment from [the CI recipe below](#checking-accessibility-in-ci). You do not need to render it.
+
+For a standalone HTML view, render the report:
+
+``` {.bash filename="Terminal"}
+quarto render _axe-checks/report.md
+```
+
+Then open `_axe-checks/report.html` in your browser. The output lands beside the report, inside the artifact directory that ignores itself.
+
+`quarto preview _axe-checks/report.md` does not work from inside a project. A directory with a `_` prefix is not a project input, so preview stops with `No output created by quarto render report.md`. Use render-then-open instead. You can also give `--report` a path inside your site source, so the report renders and previews as part of the site.
+
+One finding is one root cause, not one element. An image with no alt text in a shared include is one finding with a count of instances, not one finding for each page that uses the include. A finding on many pages usually comes from a shared source, such as a template, the theme, or the navigation that Quarto generates. One fix clears them all.
+
 ## Scan Options
 
 | Flag | Default | Description |
