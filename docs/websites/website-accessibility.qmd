@@ -176,8 +176,6 @@ Every report from then on separates **new** findings from **baselined** ones. On
 
 Entries that a full-site scan no longer sees are reported as stale. Prune them by hand. A subset scan cannot tell a fixed finding from a page it did not scan.
 
-There is no `--update-baseline` flag, by design. Every entry in the baseline exists because a person wrote it and said why.
-
 ## Exit Codes
 
 | Exit code | Meaning |
@@ -227,6 +225,4 @@ The script runs from the project directory after Quarto writes the outputs. The 
 
 Exit codes propagate. Without `--fail-on`, findings never fail the render. With `--fail-on`, a new finding at the threshold fails `quarto render` itself, and so does an incomplete scan. The error line from the scan appears in the render output.
 
-Only full renders scan. Quarto also runs post-render scripts for an incremental render and for a preview reload, and the scan skips both with a note and exit `0`. A part-rebuilt site would mix the output of this render with the output of the last one. To scan, run `quarto render` with no file argument.
-
-This adds the time of the scan to every full render.
+The scan will only run on full renders. On incremental renders or preview reloads, the scan is skipped with a note and exit `0`. To scan, run `quarto render` with no file argument.
