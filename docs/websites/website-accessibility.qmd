@@ -42,37 +42,36 @@ quarto render
 quarto call axe _site
 ```
 
-The examples on this page come from a two-page site. It has a navbar, a light theme and a dark theme, an image with no `alt` attribute, and one span of low-contrast text.
+The examples on this page come from a two-page site. It has a navbar, a light theme and a dark theme, an image with no `alt` attribute, and one span of low-contrast text. Quarto also writes an `index.html` that redirects to the first page. The scan sets redirect stubs aside as site furniture and records them, so the matrix covers two pages.
 
 The scan prints the matrix it covers, then one line for each cell, then a summary of the findings:
 
 ```
 $ quarto call axe _site
 axe: 2 pages (2 light+dark) × 2 viewports — 8 cells
-  gear.html 1440x900 light                                   1  empty-table-header
-  gear.html 1440x900 dark                                    1  empty-table-header
-  gear.html 320x568 light                                    2  aria-allowed-role,empty-table-header
-  gear.html 320x568 dark                                     2  aria-allowed-role,empty-table-header
-  index.html 1440x900 light                                  2  color-contrast,image-alt
-  index.html 1440x900 dark                                   1  image-alt
-  index.html 320x568 light                                   3  aria-allowed-role,color-contrast,image-alt
-  index.html 320x568 dark                                    2  aria-allowed-role,image-alt
+note: 1 redirect stub skipped (recorded in findings.json): index.html → notes.html
+  gear.html 1440x900 light                                   0  (none)
+  gear.html 1440x900 dark                                    0  (none)
+  gear.html 320x568 light                                    0  (none)
+  gear.html 320x568 dark                                     0  (none)
+  notes.html 1440x900 light                                  2  color-contrast,image-alt
+  notes.html 1440x900 dark                                   1  image-alt
+  notes.html 320x568 light                                   2  color-contrast,image-alt
+  notes.html 320x568 dark                                    1  image-alt
 
 8 cells: 8 ok
 axe-core 4.10.3 (quarto-cli's vendored build, injected at scan time)
 
-  ID                         IMPACT    STANDARD       N  PAGES  STATUS
-  image-alt-4468cc           critical  WCAG 2.0 A     1  1      new
-  color-contrast-78b899      serious   WCAG 2.0 AA    1  1      new
-  aria-allowed-role-6c6fc2   minor     Best Practice  2  2      new
-  empty-table-header-43b939  minor     Best Practice  1  1      new
+  ID                     IMPACT    STANDARD     N  PAGES  STATUS
+  image-alt-4468cc       critical  WCAG 2.0 A   1  1      new
+  color-contrast-78b899  serious   WCAG 2.0 AA  1  1      new
 
-  4 findings (4 new, 0 known)
+  2 findings (2 new, 0 known)
 ```
 
 A cell is one page, at one viewport, in one color mode. A page with a light mode and a dark mode contributes two cells for each viewport. A page with a single mode contributes one. Two pages with two modes, at two viewports, therefore give eight cells.
 
-The matrix matters because a violation can appear in one cell and not in another. In the output above, `color-contrast` appears only in the light cells. `aria-allowed-role` appears only at 320x568, where the navbar collapses to a menu button.
+The matrix matters because a violation can appear in one cell and not in another. In the output above, `image-alt` appears in all four cells of `notes.html`, but `color-contrast` appears only in the light cells. The dark theme gives that text enough contrast.
 
 ## Scan Artifacts
 
@@ -112,9 +111,9 @@ The report for the scan above opens with a summary table of the new findings:
 ``` {.markdown filename="_axe-checks/report.md"}
 # axe site audit
 
-2 pages · 8/8 cells ok · axe-core 4.10.3 · Quarto 1.11.0 · generated 2026-09-08T20:59:55.733Z
+2 pages · 8/8 cells ok · axe-core 4.10.3 · Quarto 1.11.4 · generated 2026-09-09T18:06:32.133Z
 
-**4 new findings**. A finding on many pages usually repeats from a shared source — fixing it once fixes them all. To accept a finding, see `README.md` in this directory.
+**2 new findings**. A finding on many pages usually repeats from a shared source — fixing it once fixes them all. To accept a finding, see `README.md` in this directory.
 
 ## New findings
 
@@ -122,8 +121,6 @@ The report for the scan above opens with a summary table of the new findings:
 |---|---|---|---:|---:|---|
 | [`image-alt-4468cc`](#image-alt-4468cc) | WCAG 2.0 A | critical | 1 | 1 | Element does not have an alt attribute |
 | [`color-contrast-78b899`](#color-contrast-78b899) | WCAG 2.0 AA | serious | 1 | 1 | #bbbbbb on #ffffff = 1.91 (needs 4.5:1) |
-| [`aria-allowed-role-6c6fc2`](#aria-allowed-role-6c6fc2) | Best Practice | minor | 2 | 2 | ARIA role menu is not allowed for given element |
-| [`empty-table-header-43b939`](#empty-table-header-43b939) | Best Practice | minor | 1 | 1 | Element does not have text that is visible to screen readers |
 ```
 
 Each id in the table links to an occurrence block further down the report. The block names the rule and the standard, and it lists the cells that the finding appeared in:
@@ -139,7 +136,7 @@ Reference: <https://dequeuniversity.com/rules/axe/4.10/color-contrast?applicatio
 
 | page | cells (width·mode) | selector | element |
 |---|---|---|---|
-| index.html | 1440x900·light, 320x568·light | `p:nth-child(4) > span` | `<span style="color: #bbb">tide table</span>` |
+| notes.html | 1440x900·light, 320x568·light | `p:nth-child(4) > span` | `<span style="color: #bbb">tide table</span>` |
 ```
 
 The `cells` column lists only the light cells, because the dark theme gives that text enough contrast. The `selector` and `element` columns are what you search for in your source.
@@ -152,9 +149,9 @@ One finding is one root cause, not one element. An image with no alt text in a s
 |-------------|-------------|-------------------------------------------|
 | `--pages <globs>` | all `*.html` | Comma-separated globs, relative to the site directory. |
 | `--exclude <globs>` | — | Globs to skip, applied after `--pages`. |
-| `--max-pages <n>` | ∞ | A cap on the number of pages. The pages are sorted first, so the cap is deterministic. Redirect stubs do not use up the cap. |
-| `--viewports <WxH,...>` | `1440x900,320x568` | The viewport widths and heights to scan. |
-| `--themes <light,dark>` | `light,dark` | Which color modes to scan. This filters pages with two modes. A page with a single mode always scans once. |
+| `--max-pages <count>` | ∞ | A cap on the number of pages. The pages are sorted first, so the cap is deterministic. Redirect stubs do not use up the cap. |
+| `--viewports <viewports>` | `1440x900,320x568` | Comma-separated `WxH` viewports to emulate. |
+| `--themes <themes>` | `light,dark` | Which color modes to scan. This filters pages with two modes. A page with a single mode always scans once. |
 | `--timeout <ms>` | `30000` | The time budget for one cell. |
 | `--settle <ms>` | `50` | An extra delay after the page reports that it is ready. |
 | `--fail-on <impact>` | off | Exit 1 when there are new findings at or above `minor`, `moderate`, `serious`, or `critical`. |
