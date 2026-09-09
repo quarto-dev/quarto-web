@@ -42,22 +42,21 @@ quarto render
 quarto call axe _site
 ```
 
-The examples on this page come from a two-page site. It has a navbar, a light theme and a dark theme, an image with no `alt` attribute, and one span of low-contrast text. Quarto also writes an `index.html` that redirects to the first page. The scan sets redirect stubs aside as site furniture and records them, so the matrix covers two pages.
+The examples on this page come from a two-page site. It has a navbar, a light theme and a dark theme, an image with no `alt` attribute, and one span of low-contrast text.
 
 The scan prints the matrix it covers, then one line for each cell, then a summary of the findings:
 
 ```
 $ quarto call axe _site
 axe: 2 pages (2 light+dark) × 2 viewports — 8 cells
-note: 1 redirect stub skipped (recorded in findings.json): index.html → notes.html
   gear.html 1440x900 light                                   0  (none)
   gear.html 1440x900 dark                                    0  (none)
   gear.html 320x568 light                                    0  (none)
   gear.html 320x568 dark                                     0  (none)
-  notes.html 1440x900 light                                  2  color-contrast,image-alt
-  notes.html 1440x900 dark                                   1  image-alt
-  notes.html 320x568 light                                   2  color-contrast,image-alt
-  notes.html 320x568 dark                                    1  image-alt
+  index.html 1440x900 light                                  2  color-contrast,image-alt
+  index.html 1440x900 dark                                   1  image-alt
+  index.html 320x568 light                                   2  color-contrast,image-alt
+  index.html 320x568 dark                                    1  image-alt
 
 8 cells: 8 ok
 axe-core 4.10.3 (quarto-cli's vendored build, injected at scan time)
@@ -71,7 +70,7 @@ axe-core 4.10.3 (quarto-cli's vendored build, injected at scan time)
 
 A cell is one page, at one viewport, in one color mode. A page with a light mode and a dark mode contributes two cells for each viewport. A page with a single mode contributes one. Two pages with two modes, at two viewports, therefore give eight cells.
 
-The matrix matters because a violation can appear in one cell and not in another. In the output above, `image-alt` appears in all four cells of `notes.html`, but `color-contrast` appears only in the light cells. The dark theme gives that text enough contrast.
+The matrix matters because a violation can appear in one cell and not in another. In the output above, `image-alt` appears in all four cells of `index.html`, but `color-contrast` appears only in the light cells. The dark theme gives that text enough contrast.
 
 ## Scan Artifacts
 
@@ -136,7 +135,7 @@ Reference: <https://dequeuniversity.com/rules/axe/4.10/color-contrast?applicatio
 
 | page | cells (width·mode) | selector | element |
 |---|---|---|---|
-| notes.html | 1440x900·light, 320x568·light | `p:nth-child(4) > span` | `<span style="color: #bbb">tide table</span>` |
+| index.html | 1440x900·light, 320x568·light | `p:nth-child(4) > span` | `<span style="color: #bbb">tide table</span>` |
 ```
 
 The `cells` column lists only the light cells, because the dark theme gives that text enough contrast. The `selector` and `element` columns are what you search for in your source.
