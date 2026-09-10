@@ -1,0 +1,188 @@
+<!--
+  Gallery live-link hover preview — self-contained.
+
+  Hovering a card's "Live" link (aria-label "Live demo of ...") loads that link's
+  target in a scaled, non-interactive <iframe> popover anchored to the link. The
+  iframe fades in on load over a neutral panel background. No other link triggers a
+  preview, so hovering the card itself only plays the featured cards' animated video.
+
+  DISABLE: delete (or rename) docs/gallery/_metadata.yml; the include stops site-wide.
+  REMOVE:  delete this file and docs/gallery/_metadata.yml. Nothing else references them.
+  BLOCKLIST: add a hostname below if a site refuses framing (X-Frame-Options or
+             a client-side frame-bust) so its links skip the iframe.
+-->
+<style>
+  .gal-preview-pop {
+    position: fixed;
+    z-index: 1080;
+    width: 440px;
+    height: 275px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.28);
+    border: 1px solid var(--gal-line, #dde3ea);
+    background: var(--gal-panel, #ffffff);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.16s ease;
+    pointer-events: none;
+  }
+  .gal-preview-pop.on {
+    opacity: 1;
+    visibility: visible;
+  }
+  .gal-preview-pop .gpp-frame {
+    position: absolute;
+    inset: 0;
+  }
+  .gal-preview-pop iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1280px;
+    height: 800px;
+    border: 0;
+    transform: scale(0.34375); /* 440 / 1280 */
+    transform-origin: top left;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background: var(--gal-panel, #ffffff);
+  }
+  .gal-preview-pop iframe.loaded {
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gal-preview-pop,
+    .gal-preview-pop iframe {
+      transition: none;
+    }
+  }
+</style>
+<script>
+  (function () {
+    if (window.__galPreviewInit) return;
+    window.__galPreviewInit = true;
+
+    // Real hover-capable pointers only: no touch, and no keyboard-triggered
+    // third-party loads.
+    if (!window.matchMedia || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    // Hosts that refuse framing (X-Frame-Options / JS frame-bust). Extend as needed.
+    // github.com sends X-Frame-Options: DENY, so Source links fall back to the thumbnail.
+    var BLOCKLIST = ["mickael.canouil.fr", "github.com", "www.github.com"];
+
+    // Only a card's "Live" link previews (both templates tag it this way); no
+    // other link — title, thumbnail, Source, See all, feature chip — triggers one.
+    var LIVE = 'a[aria-label^="Live demo of"]';
+
+    var DELAY = 400;
+    var POP_W = 440;
+    var POP_H = 275;
+    var pop = null;
+    var frameWrap = null;
+    var timer = null;
+    var current = null; // link whose preview is open
+    var pending = null; // link whose open timer is running
+
+    function ensurePop() {
+      if (pop) return;
+      pop = document.createElement("div");
+      pop.className = "gal-preview-pop";
+      pop.setAttribute("aria-hidden", "true");
+      pop.inert = true;
+      frameWrap = document.createElement("div");
+      frameWrap.className = "gpp-frame";
+      pop.appendChild(frameWrap);
+      document.body.appendChild(pop);
+    }
+
+    function urlOf(link) {
+      var raw = link.getAttribute("href") || "";
+      if (!raw || raw.charAt(0) === "#" || /^(mailto|tel|javascript):/i.test(raw)) return null;
+      var u;
+      try {
+        u = new URL(raw, location.href); // resolves relative (internal) links too
+      } catch (e) {
+        return null;
+      }
+      if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+      if (/\/blob\//i.test(u.pathname) || /\.pdf$/i.test(u.pathname)) return null;
+      if (BLOCKLIST.indexOf(u.hostname) !== -1) return null;
+      return u.href;
+    }
+
+    function place(anchor) {
+      var r = anchor.getBoundingClientRect();
+      var left = Math.min(Math.max(8, r.left), window.innerWidth - POP_W - 8);
+      var top = r.top - POP_H - 10;
+      if (top < 8) top = Math.min(r.bottom + 10, window.innerHeight - POP_H - 8);
+      pop.style.left = left + "px";
+      pop.style.top = top + "px";
+    }
+
+    function open(anchor, href) {
+      ensurePop();
+      current = anchor;
+      frameWrap.innerHTML = "";
+      var f = document.createElement("iframe");
+      f.setAttribute("sandbox", "allow-scripts allow-same-origin");
+      f.setAttribute("referrerpolicy", "no-referrer");
+      f.setAttribute("loading", "lazy");
+      f.setAttribute("tabindex", "-1");
+      f.setAttribute("aria-hidden", "true");
+      f.setAttribute("title", "Live site preview");
+      f.addEventListener("load", function () {
+        f.classList.add("loaded");
+      });
+      f.src = href;
+      frameWrap.appendChild(f);
+      place(anchor);
+      pop.classList.add("on");
+    }
+
+    function close() {
+      if (timer) clearTimeout(timer);
+      timer = null;
+      current = null;
+      pending = null;
+      if (!pop) return;
+      pop.classList.remove("on");
+      frameWrap.innerHTML = ""; // drop the iframe (and its src) so nothing keeps loading
+    }
+
+    document.addEventListener("pointerover", function (e) {
+      var link = e.target.closest && e.target.closest(LIVE);
+      if (!link) return;
+      // Already showing or waiting on this link: do nothing, so intra-link
+      // pointermove does not keep restarting the open timer.
+      if (link === current || link === pending) return;
+      var href = urlOf(link);
+      if (!href) {
+        if (current) close();
+        return;
+      }
+      if (current) close(); // moving straight onto another link
+      pending = link;
+      timer = setTimeout(function () {
+        pending = null;
+        open(link, href);
+      }, DELAY);
+    });
+
+    document.addEventListener("pointerout", function (e) {
+      var link = e.target.closest && e.target.closest("a[href]");
+      if (!link) return;
+      if (e.relatedTarget && link.contains(e.relatedTarget)) return; // moving within the link
+      if (link === current || link === pending) close();
+    });
+
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (current) close();
+      },
+      { passive: true },
+    );
+  })();
+</script>
