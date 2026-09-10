@@ -7,13 +7,65 @@
       "expected_output": "Structured review of gbt9704 extension with APPROVE verdict. Should check duplicate, repo, README, license, category, quality, and security. Repo is public, MIT licensed, has README, correct category (custom-formats.yml).",
       "files": [],
       "assertions": [
-        {"id": "has_verdict", "description": "Output contains APPROVE, REQUEST_CHANGES, or INVESTIGATE verdict", "type": "contains_any", "values": ["APPROVE", "REQUEST_CHANGES", "INVESTIGATE"]},
-        {"id": "checks_duplicate", "description": "Output mentions duplicate check", "type": "contains_any", "values": ["duplicate", "Duplicate"]},
-        {"id": "checks_license", "description": "Output mentions license check", "type": "contains_any", "values": ["license", "License", "MIT"]},
-        {"id": "checks_readme", "description": "Output mentions README check", "type": "contains_any", "values": ["readme", "README"]},
-        {"id": "checks_security", "description": "Output mentions security scan", "type": "contains_any", "values": ["security", "Security"]},
-        {"id": "correct_verdict", "description": "Verdict is APPROVE (repo is clean, MIT, has README, correct category)", "type": "contains", "value": "APPROVE"},
-        {"id": "names_repo", "description": "Output names the repository", "type": "contains", "value": "songwupei/quarto-gbt9704"}
+        {
+          "id": "has_verdict",
+          "description": "Output contains APPROVE, REQUEST_CHANGES, or INVESTIGATE verdict",
+          "type": "contains_any",
+          "values": [
+            "APPROVE",
+            "REQUEST_CHANGES",
+            "INVESTIGATE"
+          ]
+        },
+        {
+          "id": "checks_duplicate",
+          "description": "Output mentions duplicate check",
+          "type": "contains_any",
+          "values": [
+            "duplicate",
+            "Duplicate"
+          ]
+        },
+        {
+          "id": "checks_license",
+          "description": "Output mentions license check",
+          "type": "contains_any",
+          "values": [
+            "license",
+            "License",
+            "MIT"
+          ]
+        },
+        {
+          "id": "checks_readme",
+          "description": "Output mentions README check",
+          "type": "contains_any",
+          "values": [
+            "readme",
+            "README"
+          ]
+        },
+        {
+          "id": "checks_security",
+          "description": "Output mentions security scan",
+          "type": "contains_any",
+          "values": [
+            "security",
+            "Security"
+          ]
+        },
+        {
+          "id": "correct_verdict",
+          "description": "Verdict is APPROVE (repo is clean, MIT, has README, correct category)",
+          "type": "contains",
+          "value": "APPROVE"
+        },
+        {
+          "id": "names_repo",
+          "description": "Output names the repository",
+          "type": "contains",
+          "value": "songwupei/quarto-gbt9704"
+        }
       ]
     },
     {
@@ -22,12 +74,219 @@
       "expected_output": "Structured review of shortiquiz and stepbystep extensions. Two entries from same author. Should check both, run security scan on each, return per-entry verdicts. PR verdict is the worst across both entries.",
       "files": [],
       "assertions": [
-        {"id": "reviews_both_entries", "description": "Output mentions both shortiquiz and stepbystep", "type": "contains_all", "values": ["shortiquiz", "stepbystep"]},
-        {"id": "has_verdict", "description": "Output contains a verdict", "type": "contains_any", "values": ["APPROVE", "REQUEST_CHANGES", "INVESTIGATE"]},
-        {"id": "checks_security_both", "description": "Security check appears for both entries", "type": "contains", "value": "security"},
-        {"id": "checks_license", "description": "License checked for at least one entry", "type": "contains_any", "values": ["license", "License", "MIT"]},
-        {"id": "checks_duplicate", "description": "Duplicate check ran", "type": "contains_any", "values": ["duplicate", "Duplicate"]}
+        {
+          "id": "reviews_both_entries",
+          "description": "Output mentions both shortiquiz and stepbystep",
+          "type": "contains_all",
+          "values": [
+            "shortiquiz",
+            "stepbystep"
+          ]
+        },
+        {
+          "id": "has_verdict",
+          "description": "Output contains a verdict",
+          "type": "contains_any",
+          "values": [
+            "APPROVE",
+            "REQUEST_CHANGES",
+            "INVESTIGATE"
+          ]
+        },
+        {
+          "id": "checks_security_both",
+          "description": "Security check appears for both entries",
+          "type": "contains",
+          "value": "security"
+        },
+        {
+          "id": "checks_license",
+          "description": "License checked for at least one entry",
+          "type": "contains_any",
+          "values": [
+            "license",
+            "License",
+            "MIT"
+          ]
+        },
+        {
+          "id": "checks_duplicate",
+          "description": "Duplicate check ran",
+          "type": "contains_any",
+          "values": [
+            "duplicate",
+            "Duplicate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review PR 2162 for the extension listing",
+      "expected_output": "Review of the index extension (jmgirard/quarto-index). All mechanical checks pass, it uses the MIT license, and the category is correct. The review must explain that Quarto's native indexing is PDF-only through raw LaTeX and makeidx, so the extension fills a gap rather than duplicating a built-in feature. Quarto CLI discussion 3849 is the canonical open feature request. The verdict is APPROVE, with the repository's recent creation reported as context rather than a finding.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "correct_verdict",
+          "description": "Verdict is APPROVE",
+          "type": "contains",
+          "value": "APPROVE"
+        },
+        {
+          "id": "states_problem_solved",
+          "description": "Says what problem the extension solves, not just that it is valid",
+          "type": "contains_any",
+          "values": [
+            "Solves",
+            "solves",
+            "subject index",
+            "index entries"
+          ]
+        },
+        {
+          "id": "finds_native_limit",
+          "description": "Identifies that native Quarto indexing is PDF-only",
+          "type": "contains_any",
+          "values": [
+            "PDF-only",
+            "PDF only",
+            "only works in PDF",
+            "ignored for non-PDF"
+          ]
+        },
+        {
+          "id": "names_native_mechanism",
+          "description": "Names the native mechanism rather than asserting a gap vaguely",
+          "type": "contains_any",
+          "values": [
+            "makeidx",
+            "makeindex",
+            "\\index{"
+          ]
+        },
+        {
+          "id": "finds_upstream_thread",
+          "description": "Finds the canonical upstream discussion",
+          "type": "contains",
+          "value": "3849"
+        },
+        {
+          "id": "reports_youth_as_context",
+          "description": "Reports repo age or lack of users as context, not as a blocking finding",
+          "type": "contains_any",
+          "values": [
+            "0 stars",
+            "zero-star",
+            "single author",
+            "brand-new",
+            "created"
+          ]
+        },
+        {
+          "id": "no_binary_only_statuses",
+          "description": "Uses textual verdict words the template requires",
+          "type": "contains_any",
+          "values": [
+            "PASS",
+            "WARN",
+            "UNVERIFIED",
+            "INVESTIGATE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review a listing PR adding an extension whose repository has no LICENSE file, no license detected by GitHub, and no license section in its README.",
+      "expected_output": "The listing requirements demand an open-source license, so this cannot be APPROVE. Expected REQUEST_CHANGES naming the missing license, and a contributor comment draft asking for one. Must not silently downgrade to a warning and approve.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "does_not_approve",
+          "description": "Verdict is not a bare APPROVE",
+          "type": "not_contains",
+          "value": "RECOMMEND: APPROVE"
+        },
+        {
+          "id": "requests_changes",
+          "description": "Asks for changes or investigation",
+          "type": "contains_any",
+          "values": [
+            "REQUEST_CHANGES",
+            "INVESTIGATE"
+          ]
+        },
+        {
+          "id": "names_license_as_reason",
+          "description": "License is named as the reason",
+          "type": "contains_any",
+          "values": [
+            "license",
+            "License"
+          ]
+        },
+        {
+          "id": "drafts_comment",
+          "description": "Produces a contributor comment draft",
+          "type": "contains_any",
+          "values": [
+            "comment",
+            "Comment",
+            "draft"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review a listing PR where the GitHub API returns a rate-limit error partway through the checks.",
+      "expected_output": "Failed lookups must be reported as UNVERIFIED and the remaining checks completed. A rate-limited call must not be reported as a missing README, a missing license or a deleted repository, and the PR must not be approved on the strength of checks that never ran.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "does_not_approve",
+          "description": "Does not approve on the strength of checks that never ran",
+          "type": "not_contains",
+          "value": "RECOMMEND: APPROVE"
+        },
+        {
+          "id": "reports_unverified",
+          "description": "Uses an unverified state rather than inferring absence",
+          "type": "contains_any",
+          "values": [
+            "UNVERIFIED",
+            "unverified",
+            "not checked",
+            "could not verify"
+          ]
+        },
+        {
+          "id": "does_not_infer_absence",
+          "description": "Does not claim the README or repo is missing",
+          "type": "not_contains",
+          "value": "no README"
+        },
+        {
+          "id": "continues_other_checks",
+          "description": "Other checks still reported",
+          "type": "contains_any",
+          "values": [
+            "duplicate",
+            "category",
+            "order"
+          ]
+        },
+        {
+          "id": "withholds_verdict",
+          "description": "Recommends investigation or changes rather than approval",
+          "type": "contains_any",
+          "values": [
+            "INVESTIGATE",
+            "REQUEST_CHANGES"
+          ]
+        }
       ]
     }
-  ]
+  ],
+  "notes": "scripts/self-test.sh covers deterministic behavior: regex metacharacters in names, repository path prefixes, extension discovery when directory and repository names differ, vendored documentation copies, ordering, and cross-file consistency. These evals cover judgments that require a model."
 }

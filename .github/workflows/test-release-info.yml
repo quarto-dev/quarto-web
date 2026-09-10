@@ -1,0 +1,32 @@
+# Runs the unit tests for the local release-info action.
+name: Test release-info action
+
+on:
+  pull_request:
+    paths: ['.github/workflows/actions/release-info/**']
+  push:
+    branches: [main, prerelease]
+    paths: ['.github/workflows/actions/release-info/**']
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # No setup-node step: the tests use only built-in modules, and the
+      # runner image ships a Node new enough to run them.
+      - name: Run action tests
+        working-directory: .github/workflows/actions/release-info
+        run: npm test

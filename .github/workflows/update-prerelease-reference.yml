@@ -17,6 +17,10 @@ on:
       ISSUE_COMMENT_TRIGGER_PAT:
         required: true
 
+permissions:
+  contents: write # so it can push the rolling branch
+  pull-requests: write # so it can open and comment on the PR
+
 concurrency:
   group: prerelease-reference-update
   cancel-in-progress: false
@@ -26,9 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout prerelease branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: prerelease
+          persist-credentials: true # git push --force for the rolling branch uses these
 
       # --- Safety checks ---
 
@@ -98,8 +103,10 @@ jobs:
         run: quarto --version
 
       - name: Clone quarto-cli at matching tag
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
-          git clone --depth 1 --branch v${{ inputs.version }} \
+          git clone --depth 1 --branch "v$VERSION" \
             https://github.com/quarto-dev/quarto-cli.git \
             ../quarto-cli
 
@@ -134,11 +141,13 @@ jobs:
 
       - name: Check for changes
         id: check-changes
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
           git add -A
           if git diff --cached --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::No changes detected - reference pages are already up to date for v${{ inputs.version }}"
+            echo "::notice::No changes detected - reference pages are already up to date for v$VERSION"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
             echo "Changes detected:"
@@ -152,10 +161,13 @@ jobs:
         if: steps.check-changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          EXISTING_PR_NUMBER: ${{ steps.check-pr.outputs.existing_pr_number }}
+          EXISTING_PR_URL: ${{ steps.check-pr.outputs.existing_pr_url }}
         run: |
-          version="${{ inputs.version }}"
+          version="$VERSION"
           branch="auto/prerelease-reference"
-          existing_pr_number="${{ steps.check-pr.outputs.existing_pr_number }}"
+          existing_pr_number="$EXISTING_PR_NUMBER"
 
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -198,7 +210,7 @@ jobs:
             git push --force origin "$branch"
             gh pr edit "$existing_pr_number" --body-file "$RUNNER_TEMP/pr-body.md"
 
-            pr_url="${{ steps.check-pr.outputs.existing_pr_url }}"
+            pr_url="$EXISTING_PR_URL"
             echo "Updated existing PR: $pr_url"
           else
             # Create new PR
@@ -219,12 +231,14 @@ jobs:
         if: steps.check-changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ steps.push-pr.outputs.pr_url }}
         run: |
-          gh pr edit "${{ steps.push-pr.outputs.pr_url }}" --add-assignee cwickham
+          gh pr edit "$PR_URL" --add-assignee cwickham
 
       - name: Trigger preview deployment
         if: steps.check-changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
+          PR_URL: ${{ steps.push-pr.outputs.pr_url }}
         run: |
-          gh pr comment "${{ steps.push-pr.outputs.pr_url }}" --body "/deploy-preview"
+          gh pr comment "$PR_URL" --body "/deploy-preview"

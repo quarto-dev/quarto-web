@@ -41,6 +41,8 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
 Local composite actions live in `.github/workflows/actions/`:
 
 - `release-info/` - Retrieves release information from the quarto-cli repository.
+  - **Version guard:** the resolved stable and prerelease versions are each compared against the version already committed in the JSON file they would overwrite, and a version older than the committed one fails the step. The GitHub Releases API has returned valid-looking but months-old releases in response to a request for the newest page, and such a payload cannot be told apart from good data, so the committed version is the only trustworthy reference point. A failure surfaces as a red run of the every-15-minutes `Update Downloads` schedule.
+  - Unit tests live alongside the action and run via `npm test` from `.github/workflows/actions/release-info/`; `test-release-info.yml` runs them on every PR touching it.
 
 ## Netlify Configurations
 

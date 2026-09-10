@@ -55,7 +55,7 @@ for ext_dir in "${installed[@]}"; do
 done
 
 if [ ${#installed[@]} -gt 1 ]; then
-  echo "WARN: repo installed ${#installed[@]} extensions (${names[*]}), not 1 — repo tree likely contains unrelated/leftover extension dirs"
+  echo "WARN: repo installed ${#installed[@]} extensions (${names[*]}), not 1 - repo tree likely contains unrelated/leftover extension dirs"
 fi
 
 if [ -n "$EXPECTED_NAME" ] && [ ! -d "${EXT_BASE}/${EXPECTED_NAME}" ]; then
