@@ -74,11 +74,6 @@
 
           }
 
-          window.tippy("a.checksum[data-tippy-content]", {
-            interactive: true,
-            placement: "top-end",
-            maxWidth: "none",
-          });
         })
         .catch((err) => {
           console.log(err);
@@ -217,7 +212,15 @@
     }
 
     const table = createTable();
-    createHeadingRow(table, ["Platform", "Download", "Size", "SHA-256"]);
+    // Link the header to the release's checksums.txt: the full values stay
+    // reachable even where narrow screens truncate the hashes (WCAG 1.4.10).
+    const checksumsAsset = assets.find((asset) =>
+      asset.name.endsWith("-checksums.txt")
+    );
+    const shaHeading = checksumsAsset
+      ? `<a href="${checksumsAsset.download_url}">SHA-256</a>`
+      : "SHA-256";
+    createHeadingRow(table, ["Platform", "Download", "Size", shaHeading]);
 
     const tbody = table.createTBody();
     assets.forEach((asset) => {
@@ -228,11 +231,6 @@
     }
 
     downloadTableContainer.append(table);
-    window.tippy(".checksum[data-tippy-content]", {
-      interactive: true,
-      placement: "top-end",
-      maxWidth: "none",
-    });
   }
 
   function createTable() {
@@ -287,12 +285,9 @@
 
       const checksumCell = row.insertCell(i++);
       if (asset.checksum) {
-        const checkSumSlice = asset.checksum.slice(0, 7);
-
         const checksumEl = window.document.createElement("div");
         checksumEl.className = "checksum font-monospace";
-        checksumEl.setAttribute("data-tippy-content", asset.checksum);
-        checksumEl.innerText = checkSumSlice;
+        checksumEl.innerText = asset.checksum;
         checksumCell.appendChild(checksumEl);
       }
     }
