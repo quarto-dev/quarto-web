@@ -1,21 +1,23 @@
 ```{=html}
-<ul id="choose-your-tool" class="nav nav-tabs" role="tablist">
-  <li class="nav-item" role="presentation">
+<nav aria-label="Choose your tool">
+<ul id="choose-your-tool" class="nav nav-tabs">
+  <li class="nav-item">
     <a class="nav-link" href="jupyterlab.html">
-      <img src="../images/jupyter-logo.png">Jupyter
+      <img src="../images/jupyter-logo.png" alt="">Jupyter
     </a>
   </li>
-  <li class="nav-item" role="presentation">
+  <li class="nav-item">
     <a class="nav-link" href="vscode.html">
-      <img src="../images/vscode-logo.png">VS Code
+      <img src="../images/vscode-logo.png" alt="">VS Code
     </a>
   </li>
-  <li class="nav-item" role="presentation">
+  <li class="nav-item">
     <a class="nav-link" href="rstudio.html">
-      <img src="../images/rstudio-logo.png">RStudio
+      <img src="../images/rstudio-logo.png" alt="">RStudio
     </a>
   </li>
 </ul>
+</nav>
 
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
   for (const tool of toolLinks) {
     if (tool.href.endsWith(filename)) {
       tool.classList.add("active");
+      tool.setAttribute("aria-current", "page");
       break;
     }
   }
