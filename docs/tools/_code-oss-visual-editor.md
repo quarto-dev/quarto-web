@@ -125,7 +125,7 @@ Options enable configuration of appearance (font size, content width, etc.), mar
 
 Zotero references will also show up automatically in visual editor completions:
 
-<img src="/docs/visual-editor/images/visual-editing-citation-completions.png" width="426" fig-alt="Someone has typed &apos;@&apos; in the Visual Editor. In light gray to the right of the &apos;@&apos; is a magnifying glass followed by the text &apos;or DOI&apos;. Underneath this is a pop-up menu showing available citations. Each citation has a title of the form &apos;@citation&apos; in black, the title of the cited material in gray underneath it, an icon to the left, and the reference to the right in gray. Some of the icons have a small red &apos;Z&apos; on the bottom right corner, indicating that the corresponding reference comes from a Zotero library."/>
+![](/docs/visual-editor/images/visual-editing-citation-completions.png){width="426" fig-alt="Someone has typed '@' in the Visual Editor. In light gray to the right of the '@' is a magnifying glass followed by the text 'or DOI'. Underneath this is a pop-up menu showing available citations. Each citation has a title of the form '@citation' in black, the title of the cited material in gray underneath it, an icon to the left, and the reference to the right in gray. Some of the icons have a small red 'Z' on the bottom right corner, indicating that the corresponding reference comes from a Zotero library."}
 
 Items from Zotero will appear alongside items from your bibliography with a small "Z" logo juxtaposed over them. If you insert a citation from Zotero that isn't already in your bibliography then it will be automatically added to the bibliography.
 
