@@ -212,14 +212,17 @@
     }
 
     const table = createTable();
-    // Link the header to the release's checksums.txt: the full values stay
-    // reachable even where narrow screens truncate the hashes (WCAG 1.4.10).
+    // Link the header to the release's checksums.txt so the full values
+    // stay reachable even where narrow screens truncate the hashes.
     const checksumsAsset = assets.find((asset) =>
       asset.name.endsWith("-checksums.txt")
     );
-    const shaHeading = checksumsAsset
-      ? `<a href="${checksumsAsset.download_url}">SHA-256</a>`
-      : "SHA-256";
+    let shaHeading = "SHA-256";
+    if (checksumsAsset) {
+      shaHeading = window.document.createElement("a");
+      shaHeading.href = checksumsAsset.download_url;
+      shaHeading.innerText = "SHA-256";
+    }
     createHeadingRow(table, ["Platform", "Download", "Size", shaHeading]);
 
     const tbody = table.createTBody();
@@ -243,12 +246,14 @@
     const header = table.createTHead();
     var row = header.insertRow(0);
     row.className = "header";
-    let cellCount = 0;
     headings.forEach((heading) => {
-      const cell = (row.insertCell(
-        cellCount
-      ).outerHTML = `<th>${heading}</th>`);
-      cellCount = cellCount + 1;
+      const cell = window.document.createElement("th");
+      if (heading instanceof window.Node) {
+        cell.appendChild(heading);
+      } else {
+        cell.innerText = heading;
+      }
+      row.appendChild(cell);
     });
   }
 
