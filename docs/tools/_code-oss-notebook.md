@@ -3,7 +3,7 @@ In addition to editing Quarto documents as plain-text `.qmd` files, you can also
 ## Render and Preview
 
 
-![](/docs/tools/images/{{< meta tool.prefix >}}-notebook.png){.border}
+![](/docs/tools/images/{{< meta tool.prefix >}}-notebook.png){.border fig-alt="A Palmer Penguins notebook open in {{< meta tool.name >}}, with a rendered Quarto Preview panel showing the title, author, and a scatterplot of bill depth against bill length."}
 
 After you've done an initial **Quarto: Preview**, the preview will automatically update every time you save the notebook.
 
