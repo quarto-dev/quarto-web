@@ -1,4 +1,4 @@
-In addition to editing Quarto documents as plain-text `.qmd` files, you can also use the {{< meta tool.name >}} Notebook Editor to author `.ipynb` notebooks that are rendered with Quarto. In this article we'll review the basics of editing `.ipynb` notebooks for use with Quarto.
+In addition to editing Quarto documents as plain-text `.qmd` files, you can also use the {{< meta tool.name >}} [Notebook Editor](https://positron.posit.co/positron-notebook-editor.html){target="_blank"} to author `.ipynb` notebooks that are rendered with Quarto. In this article we'll review the basics of editing `.ipynb` notebooks for use with Quarto.
 
 ## Render and Preview
 
