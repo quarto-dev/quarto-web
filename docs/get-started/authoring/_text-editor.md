@@ -185,7 +185,7 @@ number-sections: true
 
 Here's what this document looks like when rendered to HTML.
 
-![](images/sections-render.png){.border}
+![](images/sections-render.png){.border fig-alt="Document with title Quarto Basics, author, and date. Table of contents is on the left-hand side with numbered items for each of the three sections: 1. Colors, 2. Shapes, 3. Textures. Each section is shown in the document with the corresponding list."}
 
 There are lots of options available for controlling how the table of contents and section numbering behave. See the output format documentation (e.g. [HTML](/docs/output-formats/html-basics.qmd), [PDF](/docs/output-formats/pdf-basics.qmd), [MS Word](/docs/output-formats/ms-word.qmd)) for additional details.
 
