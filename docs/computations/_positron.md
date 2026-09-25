@@ -1,4 +1,4 @@
-The [Quarto Extension](https://open-vsx.org/extension/quarto/quarto) is bundled with Positron, and provides a variety of tools for working with `.qmd` files. The extension integrates directly with {{< meta positron-extension>}} to provide code completion, cell execution and side-by-side preview of Quarto documents.
+The [Quarto Extension](https://open-vsx.org/extension/quarto/quarto) is bundled with [Positron](https://positron.posit.co){target="_blank"}, and provides a variety of tools for working with `.qmd` files. The extension integrates directly with {{< meta positron-extension>}} to provide code completion, cell execution and side-by-side preview of Quarto documents.
 
 ![]({{< meta positron-screenshot >}}){.include-dark .border fig-alt="Screen shot of qmd file open in Positron with source markdown shown in Editor pane and a rendered document shown in the Viewer Pane."}
 
