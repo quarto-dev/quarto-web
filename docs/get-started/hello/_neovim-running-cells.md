@@ -3,14 +3,14 @@ With the provided configuration we can open a terminal of our choosing using the
 
 If you wait a little in between the key presses a small window pops up at the bottom of your screen to tell you about existing keybindings:
 
-![](/docs/get-started/hello/images/neovim-open-terminal.png)
+![](/docs/get-started/hello/images/neovim-open-terminal.png){fig-alt="Neovim's keybinding hint popup, showing options to open a new terminal: p for Python, i for IPython, r for R, j for Julia, n for a plain terminal, c for the slime config, and s to show the terminal ID."}
 
 We can navigate between the code and the terminal using `ctrl` plus vim direction keys and enter commands into the python REPL by going into insert mode in this terminal buffer.
 
 To send code to the python REPL from quarto we navigate to one of our code blocks and press `<space><cr>` (space bar followed by Enter).
 The plugin responsible for sending code to various places, [vim-slime](https://github.com/jpalardy/vim-slime) will prompt us with the question which terminal to send the code to, pre filled with the latest terminal we created.
 
-![](/docs/get-started/hello/images/neovim-send-code.png)
+![](/docs/get-started/hello/images/neovim-send-code.png){fig-alt="Neovim split showing a Python code cell with 1 + 1 in the qmd file above, and below it a terminal running a Python REPL that received the code and printed the result, 2."}
 
 If you want to use <kbd>ctrl+Enter</kbd> to send code just like in RStudio, you are going to have to tell your terminal emulator to send the correct key codes.
 For example, in the [kitty](https://github.com/kovidgoyal/kitty) terminal the configuration looks as follows:
