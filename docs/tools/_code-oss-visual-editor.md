@@ -4,7 +4,7 @@ The [Quarto VS Code Extension](https://open-vsx.org/extension/quarto/quarto) inc
 
 ![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor.png){.border .light-content fig-alt='{{< meta tool.name >}} with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
 
-![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-dark.png){.border .dark-content fig-alt='Positron with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-dark.png){.border .dark-content fig-alt='{{< meta tool.name >}} with a document called `libraries.qmd` open in visual editing mode. The subtitle and list of items are typeset. The visual editing toolbar is visible at the top of the document.' }
 
 
 You can switch between visual and source mode at any time and can even edit documents concurrently in both modes. To switch between visual and source mode:
@@ -32,10 +32,10 @@ You can switch between visual and source mode at any time and can even edit docu
 
 You can also right click a `.qmd` document in the file explorer and select the **Open With...** command, which will prompt you for the editor to open the file with:
 
-![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode.png){.border .light-content width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode.png){.border .light-content width="609" fig-alt="The 'Select editor' menu for a .qmd file, with 'Text Editor' highlighted as the active default and 'Quarto Visual Editor' listed as an alternative below it."}
 
 
-![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode-dark.png){.border .dark-content width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-default-mode-dark.png){.border .dark-content width="609" fig-alt="The 'Select editor' menu for a .qmd file, with 'Text Editor' highlighted as the active default and 'Quarto Visual Editor' listed as an alternative below it."}
 
 Note that this menu also provides an option to configure the default editor for `.qmd` files: use this if you want to primarily edit in visual mode and occasionally switch to source mode.
 
@@ -101,7 +101,7 @@ If you are at the beginning of a line (as displayed above), you can also enter p
 
 The editor toolbar includes buttons for the most commonly used formatting commands:
 
-![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-toolbar.png){.border width="609"}
+![](/docs/tools/images/{{< meta tool.prefix >}}-visual-editor-toolbar.png){.border width="609" fig-alt="The visual editor toolbar, with a paragraph style menu, Bold, Italic, and Code buttons, bullet and numbered list buttons, link and image buttons, and Format, Insert, and Table menus."}
 
 Additional commands are available on the **Format**, **Insert**, and **Table** menus:
 
@@ -113,7 +113,7 @@ Additional commands are available on the **Format**, **Insert**, and **Table** m
 
 There are a variety of {{< meta tool.name >}} options available to configure the behavior of the visual editor. You can locate these options by filtering on `quarto.visualEditor` in the settings pane:
 
-![](/docs/tools/images/vscode-visual-editor-options.png){.border width="609"}
+![](/docs/tools/images/vscode-visual-editor-options.png){.border width="609" fig-alt="The settings pane filtered on 'quarto.visualEditor', showing options including Default List Spacing, Font Size, and Line Numbers, each with its current value."}
 
 Options enable configuration of appearance (font size, content width, etc.), markdown output (e.g. column wrapping), spell checking, and default spacing for lists.
 
@@ -135,7 +135,7 @@ If you are running both {{< meta tool.name >}} and Zotero on your desktop, then 
 
 [Zotero Groups](https://www.zotero.org/support/groups) provide a powerful way to share collections with a class or work closely with colleagues on a project. By default, Zotero Group Libraries are not included in the **Insert Citation** dialog or citation completions. However, you can use the *Quarto \> Zotero: Group Libraries* option to activate one or more group libraries (either globally, or per-workspace):
 
-![](/docs/visual-editor/images/visual-editing-vscode-zotero-libraries.png){.illustration width="563"}
+![](/docs/visual-editor/images/visual-editing-vscode-zotero-libraries.png){.illustration width="563" fig-alt="The 'Quarto > Zotero: Group Libraries' setting, with a description of how to list Zotero group libraries and an 'Add Item' button below it."}
 
 After you've added a group library to the list, a sync will be performed and you should see the library in the **Insert Citation** dialog. If you don't, double check the exact spelling of the group library name you are configuring (you may even want to copy and paste it from Zotero so you are certain to get it right).
 
@@ -165,11 +165,11 @@ Be sure to **record your key** after generating it (i.e. copy it to the clipboar
 
 Finally, go to Zotero settings and specify that you'd like to use your `web` Zotero library rather than a local one:
 
-![](/docs/visual-editor/images/vscode-zotero-web-config.png){.border}
+![](/docs/visual-editor/images/vscode-zotero-web-config.png){.border fig-alt="The 'Quarto > Zotero: Library' setting, with the location dropdown open and 'web' selected."}
 
 You'll then be promoted to enter your Zotero Web API Key:
 
-![](/docs/visual-editor/images/visual-editing-zotero-vscode-setup.png){.illustration width="601"}
+![](/docs/visual-editor/images/visual-editing-zotero-vscode-setup.png){.illustration width="601" fig-alt="The 'Connect Zotero Web Library' dialog, prompting for a Zotero Web API key."}
 
 After you provide your API key and it is validated, an initial sync of your Zotero libraries is performed. After this, you are ready to start inserting citations from Zotero.
 
