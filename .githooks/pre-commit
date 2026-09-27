@@ -1,6 +1,9 @@
 #!/bin/bash
-# Git pre-commit hook: verify _freeze/ is current for staged .qmd files.
+# Git pre-commit hook: check page formats, then verify _freeze/ is current for
+# staged .qmd files.
 # Setup: git config core.hooksPath .githooks
+set -euo pipefail
 
 HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+quarto run "$HOOK_DIR/../_tools/check-site-format.ts"
 exec bash "$HOOK_DIR/check-freeze.sh" commit
