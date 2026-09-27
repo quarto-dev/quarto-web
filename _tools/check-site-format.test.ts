@@ -21,8 +21,23 @@ const files: Record<string, string> = {
 const expected = ["docs/list.qmd", "docs/mapping.qmd", "docs/nb.ipynb", "docs/scalar.qmd", "docs/sub/_metadata.yml"];
 const actual = findViolations(Object.keys(files), (p) => files[p]).sort();
 
+const deletedRead = (p: string) => {
+  if (p === "docs/gone.qmd") throw new Deno.errors.NotFound(`readfile '${p}'`);
+  return files[p];
+};
+const skipsDeleted = findViolations(["docs/gone.qmd", "docs/scalar.qmd"], deletedRead);
+
+let parseMessage = "";
+try {
+  findViolations(["docs/broken.qmd"], () => "---\nformat: [html\n---\n");
+} catch (e) {
+  parseMessage = (e as Error).message;
+}
+
 const checks: [string, boolean][] = [
   ["violations match", JSON.stringify(actual) === JSON.stringify(expected)],
+  ["a deleted but unstaged file is skipped", JSON.stringify(skipsDeleted) === JSON.stringify(["docs/scalar.qmd"])],
+  ["a YAML error names the file", parseMessage.startsWith("docs/broken.qmd:")],
   ["_metadata.yml in a rendered directory is checked", isRendered("docs/sub/_metadata.yml")],
   ["underscore directory is skipped", !isRendered("docs/_examples/demo.qmd")],
   ["underscore file is skipped", !isRendered("docs/_partial.qmd")],

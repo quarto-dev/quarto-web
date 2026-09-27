@@ -34,8 +34,21 @@ function usesPlainHtml(meta: unknown): boolean {
 
 export function findViolations(files: string[], read: (path: string) => string): string[] {
   return files.filter(isRendered).filter((path) => {
-    const yaml = frontMatter(path, read(path));
-    return yaml !== undefined && usesPlainHtml(parse(yaml));
+    let text: string;
+    try {
+      text = read(path);
+    } catch (e) {
+      // `git ls-files` still lists a file deleted from the working tree but not staged.
+      if (e instanceof Deno.errors.NotFound) return false;
+      throw e;
+    }
+    const yaml = frontMatter(path, text);
+    if (yaml === undefined) return false;
+    try {
+      return usesPlainHtml(parse(yaml));
+    } catch (e) {
+      throw new Error(`${path}: cannot parse the front matter: ${(e as Error).message}`);
+    }
   });
 }
 
