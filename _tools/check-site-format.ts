@@ -1,0 +1,54 @@
+// Fails when a rendered page, or a _metadata.yml, sets a plain `html` format.
+// Plain `html` replaces the site's `quartoorg-html` format, so the page loses
+// the site theme without any error.
+import { parse } from "stdlib/yaml";
+
+const kSourceExtensions = [".qmd", ".md", ".ipynb"];
+
+export function isRendered(path: string): boolean {
+  const segments = path.split("/");
+  const name = segments.pop()!;
+  if (segments.some((s) => s.startsWith("_") || s.startsWith("."))) return false;
+  if (name === "_metadata.yml") return true;
+  return !name.startsWith("_") && !name.startsWith(".") && kSourceExtensions.some((ext) => name.endsWith(ext));
+}
+
+function frontMatter(path: string, text: string): string | undefined {
+  if (path.endsWith("_metadata.yml")) return text;
+  if (path.endsWith(".ipynb")) {
+    const first = JSON.parse(text).cells?.[0];
+    if (first?.cell_type !== "raw") return undefined;
+    text = Array.isArray(first.source) ? first.source.join("") : first.source;
+  }
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/);
+  return match?.[1];
+}
+
+function usesPlainHtml(meta: unknown): boolean {
+  if (meta === null || typeof meta !== "object") return false;
+  const format = (meta as Record<string, unknown>).format;
+  if (format === "html") return true;
+  if (Array.isArray(format)) return format.includes("html");
+  return format !== null && typeof format === "object" && Object.hasOwn(format, "html");
+}
+
+export function findViolations(files: string[], read: (path: string) => string): string[] {
+  return files.filter(isRendered).filter((path) => {
+    const yaml = frontMatter(path, read(path));
+    return yaml !== undefined && usesPlainHtml(parse(yaml));
+  });
+}
+
+if (import.meta.main) {
+  const listing = new Deno.Command("git", { args: ["ls-files", "-z"], stdout: "piped" }).outputSync();
+  if (!listing.success) {
+    console.error("check-site-format: `git ls-files` failed; run this from inside the repository.");
+    Deno.exit(2);
+  }
+  const files = new TextDecoder().decode(listing.stdout).split("\0").filter(Boolean);
+  const violations = findViolations(files, (p) => Deno.readTextFileSync(p));
+  for (const path of violations) {
+    console.error(`${path}: \`format: html\` drops the site theme. Use \`quartoorg-html\` instead.`);
+  }
+  Deno.exit(violations.length > 0 ? 1 : 0);
+}
