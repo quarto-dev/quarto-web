@@ -29,6 +29,25 @@ jobs:
           echo "::error title=Manual action required for preview::PR from fork can't be deployed as preview to Netlify automatically. Use '/deploy-preview' command in comments to trigger the preview manually."
         shell: bash
 
+  check-site-format:
+    # Runs for every pull request, forks included: a page with `format: html`
+    # renders without the site theme and gives no error.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+      - name: Test the page format check
+        run: quarto run _tools/check-site-format.test.ts
+      - name: Check page formats
+        run: quarto run _tools/check-site-format.ts
+
   build-deploy-preview:
     # Deploy a preview only if 
     # - the PR is not from a fork,
