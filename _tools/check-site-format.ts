@@ -53,9 +53,13 @@ export function findViolations(files: string[], read: (path: string) => string):
 }
 
 if (import.meta.main) {
-  const listing = new Deno.Command("git", { args: ["ls-files", "-z"], stdout: "piped" }).outputSync();
+  // `--staged` checks only the files staged for commit, for the pre-commit hook.
+  const gitArgs = Deno.args.includes("--staged")
+    ? ["diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z"]
+    : ["ls-files", "-z"];
+  const listing = new Deno.Command("git", { args: gitArgs, stdout: "piped" }).outputSync();
   if (!listing.success) {
-    console.error("check-site-format: `git ls-files` failed; run this from inside the repository.");
+    console.error(`check-site-format: \`git ${gitArgs[0]}\` failed; run this from inside the repository.`);
     Deno.exit(2);
   }
   const files = new TextDecoder().decode(listing.stdout).split("\0").filter(Boolean);
