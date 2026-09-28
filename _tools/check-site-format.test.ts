@@ -34,7 +34,42 @@ try {
   parseMessage = (e as Error).message;
 }
 
+let notebookMessage = "";
+try {
+  findViolations(["docs/broken.ipynb"], () => "{ not json");
+} catch (e) {
+  notebookMessage = (e as Error).message;
+}
+
+// Runs the script itself, as the hook and CI do, in a scratch git repository.
+const script = new URL("./check-site-format.ts", import.meta.url).pathname;
+const repo = Deno.makeTempDirSync();
+const git = (...args: string[]) => new Deno.Command("git", { args, cwd: repo }).outputSync();
+const write = (path: string, text: string) => {
+  Deno.mkdirSync(`${repo}/${path.split("/").slice(0, -1).join("/") || "."}`, { recursive: true });
+  Deno.writeTextFileSync(`${repo}/${path}`, text);
+};
+const cli = (cwd: string, ...args: string[]) => {
+  const out = new Deno.Command("quarto", { args: ["run", script, ...args], cwd, stderr: "piped" }).outputSync();
+  return { code: out.code, stderr: new TextDecoder().decode(out.stderr) };
+};
+git("init", "-q");
+write("docs/page.qmd", "---\ntitle: A\n---\n");
+write("about.qmd", "---\nformat: html\n---\n");
+git("add", "-A");
+const fromSubdir = cli(`${repo}/docs`);
+write("docs/page.qmd", "---\nformat: html\n---\n");
+const unstagedEdit = cli(repo, "--staged");
+git("add", "docs/page.qmd");
+write("docs/page.qmd", "---\ntitle: A\n---\n");
+const stagedEdit = cli(repo, "--staged");
+Deno.removeSync(repo, { recursive: true });
+
 const checks: [string, boolean][] = [
+  ["a malformed notebook names the file", notebookMessage.startsWith("docs/broken.ipynb:")],
+  ["run from a subdirectory, the whole repository is checked", fromSubdir.code === 1 && fromSubdir.stderr.includes("about.qmd")],
+  ["--staged ignores an unstaged edit", unstagedEdit.code === 1 && !unstagedEdit.stderr.includes("docs/page.qmd")],
+  ["--staged reports the staged content", stagedEdit.code === 1 && stagedEdit.stderr.includes("docs/page.qmd")],
   ["violations match", JSON.stringify(actual) === JSON.stringify(expected)],
   ["a deleted but unstaged file is skipped", JSON.stringify(skipsDeleted) === JSON.stringify(["docs/scalar.qmd"])],
   ["a YAML error names the file", parseMessage.startsWith("docs/broken.qmd:")],

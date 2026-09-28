@@ -21,7 +21,13 @@ export function isRendered(path: string): boolean {
 function frontMatter(path: string, text: string): string | undefined {
   if (isYamlConfig(path)) return text;
   if (path.endsWith(".ipynb")) {
-    const first = JSON.parse(text).cells?.[0];
+    let notebook;
+    try {
+      notebook = JSON.parse(text);
+    } catch (e) {
+      throw new Error(`${path}: cannot parse the notebook: ${(e as Error).message}`);
+    }
+    const first = notebook.cells?.[0];
     if (first?.cell_type !== "raw") return undefined;
     text = Array.isArray(first.source) ? first.source.join("") : first.source;
   }
@@ -58,6 +64,13 @@ export function findViolations(files: string[], read: (path: string) => string):
 }
 
 if (import.meta.main) {
+  // Paths from git and file reads are relative to the repository root.
+  const root = new Deno.Command("git", { args: ["rev-parse", "--show-toplevel"], stdout: "piped" }).outputSync();
+  if (!root.success) {
+    console.error("check-site-format: run this from inside the repository.");
+    Deno.exit(2);
+  }
+  Deno.chdir(new TextDecoder().decode(root.stdout).trim());
   // `--staged` checks only the staged content of the files staged for commit,
   // for the pre-commit hook.
   const staged = Deno.args.includes("--staged");
