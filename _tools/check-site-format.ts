@@ -88,7 +88,13 @@ if (import.meta.main) {
     Deno.exit(2);
   }
   const files = new TextDecoder().decode(listing.stdout).split("\0").filter(Boolean);
-  const violations = findViolations(files, staged ? readStaged : (p) => Deno.readTextFileSync(p));
+  let violations: string[];
+  try {
+    violations = findViolations(files, staged ? readStaged : (p) => Deno.readTextFileSync(p));
+  } catch (e) {
+    console.error(`check-site-format: ${(e as Error).message}`);
+    Deno.exit(2);
+  }
   for (const path of violations) {
     console.error(`${path}: \`format: html\` drops the site theme. Remove the \`format\` key, or use \`quartoorg-html\`.`);
   }
