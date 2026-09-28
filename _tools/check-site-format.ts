@@ -65,7 +65,7 @@ if (import.meta.main) {
   const files = new TextDecoder().decode(listing.stdout).split("\0").filter(Boolean);
   const violations = findViolations(files, (p) => Deno.readTextFileSync(p));
   for (const path of violations) {
-    console.error(`${path}: \`format: html\` drops the site theme. Use \`quartoorg-html\` instead.`);
+    console.error(`${path}: \`format: html\` drops the site theme. Remove the \`format\` key, or use \`quartoorg-html\`.`);
   }
   Deno.exit(violations.length > 0 ? 1 : 0);
 }
