@@ -5,7 +5,6 @@ Span = function(s)
   if s.classes:includes('color-box') then
     local color
     if  s.attributes['color'] then
-      quarto.log.output("HERE")
       color = s.attributes['color']
       s.attributes.color = nil
     elseif #s.content == 1 and s.content[1] and s.content[1].t == "Code" and s.content[1].text and s.content[1].text:sub(1, 1) == '#' then
