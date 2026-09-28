@@ -13,6 +13,8 @@ Utility scripts for the quarto-web project. Run with `quarto run` (TypeScript, R
 | `sort-gallery.R` | R | Sort gallery entries |
 | `release-notes.R` | R | Generate release notes content |
 | `snapshot-typst.ts` | TypeScript | Capture Typst document snapshots as PNG |
+| `check-site-format.ts` | TypeScript | Fail on pages, `_metadata.yml` or project config files that set `format: html`, which drops the site theme; `--staged` checks only staged content |
+| `check-site-format.test.ts` | TypeScript | Tests for `check-site-format.ts` |
 
 ## Usage
 
