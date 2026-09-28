@@ -64,7 +64,6 @@ xfun::gsub_file(changelog_file, pattern = "(?<!\\{)(\\{\\{<[^>]*>\\}\\})(?!\\})"
 glue("
 ---
 title: {major_version} Release Notes
-format: quartoorg-html
 ---
 
 {{{{< include _changelog.md >}}}}
