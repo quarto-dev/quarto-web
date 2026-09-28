@@ -39,6 +39,16 @@ const checks: [string, boolean][] = [
   ["a deleted but unstaged file is skipped", JSON.stringify(skipsDeleted) === JSON.stringify(["docs/scalar.qmd"])],
   ["a YAML error names the file", parseMessage.startsWith("docs/broken.qmd:")],
   ["_metadata.yml in a rendered directory is checked", isRendered("docs/sub/_metadata.yml")],
+  [
+    "a project config with format: html is reported",
+    JSON.stringify(findViolations(["_quarto.yml", "_quarto-rc.yml"], () => "format:\n  html:\n    toc: true\n")) ===
+      JSON.stringify(["_quarto.yml", "_quarto-rc.yml"]),
+  ],
+  [
+    "a project config with quartoorg-html is clean",
+    findViolations(["_quarto-prerelease-docs.yml"], () => "format:\n  quartoorg-html:\n    toc: true\n").length === 0,
+  ],
+  ["a nested _quarto.yml is not a project config", !isRendered("docs/example/_quarto.yml")],
   ["underscore directory is skipped", !isRendered("docs/_examples/demo.qmd")],
   ["underscore file is skipped", !isRendered("docs/_partial.qmd")],
   ["dot directory is skipped", !isRendered(".github/x.md")],

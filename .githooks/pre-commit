@@ -5,5 +5,9 @@
 set -euo pipefail
 
 HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
-quarto run "$HOOK_DIR/../_tools/check-site-format.ts" --staged
+if command -v quarto >/dev/null 2>&1; then
+	quarto run "$HOOK_DIR/../_tools/check-site-format.ts" --staged
+else
+	echo "pre-commit: quarto not found, skipping the page format check (CI still runs it)." >&2
+fi
 exec bash "$HOOK_DIR/check-freeze.sh" commit
