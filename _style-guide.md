@@ -101,3 +101,36 @@ Use the **Render** button ![](images/rstudio-render-button.png){.ui-icon alt="" 
 ```
 
 The `.ui-icon` class (`theme.scss` and `theme-dark.scss`) gives the image the same key-cap look as `<kbd>` in the light and dark themes.
+
+## Headings and Example Labels
+
+Use a heading only when it starts a section. A section continues until the next heading of the same level or higher. Screen readers use headings to move through a page, and the page TOC lists them.
+
+Do not skip heading levels. After `##`, the next level is `###`.
+
+A short label for one example is a caption, not a heading. Labels such as "Markdown Syntax", "Output", "HTML output", and "Arrow (light)" are captions. If you use a heading for a caption, the text after the example becomes part of the caption's section. This is incorrect when that text applies to the whole section.
+
+Use one of these patterns for a caption:
+
+* For a code block, use the `filename` attribute. The label shows in the header of the block.
+
+  ````markdown
+  ``` {.markdown filename="Markdown Syntax"}
+  | Right | Left |
+  |------:|:-----|
+  ```
+  ````
+
+* For an image, use the image caption. The caption becomes a `<figcaption>` for the image. If a page shows several captioned images in a sequence, set `fig-cap-location: top` in the page front matter. Then each caption is directly above its image.
+
+  ```markdown
+  ![Arrow (light)](images/arrow.png){fig-alt="A block of code showcasing the Arrow (light) theme."}
+  ```
+
+* For rendered output that follows its source, write a lead-in sentence, for example "This renders as:".
+
+* For a set of source and output pairs, use a table with `Markdown Syntax` and `Output` column headers. See "Other Blocks" in `docs/authoring/markdown-basics.qmd`.
+
+* For output that has no other pattern, use a bold label paragraph, for example `**PDF output**`.
+
+Do not add `{.unlisted}` to a heading to hide a caption from the TOC. The heading is still in the page structure.
