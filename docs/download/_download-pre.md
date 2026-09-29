@@ -15,7 +15,7 @@
 
 :::: {#download-pre-section-news}
 
-### Release Notes {#download-pre-release-notes}
+## Release Notes {#download-pre-release-notes}
 
 ::: {#download-pre-news .download-news}
 :::
