@@ -86,3 +86,18 @@ grep -o '<img[^>]*>' _site/docs/path/to/page.html
 Do this check also when an axe scan of the page shows no problems. Axe does not examine images on hidden slides or in tabs that are not open, but these images also need alt text.
 
 If the page has a `_freeze/` entry, update the freeze too. See [README.md](README.md).
+
+## Toolbar Icons
+
+When prose points to a button or other control in a user interface:
+
+* Name the control in bold. Use the name the control shows: its label, its tooltip, or its accessible name. Screen reader users hear this name, and voice control users say it.
+* Add "button" after the name if the control is a button.
+* Put the icon image after the name, with `alt=""` and the `.ui-icon` class. The name is already in the text, so the image is decorative.
+* Do not use `<kbd>` for the icon or the name. `<kbd>` is for keyboard input.
+
+```markdown
+Use the **Render** button ![](images/rstudio-render-button.png){.ui-icon alt="" width="25" height="20"} in RStudio.
+```
+
+The `.ui-icon` class (`theme.scss` and `theme-dark.scss`) gives the image the same key-cap look as `<kbd>` in the light and dark themes.
