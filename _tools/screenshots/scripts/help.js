@@ -14,6 +14,10 @@ Commands (run from _tools/screenshots/):
   npm run capture -- --no-compress       Skip oxipng compression
   npm run capture -- --verify            Open each image for visual review
 
+  npm run capture:previews               Gallery hover previews (webm + mp4)
+  npm run capture:pdf-thumbs             Gallery thumbnails for PDF-linked cards
+  npm run capture:card-thumbs            Gallery thumbnails for image-less cards
+
   npm run list                           List manifest entries (formatted)
   npm run render -- <project-path>       Render a Quarto example project
   npm run serve -- <site-path>           Serve a rendered site locally
@@ -25,5 +29,6 @@ Commands (run from _tools/screenshots/):
   npm run help                           Show this help
 
 Source of truth: manifest.json
-Docs: CLAUDE.md (workflow), SETUP.md (setup guide)
+Docs: README.md (overview), SETUP.md (setup guide), CLAUDE.md (workflow),
+      scripts/PREVIEWS.md (gallery video/image capture)
 `.trim());

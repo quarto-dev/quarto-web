@@ -1,0 +1,300 @@
+/*-- scss:defaults --*/
+
+// Gallery design tokens. Light values here; dark overrides in the rules block
+// under `body.quarto-dark`, mirroring the site theme toggle (no extra JS).
+
+/*-- scss:rules --*/
+
+:root {
+  --gal-bg: #ffffff;
+  --gal-panel: #ffffff;
+  --gal-ink: #1c2733;
+  --gal-muted: #5d6b7b;
+  --gal-line: #dde3ea;
+  --gal-chip: #eef1f5;
+  --gal-chip-ink: #3f5266;
+  --gal-chip-line: #e2e7ec;
+  --gal-accent: #3f6699;
+  --gal-ring: #1a73e8;
+  --gal-interactive-bg: rgba(18, 165, 148, 0.16);
+  --gal-interactive-ink: #0a6b5e;
+  --gal-interactive-line: rgba(18, 165, 148, 0.30);
+
+  // category accent colours
+  --cat-reports: #3b7dd8;
+  --cat-dashboards: #12a594;
+  --cat-research: #8b5cf6;
+  --cat-teaching: #e8863c;
+  --cat-docs: #546e91;
+  --cat-personal: #d6457f;
+}
+
+body.quarto-dark {
+  --gal-bg: #161f28;
+  --gal-panel: #1d2833;
+  --gal-ink: #e8eef4;
+  --gal-muted: #a4b4c4;
+  --gal-line: #2c3a48;
+  --gal-chip: #26333f;
+  --gal-chip-ink: #c4d2df;
+  --gal-chip-line: #33424f;
+  --gal-accent: #8fbdf0;
+  --gal-ring: #7fb2ff;
+  --gal-interactive-ink: #2fd4bf;
+}
+
+// per-category accent, applied via a `.cat-<slug>` class
+.cat-reports    { --c: var(--cat-reports); }
+.cat-dashboards { --c: var(--cat-dashboards); }
+.cat-research   { --c: var(--cat-research); }
+.cat-teaching   { --c: var(--cat-teaching); }
+.cat-docs       { --c: var(--cat-docs); }
+.cat-personal   { --c: var(--cat-personal); }
+
+// Empty title block reserves space at the top; hide only when empty so titled
+// pages keep theirs.
+header#title-block-header:empty { display: none; }
+
+// On the landing (body.gallery-landing) the page `title:` is the eyebrow above
+// the hero heading, so style it like the old `.kicker` label and drop the
+// theme's title-block chrome (rule, spacing, metadata).
+.gallery-landing #title-block-header {
+  margin-block-end: 0; border-block-end: 0; padding-block-end: 0;
+  .title {
+    letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: 0.75rem; color: var(--gal-accent); font-weight: 700;
+    margin: 0;
+  }
+  .quarto-title-meta, .subtitle { display: none; }
+}
+
+// ---------------------------------------------------------------- hero chooser
+.gal-hero { padding: 0.5rem 0 0.4rem; }
+.gal-hero h2 { font-size: 2.25rem; line-height: 1.1; margin: 0.4rem 0 0.3rem; font-weight: 800; }
+.gal-hero .lede { color: var(--gal-muted); font-size: 1rem; margin: 0 0 1.4rem; }
+
+.gal-chooser {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+  padding: 0 0 1.6rem; list-style: none; margin: 0;
+}
+@media (max-width: 900px) { .gal-chooser { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .gal-chooser { grid-template-columns: 1fr; } }
+
+.gal-chooser > li { display: flex; } // stretch the card to the grid row height
+.gal-choice {
+  position: relative; display: block; overflow: hidden; text-decoration: none;
+  width: 100%; // fill the flex item so wrapped taglines don't make one card taller
+  border: 1px solid var(--gal-line); border-radius: 12px; padding: 0.95rem 1rem 0.9rem;
+  background: var(--gal-panel); color: var(--gal-ink);
+}
+.gal-choice::before { content: ""; position: absolute; left: 0; top: 0; height: 4px; width: 100%; background: var(--c); }
+.gal-choice:hover { border-color: var(--c); }
+.gal-choice:focus-visible { outline: 3px solid var(--gal-ring); outline-offset: 2px; }
+.gal-choice .row { display: flex; align-items: center; justify-content: space-between; }
+.gal-choice .ic { font-size: 1.2rem; }
+.gal-choice .gal-choice-title { display: block; margin: 0.55rem 0 0.2rem; font-size: 1rem; font-weight: 700; }
+.gal-choice p { margin: 0; font-size: 0.8rem; color: var(--gal-muted); line-height: 1.35; }
+
+// --------------------------------------------------------- floating jump rail
+// In-page navigation as a floating rail pinned to the right edge (à la
+// mickael.canouil.fr): a collapsed icon column whose labels expand leftwards on
+// hover / keyboard focus, so the centred content never shifts. Scrollspy (in
+// _jumpnav.ejs.md) marks the active section with .active + aria-current. Below
+// $gal-rail-bp the same markup becomes a horizontal bottom dock. The listing
+// wrapper carries no layout because the nav is `position: fixed`.
+$gal-rail-bp: 991.98px;
+
+#jumpnav { margin: 0; }
+.gal-rail {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1020;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  max-width: min(18rem, 22vw);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+
+  &.gal-rail--tucked {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(120%);
+  }
+
+  ul {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem;
+    max-height: 100%; margin: 0; padding: 0.5rem; list-style: none;
+    overflow-y: auto; scrollbar-width: none;
+    border: 1px solid var(--gal-line); border-radius: 14px;
+    background: color-mix(in srgb, var(--gal-bg) 92%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    pointer-events: auto;
+    &::-webkit-scrollbar { display: none; }
+  }
+  li { width: 100%; margin: 0; }
+
+  &:hover .gal-rail__label,
+  &:focus-within .gal-rail__label { max-width: 12rem; padding-inline-start: 0.5rem; opacity: 1; }
+}
+
+.gal-rail__link {
+  display: flex; flex-direction: row-reverse; align-items: center; justify-content: flex-start;
+  padding: 0.2rem; border-radius: 10px; color: var(--gal-ink); text-decoration: none;
+  outline-offset: 2px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  &:hover, &:focus-visible {
+    color: var(--c, var(--gal-accent));
+    background: color-mix(in srgb, var(--c, var(--gal-accent)) 16%, transparent);
+    text-decoration: none;
+  }
+  &.active {
+    color: var(--c, var(--gal-accent));
+    background: color-mix(in srgb, var(--c, var(--gal-accent)) 24%, transparent);
+  }
+  &:focus-visible { outline: 2px solid var(--gal-ring); }
+}
+
+.gal-rail__mark {
+  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center;
+  width: 1.75rem; height: 1.75rem; font-size: 1.05rem;
+}
+
+.gal-rail__label {
+  max-width: 0; overflow: hidden; white-space: nowrap;
+  font-size: 0.82rem; font-weight: 600; letter-spacing: 0.01em; opacity: 0;
+  will-change: max-width, opacity;
+  // Grow the box first, then fade the text in (opacity delayed), so the label
+  // never paints while still clipped — the main cause of the reveal flicker.
+  // One shared easing curve keeps width, padding and text in step.
+  transition:
+    max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.18s ease 0.09s;
+}
+
+.cat-browse { --c: var(--gal-accent); }
+
+// Bottom dock: below the breakpoint a right-edge rail would sit on the body, so
+// the same markup docks along the bottom edge as a horizontal, swipeable strip
+// with the label shown on the active chip only.
+@media (max-width: $gal-rail-bp) {
+  // Reserve a band at the page end so the fixed dock never traps the last
+  // content beneath it (the footer tuck only clears the footer itself).
+  body { padding-bottom: 4rem; }
+
+  .gal-rail {
+    inset: auto 0 0 0; align-items: stretch; max-width: none;
+    &.gal-rail--tucked { transform: none; }
+    ul {
+      flex-direction: row; align-items: center; width: 100%; max-height: none;
+      padding: 0.35rem 0.5rem; overflow-x: auto; overflow-y: hidden;
+      border-width: 1px 0 0; border-radius: 0;
+    }
+    li {
+      width: auto;
+      &:first-child { margin-inline-start: auto; }
+      &:last-child { margin-inline-end: auto; }
+    }
+    // Cancel the bar-wide reveal so the whole dock does not expand; the active
+    // and the focused chip each still show their label (below).
+    &:hover .gal-rail__label,
+    &:focus-within .gal-rail__label { max-width: 0; padding-inline-start: 0; opacity: 0; }
+  }
+  .gal-rail__link {
+    flex-direction: row; min-width: 2.75rem; min-height: 2.75rem;
+    justify-content: center; padding: 0.25rem 0.35rem;
+  }
+  // Eased (not snapped) so hover and active-on-scroll reveals glide; kept short
+  // because the active chip retargets as sections pass.
+  .gal-rail__label {
+    transition:
+      max-width 0.24s cubic-bezier(0.4, 0, 0.2, 1),
+      padding 0.24s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.16s ease 0.06s;
+  }
+  // Named for screen readers at every size (label kept in the a11y tree, only
+  // clipped); shown visually on the active chip, the hovered chip, and the
+  // keyboard-focused one, so pointer and keyboard users both see the label, not
+  // a bare icon. Per-chip (not bar-wide) so the dock never expands as a whole.
+  .gal-rail__link.active .gal-rail__label,
+  .gal-rail__link:hover .gal-rail__label,
+  .gal-rail__link:focus-visible .gal-rail__label { max-width: 12rem; padding-inline-start: 0.35rem; opacity: 1; }
+}
+
+// ---------------------------------------------------------------- sections
+.gal-featured-intro { margin: 1.6rem 0 0.2rem; }
+.gal-featured-intro h2 { font-size: 1.4rem; font-weight: 800; margin: 0 0 0.3rem; }
+.gal-featured-intro p { color: var(--gal-muted); font-size: 1rem; margin: 0; }
+
+.gal-section { padding: 1.9rem 0 0.3rem; scroll-margin-top: 5rem; }
+#browse-by-format { scroll-margin-top: 5rem; }
+.gal-section .shead { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.2rem; }
+.gal-section .shead .l { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
+.gal-section h2 { font-size: 1.4rem; margin: 0; font-weight: 800; position: relative; padding-left: 0.9rem; }
+.gal-section h2::before { content: ""; position: absolute; left: 0; top: 0.2rem; bottom: 0.2rem; width: 5px; border-radius: 3px; background: var(--c); }
+.gal-section h2 a { color: inherit; text-decoration: none; display: inline-flex; align-items: baseline; gap: 0.5rem; }
+.gal-section h2 .ic { font-size: 1.15rem; line-height: 1; flex: 0 0 auto; }
+.gal-section .tag { color: var(--gal-muted); font-size: 0.85rem; }
+.gal-seeall { white-space: nowrap; color: var(--gal-accent); text-decoration: none; font-weight: 600; font-size: 0.82rem; }
+
+.gal-caps { margin: 0.55rem 0 1rem; font-size: 0.78rem; color: var(--gal-muted); }
+.gal-caps b { color: var(--gal-ink); font-weight: 600; }
+.gal-caps a { display: inline-block; background: var(--gal-chip); color: var(--gal-accent); text-decoration: none; padding: 0.18rem 0.6rem; border-radius: 20px; margin: 0 0.35rem 0.35rem 0; font-weight: 600; font-size: 0.72rem; border: 1px solid var(--gal-chip-line); }
+
+// ------------------------------------------------------------------- cards
+.gal-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; list-style: none; margin: 0; padding: 0; }
+@media (max-width: 900px) { .gal-cards { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .gal-cards { grid-template-columns: 1fr; } }
+
+.gal-card { border: 1px solid var(--gal-line); border-radius: 12px; overflow: hidden; background: var(--gal-panel); display: flex; flex-direction: column; }
+.gal-card:focus-within { outline: 3px solid var(--gal-ring); outline-offset: 2px; }
+.gal-card .thumb { height: 172px; display: flex; align-items: flex-end; padding: 0.6rem 0.75rem; color: #fff; font-size: 0.74rem; font-weight: 600; background: linear-gradient(135deg, color-mix(in srgb, var(--c, var(--gal-accent)) 55%, #000), color-mix(in srgb, var(--c, var(--gal-accent)) 32%, #000)); }
+// `contain` shows the whole screenshot; the letterbox blanks take the card's
+// category colour (the same accent used for image-less card headers), falling back
+// to the neutral surface where a card is not scoped to one category (browse grid).
+.gal-card img.thumb-img, .gal-card video.thumb-img { width: 100%; height: 172px; object-fit: contain; object-position: center; display: block; background: var(--c, var(--gal-chip)); }
+// Featured hover preview: static poster <img> with the <video> stacked over it.
+// The video is hidden until hover, so leaving the card reveals the still poster.
+.gal-card .thumb-stack { position: relative; display: block; background: var(--c, var(--gal-chip)); }
+.gal-card .thumb-stack .gal-preview { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.2s ease; }
+@media (prefers-reduced-motion: reduce) { .gal-card .thumb-stack .gal-preview { transition: none; } }
+.gal-card .body { padding: 0.75rem 0.85rem 0.8rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+.gal-card .job { font-size: 0.97rem; font-weight: 700; line-height: 1.25; margin: 0; }
+.gal-card .job a { color: var(--gal-ink); text-decoration: none; }
+.gal-card .job a:focus-visible { outline: 2px solid var(--gal-ring); outline-offset: 2px; }
+.gal-card .who { font-size: 0.75rem; color: var(--gal-muted); margin: 0; }
+.gal-card .feats { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.1rem; }
+.gal-card .feats .f { font-size: 0.66rem; font-weight: 600; padding: 0.12rem 0.5rem; border-radius: 20px; background: var(--gal-chip); color: var(--gal-chip-ink); text-decoration: none; border: 1px solid var(--gal-chip-line); text-transform: lowercase; font-variant: small-caps; letter-spacing: 0.03em; }
+.gal-card .feats .f.i { background: var(--gal-interactive-bg); color: var(--gal-interactive-ink); border-color: var(--gal-interactive-line); }
+.gal-card .feats .f.cat { background: color-mix(in srgb, var(--c, var(--gal-accent)) 12%, var(--gal-panel)); color: var(--gal-accent); border-color: color-mix(in srgb, var(--c, var(--gal-accent)) 30%, var(--gal-chip-line)); font-variant: small-caps; letter-spacing: 0.03em; }
+
+// clickable category chips (native listing filter) shown on spoke/browse cards
+.gal-card .gal-cats { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.1rem; }
+.gal-card .gal-cats .listing-category { font-size: 0.66rem; font-weight: 700; padding: 0.12rem 0.55rem; border-radius: 20px; text-decoration: none; cursor: pointer;
+  font-variant: small-caps; letter-spacing: 0.03em;
+  background: color-mix(in srgb, var(--c, var(--gal-accent)) 12%, var(--gal-panel)); color: var(--gal-accent);
+  border: 1px solid color-mix(in srgb, var(--c, var(--gal-accent)) 30%, var(--gal-chip-line)); }
+.gal-card .gal-cats .listing-category:hover { background: color-mix(in srgb, var(--c, var(--gal-accent)) 26%, var(--gal-panel)); }
+.gal-card .gal-cats .listing-category:focus-visible { outline: 2px solid var(--gal-ring); outline-offset: 2px; }
+
+// keep the browse-page category facet from dominating the page height
+.quarto-listing-category { position: sticky; top: 4rem; max-height: calc(100vh - 6rem); overflow-y: auto; }
+// category values are stored lower case; present them as small caps everywhere
+.quarto-listing-category .category { font-variant: small-caps; letter-spacing: 0.02em; }
+.gal-browse-chips a { font-variant: small-caps; letter-spacing: 0.02em; }
+.gal-card .why { font-size: 0.75rem; color: var(--gal-muted); line-height: 1.4; margin: 0.1rem 0 0; }
+.gal-card .foot { margin-top: auto; padding-top: 0.6rem; border-top: 1px solid var(--gal-line); display: flex; gap: 1rem; align-items: center; }
+.gal-card .foot a { font-size: 0.75rem; text-decoration: none; font-weight: 700; color: var(--gal-accent); display: inline-flex; gap: 0.25rem; align-items: center; }
+.gal-card .foot a:focus-visible { outline: 2px solid var(--gal-ring); outline-offset: 2px; border-radius: 3px; }
+
+.gal-card.ghost { border-style: dashed; background: color-mix(in srgb, var(--gal-panel) 70%, var(--gal-bg)); }
+.gal-card.ghost .body { align-items: center; justify-content: center; text-align: center; color: var(--gal-muted); gap: 0.25rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .gal-choice, .gal-card, .gal-rail, .gal-rail ul, .gal-rail__link, .gal-rail__label { transition: none; }
+}
