@@ -1,5 +1,5 @@
 ```{=html}
-<h3 class="no-anchor" id="choose-your-tool-heading">Choose your tool</h3>
+<p class="h3" id="choose-your-tool-heading">Choose your tool</p>
 <nav aria-labelledby="choose-your-tool-heading">
 <ul id="choose-your-tool" class="nav nav-tabs">
   <li class="nav-item">
