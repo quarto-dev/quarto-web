@@ -2,6 +2,14 @@
 $link-color: #39729E;
 $text-muted: #6a737b;
 
+// Align light mode with the site's brand blue (theme-dark.scss $blue).
+// This also clears the white-on-primary contrast failures on cosmo's
+// #2780e3 (3.97:1): .btn-primary, .text-bg-primary badges, and Quarto's
+// notebook-preview header, whose h6 Quarto dims to opacity .9 (axe
+// color-contrast-b09c0e, -50505e). White on #447099 is 5.22:1; the faded
+// h6 is 4.59:1.
+$primary: #447099;
+
 // Quarto's body-secondary mixin (blockquotes, captions, asides, header
 // section numbers) defaults to theme-dim($body-color, 25%) = #6d7a86, only
 // 4.39:1 on white — a WCAG AA 1.4.3 failure (axe color-contrast-7ed054).
@@ -32,7 +40,7 @@ $code-block-bg: #eff2f5;
 }
 
 .layout-example {
-  background: $gray-500;
+  background: $gray-600;
   color: $white;
   text-align: center;
   margin-bottom: 1em;
@@ -63,4 +71,19 @@ $code-block-bg: #eff2f5;
 
 #quarto-announcement a {
   color: $white;
+}
+
+// Toolbar icons in prose: shown as a key cap, without <kbd> (see _style-guide.md).
+// Extends Quarto's .kbd so light and dark themes each pick up their own colors.
+img.ui-icon {
+  @extend .kbd;
+  padding: 0.15rem 0.3rem;
+  vertical-align: middle;
+  box-sizing: content-box;
+}
+
+// Quarto's title-block.scss sets `.quarto-category { opacity: 0.6 }`.
+// That drops the category chips below 4.5:1 (2.77 light, 3.43 dark).
+.quarto-title .quarto-categories .quarto-category {
+  opacity: 1;
 }
