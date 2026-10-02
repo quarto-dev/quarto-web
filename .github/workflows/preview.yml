@@ -143,18 +143,6 @@ jobs:
           overwrites-pull-request-comment: false
         timeout-minutes: 1
 
-      # The `axe` job scans this render instead of rendering again. One tar
-      # file uploads much faster than the thousands of files in _site.
-      - name: Pack the rendered site for the axe scan
-        run: tar -cf site.tar _site
-
-      - name: Upload the rendered site
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: site
-          path: site.tar
-          retention-days: 1
-
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
@@ -194,6 +182,9 @@ jobs:
             **/_*.md
             **/_*.qmd
             docs/**/_*/**
+          # The weekly report workflow commits this file, and release merges
+          # carry it. It changes one page only, so it needs no full scan.
+          files_ignore: _axe-report.md
 
       - name: Map changed images to doc pages
         id: image-pages
@@ -342,9 +333,24 @@ jobs:
               body: commentBody
             });
 
+      # The `axe` job scans this render instead of rendering again. One tar
+      # file uploads much faster than the thousands of files in _site.
+      # These steps come after the PR comment, so the preview links are not
+      # delayed.
+      - name: Pack the rendered site for the axe scan
+        run: tar -cf site.tar _site
+
+      - name: Upload the rendered site
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: site
+          path: site.tar
+          retention-days: 1
+          overwrite: true # a re-run uploads again
+
   axe:
-    # Scan the preview render with `quarto call axe`. Runs after the deploy,
-    # so the preview is never slower because of it. Scans only the pages the
+    # Scan the preview render with `quarto call axe`. Runs after the deploy
+    # and the PR comment, so the preview is not delayed by it. Scans only the pages the
     # PR touches, or the whole site when a change can reach every page.
     # See accessibility/site-report.qmd and .github/workflows/axe-report.yml.
     name: Axe accessibility scan
@@ -381,11 +387,22 @@ jobs:
         env:
           AXE_FULL: ${{ needs.build-deploy-preview.outputs.axe_full }}
           AXE_PAGES: ${{ needs.build-deploy-preview.outputs.axe_pages }}
-        # .github/axe-exclude.txt lists the pages to skip and why. The
+        # _axe-exclude.txt lists the pages to skip and why. The
         # excludes apply after --pages, so a PR that edits one of them is
         # not blocked.
         run: |
-          AXE_EXCLUDE=$(grep -v -e '^#' -e '^[[:space:]]*$' .github/axe-exclude.txt | paste -sd, -)
+          AXE_EXCLUDE=$(grep -v -e '^#' -e '^[[:space:]]*$' _axe-exclude.txt | paste -sd, -)
+          if [ "$AXE_FULL" != "true" ]; then
+            # Keep only the pages that rendered. A changed file can be a
+            # README, a file in an example sub-project, or a deleted page.
+            AXE_PAGES=$(tr ',' '\n' <<< "$AXE_PAGES" | while read -r page; do
+              if [ -f "_site/$page" ]; then echo "$page"; fi
+            done | paste -sd, -)
+            if [ -z "$AXE_PAGES" ]; then
+              echo "No changed page rendered: nothing to scan"
+              exit 0
+            fi
+          fi
           set +e
           if [ "$AXE_FULL" = "true" ]; then
             echo "Site-wide change: scanning the whole site"
@@ -405,7 +422,9 @@ jobs:
 
       - name: Write the report to the job summary
         if: always() && steps.scan.outputs.exit_code != ''
-        run: cat _axe-checks/report.md >> "$GITHUB_STEP_SUMMARY"
+        # A scan that exits 2 early may not write the report.
+        run: |
+          [ -f _axe-checks/report.md ] && cat _axe-checks/report.md >> "$GITHUB_STEP_SUMMARY" || true
 
       - name: Upload scan artifacts
         if: always() && steps.scan.outputs.exit_code != ''
