@@ -187,6 +187,22 @@ quarto preview --profile prerelease,prerelease-docs
 
 Our GitHub Action workflows are documented in [`.github/workflows/README.md`](.github/workflows/README.md)
 
+## Accessibility baseline
+
+`_axe-baseline.json` lists the accessibility findings that `quarto call axe` reports as known, not new. Each entry is a finding that quarto-web cannot fix in its own content, a false positive, or an intentional example.
+
+Each entry has a `note` in this format:
+
+```
+<type>: <issue-ref>. <Description>.
+```
+
+- `<type>` is `upstream`, `third-party`, `false-positive`, or `intentional`. For `third-party`, add the library name: `third-party: leaflet, <issue-ref>.`
+- `<issue-ref>` is a full `org/repo#number` reference, for example `quarto-dev/quarto-cli#14378`. If no issue exists, write `no upstream issue`.
+- The description gives the cause and the condition to remove the entry. If the entry is limited to some pages, it also gives the reason.
+
+Do not use Markdown links in a note. Do not add commentary, for example the age of an issue.
+
 ## Style Guide
 
 You can find some style guidance in [_style-guide.md](_style-guide.md).
