@@ -81,6 +81,9 @@ jobs:
         # .github/axe-exclude.txt lists the pages to skip and why.
         run: |
           AXE_EXCLUDE=$(grep -v -e '^#' -e '^[[:space:]]*$' .github/axe-exclude.txt | paste -sd, -)
+          # Remove the committed report so a scan that stops early cannot
+          # leave last week's results in the job summary.
+          rm _axe-report.md
           set +e
           quarto call axe _site --exclude "$AXE_EXCLUDE" --report _axe-report.md
           code=$?
@@ -95,7 +98,11 @@ jobs:
 
       - name: Write the report to the job summary
         if: always() && steps.scan.outputs.exit_code != ''
-        run: cat _axe-report.md >> "$GITHUB_STEP_SUMMARY"
+        # A scan that stops early may not write a report.
+        run: |
+          if [ -f _axe-report.md ]; then
+            cat _axe-report.md >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Upload scan artifacts
         if: always() && steps.scan.outputs.exit_code != ''
@@ -106,9 +113,10 @@ jobs:
           retention-days: 90
 
       - name: Stamp the report with the scanned commit
-        env:
-          SHA: ${{ github.sha }}
         run: |
+          # The checkout is always main, so github.sha is wrong on a manual
+          # run started from another branch.
+          SHA=$(git rev-parse HEAD)
           # The report opens with its own h1, which would be a second h1 on
           # the page that includes it. Replace that line with the commit the
           # scan describes.
