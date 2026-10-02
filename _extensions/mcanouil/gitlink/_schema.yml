@@ -1,0 +1,147 @@
+# Schema for the gitlink extension
+# Describes options for IDE tooling and runtime validation.
+
+# Extension-level metadata options.
+# Configured in _quarto.yml, _metadata.yml, or document front matter:
+#   extensions:
+#     gitlink:
+#       platform: "github"
+#       repository-name: "owner/repo"
+
+$schema: https://m.canouil.dev/quarto-wizard/assets/schema/v2/extension-schema.json
+
+options:
+  enabled:
+    type: boolean
+    default: true
+    description: "Whether the filter is enabled for the document, set to false in drafts or templates to opt out of link rewriting."
+  platform:
+    type: string
+    default: "github"
+    description: "Git hosting platform to use for link generation."
+    enum:
+      - github
+      - gitlab
+      - codeberg
+      - gitea
+      - bitbucket
+    enumCaseInsensitive: true
+  repository-name:
+    type: string
+    description: "Repository in 'owner/repo' format, auto-detected from the git remote when not set."
+  base-url:
+    type: string
+    description: "Base URL for the Git hosting platform, defaulting to the platform's standard URL."
+  custom-platforms-file:
+    type: string
+    description: "Path to a YAML file defining custom platform configurations."
+    completion:
+      type: file
+      extensions:
+        - .yml
+        - .yaml
+  show-platform-badge:
+    type: boolean
+    default: true
+    description: "Whether to display a platform badge alongside generated links."
+  badge-position:
+    type: string
+    default: "after"
+    description: "Position of the platform badge relative to the link."
+    enum:
+      - after
+      - before
+  badge-background-colour:
+    type: string
+    default: "#c3c3c3"
+    description: "Background colour for the platform badge as a hex code or CSS named colour."
+    aliases:
+      - badge-background-color
+    completion:
+      type: color
+  badge-text-colour:
+    type: string
+    description: "Text colour for the platform badge as a hex code or CSS named colour."
+    aliases:
+      - badge-text-color
+    completion:
+      type: color
+  normalize-links:
+    type: boolean
+    default: true
+    description: "Whether to shorten platform URLs used as autolink text, so <https://github.com/owner/repo/issues/1> becomes #1."
+  fetch-titles:
+    type: boolean
+    default: false
+    description: "Whether to fetch the page title for autolinked platform URLs and use it as the link text, requiring network access via curl."
+  mentions:
+    type: array
+    description: "List of citation IDs to force-treat as Git hosting mentions even when a bibliography reference with the same id exists."
+    items:
+      type: string
+  widget:
+    type: object
+    description: "Repository widget showing live star/fork counts and a dropdown of repository links, replacing every navbar item, sidebar tool, or sidebar contents item with href '#gitlink-widget'. HTML websites only."
+    additionalProperties: false
+    properties:
+      enabled:
+        type: boolean
+        default: false
+        description: "Whether to inject the widget. Independent of the top-level 'enabled' option, so a site can run widget-only."
+      links:
+        type: object
+        description: "Toggles for the platform-derived default menu entries."
+        additionalProperties: false
+        properties:
+          issues:
+            type: boolean
+            default: true
+            description: "Whether to include the Issues link."
+          pull-requests:
+            type: boolean
+            default: true
+            description: "Whether to include the Pull Requests (or Merge Requests) link."
+          releases:
+            type: boolean
+            default: true
+            description: "Whether to include the Releases link."
+          discussions:
+            type: boolean
+            default: false
+            description: "Whether to include the Discussions link, on platforms that support discussions."
+          star:
+            type: boolean
+            default: true
+            description: "Whether to include the Add a Star link."
+          fork:
+            type: boolean
+            default: true
+            description: "Whether to include the Create a Fork link."
+      extra-links:
+        type: array
+        description: "Additional dropdown entries appended after the default set. Hrefs starting with '/' are resolved against the repository URL."
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            text:
+              type: string
+              required: true
+              description: "Link label."
+            href:
+              type: string
+              required: true
+              description: "Link target, absolute or relative to the repository URL when starting with '/'."
+            icon:
+              type: string
+              description: "Icon name from Quarto's bundled Bootstrap Icons (same names as navbar tools), or one of the widget's embedded octicons (see the README for the full list; embedded names win). For anything else, put a shortcode (e.g. iconify) in 'text' instead."
+      sponsor:
+        type: string
+        description: "Username for a Sponsor entry, on platforms that define a sponsor URL (GitHub)."
+      icon:
+        type: string
+        description: "Trigger icon override: a Bootstrap icon name (as bundled with Quarto) or one of the widget's embedded icons. Defaults to the platform mark."
+      style-navbar-tools:
+        type: boolean
+        default: false
+        description: "Whether to also apply the widget's bordered pill style to Quarto's navbar search button and colour-scheme toggle; sizing and spacing always match the widget."
