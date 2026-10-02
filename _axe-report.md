@@ -1,1 +1,283 @@
-No scan has run yet. The Axe Report workflow writes this file.
+Results for [quarto.org](https://quarto.org) at commit [`7e23a2de6`](https://github.com/quarto-dev/quarto-web/tree/7e23a2de6c9e84a3d87a3cb17aee4f5d480b4ded), scanned October 2, 2026.
+
+# axe site audit
+
+372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.5 · generated 2026-10-02T18:43:52.590Z
+
+> **Partial scan** (`--exclude docs/get-started/*/index.html,docs/manuscripts/authoring/index.html`) — counts describe this subset, not the whole site. A one-page rescan proves an instance is gone, not that the finding is fixed on other pages.
+
+**5 new findings** · 128 baselined (known, listed at the end). A finding on many pages usually repeats from a shared source — fixing it once fixes them all.
+
+## New findings
+
+| id | standard | impact | pages | instances | detail |
+|---|---|---|---:|---:|---|
+| [`image-alt-299f15`](#image-alt-299f15) | WCAG 2.0 A | critical | 1 | 1 | Element does not have an alt attribute |
+| [`image-alt-54f051`](#image-alt-54f051) | WCAG 2.0 A | critical | 1 | 1 | Element does not have an alt attribute |
+| [`link-name-faac6c`](#link-name-faac6c) | WCAG 2.0 A | serious | 1 | 1 | Element is in tab order and does not have accessible text |
+| [`link-name-79a8bc`](#link-name-79a8bc) | WCAG 2.0 A | serious | 1 | 1 | Element is in tab order and does not have accessible text |
+| [`empty-table-header-4123ba`](#empty-table-header-4123ba) | Best Practice | minor | 1 | 1 | Element does not have text that is visible to screen readers |
+
+### Occurrences
+
+#### image-alt-299f15
+
+<details>
+<summary>Images must have alternative text (1 instance on 1 page)</summary>
+
+**Standard:** WCAG 2.0 A (1.1.1) · **Impact:** critical · **Signature:** `image-alt :: .odd > td > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a > .figure-img.img-fluid[src$="elephant.png"]`
+
+**Problem:** Element does not have an alt attribute
+
+Reference: <https://dequeuniversity.com/rules/axe/4.10/image-alt?application=axeAPI>
+
+| page | cells (width·mode) | selector | element |
+|---|---|---|---|
+| docs/authoring/markdown-basics.html | 1440x900·light, 320x568·light | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"] > .figure-img.img-fluid[src$="elephant.png"]` | `<img src="elephant.png" class="img-fluid figure-img">` |
+
+</details>
+
+#### image-alt-54f051
+
+<details>
+<summary>Images must have alternative text (1 instance on 1 page)</summary>
+
+**Standard:** WCAG 2.0 A (1.1.1) · **Impact:** critical · **Signature:** `image-alt :: .odd > td > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a > .figure-img.img-fluid[src$="elephant-dark.png"]`
+
+**Problem:** Element does not have an alt attribute
+
+Reference: <https://dequeuniversity.com/rules/axe/4.10/image-alt?application=axeAPI>
+
+| page | cells (width·mode) | selector | element |
+|---|---|---|---|
+| docs/authoring/markdown-basics.html | 1440x900·dark, 320x568·dark | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"] > .figure-img.img-fluid[src$="elephant-dark.png"]` | `<img src="elephant-dark.png" class="img-fluid figure-img">` |
+
+</details>
+
+#### link-name-faac6c
+
+<details>
+<summary>Links must have discernible text (1 instance on 1 page)</summary>
+
+**Standard:** WCAG 2.0 A (2.4.4, 4.1.2) · **Impact:** serious · **Signature:** `link-name :: .odd > td > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a`
+
+**Problem:** Element is in tab order and does not have accessible text
+
+Reference: <https://dequeuniversity.com/rules/axe/4.10/link-name?application=axeAPI>
+
+| page | cells (width·mode) | selector | element |
+|---|---|---|---|
+| docs/authoring/markdown-basics.html | 1440x900·light, 320x568·light | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"]` | `<a href="https://quarto.org/" data-original-href="https://quarto.org/"><img src="elephant.png" class="img-fluid figure-img"></a>` |
+
+</details>
+
+#### link-name-79a8bc
+
+<details>
+<summary>Links must have discernible text (1 instance on 1 page)</summary>
+
+**Standard:** WCAG 2.0 A (2.4.4, 4.1.2) · **Impact:** serious · **Signature:** `link-name :: .odd > td > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a`
+
+**Problem:** Element is in tab order and does not have accessible text
+
+Reference: <https://dequeuniversity.com/rules/axe/4.10/link-name?application=axeAPI>
+
+| page | cells (width·mode) | selector | element |
+|---|---|---|---|
+| docs/authoring/markdown-basics.html | 1440x900·dark, 320x568·dark | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"]` | `<a href="https://quarto.org/" data-original-href="https://quarto.org/"><img src="elephant-dark.png" class="img-fluid figure-img"></a>` |
+
+</details>
+
+#### empty-table-header-4123ba
+
+<details>
+<summary>Table header text should not be empty (1 instance on 1 page)</summary>
+
+**Standard:** Best Practice · **Impact:** minor · **Signature:** `empty-table-header :: #oi-3a86ea > table > thead > tr > th`
+
+**Problem:** Element does not have text that is visible to screen readers
+
+Reference: <https://dequeuniversity.com/rules/axe/4.10/empty-table-header?application=axeAPI>
+
+| page | cells (width·mode) | selector | element |
+|---|---|---|---|
+| docs/interactive/ojs/data-sources.html | 1440x900·dark, 320x568·dark, 320x568·light | `#oi-3a86ea-1 > table > thead > tr > th:nth-child(1)` | `<th><input type="checkbox"></th>` |
+
+</details>
+
+## Baselined (known, accepted)
+
+| id | standard | impact | pages | instances | why accepted |
+|---|---|---|---:|---:|---|
+| `label-e931f5` | WCAG 2.0 A | critical | 3 | 69 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
+| `aria-allowed-attr-8b2e6a` | WCAG 2.0 A | critical | 7 | 8 | upstream: quarto-dev/quarto-cli#4934. Collapsed callouts use a &lt;div&gt; with aria-expanded instead of the ARIA disclosure pattern. |
+| `label-ab5f69` | WCAG 2.0 A | critical | 6 | 6 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled range inputs. |
+| `aria-allowed-attr-de1fc3` | WCAG 2.0 A | critical | 4 | 4 | upstream: quarto-dev/quarto-cli#4934. Collapsed callouts use a &lt;div&gt; with aria-expanded instead of the ARIA disclosure pattern. Scoped to these pages because .collapsed is the generic Bootstrap collapse class. |
+| `label-abe29f` | WCAG 2.0 A | critical | 1 | 3 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. When Quarto updates Inputs (quarto-dev/quarto-cli#14934), the class becomes .inputs-3a86ea-input, so replace this entry. |
+| `label-3c2086` | WCAG 2.0 A | critical | 1 | 3 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. When Quarto updates Inputs (quarto-dev/quarto-cli#14934), the class becomes .inputs-3a86ea-input, so replace this entry. |
+| `label-97e48d` | WCAG 2.0 A | critical | 2 | 2 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
+| `aria-required-parent-2a955c` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14755. Margin citations keep role="listitem", but Quarto removes their role="list" parent when it moves them to the margin. |
+| `image-alt-109037` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14769. The {{&lt; placeholder &gt;}} shortcode makes an &lt;img&gt; with no alt attribute. Scoped to this page because the signature also matches content images with no alt text on other pages. |
+| `image-alt-4d0f7b` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14769. The {{&lt; placeholder &gt;}} shortcode makes an &lt;img&gt; with no alt attribute. Scoped to this page because the signature also matches content images with no alt text on other pages. |
+| `label-056181` | WCAG 2.0 A | critical | 1 | 1 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
+| `aria-allowed-attr-3b0a3f` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#4934. Collapsed callouts use a &lt;div&gt; with aria-expanded instead of the ARIA disclosure pattern. |
+| `scrollable-region-focusable-7f835c` | WCAG 2.0 A | serious | 96 | 263 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `aria-prohibited-attr-08001a` | WCAG 2.0 A | serious | 4 | 57 | upstream: quarto-dev/quarto-cli#14961. revealjs removes the href from code line-number links, so the aria-label from quarto-dev/quarto-cli#14662 is on an &lt;a&gt; that is not a link. Scoped to these revealjs decks because the signature also matches line numbers on format: html pages and other labeled links. |
+| `aria-prohibited-attr-b3114f` | WCAG 2.0 A | serious | 3 | 30 | upstream: quarto-dev/quarto-cli#14961. revealjs removes the href from code line-number links, so the aria-label from quarto-dev/quarto-cli#14662 is on an &lt;a&gt; that is not a link. Scoped to these revealjs decks because the signature also matches line numbers on format: html pages and other labeled links. |
+| `scrollable-region-focusable-4fb120` | WCAG 2.0 A | serious | 25 | 25 | upstream: quarto-dev/quarto-cli#14817. The revealjs template gives slides overflow-y: auto, and the arrow keys move between slides instead of scrolling, so keyboard users cannot reach overflowing content. Flagged at 320px, where reveal.js switches to scroll view; a short viewport also brings back the slide scrollbar. Scoped to these revealjs decks. |
+| `scrollable-region-focusable-37ee42` | WCAG 2.0 A | serious | 7 | 13 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `frame-title-7be574` | WCAG 2.0 A | serious | 2 | 13 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `aria-prohibited-attr-5e781d` | WCAG 2.0 A | serious | 7 | 7 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-5c1e46` | WCAG 2.0 A | serious | 7 | 7 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `scrollable-region-focusable-7bcfa1` | WCAG 2.0 A | serious | 5 | 7 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `aria-prohibited-attr-cac6c7` | WCAG 2.0 A | serious | 6 | 6 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `aria-prohibited-attr-c1244d` | WCAG 2.0 A | serious | 5 | 5 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `summary-name-881a03` | WCAG 2.0 A | serious | 4 | 4 | third-party: vega-embed, no upstream issue. The vega-embed actions menu is a &lt;details&gt; whose &lt;summary&gt; holds only an icon SVG. The label is a title on the &lt;details&gt;, and VoiceOver reads it. Scoped to these Altair pages because the signature also matches other &lt;summary&gt; elements with no text. |
+| `scrollable-region-focusable-3b5f0f` | WCAG 2.0 A | serious | 4 | 4 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-2f9bbd` | WCAG 2.0 A | serious | 4 | 4 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-c6d335` | WCAG 2.0 A | serious | 4 | 4 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `aria-prohibited-attr-321313` | WCAG 2.0 A | serious | 2 | 4 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-066f44` | WCAG 2.0 A | serious | 2 | 4 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-cdaa10` | WCAG 2.0 A | serious | 2 | 4 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `frame-title-cb63be` | WCAG 2.0 A | serious | 1 | 4 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-7513ef` | WCAG 2.0 A | serious | 1 | 3 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `link-name-a6cfcf` | WCAG 2.0 A | serious | 2 | 2 | upstream: quarto-dev/quarto-cli#14249. The bundled reveal.js-menu plugin makes the menu button an &lt;a href="#"&gt; with only an icon, so it has no accessible name. The upstream plugin is archived, so the fix goes into the copy in Quarto. Clears when quarto-dev/quarto-cli#14251 ships. |
+| `link-in-text-block-7b0c90` | WCAG 2.0 A | serious | 2 | 2 | third-party: leaflet, no upstream issue. The ESDIS link in the leaflet tile attribution is #0078a8 on the #343a40 page text, 2.32:1. Scoped to these leaflet pages because the signature also matches other low-contrast links. |
+| `scrollable-region-focusable-37e708` | WCAG 2.0 A | serious | 1 | 2 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-2add8a` | WCAG 2.0 A | serious | 1 | 2 | third-party: the @uwdata/arquero Observable notebook, no upstream issue. The .view() method of the @uwdata/arquero Observable notebook puts the table in a &lt;div style="max-height: 270px; overflow: auto"&gt; with no tabindex, so keyboard users cannot scroll it. The notebook is not in a repo. Scoped to the Arquero example page. |
+| `aria-prohibited-attr-f1d7f8` | WCAG 2.0 A | serious | 1 | 2 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-3d5831` | WCAG 2.0 A | serious | 1 | 2 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-23aa6d` | WCAG 2.0 A | serious | 1 | 2 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `aria-prohibited-attr-0a7a48` | WCAG 2.0 A | serious | 1 | 2 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `scrollable-region-focusable-291419` | WCAG 2.0 A | serious | 1 | 2 | upstream: quarto-dev/quarto-cli#14817. The revealjs template gives slides overflow-y: auto, and the arrow keys move between slides instead of scrolling, so keyboard users cannot reach overflowing content. Every slide scrolls here because the deck sets scrollable: true. Scoped to this deck. |
+| `scrollable-region-focusable-c7adfa` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-39de8a` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-d747e7` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-04c370` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `frame-title-2cefe5` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `scrollable-region-focusable-02d2a3` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-9feb03` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-10bdb5` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-44bee2` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-56a26c` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-aa283e` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-677ae2` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-0af957` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-d61978` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-b53c42` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-59a47b` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-d28152` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-9a0b40` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-bb382b` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `aria-prohibited-attr-d00141` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `aria-prohibited-attr-568759` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-d37eaa` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-515297` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `scrollable-region-focusable-8202fb` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `aria-prohibited-attr-e4daa5` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-b4c9fd` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#2018. Observable Plot puts an aria-label with no role on axis tick and grid &lt;g&gt; elements. Plot 0.6.14 fixed this, but Quarto bundles Plot 0.6.11. Remove when Quarto updates Plot (quarto-dev/quarto-cli#14934). |
+| `aria-prohibited-attr-b5f629` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `aria-prohibited-attr-3d36c9` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `aria-prohibited-attr-6960fe` | WCAG 2.0 A | serious | 1 | 1 | third-party: Observable Plot, observablehq/plot#1760. Observable Plot puts an aria-label with no role on the &lt;g&gt; of every mark, on purpose (observablehq/plot#944). Still occurs in Plot 0.6.17. |
+| `scrollable-region-focusable-6e4c77` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-f571d3` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-c5d074` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-1d2df2` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-7ebabb` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-070cea` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `frame-title-02a9a3` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-d0d12c` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-d8f635` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-f78bd6` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `scrollable-region-focusable-b05698` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14817. The revealjs template gives slides overflow-y: auto, and the arrow keys move between slides instead of scrolling, so keyboard users cannot reach overflowing content. Here the scroller is the Slides panel of the slide menu. Scoped to this deck. |
+| `scrollable-region-focusable-689d30` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14817. The revealjs template gives slides overflow-y: auto, and the arrow keys move between slides instead of scrolling, so keyboard users cannot reach overflowing content. Here it is a code block (.reveal pre code has overflow: auto). Did not reproduce in a local render, so it can disappear from a scan. Scoped to this deck. |
+| `scrollable-region-focusable-3bdd66` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14817. The revealjs template gives slides overflow-y: auto, and the arrow keys move between slides instead of scrolling, so keyboard users cannot reach overflowing content. Scoped to this deck. |
+| `frame-title-3c8c8f` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-7335de` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-660be3` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-76e50d` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-73f91f` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-15909c` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-4a0b3d` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-bf3007` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-542f85` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `frame-title-9d882c` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
+| `scrollable-region-focusable-b99d66` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-ebcf08` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-04b933` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-7b7154` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `scrollable-region-focusable-5bf272` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `meta-viewport-cb66a4` | WCAG 2.0 AA | critical | 39 | 39 | upstream: quarto-dev/quarto-cli#14952. The revealjs template sets maximum-scale=1.0, user-scalable=no on every deck, so text cannot be resized. |
+| `color-contrast-aef353` | WCAG 2.0 AA | serious | 2 | 22 | third-party: Arquero, no upstream issue. The Arquero table viewer sets background: #fff on its sticky header in an inline style, so in dark mode the header text gets the light theme text color. Scoped to the two pages with the viewer. |
+| `color-contrast-78b899` | WCAG 2.0 AA | serious | 2 | 21 | upstream: quarto-dev/quarto-cli#14959. revealjs line highlighting fades the other lines to opacity 0.4. No opacity value meets 4.5:1 and still shows the highlight. |
+| `color-contrast-0e3605` | WCAG 2.0 AA | serious | 1 | 15 | third-party: dygraphs, rstudio/dygraphs#241. dygraph.js 1.1.1 sets the axis-label color in an inline style, so CSS cannot change it. Clears when the R dygraphs package bundles dygraph.js 2.0 or later. Scoped to this page because the same signature on penguins-preview.html is a Quarto defect. |
+| `color-contrast-342bf5` | WCAG 2.0 AA | serious | 2 | 5 | upstream: quarto-dev/quarto-cli#14959. revealjs line highlighting fades the other lines to opacity 0.4. No opacity value meets 4.5:1 and still shows the highlight. |
+| `color-contrast-a80056` | WCAG 2.0 AA | serious | 2 | 2 | third-party: leaflet, no upstream issue. The text color of the leaflet attribution control does not change in the Quarto dark theme, because leaflet.css has no dark theme. |
+| `color-contrast-9cb880` | WCAG 2.0 AA | serious | 2 | 2 | third-party: leaflet, no upstream issue. The link color of the leaflet attribution control does not change in the Quarto dark theme, because leaflet.css has no dark theme. |
+| `color-contrast-eb795e` | WCAG 2.0 AA | serious | 1 | 2 | upstream: quarto-dev/quarto-cli#14959. revealjs line highlighting fades the other lines to opacity 0.4. No opacity value meets 4.5:1 and still shows the highlight. |
+| `color-contrast-625978` | WCAG 2.0 AA | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14962. The default revealjs $link-color #2a76dd is 4.44:1 on #fff, which fails for small text such as the footer link. Flagged only at 320x568; at wider viewports reveal.js scales the slide and axe marks the contrast incomplete. Scoped to the demo deck. |
+| `color-contrast-f8f4b2` | WCAG 2.0 AA | serious | 1 | 1 | false-positive: no upstream issue. When the revealjs slide menu is closed, about 12px of a long slide title shows at the slide edge, and axe measures it against the white slide. When the menu is open, the text is #aaaaaa on #333333, 5.44:1. Scoped to this deck. |
+| `color-contrast-650337` | WCAG 2.0 AA | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14963. Below 30em, the selected revealjs tab has a #bbbbbb fill, so its #2a76dd text is 2.31:1. Scoped to the tabset example. |
+| `tabindex-aabcdd` | Best Practice | serious | 2 | 4 | upstream: quarto-dev/quarto-cli#14970. tabby.js gives revealjs tabset tabs tabindex 1, 2, and so on, so Tab on an earlier slide moves focus to a tab on a hidden slide. Related to quarto-dev/quarto-cli#14795. |
+| `landmark-complementary-is-top-level-be40a0` | Best Practice | moderate | 36 | 36 | upstream: hakimel/reveal.js#3369. reveal.js renders the slide controls as &lt;aside class="controls"&gt; inside div.reveal[role=application], so the controls are a complementary landmark inside another landmark. Scoped to these decks because the signature also matches other nested &lt;aside&gt; elements. |
+| `region-f0f230` | Best Practice | moderate | 2 | 2 | upstream: quarto-dev/quarto-cli#14968. The notebook preview header (#quarto-embed-header) is a plain &lt;div&gt; outside every landmark. penguins-qmd.embed-preview.html is rendered only when .quarto/ does not exist (quarto-dev/quarto-cli#10756). |
+| `region-4d3a2b` | Best Practice | moderate | 2 | 2 | upstream: quarto-dev/quarto-cli#14969. The collapsed TOC toggle is a plain &lt;div&gt; outside every landmark, and a keyboard cannot reach or open it. Flagged only at 320px, where a .column-page-right image on these pages covers the margin TOC. |
+| `landmark-no-duplicate-banner-fc5ea1` | Best Practice | moderate | 1 | 1 | upstream: quarto-dev/quarto-cli#14375. title-block-banner moves #title-block-header out of &lt;main&gt;, so the page has two top-level banners. Scoped to this post, the only rendered post with a title banner. |
+| `landmark-unique-28ed54` | Best Practice | moderate | 1 | 1 | upstream: quarto-dev/quarto-cli#14375. title-block-banner moves #title-block-header out of &lt;main&gt;, so the page has two top-level banners. Scoped to this post, the only rendered post with a title banner. |
+| `landmark-complementary-is-top-level-ba6484` | Best Practice | moderate | 1 | 1 | upstream: hakimel/reveal.js#3369. reveal.js renders the slide controls as &lt;aside class="controls"&gt; inside div.reveal[role=application], so the controls are a complementary landmark inside another landmark. |
+| `presentation-role-conflict-d28437` | Best Practice | minor | 4 | 4 | third-party: leaflet, no upstream issue. leaflet.js gives each marker icon &lt;img&gt; alt="" and also tabindex="0", so it is presentational and focusable at the same time. |
+| `empty-table-header-4a7d27` | Best Practice | minor | 3 | 3 | third-party: knitr, yihui/knitr#1747. kable() leaves the corner cell above the row names as an empty &lt;th&gt; on purpose. yihui/knitr#2500 added scope to the other header cells but kept this cell empty. |
+| `aria-allowed-role-41c7c4` | Best Practice | minor | 2 | 2 | third-party: leaflet, no upstream issue. leaflet.js gives each marker icon &lt;img&gt; role="button", which is not a valid role for &lt;img&gt;. |
+| `empty-table-header-43b939` | Best Practice | minor | 2 | 2 | third-party: Observable Inputs, no upstream issue. The Inputs.table select-all header cell holds only an unlabeled checkbox, so axe reports an empty header. Scoped to these pages because th matches any empty header cell. |
+| `empty-heading-5c4dd5` | Best Practice | minor | 1 | 2 | intentional: quarto-dev/quarto-cli#14971. The Slide Backgrounds Without a Title example shows slides with only background attributes, so each slide renders an empty &lt;h2&gt;. Scoped to this deck because the signature also matches empty headings on other decks. |
+| `empty-table-header-fd713f` | Best Practice | minor | 1 | 1 | third-party: knitr, yihui/knitr#1747. kable() leaves the corner cell above the row names as an empty &lt;th&gt; on purpose. yihui/knitr#2500 added scope to the other header cells but kept this cell empty. |
+| `empty-table-header-49301b` | Best Practice | minor | 1 | 1 | third-party: knitr, yihui/knitr#1747. kable() leaves the corner cell above the row names as an empty &lt;th&gt; on purpose. yihui/knitr#2500 added scope to the other header cells but kept this cell empty. |
+| `empty-table-header-5a226a` | Best Practice | minor | 1 | 1 | third-party: knitr, yihui/knitr#1747. kable() leaves the corner cell above the row names as an empty &lt;th&gt; on purpose. yihui/knitr#2500 added scope to the other header cells but kept this cell empty. |
+| `presentation-role-conflict-fb9721` | Best Practice | minor | 1 | 1 | third-party: leaflet, no upstream issue. leaflet.js gives each marker icon &lt;img&gt; alt="" and also tabindex="0", so it is presentational and focusable at the same time. axe adds the random htmlwidget ID because this page has three maps; update the ID when the page is refrozen. |
+| `presentation-role-conflict-2ffcd8` | Best Practice | minor | 1 | 1 | third-party: leaflet, no upstream issue. leaflet.js gives each marker icon &lt;img&gt; alt="" and also tabindex="0", so it is presentational and focusable at the same time. axe adds the random htmlwidget ID because this page has three maps; update the ID when the page is refrozen. |
+| `presentation-role-conflict-236e24` | Best Practice | minor | 1 | 1 | third-party: leaflet, no upstream issue. leaflet.js gives each marker icon &lt;img&gt; alt="" and also tabindex="0", so it is presentational and focusable at the same time. axe adds the random htmlwidget ID because this page has three maps; update the ID when the page is refrozen. |
+| `empty-table-header-4d7182` | Best Practice | minor | 1 | 1 | third-party: knitr, yihui/knitr#1747. kable() leaves the corner cell above the row names as an empty &lt;th&gt; on purpose. yihui/knitr#2500 added scope to the other header cells but kept this cell empty. |
+
+## Redirect stubs (skipped, not content)
+
+- `docs/authoring/cross-references-callouts.html` → `cross-references.html`
+- `docs/authoring/cross-references-listings.html` → `cross-references.html`
+- `docs/authoring/figure-layout.html` → `figures.html`
+- `docs/authoring/figures-and-layout.html` → `figures.html`
+- `docs/authoring/filters.html` → `../extensions/filters.html`
+- `docs/authoring/footnotes-and-citations.html` → `citations.html`
+- `docs/authoring/index.html` → `markdown-basics.html`
+- `docs/authoring/page-layout.html` → `article-layout.html`
+- `docs/authoring/shortcodes-and-filters.html` → `../extensions/filters.html`
+- `docs/dashboards/components.html` → `layout.html`
+- `docs/dashboards/data-presentation.html` → `data-display.html`
+- `docs/dashboards/examples/index.html` → `../../gallery/index.html`
+- `docs/dashboards/interactivity/shiny-python.html` → `shiny-python/index.html`
+- `docs/dashboards/layouts.html` → `layout.html`
+- `docs/download/changelog/1.10/index.html` → `../../release.html`
+- `docs/download/changelog/1.11/index.html` → `../../prerelease.html`
+- `docs/getting-started/installation.html` → `../get-started/index.html`
+- `docs/prerelease/1.3/code-annotation.html` → `../../authoring/code-annotation.html`
+- `docs/prerelease/1.3/confluence.html` → `../../publishing/confluence.html`
+- `docs/prerelease/1.3/embed.html` → `../../authoring/notebook-embed.html`
+- `docs/prerelease/1.3/grid.html` → `../../output-formats/page-layout.html`
+- `docs/prerelease/1.3/mermaid.html` → `../../authoring/diagrams.html`
+- `docs/prerelease/1.3/multi-format.html` → `../../output-formats/html-multi-format.html`
+- `docs/prerelease/1.4/binder.html` → `../../projects/binder.html`
+- `docs/prerelease/1.4/inline.html` → `../../computations/inline-code.html`
+- `docs/prerelease/1.4/lightbox.html` → `../../output-formats/html-lightbox-figures.html`
+- `docs/prerelease/1.4/script-r.html` → `../../computations/render-scripts.html`
+- `docs/prerelease/1.4/script.html` → `../../computations/render-scripts.html`
+- `docs/prerelease/1.4/typst.html` → `../../output-formats/typst.html`
+- `docs/prerelease/1.5/lipsum.html` → `../../authoring/lipsum.html`
+- `docs/prerelease/1.5/lua-table-processing.html` → `../../authoring/tables.html`
+- `docs/prerelease/1.5/pre-render.html` → `../../projects/scripts.html`
+- `docs/prerelease/1.5/website-drafts.html` → `../../websites/website-drafts.html`
+- `docs/reference/formats/dashboards.html` → `dashboard.html`
+- `docs/tools/vscode-notebook.html` → `vscode/notebook.html`
+- `docs/tools/vscode.html` → `vscode/index.html`
+- `docs/visual-editor/vscode/index.html` → `../../tools/vscode/visual-editor.html`
+- `reference/date-format.html` → `../docs/reference/dates.html`
+
+---
+
