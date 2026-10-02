@@ -13,17 +13,17 @@ local function injectChooseYourTool()
     injected = true
     quarto.doc.include_text('after-body', [[
       <script type="text/javascript">
-        for (const navTab of document.querySelectorAll(".panel-tabset[data-group='tools-tabset'] ul[role='tablist']")) {
-          navTab.setAttribute("aria-label", "Choose your tool");
+        document.querySelectorAll(".panel-tabset[data-group='tools-tabset'] ul[role='tablist']").forEach((navTab, i) => {
           const row = document.createElement("div");
           row.classList.add("choose-your-tool-row");
           const choose = document.createElement("p");
           choose.classList.add("choose-your-tool");
-          choose.setAttribute("aria-hidden", "true");
+          choose.id = "choose-your-tool-label-" + (i + 1);
           choose.innerText = "Choose your tool";
+          navTab.setAttribute("aria-labelledby", choose.id);
           navTab.before(row);
           row.append(choose, navTab);
-        }
+        });
       </script>
     ]])
   end
