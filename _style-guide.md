@@ -64,6 +64,8 @@ Some examples must not have alt text. For example, an example that shows what Qu
 <!-- a11y: no alt on purpose. This example shows the output without alt text. -->
 ```
 
+The axe scan reports the example as a finding. Add an `intentional:` entry to `_axe-baseline.json`. See "Intentional examples" in `.claude/rules/axe-baseline.md`.
+
 ### Images that `fig-alt` cannot fix
 
 Some images come from Quarto options, not from Markdown:
