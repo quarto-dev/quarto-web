@@ -119,10 +119,15 @@ jobs:
           SHA=$(git rev-parse HEAD)
           DATE=$(date -u '+%B %-d, %Y')
           # site-report.qmd shifts the report's headings down, so its h1 stays.
+          # The README and findings.json stay in the artifact, so drop the
+          # report's pointers to them.
+          # shellcheck disable=SC2016 # the backticks are literal markdown
           {
             echo "Results for [quarto.org](https://quarto.org) at commit [\`${SHA:0:9}\`](https://github.com/quarto-dev/quarto-web/tree/$SHA), scanned $DATE."
             echo
-            cat _axe-report.md
+            sed -e 's/ To accept a finding, see `README\.md` in this directory\.//' \
+                -e '/^Full machine-readable results: `findings\.json`/d' \
+                _axe-report.md
           } > _axe-report.md.tmp
           mv _axe-report.md.tmp _axe-report.md
 
