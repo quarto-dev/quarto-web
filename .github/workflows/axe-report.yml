@@ -1,0 +1,145 @@
+# Scans the whole site with `quarto call axe` and publishes the results page.
+#
+# Runs weekly and on demand. The scan needs a full render (about 7 minutes)
+# and then about 11 minutes for the scan itself, so it is not part of the
+# deploy or the PR preview. The PR check in preview.yml covers the pages a
+# PR touches; this workflow is the complete picture.
+#
+# The report goes in `_axe-report.md`, which `accessibility/site-report.qmd` includes.
+# A push made with GITHUB_TOKEN does not trigger `publish.yml`, so this
+# workflow calls it directly, the same way update-downloads.yml does.
+name: Axe Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+
+permissions: {} # each job opts in below
+
+concurrency:
+  group: axe-report
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # commits _axe-report.md to main
+    outputs:
+      changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
+      commit: ${{ steps.auto-commit.outputs.commit_hash }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: true # git-auto-commit-action pushes with these
+
+      - name: Get latest pre-release from github
+        id: github-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Retry a few times in case the API returns transient nulls
+          for i in 1 2 3 4 5; do
+            version="$(
+              gh api repos/quarto-dev/quarto-cli/releases \
+              | jq -r '
+                  map(select(.prerelease == true and (.tag_name? // "") != ""))
+                  | first
+                  | .tag_name?
+                  // empty
+                  | sub("^v";"")
+                '
+            )" || true
+
+            if [ -n "${version:-}" ]; then
+              echo "version=$version" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Attempt $i: prerelease version not resolved; retrying..." >&2
+            sleep 2
+          done
+
+          echo "Failed to resolve prerelease version after retries." >&2
+          exit 1
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: ${{ steps.github-release.outputs.version }}
+
+      - name: Render
+        uses: quarto-dev/quarto-actions/render@v2
+
+      - name: Scan the site with axe
+        id: scan
+        # .github/axe-exclude.txt lists the pages to skip and why.
+        run: |
+          AXE_EXCLUDE=$(grep -v -e '^#' -e '^[[:space:]]*$' .github/axe-exclude.txt | paste -sd, -)
+          set +e
+          quarto call axe _site --exclude "$AXE_EXCLUDE" --report _axe-report.md
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          # Findings alone exit 0. Anything else means the scan did not
+          # complete, and an incomplete report must not be published.
+          if [ "$code" -ne 0 ]; then
+            echo "::error::quarto call axe exited $code; the report was not published"
+            exit "$code"
+          fi
+
+      - name: Write the report to the job summary
+        if: always() && steps.scan.outputs.exit_code != ''
+        run: cat _axe-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload scan artifacts
+        if: always() && steps.scan.outputs.exit_code != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: axe-checks
+          path: _axe-checks/
+          retention-days: 90
+
+      - name: Stamp the report with the scanned commit
+        env:
+          SHA: ${{ github.sha }}
+        run: |
+          # The report opens with its own h1, which would be a second h1 on
+          # the page that includes it. Replace that line with the commit the
+          # scan describes.
+          {
+            echo "Results for quarto.org at commit [\`${SHA:0:9}\`](https://github.com/quarto-dev/quarto-web/tree/$SHA)."
+            echo
+            tail -n +2 _axe-report.md
+          } > _axe-report.md.tmp
+          mv _axe-report.md.tmp _axe-report.md
+
+      - name: Commit the report to main
+        id: auto-commit
+        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        with:
+          commit_message: "Update the axe accessibility report"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          file_pattern: _axe-report.md
+
+  # A push made with GITHUB_TOKEN does not start publish.yml on its own.
+  publish:
+    needs: [scan]
+    if: ${{ needs.scan.outputs.changes_detected == 'true' }}
+    uses: ./.github/workflows/publish.yml
+    # A called workflow cannot exceed its caller's grant.
+    permissions:
+      contents: read
+      statuses: write
+    with:
+      ref: ${{ needs.scan.outputs.commit }}
+      prerelease: false
+    secrets:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
