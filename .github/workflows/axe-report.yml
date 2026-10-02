@@ -117,13 +117,12 @@ jobs:
           # The checkout is always main, so github.sha is wrong on a manual
           # run started from another branch.
           SHA=$(git rev-parse HEAD)
-          # The report opens with its own h1, which would be a second h1 on
-          # the page that includes it. Replace that line with the commit the
-          # scan describes.
+          DATE=$(date -u '+%B %-d, %Y')
+          # site-report.qmd shifts the report's headings down, so its h1 stays.
           {
-            echo "Results for quarto.org at commit [\`${SHA:0:9}\`](https://github.com/quarto-dev/quarto-web/tree/$SHA)."
+            echo "Results for [quarto.org](https://quarto.org) at commit [\`${SHA:0:9}\`](https://github.com/quarto-dev/quarto-web/tree/$SHA), scanned $DATE."
             echo
-            tail -n +2 _axe-report.md
+            cat _axe-report.md
           } > _axe-report.md.tmp
           mv _axe-report.md.tmp _axe-report.md
 
