@@ -1,92 +1,20 @@
-Results for [quarto.org](https://quarto.org) at commit [`7e23a2de6`](https://github.com/quarto-dev/quarto-web/tree/7e23a2de6c9e84a3d87a3cb17aee4f5d480b4ded), scanned October 2, 2026.
+Results for [quarto.org](https://quarto.org) at commit [`0fe993ae0`](https://github.com/quarto-dev/quarto-web/tree/0fe993ae0d08b88213a39a7558c1a61dea63c463), scanned October 2, 2026.
 
 # axe site audit
 
-372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.5 · generated 2026-10-02T18:43:52.590Z
+372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.5 · generated 2026-10-02T19:58:56.244Z
 
 > **Partial scan** (`--exclude docs/get-started/*/index.html,docs/manuscripts/authoring/index.html`) — counts describe this subset, not the whole site. A one-page rescan proves an instance is gone, not that the finding is fixed on other pages.
 
-**5 new findings** · 128 baselined (known, listed at the end). A finding on many pages usually repeats from a shared source — fixing it once fixes them all.
+**1 new finding** · 134 baselined (known, listed at the end). A finding on many pages usually repeats from a shared source — fixing it once fixes them all.
 
 ## New findings
 
 | id | standard | impact | pages | instances | detail |
 |---|---|---|---:|---:|---|
-| [`image-alt-299f15`](#image-alt-299f15) | WCAG 2.0 A | critical | 1 | 1 | Element does not have an alt attribute |
-| [`image-alt-54f051`](#image-alt-54f051) | WCAG 2.0 A | critical | 1 | 1 | Element does not have an alt attribute |
-| [`link-name-faac6c`](#link-name-faac6c) | WCAG 2.0 A | serious | 1 | 1 | Element is in tab order and does not have accessible text |
-| [`link-name-79a8bc`](#link-name-79a8bc) | WCAG 2.0 A | serious | 1 | 1 | Element is in tab order and does not have accessible text |
 | [`empty-table-header-4123ba`](#empty-table-header-4123ba) | Best Practice | minor | 1 | 1 | Element does not have text that is visible to screen readers |
 
 ### Occurrences
-
-#### image-alt-299f15
-
-<details>
-<summary>Images must have alternative text (1 instance on 1 page)</summary>
-
-**Standard:** WCAG 2.0 A (1.1.1) · **Impact:** critical · **Signature:** `image-alt :: .odd > td > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a > .figure-img.img-fluid[src$="elephant.png"]`
-
-**Problem:** Element does not have an alt attribute
-
-Reference: <https://dequeuniversity.com/rules/axe/4.10/image-alt?application=axeAPI>
-
-| page | cells (width·mode) | selector | element |
-|---|---|---|---|
-| docs/authoring/markdown-basics.html | 1440x900·light, 320x568·light | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"] > .figure-img.img-fluid[src$="elephant.png"]` | `<img src="elephant.png" class="img-fluid figure-img">` |
-
-</details>
-
-#### image-alt-54f051
-
-<details>
-<summary>Images must have alternative text (1 instance on 1 page)</summary>
-
-**Standard:** WCAG 2.0 A (1.1.1) · **Impact:** critical · **Signature:** `image-alt :: .odd > td > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a > .figure-img.img-fluid[src$="elephant-dark.png"]`
-
-**Problem:** Element does not have an alt attribute
-
-Reference: <https://dequeuniversity.com/rules/axe/4.10/image-alt?application=axeAPI>
-
-| page | cells (width·mode) | selector | element |
-|---|---|---|---|
-| docs/authoring/markdown-basics.html | 1440x900·dark, 320x568·dark | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"] > .figure-img.img-fluid[src$="elephant-dark.png"]` | `<img src="elephant-dark.png" class="img-fluid figure-img">` |
-
-</details>
-
-#### link-name-faac6c
-
-<details>
-<summary>Links must have discernible text (1 instance on 1 page)</summary>
-
-**Standard:** WCAG 2.0 A (2.4.4, 4.1.2) · **Impact:** serious · **Signature:** `link-name :: .odd > td > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a`
-
-**Problem:** Element is in tab order and does not have accessible text
-
-Reference: <https://dequeuniversity.com/rules/axe/4.10/link-name?application=axeAPI>
-
-| page | cells (width·mode) | selector | element |
-|---|---|---|---|
-| docs/authoring/markdown-basics.html | 1440x900·light, 320x568·light | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .light-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"]` | `<a href="https://quarto.org/" data-original-href="https://quarto.org/"><img src="elephant.png" class="img-fluid figure-img"></a>` |
-
-</details>
-
-#### link-name-79a8bc
-
-<details>
-<summary>Links must have discernible text (1 instance on 1 page)</summary>
-
-**Standard:** WCAG 2.0 A (2.4.4, 4.1.2) · **Impact:** serious · **Signature:** `link-name :: .odd > td > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a`
-
-**Problem:** Element is in tab order and does not have accessible text
-
-Reference: <https://dequeuniversity.com/rules/axe/4.10/link-name?application=axeAPI>
-
-| page | cells (width·mode) | selector | element |
-|---|---|---|---|
-| docs/authoring/markdown-basics.html | 1440x900·dark, 320x568·dark | `.odd:nth-child(7) > td:nth-child(2) > .pad-to-code-block > .dark-content > .quarto-figure.quarto-figure-center > figure > p > a[href$="quarto.org/"][data-original-href$="quarto.org/"]` | `<a href="https://quarto.org/" data-original-href="https://quarto.org/"><img src="elephant-dark.png" class="img-fluid figure-img"></a>` |
-
-</details>
 
 #### empty-table-header-4123ba
 
@@ -117,6 +45,10 @@ Reference: <https://dequeuniversity.com/rules/axe/4.10/empty-table-header?applic
 | `label-3c2086` | WCAG 2.0 A | critical | 1 | 3 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. When Quarto updates Inputs (quarto-dev/quarto-cli#14934), the class becomes .inputs-3a86ea-input, so replace this entry. |
 | `label-97e48d` | WCAG 2.0 A | critical | 2 | 2 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
 | `aria-required-parent-2a955c` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14755. Margin citations keep role="listitem", but Quarto removes their role="list" parent when it moves them to the margin. |
+| `image-alt-648574` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The plain-image row of the Links &amp; Images table shows the output of an image with no fig-alt, light-mode variant. Remove the entry if the example changes to include alt text. |
+| `image-alt-bfe36b` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The linked-image row of the Links &amp; Images table shows the output of a linked image with no fig-alt, light-mode variant. Remove the entry if the example changes to include alt text. |
+| `image-alt-21cdbb` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The plain-image row of the Links &amp; Images table shows the output of an image with no fig-alt, dark-mode variant. Remove the entry if the example changes to include alt text. |
+| `image-alt-caabbf` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The linked-image row of the Links &amp; Images table shows the output of a linked image with no fig-alt, dark-mode variant. Remove the entry if the example changes to include alt text. |
 | `image-alt-109037` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14769. The {{&lt; placeholder &gt;}} shortcode makes an &lt;img&gt; with no alt attribute. Scoped to this page because the signature also matches content images with no alt text on other pages. |
 | `image-alt-4d0f7b` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14769. The {{&lt; placeholder &gt;}} shortcode makes an &lt;img&gt; with no alt attribute. Scoped to this page because the signature also matches content images with no alt text on other pages. |
 | `label-056181` | WCAG 2.0 A | critical | 1 | 1 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
@@ -156,6 +88,8 @@ Reference: <https://dequeuniversity.com/rules/axe/4.10/empty-table-header?applic
 | `scrollable-region-focusable-04c370` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
 | `frame-title-2cefe5` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14770. code-preview iframes have no title. Clears when quarto-dev/quarto-cli#14933 ships, because quarto-dev/quarto-web#2220 sets code-preview-title on every preview. |
 | `scrollable-region-focusable-02d2a3` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
+| `link-name-21e381` | WCAG 2.0 A | serious | 1 | 1 | intentional: no upstream issue. Same light-mode example as the image-alt entry above: the only content of the link is the image with no alt text, so the link has no name. Remove the entry with that image-alt entry. |
+| `link-name-d78e38` | WCAG 2.0 A | serious | 1 | 1 | intentional: no upstream issue. Same dark-mode example as the image-alt entry above: the only content of the link is the image with no alt text, so the link has no name. Remove the entry with that image-alt entry. |
 | `scrollable-region-focusable-9feb03` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
 | `scrollable-region-focusable-10bdb5` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
 | `scrollable-region-focusable-44bee2` | WCAG 2.0 A | serious | 1 | 1 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
