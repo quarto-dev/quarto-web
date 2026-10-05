@@ -1,49 +1,29 @@
-Results for [quarto.org](https://quarto.org) at commit [`f46202589`](https://github.com/quarto-dev/quarto-web/tree/f46202589f9a5c7077e62d623db927611c6ebb2b), scanned October 5, 2026.
+Results for [quarto.org](https://quarto.org) at commit [`a8c0eb34d`](https://github.com/quarto-dev/quarto-web/tree/a8c0eb34dcd6cf9338166000607f39fbcb06f522), scanned October 5, 2026.
 
 # axe site audit
 
-372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.5 · generated 2026-10-05T06:31:32.208Z
+372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.5 · generated 2026-10-05T22:02:17.359Z
 
 > **Partial scan** (`--exclude docs/get-started/*/index.html,docs/manuscripts/authoring/index.html`) — counts describe this subset, not the whole site. A one-page rescan proves an instance is gone, not that the finding is fixed on other pages.
 
-**1 new finding** · 134 baselined (known, listed at the end). A finding on many pages usually repeats from a shared source — fixing it once fixes them all.
+**0 new findings** · 134 baselined (known, listed at the end). A finding on many pages usually repeats from a shared source — fixing it once fixes them all.
+
+> 1 baseline entry not seen in this scan — which cannot tell "fixed" from "not scanned", because the flags narrowed the pages it covered. Prune only after a scan of the full matrix with every cell ok: `empty-table-header :: #oi-3a86ea > table > thead > tr > th`
 
 ## New findings
 
-| id | standard | impact | pages | instances | detail |
-|---|---|---|---:|---:|---|
-| [`empty-table-header-4123ba`](#empty-table-header-4123ba) | Best Practice | minor | 1 | 1 | Element does not have text that is visible to screen readers |
-
-### Occurrences
-
-#### empty-table-header-4123ba
-
-<details>
-<summary>Table header text should not be empty (1 instance on 1 page)</summary>
-
-**Standard:** Best Practice · **Impact:** minor · **Signature:** `empty-table-header :: #oi-3a86ea > table > thead > tr > th`
-
-**Problem:** Element does not have text that is visible to screen readers
-
-Reference: <https://dequeuniversity.com/rules/axe/4.10/empty-table-header?application=axeAPI>
-
-| page | cells (width·mode) | selector | element |
-|---|---|---|---|
-| docs/interactive/ojs/data-sources.html | 1440x900·dark, 320x568·dark, 320x568·light | `#oi-3a86ea-1 > table > thead > tr > th:nth-child(1)` | `<th><input type="checkbox"></th>` |
-
-</details>
+(none)
 
 ## Baselined (known, accepted)
 
 | id | standard | impact | pages | instances | why accepted |
 |---|---|---|---:|---:|---|
-| `label-e931f5` | WCAG 2.0 A | critical | 3 | 69 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
+| `label-e931f5` | WCAG 2.0 A | critical | 2 | 46 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
 | `aria-allowed-attr-8b2e6a` | WCAG 2.0 A | critical | 7 | 8 | upstream: quarto-dev/quarto-cli#4934. Collapsed callouts use a &lt;div&gt; with aria-expanded instead of the ARIA disclosure pattern. |
 | `label-ab5f69` | WCAG 2.0 A | critical | 6 | 6 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled range inputs. |
 | `aria-allowed-attr-de1fc3` | WCAG 2.0 A | critical | 4 | 4 | upstream: quarto-dev/quarto-cli#4934. Collapsed callouts use a &lt;div&gt; with aria-expanded instead of the ARIA disclosure pattern. Scoped to these pages because .collapsed is the generic Bootstrap collapse class. |
 | `label-abe29f` | WCAG 2.0 A | critical | 1 | 3 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. When Quarto updates Inputs (quarto-dev/quarto-cli#14934), the class becomes .inputs-3a86ea-input, so replace this entry. |
 | `label-3c2086` | WCAG 2.0 A | critical | 1 | 3 | third-party: Observable Inputs, no upstream issue. Observable Inputs connects the &lt;label for&gt; of Inputs.range to the number box only, so the slider has no accessible name, even when label is set. Same in Inputs 0.12.0. When Quarto updates Inputs (quarto-dev/quarto-cli#14934), the class becomes .inputs-3a86ea-input, so replace this entry. |
-| `label-97e48d` | WCAG 2.0 A | critical | 2 | 2 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
 | `aria-required-parent-2a955c` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14755. Margin citations keep role="listitem", but Quarto removes their role="list" parent when it moves them to the margin. |
 | `image-alt-648574` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The plain-image row of the Links &amp; Images table shows the output of an image with no fig-alt, light-mode variant. Remove the entry if the example changes to include alt text. |
 | `image-alt-bfe36b` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The linked-image row of the Links &amp; Images table shows the output of a linked image with no fig-alt, light-mode variant. Remove the entry if the example changes to include alt text. |
@@ -51,6 +31,7 @@ Reference: <https://dequeuniversity.com/rules/axe/4.10/empty-table-header?applic
 | `image-alt-caabbf` | WCAG 2.0 A | critical | 1 | 1 | intentional: no upstream issue. The linked-image row of the Links &amp; Images table shows the output of a linked image with no fig-alt, dark-mode variant. Remove the entry if the example changes to include alt text. |
 | `image-alt-109037` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14769. The {{&lt; placeholder &gt;}} shortcode makes an &lt;img&gt; with no alt attribute. Scoped to this page because the signature also matches content images with no alt text on other pages. |
 | `image-alt-4d0f7b` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#14769. The {{&lt; placeholder &gt;}} shortcode makes an &lt;img&gt; with no alt attribute. Scoped to this page because the signature also matches content images with no alt text on other pages. |
+| `label-97e48d` | WCAG 2.0 A | critical | 1 | 1 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
 | `label-056181` | WCAG 2.0 A | critical | 1 | 1 | third-party: Observable Inputs, no upstream issue. The Inputs.table selection checkboxes have no label, and no option adds one. select: false (Inputs 0.11.0 and later) removes them, but then the scroll container has no focusable content. Same in Inputs 0.12.0. Scoped to these pages because the signature also matches other unlabeled inputs. |
 | `aria-allowed-attr-3b0a3f` | WCAG 2.0 A | critical | 1 | 1 | upstream: quarto-dev/quarto-cli#4934. Collapsed callouts use a &lt;div&gt; with aria-expanded instead of the ARIA disclosure pattern. |
 | `scrollable-region-focusable-7f835c` | WCAG 2.0 A | serious | 96 | 263 | upstream: quarto-dev/quarto-cli#14378. Scrollable code blocks and cell outputs have no tabindex, so keyboard users cannot scroll them. Clears when quarto-dev/quarto-cli#14816 ships. |
