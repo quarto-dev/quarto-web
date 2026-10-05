@@ -361,6 +361,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write # so it can post the scan comment
     steps:
       # The scanner reads _axe-baseline.json from the project root.
       - name: Check out repository
@@ -400,6 +401,7 @@ jobs:
             done | paste -sd, -)
             if [ -z "$AXE_PAGES" ]; then
               echo "No changed page rendered: nothing to scan"
+              echo "skipped=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
           fi
@@ -434,3 +436,71 @@ jobs:
           path: _axe-checks/
           retention-days: 14
 
+      # Like the preview comment, this posts a new comment on every run.
+      - name: Comment with the scan result
+        if: always() && (steps.scan.outputs.exit_code != '' || steps.scan.outputs.skipped == 'true')
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          EXIT_CODE: ${{ steps.scan.outputs.exit_code }}
+          SKIPPED: ${{ steps.scan.outputs.skipped }}
+          AXE_FULL: ${{ needs.build-deploy-preview.outputs.axe_full }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const full = process.env.AXE_FULL === 'true';
+            const code = process.env.EXIT_CODE;
+
+            let findings = null;
+            if (fs.existsSync('_axe-checks/findings.json')) {
+              findings = JSON.parse(fs.readFileSync('_axe-checks/findings.json', 'utf8'));
+            }
+
+            let body = `## ♿ Accessibility Scan (axe)\n\n`;
+
+            if (process.env.SKIPPED === 'true') {
+              body += `⏭️ No changed page rendered, so there was nothing to scan.\n`;
+            } else {
+              if (code === '0') {
+                body += `✅ No new serious or critical findings.\n\n`;
+              } else if (code === '1') {
+                body += `❌ New serious or critical findings. Fix them, or accept them in \`_axe-baseline.json\` with a note that says why.\n\n`;
+              } else {
+                body += `⚠️ The scan did not complete (exit code ${code}). See the [run log](${runUrl}).\n\n`;
+              }
+
+              if (findings) {
+                const pages = findings.pages.map(p => p.output);
+                const newFindings = findings.findings.filter(f => !f.baselined);
+                const baselined = findings.findings.length - newFindings.length;
+                const cells = findings.cells;
+                body += full
+                  ? `**Scope:** whole site (site-wide change), ${pages.length} pages\n\n`
+                  : `**Scope:** ${pages.length} changed page${pages.length === 1 ? '' : 's'}\n\n` +
+                    pages.map(p => `- ${p}`).join('\n') + `\n\n`;
+                body += `**Result:** ${newFindings.length} new finding${newFindings.length === 1 ? '' : 's'} (any impact), ` +
+                  `${baselined} baselined, ${cells.ok}/${cells.total} page × mode × viewport checks completed\n\n`;
+
+                if (newFindings.length > 0) {
+                  const max = 20;
+                  body += `| rule | impact | pages | instances |\n|---|---|---:|---:|\n`;
+                  for (const f of newFindings.slice(0, max)) {
+                    body += `| [\`${f.rule}\`](${f.helpUrl}) | ${f.impact} | ${f.pages.length} | ${f.instances} |\n`;
+                  }
+                  if (newFindings.length > max) {
+                    body += `\n…and ${newFindings.length - max} more.\n`;
+                  }
+                  body += `\n`;
+                }
+              }
+              body += `📄 [Full report](${runUrl}) in the job summary, and \`findings.json\` in the \`axe-checks\` artifact.\n`;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
