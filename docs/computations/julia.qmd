@@ -1,5 +1,6 @@
 ---
 title: "Using Julia"
+toc-depth: 4
 positron-extension: "the [Julia Extension](https://www.julia-vscode.org/docs)"
 positron-screenshot: "images/positron-hello-julia.png"
 jupyter-language: "Julia"
@@ -8,7 +9,7 @@ vscode-extension: "[Julia Extension](https://www.julia-vscode.org/docs)"
 vscode-screenshot: "![](images/julia-vscode){.border fig-alt='Screen shot of VS Code with quarto document containing Julia code on the left, the output of a plot from the Julia code on the right, and the Quarto Help pane at the bottom.'}"
 ---
 
-# Overview
+## Overview
 
 Quarto supports executable Julia code blocks within markdown. This allows you to create fully reproducible documents and reports---the Julia code required to produce your output is part of the document itself, and is automatically re-run whenever the document is rendered.
 
@@ -104,26 +105,28 @@ display(plot(x -> sin(4x), y -> sin(5y), 0, 2))
 
 {{< include _jupyter-rendering.md >}}
 
+::: {.shift-headings by=1}
 {{< include _jupyter-authoring-tools.md >}}
+:::
 
-# Using the `julia` engine
+## Using the `julia` engine
 
 {{< prerelease-callout 1.5 >}}
 
-## Installation {#installation-julia-engine}
+### Installation {#installation-julia-engine}
 
 The `julia` engine uses the [QuartoNotebookRunner.jl](https://github.com/PumasAI/QuartoNotebookRunner.jl/) package to render notebooks. When you first attempt to render a notebook with the `julia` engine, Quarto will automatically install this package into a private environment that is owned by Quarto. This means you don't have to install anything in your global Julia environment for Quarto to work and Quarto will not interfere with any other Julia environments on your system. Quarto will use the `julia` binary on your PATH by default, but you can override this using the `QUARTO_JULIA` environment variable.
 
 :::{.callout-note}
 
-## Using custom versions of `QuartoNotebookRunner`
+### Using custom versions of `QuartoNotebookRunner`
 
 In special circumstances, you may not want to use the specific `QuartoNotebookRunner` version that Quarto installs for you. For example, you might be developing `QuartoNotebookRunner` itself, or you need to use a fork or an unreleased version with a bugfix. In this case, set the [environment variable](/docs/projects/environment.qmd) `QUARTO_JULIA_PROJECT` to a directory of a julia environment that has `QuartoNotebookRunner` installed. 
 
 As an example, you could install the main branch of `QuartoNotebookRunner` into the directory `/some/dir` by executing `]activate /some/dir` in a julia REPL followed by `]add QuartoNotebookRunner#main`. As long as there is no server currently running, running a command like `QUARTO_JULIA_PROJECT=/some/dir quarto render some_notebook.qmd` in your terminal will ensure the server process is started using the custom `QuartoNotebookRunner`. You can also set `quarto`'s `--execute-debug` flag and check the output to verify that the custom environment is being used.
 :::
 
-## Enabling the `julia` engine
+### Enabling the `julia` engine
 
 To use the `julia` engine, you have to specifically enable it. For that, you have two options.
 
@@ -146,7 +149,7 @@ Or, starting with Quarto 1.7, you can prioritize the julia engine project-wide b
 engines: ['julia']
 ```
 
-## Rendering notebooks
+### Rendering notebooks
 
 Requesting the first render of a notebook which contains Julia code blocks and has the `julia` engine enabled will start a persistent server process that loads QuartoNotebookRunner.jl.
 This package is installed automatically in an environment private to Quarto.
@@ -172,7 +175,7 @@ You can check the status of the server, request it to shut down, and more using 
 The server will stay alive for five minutes after the last worker process has exited, unless it's closed manually.
 Changes to environment variables that influence the server process will only be picked up once the next new server process is started.
 
-### Notebook environments
+#### Notebook environments
 
 By default, QuartoNotebookRunner will use the `--project=@.` flag when starting a worker. This makes Julia search for an environment (a `Project.toml` or `JuliaProject.toml` file) starting in the directory where the quarto notebook is stored and walking up the directory tree from there.
 
@@ -211,7 +214,7 @@ julia:
 ---
 ````
 
-### Worker process reuse
+#### Worker process reuse
 
 An idle worker process will be kept alive for 5 minutes by default, this can be changed by passing the desired number of seconds to the `daemon` key:
 
@@ -239,7 +242,7 @@ execute:
 
 The server process itself will time out after five minutes if no more worker processes exist.
 
-## Engine options
+### Engine options
 
 Engine options can be passed under the `julia` top-level key:
 
@@ -257,11 +260,11 @@ The currently available options are:
 - `exeflags`: An array of strings which are appended to the `julia` command that starts the worker process. For example, a notebook is run with `--project=@.` by default (the environment in the directory where the notebook is stored) but this could be overridden by setting `exeflags: ["--project=/some/directory/"]`.
 - `env`: An array of strings where each string specifies one environment variable that is passed to the worker process. For example, `env: ["SOMEVAR=SOMEVALUE"]`.
 
-## `quarto call engine julia` commands
+### `quarto call engine julia` commands
 
 Starting with Quarto 1.7, The julia engine offers CLI commands for configuration and monitoring via the `quarto call engine julia` entrypoint.
 
-### `status`
+#### `status`
 
 The `status` command prints out information about the currently running server process as well as potential worker processes. For example:
 
@@ -287,7 +290,7 @@ QuartoNotebookRunner server status:
       env: ["JULIA_PROJECT=@."]
 ```
 
-### `close`
+#### `close`
 
 The `close` command allows shutting down notebook worker processes.
 By default, only closing of idle worker processes is allowed.
@@ -370,7 +373,7 @@ QuartoNotebookRunner server status:
   workers active: 0
 ```
 
-### `stop`
+#### `stop`
 
 The `stop` command shuts down the server process gracefully. Note that you will get an error if any workers are currently busy:
 
@@ -393,15 +396,15 @@ $ quarto call engine julia status
 Julia control server is not running.
 ```
 
-### `kill`
+#### `kill`
 
 The `kill` command shuts the server process down forcefully. This command is intended as a last resort when the server is in a bad state and unresponsive. Note that all worker processes will be killed as well, so you will lose all progress.
 
-### `log`
+#### `log`
 
 The `log` command prints the output of the internal log file of the server process. If the server process fails to start or unexpectedly quits, this log file might contain useful information.
 
-## `juliaup` integration
+### `juliaup` integration
 
 [`juliaup`](https://github.com/JuliaLang/juliaup) is the recommended way to
 install and manage Julia versions. The `julia` engine supports using
@@ -430,7 +433,7 @@ VERSION
 `QuartoNotebookRunner` currently supports running Julia versions from 1.6
 onwards. Support for earlier versions is not planned.
 
-## Revise.jl integration
+### Revise.jl integration
 
 [Revise](https://github.com/timholy/Revise.jl) allows for automatically
 updating function definitions in Julia sessions. It is an essential tool in the
@@ -444,7 +447,7 @@ Ensure that `Revise` is installed in the project environment that the notebook
 is using, since the global environment is not included in the load path
 provided to Julia, unlike the behaviour of a Julia REPL session.
 
-## Caching {#caching-julia}
+### Caching {#caching-julia}
 
 The engine has built-in support for caching notebook results. This feature is disabled by
 default but can be enabled by setting the `execute.cache` option to `true` in a notebook's
@@ -483,7 +486,7 @@ These caches are safe to save in CI via such tools as GitHub Actions
 `action/cache` to help improve the render time of long-running notebooks that
 do not often change.
 
-## R and Python support
+### R and Python support
 
 `{{r}}` and `{{python}}` executable code blocks are supported in the `julia`
 engine via integrations with the
@@ -524,7 +527,7 @@ len($data)
 ```
 ````
 
-## Engine "extensions"
+### Engine "extensions"
 
 The implementation of `QuartoNotebookRunner` allows for extending the behaviour
 of notebooks via external Julia packages.
@@ -543,7 +546,7 @@ Please direct questions and requests regarding this functionality to the
 [QuartoNotebookRunner](https://github.com/PumasAI/QuartoNotebookRunner.jl)
 repository.
 
-## Conditional Execution
+### Conditional Execution
 
 To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell.
 For example, you could execute code only if the target format is based on HTML (e.g. for `html`, `revealjs`, and `dashboard` formats):
@@ -563,7 +566,7 @@ end
 
 This pairs well with [conditional content](/docs/authoring/conditional.qmd) when both visibility and execution should depend on format. See [Execution Context Information](/docs/advanced/quarto-execute-info.qmd) for the full JSON schema.
 
-# Using the `jupyter` engine
+## Using the `jupyter` engine
 
 ### Installation {#installation}
 
@@ -626,11 +629,13 @@ Conda.add("jupyter-cache")
 
 Alternatively, if you are using Jupyter from within any other version of Python not managed by IJulia, see the instructions below on [Installing Jupyter](#installing-jupyter) for details on installing `jupyter cache`,
 
+::: {.shift-headings by=1}
 {{< include _jupyter-cache.md >}}
 
 {{< include _caching-more.md >}}
+:::
 
-### Kernel Selection
+#### Kernel Selection
 
 You'll note in our first example that we specified the use of the `julia-1.8` kernel explicitly in our document options (shortened for brevity):
 
@@ -649,16 +654,19 @@ You can discover the available Jupyter kernels on your system using the `quarto 
 quarto check jupyter
 ```
 
+::: {.shift-headings by=1}
 {{< include _jupyter-daemon.md >}}
+:::
 
-
-### Installing Jupyter {#installing-jupyter}
+#### Installing Jupyter {#installing-jupyter}
 
 You can rely on the minimal version of Python and Jupyter that is installed automatically by **IJulia**, or you can choose to install Python and Jupyter separately. If you need to install another version of Jupyter this section describes how.
 
+::: {.shift-headings by=1}
 {{< include _jupyter-install.md >}}
+:::
 
-#### Jupyter Cache
+##### Jupyter Cache
 
 [Jupyter Cache](https://jupyter-cache.readthedocs.io/en/latest/) enables you to cache all of the cell outputs for a notebook. If any of the cells in the notebook change then all of the cells will be re-executed.
 
@@ -682,7 +690,7 @@ To use Jupyter Cache you'll want to first install the `jupyter-cache` package:
 
 To enable the cache for a document, add the `cache` option. For example:
 
-## Conditional Execution
+### Conditional Execution
 
 To execute a cell only for certain output formats, read the [`QUARTO_EXECUTE_INFO`](/docs/advanced/quarto-execute-info.qmd) environment variable inside the cell.
 For example, you could execute code only if the target format is based on HTML (e.g. for `html`, `revealjs`, and `dashboard` formats):

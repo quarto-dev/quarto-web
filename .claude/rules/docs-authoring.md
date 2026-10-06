@@ -22,3 +22,7 @@ When referring to a Quarto format by its identifier (the value used in `format:`
 ## Toolbar icons
 
 Refer to a UI control by its name in bold, then "button" if it is one, then the icon as a decorative image: `**Render** button ![](images/rstudio-render-button.png){.ui-icon alt="" width="25" height="20"}`. Never wrap icons or control names in `<kbd>` (it is for keyboard input, and `kbd.js` uppercases one-word `<kbd>` text on macOS). Never leave an icon as the only name for a control. Use the name the control itself exposes (label, tooltip, or accessible name). See the "Toolbar Icons" section of `_style-guide.md`.
+
+## Headings and example labels
+
+Use a heading only to start a section, and never skip a level. A label for one example ("Markdown Syntax", "Output", "HTML output", a theme name under a screenshot) is a caption, not a heading. Label code blocks with `filename="..."`, images with a caption (plus `fig-cap-location: top` for a sequence of images), output with a lead-in sentence ("This renders as:"), and source/output pairs with a table. A bold paragraph is the fallback. Never use `{.unlisted}` headings as captions. When you fix an axe `heading-order` finding, first decide if the skipped heading is a real section. If it is a caption, replace it; do not change its level. See the "Headings and Example Labels" section of `_style-guide.md`.
