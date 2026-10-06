@@ -56,6 +56,11 @@ jobs:
       contents: read
       statuses: write # for the Netlify deploy status
       pull-requests: write # so it can post the preview comment
+    outputs:
+      # Consumed by the `axe` job below, which runs after the deploy.
+      quarto_version: ${{ steps.github-release.outputs.version }}
+      axe_pages: ${{ steps.pr-comment.outputs.axe_pages }}
+      axe_full: ${{ steps.axe-full.outputs.any_changed }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -158,7 +163,29 @@ jobs:
             docs/_*/**
           json: true
           escape_json: false
-      
+
+      # A change to any of these can reach every page, so the axe job scans
+      # the whole site instead of the changed pages.
+      - name: Check for site-wide changes
+        id: axe-full
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
+        with:
+          base_sha: ${{ github.event.pull_request.base.sha || steps.pr-info.outputs.base_sha }}
+          files: |
+            _quarto*.yml
+            _brand.yml
+            _axe-baseline.json
+            **/*.scss
+            **/*.css
+            _extensions/**
+            docs/**/_metadata.yml
+            **/_*.md
+            **/_*.qmd
+            docs/**/_*/**
+          # The weekly report workflow commits this file, and release merges
+          # carry it. It changes one page only, so it needs no full scan.
+          files_ignore: _axe-report.md
+
       - name: Map changed images to doc pages
         id: image-pages
         env:
@@ -183,6 +210,7 @@ jobs:
         shell: bash
 
       - name: Create custom PR comment
+        id: pr-comment
         if: github.event.pull_request || github.event.issue.pull_request
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
@@ -195,6 +223,8 @@ jobs:
             const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
             const deployUrl = process.env.DEPLOY_URL;
             const changedFiles = JSON.parse(process.env.CHANGED_FILES || '[]');
+            // Every page this PR touches, for the `axe` job's --pages
+            const axePages = new Set();
 
             let commentBody = `## 📝 Preview Deployment\n\n`;
             commentBody += `🔍 Full site preview: [${deployUrl}](${deployUrl})\n\n`;
@@ -265,6 +295,7 @@ jobs:
               if (pageToFiles.size > 0) {
                 commentBody += `### 🔄 Modified Documents\n\n`;
                 for (const [page, files] of pageToFiles) {
+                  axePages.add(page);
                   const fileUrl = `${deployUrl}/${page}`;
                   if (files.length === 1) {
                     commentBody += `- [${page}](${fileUrl})\n`;
@@ -286,11 +317,14 @@ jobs:
               if (pages.length > 0) {
                 commentBody += `\n### 🖼️ Pages with Updated Screenshots\n\n`;
                 for (const page of pages) {
+                  axePages.add(page);
                   const fileUrl = `${deployUrl}/${page}`;
                   commentBody += `- [${page}](${fileUrl})\n`;
                 }
               }
             }
+
+            core.setOutput('axe_pages', [...axePages].sort().join(','));
 
             await github.rest.issues.createComment({
               issue_number: prNumber,
@@ -299,3 +333,196 @@ jobs:
               body: commentBody
             });
 
+      # The `axe` job scans this render instead of rendering again. One tar
+      # file uploads much faster than the thousands of files in _site.
+      # These steps come after the PR comment, so the preview links are not
+      # delayed.
+      - name: Pack the rendered site for the axe scan
+        run: tar -cf site.tar _site
+
+      - name: Upload the rendered site
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: site
+          path: site.tar
+          retention-days: 1
+          overwrite: true # a re-run uploads again
+
+  axe:
+    # Scan the preview render with `quarto call axe`. Runs after the deploy
+    # and the PR comment, so the preview is not delayed by it. Scans only the pages the
+    # PR touches, or the whole site when a change can reach every page.
+    # See accessibility/site-report.qmd and .github/workflows/axe-report.yml.
+    name: Axe accessibility scan
+    needs: [build-deploy-preview]
+    if: >
+      needs.build-deploy-preview.outputs.axe_full == 'true' ||
+      needs.build-deploy-preview.outputs.axe_pages != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read # so it can look up the job ID for the summary link
+      pull-requests: write # so it can post the scan comment
+    steps:
+      # The scanner reads _axe-baseline.json from the project root.
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/pull/${{ github.event.pull_request.number || github.event.issue.number }}/merge
+          persist-credentials: false # nothing here pushes
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: ${{ needs.build-deploy-preview.outputs.quarto_version }}
+
+      - name: Download the rendered site
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site
+
+      - name: Unpack the rendered site
+        run: tar -xf site.tar
+
+      - name: Scan with axe
+        id: scan
+        env:
+          AXE_FULL: ${{ needs.build-deploy-preview.outputs.axe_full }}
+          AXE_PAGES: ${{ needs.build-deploy-preview.outputs.axe_pages }}
+        # _axe-exclude.txt lists the pages to skip and why. The
+        # excludes apply after --pages, so a PR that edits one of them is
+        # not blocked.
+        run: |
+          AXE_EXCLUDE=$(grep -v -e '^#' -e '^[[:space:]]*$' _axe-exclude.txt | paste -sd, -)
+          if [ "$AXE_FULL" != "true" ]; then
+            # Keep only the pages that rendered. A changed file can be a
+            # README, a file in an example sub-project, or a deleted page.
+            AXE_PAGES=$(tr ',' '\n' <<< "$AXE_PAGES" | while read -r page; do
+              if [ -f "_site/$page" ]; then echo "$page"; fi
+            done | paste -sd, -)
+            if [ -z "$AXE_PAGES" ]; then
+              echo "No changed page rendered: nothing to scan"
+              echo "skipped=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          set +e
+          if [ "$AXE_FULL" = "true" ]; then
+            echo "Site-wide change: scanning the whole site"
+            quarto call axe _site --exclude "$AXE_EXCLUDE" --fail-on serious
+          else
+            echo "Scanning changed pages: $AXE_PAGES"
+            quarto call axe _site --pages "$AXE_PAGES" --exclude "$AXE_EXCLUDE" --fail-on serious
+          fi
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          # 0: complete, nothing new at or above serious.
+          # 1: new serious or critical findings. Fix them, or accept them in
+          #    _axe-baseline.json with a note that says why.
+          # 2: the scan did not complete, so it cannot pass.
+          exit "$code"
+
+      - name: Write the report to the job summary
+        if: always() && steps.scan.outputs.exit_code != ''
+        # A scan that exits 2 early may not write the report.
+        run: |
+          [ -f _axe-checks/report.md ] && cat _axe-checks/report.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Upload scan artifacts
+        id: upload
+        if: always() && steps.scan.outputs.exit_code != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: axe-checks
+          path: _axe-checks/
+          retention-days: 14
+
+      # Like the preview comment, this posts a new comment on every run.
+      - name: Comment with the scan result
+        if: always() && (steps.scan.outputs.exit_code != '' || steps.scan.outputs.skipped == 'true')
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          EXIT_CODE: ${{ steps.scan.outputs.exit_code }}
+          SKIPPED: ${{ steps.scan.outputs.skipped }}
+          AXE_FULL: ${{ needs.build-deploy-preview.outputs.axe_full }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const prNumber = context.payload.pull_request?.number || context.payload.issue.number;
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const full = process.env.AXE_FULL === 'true';
+            const code = process.env.EXIT_CODE;
+
+            let findings = null;
+            if (fs.existsSync('_axe-checks/findings.json')) {
+              findings = JSON.parse(fs.readFileSync('_axe-checks/findings.json', 'utf8'));
+            }
+
+            let body = `## Accessibility Scan (axe)\n\n`;
+
+            if (process.env.SKIPPED === 'true') {
+              body += `⏭️ No changed page rendered, so there was nothing to scan.\n`;
+            } else {
+              if (code === '0') {
+                body += `✅ No new serious or critical findings.\n\n`;
+              } else if (code === '1') {
+                body += `❌ New serious or critical findings. Fix them, or accept them in \`_axe-baseline.json\` with a note that says why.\n\n`;
+              } else {
+                body += `⚠️ The scan did not complete (exit code ${code}). See the [run log](${runUrl}).\n\n`;
+              }
+
+              if (findings) {
+                const pages = findings.pages.map(p => p.output);
+                const newFindings = findings.findings.filter(f => !f.baselined);
+                const baselined = findings.findings.length - newFindings.length;
+                const cells = findings.cells;
+                body += full
+                  ? `**Scope:** whole site (site-wide change), ${pages.length} pages\n\n`
+                  : `**Scope:** ${pages.length} changed page${pages.length === 1 ? '' : 's'}\n\n` +
+                    pages.map(p => `- ${p}`).join('\n') + `\n\n`;
+                body += `**Result:** ${newFindings.length} new finding${newFindings.length === 1 ? '' : 's'} (any impact), ` +
+                  `${baselined} baselined, ${cells.ok}/${cells.total} page × mode × viewport checks completed\n\n`;
+
+                if (newFindings.length > 0) {
+                  const max = 20;
+                  body += `| rule | impact | pages | instances |\n|---|---|---:|---:|\n`;
+                  for (const f of newFindings.slice(0, max)) {
+                    body += `| \`${f.rule}\` | ${f.impact} | ${f.pages.length} | ${f.instances} |\n`;
+                  }
+                  if (newFindings.length > max) {
+                    body += `\n…and ${newFindings.length - max} more.\n`;
+                  }
+                  body += `\n`;
+                }
+              }
+              // Link to this job's section of the run summary, where the report is.
+              let summaryUrl = runUrl;
+              try {
+                const { data } = await github.rest.actions.listJobsForWorkflowRunAttempt({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: context.runId,
+                  attempt_number: Number(process.env.GITHUB_RUN_ATTEMPT),
+                });
+                const job = data.jobs.find(j => j.name === 'Axe accessibility scan');
+                if (job) {
+                  summaryUrl = `${runUrl}/attempts/${process.env.GITHUB_RUN_ATTEMPT}#summary-${job.id}`;
+                }
+              } catch (e) {
+                core.warning(`Could not look up the job ID: ${e.message}`);
+              }
+              body += `📄 [Full report](${summaryUrl}) in the run summary`;
+              body += process.env.ARTIFACT_URL
+                ? `, or [download it](${process.env.ARTIFACT_URL}) (\`axe-checks\` artifact: \`report.md\` and \`findings.json\`).\n`
+                : `.\n`;
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
