@@ -104,7 +104,14 @@ Metadata defined within `_quarto.yml`, `_metadata.yml`, and document-level YAML 
 | `dir/document.qmd`     | Document options (overrides directory and project)  |
 +------------------------+-----------------------------------------------------+
 
-Note that when metadata is combined, objects and arrays are merged rather than simply overwriting each other. For example, here is how project and directory level options that affect output format and bibliographies would be merged:
+Note that when metadata is combined, objects and arrays are merged rather than simply overwriting each other:
+
+-   Objects are merged key by key, so a key set at one level keeps the other keys set at another level.
+-   Arrays are combined, with duplicate entries removed. Entries are listed in the order project, directory, document.
+-   A single value merged with an array is added to that array instead of replacing it.
+-   Any other single value (a string, number, or boolean) replaces the value set at a lower level.
+
+For example, here is how project and directory level options that affect output format and bibliographies would be merged:
 
 +------------------------------------+------------------------------------------+-------------------------------+
 | ``` {.yaml filename="_quarto.yml"} | ``` {.yaml filename="dir/_metadata.yml"} | ``` {.yaml filename="merged"} |
@@ -146,6 +153,15 @@ website:
 ```
 
 Files listed in `metadata-files` are merged with the parent file in the same fashion that project, directory, and document options are merged. This means that included files can both provide new options as well as combine with existing options.
+
+For a single value set both in an included file and in the file that includes it, which one wins depends on where `metadata-files` is used:
+
+-   In `_quarto.yml`, the included files override `_quarto.yml`. Directory and document options still override both.
+-   In a document's front matter, the document overrides the files it includes.
+
+Arrays are combined in the order project, `metadata-files` of `_quarto.yml`, directory, document. Entries from a document's own `metadata-files` come after the document's entries.
+
+A metadata file passed to `quarto render` on the command line with Pandoc's [`--metadata-file`](https://pandoc.org/MANUAL.html#option--metadata-file) option is also merged with the document: the document overrides the file for a single value, and the file's array entries come before the document's.
 
 ### Local Config
 
