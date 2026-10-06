@@ -361,6 +361,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read # so it can look up the job ID for the summary link
       pull-requests: write # so it can post the scan comment
     steps:
       # The scanner reads _axe-baseline.json from the project root.
@@ -429,6 +430,7 @@ jobs:
           [ -f _axe-checks/report.md ] && cat _axe-checks/report.md >> "$GITHUB_STEP_SUMMARY" || true
 
       - name: Upload scan artifacts
+        id: upload
         if: always() && steps.scan.outputs.exit_code != ''
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -444,6 +446,7 @@ jobs:
           EXIT_CODE: ${{ steps.scan.outputs.exit_code }}
           SKIPPED: ${{ steps.scan.outputs.skipped }}
           AXE_FULL: ${{ needs.build-deploy-preview.outputs.axe_full }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -458,7 +461,7 @@ jobs:
               findings = JSON.parse(fs.readFileSync('_axe-checks/findings.json', 'utf8'));
             }
 
-            let body = `## ♿ Accessibility Scan (axe)\n\n`;
+            let body = `## Accessibility Scan (axe)\n\n`;
 
             if (process.env.SKIPPED === 'true') {
               body += `⏭️ No changed page rendered, so there was nothing to scan.\n`;
@@ -487,7 +490,7 @@ jobs:
                   const max = 20;
                   body += `| rule | impact | pages | instances |\n|---|---|---:|---:|\n`;
                   for (const f of newFindings.slice(0, max)) {
-                    body += `| [\`${f.rule}\`](${f.helpUrl}) | ${f.impact} | ${f.pages.length} | ${f.instances} |\n`;
+                    body += `| \`${f.rule}\` | ${f.impact} | ${f.pages.length} | ${f.instances} |\n`;
                   }
                   if (newFindings.length > max) {
                     body += `\n…and ${newFindings.length - max} more.\n`;
@@ -495,7 +498,26 @@ jobs:
                   body += `\n`;
                 }
               }
-              body += `📄 [Full report](${runUrl}) in the job summary, and \`findings.json\` in the \`axe-checks\` artifact.\n`;
+              // Link to this job's section of the run summary, where the report is.
+              let summaryUrl = runUrl;
+              try {
+                const { data } = await github.rest.actions.listJobsForWorkflowRunAttempt({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: context.runId,
+                  attempt_number: Number(process.env.GITHUB_RUN_ATTEMPT),
+                });
+                const job = data.jobs.find(j => j.name === 'Axe accessibility scan');
+                if (job) {
+                  summaryUrl = `${runUrl}/attempts/${process.env.GITHUB_RUN_ATTEMPT}#summary-${job.id}`;
+                }
+              } catch (e) {
+                core.warning(`Could not look up the job ID: ${e.message}`);
+              }
+              body += `📄 [Full report](${summaryUrl}) in the run summary`;
+              body += process.env.ARTIFACT_URL
+                ? `, or [download it](${process.env.ARTIFACT_URL}) (\`axe-checks\` artifact: \`report.md\` and \`findings.json\`).\n`
+                : `.\n`;
             }
 
             await github.rest.issues.createComment({
