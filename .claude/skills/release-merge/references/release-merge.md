@@ -11,6 +11,10 @@ Two ways to merge `prerelease` into `main`:
 
 Resolve to the **prerelease / new-stable** content, except where `main` is a strict superset (e.g. a direct-push edit that `prerelease` never received). Expect version-string and `quarto check` sample-output conflicts — take the new version.
 
+## _axe-report.md
+
+The weekly axe scan (`axe-report.yml`) commits `_axe-report.md` to both `main` and `prerelease`, so every release merge conflicts on it. Keep the `main` version. After the merge, run the Axe Report workflow manually so both reports match the new sites.
+
 ## cli-info.json
 
 `docs/cli/cli-info.json` is generated, not hand-edited. Regenerate it against the stable release tag after the merge; otherwise it ships the development/prerelease version content.
