@@ -49,7 +49,6 @@ return {
     quarto.doc.add_html_dependency({
       name = "page-chooser",
       version = "1.0.0",
-      stylesheets = { "page-chooser.css" },
       scripts = { { path = "page-chooser.js", afterBody = true } },
     })
 
