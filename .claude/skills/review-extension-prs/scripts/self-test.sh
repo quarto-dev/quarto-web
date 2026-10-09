@@ -203,6 +203,15 @@ CASES
     ok "shortcode Lua file is not reported as dead code"
   fi
 
+  # format.common.shortcodes names an extension embedded under _extensions/jss/_extensions/.
+  out=$(bash "$SCRIPT_DIR/validate-extension.sh" quarto-journals/jss jss 2>&1)
+  expect_match "embedded shortcode extension resolves" "$out" "PASS: referenced embedded extension exists - quarto-ext/fancy-text"
+  if printf '%s' "$out" | grep -qE '^(FAIL|WARN):'; then
+    bad "embedded extension raises no FAIL or WARN" "$out"
+  else
+    ok "embedded extension raises no FAIL or WARN"
+  fi
+
   expect_match "missing repo is reported as not found" \
     "$(bash "$SCRIPT_DIR/validate-extension.sh" quarto-dev/definitely-not-a-repo-xyz nothing 2>&1)" \
     "not found"
