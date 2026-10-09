@@ -114,7 +114,15 @@ else:
 # Extract all file path references from contributes and check they exist
 FILE_SCALAR_KEYS = {"reference-doc", "template", "css", "csl",
                     "include-in-header", "include-before-body", "include-after-body"}
-FILE_LIST_KEYS = {"filters", "format-resources"}
+FILE_LIST_KEYS = {"filters", "shortcodes", "format-resources"}
+
+def list_entry_path(x):
+    # Filter entries may be a bare path or a mapping such as {path: f.lua, at: pre-ast}.
+    if isinstance(x, str):
+        return x
+    if isinstance(x, dict) and isinstance(x.get("path"), str):
+        return x["path"]
+    return None
 
 def collect_refs(obj):
     refs = []
@@ -127,7 +135,7 @@ def collect_refs(obj):
                     refs += [x for x in v if isinstance(x, str)]
             elif k in FILE_LIST_KEYS:
                 if isinstance(v, list):
-                    refs += [x for x in v if isinstance(x, str)]
+                    refs += [p for p in map(list_entry_path, v) if p]
                 elif isinstance(v, str):
                     refs.append(v)
             else:

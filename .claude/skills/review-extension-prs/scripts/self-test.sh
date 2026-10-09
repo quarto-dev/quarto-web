@@ -195,6 +195,14 @@ CASES
     ok "vendored docs/ extensions are excluded"
   fi
 
+  out=$(bash "$SCRIPT_DIR/validate-extension.sh" gvegayon/ergm-quarto ergm-quarto 2>&1)
+  expect_match "shortcode Lua file counts as referenced" "$out" "PASS: referenced file exists - ergm-quarto.lua"
+  if printf '%s' "$out" | grep -q 'dead code'; then
+    bad "shortcode Lua file is not reported as dead code" "$out"
+  else
+    ok "shortcode Lua file is not reported as dead code"
+  fi
+
   expect_match "missing repo is reported as not found" \
     "$(bash "$SCRIPT_DIR/validate-extension.sh" quarto-dev/definitely-not-a-repo-xyz nothing 2>&1)" \
     "not found"
