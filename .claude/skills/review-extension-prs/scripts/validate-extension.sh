@@ -125,19 +125,20 @@ def list_entry_path(x):
     return None
 
 def collect_refs(obj):
+    # Returns (key, ref) pairs; the key decides how Quarto resolves the ref.
     refs = []
     if isinstance(obj, dict):
         for k, v in obj.items():
             if k in FILE_SCALAR_KEYS:
                 if isinstance(v, str):
-                    refs.append(v)
+                    refs.append((k, v))
                 elif isinstance(v, list):
-                    refs += [x for x in v if isinstance(x, str)]
+                    refs += [(k, x) for x in v if isinstance(x, str)]
             elif k in FILE_LIST_KEYS:
                 if isinstance(v, list):
-                    refs += [p for p in map(list_entry_path, v) if p]
+                    refs += [(k, p) for p in map(list_entry_path, v) if p]
                 elif isinstance(v, str):
-                    refs.append(v)
+                    refs.append((k, v))
             else:
                 refs += collect_refs(v)
     elif isinstance(obj, list):
@@ -162,11 +163,11 @@ def is_embedded(ref):
 refs = collect_refs(data.get("contributes", {}))
 if not refs:
     print("INFO: no file references found in contributes")
-for ref in refs:
-    if ref == "quarto":
+for key, ref in refs:
+    if key == "filters" and ref == "quarto":
         print("INFO: 'quarto' is Quarto's built-in filter position marker - quarto")
         continue
-    if is_embedded(ref):
+    if key in ("filters", "shortcodes") and is_embedded(ref):
         print(f"PASS: referenced embedded extension exists - {ref}")
         continue
     clean = ref.lstrip("./")
@@ -182,7 +183,7 @@ for ref in refs:
 if ext_dir:
     all_refs_raw = collect_refs(data)  # full manifest, not just contributes
     all_refs_normalized = set()
-    for r in all_refs_raw:
+    for _, r in all_refs_raw:
         clean = r.lstrip("./")
         all_refs_normalized.add(clean)
         if ext_dir:
