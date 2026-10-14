@@ -141,10 +141,7 @@ You may also provide additional metadata to be used when generating the Open Gra
 | `description` | A short description of the content. Quarto will automatically use the `description` metadata from the page metadata. If you'd like you can override this just for the Open Graph metadata by including a `description` in the `open-graph` metadata. |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image`       | The path to a preview image for this content.  By default, Quarto will use the `image` value from the document metadata, or if that isn't specified, the `image` value from the `website:` metadata.                                                 |
-|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` (in pixels). When your site has a `site-url`, Quarto reads the size of PNG images itself and uses it instead, so a declared size mainly helps for other |
-|               | formats such as JPEG or SVG.                                                                                                                                                                                                                         |
-|               |                                                                                                                                                                                                                                                      |
-|               | Declare the size at the same level as the image it describes: in `website: open-graph` for the site image, or in the page's `open-graph` metadata for an image the page provides.                                                                    |
+|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` (in pixels). For how Quarto uses them, see [Image Size].                                                                                                |
 |               |                                                                                                                                                                                                                                                      |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                 |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -163,6 +160,24 @@ website:
 ```
 
 Quarto will automatically merge global metadata found in the `website: open-graph` key with any metadata provided in the document itself in the `open-graph` key. This is useful when you need to specify a mix of global options (for example, `site`) with per document options such as `title` or `image`.
+
+#### Image Size
+
+{{< prerelease-callout 1.11 >}}
+
+When your site has a `site-url`, Quarto reads the size of local PNG and JPEG preview images and uses it in place of any declared `image-width` and `image-height`. Declared sizes are used for remote images and for formats Quarto can't measure, such as WebP or GIF.
+
+Sizes declared in `website: open-graph` apply to the site image. A page that supplies its own image, through `image`, an `open-graph` `image`, or an automatically discovered [preview image](#preview-images), gets only the sizes declared in its own `open-graph` metadata, even if that image is the same file as the site image. Top-level `image-width` and `image-height` in the page metadata aren't used.
+
+Before Quarto 1.11, on sites without a `site-url`, page images inherited the sizes from `website: open-graph`. If you relied on this, declare the sizes in each page's `open-graph` metadata, or once for a directory in its `_metadata.yml`:
+
+```{.yaml filename="posts/_metadata.yml"}
+open-graph:
+  image-width: 1200
+  image-height: 630
+```
+
+Pages in that directory that use the site image also get these sizes.
 
 ### Preview Images
 
