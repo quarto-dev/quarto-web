@@ -592,6 +592,9 @@ writeProjectTable("utterances", utterancesOptions);
 const giscussOptions = readDefinitionsId("giscus-configuration");
 writeProjectTable("giscus", giscussOptions);
 
+const beblobOptions = readProjectProperties(findVal(definitions, "beblob")!["object"]["properties"]);
+writeProjectTable("beblob", beblobOptions);
+
 const hypothesisSchema = findVal(definitions, "hypothesis")!["anyOf"][1]["object"]["properties"];
 const hypothesisOptions = readProjectProperties(hypothesisSchema, {
   "services": "Array of service definitions",
