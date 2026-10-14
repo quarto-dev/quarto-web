@@ -1,6 +1,6 @@
 You can also insert a pause within a slide (keeping the content after the pause hidden) by inserting three dots separated by spaces:
 
-```{.markdown code-preview="examples/incremental-pause.qmd"}
+```{.markdown code-preview="examples/incremental-pause.qmd" code-preview-title="Example slide with a pause"}
 ## Slide with a pause
 
 content before the pause
