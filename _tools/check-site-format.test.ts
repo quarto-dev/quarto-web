@@ -1,3 +1,4 @@
+import { fromFileUrl } from "stdlib/path";
 import { findViolations, isRendered } from "./check-site-format.ts";
 
 const files: Record<string, string> = {
@@ -42,7 +43,7 @@ try {
 }
 
 // Runs the script itself, as the hook and CI do, in a scratch git repository.
-const script = new URL("./check-site-format.ts", import.meta.url).pathname;
+const script = fromFileUrl(new URL("./check-site-format.ts", import.meta.url));
 const repo = Deno.makeTempDirSync();
 const git = (...args: string[]) => new Deno.Command("git", { args, cwd: repo }).outputSync();
 const write = (path: string, text: string) => {
