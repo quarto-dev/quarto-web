@@ -102,7 +102,7 @@ When prose points to a button or other control in a user interface:
 Use the **Render** button ![](images/rstudio-render-button.png){.ui-icon alt="" width="25" height="20"} in RStudio.
 ```
 
-The `.ui-icon` class (`theme.scss` and `theme-dark.scss`) gives the image the same key-cap look as `<kbd>` in the light and dark themes.
+The `.ui-icon` class (`_extensions/quartoorg/scss/partials/_content.scss`) gives the image the same key-cap look as `<kbd>` in the light and dark themes.
 
 ## Headings and Example Labels
 
