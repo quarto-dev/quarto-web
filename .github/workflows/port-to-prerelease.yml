@@ -81,8 +81,14 @@ jobs:
             gh pr edit "$SOURCE_PR" --repo "$GITHUB_REPOSITORY" --remove-label backport-failed
           fi
 
+      # Also when the sync PR could not be merged, e.g. prerelease moved and
+      # it now conflicts; it stays open for a manual merge.
       - name: Label the failed backport
-        if: steps.synced-pr.outputs.was_successful == 'false'
+        if: >
+          !cancelled() && (
+            steps.synced-pr.outputs.was_successful == 'false' ||
+            steps.merge.outcome == 'failure'
+          )
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_PR: ${{ github.event.pull_request.number || github.event.issue.number }}
@@ -93,7 +99,8 @@ jobs:
   # the merge commit keeps the latest content when two syncs land together.
   publish-prerelease:
     needs: [ sync-to-prerelease ]
-    if: needs.sync-to-prerelease.outputs.merged == 'true'
+    # Publish even if a later step of the sync job failed after the merge.
+    if: ${{ !cancelled() && needs.sync-to-prerelease.outputs.merged == 'true' }}
     uses: ./.github/workflows/publish.yml
     # A called workflow cannot exceed its caller's grant.
     permissions:
