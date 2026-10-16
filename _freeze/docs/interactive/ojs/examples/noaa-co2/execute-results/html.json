@@ -1,7 +1,8 @@
 {
-  "hash": "2ddd3a5841c63df04a8b3d96ef688a80",
+  "hash": "3fe6991b958db908a1718d4eebc9b430",
   "result": {
-    "markdown": "---\ntitle: \"NOAA CO2\"\nformat: \n  html:\n    code-tools: true\n---\n\nRead and plot a CSV of NOAA's Monthly [CO2 concentration data](https://gml.noaa.gov/ccgg/trends/data.html) from Mauna Loa:\n\n```{ojs}\ndata = {\n  const co2data = await FileAttachment(\"co2_mm.csv\")\n    .csv({ typed: true });\n  return co2data.map(d => { \n    d[\"decimal date\"] = Number(d[\"decimal date\"]);\n    d.average = Number(d.average); \n    return d; \n  });\n}\nPlot.plot({\n  marks: [\n    Plot.line(data, \n      { x: \"decimal date\", y: \"average\"}, \n      { stroke: \"black\" }\n    )\n  ]\n})\n```\n\nRead the same data into R, do some grouping and summarization, then make it available using `ojs_define`:\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readr)\nlibrary(dplyr)\n\nco2 = read_csv(\"co2_mm.csv\")  %>% \n  group_by(year) %>% \n  summarize(max = max(average))\n\nojs_define(co2data = co2)\n```\n:::\n\nNow plot the summarized data:\n\n```{ojs}\nPlot.plot({\n  marks: [\n    Plot.line(transpose(co2data), \n      {x: \"year\", y: \"max\"}, \n      { stroke: \"black\" }\n    )\n  ]}\n)\n```",
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"NOAA CO2\"\ncode-tools: true\n---\n\nRead and plot a CSV of NOAA's Monthly [CO2 concentration data](https://gml.noaa.gov/ccgg/trends/data.html) from Mauna Loa:\n\n```{ojs}\ndata = {\n  const co2data = await FileAttachment(\"co2_mm.csv\")\n    .csv({ typed: true });\n  return co2data.map(d => { \n    d[\"decimal date\"] = Number(d[\"decimal date\"]);\n    d.average = Number(d.average); \n    return d; \n  });\n}\nPlot.plot({\n  marks: [\n    Plot.line(data, \n      { x: \"decimal date\", y: \"average\"}, \n      { stroke: \"black\" }\n    )\n  ]\n})\n```\n\nRead the same data into R, do some grouping and summarization, then make it available using `ojs_define`:\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readr)\nlibrary(dplyr)\n\nco2 = read_csv(\"co2_mm.csv\")  %>% \n  group_by(year) %>% \n  summarize(max = max(average))\n\nojs_define(co2data = co2)\n```\n:::\n\n\nNow plot the summarized data:\n\n```{ojs}\nPlot.plot({\n  marks: [\n    Plot.line(transpose(co2data), \n      {x: \"year\", y: \"max\"}, \n      { stroke: \"black\" }\n    )\n  ]}\n)\n```\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"
@@ -13,6 +14,6 @@
     },
     "engineDependencies": {},
     "preserve": {},
-    "postProcess": null
+    "postProcess": true
   }
 }

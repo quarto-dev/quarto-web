@@ -35,7 +35,7 @@ quarto.org / Open Graph standard) — don't copy dimensions from those examples.
 
 ## Quarto Brand Colors
 
-Sourced from the website CSS (`index.css`):
+Sourced from the website SCSS (`_extensions/quartoorg/scss/partials/_home.scss`):
 
 | Color | Hex | Usage |
 |-------|-----|-------|
@@ -148,7 +148,7 @@ SVGs don't center properly in listing cards or social card previews — the
 HTML uses flexbox for centering which SVG can't replicate without duplicating all
 the layout logic. The SVG is only a source file for regenerating the PNG.
 
-The Quarto logo SVG is at the quarto-web repo root: `quarto-icon.svg` (fill color `#74AADB`
+The Quarto logo SVG is in the quarto-web repo at `assets/images/quarto-icon.svg` (fill color `#74AADB`
 — recolor to `#5286AB` for thumbnails or `white` for dark backgrounds).
 
 ### Attribution
