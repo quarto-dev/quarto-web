@@ -31,8 +31,9 @@ concurrency:
   # build cannot finish last and overwrite a newer deploy. Each run checks
   # out the branch tip, so the run that wins includes every earlier change.
   # Same site selection as the deploy steps: an explicit prerelease input wins
-  # over the caller's ref.
-  group: ${{ format('publish - {0}', (inputs.prerelease || (format('{0}', inputs.prerelease) != 'false' && github.ref == 'refs/heads/prerelease')) && 'prerelease' || 'main') }}
+  # over the caller's ref. A run that deploys neither site (a dispatch from
+  # another branch) gets its own group, so it never cancels a deploy.
+  group: ${{ format('publish - {0}', (inputs.prerelease || (format('{0}', inputs.prerelease) != 'false' && github.ref == 'refs/heads/prerelease')) && 'prerelease' || (format('{0}', inputs.prerelease) == 'false' || github.ref == 'refs/heads/main') && 'main' || github.ref) }}
   cancel-in-progress: true
 
 jobs:
