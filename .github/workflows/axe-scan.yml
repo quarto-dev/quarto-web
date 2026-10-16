@@ -41,7 +41,6 @@ jobs:
       contents: write # commits _axe-report.md to the branch
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
-      commit: ${{ steps.auto-commit.outputs.commit_hash }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -169,7 +168,7 @@ jobs:
       contents: read
       statuses: write
     with:
-      ref: ${{ needs.scan.outputs.commit }}
+      ref: ${{ inputs.branch }}
       prerelease: ${{ inputs.prerelease }}
     secrets:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
