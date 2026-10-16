@@ -33,8 +33,11 @@ Note that technically, <prerelease.quarto.org> is also a deploy preview on Netli
 - `port-to-prerelease.yml` - This workflow is used to sync changes made to main for quarto.org to prerelease branch for prerelease.quarto.org. 
   - It is triggered when a PR is merged in to `main`. It can also be triggered manually by adding a comment `/sync-prerelease` on a merged PR.
   - This workflow uses [`korthout/backport-action`](https://github.com/korthout/backport-action) to create a PR with the changes merged into `main` branch to be synced to `prerelease` branch.
-  - It will also write a new `/deploy-preview` comment in the new PR to trigger the preview deployment from `preview.yml`.
-  - This is possible because it uses a fine-grained PAT token which allows a workflow to trigger another using usual event (GITHUB_TOKEN does not allow that usually). This is configured in repo secrets.
+  - When the cherry-pick applies cleanly, the workflow merges the sync PR right away and publishes prerelease by calling `publish.yml` (a merge made with GITHUB_TOKEN does not trigger the usual push event). Merging immediately keeps prerelease current, so the next PR touching the same files does not conflict against a sync PR still waiting for review.
+  - A PR that must not reach prerelease (e.g. docs for behavior that differs between versions) needs the `no-sync-prerelease` label **before** it is merged into `main`.
+  - When the cherry-pick fails, the source PR gets the `backport-failed` label: `gh pr list --label backport-failed --state merged` lists every change still missing from prerelease. After backporting one by hand, remove its label.
+  - After each sync merge, and after any PR is merged into `prerelease` by hand, the workflow retries the oldest `backport-failed` PR by commenting `/sync-prerelease` on it. A successful retry triggers the next one; the chain stops at the first PR that fails again.
+  - The retry comment uses a fine-grained PAT token, which allows a workflow to trigger another using usual event (GITHUB_TOKEN does not allow that usually). This is configured in repo secrets.
 
 ## Reusable Composite Actions
 
