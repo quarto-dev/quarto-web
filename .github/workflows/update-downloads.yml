@@ -11,8 +11,6 @@ jobs:
       contents: write # commits the regenerated JSON and syncs it to prerelease
     outputs:
       changes_detected: ${{ steps.auto-commit.outputs.changes_detected }}
-      commit: ${{ steps.auto-commit.outputs.commit_hash }}
-      commit_prerelease: ${{ steps.sync-prerelease.outputs.commit_hash }}
       prerelease_version: ${{ steps.get-versions.outputs.prerelease_version }}
     steps:
       - name: Checkout Repo
@@ -49,7 +47,6 @@ jobs:
           commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
         
       - name: Sync generated downloads to prerelease branch
-        id: sync-prerelease
         if: ${{ steps.auto-commit.outputs.changes_detected == 'true' }}
         env:
           MAIN_SHA: ${{ steps.auto-commit.outputs.commit_hash }}
@@ -67,11 +64,9 @@ jobs:
             git commit -m "Sync generated download redirects from main"
             git push origin prerelease
           fi
-          echo "commit_hash=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-  # If a new commit has been made with updated downloads, 
-  # then publish the changes using the new commit as ref to checkout
-  # in the reusable publish workflow
+  # If a new commit has been made with updated downloads,
+  # then publish main with the reusable publish workflow
   publish-changes-release:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
@@ -81,14 +76,13 @@ jobs:
       contents: read
       statuses: write
     with:
-      ref: ${{ needs.update-downloads.outputs.commit }}
+      ref: main
       prerelease: false
     secrets:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   # If a new commit has been made with updated downloads,
-  # then publish the changes using the new commit as ref to checkout
-  # in the reusable publish workflow
+  # then publish prerelease with the reusable publish workflow
   publish-changes-prerelease:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
@@ -98,7 +92,7 @@ jobs:
       contents: read
       statuses: write
     with:
-      ref: ${{ needs.update-downloads.outputs.commit_prerelease }}
+      ref: prerelease
       prerelease: true
     secrets:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}

@@ -8,7 +8,7 @@ on:
     inputs:
       ref: 
         required: true
-        description: 'The ref to trigger the workflow on'
+        description: 'The branch to publish; its tip is checked out when the job starts'
         type: string
       prerelease:
         required: true
@@ -28,7 +28,8 @@ permissions:
 
 concurrency:
   # One group per deployed site, whichever workflow calls it, so an older
-  # build cannot finish last and overwrite a newer deploy.
+  # build cannot finish last and overwrite a newer deploy. Each run checks
+  # out the branch tip, so the run that wins includes every earlier change.
   # Same site selection as the deploy steps: an explicit prerelease input wins
   # over the caller's ref.
   group: ${{ format('publish - {0}', (inputs.prerelease || (format('{0}', inputs.prerelease) != 'false' && github.ref == 'refs/heads/prerelease')) && 'prerelease' || 'main') }}
@@ -41,8 +42,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # if called from workflow_call event, checkout the ref otherwise use default
-          ref: ${{ inputs.ref || '' }}
+          # The branch tip, not the triggering commit: a run that cancels an
+          # older one must not deploy older content than it.
+          ref: ${{ inputs.ref || github.ref }}
           persist-credentials: false # deploys with NETLIFY_AUTH_TOKEN, never pushes
 
       - name: Get latest pre-release from github
