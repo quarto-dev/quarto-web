@@ -137,7 +137,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --base main --state merged --label backport-failed --json number,mergedAt --jq 'sort_by(.mergedAt) | .[0].number // empty')
+          pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --base main --state merged --label backport-failed --limit 1000 --json number,mergedAt --jq 'sort_by(.mergedAt) | .[0].number // empty')
           echo "pr=$pr" >> "$GITHUB_OUTPUT"
 
       - name: Re-run its backport with a comment
