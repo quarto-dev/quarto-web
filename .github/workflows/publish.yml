@@ -27,7 +27,11 @@ permissions:
   statuses: write # for the Netlify deploy status
 
 concurrency:
-  group: ${{ format('{0} - {1} - {2}', github.workflow, github.ref, inputs.prerelease && 'prerelease' || 'main') }}
+  # One group per deployed site, whichever workflow calls it, so an older
+  # build cannot finish last and overwrite a newer deploy.
+  # Same site selection as the deploy steps: an explicit prerelease input wins
+  # over the caller's ref.
+  group: ${{ format('publish - {0}', (inputs.prerelease || (format('{0}', inputs.prerelease) != 'false' && github.ref == 'refs/heads/prerelease')) && 'prerelease' || 'main') }}
   cancel-in-progress: true
 
 jobs:
