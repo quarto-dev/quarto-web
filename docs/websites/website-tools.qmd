@@ -102,6 +102,8 @@ You may also provide additional metadata to be used when generating the Twitter 
 |               |                                                                                                                                                                                                                                                                                        |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                                                   |
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `image-alt`   | Alternative text for the preview image. By default, Quarto uses the alt text that goes with the preview image. For more information, see [Preview Images].                                                                                                                             |
++---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `card-style`  | Either `summary` or `summary_large_image`. If this is not provided, the best style will automatically selected based upon other metadata. You can learn more about Twitter Card styles [here](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards). |
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `creator`     | `@username` of the content creator. Note that strings with special characters such as `@` must be quoted in yaml.                                                                                                                                                                      |
@@ -144,6 +146,8 @@ You may also provide additional metadata to be used when generating the Open Gra
 |               | If you provide an image, you may also optionally provide an `image-width` and `image-height` (in pixels). For how Quarto uses them, see [Image Size].                                                                                                |
 |               |                                                                                                                                                                                                                                                      |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                 |
++---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| `image-alt`   | Alternative text for the preview image. By default, Quarto uses the alt text that goes with the preview image. For more information, see [Preview Images].                                                                                           |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `locale`      | The locale that the Open Graph metadata is marked up in.                                                                                                                                                                                             |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -219,9 +223,12 @@ If you'd like to provide a default that is used when pages specify a preview ima
 ```{.yaml filename="_quarto.yml"}
 website:
   image: "https://quarto.org/assets/images/quarto-dark-bg.jpeg"
+  image-alt: "Quarto logo"
 ```
 
 With a `site-url`, a relative path in `_quarto.yml`, for `website: image` or for `image` under `website: open-graph` or `website: twitter-card`, is relative to the project directory, whichever page uses it.
+
+Use `image-alt` to provide alternative text for the preview image. Set it next to `image` in the page front matter, or under `website` for the site-level default as above. `website: image-alt` is only used for pages that fall back to the site-level image. When Quarto finds the preview image in the page, it uses that image's alt text (for example, from `fig-alt`), and the page's `image-alt` if the image has none. To use different alt text for one service, set `image-alt` under `twitter-card` or `open-graph`.
 
 If you would like to prevent preview image discovery on a page, set `image` to `false`:
 
