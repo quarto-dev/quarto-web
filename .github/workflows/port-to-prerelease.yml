@@ -5,15 +5,16 @@ on:
   issue_comment:
     types: [created]
 
-permissions:
-  contents: write # so it can comment
-  pull-requests: write # so it can create pull requests
-  checks: write # so it can create a check run
+permissions: {} # each job opts in below
 
 jobs:
   sync-to-prerelease:
     name: Backport pull request
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # so it can comment
+      pull-requests: write # so it can create, merge and label pull requests
+      checks: write # so it can create a check run
     # Don't run on closed unmerged pull requests and only PRs to main,
     # skipping PRs labeled 'no-sync-prerelease' (e.g. release merges that
     # would otherwise try to cherry-pick the whole prerelease history back).
@@ -29,6 +30,8 @@ jobs:
         github.event.comment.user.id != 41898282 &&
         startsWith(github.event.comment.body, '/sync-prerelease')
       )
+    outputs:
+      merged: ${{ steps.merge.outputs.merged }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -55,18 +58,92 @@ jobs:
           label_pattern: ''
           target_branches: prerelease
 
-      - name: Trigger deploy using a comment
+      # Merging right away keeps prerelease up to date before the next PR to
+      # main is cherry-picked; a sync PR left open makes the next backport
+      # touching the same file conflict.
+      - name: Merge the sync pull request
+        id: merge
         if: steps.synced-pr.outputs.was_successful == 'true'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
-          CREATED_PULL_NUMBERS: ${{ steps.synced-pr.outputs.created_pull_numbers }}
-        with:
+          GH_TOKEN: ${{ github.token }}
+          SYNC_PR: ${{ steps.synced-pr.outputs.created_pull_numbers }}
+        run: |
+          gh pr merge "$SYNC_PR" --repo "$GITHUB_REPOSITORY" --squash
+          echo "merged=true" >> "$GITHUB_OUTPUT"
+
+      - name: Remove the backport-failed label
+        if: steps.synced-pr.outputs.was_successful == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+        run: |
+          if gh pr view "$SOURCE_PR" --repo "$GITHUB_REPOSITORY" --json labels --jq '.labels[].name' | grep -qx backport-failed; then
+            gh pr edit "$SOURCE_PR" --repo "$GITHUB_REPOSITORY" --remove-label backport-failed
+          fi
+
+      # Also when the sync PR could not be merged, e.g. prerelease moved and
+      # it now conflicts; it stays open for a manual merge.
+      - name: Label the failed backport
+        if: >
+          !cancelled() && (
+            steps.synced-pr.outputs.was_successful == 'false' ||
+            steps.merge.outcome == 'failure'
+          )
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+        run: gh pr edit "$SOURCE_PR" --repo "$GITHUB_REPOSITORY" --add-label backport-failed
+
+  # Merging with GITHUB_TOKEN does not trigger the push event that publishes
+  # prerelease, so publish it explicitly. Publishing the branch tip rather than
+  # the merge commit keeps the latest content when two syncs land together.
+  publish-prerelease:
+    needs: [ sync-to-prerelease ]
+    # Publish even if a later step of the sync job failed after the merge.
+    if: ${{ !cancelled() && needs.sync-to-prerelease.outputs.merged == 'true' }}
+    uses: ./.github/workflows/publish.yml
+    # A called workflow cannot exceed its caller's grant.
+    permissions:
+      contents: read
+      statuses: write
+    with:
+      ref: prerelease
+      prerelease: true
+    secrets:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+  # A backport that failed because an earlier change was missing from
+  # prerelease can apply once that change lands. After a sync merge, or a
+  # manual merge into prerelease, retry the oldest failed backport. Each
+  # successful retry triggers the next one; the chain stops at the first
+  # backport that fails again.
+  retry-failed-backport:
+    name: Retry the oldest failed backport
+    needs: [ sync-to-prerelease ]
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read # so it can list labeled pull requests
+    if: >
+      !cancelled() && (
+        needs.sync-to-prerelease.outputs.merged == 'true' || (
+          github.event_name == 'pull_request_target' &&
+          github.event.pull_request.merged &&
+          github.event.pull_request.base.ref == 'prerelease'
+        )
+      )
+    steps:
+      - name: Find the oldest PR labeled backport-failed
+        id: oldest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --base main --state merged --label backport-failed --limit 1000 --json number,mergedAt --jq 'sort_by(.mergedAt) | .[0].number // empty')
+          echo "pr=$pr" >> "$GITHUB_OUTPUT"
+
+      - name: Re-run its backport with a comment
+        if: steps.oldest.outputs.pr != ''
+        env:
           # special fine-grained token for issue comment trigger
-          github-token: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
-          script: |
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: process.env.CREATED_PULL_NUMBERS,
-              body: "/deploy-preview",
-            });
+          GH_TOKEN: ${{ secrets.ISSUE_COMMENT_TRIGGER_PAT }}
+          RETRY_PR: ${{ steps.oldest.outputs.pr }}
+        run: gh api "repos/$GITHUB_REPOSITORY/issues/$RETRY_PR/comments" -f body="/sync-prerelease"
