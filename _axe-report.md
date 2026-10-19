@@ -1,8 +1,8 @@
-Results for [quarto.org](https://quarto.org) at commit [`6965812a5`](https://github.com/quarto-dev/quarto-web/tree/6965812a5dcca87d22ee276a2a277ca3d59155fe), scanned October 16, 2026.
+Results for [quarto.org](https://quarto.org) at commit [`86a48471c`](https://github.com/quarto-dev/quarto-web/tree/86a48471cfc8033bf6eb2c0c9068da98f33b620b), scanned October 19, 2026.
 
 # axe site audit
 
-372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.6 · generated 2026-10-16T22:00:59.513Z
+372 pages · 1410/1410 cells ok · axe-core 4.10.3 · Quarto 1.11.6 · generated 2026-10-19T06:32:44.224Z
 
 > **Partial scan** (`--exclude docs/get-started/*/index.html,docs/manuscripts/authoring/index.html`) — counts describe this subset, not the whole site. A one-page rescan proves an instance is gone, not that the finding is fixed on other pages.
 
