@@ -78,6 +78,16 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
   padding-bottom: 0;
 }
 
+// Upper case label: the table of contents heading, and the toggle title
+// that replaces it.
+@mixin qorg-toc-label {
+  color: var(--qorg-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 // Table of contents as a floating panel. Quarto already keeps the margin
 // sidebar sticky.
 #quarto-margin-sidebar nav#TOC {
@@ -85,14 +95,47 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
   padding: 0.8rem 0.6rem 0.7rem;
 
   > h2 {
+    @include qorg-toc-label;
     margin: 0 0 0.4rem 0.45rem;
-    color: var(--qorg-muted);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  }
+}
+
+// When page content scrolls under the margin, quarto.js swaps the panel for
+// #quarto-toc-toggle: a title that opens a copy of the table of contents.
+// The toggle sits outside #quarto-margin-sidebar, so it gets the panel shell
+// here, and its title takes the place of the copied heading.
+#quarto-toc-toggle {
+  @include qorg-float-panel;
+
+  .quarto-sidebar-toggle-title {
+    @include qorg-toc-label;
+    margin: 0;
+    padding: 0.55rem 0.8rem 0.5rem 1.05rem;
+    border-bottom: 0;
+    text-align: left;
   }
 
+  .quarto-sidebar-toggle-icon {
+    margin-right: 0;
+    color: var(--qorg-muted);
+  }
+
+  .quarto-sidebar-toggle-contents {
+    padding: 0 0.6rem;
+    background: transparent;
+  }
+
+  &.expanded .quarto-sidebar-toggle-contents {
+    padding-bottom: 0.7rem;
+  }
+
+  nav#TOC > h2 {
+    display: none;
+  }
+}
+
+#quarto-margin-sidebar nav#TOC,
+#quarto-toc-toggle nav#TOC {
   ul > li > a {
     display: block;
     min-height: 24px;
