@@ -1,4 +1,6 @@
-# Gallery featured video previews
+# Gallery previews and thumbnails
+
+## Featured video previews
 
 `capture-previews.mjs` generates the short, muted, looping clips that featured
 gallery cards play on hover or keyboard focus. The rendering,
@@ -10,7 +12,7 @@ This script is separate from the still-screenshot manifest (`capture.js`): it
 records motion rather than a single frame, and is driven by gallery data rather
 than `manifest.json`.
 
-## How it works
+### How it works
 
 - Driven by `docs/gallery/data/featured.yml`: every card with both a `live` URL
   and a `preview` base path gets a clip. `preview:` is the output path without
@@ -33,7 +35,7 @@ Cards without a `preview:` field keep the static PNG. Leave it off for pages tha
 do not benefit: single-screen dashboards, PDF/blob `live` URLs, or sites that block
 headless capture.
 
-## Prerequisites
+### Prerequisites
 
 - **ffmpeg** on `PATH` (`brew install ffmpeg`). Playwright records VP8 webm only;
   ffmpeg re-encodes to a smaller VP9 webm and an H.264 mp4 for Safari/broad support.
@@ -43,7 +45,7 @@ headless capture.
 - **This tool's dependencies installed** — `npm install` in `_tools/screenshots`
   (the script uses the tool's `playwright` and `js-yaml`).
 
-## Usage
+### Usage
 
 From `_tools/screenshots`:
 
@@ -56,7 +58,7 @@ npm run capture:previews -- --limit 2    # first N matches (staging)
 After capturing, re-render the landing (`quarto render docs/gallery/index.qmd`) and
 check the clips in the browser in both themes.
 
-# PDF card thumbnails
+## PDF card thumbnails
 
 `capture-pdf-thumbs.mjs` builds the still `image` for cards whose `live` URL is a
 PDF, rendering the PDF's first two pages (or the first page alone when it has only
@@ -74,7 +76,7 @@ npm run capture:pdf-thumbs -- --name whr   # match by name or image path
 npm run capture:pdf-thumbs -- --limit 1    # first N matches (staging)
 ```
 
-# Card thumbnails for image-less entries
+## Card thumbnails for image-less entries
 
 `capture-card-thumbs.mjs` fills the `image` for cards that have none yet and whose
 `live` URL is a normal web page (PDF-linked cards go through `capture-pdf-thumbs.mjs`).
