@@ -14,7 +14,7 @@ than `manifest.json`.
 
 - Driven by `docs/gallery/data/featured.yml`: every card with both a `live` URL
   and a `preview` base path gets a clip. `preview:` is the output path without
-  extension, e.g. `thumbnails/featured/software-documentation-gribouille`.
+  extension, e.g. `thumbnails/featured/software-documentation-positron`.
 - Optional `preview-url:` overrides the page that is recorded when the card's
   `live` link is not the best source (e.g. a landing page vs a richer subpage). The
   card's `live` link is unchanged; only the capture source differs.
