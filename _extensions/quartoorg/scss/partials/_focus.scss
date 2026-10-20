@@ -1,0 +1,42 @@
+// Site-wide focus ring: 2px solid, 2px away from the control, 3:1 or more on
+// every token surface. Components don't add their own focus styles.
+
+// Bootstrap and Quarto remove the outline on these controls with selectors
+// stronger than :focus-visible, and some draw a pale box-shadow instead.
+// Matching their specificity here, later in the cascade, restores the ring.
+$qorg-focus-controls: ".btn:focus-visible, .nav-link:focus-visible, .navbar-brand:focus-visible, .dropdown-item:focus-visible, .form-control:focus-visible, .form-select:focus-visible, .form-check-input:focus-visible, .aa-Input:focus-visible, .aa-DetachedSearchButton:focus-visible, .sidebar-item-toggle:focus-visible, .quarto-navigation-tool:focus-visible, .accordion-button:focus-visible, .page-link:focus-visible";
+
+:focus-visible,
+#{$qorg-focus-controls} {
+  outline: 2px solid var(--qorg-ring);
+  outline-offset: 2px;
+}
+
+#{$qorg-focus-controls} {
+  box-shadow: none;
+}
+
+// The "Supported by Posit" badge script draws the badge frame with an outline
+// on #supported-by-posit, in both modes, so the ring needs an id selector.
+#quarto-header #supported-by-posit:focus-visible {
+  outline: 2px solid var(--qorg-ring);
+  outline-offset: 2px;
+}
+
+// The navbar is fixed, so keep focused and linked elements below it: about
+// 65px on wide screens, up to about 135px when the secondary bar shows.
+html {
+  scroll-padding-top: 5rem;
+
+  @media (max-width: 991.98px) {
+    scroll-padding-top: 9rem;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible,
+  #{$qorg-focus-controls},
+  #quarto-header #supported-by-posit:focus-visible {
+    outline-color: Highlight;
+  }
+}
