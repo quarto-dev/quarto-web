@@ -1,0 +1,71 @@
+// Design tokens: custom properties read by every partial.
+// Light values go on :root and dark values on body.quarto-dark, because
+// Quarto loads the light stylesheet again after the dark one, so a dark
+// value on :root would lose in dark mode.
+@import "palette";
+
+$qorg-roles: (
+  "bg": ($qorg-bg-light, $qorg-bg-dark),
+  "panel": ($qorg-panel-light, $qorg-panel-dark),
+  "band": ($qorg-band-light, $qorg-band-dark),
+  "hero": ($qorg-hero-light, $qorg-hero-dark),
+  "code-bg": ($qorg-code-bg-light, $qorg-code-bg-dark),
+  "ink": ($qorg-ink-light, $qorg-ink-dark),
+  "muted": ($qorg-muted-light, $qorg-muted-dark),
+  "line": ($qorg-line-light, $qorg-line-dark),
+  "line-strong": ($qorg-line-strong-light, $qorg-line-strong-dark),
+  "link": ($qorg-link-light, $qorg-link-dark),
+  "brand": ($qorg-brand-light, $qorg-brand-dark),
+  "brand-hover": ($qorg-brand-hover-light, $qorg-brand-hover-dark),
+  "on-brand": ($qorg-on-brand-light, $qorg-on-brand-dark),
+  "ring": ($qorg-ring-light, $qorg-ring-dark),
+  "chip": ($qorg-chip-light, $qorg-chip-dark),
+  "chip-ink": ($qorg-chip-ink-light, $qorg-chip-ink-dark),
+  "chip-line": ($qorg-chip-line-light, $qorg-chip-line-dark),
+  "interactive-ink": ($qorg-interactive-ink-light, $qorg-interactive-ink-dark),
+);
+
+$qorg-sections: (
+  "getstarted": ($sec-getstarted-bar, $sec-getstarted-ink-light, $sec-getstarted-ink-dark),
+  "guide": ($sec-guide-bar, $sec-guide-ink-light, $sec-guide-ink-dark),
+  "extensions": ($sec-extensions-bar, $sec-extensions-ink-light, $sec-extensions-ink-dark),
+  "reference": ($sec-reference-bar, $sec-reference-ink-light, $sec-reference-ink-dark),
+  "gallery": ($sec-gallery-bar, $sec-gallery-ink-light, $sec-gallery-ink-dark),
+  "blog": ($sec-blog-bar, $sec-blog-ink-light, $sec-blog-ink-dark),
+);
+
+$qorg-categories: (
+  "reports": $cat-reports,
+  "dashboards": $cat-dashboards,
+  "research": $cat-research,
+  "teaching": $cat-teaching,
+  "docs": $cat-docs,
+  "personal": $cat-personal,
+);
+
+:root {
+  @each $role, $values in $qorg-roles {
+    --qorg-#{$role}: #{nth($values, 1)};
+  }
+  @each $name, $values in $qorg-sections {
+    --qorg-sec-#{$name}: #{nth($values, 1)};
+    --qorg-sec-#{$name}-ink: #{nth($values, 2)};
+  }
+  @each $name, $value in $qorg-categories {
+    --cat-#{$name}: #{$value};
+  }
+  --qorg-interactive-bg: #{$qorg-interactive-bg};
+  --qorg-interactive-line: #{$qorg-interactive-line};
+  --qorg-prerelease: #{$qorg-prerelease};
+  --qorg-radius-card: 12px;
+  --qorg-radius-chip: 20px;
+}
+
+body.quarto-dark {
+  @each $role, $values in $qorg-roles {
+    --qorg-#{$role}: #{nth($values, 2)};
+  }
+  @each $name, $values in $qorg-sections {
+    --qorg-sec-#{$name}-ink: #{nth($values, 3)};
+  }
+}
