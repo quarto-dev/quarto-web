@@ -34,6 +34,12 @@ _extensions/
 
 Note that the only thing strictly required is the `_extensions` directory (anything above that is for your own purposes and is ignored during installation). Even so, it's good practice to include a `README.md` and `LICENSE` file, and the `example.qmd` will be useful for developing your extension.
 
+Place each extension directly under `_extensions`, named after the extension (`_extensions/my-filter/`). Don't add a folder for your GitHub organization (`_extensions/cooltools/my-filter/`). For installations from GitHub, Quarto adds the owner folder (see [Installed Layout](#installed-layout)). Any owner folder in the source is ignored. To include an extension from another owner, embed it in your extension as described in [Embedding Extensions](#embedding-extensions).
+
+{{< prerelease-callout 1.11 >}}
+
+When an extension's source has an owner folder that differs from the owner it is installed under, `quarto add` prints a note with the name to use for the installed extension.
+
 ### \_extension.yml
 
 Each extension is defined by its `_extension.yml` file which contains the metadata about the extension as well as the what items it contributes when used. For example, here is the `_extension.yml` for a filter extension:
@@ -122,6 +128,20 @@ Invalid `version` values would be:
 - 1.2.3-beta.5+build (missing build metadata identifier)
 :::
 
+## Installed Layout
+
+When an extension is installed, Quarto copies each extension found in the source `_extensions` directory into the `_extensions` directory of the project or document. Extensions installed from GitHub land in a folder named after the GitHub owner they were installed from. Extensions installed from any other source have no owner and land directly in `_extensions`:
+
+| Command                                                                     | Installed location               |
+|-----------------------------------------------------------------------------|----------------------------------|
+| `quarto add quarto-ext/lightbox`                                            | `_extensions/quarto-ext/lightbox/` |
+| `quarto add https://github.com/quarto-ext/lightbox/archive/refs/heads/main.zip` | `_extensions/quarto-ext/lightbox/` |
+| `quarto add https://cooltools.org/quarto/shorty.zip`                        | `_extensions/shorty/`            |
+| `quarto add ~/Downloads/shorty.zip`                                         | `_extensions/shorty/`            |
+| `quarto add /share/quarto/extensions/shorty`                                | `_extensions/shorty/`            |
+
+The owner comes from the source you install from, not from the extension's source files. The extension folder keeps the name it has under the source `_extensions` directory, which can differ from the repository name. For example, `quarto add cooltools/icons/fontawesome` (see [subdirectories](#github-distribution) below) installs `_extensions/cooltools/fontawesome/`.
+
 ## GitHub Distribution
 
 Distributing extensions on GitHub has a number of benefits, including compact syntax (e.g. `quarto add org-name/extension`), the use of organizations as a "namespace" for managing name conflicts, and the ability to target specific releases or tags.
@@ -149,6 +169,10 @@ filters:
 ---
 ```
 
+A qualified name `<owner>/<name>` refers to the extension installed in `_extensions/<owner>/<name>/`. You can use it wherever you refer to an extension by name, for example in `filters` or in a format name such as `format: quarto-journals/acm-pdf`. A name without an owner (`lightbox`, `acm-pdf`) matches the extension whether or not it was installed with an owner, and Quarto warns if more than one installed extension matches.
+
+Because the owner depends on where an extension is installed from, use the name without an owner in a `template.qmd` that ships with your extension (for example `format: acm-pdf`). The template then works whether it is used from GitHub, from an archive, or from a local copy.
+
 You can also add an extension from a subdirectory of a GitHub repository. For example, here we install two different extensions from the `cooltools/icons` repository:
 
 ``` {.bash filename="Terminal"}
@@ -160,7 +184,7 @@ quarto add cooltools/icons/iconify
 
 Distributing extensions as a `.zip` or `.tar.gz` archive has the benefit of not requiring public distribution. These extensions can also be added directly from non-GitHub version control services using the archive URLs normally provided for repositories.
 
-Note that unlike GitHub hosted extensions, extensions installed from archives do not have an organizational namespace (they all share a single namespace).
+Note that unlike GitHub hosted extensions, extensions installed from archives or local directories do not have an organizational namespace: they install as `_extensions/<name>/`, all share a single namespace, and are referred to by name only. The one exception is a GitHub archive URL (`https://github.com/<owner>/<repo>/archive/refs/...`), which installs under its GitHub owner like any other GitHub extension.
 
 ### Git Repositories
 
@@ -192,3 +216,36 @@ Or alternatively from a local archive file or even ordinary uncompressed directo
 quarto add ~/Downloads/shorty.zip
 quarto add /share/quarto/extensions/shorty
 ```
+
+## Embedding Extensions
+
+A format extension can use filters and shortcodes from another extension. If that extension comes from another owner, embed it in your format extension. Extensions placed alongside your format extension in `_extensions` are installed under the same owner as your format extension (see [Installed Layout](#installed-layout)).
+
+To embed an extension, run `quarto add` with the `--embed` option from the directory that contains your `_extensions` directory, giving the name of your format extension:
+
+``` {.bash filename="Terminal"}
+quarto add quarto-ext/fancy-text --embed my-format
+```
+
+This installs the extension inside your format extension, with its own owner:
+
+``` default
+_extensions/
+  my-format/
+    _extension.yml
+    _extensions/
+      quarto-ext/
+        fancy-text/
+```
+
+Embedded extensions keep this layout when your extension is installed. Once the extension is embedded, refer to it in your `_extension.yml` by its name or qualified name:
+
+``` {.yaml filename="_extensions/my-format/_extension.yml"}
+contributes:
+  formats:
+    html:
+      shortcodes:
+        - quarto-ext/fancy-text
+```
+
+Only extensions that contribute a format can embed other extensions. Run `quarto add --embed` before adding the embedded extension's name to `_extension.yml`. Quarto reads this file during embedding and fails if it references an extension that is not yet embedded.
