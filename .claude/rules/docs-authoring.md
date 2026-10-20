@@ -7,13 +7,15 @@ paths:
 
 ## Prerelease shortcodes
 
-When documenting a feature introduced in a specific Quarto version, add at the top of the section:
+When documenting a new feature or a big behavior change introduced in a specific Quarto version, add at the top of the section:
 
 ```
 {{< prerelease-callout X.Y >}}
 ```
 
 Shows a pre-release callout before X.Y ships, disappears automatically after — never remove them manually. For blog posts use `type="blog"`. For URLs use `{{< prerelease-docs-url X.Y >}}`. See `_extensions/prerelease/` for details.
+
+Small behavior changes (a fix, a refined existing option, a table row update) need no callout or version qualifier: the `prerelease` branch already documents the upcoming version, so its pages describe that version's behavior by default.
 
 ## Format name convention
 
