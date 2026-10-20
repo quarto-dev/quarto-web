@@ -1,7 +1,6 @@
 // Shared page chrome on Quarto's own markup: active navbar item, sidebar,
 // breadcrumb label, title block, section headings and the table of contents.
 // Colours come from the page section (--sec, --sec-ink, _sections.scss).
-// Page-body rules skip body.gallery, which keeps its own look for now.
 
 // Active navbar item: bold, with a 3px bar in the section colour.
 #quarto-header .navbar-nav .nav-link.active {
@@ -20,108 +19,107 @@
   font-weight: 700;
 }
 
-body:not(.gallery) {
-  // Breadcrumb label, above the title on wide screens and in the secondary
-  // bar on narrow ones: small, bold, upper case, in the section ink. The
-  // current page comes last, in muted text.
-  .quarto-page-breadcrumbs {
-    .breadcrumb {
-      --bs-breadcrumb-divider: "/";
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .breadcrumb-item + .breadcrumb-item::before {
-      color: var(--qorg-muted);
-    }
-
-    .breadcrumb-item a {
-      color: var(--sec-ink);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .breadcrumb-item:last-child a {
-      color: var(--qorg-muted);
-    }
+// Breadcrumb label, above the title on wide screens and in the secondary
+// bar on narrow ones: small, bold, upper case, in the section ink. The
+// current page comes last, in muted text.
+.quarto-page-breadcrumbs {
+  .breadcrumb {
+    --bs-breadcrumb-divider: "/";
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
-  // Quarto colours the secondary bar breadcrumb grey with its own selectors.
-  .quarto-secondary-nav nav.quarto-page-breadcrumbs .breadcrumb-item a {
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--qorg-muted);
+  }
+
+  .breadcrumb-item a {
     color: var(--sec-ink);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
-  .quarto-secondary-nav nav.quarto-page-breadcrumbs .breadcrumb-item:last-child a {
+  .breadcrumb-item:last-child a {
     color: var(--qorg-muted);
   }
+}
 
-  // Title in 800, with the subtitle as a muted lede under it.
-  #title-block-header .quarto-title .title {
-    font-weight: 800;
-  }
+// Quarto colours the secondary bar breadcrumb grey with its own selectors.
+.quarto-secondary-nav nav.quarto-page-breadcrumbs .breadcrumb-item a {
+  color: var(--sec-ink);
+}
 
-  #title-block-header p.subtitle {
+.quarto-secondary-nav nav.quarto-page-breadcrumbs .breadcrumb-item:last-child a {
+  color: var(--qorg-muted);
+}
+
+// Title in 800, with the subtitle as a muted lede under it.
+#title-block-header .quarto-title .title {
+  font-weight: 800;
+}
+
+#title-block-header p.subtitle {
+  color: var(--qorg-muted);
+  font-size: 1.15rem;
+}
+
+// Section headings in the page body: left bar, no bottom rule. The home
+// page and the gallery have their own headings, and link card titles are h2
+// in a section too.
+body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title) > h2 {
+  @include qorg-bar-heading;
+  padding-bottom: 0;
+}
+
+// The Extensions listing moves its h2 next to the filter, out of its
+// section.
+.listing-actions-group > h2 {
+  @include qorg-bar-heading;
+  padding-bottom: 0;
+}
+
+// Table of contents as a floating panel. Quarto already keeps the margin
+// sidebar sticky.
+#quarto-margin-sidebar nav#TOC {
+  @include qorg-float-panel;
+  padding: 0.8rem 0.6rem 0.7rem;
+
+  > h2 {
+    margin: 0 0 0.4rem 0.45rem;
     color: var(--qorg-muted);
-    font-size: 1.15rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
   }
 
-  // Section headings in the page body: left bar, no bottom rule. The home
-  // page has its own headings, and link card titles are h2 in a section too.
-  &:not(.quarto-home) main.content section.level2:not(.card-title) > h2 {
-    @include qorg-bar-heading;
-    padding-bottom: 0;
+  ul > li > a {
+    display: block;
+    min-height: 24px;
+    padding: 0.2rem 0.5rem;
+    border-left: 0;
+    border-radius: 8px;
   }
 
-  // The Extensions listing moves its h2 next to the filter, out of its
-  // section.
-  .listing-actions-group > h2 {
-    @include qorg-bar-heading;
-    padding-bottom: 0;
+  ul ul > li > a {
+    padding-left: 1.2rem;
   }
 
-  // Table of contents as a floating panel. Quarto already keeps the margin
-  // sidebar sticky.
-  #quarto-margin-sidebar nav#TOC {
-    @include qorg-float-panel;
-    padding: 0.8rem 0.6rem 0.7rem;
+  // Quarto sets the active entry colour with !important.
+  ul > li > a.active {
+    background: color-mix(in srgb, var(--sec) 16%, transparent);
+    color: var(--qorg-ink) !important;
+    font-weight: 700;
+  }
 
-    > h2 {
-      margin: 0 0 0.4rem 0.45rem;
-      color: var(--qorg-muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    ul > li > a {
-      display: block;
-      min-height: 24px;
-      padding: 0.2rem 0.5rem;
-      border-left: 0;
-      border-radius: 8px;
-    }
-
-    ul ul > li > a {
-      padding-left: 1.2rem;
-    }
-
-    // Quarto sets the active entry colour with !important.
-    ul > li > a.active {
-      background: color-mix(in srgb, var(--sec) 16%, transparent);
-      color: var(--qorg-ink) !important;
-      font-weight: 700;
-    }
-
-    .toc-actions {
-      margin-top: 0.5rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid var(--qorg-line);
-    }
+  .toc-actions {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--qorg-line);
   }
 }
