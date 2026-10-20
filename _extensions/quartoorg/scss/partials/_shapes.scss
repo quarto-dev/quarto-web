@@ -1,8 +1,9 @@
 // Shapes that the site chrome, the components and the gallery share.
 // Each mixin draws the shape from the tokens; the caller picks the element.
 
-// Section heading with a 5px rounded bar in the section colour on its left.
-@mixin qorg-bar-heading($bar-inset: 0.2rem) {
+// Section heading with a 5px rounded bar on its left, in the section colour
+// unless the caller passes another one (the gallery uses its category colour).
+@mixin qorg-bar-heading($bar-inset: 0.2rem, $bar: var(--sec)) {
   position: relative;
   padding-left: 0.95rem;
   border-bottom: 0;
@@ -15,7 +16,7 @@
     bottom: $bar-inset;
     width: 5px;
     border-radius: 3px;
-    background: var(--sec);
+    background: $bar;
   }
 }
 
@@ -25,27 +26,30 @@
   border: 1px solid var(--qorg-line);
   border-radius: $radius;
   background: color-mix(in srgb, var(--qorg-bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 16px var(--qorg-shadow);
 }
 
-// Card: line border, card radius, panel surface, and a 4px bar in the
-// section colour along the top.
-@mixin qorg-card-shell {
+// Card: line border, card radius, panel surface, and a 4px bar along the
+// top, in the section colour by default. $bar: null draws no bar.
+@mixin qorg-card-shell($bar: var(--sec)) {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--qorg-line);
   border-radius: var(--qorg-radius-card);
   background: var(--qorg-panel);
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: var(--sec);
+  @if $bar {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: $bar;
+    }
   }
 }
 
@@ -84,19 +88,25 @@
   font-weight: 700;
 }
 
-// Chip: small caps label on the chip surface, with the chip radius.
+// Chip look: small caps label on the chip surface, with the chip radius.
+// The gallery uses it with its own, smaller sizes.
+@mixin qorg-chip-skin {
+  border: 1px solid var(--qorg-chip-line);
+  border-radius: var(--qorg-radius-chip);
+  background: var(--qorg-chip);
+  color: var(--qorg-chip-ink);
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
+}
+
+// Chip with the site sizes.
 @mixin qorg-chip {
   display: inline-flex;
   align-items: center;
   min-height: 24px;
   padding: 0.05rem 0.6rem;
-  border: 1px solid var(--qorg-chip-line);
-  border-radius: var(--qorg-radius-chip);
-  background: var(--qorg-chip);
-  color: var(--qorg-chip-ink);
   font-size: 0.75rem;
   font-weight: 600;
-  font-variant: small-caps;
-  letter-spacing: 0.03em;
   text-transform: none;
+  @include qorg-chip-skin;
 }
