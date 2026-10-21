@@ -11,12 +11,9 @@ body.quarto-home #quarto-content > [role="main"] > * {
 }
 
 body.quarto-home .content-block {
-  padding-top: 20px;
-  padding-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
 }
-
 
 @media(min-width: 900px) {
 body.quarto-home .content-block {
@@ -37,32 +34,12 @@ body.quarto-home .hero-banner {
   position: relative;
   display: flex;
   justify-content: center;
-}
-
-body.quarto-home.quarto-light .hero-banner {
-  background-color: rgb(240,245,249);
-}
-
-body.quarto-home.quarto-dark .hero-banner {
-  background-color: #1C2F3D;
+  background-color: var(--qorg-hero);
 }
 
 body.quarto-home .hero-banner h1 {
   font-size: 2.5rem;
-}
-
-body.quarto-home.quarto-light .hero-banner h1 {
-  color: #39729E;
-}
-
-body.quarto-home.quarto-dark .hero-banner h1 {
-  color: #b9d2eE;
-}
-
-body.quarto-home .hero-banner .hero-image {
-  position: absolute;
-  display: none;
-  height: auto;
+  color: var(--qorg-link);
 }
 
 body.quarto-home .hero-banner .content-block {
@@ -80,45 +57,6 @@ body.quarto-home .hero-banner .content-block .hero-animation {
   width: 350px;
   height: 455px;
 }
-
-body.quarto-home .hero-banner .content-block .hero-animation video {
-  width: 350px;
-  height: 455px;
-}
-
-@media (min-width: 1000px) {
-body.quarto-home .hero-banner .hero-image {
-  display: initial;
-  width: 270px;
-}
-}
-
-@media (min-width: 1200px) {
-body.quarto-home .hero-banner .hero-image {
-  width: 340px;
-}
-}
-
-@media (min-width: 1400px) {
-body.quarto-home .hero-banner .hero-image {
-  width: 440px;
-}
-}
-
-body.quarto-home .hero-banner .hero-image p {
-  margin-bottom: 0;
-}
-
-body.quarto-home .hero-banner .hero-image-left {
-  left: 0;
-  bottom: 0;
-}
-
-body.quarto-home .hero-banner .hero-image-right {
-  right: 0;
-  bottom: 0;
-}
-
 
 body.quarto-home .hero-banner .content-block {
   z-index: 2;
@@ -150,7 +88,6 @@ body.quarto-home .hero-banner .content-block {
   }
 }
 
-
 body.quarto-home .hero-banner a:not(.btn) {
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -178,149 +115,198 @@ body.quarto-home .hero-banner ul li {
   padding-bottom: 0.4rem;
 }
 
-
-body.quarto-home.quarto-light .alt-background {
-  background-color: rgb(247,249,251);
-  border-top: 1px solid #dee2e6;
-  border-bottom: 1px solid #dee2e6;
+body.quarto-home .alt-background {
+  background-color: var(--qorg-band);
+  border-top: 1px solid var(--qorg-line);
+  border-bottom: 1px solid var(--qorg-line);
 }
 
-body.quarto-home.quarto-dark .alt-background {
-    background-color: #17212B;
-  border-top: 1px solid #151515;
-  border-bottom: 1px solid #151515;
-}
-
-body.quarto-home .hello-quarto {
-  padding-bottom: 1rem;
-}
-
-/* "Hello, Quarto" is an h2 (the page has one h1) styled as the h1 it used to be.
-   section > h2:first-child matches the specificity of Quarto's
-   #quarto-content section:first-of-type h2:first-of-type, and wins by order. */
-body.quarto-home #quarto-content .hello-quarto-banner section > h2:first-child {
-  font-size: calc(1.325rem + 0.9vw);
+// Block headings: h2s with the left bar. section > h2:first-child matches the
+// specificity of Quarto's #quarto-content section:first-of-type
+// h2:first-of-type, and wins by order.
+body.quarto-home #quarto-content section > h2:first-child {
+  @include qorg-bar-heading(0.25rem);
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   padding-bottom: 0;
-  border-bottom: none;
+  font-size: 1.9rem;
+  font-weight: 800;
 }
 
-@media (min-width: 1200px) {
-body.quarto-home #quarto-content .hello-quarto-banner section > h2:first-child {
-  font-size: 2rem;
-}
-}
-
-@media (min-width: 715px) {
-body.quarto-home .hello-quarto-banner {
-  display: inline-flex;
+body.quarto-home .home-chooser,
+body.quarto-home .home-features,
+body.quarto-home .hello-quarto .content-block {
+  padding-top: 2.2rem;
+  padding-bottom: 2.2rem;
 }
 
-body.quarto-home .hello-quarto-banner h2 {
-  margin-right: 40px;
-}
+// Section chooser: one card per navbar section, in its own section colour
+// from the sec-<name> class on the link.
+body.quarto-home .choices > ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-body.quarto-home .hello-quarto-banner .nav-pills .nav-link.active, body.quarto-home .nav-pills .show>.nav-link {
-  border: none;
-  border-bottom: 2px solid #39729E;
-  color: #39729E;
-  background-color: transparent;
-}
-
-body.quarto-home .hello-quarto-banner .nav-pills button {
-  width: 125px;
-}
-@media (max-width: 560px) { 
-  body.quarto-home .hello-quarto-banner .nav-pills button {
-    width: unset;
+@media (max-width: 900px) {
+  body.quarto-home .choices > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+@media (max-width: 600px) {
+  body.quarto-home .choices > ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+body.quarto-home .choices li {
+  display: flex;
+}
+
+body.quarto-home a.choice {
+  @include qorg-card-shell;
+  display: block;
+  width: 100%;
+  padding: 1rem 1rem 0.95rem;
+  color: var(--qorg-ink);
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--sec);
+    color: var(--qorg-ink);
+  }
+}
+
+body.quarto-home .choice-glyph {
+  @include qorg-glyph-box(2.4rem);
+}
+
+body.quarto-home .choice-name {
+  display: block;
+  margin: 0.45rem 0 0.15rem;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+body.quarto-home .choice-name .bi {
+  font-size: 0.8em;
+}
+
+body.quarto-home .choice-tagline {
+  display: block;
+  color: var(--qorg-muted);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+// Hello, Quarto: the pills stay Bootstrap tabs; they read the tokens
+// through Bootstrap's nav variables.
+body.quarto-home .hello-quarto .nav-pills {
+  --bs-nav-link-color: var(--qorg-ink);
+  --bs-nav-link-hover-color: var(--qorg-link);
+  --bs-nav-pills-link-active-color: var(--qorg-on-brand);
+  --bs-nav-pills-link-active-bg: var(--qorg-brand);
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+body.quarto-home .hello-quarto .nav-pills .nav-link {
+  min-height: 44px;
+  padding: 0.3rem 1.1rem;
+  border: 1px solid var(--qorg-line-strong);
+  border-radius: var(--qorg-radius-chip);
+}
+
+body.quarto-home .hello-quarto .nav-pills .nav-link.active {
+  border-color: var(--qorg-brand);
+  font-weight: 600;
+}
+
 body.quarto-home .hello-quarto .tab-content {
   border: none;
   padding: 0;
 }
 
-body.quarto-home.quarto-light .hello-quarto .tab-content {
-  color: rgb(84, 85, 85);
+body.quarto-home .demo {
+  @include qorg-card-shell(null);
+  padding: 1rem;
 }
 
-body.quarto-home.quarto-dark .hello-quarto .tab-content {
-  color: rgb(200, 200, 200);
-}
-
-body.quarto-home .hello-quarto .tab-content p {
-  font-size: 1.1em;
-}
-
-body.quarto-home.quarto-light .hello-quarto div.sourceCode {
-  background-color: white;
-  border: 1px solid #dee2e6;
-}
-
-body.quarto-home.quarto-dark .hello-quarto div.sourceCode {
-  background-color: #151515;
-  border: 1px solid #3b3f47;
-}
-
-body.quarto-home .features {
-  padding-bottom: 2em;
-}
-
-body.quarto-home .feature {
-  margin-top: 20px;
-}
-
-@media (min-width: 800px) { 
-body.quarto-home .features {
+body.quarto-home .demo-head p {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin: 0 0 0 -30px;
-  width: calc(100% + 30px);
-}
-body.quarto-home .feature {
-  width: calc(33% - 30px);
-  margin: 20px 0 0 30px;
-}
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 0.9rem;
+  color: var(--qorg-muted);
+  font-size: 1.05rem;
 }
 
-/* Feature titles are h2s styled as the h3s they used to be (selector as above) */
-body.quarto-home #quarto-content section.feature > h2:first-child {
-  font-size: calc(1.27rem + 0.24vw);
-  opacity: 0.9;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  padding-bottom: 0;
-  border-bottom: none;
+body.quarto-home .demo-glyph {
+  @include qorg-glyph-box(2.4rem);
+  flex: 0 0 auto;
 }
 
-@media (min-width: 1200px) {
-body.quarto-home #quarto-content section.feature > h2:first-child {
-  font-size: 1.45rem;
+body.quarto-home .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
+
+@media (max-width: 700px) {
+  body.quarto-home .demo-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+body.quarto-home .demo-cell > p,
+body.quarto-home .demo-cell div.sourceCode {
+  margin: 0;
+}
+
+body.quarto-home .demo-cell img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--qorg-line);
+  border-radius: 8px;
+}
+
+body.quarto-home .features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+}
+
+@media (max-width: 800px) {
+  body.quarto-home .features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+body.quarto-home #quarto-content section.feature > h3:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+body.quarto-home .feature-glyph {
+  color: var(--qorg-link);
 }
 
 body.quarto-home .feature p:first-of-type {
   margin-bottom: 0.2rem;
-}
-
-body.quarto-home.quarto-light .feature p:first-of-type {
-  color: rgb(84, 85, 85);
-}
-
-body.quarto-home.quarto-dark .feature p:first-of-type {
-  color: rgb(200, 200, 200);
+  color: var(--qorg-muted);
 }
 
 body.quarto-home .get-started {
-   text-align: center;
-}
-
-body.quarto-home .get-started h3 {
-   margin-top: 1rem;
-   margin-bottom: 2rem;
+  text-align: center;
 }
 
 body.quarto-home nav.page-navigation {
@@ -328,10 +314,12 @@ body.quarto-home nav.page-navigation {
 }
 
 body.quarto-home .nav-footer {
-  border-top: none !important; 
+  border-top: none !important;
 }
 
-body.quarto-home .nav-pills .nav-link.active, body.quarto-home .nav-pills .show>.nav-link {
-  color: #fff;
-  background-color: #ff7518;
+@media (prefers-reduced-motion: no-preference) {
+  body.quarto-home a.choice,
+  body.quarto-home .hello-quarto .nav-pills .nav-link {
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
 }
