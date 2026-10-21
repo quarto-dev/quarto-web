@@ -10,7 +10,9 @@
 
 // Active sidebar entry: bold body ink on a tint of the section colour. The
 // padding moves into a negative margin, so the text stays where it was.
-#quarto-sidebar .sidebar-link.active {
+// #quarto-sidebarnav-toggle holds the copy of the sidebar (see below).
+#quarto-sidebar .sidebar-link.active,
+#quarto-sidebarnav-toggle .sidebar-link.active {
   margin-inline: -0.5rem;
   padding-inline: 0.5rem;
   border-radius: var(--qorg-radius-card);
@@ -78,8 +80,7 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
   padding-bottom: 0;
 }
 
-// Upper case label: the table of contents heading, and the toggle title
-// that replaces it.
+// Upper case label: the table of contents heading, and the toggle titles.
 @mixin qorg-toc-label {
   color: var(--qorg-muted);
   font-size: 0.72rem;
@@ -100,11 +101,16 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
   }
 }
 
-// When page content scrolls under the margin, quarto.js swaps the panel for
-// #quarto-toc-toggle: a title that opens a copy of the table of contents.
-// The toggle sits outside #quarto-margin-sidebar, so it gets the panel shell
-// here, and its title takes the place of the copied heading.
-#quarto-toc-toggle {
+// When page content scrolls under a side column, quarto.js swaps it for a
+// toggle: a title that opens a copy of the column. #quarto-toc-toggle copies
+// the table of contents (its title replaces the copied heading),
+// #quarto-sidebarnav-toggle the sidebar (its title is the page title), and
+// #quarto-lefttoc-toggle a left table of contents. Each toggle sits outside
+// the column it copies, so the panel shell is set here. The ids outrank
+// Quarto's .quarto-sidebar-toggle.expanded rules.
+#quarto-toc-toggle,
+#quarto-sidebarnav-toggle,
+#quarto-lefttoc-toggle {
   @include qorg-float-panel;
 
   .quarto-sidebar-toggle-title {
@@ -132,10 +138,21 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
   nav#TOC > h2 {
     display: none;
   }
+
+  // The sidebar copy starts with the space kept for the sidebar title; the
+  // toggle title already fills it. The list's Bootstrap mt-1 is !important.
+  .sidebar-menu-container {
+    padding-top: 0;
+
+    > ul:first-child {
+      margin-top: 0 !important;
+    }
+  }
 }
 
 #quarto-margin-sidebar nav#TOC,
-#quarto-toc-toggle nav#TOC {
+#quarto-toc-toggle nav#TOC,
+#quarto-lefttoc-toggle nav#TOC {
   ul > li > a {
     display: block;
     min-height: 24px;
