@@ -173,7 +173,7 @@ You can also customize the colors of the button which appears for `code-copy: tr
 
 When a reader moves through a page with the keyboard, Quarto shows a ring around the element that has focus. The ring has two tones: an outline, and an inner band that fills the gap between the outline and the element.
 
-By default, one tone is a dark shade of `$primary` and the other tone is white. On light pages the dark tone is the outline. On dark pages the tones swap, so the white tone is the outline. The defaults follow W3C technique [C40](https://www.w3.org/WAI/WCAG22/Techniques/css/C40), ensuring the focus ring has 3:1 contrast against any solid background. 
+By default, one tone is a dark shade of `$primary` and the other tone is white. On light pages the dark tone is the outline. On dark pages the tones swap, so the white tone is the outline. The defaults follow W3C technique [C40](https://www.w3.org/WAI/WCAG22/Techniques/css/C40), so at least one of the two tones has a contrast of 3:1 or more against any solid background. 
 
 To achieve this contrast the two tones need a contrast of 9:1 or more with each other. 
 If the dark shade of `$primary` does not reach 9:1 against white, Quarto makes it darker until it does. This is true for every theme, built-in or custom.
