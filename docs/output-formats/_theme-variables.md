@@ -167,6 +167,50 @@ You can also customize the colors of the button which appears for `code-copy: tr
 |                          | | `important` | `$red`    |                                                                                                                                        |
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+### Focus Ring
+
+{{< prerelease-callout 1.11 >}}
+
+When a reader moves through a page with the keyboard, Quarto shows a ring around the element that has focus. The ring has two tones: an outline, and an inner band that fills the gap between the outline and the element.
+
+By default, one tone is a dark shade of `$primary` and the other tone is white. On light pages the dark tone is the outline. On dark pages the tones swap, so the white tone is the outline. The defaults follow W3C technique [C40](https://www.w3.org/WAI/WCAG22/Techniques/css/C40), ensuring the focus ring has 3:1 contrast against any solid background. 
+
+To achieve this contrast the two tones need a contrast of 9:1 or more with each other. 
+If the dark shade of `$primary` does not reach 9:1 against white, Quarto makes it darker until it does. This is true for every theme, built-in or custom.
+
+You can change the ring with these variables:
+
+| Variable | Notes |
+|----|----|
+| `$focus-ring-outer-color` | The color of the outline. Defaults to a dark shade of `$primary`, adjusted to have a contrast of 9:1 with `$focus-ring-inner-color`. |
+| `$focus-ring-inner-color` | The color of the inner band. Defaults to `$white`. |
+| `$focus-ring-outline-width` | The width of the outline. Defaults to `2px`. |
+| `$focus-ring-outline-offset` | The width of the gap between the outline and the element, which the inner band fills. Defaults to `2px`. |
+
+If you set `$focus-ring-outer-color`, `$focus-ring-inner-color`, or both, Quarto uses your colors as given. Quarto does not swap them on dark pages, and does not adjust a color that you set. If you set only `$focus-ring-inner-color`, Quarto still derives the outer color and adjusts it to 9:1 against your inner color.
+
+Your own `:focus-visible` rules apply over the ring. For example, this rule replaces the outline on links:
+
+``` scss
+/*-- scss:rules --*/
+a:focus-visible {
+  outline: 3px dashed red;
+}
+```
+
+The inner band stays, because the rule does not set `box-shadow`.
+
+To remove the inner band, set the `--quarto-focus-ring-shadow` CSS property to `none`:
+
+``` scss
+/*-- scss:rules --*/
+:root {
+  --quarto-focus-ring-shadow: none;
+}
+```
+
+Quarto does not use the Bootstrap variables `$focus-ring-color`, `$focus-ring-box-shadow`, `$btn-focus-width`, and `$btn-focus-box-shadow`. Use the variables above instead.
+
 ::: {.content-hidden unless-meta="is_dashboards"}
 
 ### Value Boxes
