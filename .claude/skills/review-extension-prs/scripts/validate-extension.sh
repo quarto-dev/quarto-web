@@ -114,7 +114,15 @@ else:
 # Extract all file path references from contributes and check they exist
 FILE_SCALAR_KEYS = {"reference-doc", "template", "css", "csl",
                     "include-in-header", "include-before-body", "include-after-body"}
-FILE_LIST_KEYS = {"filters", "shortcodes", "format-resources"}
+FILE_LIST_KEYS = {"filters", "shortcodes", "format-resources", "template-partials"}
+
+def include_path(x):
+    # Include entries may be a bare path, {file: path}, or inline {text: ...}.
+    if isinstance(x, str):
+        return x
+    if isinstance(x, dict) and isinstance(x.get("file"), str):
+        return x["file"]
+    return None
 
 def list_entry_path(x):
     # Filter entries may be a bare path or a mapping such as {path: f.lua, at: pre-ast}.
@@ -148,10 +156,12 @@ def collect_refs(obj, in_formats=False):
             if k == "revealjs-plugins":
                 refs += plugin_refs(v, in_formats)
             elif k in FILE_SCALAR_KEYS:
-                if isinstance(v, str):
-                    refs.append((k, v))
-                elif isinstance(v, list):
-                    refs += [(k, x) for x in v if isinstance(x, str)]
+                refs += [(k, p) for p in map(include_path, v if isinstance(v, list) else [v]) if p]
+            elif k == "theme":
+                # Entries without .scss are built-in theme names; HTML may split light and dark.
+                for t in (v.values() if isinstance(v, dict) else [v]):
+                    refs += [(k, x) for x in (t if isinstance(t, list) else [t])
+                             if isinstance(x, str) and x.endswith(".scss")]
             elif k in FILE_LIST_KEYS:
                 if isinstance(v, list):
                     refs += [(k, p) for p in map(list_entry_path, v) if p]

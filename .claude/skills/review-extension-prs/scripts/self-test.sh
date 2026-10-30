@@ -210,6 +210,42 @@ expect_match "format plugin resolves to an embedded extension" "$out" "PASS: ref
 expect_no_match "bundle config keys are not file references" "$out" "config-only"
 
 echo
+echo "-- validate-extension.sh: partials, include mappings and theme files are checked"
+
+out=$(run_fixture foo foo/title.tex foo/header.html foo/custom.scss foo/light.scss <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  formats:
+    pdf:
+      template-partials: [title.tex, gone.tex]
+    html:
+      include-in-header:
+        - file: header.html
+        - text: "<meta name='inline-only'>"
+      include-after-body:
+        file: gone.html
+      theme:
+        light: [cosmo, light.scss]
+        dark: dark-gone.scss
+    revealjs:
+      theme: [default, custom.scss, gone.scss]
+EOF
+)
+expect_match "template partial that exists passes" "$out" "PASS: referenced file exists - title.tex"
+expect_match "template partial that is missing fails" "$out" "FAIL: referenced file missing from repo - gone.tex"
+expect_match "include {file:} in a list passes" "$out" "PASS: referenced file exists - header.html"
+expect_match "include {file:} as a mapping is checked" "$out" "FAIL: referenced file missing from repo - gone.html"
+expect_no_match "include {text:} is not a file reference" "$out" "inline-only"
+expect_match "theme scss that exists passes" "$out" "PASS: referenced file exists - custom.scss"
+expect_match "theme scss that is missing fails" "$out" "FAIL: referenced file missing from repo - gone.scss"
+expect_no_match "built-in theme name is not a file reference" "$out" "- default"
+expect_match "light theme scss is checked" "$out" "PASS: referenced file exists - light.scss"
+expect_match "dark theme scss is checked" "$out" "FAIL: referenced file missing from repo - dark-gone.scss"
+expect_no_match "built-in light theme name is not a file reference" "$out" "- cosmo"
+
+echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
 
 SKILL="$SKILL_DIR/SKILL.md"
@@ -323,6 +359,23 @@ CASES
   else
     ok "embedded extension raises no FAIL or WARN"
   fi
+
+  # Published revealjs plugins: scalar script/stylesheet with config, and list forms.
+  while read -r repo name files; do
+    [ -n "$repo" ] || continue
+    out=$(bash "$SCRIPT_DIR/validate-extension.sh" "$repo" "$name" 2>&1)
+    for f in $files; do
+      expect_match "$repo plugin file $f is checked" "$out" "PASS: referenced file exists - $f"
+    done
+    if printf '%s' "$out" | grep -qE '^(FAIL|WARN):'; then
+      bad "$repo raises no FAIL or WARN" "$out"
+    else
+      ok "$repo raises no FAIL or WARN"
+    fi
+  done <<'CASES'
+quarto-ext/pointer pointer pointer.js pointer.css
+quarto-ext/attribution attribution attribution.js attribution.css
+CASES
 
   expect_match "missing repo is reported as not found" \
     "$(bash "$SCRIPT_DIR/validate-extension.sh" quarto-dev/definitely-not-a-repo-xyz nothing 2>&1)" \
