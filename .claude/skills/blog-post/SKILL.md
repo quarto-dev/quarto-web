@@ -19,7 +19,10 @@ mechanics.
 1. Locate a local clone of `posit-dev/open-source-website` — conventionally a
    sibling of this repo (`../open-source-website`). Clone it if missing.
    Check `git status` before branching.
-2. Read, in its `content/blog/` directory:
+2. Before scaffolding or drafting, read the publishing repository's root
+   `CONTRIBUTING.md` and follow its applicable contribution path, including
+   any explicit internal-contributor exceptions. Then read, in its
+   `content/blog/` directory:
    - `CLAUDE.md` — frontmatter schema and taxonomies
    - `_authoring-guide.md` — format choice, rendering, preview, and PR flow
 3. Browse `content/blog/ported/quarto/` for prior Quarto posts. Recent ones
