@@ -98,6 +98,41 @@ _extensions/foo/bar/_extension.yml reject
 SHAPES
 
 echo
+echo "-- validate-extension.sh: exemptions apply only to the keys Quarto resolves that way"
+
+# A stub gh serves a synthetic repo tree, so this case runs offline.
+FIXTURE=$(mktemp -d)
+mkdir -p "$FIXTURE/bin" "$FIXTURE/repo/foo/_extensions/quarto-ext/fancy-text"
+printf 'title: x\n' > "$FIXTURE/repo/foo/_extensions/quarto-ext/fancy-text/_extension.yml"
+cat > "$FIXTURE/repo/foo/_extension.yml" <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  formats:
+    html:
+      filters: [quarto]
+      shortcodes: [quarto-ext/fancy-text]
+      format-resources: [quarto, quarto-ext/fancy-text]
+EOF
+cat > "$FIXTURE/bin/gh" <<'EOF'
+#!/usr/bin/env bash
+ROOT="$(dirname "$(dirname "$0")")/repo"
+case "$1 ${2:-}" in
+  "api "*) (cd "$ROOT" && find . -type f | sed 's|^\./||' | jq -R . | jq -sc .) ;;
+  "repo read-file") cat "$ROOT/$3" ;;
+  *) exit 1 ;;
+esac
+EOF
+chmod +x "$FIXTURE/bin/gh"
+out=$(PATH="$FIXTURE/bin:$PATH" bash "$SCRIPT_DIR/validate-extension.sh" fake/foo foo 2>&1)
+expect_match "quarto marker is accepted under filters" "$out" "filter position marker - quarto"
+expect_match "embedded extension resolves under shortcodes" "$out" "PASS: referenced embedded extension exists - quarto-ext/fancy-text"
+expect_match "quarto is a missing file under format-resources" "$out" "FAIL: referenced file missing from repo - quarto"
+expect_match "extension ID is a missing file under format-resources" "$out" "FAIL: referenced file missing from repo - quarto-ext/fancy-text"
+rm -rf "$FIXTURE"
+
+echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
 
 SKILL="$SKILL_DIR/SKILL.md"
@@ -193,6 +228,23 @@ CASES
     bad "vendored docs/ extensions are excluded" "reported a docs/_extensions copy as a shipped extension"
   else
     ok "vendored docs/ extensions are excluded"
+  fi
+
+  out=$(bash "$SCRIPT_DIR/validate-extension.sh" gvegayon/ergm-quarto ergm-quarto 2>&1)
+  expect_match "shortcode Lua file counts as referenced" "$out" "PASS: referenced file exists - ergm-quarto.lua"
+  if printf '%s' "$out" | grep -q 'dead code'; then
+    bad "shortcode Lua file is not reported as dead code" "$out"
+  else
+    ok "shortcode Lua file is not reported as dead code"
+  fi
+
+  # format.common.shortcodes names an extension embedded under _extensions/jss/_extensions/.
+  out=$(bash "$SCRIPT_DIR/validate-extension.sh" quarto-journals/jss jss 2>&1)
+  expect_match "embedded shortcode extension resolves" "$out" "PASS: referenced embedded extension exists - quarto-ext/fancy-text"
+  if printf '%s' "$out" | grep -qE '^(FAIL|WARN):'; then
+    bad "embedded extension raises no FAIL or WARN" "$out"
+  else
+    ok "embedded extension raises no FAIL or WARN"
   fi
 
   expect_match "missing repo is reported as not found" \

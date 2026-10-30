@@ -114,22 +114,31 @@ else:
 # Extract all file path references from contributes and check they exist
 FILE_SCALAR_KEYS = {"reference-doc", "template", "css", "csl",
                     "include-in-header", "include-before-body", "include-after-body"}
-FILE_LIST_KEYS = {"filters", "format-resources"}
+FILE_LIST_KEYS = {"filters", "shortcodes", "format-resources"}
+
+def list_entry_path(x):
+    # Filter entries may be a bare path or a mapping such as {path: f.lua, at: pre-ast}.
+    if isinstance(x, str):
+        return x
+    if isinstance(x, dict) and isinstance(x.get("path"), str):
+        return x["path"]
+    return None
 
 def collect_refs(obj):
+    # Returns (key, ref) pairs; the key decides how Quarto resolves the ref.
     refs = []
     if isinstance(obj, dict):
         for k, v in obj.items():
             if k in FILE_SCALAR_KEYS:
                 if isinstance(v, str):
-                    refs.append(v)
+                    refs.append((k, v))
                 elif isinstance(v, list):
-                    refs += [x for x in v if isinstance(x, str)]
+                    refs += [(k, x) for x in v if isinstance(x, str)]
             elif k in FILE_LIST_KEYS:
                 if isinstance(v, list):
-                    refs += [x for x in v if isinstance(x, str)]
+                    refs += [(k, p) for p in map(list_entry_path, v) if p]
                 elif isinstance(v, str):
-                    refs.append(v)
+                    refs.append((k, v))
             else:
                 refs += collect_refs(v)
     elif isinstance(obj, list):
@@ -137,10 +146,30 @@ def collect_refs(obj):
             refs += collect_refs(item)
     return refs
 
+# Quarto resolves a filter or shortcode entry such as `quarto-ext/fancy-text`
+# against extensions embedded under <ext_dir>/_extensions/ before treating it as a path.
+embedded = set()
+if ext_dir:
+    embed_pat = re.compile(rf"^{re.escape(ext_dir)}/_extensions/(?:([^/]+)/)?([^/]+)/_extension\.ya?ml$")
+    for p in tree_set:
+        m = embed_pat.match(p)
+        if m:
+            embedded.add((m.group(1), m.group(2)))
+
+def is_embedded(ref):
+    owner, _, name = ref.rpartition("/")
+    return any(n == name and (not owner or o == owner) for o, n in embedded)
+
 refs = collect_refs(data.get("contributes", {}))
 if not refs:
     print("INFO: no file references found in contributes")
-for ref in refs:
+for key, ref in refs:
+    if key == "filters" and ref == "quarto":
+        print("INFO: 'quarto' is Quarto's built-in filter position marker - quarto")
+        continue
+    if key in ("filters", "shortcodes") and is_embedded(ref):
+        print(f"PASS: referenced embedded extension exists - {ref}")
+        continue
     clean = ref.lstrip("./")
     qualified = (ext_dir + "/" + clean) if ext_dir else clean
     if qualified in tree_set or clean in tree_set:
@@ -154,7 +183,7 @@ for ref in refs:
 if ext_dir:
     all_refs_raw = collect_refs(data)  # full manifest, not just contributes
     all_refs_normalized = set()
-    for r in all_refs_raw:
+    for _, r in all_refs_raw:
         clean = r.lstrip("./")
         all_refs_normalized.add(clean)
         if ext_dir:
@@ -162,7 +191,9 @@ if ext_dir:
             if clean.startswith(f"{ext_dir}/"):
                 all_refs_normalized.add(clean[len(ext_dir)+1:])
 
-    lua_files = sorted(p for p in tree_set if p.startswith(f"{ext_dir}/") and p.endswith(".lua"))
+    # Embedded extensions reference their own Lua files from their own manifests.
+    lua_files = sorted(p for p in tree_set if p.startswith(f"{ext_dir}/") and p.endswith(".lua")
+                       and not p.startswith(f"{ext_dir}/_extensions/"))
     unreferenced = [p for p in lua_files
                     if p not in all_refs_normalized and p[len(ext_dir)+1:] not in all_refs_normalized]
 
