@@ -75,7 +75,7 @@ fi
 echo "INFO: _extension.yml at $FOUND_PATH"
 
 uv run --with pyyaml python - "$TMPYAML" "$TMPTREE" "$FOUND_PATH" "$REPO" <<'PYEOF'
-import sys, json, yaml, os, re, subprocess
+import sys, json, yaml, os, posixpath, re, subprocess
 
 with open(sys.argv[1], encoding="utf-8") as f:
     content = f.read()
@@ -114,7 +114,15 @@ else:
 # Extract all file path references from contributes and check they exist
 FILE_SCALAR_KEYS = {"reference-doc", "template", "css", "csl",
                     "include-in-header", "include-before-body", "include-after-body"}
-FILE_LIST_KEYS = {"filters", "shortcodes", "format-resources"}
+FILE_LIST_KEYS = {"filters", "shortcodes", "format-resources", "template-partials"}
+
+def include_path(x):
+    # Include entries may be a bare path, {file: path}, or inline {text: ...}.
+    if isinstance(x, str):
+        return x
+    if isinstance(x, dict) and isinstance(x.get("file"), str):
+        return x["file"]
+    return None
 
 def list_entry_path(x):
     # Filter entries may be a bare path or a mapping such as {path: f.lua, at: pre-ast}.
@@ -124,26 +132,46 @@ def list_entry_path(x):
         return x["path"]
     return None
 
-def collect_refs(obj):
+def plugin_refs(entries, in_formats):
+    # A string or {plugin: dir} entry names a directory holding plugin.yml; an inline
+    # entry lists script and stylesheet files. Its config is plugin data, never paths.
+    refs = []
+    for p in entries if isinstance(entries, list) else [entries]:
+        if isinstance(p, str):
+            refs.append(("revealjs-plugin-format" if in_formats else "revealjs-plugin", p))
+        elif isinstance(p, dict) and isinstance(p.get("plugin"), str):
+            refs.append(("revealjs-plugin", p["plugin"]))
+        elif isinstance(p, dict):
+            for k in ("script", "stylesheet"):
+                v = p.get(k)
+                refs += [("revealjs-plugin-file", x) for x in
+                         map(list_entry_path, v if isinstance(v, list) else [v]) if x]
+    return refs
+
+def collect_refs(obj, in_formats=False):
     # Returns (key, ref) pairs; the key decides how Quarto resolves the ref.
     refs = []
     if isinstance(obj, dict):
         for k, v in obj.items():
-            if k in FILE_SCALAR_KEYS:
-                if isinstance(v, str):
-                    refs.append((k, v))
-                elif isinstance(v, list):
-                    refs += [(k, x) for x in v if isinstance(x, str)]
+            if k == "revealjs-plugins":
+                refs += plugin_refs(v, in_formats)
+            elif k in FILE_SCALAR_KEYS:
+                refs += [(k, p) for p in map(include_path, v if isinstance(v, list) else [v]) if p]
+            elif k == "theme":
+                # Entries without .scss are built-in theme names; HTML may split light and dark.
+                for t in (v.values() if isinstance(v, dict) else [v]):
+                    refs += [(k, x) for x in (t if isinstance(t, list) else [t])
+                             if isinstance(x, str) and x.endswith(".scss")]
             elif k in FILE_LIST_KEYS:
                 if isinstance(v, list):
                     refs += [(k, p) for p in map(list_entry_path, v) if p]
                 elif isinstance(v, str):
                     refs.append((k, v))
             else:
-                refs += collect_refs(v)
+                refs += collect_refs(v, in_formats or k == "formats")
     elif isinstance(obj, list):
         for item in obj:
-            refs += collect_refs(item)
+            refs += collect_refs(item, in_formats)
     return refs
 
 # Quarto resolves a filter or shortcode entry such as `quarto-ext/fancy-text`
@@ -160,19 +188,36 @@ def is_embedded(ref):
     owner, _, name = ref.rpartition("/")
     return any(n == name and (not owner or o == owner) for o, n in embedded)
 
+def ext_path(ref):
+    # Quarto resolves references against the extension directory; quarto add installs nothing else.
+    return posixpath.normpath(posixpath.join(ext_dir, ref))
+
+def escapes(ref):
+    return bool(ext_dir) and not ext_path(ref).startswith(ext_dir + "/")
+
 refs = collect_refs(data.get("contributes", {}))
 if not refs:
-    print("INFO: no file references found in contributes")
+    print("INFO: no file references in a recognised contributes shape - check referenced paths by hand")
 for key, ref in refs:
     if key == "filters" and ref == "quarto":
         print("INFO: 'quarto' is Quarto's built-in filter position marker - quarto")
         continue
-    if key in ("filters", "shortcodes") and is_embedded(ref):
+    if key in ("filters", "shortcodes", "revealjs-plugin-format") and is_embedded(ref):
         print(f"PASS: referenced embedded extension exists - {ref}")
         continue
-    clean = ref.lstrip("./")
-    qualified = (ext_dir + "/" + clean) if ext_dir else clean
-    if qualified in tree_set or clean in tree_set:
+    is_plugin_dir = key in ("revealjs-plugin", "revealjs-plugin-format")
+    # A plugin directory may be the extension directory itself, so test its plugin.yml.
+    target = ref + "/plugin.yml" if is_plugin_dir else ref
+    if escapes(target):
+        print(f"FAIL: referenced file outside the extension directory - {ref}")
+        continue
+    if is_plugin_dir:
+        if ext_path(target) in tree_set:
+            print(f"PASS: revealjs plugin.yml exists - {ref}")
+        else:
+            print(f"FAIL: revealjs plugin.yml missing from repo - {ref}")
+        continue
+    if ext_path(ref) in tree_set:
         print(f"PASS: referenced file exists - {ref}")
     else:
         print(f"FAIL: referenced file missing from repo - {ref}")
@@ -184,10 +229,10 @@ if ext_dir:
     all_refs_raw = collect_refs(data)  # full manifest, not just contributes
     all_refs_normalized = set()
     for _, r in all_refs_raw:
-        clean = r.lstrip("./")
+        clean = posixpath.normpath(r)
         all_refs_normalized.add(clean)
         if ext_dir:
-            all_refs_normalized.add(f"{ext_dir}/{clean}")
+            all_refs_normalized.add(ext_path(r))
             if clean.startswith(f"{ext_dir}/"):
                 all_refs_normalized.add(clean[len(ext_dir)+1:])
 

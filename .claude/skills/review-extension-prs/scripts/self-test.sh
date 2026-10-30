@@ -97,14 +97,40 @@ testdata/foo/_extension.yml reject
 _extensions/foo/bar/_extension.yml reject
 SHAPES
 
+expect_no_match() { # <label> <output> <substring>
+  case "$2" in *"$3"*) bad "$1" "expected no '$3', got: $2" ;; *) ok "$1" ;; esac
+}
+
+# A stub gh serves a synthetic repo tree, so these cases run offline.
+# Usage: run_fixture <ext-name> [repo-file...] < _extension.yml
+run_fixture() {
+  local ext="$1" fx f
+  shift
+  fx=$(mktemp -d)
+  mkdir -p "$fx/bin" "$fx/repo/$ext"
+  cat > "$fx/repo/$ext/_extension.yml"
+  for f in "$@"; do
+    mkdir -p "$fx/repo/$(dirname "$f")"
+    : > "$fx/repo/$f"
+  done
+  cat > "$fx/bin/gh" <<'EOF'
+#!/usr/bin/env bash
+ROOT="$(dirname "$(dirname "$0")")/repo"
+case "$1 ${2:-}" in
+  "api "*) (cd "$ROOT" && find . -type f | sed 's|^\./||' | jq -R . | jq -sc .) ;;
+  "repo read-file") cat "$ROOT/$3" ;;
+  *) exit 1 ;;
+esac
+EOF
+  chmod +x "$fx/bin/gh"
+  PATH="$fx/bin:$PATH" bash "$SCRIPT_DIR/validate-extension.sh" "fake/$ext" "$ext" 2>&1
+  rm -rf "$fx"
+}
+
 echo
 echo "-- validate-extension.sh: exemptions apply only to the keys Quarto resolves that way"
 
-# A stub gh serves a synthetic repo tree, so this case runs offline.
-FIXTURE=$(mktemp -d)
-mkdir -p "$FIXTURE/bin" "$FIXTURE/repo/foo/_extensions/quarto-ext/fancy-text"
-printf 'title: x\n' > "$FIXTURE/repo/foo/_extensions/quarto-ext/fancy-text/_extension.yml"
-cat > "$FIXTURE/repo/foo/_extension.yml" <<'EOF'
+out=$(run_fixture foo foo/_extensions/quarto-ext/fancy-text/_extension.yml <<'EOF'
 title: Foo
 author: A
 version: 1.0.0
@@ -115,22 +141,159 @@ contributes:
       shortcodes: [quarto-ext/fancy-text]
       format-resources: [quarto, quarto-ext/fancy-text]
 EOF
-cat > "$FIXTURE/bin/gh" <<'EOF'
-#!/usr/bin/env bash
-ROOT="$(dirname "$(dirname "$0")")/repo"
-case "$1 ${2:-}" in
-  "api "*) (cd "$ROOT" && find . -type f | sed 's|^\./||' | jq -R . | jq -sc .) ;;
-  "repo read-file") cat "$ROOT/$3" ;;
-  *) exit 1 ;;
-esac
-EOF
-chmod +x "$FIXTURE/bin/gh"
-out=$(PATH="$FIXTURE/bin:$PATH" bash "$SCRIPT_DIR/validate-extension.sh" fake/foo foo 2>&1)
+)
 expect_match "quarto marker is accepted under filters" "$out" "filter position marker - quarto"
 expect_match "embedded extension resolves under shortcodes" "$out" "PASS: referenced embedded extension exists - quarto-ext/fancy-text"
 expect_match "quarto is a missing file under format-resources" "$out" "FAIL: referenced file missing from repo - quarto"
 expect_match "extension ID is a missing file under format-resources" "$out" "FAIL: referenced file missing from repo - quarto-ext/fancy-text"
-rm -rf "$FIXTURE"
+
+echo
+echo "-- validate-extension.sh: revealjs-plugins references are checked"
+
+# Inline plugin shaped like a real submission: list script and stylesheet, large config.
+out=$(run_fixture statflow statflow/formulas.js statflow/statflow.css <<'EOF'
+title: Statflow
+author: A
+version: 1.0.0
+contributes:
+  revealjs-plugins:
+    - name: RevealStatflow
+      script:
+        - formulas.js
+        - statflow.js
+      stylesheet:
+        - statflow.css
+      config:
+        statflow:
+          css: config-only.css
+          template: config-only.html
+          speed: [14, 30]
+EOF
+)
+expect_match "inline plugin script that exists passes" "$out" "PASS: referenced file exists - formulas.js"
+expect_match "inline plugin stylesheet that exists passes" "$out" "PASS: referenced file exists - statflow.css"
+expect_match "inline plugin script that is missing fails" "$out" "FAIL: referenced file missing from repo - statflow.js"
+expect_no_match "inline plugin is a recognised shape" "$out" "no file references"
+expect_no_match "plugin config keys are not file references" "$out" "config-only"
+
+out=$(run_fixture foo foo/one.js foo/two.js foo/one.css foo/plugins/ok/plugin.yml foo/plugins/ok2/plugin.yml \
+  foo/_extensions/quarto-ext/pointer/_extension.yml <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  revealjs-plugins:
+    - name: One
+      script: one.js
+      stylesheet: one.css
+    - name: Two
+      script:
+        - path: two.js
+          async: true
+    - plugins/ok
+    - plugins/gone
+    - plugin: plugins/ok2
+      config:
+        css: config-only.css
+  formats:
+    revealjs:
+      revealjs-plugins: [quarto-ext/pointer]
+EOF
+)
+expect_match "scalar script passes" "$out" "PASS: referenced file exists - one.js"
+expect_match "scalar stylesheet passes" "$out" "PASS: referenced file exists - one.css"
+expect_match "{path, async} script passes" "$out" "PASS: referenced file exists - two.js"
+expect_match "plugin directory with plugin.yml passes" "$out" "PASS: revealjs plugin.yml exists - plugins/ok"
+expect_match "plugin directory without plugin.yml fails" "$out" "FAIL: revealjs plugin.yml missing from repo - plugins/gone"
+expect_match "{plugin: dir} bundle is checked for plugin.yml" "$out" "PASS: revealjs plugin.yml exists - plugins/ok2"
+expect_match "format plugin resolves to an embedded extension" "$out" "PASS: referenced embedded extension exists - quarto-ext/pointer"
+expect_no_match "bundle config keys are not file references" "$out" "config-only"
+
+echo
+echo "-- validate-extension.sh: partials, include mappings and theme files are checked"
+
+out=$(run_fixture foo foo/title.tex foo/header.html foo/custom.scss foo/light.scss <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  formats:
+    pdf:
+      template-partials: [title.tex, gone.tex]
+    html:
+      include-in-header:
+        - file: header.html
+        - text: "<meta name='inline-only'>"
+      include-after-body:
+        file: gone.html
+      theme:
+        light: [cosmo, light.scss]
+        dark: dark-gone.scss
+    revealjs:
+      theme: [default, custom.scss, gone.scss]
+EOF
+)
+expect_match "template partial that exists passes" "$out" "PASS: referenced file exists - title.tex"
+expect_match "template partial that is missing fails" "$out" "FAIL: referenced file missing from repo - gone.tex"
+expect_match "include {file:} in a list passes" "$out" "PASS: referenced file exists - header.html"
+expect_match "include {file:} as a mapping is checked" "$out" "FAIL: referenced file missing from repo - gone.html"
+expect_no_match "include {text:} is not a file reference" "$out" "inline-only"
+expect_match "theme scss that exists passes" "$out" "PASS: referenced file exists - custom.scss"
+expect_match "theme scss that is missing fails" "$out" "FAIL: referenced file missing from repo - gone.scss"
+expect_no_match "built-in theme name is not a file reference" "$out" "- default"
+expect_match "light theme scss is checked" "$out" "PASS: referenced file exists - light.scss"
+expect_match "dark theme scss is checked" "$out" "FAIL: referenced file missing from repo - dark-gone.scss"
+expect_no_match "built-in light theme name is not a file reference" "$out" "- cosmo"
+
+echo
+echo "-- validate-extension.sh: references resolve against the extension directory only"
+
+# Root-level copies are not installed by quarto add; leading dots are part of the name.
+out=$(run_fixture foo root.js plugins/rootonly/plugin.yml foo/.dotted.js foo/.custom.scss <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  revealjs-plugins:
+    - name: One
+      script: [root.js, .dotted.js]
+    - plugins/rootonly
+  formats:
+    revealjs:
+      theme: [.custom.scss]
+EOF
+)
+expect_match "root-level copy does not satisfy a script reference" "$out" "FAIL: referenced file missing from repo - root.js"
+expect_match "root-level copy does not satisfy a plugin directory" "$out" "FAIL: revealjs plugin.yml missing from repo - plugins/rootonly"
+expect_match "dot-prefixed script name is kept" "$out" "PASS: referenced file exists - .dotted.js"
+expect_match "dot-prefixed theme name is kept" "$out" "PASS: referenced file exists - .custom.scss"
+
+# quarto add installs only the extension directory, so a reference must not escape it.
+out=$(run_fixture foo root.js foo/inside.js foo/filter.lua <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  filters: [../foo/filter.lua]
+  revealjs-plugins:
+    - name: One
+      script: [../root.js, ../foo/inside.js]
+EOF
+)
+expect_match "parent-relative reference outside the extension fails" "$out" "FAIL: referenced file outside the extension directory - ../root.js"
+expect_match "parent-relative reference back inside the extension passes" "$out" "PASS: referenced file exists - ../foo/inside.js"
+expect_no_match "parent-relative filter is not reported as dead code" "$out" "dead code"
+
+out=$(run_fixture foo foo/plugin.yml <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  revealjs-plugins:
+    - plugin: .
+EOF
+)
+expect_match "plugin stored in the extension directory itself passes" "$out" "PASS: revealjs plugin.yml exists - ."
 
 echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
@@ -246,6 +409,23 @@ CASES
   else
     ok "embedded extension raises no FAIL or WARN"
   fi
+
+  # Published revealjs plugins: scalar script/stylesheet with config, and list forms.
+  while read -r repo name files; do
+    [ -n "$repo" ] || continue
+    out=$(bash "$SCRIPT_DIR/validate-extension.sh" "$repo" "$name" 2>&1)
+    for f in $files; do
+      expect_match "$repo plugin file $f is checked" "$out" "PASS: referenced file exists - $f"
+    done
+    if printf '%s' "$out" | grep -qE '^(FAIL|WARN):'; then
+      bad "$repo raises no FAIL or WARN" "$out"
+    else
+      ok "$repo raises no FAIL or WARN"
+    fi
+  done <<'CASES'
+quarto-ext/pointer pointer pointer.js pointer.css
+quarto-ext/attribution attribution attribution.js attribution.css
+CASES
 
   expect_match "missing repo is reported as not found" \
     "$(bash "$SCRIPT_DIR/validate-extension.sh" quarto-dev/definitely-not-a-repo-xyz nothing 2>&1)" \
