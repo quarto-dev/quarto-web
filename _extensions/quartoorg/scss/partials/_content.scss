@@ -22,11 +22,7 @@
 
 
 .document-example .citation {
-  color: blue;
-}
-
-body.quarto-dark .document-example .citation {
-  color: var(--bs-link-color);
+  color: var(--qorg-link);
 }
 
 .trademark {
@@ -50,9 +46,12 @@ img.ui-icon {
   box-sizing: content-box;
 }
 
-// Quarto's title-block.scss sets `.quarto-category { opacity: 0.6 }`.
-// That drops the category chips below 4.5:1 (2.77 light, 3.43 dark).
-.quarto-title .quarto-categories .quarto-category {
+// Category chips in title blocks and listings. Quarto's title-block.scss
+// sets `.quarto-category { opacity: 0.6 }`, which drops the chips below 4.5:1.
+// Gallery cards size their own chips (_gallery.scss).
+.quarto-title .quarto-categories .quarto-category,
+.listing-categories:not(.gal-cats) .listing-category {
+  @include qorg-chip;
   opacity: 1;
 }
 
@@ -75,4 +74,44 @@ pre.sourceCode.visually-hidden {
    `#|` cell options. */
 .pymd-comment {
   font-weight: 1000;
+}
+
+// Tables: 2px header rule and 1px row rules, both in the strong line.
+// Quarto draws the outer rules on .table and the cells inherit that colour.
+.table,
+.table > thead {
+  border-color: var(--qorg-line-strong);
+}
+
+.table > thead > tr > * {
+  border-bottom: 2px solid var(--qorg-line-strong);
+}
+
+// Code blocks: code surface with a line border and an 8px radius.
+div.sourceCode {
+  border-color: var(--qorg-line);
+  border-radius: 8px;
+}
+
+// Listing filter: one rounded field with the strong line border (3:1).
+.input-group.quarto-listing-filter {
+  > .input-group-text,
+  > .form-control {
+    border-color: var(--qorg-line-strong);
+    background-color: var(--qorg-panel);
+  }
+
+  > .input-group-text {
+    border-radius: var(--qorg-radius-chip) 0 0 var(--qorg-radius-chip);
+  }
+
+  > .form-control {
+    border-radius: 0 var(--qorg-radius-chip) var(--qorg-radius-chip) 0;
+  }
+}
+
+// Search field in the search overlay.
+.aa-DetachedFormContainer .aa-Form {
+  border: 1px solid var(--qorg-line-strong);
+  border-radius: var(--qorg-radius-chip);
 }
