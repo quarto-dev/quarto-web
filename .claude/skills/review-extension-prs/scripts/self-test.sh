@@ -268,6 +268,22 @@ expect_match "root-level copy does not satisfy a plugin directory" "$out" "FAIL:
 expect_match "dot-prefixed script name is kept" "$out" "PASS: referenced file exists - .dotted.js"
 expect_match "dot-prefixed theme name is kept" "$out" "PASS: referenced file exists - .custom.scss"
 
+# quarto add installs only the extension directory, so a reference must not escape it.
+out=$(run_fixture foo root.js foo/inside.js foo/filter.lua <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  filters: [../foo/filter.lua]
+  revealjs-plugins:
+    - name: One
+      script: [../root.js, ../foo/inside.js]
+EOF
+)
+expect_match "parent-relative reference outside the extension fails" "$out" "FAIL: referenced file outside the extension directory - ../root.js"
+expect_match "parent-relative reference back inside the extension passes" "$out" "PASS: referenced file exists - ../foo/inside.js"
+expect_no_match "parent-relative filter is not reported as dead code" "$out" "dead code"
+
 echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
 

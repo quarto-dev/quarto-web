@@ -188,9 +188,12 @@ def is_embedded(ref):
     owner, _, name = ref.rpartition("/")
     return any(n == name and (not owner or o == owner) for o, n in embedded)
 
-def in_repo(ref):
+def ext_path(ref):
     # Quarto resolves references against the extension directory; quarto add installs nothing else.
-    return posixpath.normpath(posixpath.join(ext_dir, ref)) in tree_set
+    return posixpath.normpath(posixpath.join(ext_dir, ref))
+
+def escapes(ref):
+    return bool(ext_dir) and not ext_path(ref).startswith(ext_dir + "/")
 
 refs = collect_refs(data.get("contributes", {}))
 if not refs:
@@ -202,13 +205,16 @@ for key, ref in refs:
     if key in ("filters", "shortcodes", "revealjs-plugin-format") and is_embedded(ref):
         print(f"PASS: referenced embedded extension exists - {ref}")
         continue
+    if escapes(ref):
+        print(f"FAIL: referenced file outside the extension directory - {ref}")
+        continue
     if key in ("revealjs-plugin", "revealjs-plugin-format"):
-        if in_repo(ref + "/plugin.yml"):
+        if ext_path(ref + "/plugin.yml") in tree_set:
             print(f"PASS: revealjs plugin.yml exists - {ref}")
         else:
             print(f"FAIL: revealjs plugin.yml missing from repo - {ref}")
         continue
-    if in_repo(ref):
+    if ext_path(ref) in tree_set:
         print(f"PASS: referenced file exists - {ref}")
     else:
         print(f"FAIL: referenced file missing from repo - {ref}")
@@ -223,7 +229,7 @@ if ext_dir:
         clean = posixpath.normpath(r)
         all_refs_normalized.add(clean)
         if ext_dir:
-            all_refs_normalized.add(f"{ext_dir}/{clean}")
+            all_refs_normalized.add(ext_path(r))
             if clean.startswith(f"{ext_dir}/"):
                 all_refs_normalized.add(clean[len(ext_dir)+1:])
 
