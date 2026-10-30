@@ -10,18 +10,24 @@ Always PR to `main` first for shared content. Never PR directly to `prerelease` 
 
 Release-time `prerelease` → `main` merge: use the `/release-merge` skill.
 
+## Render and validate
+
+Select the Quarto CLI for the version being documented and record its `--version` output. Use the intended candidate for upcoming features; a stable CLI can reject valid candidate YAML. Commands below assume `quarto` resolves to that selected CLI.
+
+Match the destination's profiles in `.github/workflows/publish.yml` or `.github/workflows/preview.yml`. For prerelease documentation, render with `quarto render <page.qmd> --profile prerelease-docs`; CI previews also use `pr-preview`. Confirm the rendered version, links and callouts reflect the intended destination.
+
+Run each new displayed example separately with the selected CLI and check its output. Rendering a guide does not execute examples inside ordinary fenced code blocks. For an edited include, find and render every consuming page, including each highlight include context. Check links and anchors in the rendered pages.
+
 ## `_freeze/` Updates
 
-Any source change to a `.qmd` that has a `_freeze/` entry — even non-executable content like text or includes — invalidates the freeze hash. A stale hash causes the deploy preview to show the old cached page.
+Before rendering or handling freezes, run `quarto inspect <file.qmd>` with the selected CLI and destination profile for each edited page and edited-include consumer. Its `engines` array determines whether the page executes code: `markdown` means no computational engine; any other engine (for example, `knitr`, `jupyter`, `julia`, or an Engine Extension) executes code.
 
-**Wrong reasoning to avoid:** "I only added markdown, not executable code, so no `_freeze/` update needed." The cache is per-page, not per-cell.
+Any source change to a computational page with a `_freeze/` entry invalidates its freeze hash, even if only prose or includes changed. The cache is per-page, not per-cell. Follow the engine-specific procedure:
 
-**Before committing:** `git diff HEAD -- _freeze/` — every edited frozen `.qmd` must have a corresponding `_freeze/` change. (Use `HEAD` to show both staged and unstaged changes.)
+- **Computational engine:** explicitly render the page with execution enabled, for example `quarto render <file.qmd> --execute --profile prerelease-docs` for prerelease docs. An explicit file render re-executes the page; a full project render with this site's `freeze: true` can reuse frozen results. Check that the real `_freeze/` output was regenerated, then commit it alongside the source change.
+- **Markdown engine:** the page produces no computational output. Any computational freeze for it is vestigial; delete it rather than regenerate it. The freeze-check hook currently falls back to `git show HEAD:` and can reject an intentional staged deletion. If it does, preserve the deletion and track the hook correction separately; keep hooks enabled.
 
-**If the freeze-check hook blocks a commit or push:** first check whether the page even executes code — `quarto inspect <file.qmd>` reports an `engines` array. `markdown` there means no code runs (so the page should carry no computational freeze); any other engine — `knitr`, `jupyter`, `julia`, or a custom Engine Extension — means it executes code.
-
-- **Computational engine (any non-`markdown` engine — e.g. `knitr`, `jupyter`, `julia`, an Engine Extension):** the page has a real freeze. Because the site is `freeze: true`, a plain `quarto render <file.qmd>` only *thaws* the existing freeze — it does not rewrite it. Re-execute to regenerate the freeze (render with execution forced), then commit the updated `_freeze/` output alongside the source change.
-- **Markdown engine (mermaid/`dot` diagrams, no `r`/`python`/`julia` cells):** the page produces no computational output, so an `execute-results/html.json` under `_freeze/` for it is **vestigial** — delete it rather than regenerate it. The check-freeze hook's `git show HEAD:` fallback currently re-flags an intentional freeze deletion, so clearing it needs the hook fix or a confirmed `--no-verify`.
+Before committing, run `git diff HEAD -- _freeze/` to inspect both staged and unstaged changes. Every edited computational page with a tracked freeze must have a corresponding freeze update; Markdown pages must have no computational freeze.
 
 ## Avoid duplicating doc content
 
