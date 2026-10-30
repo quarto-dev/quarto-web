@@ -205,11 +205,14 @@ for key, ref in refs:
     if key in ("filters", "shortcodes", "revealjs-plugin-format") and is_embedded(ref):
         print(f"PASS: referenced embedded extension exists - {ref}")
         continue
-    if escapes(ref):
+    is_plugin_dir = key in ("revealjs-plugin", "revealjs-plugin-format")
+    # A plugin directory may be the extension directory itself, so test its plugin.yml.
+    target = ref + "/plugin.yml" if is_plugin_dir else ref
+    if escapes(target):
         print(f"FAIL: referenced file outside the extension directory - {ref}")
         continue
-    if key in ("revealjs-plugin", "revealjs-plugin-format"):
-        if ext_path(ref + "/plugin.yml") in tree_set:
+    if is_plugin_dir:
+        if ext_path(target) in tree_set:
             print(f"PASS: revealjs plugin.yml exists - {ref}")
         else:
             print(f"FAIL: revealjs plugin.yml missing from repo - {ref}")

@@ -284,6 +284,17 @@ expect_match "parent-relative reference outside the extension fails" "$out" "FAI
 expect_match "parent-relative reference back inside the extension passes" "$out" "PASS: referenced file exists - ../foo/inside.js"
 expect_no_match "parent-relative filter is not reported as dead code" "$out" "dead code"
 
+out=$(run_fixture foo foo/plugin.yml <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  revealjs-plugins:
+    - plugin: .
+EOF
+)
+expect_match "plugin stored in the extension directory itself passes" "$out" "PASS: revealjs plugin.yml exists - ."
+
 echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
 
