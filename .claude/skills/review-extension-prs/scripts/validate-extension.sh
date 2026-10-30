@@ -124,12 +124,30 @@ def list_entry_path(x):
         return x["path"]
     return None
 
-def collect_refs(obj):
+def plugin_refs(entries, in_formats):
+    # A string or {plugin: dir} entry names a directory holding plugin.yml; an inline
+    # entry lists script and stylesheet files. Its config is plugin data, never paths.
+    refs = []
+    for p in entries if isinstance(entries, list) else [entries]:
+        if isinstance(p, str):
+            refs.append(("revealjs-plugin-format" if in_formats else "revealjs-plugin", p))
+        elif isinstance(p, dict) and isinstance(p.get("plugin"), str):
+            refs.append(("revealjs-plugin", p["plugin"]))
+        elif isinstance(p, dict):
+            for k in ("script", "stylesheet"):
+                v = p.get(k)
+                refs += [("revealjs-plugin-file", x) for x in
+                         map(list_entry_path, v if isinstance(v, list) else [v]) if x]
+    return refs
+
+def collect_refs(obj, in_formats=False):
     # Returns (key, ref) pairs; the key decides how Quarto resolves the ref.
     refs = []
     if isinstance(obj, dict):
         for k, v in obj.items():
-            if k in FILE_SCALAR_KEYS:
+            if k == "revealjs-plugins":
+                refs += plugin_refs(v, in_formats)
+            elif k in FILE_SCALAR_KEYS:
                 if isinstance(v, str):
                     refs.append((k, v))
                 elif isinstance(v, list):
@@ -140,10 +158,10 @@ def collect_refs(obj):
                 elif isinstance(v, str):
                     refs.append((k, v))
             else:
-                refs += collect_refs(v)
+                refs += collect_refs(v, in_formats or k == "formats")
     elif isinstance(obj, list):
         for item in obj:
-            refs += collect_refs(item)
+            refs += collect_refs(item, in_formats)
     return refs
 
 # Quarto resolves a filter or shortcode entry such as `quarto-ext/fancy-text`
@@ -160,19 +178,28 @@ def is_embedded(ref):
     owner, _, name = ref.rpartition("/")
     return any(n == name and (not owner or o == owner) for o, n in embedded)
 
+def in_repo(ref):
+    clean = ref.lstrip("./")
+    qualified = (ext_dir + "/" + clean) if ext_dir else clean
+    return qualified in tree_set or clean in tree_set
+
 refs = collect_refs(data.get("contributes", {}))
 if not refs:
-    print("INFO: no file references found in contributes")
+    print("INFO: no file references in a recognised contributes shape - check referenced paths by hand")
 for key, ref in refs:
     if key == "filters" and ref == "quarto":
         print("INFO: 'quarto' is Quarto's built-in filter position marker - quarto")
         continue
-    if key in ("filters", "shortcodes") and is_embedded(ref):
+    if key in ("filters", "shortcodes", "revealjs-plugin-format") and is_embedded(ref):
         print(f"PASS: referenced embedded extension exists - {ref}")
         continue
-    clean = ref.lstrip("./")
-    qualified = (ext_dir + "/" + clean) if ext_dir else clean
-    if qualified in tree_set or clean in tree_set:
+    if key in ("revealjs-plugin", "revealjs-plugin-format"):
+        if in_repo(ref.rstrip("/") + "/plugin.yml"):
+            print(f"PASS: revealjs plugin.yml exists - {ref}")
+        else:
+            print(f"FAIL: revealjs plugin.yml missing from repo - {ref}")
+        continue
+    if in_repo(ref):
         print(f"PASS: referenced file exists - {ref}")
     else:
         print(f"FAIL: referenced file missing from repo - {ref}")
