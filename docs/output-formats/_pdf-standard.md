@@ -122,7 +122,7 @@ Although Quarto can't on its own guarantee accessibility requirements are met, m
 :::
 
 ::: {.content-visible when-meta="pdf-standard-latex-examples"}
-- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Pandoc enables PDF tagging for LaTeX when you specify a standard that requires it (PDF/UA standards and PDF/A "a" variants like `a-2a`).
+- **Document tagging**: Markdown provides the semantic structure to fulfill tagging requirements. Pandoc enables PDF tagging for LaTeX when you specify a standard that requires it (PDF/UA standards and PDF/A "a" variants like `a-3a`). For archival output with tagging, use `[a-4f, ua-2]`; see [PDF/A and LaTeX Tagging](#pdf-a-latex-tagging).
 :::
 
 - **Alt text propagation**: Alt text from `fig-alt` attributes is passed through to the PDF for screen readers. See [Figures](/docs/authoring/figures.qmd#alt-text) for details on specifying alt text.
@@ -146,6 +146,33 @@ format:
 For books, use `report` or `book` instead of `scrreprt` or `scrbook`.
 
 The same applies if you set a KOMA class explicitly. Switching to a standard class changes the page layout, and KOMA-only options, such as `DIV` in `classoption` or `\KOMAoption` commands, no longer have any effect.
+
+### PDF/A and LaTeX Tagging {#pdf-a-latex-tagging}
+
+For a tagged PDF that also meets an archival standard, combine `a-4f` with `ua-2`:
+
+```yaml
+format:
+  pdf:
+    documentclass: article
+    pdf-standard: [a-4f, ua-2]
+```
+
+LaTeX tagging targets PDF 2.0, the version that PDF/A-4 and PDF/UA-2 are based on. Tagged LaTeX output also embeds extra files in the PDF: by default two CSS files, `latex-list-css.html` and `latex-align-css.html`, and with LuaLaTeX, MathML files for display equations. `a-4f` and the PDF/A-3 levels allow these embedded files. PDF/A-2 levels (such as `a-2a`) and `a-4` only allow embedded files that are themselves PDF/A, so tagged output fails veraPDF validation against them. The LaTeX log warns `Embedded non-PDF files detected`.
+
+If you must use `a-2a` or `a-4`, you can stop LaTeX from embedding the CSS files:
+
+```yaml
+format:
+  pdf:
+    documentclass: article
+    pdf-standard: a-2a
+    include-in-header:
+      text: |
+        \tagpdfsetup{attach-css=false}
+```
+
+This is enough only for documents without display math. With LuaLaTeX, equations still embed MathML files and validation still fails.
 :::
 
 ### Validation with veraPDF
