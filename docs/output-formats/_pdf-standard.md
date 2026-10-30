@@ -23,6 +23,7 @@ format:
 title: "Accessible Report"
 format:
   pdf:
+    documentclass: article
     pdf-standard: ua-2
 ---
 ```
@@ -103,6 +104,7 @@ format:
 ```yaml
 format:
   pdf:
+    documentclass: article
     pdf-standard: [a-4f, ua-2]
 ```
 :::
@@ -126,6 +128,25 @@ Although Quarto can't on its own guarantee accessibility requirements are met, m
 - **Alt text propagation**: Alt text from `fig-alt` attributes is passed through to the PDF for screen readers. See [Figures](/docs/authoring/figures.qmd#alt-text) for details on specifying alt text.
 
 Use validation (described below) to identify accessibility issues in your documents that may require manual attention.
+
+::: {.content-visible when-meta="pdf-standard-latex-examples"}
+### Document Class and Tagging {#pdf-document-class-tagging}
+
+Quarto's default [KOMA-Script](/docs/output-formats/pdf-basics.qmd#document-class) classes (`scrartcl` for documents, `scrreprt` for books) don't yet support LaTeX PDF tagging. When you set `pdf-standard` with a KOMA class, the PDF still renders, declares the standard, and can pass validation, but its structure tags are incomplete. For example, headings are tagged as plain paragraphs (`P`) instead of heading tags (`H2`, `H3`, ...), so screen reader users can't navigate the document by its headings.
+
+To get a correctly tagged PDF, for PDF/UA (`ua-2`) or a PDF/A "a" level (such as `a-3a`), use a standard LaTeX class:
+
+```yaml
+format:
+  pdf:
+    documentclass: article
+    pdf-standard: ua-2
+```
+
+For books, use `report` or `book` instead of `scrreprt` or `scrbook`.
+
+The same applies if you set a KOMA class explicitly. Switching to a standard class changes the page layout, and KOMA-only options, such as `DIV` in `classoption` or `\KOMAoption` commands, no longer have any effect.
+:::
 
 ### Validation with veraPDF
 
