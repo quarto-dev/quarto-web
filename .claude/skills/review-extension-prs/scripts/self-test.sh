@@ -246,6 +246,29 @@ expect_match "dark theme scss is checked" "$out" "FAIL: referenced file missing 
 expect_no_match "built-in light theme name is not a file reference" "$out" "- cosmo"
 
 echo
+echo "-- validate-extension.sh: references resolve against the extension directory only"
+
+# Root-level copies are not installed by quarto add; leading dots are part of the name.
+out=$(run_fixture foo root.js plugins/rootonly/plugin.yml foo/.dotted.js foo/.custom.scss <<'EOF'
+title: Foo
+author: A
+version: 1.0.0
+contributes:
+  revealjs-plugins:
+    - name: One
+      script: [root.js, .dotted.js]
+    - plugins/rootonly
+  formats:
+    revealjs:
+      theme: [.custom.scss]
+EOF
+)
+expect_match "root-level copy does not satisfy a script reference" "$out" "FAIL: referenced file missing from repo - root.js"
+expect_match "root-level copy does not satisfy a plugin directory" "$out" "FAIL: revealjs plugin.yml missing from repo - plugins/rootonly"
+expect_match "dot-prefixed script name is kept" "$out" "PASS: referenced file exists - .dotted.js"
+expect_match "dot-prefixed theme name is kept" "$out" "PASS: referenced file exists - .custom.scss"
+
+echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
 
 SKILL="$SKILL_DIR/SKILL.md"

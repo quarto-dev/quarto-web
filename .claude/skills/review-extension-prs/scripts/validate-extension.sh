@@ -75,7 +75,7 @@ fi
 echo "INFO: _extension.yml at $FOUND_PATH"
 
 uv run --with pyyaml python - "$TMPYAML" "$TMPTREE" "$FOUND_PATH" "$REPO" <<'PYEOF'
-import sys, json, yaml, os, re, subprocess
+import sys, json, yaml, os, posixpath, re, subprocess
 
 with open(sys.argv[1], encoding="utf-8") as f:
     content = f.read()
@@ -189,9 +189,8 @@ def is_embedded(ref):
     return any(n == name and (not owner or o == owner) for o, n in embedded)
 
 def in_repo(ref):
-    clean = ref.lstrip("./")
-    qualified = (ext_dir + "/" + clean) if ext_dir else clean
-    return qualified in tree_set or clean in tree_set
+    # Quarto resolves references against the extension directory; quarto add installs nothing else.
+    return posixpath.normpath(posixpath.join(ext_dir, ref)) in tree_set
 
 refs = collect_refs(data.get("contributes", {}))
 if not refs:
@@ -204,7 +203,7 @@ for key, ref in refs:
         print(f"PASS: referenced embedded extension exists - {ref}")
         continue
     if key in ("revealjs-plugin", "revealjs-plugin-format"):
-        if in_repo(ref.rstrip("/") + "/plugin.yml"):
+        if in_repo(ref + "/plugin.yml"):
             print(f"PASS: revealjs plugin.yml exists - {ref}")
         else:
             print(f"FAIL: revealjs plugin.yml missing from repo - {ref}")
@@ -221,7 +220,7 @@ if ext_dir:
     all_refs_raw = collect_refs(data)  # full manifest, not just contributes
     all_refs_normalized = set()
     for _, r in all_refs_raw:
-        clean = r.lstrip("./")
+        clean = posixpath.normpath(r)
         all_refs_normalized.add(clean)
         if ext_dir:
             all_refs_normalized.add(f"{ext_dir}/{clean}")
