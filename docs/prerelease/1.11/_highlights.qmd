@@ -1,7 +1,22 @@
-Quarto 1.11 includes the following new features:
+Quarto 1.11 includes a security update and improvements to accessibility, Typst documents, and Julia notebooks.
 
-- [Definition list divs](/docs/authoring/markdown-basics.qmd#definition-lists): Write definition lists as a `.definition-list` div holding a nested bullet list, the definition list syntax of Quarto 2.
+The bundled Deno runtime is updated to 2.9.8, which rejects certificates from the compromised eMudhra / emSign certificate authorities. Earlier versions trusted these certificates, allowing an attacker on the network to impersonate HTTPS sites to commands such as `quarto publish`, `quarto add`, and `quarto use template`, and to TypeScript scripts run by Quarto. See [quarto-dev/quarto-cli#15152](https://github.com/quarto-dev/quarto-cli/issues/15152) for details.
 
-Dependency updates:
+Accessibility improvements include:
 
-- `deno` updated to 2.9.8 as a security fix. Deno 2.7.14, bundled with Quarto 1.10 and earlier 1.11 pre-releases, still trusted the compromised eMudhra / emSign intermediate certificate authorities, whose private keys can be recovered from their public certificates ([Mozilla bug 2083449](https://bugzilla.mozilla.org/show_bug.cgi?id=2083449), [incident details](https://emudhra.we-have-a-problem.com/)). An attacker on the network could use them to impersonate any HTTPS site to `quarto publish`, `quarto add`, `quarto use template`, `quarto install`, and TypeScript scripts run by Quarto. Deno 2.9.8 [distrusts these certificate authorities](https://github.com/denoland/deno/pull/37046). See [quarto-dev/quarto-cli#15152](https://github.com/quarto-dev/quarto-cli/issues/15152) for details.
+- **Keyboard navigation:** Bootstrap-themed HTML output adds a **Skip to main content** link, keyboard-operable website sidebar sections, and keyboard scrolling for overflowing code and cell output. A [two-tone focus ring](/docs/output-formats/html-themes.qmd#focus-ring) makes keyboard focus easier to follow.
+- **Figures and diagrams:** [`fig-alt`](/docs/authoring/figures.qmd#alt-text) is now honored for Mermaid and Graphviz diagrams in `html`, `revealjs`, `docx`, and `typst` output, and for images and computational figures in `docx`. Alternative text and visible captions remain separate.
+- **Presentations:** In normal slide view, keyboard focus stays on the current slide of a [`revealjs` presentation](/docs/presentations/revealjs/index.qmd). Screen readers no longer announce incremental content before it is revealed, and switching back to the presentation's browser tab preserves keyboard focus.
+
+Authoring improvements include:
+
+- **Typst:** Add [lists of figures and tables](/docs/output-formats/typst.qmd#lists-of-figures-and-tables) with `lof: true` and `lot: true`. Proof, remark, and solution blocks now use [theorem styling](/docs/output-formats/typst.qmd#proofs-remarks-and-solutions), and labeled blocks can be cross-referenced.
+- **Definition lists:** Write [definition lists](/docs/authoring/markdown-basics.qmd#definition-lists) as a `.definition-list` div containing a nested bullet list, the definition-list syntax used by Quarto 2.
+- **Julia notebooks:** The [`julia` engine](/docs/computations/julia.qmd#notebook-export) supports `keep-ipynb: true` to save the executed notebook alongside its source. It also includes fixes for notebook execution hangs and metadata changes not invalidating cached cell outputs.
+
+When upgrading:
+
+- On macOS, the bundled Deno 2.9.8 runtime requires macOS 12 or later. Update older macOS systems before upgrading to Quarto 1.11; rendering engines and formats may have additional requirements.
+- [Shared metadata](/docs/projects/quarto-projects.qmd#metadata-merging) now reaches Pandoc templates and Lua filters as merged values. Inherited lists such as `keywords` combine with document values; a document list no longer replaces an inherited list in that metadata.
+- Custom HTML themes should use the [Quarto focus-ring variables](/docs/output-formats/html-themes.qmd#focus-ring). Quarto no longer uses Bootstrap's `$focus-ring-color`, `$focus-ring-box-shadow`, `$btn-focus-width`, or `$btn-focus-box-shadow` for its focus styling.
+- Page-level `open-graph` and `twitter-card` options are now [validated](/docs/websites/website-tools.qmd#social-metadata-validation). Unknown keys within these options in document front matter or `_metadata.yml` produce an error instead of being silently ignored.
