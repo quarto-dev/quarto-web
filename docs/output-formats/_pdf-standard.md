@@ -23,6 +23,7 @@ format:
 title: "Accessible Report"
 format:
   pdf:
+    documentclass: article
     pdf-standard: ua-2
 ---
 ```
@@ -103,6 +104,7 @@ format:
 ```yaml
 format:
   pdf:
+    documentclass: article
     pdf-standard: [a-4f, ua-2]
 ```
 :::
