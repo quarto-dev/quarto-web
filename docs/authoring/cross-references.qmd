@@ -81,6 +81,31 @@ As illustrated in [@fig-elephant; @fig-panther; @fig-rabbit].
 
 There are a number of options that can be used to further customize the treatment of cross-references. See the guide on [Cross Reference Options](cross-reference-options.qmd#references) for additional details.
 
+### Titles as Link Text
+
+{{< prerelease-callout 1.11 >}}
+
+To use a section's title as the text of a reference instead of its number, write a link with empty text to the section's identifier. Equations can do the same with a `name` attribute:
+
+``` markdown
+## Introduction {#sec-introduction}
+
+$$
+E = mc^2
+$$ {#eq-energy name="mass–energy equivalence"}
+
+See [](#sec-introduction) and [](#eq-energy).
+```
+
+The links are filled in with the title or name, and link to the target:
+
+| Syntax                  | Output                   |
+|-------------------------|--------------------------|
+| `[](#sec-introduction)` | Introduction             |
+| `[](#eq-energy)`        | mass–energy equivalence  |
+
+An equation without a `name` falls back to a numbered reference, such as "Equation 1". This works in all output formats, and across chapters of a book. Links that have text of their own, and references such as `@sec-introduction`, are not changed.
+
 ## Lists
 
 For LaTeX / PDF output, you can use the raw LaTeX commands `\listoffigures`, `\listoftables` and `\listoflistings` to produce listings of all figures, tables, etc. within a document. You can use the `lof-title`, `lot-title`, and `lol-title` crossref options to customize the title of the listing.
