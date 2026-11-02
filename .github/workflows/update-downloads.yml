@@ -39,7 +39,7 @@ jobs:
 
       - name: Commit Changes to main branch
         id: auto-commit
-        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
         with:
           repository: .
           commit_user_name: Github Action Runner
@@ -70,7 +70,7 @@ jobs:
   publish-changes-release:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
-    uses: ./.github/workflows/publish.yml
+    uses: $/.github/workflows/publish.yml
     # A called workflow cannot exceed its caller's grant.
     permissions:
       contents: read
@@ -86,7 +86,7 @@ jobs:
   publish-changes-prerelease:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
-    uses: ./.github/workflows/publish.yml
+    uses: $/.github/workflows/publish.yml
     # A called workflow cannot exceed its caller's grant.
     permissions:
       contents: read
@@ -102,7 +102,7 @@ jobs:
   update-prerelease-reference:
     needs: [ update-downloads ]
     if: ${{ needs.update-downloads.outputs.changes_detected == 'true' }}
-    uses: ./.github/workflows/update-prerelease-reference.yml
+    uses: $/.github/workflows/update-prerelease-reference.yml
     # A called workflow cannot exceed its caller's grant.
     permissions:
       contents: write

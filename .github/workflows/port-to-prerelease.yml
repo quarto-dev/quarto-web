@@ -40,7 +40,7 @@ jobs:
       - name: Create backport pull requests
         id: synced-pr
         # https://github.com/korthout/backport-action/releases/tag/v4.6.0
-        uses: korthout/backport-action@2e830a1d0b8269505846ddd407a70876913ad1f8 # v4.6.0
+        uses: korthout/backport-action@8560fb503c275d433c56f05a2f64850093baa9f7 # v4.7.0
         with:
           cherry_picking: auto
           branch_name: sync-${pull_number}-to-${target_branch}
@@ -101,7 +101,7 @@ jobs:
     needs: [ sync-to-prerelease ]
     # Publish even if a later step of the sync job failed after the merge.
     if: ${{ !cancelled() && needs.sync-to-prerelease.outputs.merged == 'true' }}
-    uses: ./.github/workflows/publish.yml
+    uses: $/.github/workflows/publish.yml
     # A called workflow cannot exceed its caller's grant.
     permissions:
       contents: read
