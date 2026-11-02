@@ -167,6 +167,32 @@ You can also customize the colors of the button which appears for `code-copy: tr
 |                          | | `important` | `$red`    |                                                                                                                                        |
 +--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
+### Focus Ring
+
+{{< prerelease-callout 1.11 >}}
+
+When a reader moves through a page with the keyboard, Quarto shows a ring around the element that has focus. The ring has two parts: a CSS `outline`, and an inner band drawn with `box-shadow` that fills the gap between the outline and the element.
+
+You can change the ring with these variables:
+
+| Variable | Notes |
+|----|----|
+| `$focus-ring-outer-color` | The color of the outline. Defaults to a dark shade of `$primary`, adjusted to have a contrast of 9:1 with `$focus-ring-inner-color`. |
+| `$focus-ring-inner-color` | The color of the inner band. Defaults to `$white`. |
+| `$focus-ring-outline-width` | The width of the outline. Defaults to `2px`. |
+| `$focus-ring-outline-offset` | The width of the gap between the outline and the element, which the inner band fills. Defaults to `2px`. |
+
+When upgrading a custom theme to Quarto 1.11, replace settings for Bootstrap's `$focus-ring-color`, `$focus-ring-box-shadow`, `$btn-focus-width`, and `$btn-focus-box-shadow` with the variables above. Quarto no longer uses those Bootstrap variables for focus styling. Use `$focus-ring-outer-color` and `$focus-ring-inner-color` for the two colors, `$focus-ring-outline-width` for the outline thickness, and `$focus-ring-outline-offset` for the gap.
+
+To remove the inner band, set the `--quarto-focus-ring-shadow` CSS property to `none`:
+
+``` scss
+/*-- scss:rules --*/
+:root {
+  --quarto-focus-ring-shadow: none;
+}
+```
+
 ::: {.content-hidden unless-meta="is_dashboards"}
 
 ### Value Boxes

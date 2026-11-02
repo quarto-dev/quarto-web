@@ -123,6 +123,22 @@ Can be set per-screenshot in `capture.zoom` or globally in `defaults.zoom`.
 
 Example: `"zoom": 1.15` makes content 15% larger. About pages use 1.15.
 
+### Zoom as a 2x asset
+
+`capture.zoom` also doubles as the way to get a retina-resolution screenshot.
+The browser context is 1x (`newContext()` sets no `deviceScaleFactor`), so a
+capture is one image pixel per CSS pixel — fine for UI screenshots, visibly soft
+for dense small text on a HiDPI display.
+
+Pairing `"zoom": 2` with a doubled viewport renders the same layout at twice the
+pixel detail, so the image can be displayed at half its width and stay crisp.
+Line breaks and column widths are preserved, since the viewport is scaled by the
+same factor.
+
+`axe-report` uses this: viewport 2400x1800 with `"zoom": 2` yields a ~1638px-wide
+image that renders at the 900px body width. Do not "correct" that zoom back to 1
+— it is resolution, not sizing.
+
 ## Cleanup
 
 `capture.cleanup` (optional) — array of actions to run after page load, before

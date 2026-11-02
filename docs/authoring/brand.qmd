@@ -370,6 +370,8 @@ logo: logo.png
 ---
 ```
 
+Relative logo file paths in the document's YAML header are relative to the input document, even when a brand is active. For example, `slides/talk.qmd` should use `logo: ../images/logo.png` to reference `images/logo.png` at the project root. Paths in `_brand.yml` remain relative to the brand file.
+
 Or specify a brand logo resource and change the alt text:
 
 ```{.yaml filename="document.qmd"}
@@ -393,6 +395,10 @@ logo:
     alt: Alternate text for dark logo
 ---
 ```
+
+{{< prerelease-callout 1.11 >}}
+
+Starting in Quarto 1.11, `revealjs` and `dashboard` documents in website projects with an active brand retain a deprecated fallback: if a relative logo path is missing relative to the document but exists relative to the project root, Quarto uses that file and warns with a replacement path. Update the logo path to the suggested document-relative path. If the file exists in both locations, the document-relative file takes precedence.
 
 ::: {.callout-warning}
 

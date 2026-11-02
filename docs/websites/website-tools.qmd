@@ -2,6 +2,10 @@
 title: "Website Tools"
 ---
 
+{{< include ../books/_book-vs-website-key.qmd >}}
+
+As you read the documentation below, keep in mind to substitute `book` for `website` if you are authoring a book.
+
 ## Headers & Footers
 
 You can provide standard headers and footers for pages on your site. These can apply to the main document body or to the sidebar. Available options include:
@@ -64,10 +68,6 @@ You can enhance your website and the content that you publish to it by including
 -   Twitter Cards
 -   Open Graph
 
-{{< include ../books/_book-vs-website-key.qmd >}}
-
-As you read the documentation below, keep in mind to substitute `book` for `website` if you are authoring a book.
-
 ### Favicon
 
 The favicon for your site provides an icon for browser tabs and other sites that link to yours. Use the `favicon` option to provide the path to a favicon image. For example:
@@ -98,7 +98,7 @@ You may also provide additional metadata to be used when generating the Twitter 
 | `description` | A short description of the content. Quarto will automatically use the `description` metadata from the page metadata. If you'd like you can override this just for the Twitter Card by including a `description` in the `twitter-card` metadata.                                        |
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image`       | The path to a preview image for this content.  By default, Quarto will use the `image` value from the document metadata, or if that isn't specified, the `image` value from the `website:` metadata.                                                                                   |
-|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` to improve the appearance of your Twitter Card.                                                                                                                                           |
+|               | Twitter Cards don't use `image-width` and `image-height`. To declare the size of your preview image, see [Open Graph].                                                                                                                                                                 |
 |               |                                                                                                                                                                                                                                                                                        |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                                                   |
 +---------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -143,7 +143,7 @@ You may also provide additional metadata to be used when generating the Open Gra
 | `description` | A short description of the content. Quarto will automatically use the `description` metadata from the page metadata. If you'd like you can override this just for the Open Graph metadata by including a `description` in the `open-graph` metadata. |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | `image`       | The path to a preview image for this content.  By default, Quarto will use the `image` value from the document metadata, or if that isn't specified, the `image` value from the `website:` metadata.                                                 |
-|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` to improve the appearance of your Twitter Card.                                                                                                         |
+|               | If you provide an image, you may also optionally provide an `image-width` and `image-height` (in pixels). For how Quarto uses them, see [Image Size].                                                                                                |
 |               |                                                                                                                                                                                                                                                      |
 |               | If `image` is not provided, Quarto will automatically attempt to locate a preview image. For more information, see [Preview Images].                                                                                                                 |
 +---------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -164,6 +164,50 @@ website:
 ```
 
 Quarto will automatically merge global metadata found in the `website: open-graph` key with any metadata provided in the document itself in the `open-graph` key. This is useful when you need to specify a mix of global options (for example, `site`) with per document options such as `title` or `image`.
+
+#### Image Size
+
+{{< prerelease-callout 1.11 >}}
+
+When your site has a `site-url`, Quarto reads the size of local PNG and JPEG preview images and uses it in place of any declared `image-width` and `image-height`. Declared sizes are used for remote images and for formats Quarto can't measure, such as WebP or GIF.
+
+Sizes declared in `website: open-graph` apply to the site image. A page that supplies its own image, through `image`, an `open-graph` `image`, or an automatically discovered [preview image](#preview-images), gets only the sizes declared in its own `open-graph` metadata, even if that image is the same file as the site image. Top-level `image-width` and `image-height` in the page metadata aren't used.
+
+Before Quarto 1.11, on sites without a `site-url`, page images inherited the sizes from `website: open-graph`. If you relied on this, declare the sizes in each page's `open-graph` metadata, or once for a directory in its `_metadata.yml`:
+
+```{.yaml filename="posts/_metadata.yml"}
+open-graph:
+  image-width: 1200
+  image-height: 630
+```
+
+Pages in that directory that use the site image also get these sizes.
+
+### Disabling on a Page
+
+{{< prerelease-callout 1.11 >}}
+
+When `twitter-card` or `open-graph` is enabled under `website:`, a page can omit that metadata by setting the option to `false` in its front matter:
+
+```{.yaml filename="notes.qmd"}
+---
+title: "Notes"
+open-graph: false
+twitter-card: false
+---
+```
+
+To omit it for every page in a directory, set the option to `false` in the directory's `_metadata.yml`. Each option is independent: a page with only `open-graph: false` still gets Twitter Card metadata.
+
+Before Quarto 1.11, `false` in a page had no effect when the website enabled the metadata.
+
+### Social Metadata Validation {#social-metadata-validation}
+
+{{< prerelease-callout 1.11 >}}
+
+Quarto validates the keys within page-level `open-graph` and `twitter-card` options, including options inherited from `_metadata.yml`. Before Quarto 1.11, unknown keys at these levels could be silently ignored; they now stop the render with a validation error. When upgrading, remove unknown keys or replace them with the supported options listed above.
+
+Site-wide defaults belong under `website: open-graph` or `website: twitter-card` in `_quarto.yml`. Page and directory overrides use top-level `open-graph` or `twitter-card` keys in document front matter or `_metadata.yml`.
 
 ### Preview Images
 
@@ -208,6 +252,8 @@ website:
   image-alt: "Quarto logo"
 ```
 
+With a `site-url`, a relative path in `_quarto.yml`, for `website: image` or for `image` under `website: open-graph` or `website: twitter-card`, is relative to the project directory, whichever page uses it.
+
 Use `image-alt` to provide alternative text for the preview image. Set it next to `image` in the page front matter, or under `website` for the site-level default as above. `website: image-alt` is only used for pages that fall back to the site-level image. When Quarto finds the preview image in the page, it uses that image's alt text (for example, from `fig-alt`), and the page's `image-alt` if the image has none. To use different alt text for one service, set `image-alt` under `twitter-card` or `open-graph`.
 
 If you would like to prevent preview image discovery on a page, set `image` to `false`:
@@ -219,6 +265,8 @@ image: false
 ```
 
 ## Analytics
+
+If you are authoring a book, remember to set the analytics keys below under `book` instead of `website` (see the note at the top of this page).
 
 ### Plausible Analytics
 
