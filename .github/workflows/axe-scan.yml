@@ -121,7 +121,7 @@ jobs:
 
       - name: Upload scan artifacts
         if: always() && steps.scan.outputs.exit_code != ''
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: axe-checks-${{ inputs.branch }}
           path: _axe-checks/
@@ -149,7 +149,7 @@ jobs:
 
       - name: Commit the report to the branch
         id: auto-commit
-        uses: stefanzweifel/git-auto-commit-action@4a55954c782fc1ea30b9056cd3e7a2b40ca8887d # v7.2.0
+        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
         with:
           commit_message: "Update the axe accessibility report"
           commit_user_name: github-actions[bot]
@@ -162,7 +162,7 @@ jobs:
   publish:
     needs: [scan]
     if: ${{ needs.scan.outputs.changes_detected == 'true' }}
-    uses: ./.github/workflows/publish.yml
+    uses: $/.github/workflows/publish.yml
     # A called workflow cannot exceed its caller's grant.
     permissions:
       contents: read
