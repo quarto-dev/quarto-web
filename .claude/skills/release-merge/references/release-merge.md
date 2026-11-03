@@ -33,6 +33,14 @@ Build check after pushing `<sha>` to `<b>`: take the run whose `headSha` is `<sh
 
 ## Before the merge
 
+Changes to `prerelease` below happen in `$P`. Under `make-release` it exists from checklist step 8; otherwise create it, or bring an existing one up to date:
+
+```bash
+git -C "$QW" fetch upstream
+git -C "$QW" worktree add "$P" upstream/prerelease -b "release/$REL-prerelease" --no-track   # new
+git -C "$P" fetch upstream && git -C "$P" merge --ff-only upstream/prerelease              # existing; stop if it does not fast-forward
+```
+
 Drift: commits on `main` that never reached `prerelease`.
 
 ```bash
@@ -83,7 +91,17 @@ Any other path in the `diff --stat` is drift the check missed: stop and report.
 
 If the freeze-check hook blocks an intentional `_freeze/` deletion, see the `_freeze/` section of `.claude/rules/quarto-web-workflow.md`.
 
-Then guarded push of `$M` to `main`, build check.
+Then land it on `main` by the chosen merge path (both are GATEs):
+
+- Direct push: guarded push of `$M` to `main`, build check.
+- PR: push the merge to a branch and open the PR with the label, then merge with a merge commit once `build-deploy-preview` passes, and run the build check on `main`.
+
+  ```bash
+  git -C "$M" push upstream HEAD:"release/$REL-main"
+  gh pr create --repo quarto-dev/quarto-web --base main --head "release/$REL-main" --label no-sync-prerelease --title "Merge prerelease into main for v$REL" --body "Release merge for $TAG."
+  gh pr checks <N> --repo quarto-dev/quarto-web --watch
+  gh pr merge <N> --repo quarto-dev/quarto-web --merge     # merge commit, never squash
+  ```
 
 ## After merging
 
