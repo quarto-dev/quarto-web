@@ -233,6 +233,34 @@ It is possible to customize the appearance of listings using the following optio
 
 In addition to the above listing-wide options, each listing type has a variety of options to customize its appearance.
 
+### Link Targets
+
+{{< prerelease-callout 1.12 >}}
+
+Use the `target` and `rel` options to set the `target` and `rel` attributes of the item links.
+These options have the same meaning as the `target` and `rel` options of navigation items.
+You can set them on the listing, on an item in the listing `contents`, or on both.
+A value on an item replaces the value on the listing.
+For example, this listing opens all items in a new tab, except the local post:
+
+``` yaml
+listing:
+  target: _blank
+  contents:
+    - path: https://example.com/article
+      title: "External article"
+    - path: posts/local-post.qmd
+      title: "Local post"
+      target: _self
+```
+
+If `target` opens a new tab and `rel` is not set, `rel` is `noopener`.
+Screen readers announce each link that opens a new tab.
+
+Quarto reads these options only from the listing and from the items in the listing `contents`.
+It does not read them from the front matter of a listed document.
+RSS feeds and custom listing templates do not use these options.
+
 ## Categories
 
 In addition to displaying the listing contents, listings can also automatically add a list of categories to the page that they appear on. To enable categories you can set the `categories` option like:
