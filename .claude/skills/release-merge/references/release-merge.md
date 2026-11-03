@@ -9,7 +9,15 @@ Two ways to merge `prerelease` into `main`:
 
 ## Resolving conflicts
 
-Resolve to the **prerelease / new-stable** content, except where `main` is a strict superset (e.g. a direct-push edit that `prerelease` never received). Expect version-string and `quarto check` sample-output conflicts — take the new version.
+| Path | Keep |
+|---|---|
+| `_axe-report.md` | `main` |
+| `_freeze/` entries | whatever happens to their page, deletions included |
+| everything else (`_quarto.yml`, pages, `docs/cli/cli-info.json`, `_axe-baseline.json`) | `prerelease`, deletions included |
+
+Expect version-string and `quarto check` sample-output conflicts; the `prerelease` side carries the new version.
+
+After committing the merge, `git diff --stat upstream/prerelease HEAD` must list only `_axe-report.md`. Any other path is drift between the branches.
 
 ## _axe-report.md
 
@@ -17,11 +25,11 @@ The weekly axe scan (`axe-report.yml`) commits `_axe-report.md` to both `main` a
 
 ## cli-info.json
 
-`docs/cli/cli-info.json` is generated, not hand-edited. Regenerate it against the stable release tag after the merge; otherwise it ships the development/prerelease version content.
+`docs/cli/cli-info.json` is generated, not hand-edited. Before the merge, check its `version` on `prerelease`. If it already equals the stable version (`1.x.N`), the merge keeps the `prerelease` side as is. Otherwise regenerate it on `prerelease` first with `quarto dev-call cli-info` from a `1.x.N` binary and push that, then merge.
 
 ## Freeze on a release merge
 
-A release merge can surface `_freeze/` conflicts. Resolve them per the `_freeze/` section of `.claude/rules/quarto-web-workflow.md` — most often it's a markdown-engine page carrying a vestigial freeze entry to delete.
+A `_freeze/` entry follows its page (table above). If the freeze-check hook blocks an intentional deletion, see the `_freeze/` section of `.claude/rules/quarto-web-workflow.md`.
 
 ## After merging
 
