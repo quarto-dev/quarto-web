@@ -17,17 +17,70 @@ on:
       ISSUE_COMMENT_TRIGGER_PAT:
         required: true
 
-permissions:
-  contents: write # so it can push the rolling branch
-  pull-requests: write # so it can open and comment on the PR
+permissions: {}
 
 concurrency:
   group: prerelease-reference-update
   cancel-in-progress: false
 
 jobs:
-  update-reference:
+  # Between a first stable release (X.Y.0) and the prerelease -> main release
+  # merge, main's _quarto.yml still names the previous minor while the
+  # prerelease is already X.(Y+1). Reference updates against the prerelease
+  # branch would then land on top of the pending release merge, so skip them.
+  release-window:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      in_window: ${{ steps.decide.outputs.in_window }}
+    steps:
+      - name: Read main's documented version
+        id: main-version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          main_version=$(gh api -H "Accept: application/vnd.github.raw" \
+            "repos/$REPO/contents/_quarto.yml?ref=main" \
+            | sed -n "s/^version: *['\"]\{0,1\}\([0-9][0-9.]*\)['\"]\{0,1\} *$/\1/p")
+          echo "main_version=$main_version" >> "$GITHUB_OUTPUT"
+
+      - name: Decide whether a release window is open
+        id: decide
+        env:
+          PRERELEASE_VERSION: ${{ inputs.version }}
+          MAIN_VERSION: ${{ steps.main-version.outputs.main_version }}
+        run: |
+          if ! [[ "$PRERELEASE_VERSION" =~ ^v?([0-9]+)\.([0-9]+)(\.[0-9]+)?$ ]]; then
+            echo "::error::Prerelease version \"$PRERELEASE_VERSION\" is not a valid X.Y.Z version"
+            exit 1
+          fi
+          pre_major=${BASH_REMATCH[1]}
+          pre_minor=${BASH_REMATCH[2]}
+
+          if ! [[ "$MAIN_VERSION" =~ ^([0-9]+)\.([0-9]+) ]]; then
+            echo "::error::main _quarto.yml version \"$MAIN_VERSION\" is not a valid X.Y version"
+            exit 1
+          fi
+          main_major=${BASH_REMATCH[1]}
+          main_minor=${BASH_REMATCH[2]}
+
+          if [ "$pre_major" -eq "$main_major" ] && [ $((pre_minor - main_minor)) -gt 1 ]; then
+            echo "in_window=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping reference update: prerelease v$PRERELEASE_VERSION is more than one minor ahead of main ($MAIN_VERSION), so a stable release is awaiting its release merge. Updates resume once main's _quarto.yml version is bumped."
+          else
+            echo "in_window=false" >> "$GITHUB_OUTPUT"
+            echo "Prerelease v$PRERELEASE_VERSION vs main $MAIN_VERSION: no release window, proceeding."
+          fi
+
+  update-reference:
+    needs: release-window
+    if: needs.release-window.outputs.in_window != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # so it can push the rolling branch
+      pull-requests: write # so it can open and comment on the PR
     steps:
       - name: Checkout prerelease branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
