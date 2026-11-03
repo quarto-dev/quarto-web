@@ -18,16 +18,17 @@ Not for ordinary content PRs — those follow the normal Stable → Prerelease f
 
 ## Canonical checklist
 
-The authoritative release steps live in quarto-cli `dev-docs/checklist-make-a-new-quarto-release.md`. This skill covers only the quarto-web merge mechanics.
+The authoritative release steps live in quarto-cli `dev-docs/checklist-make-a-new-quarto-release.md`. This skill carries the commands for its step 9 (the quarto-web merge); quarto-cli's `make-release` skill hands that step to it. When the checklist and this skill disagree, the checklist wins: report the mismatch.
 
 ## Steps
 
 1. Choose the merge path — direct push, or a PR to `main` for CI build verification.
-2. Check `cli-info.json` on `prerelease`; regenerate it there only if its version is not the stable version.
-3. Merge and resolve conflicts per the conflict table.
-4. Verify `git diff --stat upstream/prerelease HEAD` lists only `_axe-report.md`.
-5. Sync `main` back into `prerelease`.
+2. Drift check: cherry-pick onto `prerelease` the `main` commits it never received.
+3. Check `cli-info.json` on `prerelease`; regenerate it there only if its version is not the stable version.
+4. Merge and resolve conflicts per the conflict table.
+5. Verify `git diff --stat upstream/prerelease HEAD` lists only `_axe-report.md` (plus `_quarto.yml` if checklist step 6 flipped the profile group), then push.
+6. Hand back to checklist step 10: merge back into `prerelease`, then the Axe Report.
 
 ## Details
 
-**REQUIRED:** read `references/release-merge.md` before executing — it carries the label, merge-commit, conflict, and freeze specifics.
+**REQUIRED:** read `references/release-merge.md` before executing — it carries the commands, conflict table, label, merge-commit, and freeze specifics.
