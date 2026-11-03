@@ -23,9 +23,9 @@ The authoritative release steps live in quarto-cli `dev-docs/checklist-make-a-ne
 ## Steps
 
 1. Choose the merge path — direct push, or a PR to `main` for CI build verification.
-2. Resolve conflicts to the new-stable content.
-3. Handle `_freeze` conflicts.
-4. Regenerate `cli-info.json` against the stable tag.
+2. Check `cli-info.json` on `prerelease`; regenerate it there only if its version is not the stable version.
+3. Merge and resolve conflicts per the conflict table.
+4. Verify `git diff --stat upstream/prerelease HEAD` lists only `_axe-report.md`.
 5. Sync `main` back into `prerelease`.
 
 ## Details
