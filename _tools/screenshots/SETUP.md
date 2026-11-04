@@ -61,6 +61,12 @@ playwright-cli -s=screenshot screenshot --filename=docs/websites/images/about-jo
 playwright-cli -s=screenshot close
 ```
 
+## Gallery featured video previews
+
+`scripts/capture-previews.mjs` (`npm run capture:previews`) records the animated preview
+clips for featured gallery cards. It is separate from the still-screenshot manifest and
+needs ffmpeg plus a full Playwright Chromium. See **`scripts/PREVIEWS.md`** for details.
+
 ## Optional: PNG Compression
 
 ```bash
