@@ -262,6 +262,41 @@ plt.show()
 ```
 ````
 
+By default, each highlight step is the next fragment on the slide.
+To show the highlight steps between other fragments, use the `code-line-fragment-indices` attribute.
+Give one fragment index for each step after the first, separated by commas.
+The first step is the code block without a fragment, so it shows when the slide opens.
+
+In this example, the slide shows the first note, then highlights line 1, then shows the second note, and then highlights line 2:
+
+```` {.java code-preview="examples/line-highlighting-5.qmd" code-preview-title="Example slide that puts code highlight steps between other fragments"}
+::: {.fragment fragment-index=1}
+First, the code creates the data.
+:::
+
+```{.python code-line-numbers="|1|2" code-line-fragment-indices="2,4"}
+x = [1, 2, 3]
+print(x)
+```
+
+::: {.fragment fragment-index=3}
+Then, the code prints the data.
+:::
+````
+
+The values must be non-negative integers, and the number of values must be one less than the number of steps.
+If the values are not correct, Quarto shows a warning, ignores the values, and uses the default order.
+In an executable code cell, use the `code-line-fragment-indices` cell option:
+
+````markdown
+```{{python}}
+#| code-line-numbers: "|1|2"
+#| code-line-fragment-indices: "2,4"
+x = [1, 2, 3]
+print(x)
+```
+````
+
 ### Code Block Height
 
 By default, code blocks are limited to a maximum height of 500px. Code that exceeds this height introduces a scrollbar. To avoid a scrollbar you can increase the maximum height with the `code-block-height` option:
