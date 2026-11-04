@@ -239,8 +239,10 @@ In addition to the above listing-wide options, each listing type has a variety o
 
 Use the `target` and `rel` options to set the `target` and `rel` attributes of the item links.
 These options have the same meaning as the `target` and `rel` options of navigation items.
-You can set them on the listing, on an item in the listing `contents`, or on both.
-A value on an item replaces the value on the listing.
+They apply to default, grid, and table listings.
+You can set them on the listing, on an item in the listing `contents`, or in a listed document's front matter.
+Values in `contents` override the document's front-matter values.
+For each option, a nonempty item value overrides the listing value.
 For example, this listing opens all items in a new tab, except the local post:
 
 ``` yaml
@@ -255,11 +257,14 @@ listing:
 ```
 
 If `target` opens a new tab and `rel` is not set, `rel` is `noopener`.
-Screen readers announce each link that opens a new tab.
+An explicit listing or item `target` takes precedence over `link-external-newwindow`.
+For example, `target: _self` keeps an external item in the current tab even when `link-external-newwindow: true`.
 
-Quarto reads these options only from the listing and from the items in the listing `contents`.
-It does not read them from the front matter of a listed document.
-RSS feeds and custom listing templates do not use these options.
+Listing item links with `target: _blank` receive the accessible description "(opens in a new tab)".
+This applies to internal and external listing links, independently of `link-external-newwindow`.
+
+With `table-hover: true`, clicking a table row also honors its item link's `target` and `rel`.
+RSS feeds and custom listing templates do not apply these options automatically.
 
 ## Categories
 
