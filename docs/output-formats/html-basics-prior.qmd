@@ -1,0 +1,472 @@
+---
+title: "HTML Basics"
+format: html
+comments:
+  hypothesis: true
+---
+
+## Overview
+
+Use the `html` format to create HTML output. For example:
+
+``` yaml
+---
+title: "My document"
+format:
+  html:
+    toc: true
+    html-math-method: katex
+    css: styles.css
+---
+```
+
+This example highlights a few of the options available for HTML output. This document covers these and other options in detail. See the HTML [format reference](/docs/reference/formats/html.qmd) for a complete list of all available options.
+
+## Table of Contents
+
+Use the `toc` option to include an automatically generated table of contents in the output document. Use the `toc-depth` option to specify the number of section levels to include in the table of contents. The default is 3 (which means that level-1, 2, and 3 headings will be listed in the contents). For example:
+
+``` yaml
+toc: true
+toc-depth: 2
+```
+
+Use the `toc-expand` option to specify how much of the table of contents to show initially (defaults to 1 with auto-expansion as the user scrolls). Use `true` to expand all or `false` to collapse all.
+
+``` yaml
+toc: true
+toc-expand: 2
+```
+
+You can customize the title used for the table of contents using the `toc-title` option:
+
+``` yaml
+toc-title: Contents
+```
+
+If you want to exclude a heading from the table of contents, add both the `.unnumbered` and `.unlisted` classes to it:
+
+``` markdown
+### More Options {.unnumbered .unlisted}
+```
+
+The HTML format by default floats the table of contents to the right. You can alternatively position it at the `left`, or in the `body`. For example:
+
+``` yaml
+format:
+  html:
+    toc: true
+    toc-location: left
+```
+
+If you would like to display a table of contents both in the body and floating left or right, you can specify `left-body` or `right-body` respectively.
+
+The floating table of contents can be used to navigate to sections of the document and also will automatically highlight the appropriate section as the user scrolls. The table of contents is responsive and will become hidden once the viewport becomes too narrow. See an example on the right of this page.
+
+Note that the `toc-location` option is not available when you disable the standard HTML theme (e.g. if you specify the `theme: none` or `theme: pandoc` option).
+
+{{< include _document-options-section-numbering.md >}}
+
+## Code Links and Other Links
+
+Use `code-links` and `other-links` to add links that will appear in the page navigation under the headings "Code Links" and "Other Links" respectively. For example, consider the following document YAML header:
+
+``` yaml
+---
+format:
+  html:
+    other-links:
+      - text: NASA Open Data
+        href: https://data.nasa.gov/
+    code-links:
+      - text: Data Import Code
+        icon: file-code
+        href: data-import.py
+---
+```
+
+When rendered this results in:
+
+![](images/html-other-links.png){fig-alt="Screenshot of a HTML page shdwing the headers 'Other Links' and 'Code Links' below the Table of Contents on the right of the page. The 'Other Links' header is followed by a link with the text 'NASA Open Data', and the header 'Code Links' is followed by a link with the text 'Data Import Code'."}
+
+You can provide the following options for items in `code-links` and `other-links`:
+
+| Option   | Description                                                         |
+|--------------------|----------------------------------------------------|
+| `text`   | The text to be displayed for the link.                              |
+| `href`   | The URL for the link.                                               |
+| `icon`   | The [bootstrap icon](https://icons.getbootstrap.com/) for the link. |
+| `rel`    | The rel used in the `a` tag for this link.                          |
+| `target` | The target used in the `a` tag for this link.                       |
+
+### GitHub and Binder Links
+
+For projects there are also two special values you can pass as items to `code-links`:
+
+`repo`
+
+:   Add a link to "GitHub Repo" under "Code Links" that points at the GitHub repository of your project.
+
+`binder`
+
+:   Add a link to “Launch Binder” under "Code Links" if your project is configured to [Use Binder](/docs/projects/binder.qmd).
+
+## CSS Styles
+
+To add a CSS stylesheet to your document, just provide the `css` option. For example:
+
+``` yaml
+format:
+  html: 
+    css: styles.css
+```
+
+Using the `css` option works well for simple tweaks to document appearance. If you want to do more extensive customization see the documentation on [HTML Themes](html-themes.qmd).
+
+## LaTeX Equations
+
+By default, LaTeX equations are rendered using [MathJax](https://www.mathjax.org/). Use the `html-math-method` option to choose another method. For example:
+
+``` yaml
+format:
+  html:
+    html-math-method: katex
+```
+
+You can also specify a `url` for the library to load for a given method:
+
+``` yaml
+html-math-method:
+  method: mathjax
+  url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+```
+
+Available math rendering methods include:
+
+| Method    | Description                                                                                                                                                                                                                      |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `mathjax` | Use [MathJax](https://www.mathjax.org/) to display embedded TeX math in HTML output. The default configuration for [MathJax](https://docs.mathjax.org/) is [`tex-chtml-full.js`](https://docs.mathjax.org/en/latest/web/components/combined.html?highlight=tex-chtml-full.js#tex-chtml-full) which loads all [MathJax's extensions](https://docs.mathjax.org/en/latest/input/tex/extensions.html) except `colorv2` and `physics` (available using `\require{physics}`).                                                                                                                                         |
+| `katex`   | Use [KaTeX](https://github.com/Khan/KaTeX) to display embedded TeX math in HTML output.                                                                                                                                          |
+| `webtex`  | Convert TeX formulas to `<img>` tags that link to an external script that converts formulas to images.                                                                                                                           |
+| `gladtex` | Enclose TeX math in `<eq>` tags in HTML output. The resulting HTML can then be processed by [GladTeX](https://humenda.github.io/GladTeX/) to produce images of the typeset formulas and an HTML file with links to these images. |
+| `mathml`  | Convert TeX math to [MathML](https://www.w3.org/Math/).                                                                                                                                                                          |
+| `plain`   | No special processing (formulas are put inside a `span` with `class="math").`                                                                                                                                                    |
+
+Note that there is more detailed documentation on each of these options in the Pandoc [Math Rendering in HTML](https://pandoc.org/MANUAL.html#math-rendering-in-html) documentation.
+
+## Tabsets
+
+You can use tabsets to present content that will vary in interest depending on the audience. For example, here we provide some example code in a variety of languages:
+
+:::: panel-tabset
+## R
+
+``` r
+fizz_buzz <- function(fbnums = 1:50) {
+  output <- dplyr::case_when(
+    fbnums %% 15 == 0 ~ "FizzBuzz",
+    fbnums %% 3 == 0 ~ "Fizz",
+    fbnums %% 5 == 0 ~ "Buzz",
+    TRUE ~ as.character(fbnums)
+  )
+  print(output)
+}
+```
+
+## Python
+
+``` python
+def fizz_buzz(num):
+  if num % 15 == 0:
+    print("FizzBuzz")
+  elif num % 5 == 0:
+    print("Buzz")
+  elif num % 3 == 0:
+    print("Fizz")
+  else:
+    print(num)
+```
+
+## Java
+
+``` java
+public class FizzBuzz
+{
+  public static void fizzBuzz(int num)
+  {
+    if (num % 15 == 0) {
+      System.out.println("FizzBuzz");
+    } else if (num % 5 == 0) {
+      System.out.println("Buzz");
+    } else if (num % 3 == 0) {
+      System.out.println("Fizz");
+    } else {
+      System.out.println(num);
+    }
+  }
+}
+```
+
+## Julia
+
+::: panel-tabset
+
+## Dog
+
+hello-unique-dog
+
+## Cat
+
+hello-unique-cat
+
+:::
+
+``` julia
+function FizzBuzz(num)
+  if num % 15 == 0
+    println("FizzBuzz")
+  elseif num % 5 == 0
+    println("Buzz")
+  elseif num % 3 == 0
+    println("Fizz")
+  else
+    println(num)
+  end
+end
+```
+::::
+
+Create a tabset via a markdown div with the class name panel-tabset (e.g. `::: {.panel-tabset}`). Each top-level heading within the div creates a new tab. For example, here is the markdown used to implement the first two tabs displayed above:
+
+### Tabset Groups
+
+If you have multiple tabsets that include the same tab names, you can define a tabset `group`. Tabs within a `group` are all switched together (so in the example above once a reader switches to R or Python in one tabset the others will follow along). For example:
+
+``` markdown
+::: {.panel-tabset group="language"}
+## R
+
+Tab content
+
+## Python
+
+Tab content
+:::
+```
+
+### Active Tabset
+
+By default the first tab in the tabset will be active when a page loads. 
+To have a different tab active on page load, add the `.active` class to the tab heading.
+For example, here the "Python" tab will be active on page load:
+
+```markdown
+::: {.panel-tabset}
+## R
+
+Tab content
+
+## Python {.active}
+
+Tab content
+:::
+```
+
+## Self Contained
+
+HTML documents typically have a number of external dependencies (e.g. images, CSS style sheets, JavaScript, etc.). By default these dependencies are placed in a `_files` directory alongside your document. For example, if you render `report.qmd` to HTML:
+
+``` {.bash filename="Terminal"}
+quarto render report.qmd --to html
+```
+
+Then the following output is produced:
+
+``` ini
+report.html
+report_files/
+```
+
+You might alternatively want to create an entirely self-contained HTML document (with images, CSS style sheets, JavaScript, etc. embedded into the HTML file). You can do this by specifying the `embed-resources` option:
+
+``` yaml
+format:
+  html:
+    embed-resources: true
+```
+
+This will produce a standalone HTML file with no external dependencies, using `data:` URIs to incorporate the contents of linked scripts, style sheets, images, and videos. The resulting file should be self contained, in the sense that it needs no external files and no net access to be displayed properly by a browser.
+
+## Anchor Sections
+
+Hover over a section title to see an anchor link. Enable/disable this behavior with:
+
+``` yaml
+format:
+  html:
+    anchor-sections: true
+```
+
+Anchor links are also automatically added to figures and tables that have a [cross reference](/docs/authoring/cross-references.qmd) defined.
+
+## Smooth Scrolling
+
+Enable smooth scrolling within the page. By default, smooth scroll is not enabled. Enable/disable it with:
+
+``` yaml
+format:
+  html:
+    smooth-scroll: true
+```
+
+## External Links
+
+By default external links (i.e. links that don't target the current site) receive no special visual adornment or navigation treatment (the current page is navigated). You can use the following options to modify this behavior:
+
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| Option                    | Description                                                                                                        |
++===========================+====================================================================================================================+
+| `link-external-icon`      | `true` to show an icon next to the link to indicate that it's external (e.g. [external](#){.external}).            |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| `link-external-newwindow` | `true` to open external links in a new browser window or tab (rather than navigating the current tab).             |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| `link-external-filter`    | A regular expression that can be used to determine whether a link is an internal link. For example                 |
+|                           |                                                                                                                    |
+|                           | `^(?:http:|https:)\/\/www\.quarto\.org\/custom`                                                                    |
+|                           |                                                                                                                    |
+|                           | will treat links that start with http://www.quarto.org as internal links (and others will be considered external). |
++---------------------------+--------------------------------------------------------------------------------------------------------------------+
+
+External links are identified either using the `site-url` (if provided) or using the `window.host` if no `site-url` or `link-external-filter` is provided. For example, here we enable both options and a custom filter:
+
+``` yaml
+format:
+  html:
+    link-external-icon: true
+    link-external-newwindow: true
+    link-external-filter: '^(?:http:|https:)\/\/www\.quarto\.org\/custom'
+```
+
+You can also specify one or both of these behaviors for an individual link using the `.external` class and `target` attribute. For example:
+
+``` python
+[example](https://example.com){.external target="_blank"}
+```
+
+## Reference Popups
+
+If you hover your mouse over the citation, footnote and cross-reference in this sentence you'll see a popup displaying the reference contents:
+
+   Hover over @xie2015 to see a reference to the definitive book on knitr[^1]. @lst-hover shows you how to disable hover behaviour.
+
+This behavior is enabled by default. You can disable it with the following options:
+
+::: {#lst-hover}
+```{.yaml}
+format:
+  html:
+    citations-hover: false
+    footnotes-hover: false
+    crossrefs-hover: false
+```
+:::
+
+## Commenting
+
+This page has commenting with [Hypothes.is](https://web.hypothes.is/) enabled via the following YAML option:
+
+``` yaml
+comments:
+  hypothesis: true
+```
+
+You can see the Hypothesis UI at the far right of the page. Rather than `true`, you can specify any of the available Hypothesis [embedding options](/docs/reference/projects/websites.qmd#hypothesis) as a sub-key of `hypothesis`. For example:
+
+``` yaml
+comments:
+  hypothesis: 
+    theme: clean
+```
+
+You can enable [Utterances](https://utteranc.es/){.external} commenting using the `utterances` option. Here you need to specify at least the GitHub repo you want to use for storing comments:
+
+``` yaml
+comments:
+  utterances:
+    repo: quarto-dev/quarto-docs
+```
+
+You can also specify the other options [documented here](/docs/reference/projects/websites.qmd#utterances).
+
+You may also enable [Giscus](https://giscus.app) for commenting using the `giscus` option. Giscus will store comments in the 'Discussions' of a Github repo.
+
+``` yaml
+comments:
+  giscus: 
+    repo: quarto-dev/quarto-docs
+```
+
+Like utterances, you need to specify at least the Git repo you want to use for storing comments. In addition, the repo that you use must:
+
+1.  Be public
+
+2.  Have the Giscus app installed.
+
+3.  Have discussion enabled
+
+Review the [Giscus documentation](https://giscus.app) for instructions on setting up Giscus in your repository. Additional options are [covered here](/docs/reference/projects/websites.qmd#giscus).
+
+### Disabling Comments
+
+If you have comments enabled for an entire website or book, you can selectively disable comments for a single page by specifying `comments: false`. For example:
+
+``` yaml
+title: "Home Page"
+comments: false
+```
+
+## Includes
+
+{{< include _document-options-includes.md >}}
+
+For example:
+
+``` yaml
+format:
+  html:
+    include-in-header:
+      - text: |
+          <script src="https://examples.org/demo.js"></script>
+      - file: analytics.html
+      - comments.html
+    include-before-body: header.html
+```
+
+## Minimal HTML
+
+The default Quarto HTML output format includes several features by default, including bootstrap themes, anchor sections, reference popups, tabsets, code block copying, and responsive figures. You can disable all of these built in features at once using the `minimal` option. For example:
+
+``` yaml
+---
+title: "My Document"
+format:
+  html:
+    minimal: true
+---
+```
+
+When specifying `minimal: true` you can still selectively re-enable features you do want, for example:
+
+``` yaml
+---
+title: "My Document"
+format:
+  html:
+    minimal: true
+    code-copy: true
+---
+```
+
+{{< include /docs/advanced/html/_external-sources-section.md >}}
+
+[^1]: knitr is an R package for creating dynamic documents.
