@@ -8,17 +8,50 @@
   box-shadow: inset 0 -3px 0 var(--qorg-brand);
 }
 
-// Active sidebar entry: bold body ink on a tint of the brand colour. The
-// padding moves into a negative margin, so the text stays where it was.
-// #quarto-sidebarnav-toggle holds the copy of the sidebar (see below).
-#quarto-sidebar .sidebar-link.active,
-#quarto-sidebarnav-toggle .sidebar-link.active {
-  margin-inline: -0.5rem;
-  padding-inline: 0.5rem;
-  border-radius: var(--qorg-radius-card);
-  background: color-mix(in srgb, var(--qorg-brand) 16%, transparent);
-  color: var(--qorg-ink);
-  font-weight: 700;
+// Sidebar rows take the table of contents row (qorg-nav-row), with no gap
+// between rows. Links and section toggles fill the row, so every chevron
+// sits at the right edge. #quarto-sidebarnav-toggle holds the copy of the
+// sidebar (see below).
+#quarto-sidebar,
+#quarto-sidebarnav-toggle {
+  .sidebar-item {
+    margin: 0;
+  }
+
+  .sidebar-section {
+    padding-bottom: 0;
+    padding-left: 0.6rem;
+  }
+
+  .sidebar-item-container {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sidebar-link {
+    @include qorg-nav-row;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+
+    .menu-text {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .bi {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .sidebar-item-container > .sidebar-item-toggle:not(.sidebar-link) {
+    margin: 0;
+    padding: 0 0.5rem;
+  }
 }
 
 // Breadcrumb label, above the title on wide screens and in the secondary
@@ -148,11 +181,9 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
 #quarto-margin-sidebar nav#TOC,
 #quarto-toc-toggle nav#TOC {
   ul > li > a {
+    @include qorg-nav-row;
     display: block;
-    min-height: 24px;
-    padding: 0.2rem 0.5rem;
     border-left: 0;
-    border-radius: 8px;
   }
 
   ul ul > li > a {
@@ -161,9 +192,7 @@ body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title
 
   // Quarto sets the active entry colour with !important.
   ul > li > a.active {
-    background: color-mix(in srgb, var(--qorg-brand) 16%, transparent);
     color: var(--qorg-ink) !important;
-    font-weight: 700;
   }
 
   .toc-actions {

@@ -55,6 +55,39 @@
   }
 }
 
+// Navigation row, shared by the sidebar and the table of contents: one size,
+// one padding and one highlight, so both lists read the same. The current row
+// is bold on a brand tint; its transparent outline turns into a visible frame
+// in forced colours modes, where the tint disappears. The focus ring replaces
+// that outline when the current row has keyboard focus.
+@mixin qorg-nav-row {
+  min-height: 24px;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+  color: var(--qorg-ink);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.1rem;
+
+  &:hover {
+    background: color-mix(in srgb, var(--qorg-brand) 8%, transparent);
+    color: var(--qorg-ink);
+  }
+
+  &.active {
+    background: color-mix(in srgb, var(--qorg-brand) 16%, transparent);
+    color: var(--qorg-ink);
+    font-weight: 700;
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+  }
+
+  &.active:focus-visible {
+    outline: 2px solid var(--qorg-ring);
+    outline-offset: 2px;
+  }
+}
+
 // Glyph in a square box tinted with the brand colour.
 @mixin qorg-glyph-box($size: 2.3rem) {
   display: inline-grid;
