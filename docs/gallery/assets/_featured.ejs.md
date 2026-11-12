@@ -1,21 +1,12 @@
-<% /* The chooser and the section rail render from the same featured.yml items, so pull them in as partials before the featured sections below. */ %>
+<% /* The chooser renders from the same featured.yml items, so pull it in as a partial before the featured sections below. */ %>
 <% partial("_chooser.ejs.md", { items }); %>
-
-<% partial("_jumpnav.ejs.md", { items }); %>
-
-```{=html}
-<div class="gal-featured-intro">
-  <h2 class="no-anchor">Need inspiration?</h2>
-  <p>Browse a few examples we curated below.</p>
-</div>
-```
 
 ```{=html}
 <% for (const cat of items) { %>
 <section class="gal-section cat-<%- cat.slug %>" id="<%- cat.anchor %>">
   <div class="shead">
     <div class="l">
-      <h2><a href="<%- cat.page %>"><span class="ic" aria-hidden="true"><% if (cat.icon) { %><i class="bi bi-<%- cat.icon %>"></i><% } %></span><%= cat.category %></a></h2>
+      <h2><a href="<%- cat.page %>"><%= cat.category %></a></h2>
       <span class="tag"><%= cat.tagline %></span>
     </div>
     <a class="gal-seeall" href="<%- cat.page %>">See all &rarr;</a>

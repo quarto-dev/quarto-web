@@ -12,7 +12,7 @@ The spoke page renders it through `assets/_card.ejs.md` with filtering, sorting,
 The first three cards in each list are the category's landing featured set.
 
 `data/featured.yml` is the curated landing file, grouped by category.
-Each category is an object with meta (`category`, `slug`, `anchor`, `page`, `icon`, `gap`, `tagline`, `capabilities`) and a `cards:` list.
+Each category is an object with meta (`category`, `slug`, `anchor`, `page`, `gap`, `tagline`, `capabilities`) and a `cards:` list.
 `assets/_featured.ejs.md` renders up to three cards per category on the landing.
 
 Both files use the same card shape.
@@ -26,7 +26,7 @@ Both files use the same card shape.
 | `live`        | yes      | URL to the live example or PDF.                                                                  |
 | `code`        | no       | URL to the source.                                                                               |
 | `categories`  | yes      | Facet chips: format, project type, language; also the clickable filters.                         |
-| `features`    | no       | Display-only capability chips, for example `Listings` or `brand.yml`.                            |
+| `features`    | no       | Curation notes on the Quarto features used, for example `Listings`. Not shown on the cards.      |
 | `image`       | yes      | Thumbnail path, relative to `docs/gallery/`, for example `thumbnails/reports-analytics/whr.png`. |
 | `alt`         | no       | Alt text for the thumbnail.                                                                      |
 | `description` | yes      | One-line summary.                                                                                |
