@@ -6,7 +6,7 @@
 gallery cards play on hover or keyboard focus. The rendering,
 interaction, and reduced-motion handling live in the gallery, not here:
 `_extensions/quartoorg/assets/ejs/gallery/featured.ejs.md` and
-`_extensions/quartoorg/scss/partials/_gallery.scss`.
+`_extensions/quartoorg/assets/scss/partials/_gallery.scss`.
 
 This script is separate from the still-screenshot manifest (`capture.js`): it
 records motion rather than a single frame, and is driven by gallery data rather
