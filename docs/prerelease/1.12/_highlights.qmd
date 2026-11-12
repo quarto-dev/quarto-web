@@ -1,1 +1,14 @@
-Quarto v1.12 was just released, nothing to see here -- yet!
+Quarto 1.12 updates Pandoc to 3.13, which brings:
+
+- [Typst labels](/docs/output-formats/typst.qmd#typst-labels) set with the `typst-label` attribute, and [`lang` on spans](/docs/output-formats/typst.qmd#text-language) in `typst` output.
+- Support for Pandoc's `--math-method` option in `quarto render`. The `--katex`, `--mathjax`, `--mathml`, and `--webtex` options still work but print a deprecation warning.
+
+When upgrading:
+
+- **Bibliography files:** A duplicated key in a YAML [bibliography file](/docs/authoring/citations.qmd#bibliography-files), such as two `title` fields in one reference, now stops the render with an error. Previously the last value was used silently. Remove the duplicate key to render again.
+- **Name sorting in bibliographies:** A lowercase particle written in a `family` name, such as `de Gaulle`, now stays part of the family name, so the entry sorts under "d". Use the `non-dropping-particle` field to keep the previous sorting.
+- **Word cross-references:** In `docx` output, cross-reference targets are bookmarks with generated names. Links within the document still work, but a link from outside the document to a Quarto identifier, such as `report.docx#fig-plot`, no longer finds its target.
+- **Word image widths:** In `docx` output, an image [width](/docs/authoring/figures.qmd#figure-sizing) given as a percentage is now a percentage of the text width, so small images can get larger.
+- **HTML math without Bootstrap:** HTML documents without the Bootstrap theme (`minimal: true`, `theme: none`, or `theme: pandoc`) render [math](/docs/output-formats/html-basics.qmd#latex-equations) as MathML when no `html-math-method` is set, instead of plain text. Set `html-math-method: plain` for the previous output.
+- **Divs around headings:** A div with an identifier that starts with a heading now renders as that heading's section, and the section takes the div's classes. CSS selectors such as `div.myclass > section` no longer match. Cross-references and table of contents links still target the heading.
+- **Typst horizontal rules:** In `typst` output, horizontal rules are full-width. A Typst binary set through the `QUARTO_TYPST` environment variable must be version 0.15 or later.
