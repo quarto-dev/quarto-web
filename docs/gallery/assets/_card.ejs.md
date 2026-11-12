@@ -19,11 +19,6 @@
         <% for (const c of item.categories) { %><div class="listing-category" role="button" tabindex="0" aria-label="Filter by <%= c %>" data-category="<%- btoa(unescape(encodeURIComponent(c))) %>" onclick="window.quartoListingCategory(this.dataset.category); return false;" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); window.quartoListingCategory(this.dataset.category); }"><%= c %></div><% } %>
       </div>
       <% } %>
-      <% if (item.features && item.features.length) { %>
-      <div class="feats">
-        <% for (const f of item.features) { %><span class="f<%= /interactive/i.test(f) ? ' i' : '' %>"><%= f %></span><% } %>
-      </div>
-      <% } %>
       <% if (item.description) { %><p class="why listing-description"><%= item.description %></p><% } %>
       <div class="foot">
         <% if (item.live) { %><a href="<%- item.live %>" target="_blank" rel="noopener noreferrer" aria-label="Live demo of <%= item.name || item.title %>, opens in new window">Live &#8599;</a><% } %>

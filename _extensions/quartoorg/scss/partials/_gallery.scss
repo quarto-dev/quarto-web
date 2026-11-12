@@ -55,32 +55,31 @@ body.gallery header#title-block-header:empty { display: none; }
 @media (max-width: 900px) { .gal-cards { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .gal-cards { grid-template-columns: 1fr; } }
 
-.gal-card { display: flex; flex-direction: column; @include qorg-card-shell($bar: null); }
-// Image-less card header: white label on the category colour darkened with
-// black, the same in both modes, so these three colours stay literal.
-.gal-card .thumb { height: 172px; display: flex; align-items: flex-end; padding: 0.6rem 0.75rem; color: #fff; font-size: 0.74rem; font-weight: 600; background: linear-gradient(135deg, color-mix(in srgb, var(--c, var(--qorg-link)) 55%, #000), color-mix(in srgb, var(--c, var(--qorg-link)) 32%, #000)); }
-// `contain` shows the whole screenshot; the letterbox blanks take the card's
-// category colour (the same accent used for image-less card headers), falling back
-// to the neutral surface where a card is not scoped to one category (browse grid).
-.gal-card img.thumb-img, .gal-card video.thumb-img { width: 100%; height: 172px; object-fit: contain; object-position: center; display: block; background: var(--c, var(--qorg-chip)); }
+// Card: neutral border with a 4px top bar in the category colour. The Browse
+// page mixes every category and no card text names it, so its bars use the
+// brand colour (colour never carries meaning the text does not).
+.gal-card { display: flex; flex-direction: column; @include qorg-card-shell($bar: var(--c, var(--qorg-line))); }
+.gallery-browse .gal-card { --c: var(--qorg-brand); }
+// Image-less card header: muted label on the neutral band surface.
+.gal-card .thumb { height: 172px; display: flex; align-items: flex-end; padding: 0.6rem 0.75rem; color: var(--qorg-muted); font-size: 0.74rem; font-weight: 600; background: var(--qorg-band); }
+// `contain` shows the whole screenshot; the letterbox blanks use the neutral
+// band surface, so the eye goes to the screenshot.
+.gal-card img.thumb-img, .gal-card video.thumb-img { width: 100%; height: 172px; object-fit: contain; object-position: center; display: block; background: var(--qorg-band); }
 // Featured hover preview: static poster <img> with the <video> stacked over it.
 // The video is hidden until hover, so leaving the card reveals the still poster.
-.gal-card .thumb-stack { position: relative; display: block; background: var(--c, var(--qorg-chip)); }
+.gal-card .thumb-stack { position: relative; display: block; background: var(--qorg-band); }
 .gal-card .thumb-stack .gal-preview { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.2s ease; }
 @media (prefers-reduced-motion: reduce) { .gal-card .thumb-stack .gal-preview { transition: none; } }
 .gal-card .body { padding: 0.75rem 0.85rem 0.8rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
 .gal-card .job { font-size: 0.97rem; font-weight: 700; line-height: 1.25; margin: 0; }
 .gal-card .job a { color: var(--qorg-ink); text-decoration: none; }
 .gal-card .who { font-size: 0.75rem; color: var(--qorg-muted); margin: 0; }
-.gal-card .feats { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.1rem; }
-.gal-card .feats .f { font-size: 0.66rem; font-weight: 600; padding: 0.12rem 0.5rem; text-decoration: none; text-transform: lowercase; @include qorg-chip-skin; }
 
 // clickable category chips (native listing filter) shown on spoke/browse cards
 .gal-card .gal-cats { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.1rem; }
 .gal-card .gal-cats .listing-category { font-size: 0.66rem; font-weight: 700; padding: 0.12rem 0.55rem; text-decoration: none; cursor: pointer;
   @include qorg-chip-skin; }
-// category chips on featured and spoke cards: tinted with the category colour
-.gal-card .feats .f.cat,
+// tinted with the card colour (the category, or the brand on Browse)
 .gal-card .gal-cats .listing-category { background: color-mix(in srgb, var(--c, var(--qorg-link)) 12%, var(--qorg-panel)); color: var(--qorg-link); border-color: color-mix(in srgb, var(--c, var(--qorg-link)) 30%, var(--qorg-chip-line)); }
 .gal-card .gal-cats .listing-category:hover { background: color-mix(in srgb, var(--c, var(--qorg-link)) 26%, var(--qorg-panel)); }
 
