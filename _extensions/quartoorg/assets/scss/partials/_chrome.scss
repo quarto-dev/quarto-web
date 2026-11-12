@@ -1,0 +1,230 @@
+// Shared page chrome on Quarto's own markup: active navbar item, sidebar,
+// breadcrumb label, title block, section headings and the table of contents.
+// Colours come from the brand tokens (--qorg-brand, --qorg-link).
+
+// Active navbar item: bold, with a 3px bar in the brand colour.
+#quarto-header .navbar-nav .nav-link.active {
+  font-weight: 700;
+  box-shadow: inset 0 -3px 0 var(--qorg-brand);
+}
+
+// Sidebar rows take the table of contents row (qorg-nav-row), with no gap
+// between rows. Links and section toggles fill the row, so every chevron
+// sits at the right edge. #quarto-sidebarnav-toggle holds the copy of the
+// sidebar (see below).
+#quarto-sidebar,
+#quarto-sidebarnav-toggle {
+  .sidebar-item {
+    margin: 0;
+  }
+
+  .sidebar-section {
+    padding-bottom: 0;
+    padding-left: 0.6rem;
+  }
+
+  .sidebar-item-container {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .sidebar-link {
+    @include qorg-nav-row;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    text-align: left;
+
+    .menu-text {
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .bi {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .sidebar-item-container > .sidebar-item-toggle:not(.sidebar-link) {
+    margin: 0;
+    padding: 0 0.5rem;
+  }
+
+  // A section link with its chevron in a separate toggle button: the whole
+  // container is the row, so the tint and the forced colours frame cover the
+  // chevron too. The link keeps its focus ring.
+  .sidebar-item-container:has(> .sidebar-item-toggle:not(.sidebar-link)) {
+    border-radius: 8px;
+
+    > .sidebar-link,
+    > .sidebar-link:hover,
+    > .sidebar-link.active {
+      background: transparent;
+    }
+
+    > .sidebar-link.active:not(:focus-visible) {
+      outline: 0;
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--qorg-brand) 8%, transparent);
+    }
+
+    &:has(> .sidebar-link.active) {
+      background: color-mix(in srgb, var(--qorg-brand) 16%, transparent);
+      outline: 1px solid transparent;
+      outline-offset: -1px;
+    }
+  }
+}
+
+// Breadcrumb label, above the title on wide screens and in the secondary
+// bar on narrow ones: small, bold, upper case, in the section ink. The
+// current page comes last, in muted text.
+.quarto-page-breadcrumbs {
+  .breadcrumb {
+    --bs-breadcrumb-divider: "/";
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--qorg-muted);
+  }
+
+  .breadcrumb-item a {
+    color: var(--qorg-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .breadcrumb-item:last-child a {
+    color: var(--qorg-muted);
+  }
+}
+
+// Quarto colours the secondary bar breadcrumb grey with its own selectors.
+.quarto-secondary-nav nav.quarto-page-breadcrumbs .breadcrumb-item a {
+  color: var(--qorg-link);
+}
+
+.quarto-secondary-nav nav.quarto-page-breadcrumbs .breadcrumb-item:last-child a {
+  color: var(--qorg-muted);
+}
+
+// Title in 800, with the subtitle as a muted lede under it.
+#title-block-header .quarto-title .title {
+  font-weight: 800;
+}
+
+#title-block-header p.subtitle {
+  color: var(--qorg-muted);
+  font-size: 1.15rem;
+}
+
+// Section headings in the page body: left bar, no bottom rule. The home
+// page and the gallery have their own headings, and link card titles are h2
+// in a section too. The Extensions listing moves its h2 next to the filter,
+// out of its section.
+body:not(.quarto-home):not(.gallery) main.content section.level2:not(.card-title) > h2,
+.listing-actions-group > h2 {
+  @include qorg-bar-heading;
+  padding-bottom: 0;
+}
+
+// Upper case label: the table of contents heading, and the toggle titles.
+@mixin qorg-toc-label {
+  color: var(--qorg-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+// Table of contents as a floating panel. Quarto already keeps the margin
+// sidebar sticky.
+#quarto-margin-sidebar nav#TOC {
+  @include qorg-float-panel;
+  padding: 0.8rem 0.6rem 0.7rem;
+
+  > h2 {
+    @include qorg-toc-label;
+    margin: 0 0 0.4rem 0.45rem;
+  }
+}
+
+// When page content scrolls under a side column, quarto.js swaps it for a
+// toggle that opens a copy of it, outside the column. The ids outrank
+// Quarto's #quarto-content .quarto-sidebar-toggle rules.
+#quarto-content #quarto-toc-toggle,
+#quarto-content #quarto-sidebarnav-toggle {
+  @include qorg-float-panel;
+
+  .quarto-sidebar-toggle-title {
+    @include qorg-toc-label;
+    margin: 0;
+    padding: 0.55rem 0.8rem 0.5rem 1.05rem;
+    border-bottom: 0;
+    text-align: left;
+  }
+
+  .quarto-sidebar-toggle-icon {
+    margin-right: 0;
+    color: var(--qorg-muted);
+  }
+
+  .quarto-sidebar-toggle-contents {
+    padding: 0 0.6rem;
+    background: transparent;
+  }
+
+  &.expanded .quarto-sidebar-toggle-contents {
+    padding-bottom: 0.7rem;
+  }
+
+  nav#TOC > h2 {
+    display: none;
+  }
+}
+
+// The sidebar copy starts with the space kept for the sidebar title; the
+// toggle title already fills it. The list's Bootstrap mt-1 is !important.
+#quarto-sidebarnav-toggle .sidebar-menu-container {
+  padding-top: 0;
+
+  > ul:first-child {
+    margin-top: 0 !important;
+  }
+}
+
+#quarto-margin-sidebar nav#TOC,
+#quarto-toc-toggle nav#TOC {
+  ul > li > a {
+    @include qorg-nav-row;
+    display: block;
+    border-left: 0;
+  }
+
+  ul ul > li > a {
+    padding-left: 1.2rem;
+  }
+
+  // Quarto sets the active entry colour with !important.
+  ul > li > a.active {
+    color: var(--qorg-ink) !important;
+  }
+
+  .toc-actions {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--qorg-line);
+  }
+}
