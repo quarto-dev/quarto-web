@@ -62,4 +62,3 @@ Featured cards currently mirror the first entries of the matching `data/<categor
 
 `../../_tools/screenshots/README.md` is the capture tooling for thumbnails and previews.
 `../../_extensions/quartoorg/assets/ejs/gallery/` holds the EJS templates that render these YAML files.
-`legacy/` holds the previous gallery implementation, kept for reference.
