@@ -3,17 +3,17 @@
 How to add examples to the Quarto gallery.
 
 The gallery has one landing page (`index.qmd`) and six category spoke pages (`reports-analytics.qmd`, `dashboards-monitoring.qmd`, `research-scholarship.qmd`, `teaching-learning.qmd`, `software-documentation.qmd`, `personal-community.qmd`).
-Every card is driven by YAML under `data/` and rendered through the EJS templates in `assets/`.
+Every card is driven by YAML under `data/` and rendered through the EJS templates in `_extensions/quartoorg/assets/ejs/gallery/`.
 
 ## Data model
 
 `data/<category>.yml` is the full list for one category, a flat sequence of cards.
-The spoke page renders it through `assets/_card.ejs.md` with filtering, sorting, and category facets.
+The spoke page renders it through `card.ejs.md` with filtering, sorting, and category facets.
 The first three cards in each list are the category's landing featured set.
 
 `data/featured.yml` is the curated landing file, grouped by category.
 Each category is an object with meta (`category`, `slug`, `anchor`, `page`, `gap`, `tagline`, `capabilities`) and a `cards:` list.
-`assets/_featured.ejs.md` renders up to three cards per category on the landing.
+`featured.ejs.md` renders up to three cards per category on the landing.
 
 Both files use the same card shape.
 
@@ -61,5 +61,5 @@ Featured cards currently mirror the first entries of the matching `data/<categor
 ## Related
 
 `../../_tools/screenshots/README.md` is the capture tooling for thumbnails and previews.
-`assets/` holds the EJS templates that render these YAML files.
+`../../_extensions/quartoorg/assets/ejs/gallery/` holds the EJS templates that render these YAML files.
 `legacy/` holds the previous gallery implementation, kept for reference.

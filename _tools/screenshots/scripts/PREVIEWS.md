@@ -5,7 +5,7 @@
 `capture-previews.mjs` generates the short, muted, looping clips that featured
 gallery cards play on hover or keyboard focus. The rendering,
 interaction, and reduced-motion handling live in the gallery, not here:
-`docs/gallery/assets/_featured.ejs.md` and
+`_extensions/quartoorg/assets/ejs/gallery/featured.ejs.md` and
 `_extensions/quartoorg/scss/partials/_gallery.scss`.
 
 This script is separate from the still-screenshot manifest (`capture.js`): it

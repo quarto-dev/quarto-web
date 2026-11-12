@@ -1,5 +1,5 @@
 <% /* The chooser renders from the same featured.yml items, so pull it in as a partial before the featured sections below. */ %>
-<% partial("_chooser.ejs.md", { items }); %>
+<% partial("chooser.ejs.md", { items }); %>
 
 ```{=html}
 <% for (const cat of items) { %>
