@@ -56,8 +56,11 @@ local badge_position = 'after'
 --- @type string Badge background colour (hex or colour name)
 local badge_background_colour = '#c3c3c3'
 
---- @type string|nil Badge text colour (hex or colour name)
+--- @type string|nil Badge text colour (hex or colour name), nil to pick black or white
 local badge_text_colour = nil
+
+--- @type boolean Whether this document has already warned about a faint badge background
+local badge_contrast_warned = false
 
 --- @type boolean Whether to shorten link text matching platform URLs
 local normalize_links = true
@@ -83,23 +86,41 @@ local COMMIT_SHA_SHORT_LENGTH = 7
 --- @type integer Minimum length for a valid git commit SHA
 local COMMIT_SHA_MIN_LENGTH = 7
 
---- @type string Lua pattern matching a 3-, 4-, 6-, or 8-character hex colour with leading #
-local HEX_COLOUR_PATTERN = '^#%x%x%x%x?%x?%x?%x?%x?$'
-
 --- @type string Class Quarto puts on the markdown-pipeline envelope elements
 local MARKDOWN_ENVELOPE_CLASS = 'quarto-markdown-envelope-contents'
 
+--- @type table<integer, boolean> Digit counts of a valid hex colour: #rgb, #rgba, #rrggbb, #rrggbbaa
+local HEX_COLOUR_DIGIT_COUNTS = { [3] = true, [4] = true, [6] = true, [8] = true }
+
+--- @type number WCAG AA minimum contrast ratio for normal text
+local WCAG_AA_CONTRAST = 4.5
+
+--- @type number[] Page colours behind an HTML badge: white for a light theme, black for a dark one
+local HTML_PAGES = { 1, 0 }
+
+--- @type number[] Page colour behind a Typst badge: white
+local TYPST_PAGES = { 1 }
+
+--- Check whether a value is a hex colour with 3, 4, 6, or 8 digits after the #.
+--- @param value string The candidate colour value
+--- @return boolean True if the value is a hex colour
+local function is_hex_colour(value)
+  return value:match('^#%x+$') ~= nil and HEX_COLOUR_DIGIT_COUNTS[#value - 1] == true
+end
+
 --- Validate a colour value as a hex code or CSS named colour.
 --- Returns the original value if valid, or nil if invalid.
---- @param value string|nil The candidate colour value
+--- A value that is not a string returns nil without a warning, because the
+--- schema check has already reported its type.
+--- @param value any The candidate colour value
 --- @param option_label string The metadata option name (for warnings)
 --- @return string|nil The validated colour value, or nil if invalid
 local function validate_colour(value, option_label)
-  if str.is_empty(value) then
+  if type(value) ~= 'string' or str.is_empty(value) then
     return nil
   end
   local s = value --[[@as string]]
-  if s:match(HEX_COLOUR_PATTERN) or colour.is_named_colour(s) then
+  if is_hex_colour(s) or colour.is_named_colour(s) then
     return s
   end
   log.log_warning(
@@ -116,26 +137,119 @@ end
 --- @param value string The colour value (hex code or CSS named colour)
 --- @return string The hex form
 local function colour_to_hex(value)
-  if value:match(HEX_COLOUR_PATTERN) then
+  if is_hex_colour(value) then
     return value
   end
   return colour.named_to_HTML(value)
 end
 
---- Reset all module-level state to defaults.
+--- Split a validated colour value into its channels, each from 0 to 1.
+--- @param value string The colour value (hex code or CSS named colour)
+--- @return number[] The red, green, and blue channels
+--- @return number The alpha channel, 1 when the colour has no alpha digits
+local function colour_channels(value)
+  local digits = colour_to_hex(value):sub(2)
+  if #digits <= 4 then
+    digits = digits:gsub('%x', '%0%0')
+  end
+  local channels = {}
+  for i = 1, 3 do
+    channels[i] = tonumber(digits:sub(2 * i - 1, 2 * i), 16) / 255
+  end
+  local alpha = #digits == 8 and tonumber(digits:sub(7, 8), 16) / 255 or 1
+  return channels, alpha
+end
+
+--- Compute the WCAG relative luminance of sRGB channels.
+--- @param channels number[] The red, green, and blue channels, each from 0 to 1
+--- @return number The relative luminance, from 0 (black) to 1 (white)
+local function relative_luminance(channels)
+  local luminance = 0
+  local weights = { 0.2126, 0.7152, 0.0722 }
+  for i, weight in ipairs(weights) do
+    local channel = channels[i]
+    if channel <= 0.04045 then
+      channel = channel / 12.92
+    else
+      channel = ((channel + 0.055) / 1.055) ^ 2.4
+    end
+    luminance = luminance + weight * channel
+  end
+  return luminance
+end
+
+--- Compute the WCAG contrast ratio between two relative luminances.
+--- @param a number A relative luminance
+--- @param b number Another relative luminance
+--- @return number The contrast ratio, from 1 to 21
+local function contrast_ratio(a, b)
+  return (math.max(a, b) + 0.05) / (math.min(a, b) + 0.05)
+end
+
+--- Pick black or white text for a background colour.
+--- A translucent background is blended over each page colour it can sit on.
+--- The text colour with the higher worst-case contrast wins.
+--- @param background string The background colour (hex code or CSS named colour)
+--- @param pages number[] The grey levels of the possible pages, from 0 (black) to 1 (white)
+--- @return string '#000000' or '#ffffff'
+--- @return number The worst-case contrast ratio of that text colour
+local function contrasting_text_colour(background, pages)
+  local channels, alpha = colour_channels(background)
+  local worst_black, worst_white = math.huge, math.huge
+  for _, page in ipairs(pages) do
+    local blended = {}
+    for i, channel in ipairs(channels) do
+      blended[i] = channel * alpha + page * (1 - alpha)
+    end
+    local luminance = relative_luminance(blended)
+    worst_black = math.min(worst_black, contrast_ratio(luminance, 0))
+    worst_white = math.min(worst_white, contrast_ratio(luminance, 1))
+  end
+  local text, worst = '#000000', worst_black
+  if worst_white > worst_black then
+    text, worst = '#ffffff', worst_white
+  end
+  return text, worst
+end
+
+--- Resolve the badge text colour for the pages of the current output format.
+--- Returns the configured text colour when there is one.
+--- Otherwise picks black or white, and warns once per document when neither
+--- reaches WCAG AA on every page.
+--- @param pages number[] The grey levels of the possible pages, from 0 (black) to 1 (white)
+--- @return string The text colour (hex code or CSS named colour)
+local function resolve_badge_text_colour(pages)
+  if badge_text_colour then
+    return badge_text_colour
+  end
+  local text, worst = contrasting_text_colour(badge_background_colour, pages)
+  if worst < WCAG_AA_CONTRAST and not badge_contrast_warned then
+    badge_contrast_warned = true
+    log.log_warning(
+      EXTENSION_NAME,
+      "'badge-background-colour' value '" .. badge_background_colour .. "' is too transparent for readable text " ..
+      "(" .. string.format('%.1f', worst) .. ':1 at worst, below ' .. WCAG_AA_CONTRAST .. ':1). ' ..
+      "Use a more opaque colour or a valid 'badge-text-colour'."
+    )
+  end
+  return text
+end
+
+--- Reset module-level state to defaults.
 --- Quarto can render multiple documents in one process, so module-level state
 --- from a previous document must be cleared at the start of each Meta pass.
+--- `references_ids_set` is rebuilt by `get_references` in its own pass.
 local function reset_state()
   platform = 'github'
   repository_name = nil
   base_url = 'https://github.com'
-  references_ids_set = {}
   force_mentions_set = {}
   is_enabled = true
   show_platform_badge = true
   badge_position = 'after'
   badge_background_colour = '#c3c3c3'
   badge_text_colour = nil
+  badge_contrast_warned = false
   normalize_links = true
   fetch_titles = false
   title_cache = {}
@@ -227,26 +341,17 @@ local function create_platform_link(text, uri, platform_name)
       local css_path = quarto.utils.resolve_path("gitlink.css")
       html_mod.ensure_html_dependency({
         name = 'quarto-gitlink',
-        version = '1.0.0',
         stylesheets = { css_path }
       })
 
-      local badge_classes = { 'gitlink-badge', 'badge', 'text-bg-secondary' }
-      local badge_style = {}
-      if not str.is_empty(badge_background_colour) then
-        table.insert(badge_style, 'background-color: ' .. badge_background_colour .. ';')
-      end
-      if not str.is_empty(badge_text_colour) then
-        table.insert(badge_style, 'color: ' .. badge_text_colour .. ';')
-      end
-
       local badge_attr = pandoc.Attr(
         '',
-        badge_classes,
+        { 'gitlink-badge', 'badge' },
         {
           title = platform_label,
           ['aria-label'] = platform_label .. ' platform',
-          style = table.concat(badge_style, ' ')
+          style = 'background-color: ' .. badge_background_colour ..
+              '; color: ' .. resolve_badge_text_colour(HTML_PAGES) .. ';'
         }
       )
       local badge = pandoc.Span({ pandoc.Str(platform_label) }, badge_attr)
@@ -269,14 +374,11 @@ local function create_platform_link(text, uri, platform_name)
       -- Typst rgb() only accepts hex strings, so convert any CSS-named colour
       -- (already validated at Meta time) to its hex equivalent.
       local bg_hex = colour_to_hex(badge_background_colour)
-      local text_colour_opt = ''
-      if not str.is_empty(badge_text_colour) then
-        text_colour_opt = ', fill: rgb("' .. colour_to_hex(badge_text_colour --[[@as string]]) .. '")'
-      end
+      local text_hex = colour_to_hex(resolve_badge_text_colour(TYPST_PAGES))
       local badge_raw = '#box(fill: rgb("' ..
           bg_hex ..
-          '"), inset: 2pt, outset: 0pt, radius: 3pt, baseline: -0.3em, text(size: 0.45em' ..
-          text_colour_opt .. ', [' .. platform_label .. ']))'
+          '"), inset: 2pt, outset: 0pt, radius: 3pt, baseline: -0.3em, text(size: 0.45em, fill: rgb("' ..
+          text_hex .. '"), [' .. platform_label .. ']))'
       local badge = pandoc.RawInline('typst', ' ' .. badge_raw)
 
       local inlines = {}
@@ -339,11 +441,13 @@ local function get_repository(meta)
     if not ok then
       log.log_error(
         EXTENSION_NAME,
-        "Failed to load custom platforms from '" .. original_path .. "':\n" .. (err or 'unknown error')
+        "Failed to load custom platforms from '" .. original_path .. "':\n" ..
+        (err or 'unknown error') .. '\nUsing the built-in platforms only.'
       )
-      return meta
+      meta_custom_platforms = nil
     end
-  else
+  end
+  if str.is_empty(meta_custom_platforms) then
     local ok, err = platforms.initialise()
     if not ok then
       log.log_error(EXTENSION_NAME, "Failed to load built-in platforms:\n" .. (err or 'unknown error'))
@@ -351,8 +455,20 @@ local function get_repository(meta)
     end
   end
 
-  -- Parse repo-url from project metadata (website/book)
-  local project_repo_url = meta_mod.get_project_repo_url()
+  -- Parse repo-url from project metadata (website/book). That configuration
+  -- is not in the document metadata, so read it once and share it with the
+  -- widget.
+  local project_meta, project_meta_error, project_meta_path = meta_mod.get_project_metadata()
+  if project_meta_error then
+    log.log_warning(
+      EXTENSION_NAME,
+      "Could not read the project metadata (" .. project_meta_error .. ") from '" ..
+      project_meta_path .. "'. " ..
+      "'website.repo-url' and 'book.repo-url' are ignored, " ..
+      "and the widget placeholder check is skipped."
+    )
+  end
+  local project_repo_url = project_meta and meta_mod.get_project_repo_url(project_meta)
   local parsed_platform, parsed_base_url, parsed_repo_name = nil, nil, nil
   if project_repo_url then
     parsed_platform, parsed_base_url, parsed_repo_name = parse_repo_url(project_repo_url)
@@ -405,26 +521,12 @@ local function get_repository(meta)
 
   show_platform_badge = checker:option('show-platform-badge') ~= false
 
-  local badge_pos_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'badge-position')
-  if badge_pos_meta ~= nil then
-    badge_position = badge_pos_meta --[[@as string]]
-  end
-
-  local badge_bg_colour_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'badge-background-colour')
-  if not str.is_empty(badge_bg_colour_meta) then
-    local validated_bg = validate_colour(badge_bg_colour_meta --[[@as string]], 'badge-background-colour')
-    if validated_bg then
-      badge_background_colour = validated_bg
-    end
-  end
-
-  local badge_text_colour_meta = meta_mod.get_metadata_value(meta, 'gitlink', 'badge-text-colour')
-  if not str.is_empty(badge_text_colour_meta) then
-    local validated_text = validate_colour(badge_text_colour_meta --[[@as string]], 'badge-text-colour')
-    if validated_text then
-      badge_text_colour = validated_text
-    end
-  end
+  -- Read through the schema, which applies the defaults and resolves the
+  -- `-color` spelling aliases.
+  badge_position = checker:option('badge-position') or badge_position
+  badge_background_colour = validate_colour(checker:option('badge-background-colour'), 'badge-background-colour')
+      or badge_background_colour
+  badge_text_colour = validate_colour(checker:option('badge-text-colour'), 'badge-text-colour')
 
   normalize_links = checker:option('normalize-links') ~= false
 
@@ -457,11 +559,28 @@ local function get_repository(meta)
       platform_config = config,
       base_url = base_url,
       repository_name = repository_name,
+      format_meta = project_meta,
       display_name = platforms.get_platform_display_name(platform),
     })
   end
 
   return meta
+end
+
+--- Turn a Typst bibliography entry into a path that Pandoc can read.
+--- Quarto stores it as raw Typst, which `str.stringify` drops, and Typst reads
+--- a leading `/` from the project root.
+--- Remove when https://github.com/quarto-dev/quarto-cli/issues/11552 and
+--- https://github.com/quarto-dev/quarto-cli/issues/12553 are fixed.
+--- @param entry pandoc.MetaValue A bibliography entry
+--- @return string The bibliography path
+local function typst_bibliography_path(entry)
+  if pandoc.utils.type(entry) == 'Inlines' then
+    entry = entry:walk({
+      RawInline = function(raw) return pandoc.Str(raw.text) end
+    })
+  end
+  return paths.resolve_project_path(str.stringify(entry))
 end
 
 --- Extract and store reference IDs from the document
@@ -470,8 +589,22 @@ end
 --- @param doc pandoc.Pandoc The Pandoc document
 --- @return pandoc.Pandoc The document (unchanged)
 local function get_references(doc)
-  local references = pandoc.utils.references(doc)
-  for _, reference in ipairs(references) do
+  references_ids_set = {}
+  if not is_enabled then
+    return doc
+  end
+  local source = doc
+  local bibliography = doc.meta.bibliography
+  if bibliography and quarto.doc.is_format('typst') then
+    local meta = {}
+    for key, value in pairs(doc.meta) do
+      meta[key] = value
+    end
+    local entries = pandoc.utils.type(bibliography) == 'List' and bibliography or { bibliography }
+    meta.bibliography = pandoc.List.map(entries, typst_bibliography_path)
+    source = pandoc.Pandoc(doc.blocks, meta)
+  end
+  for _, reference in ipairs(pandoc.utils.references(source)) do
     if reference.id then
       references_ids_set[reference.id] = true
     end
@@ -479,34 +612,154 @@ local function get_references(doc)
   return doc
 end
 
+--- Remove the anchors a custom pattern may already carry.
+--- @param pattern string A `user`, `issue`, `merge-request` or `commit` pattern of a platform
+--- @return string The pattern without a leading `^` or a trailing unescaped `$`
+local function strip_anchors(pattern)
+  local stripped = pattern:gsub('^%^', '')
+  if stripped:sub(-1) == '$' and stripped:sub(-2, -2) ~= '%' then
+    stripped = stripped:sub(1, -2)
+  end
+  return stripped
+end
+
+--- Match a whole `@username` against the `user` pattern of a platform.
+--- A partial match does not count, and the username must end with a letter or digit.
+--- @param config table The platform configuration
+--- @param text string The text to match, such as `@mcanouil`
+--- @return string|nil The username, or nil if the text is not a valid mention
+local function match_username(config, text)
+  if not config.patterns.user then
+    return nil
+  end
+  local username = text:match('^' .. strip_anchors(config.patterns.user) .. '$')
+  if username and username:match('%w$') then
+    return username
+  end
+  return nil
+end
+
+--- Find the username a citation id stands for.
+--- An id listed in `gitlink.mentions` is used as is; an id in the bibliography is not a mention.
+--- @param config table The platform configuration
+--- @param id string The citation id
+--- @return string|nil The username, or nil if the citation is not a mention
+local function mention_username(config, id)
+  if force_mentions_set[id] then
+    return id
+  end
+  if references_ids_set[id] then
+    return nil
+  end
+  return match_username(config, '@' .. id)
+end
+
+--- Build the inlines for one mention: prefix, link, suffix.
+--- @param config table The platform configuration
+--- @param citation pandoc.Citation The citation
+--- @param username string The username
+--- @return pandoc.Inlines The prefix, the mention link, and the suffix
+local function mention_inlines(config, citation, username)
+  local uri = base_url .. config.url_formats.user:gsub('{username}', username)
+  local inlines = pandoc.Inlines({})
+  if #citation.prefix > 0 then
+    inlines:extend(citation.prefix)
+    inlines:insert(pandoc.Space())
+  end
+  inlines:insert(create_platform_link('@' .. username, uri, platform))
+  local suffix = citation.suffix
+  if #suffix > 0 then
+    local first = suffix[1]
+    local hugs_link = first.t == 'Space' or (first.t == 'Str' and first.text:match('^[,;:.%)%]]') ~= nil)
+    if not hugs_link then
+      inlines:insert(pandoc.Space())
+    end
+    inlines:extend(suffix)
+  end
+  return inlines
+end
+
 --- Process Git hosting mentions in citations.
 --- Distinguishes between actual bibliography citations and Git hosting @mentions.
 --- When the citation id appears in `gitlink.mentions`, the citation is forced
 --- to be treated as a mention even if a reference with that id exists.
+--- A citation with several ids becomes links only when every id is a mention.
 --- @param cite pandoc.Cite The citation element
---- @return pandoc.Cite|pandoc.Link The original citation or a Git hosting mention link
+--- @return pandoc.Cite|pandoc.Inlines The original citation or the mention inlines
 local function process_mentions(cite)
   if not is_enabled then
     return cite
   end
-  local cite_id = cite.citations[1] and cite.citations[1].id
-  if cite_id and not force_mentions_set[cite_id] and references_ids_set[cite_id] then
+  local config = get_platform_config(platform)
+  if not config then
     return cite
   end
-  local mention_text = str.stringify(cite.content)
-  local config = get_platform_config(platform)
-  if config and config.patterns.user then
-    local username = mention_text:match(config.patterns.user)
-    if username then
-      local url_format = config.url_formats.user
-      local uri = base_url .. url_format:gsub("{username}", username)
-      local link = create_platform_link(mention_text, uri, platform)
-      return link or cite
+  local inlines = pandoc.Inlines({})
+  for i, citation in ipairs(cite.citations) do
+    local username = mention_username(config, citation.id)
+    if not username then
+      return cite
     end
+    if i > 1 then
+      inlines:extend({ pandoc.Str(';'), pandoc.Space() })
+    end
+    inlines:extend(mention_inlines(config, citation, username))
   end
-  return cite
+  return inlines
 end
 
+
+--- Match a whole token against a list of issue or merge request patterns.
+--- One capture is a number in the configured repository; two captures are a repository and a number.
+--- @param patterns table|nil The patterns, tried in order
+--- @param text string The token text
+--- @param separator string The character shown between repository and number (`#` or `!`)
+--- @return string|nil repo The repository
+--- @return string|nil number The issue or merge request number
+--- @return string|nil short_link The link text
+local function match_numbered_reference(patterns, text, separator)
+  for _, pattern in ipairs(patterns or {}) do
+    local first, second = text:match('^' .. strip_anchors(pattern) .. '$')
+    if second then
+      return first, second, first .. separator .. second
+    elseif first then
+      return repository_name, first, separator .. first
+    end
+  end
+  return nil, nil, nil
+end
+
+--- Match a whole token against the commit patterns of a platform.
+--- One capture is a SHA in the configured repository.
+--- Two captures are a repository (`owner/repo`) or a user (their fork), then a SHA.
+--- @param config table The platform configuration
+--- @param text string The token text
+--- @return string|nil repo The repository
+--- @return string|nil sha The commit SHA
+--- @return string|nil short_link The link text
+local function match_commit_reference(config, text)
+  for _, pattern in ipairs(config.patterns.commit) do
+    local first, second = text:match('^' .. strip_anchors(pattern) .. '$')
+    local sha = second or first
+    local valid_sha = sha and sha:match('^%x+$')
+      and #sha >= COMMIT_SHA_MIN_LENGTH and #sha <= COMMIT_SHA_FULL_LENGTH
+    if valid_sha then
+      local short_sha = sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
+      if not second then
+        return repository_name, sha, short_sha
+      elseif first:find('/', 1, true) then
+        return first, sha, first .. '@' .. short_sha
+      else
+        local user = match_username(config, '@' .. first)
+        local repo_part = repository_name and repository_name:match('/(.+)')
+        if user and repo_part then
+          return user .. '/' .. repo_part, sha, user .. '@' .. short_sha
+        end
+      end
+    end
+  end
+  return nil, nil, nil
+end
 
 --- Process issues and merge requests
 --- @param elem pandoc.Str The string element to process
@@ -529,41 +782,13 @@ local function process_issues_and_mrs(elem, current_platform, current_base_url)
   local matched_platform = current_platform
   local matched_base_url = current_base_url
 
-  for _, pattern in ipairs(config.patterns.issue) do
-    if pattern == "#(%d+)" and text:match("^#(%d+)$") then
-      number = text:match("^#(%d+)$")
-      repo = repository_name
-      ref_type = "issue"
-      short_link = "#" .. number
-      break
-    elseif pattern == "([^/]+/[^/#]+)#(%d+)" and text:match("^([^/]+/[^/#]+)#(%d+)$") then
-      repo, number = text:match("^([^/]+/[^/#]+)#(%d+)$")
-      ref_type = "issue"
-      short_link = repo .. "#" .. number
-      break
-    elseif pattern == "GH%-(%d+)" and text:match("^GH%-(%d+)$") then
-      number = text:match("^GH%-(%d+)$")
-      repo = repository_name
-      ref_type = "issue"
-      short_link = "#" .. number
-      break
-    end
-  end
-
-  if not number and config.patterns.merge_request then
-    for _, pattern in ipairs(config.patterns.merge_request) do
-      if pattern == "!(%d+)" and text:match("^!(%d+)$") then
-        number = text:match("^!(%d+)$")
-        repo = repository_name
-        ref_type = "merge_request"
-        short_link = "!" .. number
-        break
-      elseif pattern == "([^/]+/[^/#]+)!(%d+)" and text:match("^([^/]+/[^/#]+)!(%d+)$") then
-        repo, number = text:match("^([^/]+/[^/#]+)!(%d+)$")
-        ref_type = "merge_request"
-        short_link = repo .. "!" .. number
-        break
-      end
+  repo, number, short_link = match_numbered_reference(config.patterns.issue, text, '#')
+  if number then
+    ref_type = 'issue'
+  else
+    repo, number, short_link = match_numbered_reference(config.patterns.merge_request, text, '!')
+    if number then
+      ref_type = 'merge_request'
     end
   end
 
@@ -664,7 +889,6 @@ local function process_users(elem, current_platform)
   end
 
   local text = elem.text
-  local username = nil
 
   local all_platform_names = get_all_platform_names()
   for _, platform_name in ipairs(all_platform_names) do
@@ -672,15 +896,12 @@ local function process_users(elem, current_platform)
     if platform_config then
       local platform_base_url = platform_config.base_url
       local escaped_platform_url = str.escape_pattern(platform_base_url)
-      local url_pattern = '^' .. escaped_platform_url .. '/([%w%-%.]+)$'
-
-      if text:match(url_pattern) then
-        username = text:match(url_pattern)
-        if username then
-          local url_format = platform_config.url_formats.user
-          local uri = platform_base_url .. url_format:gsub('{username}', username)
-          return create_platform_link('@' .. username, uri, platform_name), platform_name, platform_base_url
-        end
+      local path = text:match('^' .. escaped_platform_url .. '/([^/]+)$')
+      local username = path and match_username(platform_config, '@' .. path)
+      if username then
+        local url_format = platform_config.url_formats.user
+        local uri = platform_base_url .. url_format:gsub('{username}', username)
+        return create_platform_link('@' .. username, uri, platform_name), platform_name, platform_base_url
       end
     end
   end
@@ -708,33 +929,7 @@ local function process_commits(elem, current_platform, current_base_url)
   local matched_platform = current_platform
   local matched_base_url = current_base_url
 
-  for _, pattern in ipairs(config.patterns.commit) do
-    if pattern == "^(%x+)$" and text:match("^(%x+)$") and text:len() >= COMMIT_SHA_MIN_LENGTH and text:len() <= COMMIT_SHA_FULL_LENGTH then
-      commit_sha = text:match("^(%x+)$")
-      repo = repository_name
-      short_link = commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
-      break
-    elseif pattern == "([^/]+/[^/@]+)@(%x+)" and text:match("^([^/]+/[^/@]+)@(%x+)$") then
-      local r, sha = text:match("^([^/]+/[^/@]+)@(%x+)$")
-      if sha:len() >= COMMIT_SHA_MIN_LENGTH and sha:len() <= COMMIT_SHA_FULL_LENGTH then
-        repo = r
-        commit_sha = sha
-        short_link = repo .. "@" .. commit_sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
-        break
-      end
-    elseif pattern == "(%w+)@(%x+)" and text:match("^(%w+)@(%x+)$") then
-      local user, sha = text:match("^(%w+)@(%x+)$")
-      if repository_name and sha:len() >= COMMIT_SHA_MIN_LENGTH and sha:len() <= COMMIT_SHA_FULL_LENGTH then
-        local repo_part = repository_name:match("/(.+)")
-        if repo_part then
-          repo = user .. "/" .. repo_part
-          commit_sha = sha
-          short_link = user .. "@" .. sha:sub(1, COMMIT_SHA_SHORT_LENGTH)
-          break
-        end
-      end
-    end
-  end
+  repo, commit_sha, short_link = match_commit_reference(config, text)
 
   if not commit_sha then
     local all_platform_names = get_all_platform_names()
@@ -1069,15 +1264,15 @@ end
 
 --- Pandoc filter configuration
 --- Defines the order of filter execution:
---- 1. Extract references from the document
---- 2. Get repository information from metadata
+--- 1. Get repository information from metadata
+--- 2. Extract references from the document, once `enabled` is known
 --- 3. Process inline containers for Bitbucket multi-word patterns
 --- 4. Process link elements to shorten URLs used as link text
 --- 5. Process string elements for Git hosting patterns
 --- 6. Process citations for Git hosting mentions
 return {
-  { Pandoc = get_references },
   { Meta = get_repository },
+  { Pandoc = get_references },
   { Plain = process_inlines, Para = process_inlines },
   envelope_safe_pass({ Link = process_link }),
   envelope_safe_pass({ Str = process_gitlink_topdown }),
