@@ -286,6 +286,115 @@
           ]
         }
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Review a listing PR adding a Lua filter extension. Every mechanical check passes: it installs, the README has install and usage, the license is MIT, the entry is correctly ordered, and the filter is small and clean. The PR author's GitHub account was created 2 days before the PR and has 55 public repos with 0 followers. The repo was created the day before the PR with three 'Add files via upload' commits. The account's repos created in the 14 days before the PR are near-identical 'camp-checklist' style projects across Go, Swift, Vim, Arduino and JavaScript. The repo description ends with a company name and the author link points to the company's commercial website.",
+      "expected_output": "The mechanical checks pass, but the account is under 30 days old and shows a burst of templated repos across unrelated ecosystems, so the recommendation is INVESTIGATE (submitter footprint), not APPROVE. The report states the observations as facts. It runs no upstream thread search, drafts no upstream comment, and drafts no PR comment asking for fixes or thanking the submitter. Any note for the contributor, if drafted at all, gives no reason.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "does_not_approve",
+          "description": "Verdict is not APPROVE",
+          "type": "not_contains",
+          "value": "RECOMMEND: APPROVE"
+        },
+        {
+          "id": "names_submitter_footprint",
+          "description": "Names the submitter footprint as the reason",
+          "type": "contains_any",
+          "values": [
+            "submitter footprint",
+            "Submitter footprint"
+          ]
+        },
+        {
+          "id": "states_observations",
+          "description": "Reports account age or repo burst as facts",
+          "type": "contains_any",
+          "values": [
+            "55",
+            "2 days",
+            "days old"
+          ]
+        },
+        {
+          "id": "no_fix_list_or_thanks",
+          "description": "Does not draft the usual thank-you and fix-list comment",
+          "type": "not_contains",
+          "value": "Thanks for submitting"
+        },
+        {
+          "id": "no_accusation",
+          "description": "Does not use accusatory words in any public draft",
+          "type": "not_contains",
+          "value": "spam"
+        },
+        {
+          "id": "skips_upstream",
+          "description": "Does not draft a comment for an upstream quarto-cli thread",
+          "type": "not_contains",
+          "value": "Upstream thread comment"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review a listing PR adding a substantive Lua filter extension. The PR author's GitHub account was created 12 days before the PR. It has 3 public repos, only one of them related to Quarto, and the other two are unrelated personal projects. The extension repo was created 5 days before the PR, has 0 stars and one author, and the commits were uploaded through the web interface. All mechanical checks pass and the README documents install and usage.",
+      "expected_output": "A new account alone is not a flag: there is no burst of templated repos across ecosystems. The recommendation stays APPROVE, with the young account and repo reported as context. This is the false-positive guard for the submitter footprint check.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "approves",
+          "description": "Verdict is APPROVE",
+          "type": "contains",
+          "value": "RECOMMEND: APPROVE"
+        },
+        {
+          "id": "no_footprint_flag",
+          "description": "Does not raise the submitter footprint flag",
+          "type": "not_contains",
+          "value": "INVESTIGATE (submitter footprint)"
+        },
+        {
+          "id": "reports_account_age",
+          "description": "Reports the account or repo age as context",
+          "type": "contains_any",
+          "values": [
+            "12 days",
+            "created",
+            "new account"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Review a listing PR where gh repo view reports licenseInfo with key 'other' and name 'Other', and the LICENSE file is MIT text with the 'THE SOFTWARE IS PROVIDED AS IS' warranty paragraph removed. All other checks pass.",
+      "expected_output": "licenseInfo of 'other' means GitHub did not recognise the text, so it is not a PASS. The reviewer reads the LICENSE file, reports that it is an altered MIT text, marks the license check WARN, and the recommendation is APPROVE with notes or REQUEST_CHANGES, never a clean APPROVE.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "license_not_pass",
+          "description": "License is not reported as a plain PASS",
+          "type": "contains_any",
+          "values": [
+            "WARN",
+            "altered",
+            "truncated",
+            "warranty"
+          ]
+        },
+        {
+          "id": "reads_license_text",
+          "description": "Says the license text was read",
+          "type": "contains_any",
+          "values": [
+            "MIT",
+            "LICENSE file"
+          ]
+        }
+      ]
     }
   ],
   "notes": "scripts/self-test.sh covers deterministic behavior: regex metacharacters in names, repository path prefixes, extension discovery when directory and repository names differ, vendored documentation copies, ordering, and cross-file consistency. These evals cover judgments that require a model."

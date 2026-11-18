@@ -41,6 +41,15 @@ bash "${CLAUDE_SKILL_DIR}/scripts/pr-new-entries.sh <PR_NUMBER>"
 
 Returns `[{file, name, path, author, description}]` for added entries. A PR may touch several listing files; review every entry. A PR that only edits or removes existing entries yields nothing here — review that diff by hand and say that is what happened.
 
+Then check who submitted it, before the slower reads:
+
+```bash
+gh pr view <PR_NUMBER> --json author,createdAt
+bash "${CLAUDE_SKILL_DIR}/scripts/submitter-footprint.sh" "<login>" "<createdAt>"
+```
+
+Run it for the repository owner too when that is a different account. Check 9 in the reference checklist defines the flag. A flagged submitter makes the recommendation `INVESTIGATE (submitter footprint)`: still complete steps 3 and 4 so the maintainer has the facts, but skip step 5 and draft no comments in step 7.
+
 ### 3. Understand what the extension does
 
 Read the extension's README and docs site first, then answer four questions in the report. `references/verification-checklist.md` Check 0 has the verdict rules.
@@ -63,13 +72,13 @@ grep -rniE '<feature keyword>' docs/extensions/listings/*.yml
 
 Two extensions can legitimately overlap; near-identical scope under a different name is worth raising.
 
-**d. Is the substance there?** Judgement call, reported as context, not a gate. Signals in Check 0.
+**d. Is the substance there?** Judgement call, reported as context, not a gate. Signals in Check 0. The submitter footprint check in step 2 is the one exception, and it only ever raises INVESTIGATE.
 
 ### 4. Verify each entry
 
 1. **Duplicate** — `bash "${CLAUDE_SKILL_DIR}/scripts/check-duplicate.sh" "<name>" "<owner/repo>"` — empty output = no duplicate.
 2. **Repo exists** — `gh repo view <owner/repo> --json name,description,licenseInfo,isPrivate,isArchived,createdAt,pushedAt,stargazerCount` — must exist and be public. Archived is a WARN, not a gate; `createdAt` and `stargazerCount` are context for step 3d.
-3. **License** — from the repo view above. A detector miss is not absence: look for a `LICENSE` file and a README license section before concluding anything. Genuinely unlicensed is a FAIL, since the listing requires one. See Check 4 for the lookup order.
+3. **License** — from the repo view above. A detector miss is not absence: look for a `LICENSE` file and a README license section before concluding anything. `licenseInfo.key` of `other` is a miss too, not a pass: read the text. Genuinely unlicensed is a FAIL, since the listing requires one. See Check 4 for the lookup order.
 4. **README** — `gh repo read-file README.md --repo <owner/repo>` — must have a `quarto add` command and a usage example.
 5. **Category** — does the entry's file match the extension type? See `references/category-guide.md`, which also covers formats that ship shortcodes, cross-format extensions, and non-journal academic templates.
 6. **Alphabetical order** — `bash "${CLAUDE_SKILL_DIR}/scripts/check-order.sh" "<file>" "<name>"` — empty output = correctly placed. Appending at end-of-file instead of inserting in place is a common contributor mistake.
@@ -85,7 +94,7 @@ Two extensions can legitimately overlap; near-identical scope under a different 
    ```
 
    `ORDER_CHECK_ERROR: name '<name>' not found` means the wrong file was passed, not that the entry is misplaced.
-7. **Description quality** — one clear sentence, not the repo name restated. Cross-check against step 3a: a description that misstates what the extension does is a finding even when it reads well.
+7. **Description quality** — one clear sentence, not the repo name restated. Cross-check against step 3a: a description that misstates what the extension does is a finding even when it reads well. Note an author link that does not point to github.com, or brand text in the description, as WARN context; it is not a verdict trigger on its own.
 8. **Extension validity** — `bash "${CLAUDE_SKILL_DIR}/scripts/validate-extension.sh" "<owner/repo>" "<name>"` — pass the listing `name` as the second argument because the extension directory may differ from the repository name. The script finds installable manifests at `<dir>/_extension.yml` or `_extensions/<dir>/_extension.yml` and prefers the directory matching `<name>`. It checks the location, required `title`/`author`/`version`/`contributes` fields, misplaced document-header fields, and paths that `contributes` references through `template`, `template-partials`, `css`, `csl`, `reference-doc`, `include-*` (paths and `{file:}`), `filters`, `shortcodes`, `format-resources`, theme `.scss` entries, and `revealjs-plugins` (inline `script`/`stylesheet`, and `plugin.yml` for plugin directories). Paths under any other key are not checked; `INFO: no file references in a recognised contributes shape` means verify them by hand.
 9. **Install test** — `bash "${CLAUDE_SKILL_DIR}/scripts/test-install.sh" "<owner/repo>" "<name>"` — runs `quarto add --no-prompt` in a temp dir. Also warns when the repo installs more than one extension, or when the listed `<name>` is not what got installed. Slow (network); run last.
 10. **Security** — list shipped source, then read everything inside the extension root:
@@ -104,7 +113,7 @@ If a `gh` call fails mid-checklist, record that check as unverified and finish t
 
 ### 5. Find upstream threads it addresses
 
-Run this once the mechanical checks in step 4 have passed. A submission already heading for REQUEST_CHANGES needs no upstream comment draft, and these searches are the most expensive part of the review. Steps 3b and 3c stay mandatory either way: whether Quarto already does this, and whether the listing already carries it, decide whether the entry belongs at all.
+Run this once the mechanical checks in step 4 have passed. A submission already heading for REQUEST_CHANGES needs no upstream comment draft, and these searches are the most expensive part of the review. Skip this step entirely for a flagged submitter: pointing users at the extension in public threads would promote it. Steps 3b and 3c stay mandatory either way: whether Quarto already does this, and whether the listing already carries it, decide whether the entry belongs at all.
 
 If the extension addresses an existing request, surface it in the relevant thread because users may not discover it through the listing. Search for feature terms rather than the extension name.
 
@@ -148,10 +157,11 @@ PR #N — <title> (@author)
   extension valid  <status> <_extension.yml location and fields>
   install test     <status> <what quarto add produced>
   security         <status> <what was read and what was found>
+  submitter        <status> <account age at PR, public repos, repos created in the 14 days before, flagged or not>
   Substance: <implementation weight, repo age, users, authorship signals>
   Upstream: <threads this answers, with number, state and category | none found | not searched>
 
-→ RECOMMEND: APPROVE / REQUEST_CHANGES / INVESTIGATE
+→ RECOMMEND: APPROVE / REQUEST_CHANGES / INVESTIGATE (<reason, e.g. submitter footprint>)
    <reason if not APPROVE>
 ```
 
@@ -163,7 +173,7 @@ Verdict rules are in the reference checklist's Verdict Rules table. State plainl
 
 Never post anything. Output drafts for the human to review and send.
 
-**PR comment** — for every PR that is not a clean APPROVE.
+**PR comment** — for every PR that is not a clean APPROVE, except `INVESTIGATE (submitter footprint)`: draft nothing for that one. The maintainer decides whether to reply or close, and a fix list would coach the submitter. If the maintainer asks for a note, write one neutral line that gives no reason, such as "not a fit for the listing".
 
 - Open by thanking the contributor for the submission, one short sentence.
 - State findings as plain facts, not accusations: "the new entry appears at the end of the file rather than next to its alphabetical neighbours", not "you broke alphabetical order".
@@ -171,6 +181,7 @@ Never post anything. Output drafts for the human to review and send.
 - One issue per bullet; no filler paragraphs.
 - Never mention internal tooling, script names, check numbers, or that the review was automated.
 - Never promise a merge; the fix is a precondition for further review.
+- Public text never mentions the submitter's account age, repo counts or other repos, their website or branding, or whether AI was used, and never uses words like "spam" or "bot" or guesses at intent. Keep those observations in the internal report.
 - APPROVE-with-a-nit: say the PR looks good and mark the nit optional.
 
 **Upstream thread comment** — when step 5 found a venue. One draft per thread, each labelled with its target.

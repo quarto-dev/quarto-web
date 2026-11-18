@@ -20,7 +20,8 @@ Read the extension's README and docs site first. Answer in the report:
 | | Native and equivalent → INVESTIGATE: redundant with a built-in feature |
 | | Native but narrower → PASS, name the limit precisely |
 | Does an existing listing entry solve it? (`grep -rniE '<keyword>' docs/extensions/listings/*.yml`) | Near-identical scope under another name → INVESTIGATE |
-| Implementation weight, repository age, user count, number of authors, machine-generated prose | Context, not a gate. A new repository with one author warrants a cautious public description |
+| Implementation weight, repository age, user count, number of authors, machine-generated prose | Context, not a gate. A new repository with one author warrants a cautious public description. The one gate on who submitted is Check 9 (submitter footprint) |
+| Author link or description that points at a non-GitHub site or carries brand text | WARN as context only; a few merged entries do this, so it is not a trigger on its own |
 
 (Check 1 matches `name` and `owner/repo` only, not function.)
 
@@ -79,7 +80,7 @@ Look for: `quarto add`, install instructions, example syntax, usage section head
 `docs/extensions/listings/README.md` requires a submission to indicate an open-source license, so an unlicensed repo cannot reach APPROVE. GitHub's detector does miss CC0, some BSD variants and custom OSS texts, so a detector miss is not itself absence — the two cases are separated below.
 
 Priority order:
-1. `licenseInfo` non-null from Check 2 → PASS (record `.name`)
+1. `licenseInfo` non-null from Check 2 and `licenseInfo.key` is not `other` → PASS (record `.name`). A key of `other` (GitHub's NOASSERTION) means the text was not recognised, for example an altered or truncated standard license, so treat it as a detector miss and continue to step 2
 2. `gh repo read-file LICENSE --repo <owner/repo>` → present → verify manually
 3. Try `LICENSE.md`, `LICENSE.txt`, `COPYING`
 4. Check the README for a license section naming a license
@@ -87,8 +88,8 @@ Priority order:
 
 | Result | Verdict |
 |--------|---------|
-| licenseInfo detected | PASS: `<license name>` |
-| Detector missed it, but a license file or README section exists | WARN: read the text and name the license; PASS once identified |
+| licenseInfo detected and not `other` | PASS: `<license name>` |
+| Detector missed it or reported `other`, but a license file or README section exists | WARN: read the text and name the license; PASS once identified. Report an altered standard text (for example MIT without its warranty paragraph) as what it is, and keep it WARN: it is not a standard license until the submitter restores the text |
 | No license detected, no license file, no README statement | FAIL: unlicensed, the listing requires one |
 | Any lookup failed for another reason (auth, rate limit, network) | UNVERIFIED: report as not checked, do not infer absence |
 
@@ -171,6 +172,25 @@ Search the feature vocabulary and the underlying mechanism, never the extension 
 
 ---
 
+## Check 9: Submitter Footprint
+
+Script: `submitter-footprint.sh <login> [pr-created-at]`, run at the start of the review for the PR author, and for the repository owner as well when that is a different account. It prints facts only: account type, age at the PR date, public repo count (today's count, not the count at the PR date), followers, and the repos created in the 14 days before the PR. A flagged submitter gets the status `INVESTIGATE` on the report's `submitter` line. The judgement stays with the reviewer.
+
+Flag when **both** hold:
+
+1. The account is under 30 days old at the PR date.
+2. Several repos were created in the 14 days before the PR that share a template, such as near-identical names, descriptions or README structure, across unrelated languages or ecosystems.
+
+A flag makes the recommendation `INVESTIGATE (submitter footprint)`. The maintainer decides; this skill never closes or bans.
+
+These are not signals, because legitimate submitters show them: the public repo count, bulk-upload or "Add files via upload" commits, a young or unstarred repository, a non-GitHub author link, and AI authorship that the submission discloses. A burst of repos on an old account is not a flag either; the age condition is what separates the two. An `Organization` owner is reported as a fact, not a flag.
+
+State observations in the report ("55 repos created since 2026-11-16, across Go, Swift and Vim"), not conclusions about the person.
+
+Calibration (2026-11-18): across 177 merged listing PRs from 98 distinct human authors since 2023-01, the youngest account at PR time was 317 days old, and the median was about 3,800 days. The 30-day threshold is a judgement call set well inside that gap. The sample is merged PRs only, so it says nothing about rejected submissions. `submitter-footprint.sh` reads only the 100 most recently created repos, which is enough for a new account; the events API is not used.
+
+---
+
 ## Verdict Rules
 
 | Conditions | Recommendation |
@@ -183,4 +203,5 @@ Search the feature vocabulary and the underlying mechanism, never the extension 
 | INVESTIGATE (cross-listing duplicate) | INVESTIGATE |
 | Redundant with native Quarto functionality | INVESTIGATE |
 | Functional duplicate of an existing entry under another name | INVESTIGATE |
+| Submitter footprint flag (Check 9) | `INVESTIGATE (submitter footprint)`: skip the upstream-thread search, draft no PR comment and no upstream comment |
 | Private or 404 repo | REQUEST_CHANGES |
