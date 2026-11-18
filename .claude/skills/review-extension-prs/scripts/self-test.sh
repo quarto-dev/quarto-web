@@ -296,6 +296,37 @@ EOF
 expect_match "plugin stored in the extension directory itself passes" "$out" "PASS: revealjs plugin.yml exists - ."
 
 echo
+echo "-- submitter-footprint.sh: facts only, windowed to the 14 days before the PR"
+
+# A stub gh serves a synthetic account, so these cases run offline.
+FP=$(mktemp -d)
+mkdir -p "$FP/bin"
+cat > "$FP/bin/gh" <<'EOF'
+#!/usr/bin/env bash
+case "$2" in
+  users/newbie)
+    echo '{"type":"User","created_at":"2026-11-16T17:04:17Z","public_repos":55,"followers":0}' ;;
+  users/newbie/repos*)
+    echo '[{"name":"go-thing","language":"Go","created_at":"2026-11-18T10:00:00Z","fork":false},{"name":"swift-thing","language":"Swift","created_at":"2026-11-17T11:00:00Z","fork":false},{"name":"later-repo","language":"Rust","created_at":"2026-11-20T10:00:00Z","fork":false},{"name":"old-project","language":"R","created_at":"2026-05-01T09:00:00Z","fork":false}]' ;;
+  users/ghost)
+    echo "gh: Not Found (HTTP 404)" >&2; exit 1 ;;
+  *) exit 1 ;;
+esac
+EOF
+chmod +x "$FP/bin/gh"
+out=$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" newbie 2026-11-19T17:04:17Z 2>&1)
+expect_match "account age is counted back from the PR date" "$out" "account_age_days_at_pr=3"
+expect_match "repo count is reported" "$out" "public_repos=55"
+expect_match "only repos created in the window are counted" "$out" "recent_repos_created=2"
+expect_match "a windowed repo is listed with its language" "$out" "repo	go-thing	Go"
+expect_no_match "a repo older than the window is not listed" "$out" "old-project"
+expect_no_match "a repo created after the PR is not listed" "$out" "later-repo"
+expect_no_match "the script prints facts, not a verdict" "$out" "INVESTIGATE"
+expect_match "an unfetchable account is UNVERIFIED, not clean" \
+  "$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" ghost 2>&1)" "UNVERIFIED"
+rm -rf "$FP"
+
+echo
 echo "-- cross-file consistency: SKILL.md and the checklist must not contradict"
 
 SKILL="$SKILL_DIR/SKILL.md"
@@ -369,6 +400,36 @@ if grep -qi 'never FAIL' "$CHECKLIST"; then
     "checklist still says a missing license is never a FAIL, but the listing requires one"
 else
   ok "unlicensed submission can fail"
+fi
+
+for f in "$SKILL" "$CHECKLIST"; do
+  if grep -qF 'submitter footprint' "$f"; then
+    ok "$(basename "$f") names the submitter footprint verdict"
+  else
+    bad "$(basename "$f") names the submitter footprint verdict" \
+      "the flag and its consequences must be stated in both documents"
+  fi
+done
+
+if grep -A25 '^## Verdict Rules' "$CHECKLIST" | grep -qF 'submitter footprint'; then
+  ok "Verdict Rules cover the submitter footprint flag"
+else
+  bad "Verdict Rules cover the submitter footprint flag" \
+    "a flag with no row in the table gets no recommendation"
+fi
+
+if grep -qF 'Skip this step entirely for a flagged submitter' "$SKILL"; then
+  ok "step 5 is skipped for a flagged submitter"
+else
+  bad "step 5 is skipped for a flagged submitter" \
+    "a flagged submission that passes the mechanical checks would get upstream promotion drafted"
+fi
+
+if grep -qF "licenseInfo.key" "$CHECKLIST" && grep -qF "licenseInfo.key" "$SKILL"; then
+  ok "an unrecognised license key is a detector miss in both documents"
+else
+  bad "an unrecognised license key is a detector miss in both documents" \
+    "licenseInfo of 'other' (NOASSERTION) must not read as a PASS"
 fi
 
 if [ "$NETWORK" -eq 1 ]; then
