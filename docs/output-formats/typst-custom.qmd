@@ -96,6 +96,40 @@ Use the [source code](https://github.com/quarto-dev/quarto-cli/blob/main/src/res
 
 The [AMS](https://github.com/quarto-ext/typst-templates/tree/main/ams) format provides an example of redefining the main template (in that case, it is to prevent automatic bibliography processing by Quarto in deference to the built-in handling of the Typst AMS template).
 
+### Code Blocks
+
+{{< prerelease-callout 1.12 >}}
+
+Two Typst definitions control how Quarto draws code blocks.
+A custom format can change them in its `typst-template.typ` partial, which comes after Quarto's definitions.
+A filter can change them with a raw `typst` block.
+
+`quarto-code-filename(filename, body)` draws each code block that has a `filename`.
+The default shows the filename in a bar above the code.
+To draw a different frame, define a new `quarto-code-filename` with the same arguments.
+To keep the default for some blocks, save it under another name before the new definition, for example `#let native-code-filename = quarto-code-filename`.
+
+`quarto-code-block-style` is a Typst state that holds the `inset`, `radius` and `stroke` of each code block.
+To change the code blocks in one part of the document, update the state before that part and restore it after.
+
+The example below draws a frame around each code block that has a `filename`.
+Inside the frame, the code block has no radius and no outline of its own, so the frame is the only border:
+
+``` {.typst filename="typst-template.typ"}
+#let quarto-code-filename(filename, body) = context {
+  let outer = quarto-code-block-style.get()
+  block(width: 100%, stroke: 1pt + luma(160), radius: 6pt, clip: true)[
+    #set block(spacing: 0pt)
+    #block(width: 100%, fill: luma(235), inset: 6pt)[#filename]
+    #quarto-code-block-style.update((..outer, radius: 0pt, stroke: none))
+    #body
+    #quarto-code-block-style.update(outer)
+  ]
+}
+```
+
+If a format replaces the `definitions.typ` partial and does not define these helpers, Quarto adds them before the first line that uses them.
+
 ## Bundling Typst Packages
 
 If your custom format uses packages from the Typst preview namespace (e.g., `@preview/cetz`), you can bundle them with your extension for offline use. The `quarto call typst-gather` command scans your template files for `@preview` imports and downloads the packages.
