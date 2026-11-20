@@ -18,7 +18,8 @@ jobs:
     # Don't run on closed unmerged pull requests and only PRs to main,
     # skipping PRs labeled 'no-sync-prerelease' (e.g. release merges that
     # would otherwise try to cherry-pick the whole prerelease history back).
-    # Also runs on a '/sync-prerelease' comment, ignoring the Github Action Bot.
+    # Also runs on a '/sync-prerelease' comment from an owner, member or
+    # collaborator, ignoring the Github Action Bot.
     if: > 
       (
         github.event.pull_request.merged && 
@@ -28,6 +29,7 @@ jobs:
         github.event_name == 'issue_comment' &&
         github.event.issue.pull_request &&
         github.event.comment.user.id != 41898282 &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
         startsWith(github.event.comment.body, '/sync-prerelease')
       )
     outputs:
