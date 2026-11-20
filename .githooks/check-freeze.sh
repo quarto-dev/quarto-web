@@ -39,6 +39,19 @@ while IFS= read -r qmd; do
     [ -n "$qmd" ] || continue
     freeze_rel="_freeze/${qmd%.qmd}/execute-results/html.json"
 
+    # Skip when the freeze file is intentionally removed in this change: the
+    # page no longer executes code (e.g. converted to the markdown engine), so
+    # its freeze entry is vestigial and correctly deleted, not stale.
+    if [ "$MODE" = "commit" ]; then
+        if git diff --cached --diff-filter=D --name-only 2>/dev/null | grep -Fxq "$freeze_rel"; then
+            continue
+        fi
+    else
+        if git diff "${REMOTE}..HEAD" --diff-filter=D --name-only 2>/dev/null | grep -Fxq "$freeze_rel"; then
+            continue
+        fi
+    fi
+
     # Read freeze JSON from git objects, not working tree, to avoid false passes
     # when the freeze file is updated on disk but not yet staged.
     if [ "$MODE" = "commit" ]; then
