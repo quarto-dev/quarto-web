@@ -264,7 +264,7 @@
    The row is also the containing block for the overlay menu below. It spans
    the sidebar, where the centred trigger does not, so anchoring the menu here
    is what keeps it inside the column. */
-#quarto-sidebar .gitlink-widget-tools {
+#quarto-sidebar :is(.sidebar-tools-main, .sidebar-tools-collapse):is(.gitlink-widget-tools, :has(> a[href$="#gitlink-widget"])) {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -275,7 +275,7 @@
 
 /* Quarto pulls the tools row up under the sidebar title (`margin-top: -6px`),
    which crowds the widget pill; give it room instead. */
-.sidebar-title .sidebar-tools-main.gitlink-widget-tools {
+.sidebar-title .sidebar-tools-main:is(.gitlink-widget-tools, :has(> a[href$="#gitlink-widget"])) {
   margin-top: 0.5rem;
 }
 
@@ -287,6 +287,22 @@
 .gitlink-widget-tools .gitlink-widget {
   order: 1;
   position: static;
+}
+
+/* Quarto serves the row with only the placeholder anchor in it, and the
+   script swaps the widget in after the page has painted. The rules above
+   already match the row by that anchor, so the row is stacked from the first
+   paint; the anchor takes the widget's slot and height so the swap moves
+   nothing. */
+#quarto-sidebar :is(.sidebar-tools-main, .sidebar-tools-collapse) > a[href$="#gitlink-widget"] {
+  order: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  font-size: 0.85rem;
+  height: 1lh;
+  padding-block: calc(0.3rem + 1px);
 }
 
 .gitlink-widget-tools #quarto-search {
