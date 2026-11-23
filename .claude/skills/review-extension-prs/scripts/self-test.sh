@@ -311,8 +311,8 @@ case "$2" in
   users/prolific)
     echo '{"type":"User","created_at":"2026-11-16T17:04:17Z","public_repos":104,"followers":0}' ;;
   users/prolific/repos*)
-    # A full page of repos created after the PR hides the burst before it.
-    jq -nc '[range(100) | {name: "after-\(.)", language: "Go", created_at: "2026-11-25T10:00:00Z", fork: false}]' ;;
+    # A full page that ends inside the window hides the rest of the burst before the PR.
+    jq -nc '[range(100) | {name: "r-\(.)", language: "Go", created_at: (if . < 99 then "2026-11-25T10:00:00Z" else "2026-11-18T10:00:00Z" end), fork: false}]' ;;
   users/established)
     echo '{"type":"User","created_at":"2020-01-01T00:00:00Z","public_repos":300,"followers":5}' ;;
   users/established/repos*)
@@ -327,17 +327,18 @@ chmod +x "$FP/bin/gh"
 out=$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" newbie 2026-11-19T17:04:17Z 2>&1)
 expect_match "account age is counted back from the PR date" "$out" "account_age_days_at_pr=3"
 expect_match "repo count is reported" "$out" "public_repos=55"
-expect_match "only repos created in the window are counted" "$out" "recent_repos_created=2"
+expect_match "only repos created in the window are counted" "$out"$'\n' "recent_repos_created=2"$'\n'
 expect_match "a windowed repo is listed with its language" "$out" "repo	go-thing	Go"
 expect_no_match "a repo older than the window is not listed" "$out" "old-project"
 expect_no_match "a repo created after the PR is not listed" "$out" "later-repo"
 expect_no_match "the script prints facts, not a verdict" "$out" "INVESTIGATE"
 expect_no_match "a short repo list is complete" "$out" "UNVERIFIED"
 out=$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" established 2026-11-19T17:04:17Z 2>&1)
-expect_match "a full page reaching past the window counts its windowed repos" "$out" "recent_repos_created=3"
+expect_match "a full page reaching past the window counts its windowed repos" "$out"$'\n' "recent_repos_created=3"$'\n'
 expect_no_match "a full page reaching past the window is complete" "$out" "UNVERIFIED"
-expect_match "a repo page that ends inside or after the window is UNVERIFIED, not clean" \
-  "$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" prolific 2026-11-19T17:04:17Z 2>&1)" "UNVERIFIED"
+out=$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" prolific 2026-11-19T17:04:17Z 2>&1)
+expect_match "a full page that ends inside the window is UNVERIFIED, not clean" "$out" "UNVERIFIED"
+expect_match "a truncated page still counts the windowed repos it shows" "$out"$'\n' "recent_repos_created=1"$'\n'
 expect_match "an unfetchable account is UNVERIFIED, not clean" \
   "$(PATH="$FP/bin:$PATH" bash "$SCRIPT_DIR/submitter-footprint.sh" ghost 2>&1)" "UNVERIFIED"
 rm -rf "$FP"
