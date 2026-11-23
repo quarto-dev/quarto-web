@@ -183,11 +183,13 @@ Flag when **both** hold:
 
 A flag makes the recommendation `INVESTIGATE (submitter footprint)`. The maintainer decides; this skill never closes or bans.
 
+An `UNVERIFIED` line from the script means the repo burst could not be checked. If the printed account age is 30 days or more, the flag is ruled out anyway: report the line as context. Otherwise, including when the account itself could not be fetched, the flag cannot be ruled out: report the submitter as `UNVERIFIED` and handle the PR as flagged.
+
 These are not signals, because legitimate submitters show them: the public repo count, bulk-upload or "Add files via upload" commits, a young or unstarred repository, a non-GitHub author link, and AI authorship that the submission discloses. A burst of repos on an old account is not a flag either; the age condition is what separates the two. An `Organization` owner is reported as a fact, not a flag.
 
 State observations in the report ("55 repos created since 2026-11-16, across Go, Swift and Vim"), not conclusions about the person.
 
-Calibration (2026-11-18): across 177 merged listing PRs from 98 distinct human authors since 2023-01, the youngest account at PR time was 317 days old, and the median was about 3,800 days. The 30-day threshold is a judgement call set well inside that gap. The sample is merged PRs only, so it says nothing about rejected submissions. `submitter-footprint.sh` reads only the 100 most recently created repos, which is enough for a new account; the events API is not used.
+Calibration (2026-11-18): across 177 merged listing PRs from 98 distinct human authors since 2023-01, the youngest account at PR time was 317 days old, and the median was about 3,800 days. The 30-day threshold is a judgement call set well inside that gap. The sample is merged PRs only, so it says nothing about rejected submissions. `submitter-footprint.sh` reads only the 100 most recently created repos and prints `UNVERIFIED` when they do not reach back to the start of the window; the events API is not used.
 
 ---
 
@@ -203,5 +205,5 @@ Calibration (2026-11-18): across 177 merged listing PRs from 98 distinct human a
 | INVESTIGATE (cross-listing duplicate) | INVESTIGATE |
 | Redundant with native Quarto functionality | INVESTIGATE |
 | Functional duplicate of an existing entry under another name | INVESTIGATE |
-| Submitter footprint flag (Check 9) | `INVESTIGATE (submitter footprint)`: skip the upstream-thread search, draft no PR comment and no upstream comment |
+| Submitter footprint flag (Check 9), or Check 9 UNVERIFIED on an account under 30 days old or of unknown age | `INVESTIGATE (submitter footprint)`: skip the upstream-thread search, draft no PR comment and no upstream comment |
 | Private or 404 repo | REQUEST_CHANGES |

@@ -48,7 +48,7 @@ gh pr view <PR_NUMBER> --json author,createdAt
 bash "${CLAUDE_SKILL_DIR}/scripts/submitter-footprint.sh" "<login>" "<createdAt>"
 ```
 
-Run it for the repository owner too when that is a different account. Check 9 in the reference checklist defines the flag. A flagged submitter makes the recommendation `INVESTIGATE (submitter footprint)`: still complete steps 3 and 4 so the maintainer has the facts, but skip step 5 and draft no comments in step 7.
+Run it for the repository owner too when that is a different account. Check 9 in the reference checklist defines the flag. A flagged submitter makes the recommendation `INVESTIGATE (submitter footprint)`: still complete steps 3 and 4 so the maintainer has the facts, but skip step 5 and draft no comments in step 7. An `UNVERIFIED` line from the script counts as a flag unless the account is 30 days or older; Check 9 has the rule.
 
 ### 3. Understand what the extension does
 

@@ -4,7 +4,7 @@ set -uo pipefail
 # Usage: submitter-footprint.sh <login> [pr-created-at]
 # pr-created-at is an ISO 8601 UTC timestamp (default: now); ages and the recent-repo window count back from it.
 # Output: key=value lines, then one tab-separated `repo` line per repo created in the 14 days before that time.
-# Only the 100 most recently created repos are inspected.
+# Only the 100 most recently created repos are inspected; an UNVERIFIED line says when they end inside the window.
 # Always exits 0 — caller interprets output.
 
 LOGIN="${1:?Usage: submitter-footprint.sh <login> [pr-created-at]}"
@@ -29,6 +29,9 @@ fi
 
 printf '%s' "$REPOS_JSON" | jq -r --arg at "$AT" '
   ($at | fromdateiso8601) as $t
-  | [.[] | select((.created_at | fromdateiso8601) > $t - 1209600 and (.created_at | fromdateiso8601) <= $t)]
+  | (if length == 100 and (.[-1].created_at | fromdateiso8601) > $t - 1209600
+     then "UNVERIFIED: the 100 newest repos do not reach back to the start of the 14-day window; recent_repos_created may be incomplete"
+     else empty end),
+    ([.[] | select((.created_at | fromdateiso8601) > $t - 1209600 and (.created_at | fromdateiso8601) <= $t)]
   | "recent_repos_created=\(length)",
-    (.[] | "repo\t\(.name)\t\(.language // "-")\t\(.created_at)\tfork=\(.fork)")' | tr -d '\r'
+    (.[] | "repo\t\(.name)\t\(.language // "-")\t\(.created_at)\tfork=\(.fork)"))' | tr -d '\r'
