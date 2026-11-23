@@ -1,8 +1,8 @@
-Results for [quarto.org](https://quarto.org) at commit [`310d6441d`](https://github.com/quarto-dev/quarto-web/tree/310d6441d15be04636a1123cab0770268884305b), scanned November 16, 2026.
+Results for [quarto.org](https://quarto.org) at commit [`916b863e5`](https://github.com/quarto-dev/quarto-web/tree/916b863e52c0d10ab3fced896a0fce43e6aac191), scanned November 23, 2026.
 
 # axe site audit
 
-376 pages · 1426/1426 cells ok · axe-core 4.10.3 · Quarto 1.12.2 · generated 2026-11-16T06:30:11.900Z
+376 pages · 1426/1426 cells ok · axe-core 4.10.3 · Quarto 1.12.3 · generated 2026-11-23T06:23:59.827Z
 
 > **Partial scan** (`--exclude docs/get-started/*/index.html,docs/manuscripts/authoring/index.html`) — counts describe this subset, not the whole site. A one-page rescan proves an instance is gone, not that the finding is fixed on other pages.
 
@@ -162,7 +162,7 @@ Reference: <https://dequeuniversity.com/rules/axe/4.10/empty-table-header?applic
 - `docs/prerelease/1.4/script-r.html` → `../../computations/render-scripts.html`
 - `docs/prerelease/1.4/script.html` → `../../computations/render-scripts.html`
 - `docs/prerelease/1.4/typst.html` → `../../output-formats/typst.html`
-- `docs/prerelease/1.5/lipsum.html` → `../../authoring/placeholder.html`
+- `docs/prerelease/1.5/lipsum.html` → `../../authoring/lipsum.html`
 - `docs/prerelease/1.5/lua-table-processing.html` → `../../authoring/tables.html`
 - `docs/prerelease/1.5/pre-render.html` → `../../projects/scripts.html`
 - `docs/prerelease/1.5/website-drafts.html` → `../../websites/website-drafts.html`
