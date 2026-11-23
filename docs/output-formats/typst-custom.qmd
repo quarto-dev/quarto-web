@@ -84,7 +84,10 @@ Quarto calls this function with these named arguments:
 | `icon`                  | The icon, or `none` when the callout has no icon.                                                                                   |
 | `body_background_color` | The fill of the body area.                                                                                                          |
 | `kind`                  | The callout type: `"note"`, `"tip"`, `"warning"`, `"important"` or `"caution"`. The value is `"none"` for a callout without a type. |
-| `appearance`            | The appearance that the author sets: `"default"`, `"simple"` or `"minimal"`.                                                        |
+| `appearance`            | The callout appearance: `"default"`, `"simple"` or `"minimal"`.                                                                     |
+
+The `appearance` value comes from the `appearance` attribute of the callout, or else from the `callout-appearance` option.
+If neither is set, the value is `"default"`, or `"simple"` for a callout without a type.
 
 A custom format can change the callouts with its own `callout()` function.
 Put the function in a partial that comes after `definitions.typ`, for example `typst-template.typ`.
@@ -94,9 +97,9 @@ Keep a reference to the default function, and give it the arguments that you do 
 #let quarto-callout = callout
 #let callout(kind: "none", appearance: "default", ..args) = {
   if kind == "warning" and appearance != "minimal" {
-    quarto-callout(..args, background_color: rgb("#fff3cd"))
+    quarto-callout(..args, kind: kind, appearance: appearance, background_color: rgb("#fff3cd"))
   } else {
-    quarto-callout(..args)
+    quarto-callout(..args, kind: kind, appearance: appearance)
   }
 }
 ```
