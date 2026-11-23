@@ -68,6 +68,53 @@ The Lua filter uses `quarto.doc.file_metadata()` to detect book item types (part
 
 The bundled [orange-book extension](https://github.com/quarto-ext/orange-book) provides a complete example of this structure.
 
+## Callouts {#callouts}
+
+{{< prerelease-callout 1.12 >}}
+
+In Typst output, Quarto draws each callout with the `callout()` function of the `definitions.typ` partial.
+Quarto calls this function with these named arguments:
+
+| Argument                | Value                                                                                                                               |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `body`                  | The content of the callout.                                                                                                         |
+| `title`                 | The title of the callout.                                                                                                           |
+| `background_color`      | The fill of the title area.                                                                                                         |
+| `icon_color`            | The color of the icon and of the border.                                                                                            |
+| `icon`                  | The icon, or `none` when the callout has no icon.                                                                                   |
+| `body_background_color` | The fill of the body area.                                                                                                          |
+| `kind`                  | The callout type: `"note"`, `"tip"`, `"warning"`, `"important"` or `"caution"`. The value is `"none"` for a callout without a type. |
+| `appearance`            | The callout appearance: `"default"`, `"simple"` or `"minimal"`.                                                                     |
+
+The `appearance` value comes from the `appearance` attribute of the callout, or else from the `callout-appearance` option.
+If neither is set, the value is `"default"`, or `"simple"` for a callout without a type.
+
+A callout with a custom type, for example one that an extension makes with `quarto.Callout()`, gives its type name unchanged in `kind`.
+
+A custom format can change the callouts with its own `callout()` function.
+Put the function in a partial that comes after `definitions.typ`, for example `typst-template.typ`.
+Keep a reference to the default function, and give it the arguments that you do not change:
+
+``` {.typst filename="typst-template.typ"}
+#let quarto-callout = callout
+#let callout(kind: "none", appearance: "default", ..args) = {
+  if kind == "warning" and appearance != "minimal" {
+    quarto-callout(..args, kind: kind, appearance: appearance, background_color: rgb("#fff3cd"))
+  } else {
+    quarto-callout(..args, kind: kind, appearance: appearance)
+  }
+}
+```
+
+Write each argument that you change after `..args`.
+Typst uses the last value of a named argument, so a value before `..args` has no effect.
+
+Your function must accept `..args`.
+Typst stops with an error when a function gets a named argument that it does not declare, and Quarto can add arguments in a later version.
+
+Use the default function to make the result, as in the example.
+For a cross-referenced callout, Quarto reads the structure of this result to add the callout number.
+
 ## Advanced Customization
 
 ::: callout-note
