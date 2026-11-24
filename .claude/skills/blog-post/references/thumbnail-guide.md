@@ -35,7 +35,7 @@ quarto.org / Open Graph standard) — don't copy dimensions from those examples.
 
 ## Quarto Brand Colors
 
-Sourced from the website SCSS (`_extensions/quartoorg/scss/partials/_home.scss`):
+Sourced from the website SCSS (`_extensions/quartoorg/assets/scss/partials/_home.scss`):
 
 | Color | Hex | Usage |
 |-------|-----|-------|
