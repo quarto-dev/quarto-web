@@ -10,9 +10,15 @@ local M = {}
 --- @param filename string The sibling module filename (e.g., 'string.lua')
 --- @return table The loaded module
 local function load_sibling(filename)
+  local name = filename:gsub('%.lua$', '')
+  if not (debug and debug.getinfo) then
+    -- q2 has no `debug` library, and its `require` looks in the directory of
+    -- the module being loaded first.
+    return require(name)
+  end
   local source = debug.getinfo(1, 'S').source:sub(2)
   local dir = source:match('(.*[/\\])') or ''
-  return require((dir .. filename):gsub('%.lua$', ''))
+  return require(dir .. name)
 end
 
 --- Load string module for is_empty

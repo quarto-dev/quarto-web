@@ -3,7 +3,7 @@
 --- @license MIT
 --- @copyright 2026 Mickaël Canouil
 --- @author Mickaël Canouil
---- @version 2.2.0
+--- @version 2.3.0
 ---
 --- Implements the v2 extension schema vocabulary published at
 --- <https://m.canouil.dev/quarto-wizard/assets/schema/v2/extension-schema.json>.
@@ -2160,7 +2160,7 @@ end
 --- carry on with a nil schema and fail later somewhere unrelated.
 ---
 --- @param filename string|nil Path to the schema file (defaults to '_schema.yml')
---- @return table|nil schema Schema with {['$schema'], options, shortcodes, formats, projects, attributes, classes}
+--- @return table|nil schema Schema with {['$schema'], options, shortcodes, formats, projects, attributes, classes, cells}
 --- @return string|nil err Why the schema could not be read
 --- @usage local schema, err = M.load_schema('_schema.yml')
 function M.load_schema(filename)
@@ -2177,6 +2177,7 @@ function M.load_schema(filename)
     projects = raw.projects or {},
     attributes = raw.attributes or {},
     classes = raw.classes or {},
+    cells = raw.cells or {},
   }, nil
 end
 
@@ -2384,6 +2385,48 @@ function M.validate_attributes(attributes, group, schema, options)
 
   local merged = _validate_map(attributes or {}, descriptors, group, context, {
     unknown = options.unknown or 'ignore',
+  })
+  return _finish(context, merged)
+end
+
+--- Validate the comment-pipe options of one code cell against the `cells`
+--- section. The language is matched case-insensitively, because Quarto treats
+--- `{Typst}` and `{typst}` as the same cell language. Undeclared options are
+--- ignored by default, because a cell legitimately carries options from Quarto
+--- and from other filters.
+--- @param options table Map of option values, as read from the comment-pipe lines
+--- @param language string Cell language, such as 'typst'
+--- @param schema table Loaded schema
+--- @param opts table|nil {unknown = 'warn'|'error'|'ignore'}
+--- @return boolean valid
+--- @return table errors
+--- @return table warnings
+--- @return table merged
+--- @return table findings
+--- @usage local valid, errors, warnings, merged = M.validate_cells(cell_options, 'typst', schema)
+function M.validate_cells(options, language, schema, opts)
+  opts = opts or {}
+  local entry
+  if schema and type(schema.cells) == 'table' and type(language) == 'string' then
+    entry = _lookup(schema.cells, language)
+    if entry == nil then
+      local wanted = language:lower()
+      for key, candidate in pairs(schema.cells) do
+        if type(key) == 'string' and key:lower() == wanted then
+          entry = candidate
+          break
+        end
+      end
+    end
+  end
+
+  local context = _new_context()
+  if type(entry) ~= 'table' or type(entry.options) ~= 'table' then
+    return _finish(context, options or {})
+  end
+
+  local merged = _validate_map(options or {}, entry.options, language, context, {
+    unknown = opts.unknown or 'ignore',
   })
   return _finish(context, merged)
 end

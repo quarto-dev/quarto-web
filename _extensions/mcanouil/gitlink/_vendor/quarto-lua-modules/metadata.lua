@@ -10,9 +10,15 @@ local M = {}
 --- @param filename string The sibling module filename (e.g., 'string.lua')
 --- @return table The loaded module
 local function load_sibling(filename)
+  local name = filename:gsub('%.lua$', '')
+  if not (debug and debug.getinfo) then
+    -- q2 has no `debug` library, and its `require` looks in the directory of
+    -- the module being loaded first.
+    return require(name)
+  end
   local source = debug.getinfo(1, 'S').source:sub(2)
   local dir = source:match('(.*[/\\])') or ''
-  return require((dir .. filename):gsub('%.lua$', ''))
+  return require(dir .. name)
 end
 
 --- Load required modules
@@ -182,34 +188,67 @@ end
 -- PROJECT METADATA UTILITIES
 -- ============================================================================
 
---- Get repo-url from Quarto project metadata via QUARTO_EXECUTE_INFO.
---- Reads the JSON file pointed to by the QUARTO_EXECUTE_INFO environment variable
---- and extracts repo-url from website or book metadata.
---- @return string|nil The repo-url value, or nil if not available
-function M.get_project_repo_url()
+--- Get project-level metadata from Quarto via QUARTO_EXECUTE_INFO.
+--- Reads and decodes the JSON file pointed to by the QUARTO_EXECUTE_INFO
+--- environment variable and returns its format.metadata table, which holds
+--- the website and book configuration that document metadata lacks.
+--- The file is read on every call; pass the result on rather than calling twice.
+--- @return table|nil format_meta The format.metadata table, or nil if unavailable
+--- @return string|nil reason Why the file could not be used when
+---   QUARTO_EXECUTE_INFO is set; nil when it is unset or empty.
+---   The reasons are a stable API: callers can compare against them, and a
+---   change to any of them is a breaking change. They are exactly
+---   "file is unreadable", "file is empty", "invalid JSON" and
+---   "no format.metadata table".
+--- @return string|nil path The QUARTO_EXECUTE_INFO path, with every reason
+--- @usage local format_meta, reason, path = M.get_project_metadata()
+--- @note quarto-cli's decoder raises on bad JSON, while q2's (pandoc.json)
+---   returns nil, so a nil result is also reported as invalid JSON.
+function M.get_project_metadata()
   local path = os.getenv("QUARTO_EXECUTE_INFO")
-  if not path then return nil end
+  if str.is_empty(path) then return nil end
 
   local file = io.open(path, "r")
-  if not file then return nil end
+  if not file then return nil, "file is unreadable", path end
 
   local content = file:read("*a")
   file:close()
 
-  if str.is_empty(content) then return nil end
+  if str.is_empty(content) then return nil, "file is empty", path end
 
   local ok, info = pcall(quarto.json.decode, content)
-  if not ok or not info then return nil end
+  if not ok or info == nil then return nil, "invalid JSON", path end
 
-  local format_meta = info["format"] and info["format"]["metadata"]
-  if not format_meta then return nil end
+  if type(info) ~= "table" or type(info["format"]) ~= "table"
+      or type(info["format"]["metadata"]) ~= "table" then
+    return nil, "no format.metadata table", path
+  end
 
-  -- Try website.repo-url first, then book.repo-url
-  local repo_url = nil
-  if format_meta["website"] and format_meta["website"]["repo-url"] then
-    repo_url = format_meta["website"]["repo-url"]
-  elseif format_meta["book"] and format_meta["book"]["repo-url"] then
-    repo_url = format_meta["book"]["repo-url"]
+  return info["format"]["metadata"]
+end
+
+--- Get repo-url from Quarto project metadata via QUARTO_EXECUTE_INFO.
+--- Extracts repo-url from website or book metadata, website first.
+--- The QUARTO_EXECUTE_INFO file is read only when no table is given.
+--- @param format_meta table|nil The project format.metadata table, as returned
+---   by get_project_metadata; read from QUARTO_EXECUTE_INFO when nil
+--- @return string|nil The repo-url value, or nil if not available
+--- @usage local repo_url = M.get_project_repo_url(format_meta)
+function M.get_project_repo_url(format_meta)
+  if format_meta == nil then
+    format_meta = M.get_project_metadata()
+    if not format_meta then return nil end
+  elseif type(format_meta) ~= "table" then
+    error("get_project_repo_url: format_meta must be a table or nil, got " .. type(format_meta), 2)
+  end
+
+  local website = format_meta["website"]
+  local book = format_meta["book"]
+  local repo_url
+  if type(website) == "table" and website["repo-url"] then
+    repo_url = website["repo-url"]
+  elseif type(book) == "table" and book["repo-url"] then
+    repo_url = book["repo-url"]
   end
 
   if str.is_empty(repo_url) then return nil end
